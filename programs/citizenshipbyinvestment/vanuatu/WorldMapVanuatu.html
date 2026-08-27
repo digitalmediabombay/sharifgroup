@@ -1,0 +1,443 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="UTF-8" />
+    <title>My World by amCharts</title>
+    <meta name="viewport" content="width=device-width, minimum-scale=1, initial-scale=1, user-scalable=yes, minimal-ui">
+    <style>
+body {
+	font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol";
+	font-size: 12px;
+	padding: 0;
+	margin: 0;
+	background-color: #F9F5F0;
+}
+
+#chartdiv {
+	width: 100vw;
+	height: 100vh;
+}
+    </style>
+  </head>
+  <body>
+
+
+<script src="https://cdn.amcharts.com/lib/editor/map/5/viewer.js"></script>
+<div id="chartdiv"></div>
+<script>
+
+/**
+ * -----------------------------------------------
+ * This map was created using amCharts Map Editor.
+ *
+ * To create your own map visit:
+ * https://pixelmap.amcharts.com/
+ *
+ * For more information on amCharts visit:
+ * https://www.amcharts.com/
+ * -----------------------------------------------
+ */
+
+am5viewer.create("chartdiv", {
+  "settings": {
+    "editor": {
+      "theme": "dark",
+      "userData": {
+        "projection": "geoMercator",
+        "geodata": "worldLow"
+      },
+      "themeTags": [
+        "dark"
+      ],
+      "__parse": true
+    },
+    "editor.map": {
+      "minZoomLevel": 0.8,
+      "projection": "geoMercator",
+      "panX": "none",
+      "panY": "none",
+      "wheelX": "none",
+      "wheelY": "none",
+      "pinchZoom": false,
+      "maxZoomLevel": 1,
+      "minZoomLevel": 1,
+      "zoomControl": {
+        "type": "ZoomControl",
+        "settings": {
+          "visible": false
+        }
+      },
+      "background": {
+        "type": "Rectangle",
+        "settings": {
+          "fill": {
+            "type": "Color",
+            "value": "#F9F5F0"
+          },
+          "fillOpacity": 1,
+          "width": 1707,
+          "height": 825,
+          "x": 0,
+          "y": 0,
+          "fillPattern": {
+            "type": "GrainPattern",
+            "settings": {
+              "maxOpacity": 0.08,
+              "density": 0.2,
+              "colors": [
+                {
+                  "type": "Color",
+                  "value": "#aaaaaa"
+                }
+              ]
+            }
+          },
+          "isMeasured": false,
+          "crisp": true
+        }
+      },
+      "themeTags": [
+        "map"
+      ],
+      "translateX": 889.6,
+      "translateY": 564.4957848200618
+    },
+    "editor.pointTemplate": {
+      "toggleKey": "active",
+      "centerX": {
+        "type": "Percent",
+        "value": 50
+      },
+      "centerY": {
+        "type": "Percent",
+        "value": 50
+      },
+      "tooltipText": "{name}"
+    },
+    "editor.bubbleTemplate": {
+      "toggleKey": "active",
+      "tooltipText": "{name}: {value}"
+    },
+    "editor.pixelTemplate": {
+      "tooltipText": "{name}"
+    },
+    "editor.linePointTemplate": {
+      "toggleKey": "active",
+      "centerX": {
+        "type": "Percent",
+        "value": 50
+      },
+      "centerY": {
+        "type": "Percent",
+        "value": 50
+      },
+      "tooltipText": "{name}"
+    },
+    "editor.labelTemplate": {
+      "toggleKey": "active",
+      "tooltipText": "{name}"
+    },
+    "editor.polygonSeries": {
+      "valueField": "value",
+      "calculateAggregates": true,
+      "id": "polygonseries",
+      "exclude": [
+        "AQ"
+      ],
+      "geometryField": "geometry",
+      "geometryTypeField": "geometryType",
+      "idField": "id"
+    },
+    "editor.polygonSeries.mapPolygons.template": {
+      "tooltipText": "{name}",
+      "templateField": "polygonSettings"
+    },
+    "editor.lineSeries": {
+      "layer": 30,
+      "id": "lineseries",
+      "lineTypeField": "lineType",
+      "geometryField": "geometry",
+      "geometryTypeField": "geometryType",
+      "idField": "id"
+    },
+    "editor.pointSeries": {
+      "fixedField": "fixed",
+      "id": "pointseries",
+      "longitudeField": "longitude",
+      "latitudeField": "latitude",
+      "geometryField": "geometry",
+      "geometryTypeField": "geometryType",
+      "idField": "id"
+    },
+    "editor.labelSeries": {
+      "fixedField": "fixed",
+      "id": "labelseries",
+      "longitudeField": "longitude",
+      "latitudeField": "latitude",
+      "geometryField": "geometry",
+      "geometryTypeField": "geometryType",
+      "idField": "id"
+    },
+    "editor.bubbleSeries": {
+      "calculateAggregates": true,
+      "valueField": "value",
+      "polygonIdField": "id",
+      "id": "bubbleseries",
+      "longitudeField": "longitude",
+      "latitudeField": "latitude",
+      "geometryField": "geometry",
+      "geometryTypeField": "geometryType",
+      "idField": "id"
+    },
+    "editor.gridSeries": {
+      "themeTags": [
+        "grid"
+      ],
+      "affectsBounds": false,
+      "lineTypeField": "lineType",
+      "geometryField": "geometry",
+      "geometryTypeField": "geometryType",
+      "idField": "id",
+      "clipExtent": true
+    },
+    "editor.backgroundSeries": {
+      "visible": false,
+      "themeTags": [
+        "polygon",
+        "background"
+      ],
+      "affectsBounds": false,
+      "geometryField": "geometry",
+      "geometryTypeField": "geometryType",
+      "idField": "id"
+    },
+    "editor.backgroundSeries.mapPolygons.template": {
+      "forceInactive": true
+    },
+    "editor.gridSeries.mapLines.template": {
+      "forceInactive": true
+    }
+  },
+  "data": {
+   "editor.polygonSeries": [
+      // ==========================================
+      // 1. VISA-FREE (Muted Sage Green: #9EBC9C)
+      // ==========================================
+      { "id": "AO", "polygonSettings": { "fill": "#9EBC9C" } }, // Angola
+      { "id": "AG", "polygonSettings": { "fill": "#9EBC9C" } }, // Antigua and Barbuda
+      { "id": "BS", "polygonSettings": { "fill": "#9EBC9C" } }, // Bahamas
+      { "id": "BB", "polygonSettings": { "fill": "#9EBC9C" } }, // Barbados
+      { "id": "BY", "polygonSettings": { "fill": "#9EBC9C" } }, // Belarus
+      { "id": "BZ", "polygonSettings": { "fill": "#9EBC9C" } }, // Belize
+      { "id": "BA", "polygonSettings": { "fill": "#9EBC9C" } }, // Bosnia and Herzegovina
+      { "id": "BW", "polygonSettings": { "fill": "#9EBC9C" } }, // Botswana
+      { "id": "CR", "polygonSettings": { "fill": "#9EBC9C" } }, // Costa Rica
+      { "id": "DM", "polygonSettings": { "fill": "#9EBC9C" } }, // Dominica
+      { "id": "DO", "polygonSettings": { "fill": "#9EBC9C" } }, // Dominican Republic
+      { "id": "EC", "polygonSettings": { "fill": "#9EBC9C" } }, // Ecuador
+      { "id": "SV", "polygonSettings": { "fill": "#9EBC9C" } }, // El Salvador
+      { "id": "SZ", "polygonSettings": { "fill": "#9EBC9C" } }, // Eswatini
+      { "id": "FJ", "polygonSettings": { "fill": "#9EBC9C" } }, // Fiji
+      { "id": "GM", "polygonSettings": { "fill": "#9EBC9C" } }, // Gambia
+      { "id": "GD", "polygonSettings": { "fill": "#9EBC9C" } }, // Grenada
+      { "id": "GT", "polygonSettings": { "fill": "#9EBC9C" } }, // Guatemala
+      { "id": "HT", "polygonSettings": { "fill": "#9EBC9C" } }, // Haiti
+      { "id": "HN", "polygonSettings": { "fill": "#9EBC9C" } }, // Honduras
+      { "id": "HK", "polygonSettings": { "fill": "#9EBC9C" } }, // Hong Kong
+      { "id": "JM", "polygonSettings": { "fill": "#9EBC9C" } }, // Jamaica
+      { "id": "KE", "polygonSettings": { "fill": "#9EBC9C" } }, // Kenya
+      { "id": "KI", "polygonSettings": { "fill": "#9EBC9C" } }, // Kiribati
+      { "id": "XK", "polygonSettings": { "fill": "#9EBC9C" } }, // Kosovo
+      { "id": "LS", "polygonSettings": { "fill": "#9EBC9C" } }, // Lesotho
+      { "id": "MW", "polygonSettings": { "fill": "#9EBC9C" } }, // Malawi
+      { "id": "MY", "polygonSettings": { "fill": "#9EBC9C" } }, // Malaysia
+      { "id": "MU", "polygonSettings": { "fill": "#9EBC9C" } }, // Mauritius
+      { "id": "FM", "polygonSettings": { "fill": "#9EBC9C" } }, // Micronesia
+      { "id": "MD", "polygonSettings": { "fill": "#9EBC9C" } }, // Moldova
+      { "id": "PS", "polygonSettings": { "fill": "#9EBC9C" } }, // Palestinian Territories
+      { "id": "PA", "polygonSettings": { "fill": "#9EBC9C" } }, // Panama
+      { "id": "PE", "polygonSettings": { "fill": "#9EBC9C" } }, // Peru
+      { "id": "PH", "polygonSettings": { "fill": "#9EBC9C" } }, // Philippines
+      { "id": "RU", "polygonSettings": { "fill": "#9EBC9C" } }, // Russian Federation
+      { "id": "RW", "polygonSettings": { "fill": "#9EBC9C" } }, // Rwanda
+      { "id": "LC", "polygonSettings": { "fill": "#9EBC9C" } }, // Saint Lucia
+      { "id": "SG", "polygonSettings": { "fill": "#9EBC9C" } }, // Singapore
+      { "id": "VC", "polygonSettings": { "fill": "#9EBC9C" } }, // St. Vincent and the Grenadines
+      { "id": "SR", "polygonSettings": { "fill": "#9EBC9C" } }, // Suriname
+      { "id": "TZ", "polygonSettings": { "fill": "#9EBC9C" } }, // Tanzania
+      { "id": "TT", "polygonSettings": { "fill": "#9EBC9C" } }, // Trinidad and Tobago
+      { "id": "UG", "polygonSettings": { "fill": "#9EBC9C" } }, // Uganda
+      { "id": "ZM", "polygonSettings": { "fill": "#9EBC9C" } }, // Zambia
+      { "id": "ZW", "polygonSettings": { "fill": "#9EBC9C" } }, // Zimbabwe
+
+      // ==========================================
+      // 2. VOA / EVISA (Muted Teal: #6DA0A5)
+      // ==========================================
+      { "id": "AM", "polygonSettings": { "fill": "#6DA0A5" } }, // Armenia
+      { "id": "BO", "polygonSettings": { "fill": "#6DA0A5" } }, // Bolivia
+      { "id": "BI", "polygonSettings": { "fill": "#6DA0A5" } }, // Burundi
+      { "id": "KH", "polygonSettings": { "fill": "#6DA0A5" } }, // Cambodia
+      { "id": "KM", "polygonSettings": { "fill": "#6DA0A5" } }, // Comoros
+      { "id": "CD", "polygonSettings": { "fill": "#6DA0A5" } }, // Congo (Dem. Rep.)
+      { "id": "CU", "polygonSettings": { "fill": "#6DA0A5" } }, // Cuba
+      { "id": "DJ", "polygonSettings": { "fill": "#6DA0A5" } }, // Djibouti
+      { "id": "EG", "polygonSettings": { "fill": "#6DA0A5" } }, // Egypt
+      { "id": "GQ", "polygonSettings": { "fill": "#6DA0A5" } }, // Equatorial Guinea
+      { "id": "ET", "polygonSettings": { "fill": "#6DA0A5" } }, // Ethiopia
+      { "id": "GA", "polygonSettings": { "fill": "#6DA0A5" } }, // Gabon
+      { "id": "GN", "polygonSettings": { "fill": "#6DA0A5" } }, // Guinea
+      { "id": "GW", "polygonSettings": { "fill": "#6DA0A5" } }, // Guinea-Bissau
+      { "id": "IN", "polygonSettings": { "fill": "#6DA0A5" } }, // India
+      { "id": "JO", "polygonSettings": { "fill": "#6DA0A5" } }, // Jordan
+      { "id": "LA", "polygonSettings": { "fill": "#6DA0A5" } }, // Laos
+      { "id": "MO", "polygonSettings": { "fill": "#6DA0A5" } }, // Macao
+      { "id": "MG", "polygonSettings": { "fill": "#6DA0A5" } }, // Madagascar
+      { "id": "MV", "polygonSettings": { "fill": "#6DA0A5" } }, // Maldives
+      { "id": "MH", "polygonSettings": { "fill": "#6DA0A5" } }, // Marshall Islands
+      { "id": "MR", "polygonSettings": { "fill": "#6DA0A5" } }, // Mauritania
+      { "id": "MZ", "polygonSettings": { "fill": "#6DA0A5" } }, // Mozambique
+      { "id": "NA", "polygonSettings": { "fill": "#6DA0A5" } }, // Namibia
+      { "id": "NR", "polygonSettings": { "fill": "#6DA0A5" } }, // Nauru
+      { "id": "NP", "polygonSettings": { "fill": "#6DA0A5" } }, // Nepal
+      { "id": "NG", "polygonSettings": { "fill": "#6DA0A5" } }, // Nigeria
+      { "id": "PW", "polygonSettings": { "fill": "#6DA0A5" } }, // Palau
+      { "id": "PG", "polygonSettings": { "fill": "#6DA0A5" } }, // Papua New Guinea
+      { "id": "WS", "polygonSettings": { "fill": "#6DA0A5" } }, // Samoa
+      { "id": "SN", "polygonSettings": { "fill": "#6DA0A5" } }, // Senegal
+      { "id": "SL", "polygonSettings": { "fill": "#6DA0A5" } }, // Sierra Leone
+      { "id": "SB", "polygonSettings": { "fill": "#6DA0A5" } }, // Solomon Islands
+      { "id": "SS", "polygonSettings": { "fill": "#6DA0A5" } }, // South Sudan
+      { "id": "TH", "polygonSettings": { "fill": "#6DA0A5" } }, // Thailand
+      { "id": "TL", "polygonSettings": { "fill": "#6DA0A5" } }, // Timor-Leste
+      { "id": "TG", "polygonSettings": { "fill": "#6DA0A5" } }, // Togo
+      { "id": "TO", "polygonSettings": { "fill": "#6DA0A5" } }, // Tonga
+      { "id": "TV", "polygonSettings": { "fill": "#6DA0A5" } }, // Tuvalu
+      { "id": "UA", "polygonSettings": { "fill": "#6DA0A5" } }, // Ukraine
+      { "id": "UZ", "polygonSettings": { "fill": "#6DA0A5" } }, // Uzbekistan
+      { "id": "VN", "polygonSettings": { "fill": "#6DA0A5" } }, // Viet Nam
+
+      // ==========================================
+      // 3. PRE-ENROLLMENT / eTA (Soft Antique Gold: #E2C07C)
+      // ==========================================
+      { "id": "CI", "polygonSettings": { "fill": "#E2C07C" } }, // Cote d'Ivoire (Ivory Coast)
+      { "id": "IL", "polygonSettings": { "fill": "#E2C07C" } }, // Israel
+      { "id": "KN", "polygonSettings": { "fill": "#E2C07C" } }, // Saint Kitts and Nevis
+      { "id": "SC", "polygonSettings": { "fill": "#E2C07C" } }, // Seychelles
+      { "id": "LK", "polygonSettings": { "fill": "#E2C07C" } }, // Sri Lanka
+
+      // ==========================================
+      // 4. EVISA REQUIRED / VISA REQUIRED (Red/Maroon: #C57C6C)
+      // ==========================================
+      { "id": "AF", "polygonSettings": { "fill": "#C57C6C" } }, // Afghanistan
+      { "id": "AL", "polygonSettings": { "fill": "#C57C6C" } }, // Albania
+      { "id": "DZ", "polygonSettings": { "fill": "#C57C6C" } }, // Algeria
+      { "id": "AD", "polygonSettings": { "fill": "#C57C6C" } }, // Andorra
+      { "id": "AR", "polygonSettings": { "fill": "#C57C6C" } }, // Argentina
+      { "id": "AU", "polygonSettings": { "fill": "#C57C6C" } }, // Australia
+      { "id": "AT", "polygonSettings": { "fill": "#C57C6C" } }, // Austria
+      { "id": "AZ", "polygonSettings": { "fill": "#C57C6C" } }, // Azerbaijan
+      { "id": "BH", "polygonSettings": { "fill": "#C57C6C" } }, // Bahrain
+      { "id": "BD", "polygonSettings": { "fill": "#C57C6C" } }, // Bangladesh
+      { "id": "BE", "polygonSettings": { "fill": "#C57C6C" } }, // Belgium
+      { "id": "BJ", "polygonSettings": { "fill": "#C57C6C" } }, // Benin
+      { "id": "BT", "polygonSettings": { "fill": "#C57C6C" } }, // Bhutan
+      { "id": "BR", "polygonSettings": { "fill": "#C57C6C" } }, // Brazil
+      { "id": "BN", "polygonSettings": { "fill": "#C57C6C" } }, // Brunei
+      { "id": "BG", "polygonSettings": { "fill": "#C57C6C" } }, // Bulgaria
+      { "id": "BF", "polygonSettings": { "fill": "#C57C6C" } }, // Burkina Faso
+      { "id": "CM", "polygonSettings": { "fill": "#C57C6C" } }, // Cameroon
+      { "id": "CA", "polygonSettings": { "fill": "#C57C6C" } }, // Canada
+      { "id": "CV", "polygonSettings": { "fill": "#C57C6C" } }, // Cape Verde
+      { "id": "CF", "polygonSettings": { "fill": "#C57C6C" } }, // Central African Republic
+      { "id": "TD", "polygonSettings": { "fill": "#C57C6C" } }, // Chad
+      { "id": "CL", "polygonSettings": { "fill": "#C57C6C" } }, // Chile
+      { "id": "CN", "polygonSettings": { "fill": "#C57C6C" } }, // China
+      { "id": "CO", "polygonSettings": { "fill": "#C57C6C" } }, // Colombia
+      { "id": "CG", "polygonSettings": { "fill": "#C57C6C" } }, // Congo
+      { "id": "HR", "polygonSettings": { "fill": "#C57C6C" } }, // Croatia
+      { "id": "CY", "polygonSettings": { "fill": "#C57C6C" } }, // Cyprus
+      { "id": "CZ", "polygonSettings": { "fill": "#C57C6C" } }, // Czech Republic
+      { "id": "DK", "polygonSettings": { "fill": "#C57C6C" } }, // Denmark
+      { "id": "ER", "polygonSettings": { "fill": "#C57C6C" } }, // Eritrea
+      { "id": "EE", "polygonSettings": { "fill": "#C57C6C" } }, // Estonia
+      { "id": "FI", "polygonSettings": { "fill": "#C57C6C" } }, // Finland
+      { "id": "FR", "polygonSettings": { "fill": "#C57C6C" } }, // France
+      { "id": "GE", "polygonSettings": { "fill": "#C57C6C" } }, // Georgia
+      { "id": "DE", "polygonSettings": { "fill": "#C57C6C" } }, // Germany
+      { "id": "GH", "polygonSettings": { "fill": "#C57C6C" } }, // Ghana
+      { "id": "GR", "polygonSettings": { "fill": "#C57C6C" } }, // Greece
+      { "id": "GY", "polygonSettings": { "fill": "#C57C6C" } }, // Guyana
+      { "id": "HU", "polygonSettings": { "fill": "#C57C6C" } }, // Hungary
+      { "id": "IS", "polygonSettings": { "fill": "#C57C6C" } }, // Iceland
+      { "id": "ID", "polygonSettings": { "fill": "#C57C6C" } }, // Indonesia
+      { "id": "IR", "polygonSettings": { "fill": "#C57C6C" } }, // Iran
+      { "id": "IQ", "polygonSettings": { "fill": "#C57C6C" } }, // Iraq
+      { "id": "IE", "polygonSettings": { "fill": "#C57C6C" } }, // Ireland
+      { "id": "IT", "polygonSettings": { "fill": "#C57C6C" } }, // Italy
+      { "id": "JP", "polygonSettings": { "fill": "#C57C6C" } }, // Japan
+      { "id": "KZ", "polygonSettings": { "fill": "#C57C6C" } }, // Kazakhstan
+      { "id": "KW", "polygonSettings": { "fill": "#C57C6C" } }, // Kuwait
+      { "id": "KG", "polygonSettings": { "fill": "#C57C6C" } }, // Kyrgyzstan
+      { "id": "LV", "polygonSettings": { "fill": "#C57C6C" } }, // Latvia
+      { "id": "LB", "polygonSettings": { "fill": "#C57C6C" } }, // Lebanon
+      { "id": "LR", "polygonSettings": { "fill": "#C57C6C" } }, // Liberia
+      { "id": "LY", "polygonSettings": { "fill": "#C57C6C" } }, // Libya
+      { "id": "LI", "polygonSettings": { "fill": "#C57C6C" } }, // Liechtenstein
+      { "id": "LT", "polygonSettings": { "fill": "#C57C6C" } }, // Lithuania
+      { "id": "LU", "polygonSettings": { "fill": "#C57C6C" } }, // Luxembourg
+      { "id": "ML", "polygonSettings": { "fill": "#C57C6C" } }, // Mali
+      { "id": "MT", "polygonSettings": { "fill": "#C57C6C" } }, // Malta
+      { "id": "MX", "polygonSettings": { "fill": "#C57C6C" } }, // Mexico
+      { "id": "MC", "polygonSettings": { "fill": "#C57C6C" } }, // Monaco
+      { "id": "MN", "polygonSettings": { "fill": "#C57C6C" } }, // Mongolia
+      { "id": "ME", "polygonSettings": { "fill": "#C57C6C" } }, // Montenegro
+      { "id": "MA", "polygonSettings": { "fill": "#C57C6C" } }, // Morocco
+      { "id": "MM", "polygonSettings": { "fill": "#C57C6C" } }, // Myanmar
+      { "id": "NL", "polygonSettings": { "fill": "#C57C6C" } }, // Netherlands
+      { "id": "NZ", "polygonSettings": { "fill": "#C57C6C" } }, // New Zealand
+      { "id": "NI", "polygonSettings": { "fill": "#C57C6C" } }, // Nicaragua
+      { "id": "NE", "polygonSettings": { "fill": "#C57C6C" } }, // Niger
+      { "id": "KP", "polygonSettings": { "fill": "#C57C6C" } }, // North Korea
+      { "id": "MK", "polygonSettings": { "fill": "#C57C6C" } }, // North Macedonia
+      { "id": "NO", "polygonSettings": { "fill": "#C57C6C" } }, // Norway
+      { "id": "OM", "polygonSettings": { "fill": "#C57C6C" } }, // Oman
+      { "id": "PK", "polygonSettings": { "fill": "#C57C6C" } }, // Pakistan
+      { "id": "PY", "polygonSettings": { "fill": "#C57C6C" } }, // Paraguay
+      { "id": "PL", "polygonSettings": { "fill": "#C57C6C" } }, // Poland
+      { "id": "PT", "polygonSettings": { "fill": "#C57C6C" } }, // Portugal
+      { "id": "QA", "polygonSettings": { "fill": "#C57C6C" } }, // Qatar
+      { "id": "RO", "polygonSettings": { "fill": "#C57C6C" } }, // Romania
+      { "id": "SM", "polygonSettings": { "fill": "#C57C6C" } }, // San Marino
+      { "id": "ST", "polygonSettings": { "fill": "#C57C6C" } }, // Sao Tome and Principe
+      { "id": "SA", "polygonSettings": { "fill": "#C57C6C" } }, // Saudi Arabia
+      { "id": "RS", "polygonSettings": { "fill": "#C57C6C" } }, // Serbia
+      { "id": "SK", "polygonSettings": { "fill": "#C57C6C" } }, // Slovakia
+      { "id": "SI", "polygonSettings": { "fill": "#C57C6C" } }, // Slovenia
+      { "id": "SO", "polygonSettings": { "fill": "#C57C6C" } }, // Somalia
+      { "id": "ZA", "polygonSettings": { "fill": "#C57C6C" } }, // South Africa
+      { "id": "KR", "polygonSettings": { "fill": "#C57C6C" } }, // South Korea
+      { "id": "ES", "polygonSettings": { "fill": "#C57C6C" } }, // Spain
+      { "id": "SD", "polygonSettings": { "fill": "#C57C6C" } }, // Sudan
+      { "id": "SE", "polygonSettings": { "fill": "#C57C6C" } }, // Sweden
+      { "id": "CH", "polygonSettings": { "fill": "#C57C6C" } }, // Switzerland
+      { "id": "SY", "polygonSettings": { "fill": "#C57C6C" } }, // Syria
+      { "id": "TW", "polygonSettings": { "fill": "#C57C6C" } }, // Taiwan
+      { "id": "TJ", "polygonSettings": { "fill": "#C57C6C" } }, // Tajikistan
+      { "id": "TN", "polygonSettings": { "fill": "#C57C6C" } }, // Tunisia
+      { "id": "TM", "polygonSettings": { "fill": "#C57C6C" } }, // Turkmenistan
+      { "id": "TR", "polygonSettings": { "fill": "#C57C6C" } }, // Türkiye
+      { "id": "AE", "polygonSettings": { "fill": "#C57C6C" } }, // United Arab Emirates
+      { "id": "GB", "polygonSettings": { "fill": "#C57C6C" } }, // United Kingdom
+      { "id": "US", "polygonSettings": { "fill": "#C57C6C" } }, // United States of America
+      { "id": "UY", "polygonSettings": { "fill": "#C57C6C" } }, // Uruguay
+      { "id": "VA", "polygonSettings": { "fill": "#C57C6C" } }, // Vatican City
+      { "id": "VE", "polygonSettings": { "fill": "#C57C6C" } }, // Venezuela
+      { "id": "YE", "polygonSettings": { "fill": "#C57C6C" } }  // Yemen
+]
+  }
+});
+
+</script>
+
+  </body>
+</html>
