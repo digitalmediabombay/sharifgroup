@@ -2715,34 +2715,5 @@
         });
     </script>
 
-	function activateFocusCard(card) {
-            document.querySelectorAll('.focus-acc-item').forEach(c => {
-                if (c !== card) {
-                    c.classList.remove('is-active');
-                    const badge = c.querySelector('.focus-badge');
-                    if (badge) {
-                        badge.className = 'focus-badge hidden sm:inline-block text-[10px] font-bold uppercase tracking-widest px-4 py-1.5 rounded-full border border-neutral-700 text-neutral-400 shrink-0 transition-all duration-500';
-                        badge.textContent = 'HOVER TO EXPAND';
-                    }
-                }
-            });
-
-            card.classList.add('is-active');
-            const activeBadge = card.querySelector('.focus-badge');
-            if (activeBadge) {
-                activeBadge.className = 'focus-badge hidden sm:inline-block text-[10px] font-bold uppercase tracking-widest px-4 py-1.5 rounded-full border border-luxury-gold bg-luxury-gold/20 text-luxury-gold shrink-0 transition-all duration-500';
-                activeBadge.textContent = 'ACTIVE UNIT';
-            }
-        }
-
-        function deactivateFocusCard(card) {
-            card.classList.remove('is-active');
-            const badge = card.querySelector('.focus-badge');
-            if (badge) {
-                badge.className = 'focus-badge hidden sm:inline-block text-[10px] font-bold uppercase tracking-widest px-4 py-1.5 rounded-full border border-neutral-700 text-neutral-400 shrink-0 transition-all duration-500';
-                badge.textContent = 'HOVER TO EXPAND';
-            }
-        }
-
 </body>
 </html>
