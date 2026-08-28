@@ -310,42 +310,43 @@
             letter-spacing: -0.02em;
         }
 
-        /* High-Performance Smooth Accordion Engine */
+        /* Cinematic Slow-Motion Accordion & Glow Engine */
         .focus-acc-item {
-            transition: transform 0.6s cubic-bezier(0.16, 1, 0.3, 1),
-                        border-color 0.6s cubic-bezier(0.16, 1, 0.3, 1),
-                        box-shadow 0.6s cubic-bezier(0.16, 1, 0.3, 1),
-                        background-color 0.6s cubic-bezier(0.16, 1, 0.3, 1);
+            transition: transform 1.4s cubic-bezier(0.16, 1, 0.3, 1),
+                        border-color 1.4s cubic-bezier(0.16, 1, 0.3, 1),
+                        box-shadow 1.4s cubic-bezier(0.16, 1, 0.3, 1),
+                        background-color 1.4s cubic-bezier(0.16, 1, 0.3, 1);
             will-change: transform, box-shadow, border-color;
+            border: 1px solid rgba(255, 255, 255, 0.12);
         }
 
         .focus-acc-item.is-active {
             border-color: #C5A880 !important;
-            box-shadow: 0 0 38px rgba(197, 168, 128, 0.65), inset 0 0 16px rgba(197, 168, 128, 0.2) !important;
-            transform: translateY(-4px);
+            box-shadow: 0 0 45px rgba(197, 168, 128, 0.75), inset 0 0 20px rgba(197, 168, 128, 0.3) !important;
+            transform: translateY(-5px);
             background-color: rgba(12, 20, 36, 0.98) !important;
         }
 
         .focus-acc-icon {
-            transition: transform 0.6s cubic-bezier(0.16, 1, 0.3, 1),
-                        background-color 0.5s ease,
-                        border-color 0.5s ease,
-                        color 0.5s ease,
-                        box-shadow 0.6s ease !important;
+            transition: transform 1.2s cubic-bezier(0.16, 1, 0.3, 1),
+                        background-color 1.2s ease,
+                        border-color 1.2s ease,
+                        color 1.2s ease,
+                        box-shadow 1.2s ease !important;
         }
 
         .focus-acc-item.is-active .focus-acc-icon {
             background-color: #C5A880 !important;
             color: #ffffff !important;
             border-color: #C5A880 !important;
-            box-shadow: 0 0 22px rgba(197, 168, 128, 0.85) !important;
-            transform: scale(1.12) rotate(10deg);
+            box-shadow: 0 0 25px rgba(197, 168, 128, 0.9) !important;
+            transform: scale(1.15) rotate(12deg);
         }
 
         .focus-body-grid {
             display: grid;
             grid-template-rows: 0fr;
-            transition: grid-template-rows 0.6s cubic-bezier(0.16, 1, 0.3, 1);
+            transition: grid-template-rows 1.4s cubic-bezier(0.16, 1, 0.3, 1);
         }
 
         .focus-acc-item.is-active .focus-body-grid {
@@ -356,9 +357,9 @@
             min-height: 0;
             overflow: hidden;
             opacity: 0;
-            transform: translateY(10px);
-            transition: opacity 0.45s ease 0.1s,
-                        transform 0.55s cubic-bezier(0.16, 1, 0.3, 1) 0.1s;
+            transform: translateY(16px);
+            transition: opacity 1s cubic-bezier(0.16, 1, 0.3, 1) 0.2s,
+                        transform 1.1s cubic-bezier(0.16, 1, 0.3, 1) 0.2s;
         }
 
         .focus-acc-item.is-active .focus-body-inner {
@@ -2565,33 +2566,14 @@
         }
 
         function activateFocusCard(card) {
-            const allCards = document.querySelectorAll('.focus-acc-item');
-            allCards.forEach(c => {
-                if (c !== card) {
-                    c.classList.remove('is-active');
-                    const badge = c.querySelector('.focus-badge');
-                    if (badge) {
-                        badge.className = 'focus-badge hidden sm:inline-block text-[10px] font-bold uppercase tracking-widest px-4 py-1.5 rounded-full border border-neutral-700 text-neutral-400 shrink-0 transition-all duration-500';
-                        badge.textContent = 'HOVER TO EXPAND';
-                    }
-                }
+            document.querySelectorAll('.focus-acc-item').forEach(c => {
+                if (c !== card) c.classList.remove('is-active');
             });
-
             card.classList.add('is-active');
-            const activeBadge = card.querySelector('.focus-badge');
-            if (activeBadge) {
-                activeBadge.className = 'focus-badge hidden sm:inline-block text-[10px] font-bold uppercase tracking-widest px-4 py-1.5 rounded-full border border-luxury-gold bg-luxury-gold/20 text-luxury-gold shrink-0 transition-all duration-500';
-                activeBadge.textContent = 'ACTIVE UNIT';
-            }
         }
 
         function deactivateFocusCard(card) {
             card.classList.remove('is-active');
-            const badge = card.querySelector('.focus-badge');
-            if (badge) {
-                badge.className = 'focus-badge hidden sm:inline-block text-[10px] font-bold uppercase tracking-widest px-4 py-1.5 rounded-full border border-neutral-700 text-neutral-400 shrink-0 transition-all duration-500';
-                badge.textContent = 'HOVER TO EXPAND';
-            }
         }
 
        function initReviewSlider() {
@@ -2681,6 +2663,35 @@
             if (v1.readyState >= 2) { draw(); }
         });
     </script>
+
+	function activateFocusCard(card) {
+            document.querySelectorAll('.focus-acc-item').forEach(c => {
+                if (c !== card) {
+                    c.classList.remove('is-active');
+                    const badge = c.querySelector('.focus-badge');
+                    if (badge) {
+                        badge.className = 'focus-badge hidden sm:inline-block text-[10px] font-bold uppercase tracking-widest px-4 py-1.5 rounded-full border border-neutral-700 text-neutral-400 shrink-0 transition-all duration-500';
+                        badge.textContent = 'HOVER TO EXPAND';
+                    }
+                }
+            });
+
+            card.classList.add('is-active');
+            const activeBadge = card.querySelector('.focus-badge');
+            if (activeBadge) {
+                activeBadge.className = 'focus-badge hidden sm:inline-block text-[10px] font-bold uppercase tracking-widest px-4 py-1.5 rounded-full border border-luxury-gold bg-luxury-gold/20 text-luxury-gold shrink-0 transition-all duration-500';
+                activeBadge.textContent = 'ACTIVE UNIT';
+            }
+        }
+
+        function deactivateFocusCard(card) {
+            card.classList.remove('is-active');
+            const badge = card.querySelector('.focus-badge');
+            if (badge) {
+                badge.className = 'focus-badge hidden sm:inline-block text-[10px] font-bold uppercase tracking-widest px-4 py-1.5 rounded-full border border-neutral-700 text-neutral-400 shrink-0 transition-all duration-500';
+                badge.textContent = 'HOVER TO EXPAND';
+            }
+        }
 
 </body>
 </html>
