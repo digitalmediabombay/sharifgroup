@@ -310,43 +310,43 @@
             letter-spacing: -0.02em;
         }
 
-        /* Cinematic Slow-Motion Accordion & Glow Engine */
+        /* Balanced Cinematic Slow-Motion Accordion & Glow Engine */
         .focus-acc-item {
-            transition: transform 1.4s cubic-bezier(0.16, 1, 0.3, 1),
-                        border-color 1.4s cubic-bezier(0.16, 1, 0.3, 1),
-                        box-shadow 1.4s cubic-bezier(0.16, 1, 0.3, 1),
-                        background-color 1.4s cubic-bezier(0.16, 1, 0.3, 1);
+            transition: transform 2.2s cubic-bezier(0.16, 1, 0.3, 1),
+                        border-color 2.2s cubic-bezier(0.16, 1, 0.3, 1),
+                        box-shadow 2.2s cubic-bezier(0.16, 1, 0.3, 1),
+                        background-color 2.2s cubic-bezier(0.16, 1, 0.3, 1);
             will-change: transform, box-shadow, border-color;
             border: 1px solid rgba(255, 255, 255, 0.12);
         }
 
         .focus-acc-item.is-active {
             border-color: #C5A880 !important;
-            box-shadow: 0 0 45px rgba(197, 168, 128, 0.75), inset 0 0 20px rgba(197, 168, 128, 0.3) !important;
-            transform: translateY(-5px);
+            box-shadow: 0 0 50px rgba(197, 168, 128, 0.8), inset 0 0 22px rgba(197, 168, 128, 0.35) !important;
+            transform: translateY(-6px);
             background-color: rgba(12, 20, 36, 0.98) !important;
         }
 
         .focus-acc-icon {
-            transition: transform 1.2s cubic-bezier(0.16, 1, 0.3, 1),
-                        background-color 1.2s ease,
-                        border-color 1.2s ease,
-                        color 1.2s ease,
-                        box-shadow 1.2s ease !important;
+            transition: transform 1.8s cubic-bezier(0.16, 1, 0.3, 1),
+                        background-color 1.8s ease,
+                        border-color 1.8s ease,
+                        color 1.8s ease,
+                        box-shadow 1.8s ease !important;
         }
 
         .focus-acc-item.is-active .focus-acc-icon {
             background-color: #C5A880 !important;
             color: #ffffff !important;
             border-color: #C5A880 !important;
-            box-shadow: 0 0 25px rgba(197, 168, 128, 0.9) !important;
-            transform: scale(1.15) rotate(12deg);
+            box-shadow: 0 0 30px rgba(197, 168, 128, 0.95) !important;
+            transform: scale(1.18) rotate(15deg);
         }
 
         .focus-body-grid {
             display: grid;
             grid-template-rows: 0fr;
-            transition: grid-template-rows 1.4s cubic-bezier(0.16, 1, 0.3, 1);
+            transition: grid-template-rows 2.4s cubic-bezier(0.16, 1, 0.3, 1);
         }
 
         .focus-acc-item.is-active .focus-body-grid {
@@ -357,9 +357,27 @@
             min-height: 0;
             overflow: hidden;
             opacity: 0;
-            transform: translateY(16px);
-            transition: opacity 1s cubic-bezier(0.16, 1, 0.3, 1) 0.2s,
-                        transform 1.1s cubic-bezier(0.16, 1, 0.3, 1) 0.2s;
+            transform: translateY(20px);
+            transition: opacity 1.6s cubic-bezier(0.16, 1, 0.3, 1) 0.3s,
+                        transform 1.8s cubic-bezier(0.16, 1, 0.3, 1) 0.3s;
+        }
+
+        .focus-acc-item.is-active .focus-body-inner {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        .focus-acc-item.is-active .focus-body-grid {
+            grid-template-rows: 1fr;
+        }
+
+        .focus-body-inner {
+            min-height: 0;
+            overflow: hidden;
+            opacity: 0;
+            transform: translateY(20px);
+            transition: opacity 1.3s cubic-bezier(0.16, 1, 0.3, 1) 0.25s,
+                        transform 1.4s cubic-bezier(0.16, 1, 0.3, 1) 0.25s;
         }
 
         .focus-acc-item.is-active .focus-body-inner {
@@ -863,7 +881,10 @@
                         <div class="focus-body-grid">
                             <div class="focus-body-inner pt-6 space-y-4">
                                 <p class="text-xs sm:text-sm text-neutral-300 font-light leading-relaxed max-w-3xl">
-                                    Legally obtain authorized second passports with 100% government clearances. Enjoy visa-free international mobility, asset protection, and tax optimization for you and your family across sovereign Caribbean and Pacific programs.
+                                    Getting a second citizenship gives you and your family the legal right to hold an extra passport. This opens up doors for easy global travel without needing visas ahead of time. It also protects your personal assets and helps you manage your taxes in a smart, legal way. We guide you through approved government programs in the Caribbean and Pacific from start to finish, ensuring your application is safe, quick, and completely clear of stress.
+                                </p>
+                                <p class="text-xs sm:text-sm text-neutral-300 font-light leading-relaxed max-w-3xl">
+                                    Our team handles all paperwork, background checks, and official submissions so you do not have to worry about complicated rules. Whether you want better security for your family or smoother business travel around the world, our citizenship desk makes the entire journey smooth and transparent.
                                 </p>
                                 
                                 <!-- 1-by-1 Itemized Programs List -->
@@ -1001,7 +1022,10 @@
                         <div class="focus-body-grid">
                             <div class="focus-body-inner pt-6 space-y-4">
                                 <p class="text-xs sm:text-sm text-neutral-300 font-light leading-relaxed max-w-3xl">
-                                    Establish strategic residential bases and obtain Golden Visas in top global destinations. Secure full freedom of movement across Europe's Schengen Zone and access favorable tax regimes.
+                                    Residency and Golden Visa programs allow you to live, work, and study in amazing countries like Portugal, Greece, Panama, and the UAE. Having a legal residence card gives you the freedom to move across borders easily while enjoying high living standards and great tax benefits.
+                                </p>
+                                <p class="text-xs sm:text-sm text-neutral-300 font-light leading-relaxed max-w-3xl">
+                                    We help you choose the best residency option based on your lifestyle and business goals. Our experts prepare all legal documents, book your appointments, and assist you right through until your residency card and local ID are safely delivered into your hands.
                                 </p>
                                 
                                 <!-- 1-by-1 Itemized Residency Programs -->
@@ -1087,7 +1111,10 @@
                         <div class="focus-body-grid">
                             <div class="focus-body-inner pt-6 space-y-4">
                                 <p class="text-xs sm:text-sm text-neutral-300 font-light leading-relaxed max-w-3xl">
-                                    Direct high-speed document clearing through Dubai Land Department and immigration authorities. We handle property evaluation, medical testing, and Emirates ID issuance for complete 10-year residency security.
+                                    The UAE Golden Visa gives investors, entrepreneurs, and skilled professionals the right to live in Dubai for 10 long years without needing a local sponsor. It is one of the most popular long-term residency options in the world because of Dubai's safe environment, top-notch schools, and zero personal income tax.
+                                </p>
+                                <p class="text-xs sm:text-sm text-neutral-300 font-light leading-relaxed max-w-3xl">
+                                    Our office in Business Bay, Dubai works directly with government authorities and the Dubai Land Department. We handle your property evaluations, medical test bookings, and Emirates ID paperwork quickly so you get your visa approved with zero hassle.
                                 </p>
                                 <div class="pt-2 flex flex-wrap gap-3">
                                     <a href="programs/residencybyinvestment/uae/index.html" class="px-5 py-2.5 rounded-xl bg-[#786142] hover:bg-luxury-gold text-white text-[10px] font-bold uppercase tracking-widest transition shadow-md">View UAE Process</a>
@@ -1119,7 +1146,10 @@
                         <div class="focus-body-grid">
                             <div class="focus-body-inner pt-6 space-y-4">
                                 <p class="text-xs sm:text-sm text-neutral-300 font-light leading-relaxed max-w-3xl">
-                                    Pre-vetted luxury properties in Dubai and Europe that qualify you for local residency. We inspect developments for title authenticity, builder reputation, and high rental ROI.
+                                    Investing in real estate is one of the smartest ways to grow your wealth while securing a path to residency. We help you find luxury apartments, villas, and commercial properties in Dubai and top European cities that give you high rental profits and long-term value.
+                                </p>
+                                <p class="text-xs sm:text-sm text-neutral-300 font-light leading-relaxed max-w-3xl">
+                                    Before you buy any property, our legal team checks all land titles, builder histories, and payment plans to make sure your money is 100% safe. We make property buying simple, clear, and profitable for every investor.
                                 </p>
                                 <div class="pt-2 flex flex-wrap gap-3">
                                     <a href="realestate/index.html" class="px-5 py-2.5 rounded-xl bg-[#786142] hover:bg-luxury-gold text-white text-[10px] font-bold uppercase tracking-widest transition shadow-md">Explore Properties</a>
@@ -1151,7 +1181,10 @@
                         <div class="focus-body-grid">
                             <div class="focus-body-inner pt-6 space-y-4">
                                 <p class="text-xs sm:text-sm text-neutral-300 font-light leading-relaxed max-w-3xl">
-                                    Unlock local domestic tuition rates and secure placements in prestigious British and American universities by pairing applications with alternative citizenship statuses.
+                                    Giving your children the best education opens up a bright future for them. We help families secure student placements in top boarding schools and famous universities across the UK, Europe, and America. 
+                                </p>
+                                <p class="text-xs sm:text-sm text-neutral-300 font-light leading-relaxed max-w-3xl">
+                                    By pairing your university applications with a second citizenship or global residency, your children can qualify for local domestic tuition rates, saving you a large amount of money on school fees. Our educational advisors take care of test preparation, school tours, and admission forms from start to finish.
                                 </p>
                                 <div class="pt-2 flex flex-wrap gap-3">
                                     <a href="educationaladvisory/index.html" class="px-5 py-2.5 rounded-xl bg-[#786142] hover:bg-luxury-gold text-white text-[10px] font-bold uppercase tracking-widest transition shadow-md">View Academic Advisory</a>
