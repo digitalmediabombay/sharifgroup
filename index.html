@@ -163,6 +163,7 @@
     
     <!-- GSAP (GreenSock Animation Platform) -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/ScrollTrigger.min.js"></script>
 
     <style>
         .glass-card {
@@ -254,11 +255,14 @@
         }
 	#review-slider-track {
             display: flex;
+            width: 100%;
             will-change: transform;
+            transition: transform 0.7s cubic-bezier(0.22, 1, 0.36, 1);
         }
-        #review-slider-track > div {
+        .review-slide-card {
             flex: 0 0 100% !important;
-            width: 100% !important;
+            min-width: 100% !important;
+            max-width: 100% !important;
             box-sizing: border-box;
         }
 	#blog-slider-inner {
@@ -270,6 +274,111 @@
         }
         #blog-slider-inner::-webkit-scrollbar {
             display: none;
+        }
+
+        .services-section-wrapper {
+            position: relative;
+            background-color: #050B14;
+            overflow: hidden;
+        }
+        @keyframes scrollMarqueeLeft {
+            0% { transform: translate3d(0, 0, 0); }
+            100% { transform: translate3d(-50%, 0, 0); }
+        }
+        @keyframes scrollMarqueeRight {
+            0% { transform: translate3d(-50%, 0, 0); }
+            100% { transform: translate3d(0, 0, 0); }
+        }
+        .marquee-container {
+            display: flex;
+            width: max-content;
+            white-space: nowrap;
+            will-change: transform;
+        }
+        .marquee-track-left {
+            animation: scrollMarqueeLeft 35s linear infinite;
+        }
+        .marquee-track-right {
+            animation: scrollMarqueeRight 35s linear infinite;
+        }
+        .marquee-line {
+            display: inline-block;
+            font-size: clamp(3rem, 7vw, 6.5rem);
+            line-height: 1.05;
+            font-weight: 900;
+            text-transform: uppercase;
+            letter-spacing: -0.02em;
+        }
+
+        /* High-Performance Smooth Accordion Engine */
+        .focus-acc-item {
+            transition: transform 0.6s cubic-bezier(0.16, 1, 0.3, 1),
+                        border-color 0.6s cubic-bezier(0.16, 1, 0.3, 1),
+                        box-shadow 0.6s cubic-bezier(0.16, 1, 0.3, 1),
+                        background-color 0.6s cubic-bezier(0.16, 1, 0.3, 1);
+            will-change: transform, box-shadow, border-color;
+        }
+
+        .focus-acc-item.is-active {
+            border-color: #C5A880 !important;
+            box-shadow: 0 0 38px rgba(197, 168, 128, 0.65), inset 0 0 16px rgba(197, 168, 128, 0.2) !important;
+            transform: translateY(-4px);
+            background-color: rgba(12, 20, 36, 0.98) !important;
+        }
+
+        .focus-acc-icon {
+            transition: transform 0.6s cubic-bezier(0.16, 1, 0.3, 1),
+                        background-color 0.5s ease,
+                        border-color 0.5s ease,
+                        color 0.5s ease,
+                        box-shadow 0.6s ease !important;
+        }
+
+        .focus-acc-item.is-active .focus-acc-icon {
+            background-color: #C5A880 !important;
+            color: #ffffff !important;
+            border-color: #C5A880 !important;
+            box-shadow: 0 0 22px rgba(197, 168, 128, 0.85) !important;
+            transform: scale(1.12) rotate(10deg);
+        }
+
+        .focus-body-grid {
+            display: grid;
+            grid-template-rows: 0fr;
+            transition: grid-template-rows 0.6s cubic-bezier(0.16, 1, 0.3, 1);
+        }
+
+        .focus-acc-item.is-active .focus-body-grid {
+            grid-template-rows: 1fr;
+        }
+
+        .focus-body-inner {
+            min-height: 0;
+            overflow: hidden;
+            opacity: 0;
+            transform: translateY(10px);
+            transition: opacity 0.45s ease 0.1s,
+                        transform 0.55s cubic-bezier(0.16, 1, 0.3, 1) 0.1s;
+        }
+
+        .focus-acc-item.is-active .focus-body-inner {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        /* Neon Glow Sub-Program Items */
+        .program-neon-item {
+            position: relative;
+            background: rgba(7, 14, 26, 0.7);
+            border: 1px solid rgba(255, 255, 255, 0.08);
+            border-radius: 1.25rem;
+            transition: all 0.35s cubic-bezier(0.16, 1, 0.3, 1);
+        }
+        .program-neon-item:hover {
+            border-color: #C5A880 !important;
+            box-shadow: 0 0 25px rgba(197, 168, 128, 0.5), inset 0 0 10px rgba(197, 168, 128, 0.15) !important;
+            background: rgba(12, 20, 36, 0.95);
+            transform: translateY(-2px);
         }
     </style>
 </head>
@@ -695,439 +804,368 @@
             </div>
         </section>
 
-        <!-- IMMERSIVE VISUAL DECK FOR SERVICES -->
-        <section class="py-24 px-6 bg-[#FAF6EE] border-b border-neutral-200/80" id="interactive-services-block">
-            <div class="max-w-7xl mx-auto">
-                <div class="text-center max-w-2xl mx-auto space-y-4 mb-20">
-                    <span class="text-xs tracking-[0.2em] uppercase text-luxury-gold font-bold flex items-center justify-center gap-2">
-                        <i class="fa-solid fa-star text-[10px]"></i> FEATURED PROGRAMS
-                    </span>
-                    <h3 class="text-4xl font-serif text-neutral-900 font-bold">Our Services & <span class="italic text-[#786142] font-serif font-normal">Pathways</span></h3>
-                    <div class="w-16 h-[2px] bg-luxury-gold mx-auto"></div>
-                    <p class="text-xs text-neutral-400">Scroll down to explore program details, benefits, and background options.</p>
+        <!-- IMMERSIVE SERVICES SECTION (INTERACTIVE ACCORDION CARDS) -->
+        <section class="services-section-wrapper py-28 text-white" id="interactive-services-block">
+            
+            <!-- Centered Heading Intro -->
+            <div class="max-w-4xl mx-auto px-6 text-center space-y-4 mb-20 relative z-20">
+                <span class="text-xs tracking-[0.25em] uppercase text-luxury-gold font-bold flex items-center justify-center gap-2">
+                    <i class="fa-solid fa-star text-[10px]"></i> FEATURED PATHWAYS
+                </span>
+                <h3 class="text-3xl sm:text-4xl md:text-5xl font-serif font-bold text-white tracking-tight">
+                    Our Services & <span class="italic text-luxury-gold font-serif font-normal">Pathways</span>
+                </h3>
+                <p class="text-xs text-neutral-400 max-w-lg mx-auto font-light leading-relaxed">
+                    Sovereign dual citizenship, European golden visas, Dubai luxury property portfolios, and Ivy League academic guidance.
+                </p>
+                <div class="pt-2">
+                    <a href="contact/index.html" class="inline-block px-7 py-3 rounded-full border border-white/20 text-white text-[11px] font-bold uppercase tracking-widest hover:bg-white hover:text-black transition-all duration-300">
+                        View All Programs
+                    </a>
                 </div>
+            </div>
 
-                <!-- Split Screen Interactive Layout -->
-                <div class="flex flex-col lg:grid lg:grid-cols-12 gap-10 lg:gap-12 relative items-start">
-                    
-                    <!-- Left Dynamic Visual Frame (Sticky) -->
-                    <div class="w-full lg:col-span-5 lg:sticky lg:top-28 self-start pt-2 space-y-6 lg:space-y-8">
-                        <div class="relative w-full aspect-[4/5] rounded-3xl overflow-hidden shadow-2xl border-4 border-white/90 premium-hover bg-neutral-900">
-                            <img id="sticky-theater-img" src="citizenshipbyinvestment.png" alt="Active Program Showcase" class="absolute inset-0 object-cover w-full h-full opacity-80 transition-all duration-1000 ease-out transform scale-100">
-                            <div class="absolute inset-0 bg-gradient-to-t from-neutral-950 via-neutral-950/40 to-transparent"></div>
-                            
-                            <div class="absolute bottom-8 left-8 right-8 text-white space-y-3">
-                                <span id="sticky-service-pre-title" class="text-[10px] tracking-[0.3em] text-luxury-gold uppercase font-bold">Citizenship Program</span>
-                                <h4 id="sticky-service-title" class="text-xl sm:text-2xl font-serif font-bold transition-all duration-500">Citizenship By Investment</h4>
-                                <p id="sticky-service-desc" class="text-xs text-neutral-300 leading-relaxed font-light transition-all duration-500">
-                                    We assist you in selecting and obtaining authorized second passports entirely legally. Sharif Group matches your family's profile with trusted sovereign programs to secure direct citizenship clearances securely.
+            <!-- Double Opposing Continuous Smooth Marquees -->
+            <div class="relative w-full overflow-hidden py-6 my-10 pointer-events-none select-none z-0 opacity-90 space-y-3">
+                <div class="marquee-container marquee-track-left text-white">
+                    <span class="marquee-line">CITIZENSHIP BY INVESTMENT &bull; RESIDENCY BY INVESTMENT &bull; GOLDEN VISAS &bull; REAL ESTATE &bull;&nbsp;</span>
+                    <span class="marquee-line">CITIZENSHIP BY INVESTMENT &bull; RESIDENCY BY INVESTMENT &bull; GOLDEN VISAS &bull; REAL ESTATE &bull;&nbsp;</span>
+                </div>
+                <div class="marquee-container marquee-track-right text-neutral-400">
+                    <span class="marquee-line">DUBAI GOLDEN VISA &bull; EDUCATION ADVISORY &bull; PASSPORT SOLUTIONS &bull; GLOBAL MOBILITY &bull;&nbsp;</span>
+                    <span class="marquee-line">DUBAI GOLDEN VISA &bull; EDUCATION ADVISORY &bull; PASSPORT SOLUTIONS &bull; GLOBAL MOBILITY &bull;&nbsp;</span>
+                </div>
+            </div>
+
+            <!-- Accordion Cards Stack (Itemized List with Neon Glowing Borders) -->
+            <div class="space-y-4 max-w-5xl mx-auto" id="focus-accordion-container">
+
+                <!-- Pillar 01: Citizenship By Investment -->
+                <div class="focus-acc-item relative rounded-[2rem] border border-white/10 bg-[#0c1424]/60 shadow-xl overflow-hidden cursor-pointer" onmouseenter="activateFocusCard(this)" onmouseleave="deactivateFocusCard(this)">
+                    <div class="absolute inset-0 bg-cover bg-center opacity-15 transition-transform duration-700 pointer-events-none" style="background-image: url('citizenshipbyinvestment.png');"></div>
+                    <div class="absolute inset-0 bg-gradient-to-r from-[#070E1A]/95 via-[#0c1424]/90 to-transparent pointer-events-none"></div>
+
+                    <div class="relative z-10 p-5 sm:p-8">
+                        <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+                            <div class="flex items-start sm:items-center gap-3.5">
+                                <div class="focus-acc-icon w-11 h-11 sm:w-12 sm:h-12 rounded-xl bg-white/10 text-neutral-300 border border-white/15 flex items-center justify-center text-base sm:text-lg shrink-0 mt-0.5 sm:mt-0">
+                                    <i class="fa-solid fa-passport"></i>
+                                </div>
+                                <div>
+                                    <span class="text-[9px] font-bold uppercase tracking-[0.2em] text-neutral-400 border border-neutral-700/60 px-2.5 py-0.5 rounded-full bg-neutral-900/50 inline-block mb-1">Pillar 01 &bull; Passports</span>
+                                    <h4 class="font-serif text-base sm:text-2xl font-bold text-white leading-snug">Citizenship by Investment</h4>
+                                </div>
+                            </div>
+                            <span class="focus-badge hidden sm:inline-block text-[10px] font-bold uppercase tracking-widest px-4 py-1.5 rounded-full border border-neutral-700 text-neutral-400 shrink-0 transition-all duration-500">HOVER TO EXPAND</span>
+                        </div>
+
+                        <div class="focus-body-grid">
+                            <div class="focus-body-inner pt-6 space-y-4">
+                                <p class="text-xs sm:text-sm text-neutral-300 font-light leading-relaxed max-w-3xl">
+                                    Legally obtain authorized second passports with 100% government clearances. Enjoy visa-free international mobility, asset protection, and tax optimization for you and your family across sovereign Caribbean and Pacific programs.
                                 </p>
-                            </div>
-                        </div>
+                                
+                                <!-- 1-by-1 Itemized Programs List -->
+                                <div class="space-y-3 pt-3">
+                                    
+                                    <!-- 1. Dominica -->
+                                    <div class="program-neon-item p-4 sm:p-5 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
+                                        <div class="space-y-1 text-left">
+                                            <h5 class="font-serif text-lg font-bold text-white">Dominica | Passport</h5>
+                                            <p class="text-xs text-neutral-300 font-light max-w-2xl">
+                                                Safe and peaceful Caribbean island offering straightforward legal passport processing without travel or language tests.
+                                            </p>
+                                        </div>
+                                        <a href="programs/citizenshipbyinvestment/dominica/index.html" class="px-5 py-2.5 rounded-xl bg-[#786142] hover:bg-luxury-gold text-white text-[10px] font-bold uppercase tracking-widest whitespace-nowrap transition shadow-md shrink-0">
+                                            Know More <i class="fa-solid fa-arrow-right ml-1"></i>
+                                        </a>
+                                    </div>
 
-                        <!-- HUD Status Navigation Bars -->
-                        <div class="flex flex-col space-y-3 pl-2 sm:pl-4">
-                            <div class="flex items-center space-x-3 text-xs" id="nav-indicator-citizenship">
-                                <span class="w-3 h-3 rounded-full bg-luxury-gold transition duration-300"></span> 
-                                <span class="font-bold text-neutral-900 transition">Citizenship By Investment</span>
-                            </div>
-                            <div class="flex items-center space-x-3 text-xs opacity-40" id="nav-indicator-residency">
-                                <span class="w-3 h-3 rounded-full bg-neutral-300 transition duration-300"></span> 
-                                <span class="transition">Residency By Investment</span>
-                            </div>
-                            <div class="flex items-center space-x-3 text-xs opacity-40" id="nav-indicator-golden-visa">
-                                <span class="w-3 h-3 rounded-full bg-neutral-300 transition duration-300"></span> 
-                                <span class="transition">UAE Golden Visa</span>
-                            </div>
-                            <div class="flex items-center space-x-3 text-xs opacity-40" id="nav-indicator-real-estate">
-                                <span class="w-3 h-3 rounded-full bg-neutral-300 transition duration-300"></span> 
-                                <span class="transition">Real Estate Assets</span>
-                            </div>
-                            <div class="flex items-center space-x-3 text-xs opacity-40" id="nav-indicator-education">
-                                <span class="w-3 h-3 rounded-full bg-neutral-300 transition duration-300"></span> 
-                                <span class="transition">Education Advisory</span>
-                            </div>
-                        </div>
-                    </div>
+                                    <!-- 2. St. Kitts & Nevis -->
+                                    <div class="program-neon-item p-4 sm:p-5 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
+                                        <div class="space-y-1 text-left">
+                                            <h5 class="font-serif text-lg font-bold text-white">St. Kitts & Nevis | Passport</h5>
+                                            <p class="text-xs text-neutral-300 font-light max-w-2xl">
+                                                The oldest and most trusted citizenship by investment program in the world, active since 1984 with dependable asset security.
+                                            </p>
+                                        </div>
+                                        <a href="programs/citizenshipbyinvestment/stkittis/index.html" class="px-5 py-2.5 rounded-xl bg-[#786142] hover:bg-luxury-gold text-white text-[10px] font-bold uppercase tracking-widest whitespace-nowrap transition shadow-md shrink-0">
+                                            Know More <i class="fa-solid fa-arrow-right ml-1"></i>
+                                        </a>
+                                    </div>
 
-                    <!-- Right Scrolling Items Stream -->
-                    <div class="w-full lg:col-span-7 space-y-12 lg:space-y-16">
-                        
-                        <!-- CITIZENSHIP PROGRAMS -->
-                        <div class="space-y-12">
-                            <h4 class="text-xs uppercase tracking-widest text-luxury-gold font-bold border-b border-neutral-200 pb-2">Citizenship Programs</h4>
-                            
-                            <!-- Program 1: Dominica -->
-                            <div class="scroll-group-block relative p-8 md:p-10 rounded-3xl border border-neutral-200/50 shadow-lg overflow-hidden premium-hover text-white flex flex-col justify-between min-h-[380px] bg-neutral-900" data-service="citizenship" data-desc="We help you and your family legally get a trusted second passport. Sharif Group connects you with safe government programs to secure your new citizenship easily." data-title="Citizenship By Investment" data-pre="Citizenship Programs" data-image="citizenshipbyinvestment.png">
-                                <div class="absolute inset-0 z-0">
-                                    <img src="https://www.commonwealthlawyers.com/wp-content/uploads/2023/11/Dominica-Americas-Hub.png" alt="Dominica" class="w-full h-full object-cover opacity-60">
-                                    <div class="absolute inset-0 bg-gradient-to-br from-neutral-950/40 via-neutral-950/60 to-neutral-950/80"></div>
-                                </div>
-                                <div class="relative z-10 space-y-4">
-                                    <h5 class="text-2xl font-serif font-bold">Dominica | Passport</h5>
-                                    <p class="text-xs text-neutral-200 leading-relaxed font-light">
-                                        Dominica is a safe and beautiful green island located in the Caribbean Sea. It offers a wonderful government-approved citizenship program that allows you and your family to get a second passport completely legally. You do not need to worry about complicated rules because the process is very clear and straightforward.
-                                    </p>
-                                    <p class="text-xs text-neutral-200 leading-relaxed font-light">
-                                        You do not even need to travel to the island, learn their local language, or take any difficult exams to qualify. Your new second passport will let you travel freely to many countries around the world without needing a visa beforehand. It is a fantastic choice for global freedom and personal security.
-                                    </p>
-                                    <p class="text-xs text-neutral-200 leading-relaxed font-light">
-                                        Our expert team located right here in Business Bay, Dubai will take care of everything for you. We help you prepare your files, check all documents carefully, and submit them directly to the government until your passport is safely delivered to your hands.
-                                    </p>
-                                </div>
-                                <div class="relative z-10 pt-6">
-                                    <a href="programs/citizenshipbyinvestment/dominica/index.html" class="inline-block px-6 py-3 bg-luxury-gold text-white rounded-xl text-xs uppercase tracking-wider font-semibold premium-btn-hover hover:bg-white hover:text-luxury-dark transition">Know More</a>
-                                </div>
-                            </div>
+                                    <!-- 3. Antigua & Barbuda -->
+                                    <div class="program-neon-item p-4 sm:p-5 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
+                                        <div class="space-y-1 text-left">
+                                            <h5 class="font-serif text-lg font-bold text-white">Antigua & Barbuda | Passport</h5>
+                                            <p class="text-xs text-neutral-300 font-light max-w-2xl">
+                                                The best and most cost-effective passport solution for large families, covering up to four members under one baseline fee.
+                                            </p>
+                                        </div>
+                                        <a href="programs/citizenshipbyinvestment/antiguaandbarbuda/index.html" class="px-5 py-2.5 rounded-xl bg-[#786142] hover:bg-luxury-gold text-white text-[10px] font-bold uppercase tracking-widest whitespace-nowrap transition shadow-md shrink-0">
+                                            Know More <i class="fa-solid fa-arrow-right ml-1"></i>
+                                        </a>
+                                    </div>
 
-                            <!-- Program 2: São Tomé -->
-                            <div class="scroll-group-block relative p-8 md:p-10 rounded-3xl border border-neutral-200/50 shadow-lg overflow-hidden premium-hover text-white flex flex-col justify-between min-h-[380px] bg-neutral-900" data-service="citizenship" data-desc="We help you and your family legally get a trusted second passport. Sharif Group connects you with safe government programs to secure your new citizenship easily." data-title="Citizenship By Investment" data-pre="Citizenship Programs" data-image="citizenshipbyinvestment.png">
-                                <div class="absolute inset-0 z-0">
-                                    <img src="https://b3052398.smushcdn.com/3052398/wp-content/uploads/Sao_Tome_passport.png?lossy=2&strip=1&webp=1" alt="São Tomé" class="w-full h-full object-cover opacity-60">
-                                    <div class="absolute inset-0 bg-gradient-to-br from-neutral-950/40 via-neutral-950/60 to-neutral-950/80"></div>
-                                </div>
-                                <div class="relative z-10 space-y-4">
-                                    <h5 class="text-2xl font-serif font-bold">São Tomé and Príncipe | Passport</h5>
-                                    <p class="text-xs text-neutral-200 leading-relaxed font-light">
-                                        São Tomé and Príncipe is a peaceful, sunny island country situated off the coast of Africa. This exclusive citizenship option is specially created for families and investors who value absolute privacy, calm living, and a very quiet second passport solution.
-                                    </p>
-                                    <p class="text-xs text-neutral-200 leading-relaxed font-light">
-                                        You can qualify for direct citizenship by supporting important local projects such as national infrastructure, agriculture, or luxury hospitality developments. The government welcomes investors who want to help grow the local economy while securing their own future.
-                                    </p>
-                                    <p class="text-xs text-neutral-200 leading-relaxed font-light">
-                                        Our professional advisors manage your application files directly with the country's ministries. We ensure fast processing times and keep your entire journey completely private, secure, and stress-free from beginning to end.
-                                    </p>
-                                </div>
-                                <div class="relative z-10 pt-6">
-                                    <a href="programs/citizenshipbyinvestment/sãotoméandpríncipe/index.html" class="inline-block px-6 py-3 bg-luxury-gold text-white rounded-xl text-xs uppercase tracking-wider font-semibold premium-btn-hover hover:bg-white hover:text-luxury-dark transition">Know More</a>
-                                </div>
-                            </div>
+                                    <!-- 4. Saint Lucia -->
+                                    <div class="program-neon-item p-4 sm:p-5 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
+                                        <div class="space-y-1 text-left">
+                                            <h5 class="font-serif text-lg font-bold text-white">Saint Lucia | Passport</h5>
+                                            <p class="text-xs text-neutral-300 font-light max-w-2xl">
+                                                Flexible financial options with government-guaranteed bond investments that are 100% refundable after 5 years.
+                                            </p>
+                                        </div>
+                                        <a href="programs/citizenshipbyinvestment/stlucia/index.html" class="px-5 py-2.5 rounded-xl bg-[#786142] hover:bg-luxury-gold text-white text-[10px] font-bold uppercase tracking-widest whitespace-nowrap transition shadow-md shrink-0">
+                                            Know More <i class="fa-solid fa-arrow-right ml-1"></i>
+                                        </a>
+                                    </div>
 
-                            <!-- Program 3: Nauru -->
-                            <div class="scroll-group-block relative p-8 md:p-10 rounded-3xl border border-neutral-200/50 shadow-lg overflow-hidden premium-hover text-white flex flex-col justify-between min-h-[380px] bg-neutral-900" data-service="citizenship" data-desc="We help you and your family legally get a trusted second passport. Sharif Group matches your family's profile with trusted sovereign programs." data-title="Citizenship By Investment" data-pre="Citizenship Programs" data-image="citizenshipbyinvestment.png">
-                                <div class="absolute inset-0 z-0">
-                                    <img src="https://reloc8.online/wp-content/uploads/2024/12/reloc8-online-nauru-passport-citizenship-climate.jpg" alt="Nauru" class="w-full h-full object-cover opacity-60">
-                                    <div class="absolute inset-0 bg-gradient-to-br from-neutral-950/40 via-neutral-950/60 to-neutral-950/80"></div>
-                                </div>
-                                <div class="relative z-10 space-y-4">
-                                    <h5 class="text-2xl font-serif font-bold">Republic of Nauru | Passport</h5>
-                                    <p class="text-xs text-neutral-200 leading-relaxed font-light">
-                                        The Republic of Nauru is a quiet and friendly island nation located in the blue waters of the Pacific Ocean. It offers a very fast and secure legal path to obtain dual citizenship for you and your loved ones without any complicated residency requirements.
-                                    </p>
-                                    <p class="text-xs text-neutral-200 leading-relaxed font-light">
-                                        This program is handled completely from a distance, which means you never have to travel across the world or leave your home country to complete the process. Everything is managed smoothly through our reliable corporate office channels in Dubai.
-                                    </p>
-                                    <p class="text-xs text-neutral-200 leading-relaxed font-light">
-                                        Our dedicated team coordinates every single step directly with the Nauru government units. We double-check all your paperwork to guarantee full legal compliance and rapid passport delivery.
-                                    </p>
-                                </div>
-                                <div class="relative z-10 pt-6">
-                                    <a href="programs/citizenshipbyinvestment/nauru/index.html" class="inline-block px-6 py-3 bg-luxury-gold text-white rounded-xl text-xs uppercase tracking-wider font-semibold premium-btn-hover hover:bg-white hover:text-luxury-dark transition">Know More</a>
-                                </div>
-                            </div>
+                                    <!-- 5. Grenada -->
+                                    <div class="program-neon-item p-4 sm:p-5 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
+                                        <div class="space-y-1 text-left">
+                                            <h5 class="font-serif text-lg font-bold text-white">Grenada | Passport</h5>
+                                            <p class="text-xs text-neutral-300 font-light max-w-2xl">
+                                                Powerful second passport providing direct qualification to apply for the USA E-2 Investor Visa to live and conduct business in America.
+                                            </p>
+                                        </div>
+                                        <a href="programs/citizenshipbyinvestment/greneda/index.html" class="px-5 py-2.5 rounded-xl bg-[#786142] hover:bg-luxury-gold text-white text-[10px] font-bold uppercase tracking-widest whitespace-nowrap transition shadow-md shrink-0">
+                                            Know More <i class="fa-solid fa-arrow-right ml-1"></i>
+                                        </a>
+                                    </div>
 
-                            <!-- Program 4: St. Kitts -->
-                            <div class="scroll-group-block relative p-8 md:p-10 rounded-3xl border border-neutral-200/50 shadow-lg overflow-hidden premium-hover text-white flex flex-col justify-between min-h-[380px] bg-neutral-900" data-service="citizenship" data-desc="We help you and your family legally get a trusted second passport. Sharif Group matches your family's profile with trusted sovereign programs." data-title="Citizenship By Investment" data-pre="Citizenship Programs" data-image="citizenshipbyinvestment.png">
-                                <div class="absolute inset-0 z-0">
-                                    <img src="https://knightsbridge.ae/wp-content/uploads/2025/08/St-Kitts-and-Nevis-Passport.png" alt="St. Kitts" class="w-full h-full object-cover opacity-60">
-                                    <div class="absolute inset-0 bg-gradient-to-br from-neutral-950/40 via-neutral-950/60 to-neutral-950/80"></div>
-                                </div>
-                                <div class="relative z-10 space-y-4">
-                                    <h5 class="text-2xl font-serif font-bold">St. Kitts & Nevis | Passport</h5>
-                                    <p class="text-xs text-neutral-200 leading-relaxed font-light">
-                                        St. Kitts & Nevis runs the oldest and most respected citizenship by investment program in the entire world, established way back in 1984 with an incredible track record of safety and trust.
-                                    </p>
-                                    <p class="text-xs text-neutral-200 leading-relaxed font-light">
-                                        You can choose to invest safely in approved sustainable public projects or purchase shares in luxury eco-resorts. This gives you a wonderful second passport while also backing high-quality regional developments.
-                                    </p>
-                                    <p class="text-xs text-neutral-200 leading-relaxed font-light">
-                                        Sharif Group carefully reviews your file to ensure it matches every single government guideline. We make sure your application moves forward smoothly without delays or unnecessary paperwork stress.
-                                    </p>
-                                </div>
-                                <div class="relative z-10 pt-6">
-                                    <a href="programs/citizenshipbyinvestment/stkittis/index.html" class="inline-block px-6 py-3 bg-luxury-gold text-white rounded-xl text-xs uppercase tracking-wider font-semibold premium-btn-hover hover:bg-white hover:text-luxury-dark transition">Know More</a>
-                                </div>
-                            </div>
+                                    <!-- 6. Vanuatu -->
+                                    <div class="program-neon-item p-4 sm:p-5 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
+                                        <div class="space-y-1 text-left">
+                                            <h5 class="font-serif text-lg font-bold text-white">Vanuatu | Passport</h5>
+                                            <p class="text-xs text-neutral-300 font-light max-w-2xl">
+                                                The fastest legal citizenship pathway worldwide, delivered in 45 days with 100% remote processing.
+                                            </p>
+                                        </div>
+                                        <a href="programs/citizenshipbyinvestment/vanuatu/index.html" class="px-5 py-2.5 rounded-xl bg-[#786142] hover:bg-luxury-gold text-white text-[10px] font-bold uppercase tracking-widest whitespace-nowrap transition shadow-md shrink-0">
+                                            Know More <i class="fa-solid fa-arrow-right ml-1"></i>
+                                        </a>
+                                    </div>
 
-                            <!-- Program 5: Antigua -->
-                            <div class="scroll-group-block relative p-8 md:p-10 rounded-3xl border border-neutral-200/50 shadow-lg overflow-hidden premium-hover text-white flex flex-col justify-between min-h-[380px] bg-neutral-900" data-service="citizenship" data-desc="We help you and your family legally get a trusted second passport. Sharif Group matches your family's profile with trusted sovereign programs." data-title="Citizenship By Investment" data-pre="Citizenship Programs" data-image="citizenshipbyinvestment.png">
-                                <div class="absolute inset-0 z-0">
-                                    <img src="https://iworld.com/wp-content/uploads/2022/12/passport-investment-antigua-barbuda-900x467.jpg" alt="Antigua" class="w-full h-full object-cover opacity-60">
-                                    <div class="absolute inset-0 bg-gradient-to-br from-neutral-950/40 via-neutral-950/60 to-neutral-950/80"></div>
-                                </div>
-                                <div class="relative z-10 space-y-4">
-                                    <h5 class="text-2xl font-serif font-bold">Antigua and Barbuda | Passport</h5>
-                                    <p class="text-xs text-neutral-200 leading-relaxed font-light">
-                                        Antigua and Barbuda is widely known as the best and most affordable passport program for larger families. It features special financial pricing that covers up to four family members under one single application fee.
-                                    </p>
-                                    <p class="text-xs text-neutral-200 leading-relaxed font-light">
-                                        The program is very popular because it allows you to include your spouse, children, and dependent parents or grandparents together. This keeps your entire family united under one powerful second citizenship status.
-                                    </p>
-                                    <p class="text-xs text-neutral-200 leading-relaxed font-light">
-                                        Our experienced consultants in Dubai handle all document translations, clearances, and government submissions. We guide you patiently until every family member receives their official passport.
-                                    </p>
-                                </div>
-                                <div class="relative z-10 pt-6">
-                                    <a href="programs/citizenshipbyinvestment/antiguaandbarbuda/index.html" class="inline-block px-6 py-3 bg-luxury-gold text-white rounded-xl text-xs uppercase tracking-wider font-semibold premium-btn-hover hover:bg-white hover:text-luxury-dark transition">Know More</a>
-                                </div>
-                            </div>
+                                    <!-- 7. São Tomé and Príncipe -->
+                                    <div class="program-neon-item p-4 sm:p-5 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
+                                        <div class="space-y-1 text-left">
+                                            <h5 class="font-serif text-lg font-bold text-white">São Tomé and Príncipe | Passport</h5>
+                                            <p class="text-xs text-neutral-300 font-light max-w-2xl">
+                                                Exclusive African island destination offering complete privacy, tax efficiency, and quiet citizenship by investment routes.
+                                            </p>
+                                        </div>
+                                        <a href="programs/citizenshipbyinvestment/sãotoméandpríncipe/index.html" class="px-5 py-2.5 rounded-xl bg-[#786142] hover:bg-luxury-gold text-white text-[10px] font-bold uppercase tracking-widest whitespace-nowrap transition shadow-md shrink-0">
+                                            Know More <i class="fa-solid fa-arrow-right ml-1"></i>
+                                        </a>
+                                    </div>
 
-                            <!-- Program 6: Saint Lucia -->
-                            <div class="scroll-group-block relative p-8 md:p-10 rounded-3xl border border-neutral-200/50 shadow-lg overflow-hidden premium-hover text-white flex flex-col justify-between min-h-[380px] bg-neutral-900" data-service="citizenship" data-desc="We help you and your family legally get a trusted second passport. Sharif Group matches your family's profile with trusted sovereign programs." data-title="Citizenship By Investment" data-pre="Citizenship Programs" data-image="citizenshipbyinvestment.png">
-                                <div class="absolute inset-0 z-0">
-                                    <img src="https://reachimmigration.com/wp-content/uploads/2021/09/610fd15b02a12.png" alt="Saint Lucia" class="w-full h-full object-cover opacity-60">
-                                    <div class="absolute inset-0 bg-gradient-to-br from-neutral-950/40 via-neutral-950/60 to-neutral-950/80"></div>
-                                </div>
-                                <div class="relative z-10 space-y-4">
-                                    <h5 class="text-2xl font-serif font-bold">Saint Lucia | Passport</h5>
-                                    <p class="text-xs text-neutral-200 leading-relaxed font-light">
-                                        Saint Lucia is a stunning Caribbean destination that offers fantastic financial flexibility for investors. You can choose to invest in secure government bonds that are fully backed by the state authorities.
-                                    </p>
-                                    <p class="text-xs text-neutral-200 leading-relaxed font-light">
-                                        The government officially guarantees to return 100% of your invested capital back to you after a short and safe five-year holding period. This makes it a very smart and protective financial choice.
-                                    </p>
-                                    <p class="text-xs text-neutral-200 leading-relaxed font-light">
-                                        Sharif Group monitors your fund transfers securely and verifies every financial step. We make sure your investment meets all legal requirements while keeping your citizenship process completely transparent.
-                                    </p>
-                                </div>
-                                <div class="relative z-10 pt-6">
-                                    <a href="programs/citizenshipbyinvestment/stlucia/index.html" class="inline-block px-6 py-3 bg-luxury-gold text-white rounded-xl text-xs uppercase tracking-wider font-semibold premium-btn-hover hover:bg-white hover:text-luxury-dark transition">Know More</a>
-                                </div>
-                            </div>
+                                    <!-- 8. Republic of Nauru -->
+                                    <div class="program-neon-item p-4 sm:p-5 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
+                                        <div class="space-y-1 text-left">
+                                            <h5 class="font-serif text-lg font-bold text-white">Republic of Nauru | Passport</h5>
+                                            <p class="text-xs text-neutral-300 font-light max-w-2xl">
+                                                Peaceful Pacific island citizenship offering zero residency requirements and straightforward remote management from Dubai.
+                                            </p>
+                                        </div>
+                                        <a href="programs/citizenshipbyinvestment/nauru/index.html" class="px-5 py-2.5 rounded-xl bg-[#786142] hover:bg-luxury-gold text-white text-[10px] font-bold uppercase tracking-widest whitespace-nowrap transition shadow-md shrink-0">
+                                            Know More <i class="fa-solid fa-arrow-right ml-1"></i>
+                                        </a>
+                                    </div>
 
-                            <!-- Program 7: Grenada -->
-                            <div class="scroll-group-block relative p-8 md:p-10 rounded-3xl border border-neutral-200/50 shadow-lg overflow-hidden premium-hover text-white flex flex-col justify-between min-h-[380px] bg-neutral-900" data-service="citizenship" data-desc="We help you and your family legally get a trusted second passport. Sharif Group matches your family's profile with trusted sovereign programs." data-title="Citizenship By Investment" data-pre="Citizenship Programs" data-image="citizenshipbyinvestment.png">
-                                <div class="absolute inset-0 z-0">
-                                    <img src="https://iworld.com/wp-content/uploads/2022/12/citizenship-passport-investment-grenada-900x467.jpg" alt="Grenada" class="w-full h-full object-cover opacity-60">
-                                    <div class="absolute inset-0 bg-gradient-to-br from-neutral-950/40 via-neutral-950/60 to-neutral-950/80"></div>
-                                </div>
-                                <div class="relative z-10 space-y-4">
-                                    <h5 class="text-2xl font-serif font-bold">Grenada | Passport</h5>
-                                    <p class="text-xs text-neutral-200 leading-relaxed font-light">
-                                        Grenada is a gorgeous spice island offering an incredible dual citizenship program. One of its greatest advantages is that a Grenada passport qualifies you to apply for the USA E-2 Investor Visa.
-                                    </p>
-                                    <p class="text-xs text-neutral-200 leading-relaxed font-light">
-                                        This special visa gives you and your family the legal right to move, live, and run business operations directly inside the United States. It opens up massive global business and career opportunities.
-                                    </p>
-                                    <p class="text-xs text-neutral-200 leading-relaxed font-light">
-                                        Our office in Business Bay assists you with both the Grenada passport process and the subsequent US investor visa steps. We provide complete, professional guidance under one roof.
-                                    </p>
-                                </div>
-                                <div class="relative z-10 pt-6">
-                                    <a href="programs/citizenshipbyinvestment/greneda/index.html" class="inline-block px-6 py-3 bg-luxury-gold text-white rounded-xl text-xs uppercase tracking-wider font-semibold premium-btn-hover hover:bg-white hover:text-luxury-dark transition">Know More</a>
-                                </div>
-                            </div>
-
-                            <!-- Program 8: Vanuatu -->
-                            <div class="scroll-group-block relative p-8 md:p-10 rounded-3xl border border-neutral-200/50 shadow-lg overflow-hidden premium-hover text-white flex flex-col justify-between min-h-[380px] bg-neutral-900" data-service="citizenship" data-desc="We help you and your family legally get a trusted second passport. Sharif Group matches your family's profile with trusted sovereign programs." data-title="Citizenship By Investment" data-pre="Citizenship Programs" data-image="citizenshipbyinvestment.png">
-                                <div class="absolute inset-0 z-0">
-                                    <img src="https://fca.vu/wp-content/uploads/2020/01/how-to-get-vanuatu-citizenship-en-449126643.jpeg" alt="Vanuatu" class="w-full h-full object-cover opacity-60">
-                                    <div class="absolute inset-0 bg-gradient-to-br from-neutral-950/40 via-neutral-950/60 to-neutral-950/80"></div>
-                                </div>
-                                <div class="relative z-10 space-y-4">
-                                    <h5 class="text-2xl font-serif font-bold">Vanuatu | Passport</h5>
-                                    <p class="text-xs text-neutral-200 leading-relaxed font-light">
-                                        Vanuatu proudly hosts the absolute fastest citizenship program available in the world today. You can successfully secure your full second passport in as little as 45 days from start to finish.
-                                    </p>
-                                    <p class="text-xs text-neutral-200 leading-relaxed font-light">
-                                        The entire application is processed completely remotely, meaning you do not have to travel or leave your current city. Our team manages all government communications for you securely.
-                                    </p>
-                                    <p class="text-xs text-neutral-200 leading-relaxed font-light">
-                                        It is widely recognized as a very reliable, clean, and efficient option for busy business owners who need a strong travel document quickly. Sharif Group makes the timeline completely effortless.
-                                    </p>
-                                </div>
-                                <div class="relative z-10 pt-6">
-                                    <a href="programs/citizenshipbyinvestment/vanuatu/index.html" class="inline-block px-6 py-3 bg-luxury-gold text-white rounded-xl text-xs uppercase tracking-wider font-semibold premium-btn-hover hover:bg-white hover:text-luxury-dark transition">Know More</a>
                                 </div>
                             </div>
                         </div>
-
-                        <!-- RESIDENCY PROGRAMS -->
-                        <div class="space-y-12 scroll-group-block pt-12" data-service="residency" data-desc="Establish strategic residential bases in secure global hubs. We handle your legal filings, tax numbers, and residency card issuance." data-title="Residency By Investment" data-pre="Residency Programs" data-image="residencybyinvestment.png">
-                            <h4 class="text-xs uppercase tracking-widest text-luxury-gold font-bold border-b border-neutral-200 pb-2">Residency Programs</h4>
-                            
-                            <!-- Program 9: Portugal -->
-                            <div class="relative p-8 md:p-10 rounded-3xl border border-neutral-200/50 shadow-lg overflow-hidden premium-hover text-white flex flex-col justify-between min-h-[380px] bg-neutral-900">
-                                <div class="absolute inset-0 z-0">
-                                    <img src="https://www.bilimoriaassociate.com/images/portugal-golden-vsa.png" alt="Portugal" class="w-full h-full object-cover opacity-60">
-                                    <div class="absolute inset-0 bg-gradient-to-br from-neutral-950/40 via-neutral-950/60 to-neutral-950/80"></div>
-                                </div>
-                                <div class="relative z-10 space-y-4">
-                                    <h5 class="text-2xl font-serif font-bold">Portugal | Golden Visa</h5>
-                                    <p class="text-xs text-neutral-200 leading-relaxed font-light">
-                                        Portugal offers one of Europe's most beloved residency programs for international investors looking to secure a permanent European base. By investing in approved regulated funds, you gain full legal rights to live and work.
-                                    </p>
-                                    <p class="text-xs text-neutral-200 leading-relaxed font-light">
-                                        One of the best benefits is the very low physical stay requirement, needing only 7 days of your time in the country each year. After maintaining your residency for five years, you become eligible to apply for a European passport.
-                                    </p>
-                                    <p class="text-xs text-neutral-200 leading-relaxed font-light">
-                                        Our legal specialists manage your tax numbers, fund selections, and government paperwork, ensuring a smooth path to European residency without disrupting your daily lifestyle.
-                                    </p>
-                                </div>
-                                <div class="relative z-10 pt-6">
-                                    <a href="programs/residencybyinvestment/portugal/index.html" class="inline-block px-6 py-3 bg-luxury-gold text-white rounded-xl text-xs uppercase tracking-wider font-semibold premium-btn-hover hover:bg-white hover:text-luxury-dark transition">Know More</a>
-                                </div>
-                            </div>
-
-                            <!-- Program 10: Greece -->
-                            <div class="relative p-8 md:p-10 rounded-3xl border border-neutral-200/50 shadow-lg overflow-hidden premium-hover text-white flex flex-col justify-between min-h-[380px] bg-neutral-900">
-                                <div class="absolute inset-0 z-0">
-                                    <img src="https://theluxuryplaybook.com/wp-content/uploads/2024/07/golden-visa-greece-threshold.jpg" alt="Greece" class="w-full h-full object-cover opacity-60">
-                                    <div class="absolute inset-0 bg-gradient-to-br from-neutral-950/40 via-neutral-950/60 to-neutral-950/80"></div>
-                                </div>
-                                <div class="relative z-10 space-y-4">
-                                    <h5 class="text-2xl font-serif font-bold">Greece | Golden Visa</h5>
-                                    <p class="text-xs text-neutral-200 leading-relaxed font-light">
-                                        Greece grants permanent European residency cards and free travel across the entire Schengen zone through straightforward real estate investments. It is a fantastic gateway to Europe.
-                                    </p>
-                                    <p class="text-xs text-neutral-200 leading-relaxed font-light">
-                                        Sharif Group thoroughly checks and pre-screens all real estate listings to protect your money and guarantee full legal safety before you make any purchase commitments.
-                                    </p>
-                                    <p class="text-xs text-neutral-200 leading-relaxed font-light">
-                                        Our Dubai team coordinates with property developers and legal authorities in Athens to make your property acquisition and visa approval completely hassle-free.
-                                    </p>
-                                </div>
-                                <div class="relative z-10 pt-6">
-                                    <a href="programs/residencybyinvestment/greece/index.html" class="inline-block px-6 py-3 bg-luxury-gold text-white rounded-xl text-xs uppercase tracking-wider font-semibold premium-btn-hover hover:bg-white hover:text-luxury-dark transition">Know More</a>
-                                </div>
-                            </div>
-
-                            <!-- Program 11: Panama -->
-                            <div class="relative p-8 md:p-10 rounded-3xl border border-neutral-200/50 shadow-lg overflow-hidden premium-hover text-white flex flex-col justify-between min-h-[380px] bg-neutral-900">
-                                <div class="absolute inset-0 z-0">
-                                    <img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQlkpBOrKxy_nypaBUd8WsErlwsFO4buofBcHfNKGhBKQ&s=10" alt="Panama" class="w-full h-full object-cover opacity-60">
-                                    <div class="absolute inset-0 bg-gradient-to-br from-neutral-950/40 via-neutral-950/60 to-neutral-950/80"></div>
-                                </div>
-                                <div class="relative z-10 space-y-4">
-                                    <h5 class="text-2xl font-serif font-bold">Panama | Golden Visa</h5>
-                                    <p class="text-xs text-neutral-200 leading-relaxed font-light">
-                                        Panama is a very stable international banking hub in Central America that provides rapid paths to permanent residency along with wonderful tax exemptions for global business owners.
-                                    </p>
-                                    <p class="text-xs text-neutral-200 leading-relaxed font-light">
-                                        We work closely with trusted legal partners based directly in Panama City to ensure your paperwork meets all local regulations without any complications or delays.
-                                    </p>
-                                    <p class="text-xs text-neutral-200 leading-relaxed font-light">
-                                        Whether you choose to qualify through the Friendly Nations track or the Qualified Investor program, Sharif Group manages your complete file with total professionalism.
-                                    </p>
-                                </div>
-                                <div class="relative z-10 pt-6">
-                                    <a href="programs/residencybyinvestment/panama/index.html" class="inline-block px-6 py-3 bg-luxury-gold text-white rounded-xl text-xs uppercase tracking-wider font-semibold premium-btn-hover hover:bg-white hover:text-luxury-dark transition">Know More</a>
-                                </div>
-                            </div>
-
-                            <!-- Program 12: United Arab Emirates -->
-                            <div class="relative p-8 md:p-10 rounded-3xl border border-neutral-200/50 shadow-lg overflow-hidden premium-hover text-white flex flex-col justify-between min-h-[380px] bg-neutral-900">
-                                <div class="absolute inset-0 z-0">
-                                    <img src="https://lawbridgecorporate.com/wp-content/uploads/2023/10/uae-residence-visa.jpg" alt="UAE" class="w-full h-full object-cover opacity-60">
-                                    <div class="absolute inset-0 bg-gradient-to-br from-neutral-950/40 via-neutral-950/60 to-neutral-950/80"></div>
-                                </div>
-                                <div class="relative z-10 space-y-4">
-                                    <h5 class="text-2xl font-serif font-bold">United Arab Emirates | Golden Visa</h5>
-                                    <p class="text-xs text-neutral-200 leading-relaxed font-light">
-                                        The United Arab Emirates offers an exclusive 10-year Golden Visa program that establishes long-term family security in one of the safest and most vibrant countries in the world.
-                                    </p>
-                                    <p class="text-xs text-neutral-200 leading-relaxed font-light">
-                                        Sharif Group operates high-speed document clearing lanes to process your residency cards efficiently. By investing AED 2 Million in property, you secure your long-term status.
-                                    </p>
-                                    <p class="text-xs text-neutral-200 leading-relaxed font-light">
-                                        Enjoy completely tax-free living, world-class infrastructure, and a wonderful lifestyle in Dubai with our direct, expert government clearance services.
-                                    </p>
-                                </div>
-                                <div class="relative z-10 pt-6">
-                                    <a href="programs/residencybyinvestment/uae/index.html" class="inline-block px-6 py-3 bg-luxury-gold text-white rounded-xl text-xs uppercase tracking-wider font-semibold premium-btn-hover hover:bg-white hover:text-luxury-dark transition">Know More</a>
-                                </div>
-                            </div>
-                        </div>
-
-                        <!-- UAE GOLDEN VISA STREAM -->
-                        <div class="space-y-12 scroll-group-block pt-12" data-service="golden-visa" data-desc="Complete end-to-end clearing solutions for Dubai Golden Visas. We manage your title deeds, medical checks, and Emirates ID issuance." data-title="UAE Golden Visa" data-pre="Dubai Long-Term Visa" data-image="https://webapi.bnw.ae/uploads/UAE_Golden_Visa_2f718c69d8.jpg">
-                            <h4 class="text-xs uppercase tracking-widest text-luxury-gold font-bold border-b border-neutral-200 pb-2">UAE Long-Term Residency</h4>
-                            
-                            <div class="relative p-8 md:p-10 rounded-3xl border border-neutral-200/50 shadow-lg overflow-hidden premium-hover text-white flex flex-col justify-between min-h-[380px] bg-neutral-900">
-                                <div class="absolute inset-0 z-0">
-                                    <img src="https://webapi.bnw.ae/uploads/UAE_Golden_Visa_2f718c69d8.jpg" alt="UAE Golden Visa" class="w-full h-full object-cover opacity-60">
-                                    <div class="absolute inset-0 bg-gradient-to-br from-neutral-950/40 via-neutral-950/60 to-neutral-950/80"></div>
-                                </div>
-                                <div class="relative z-10 space-y-4">
-                                    <h5 class="text-2xl font-serif font-bold">Dubai 10-Year Golden Visa</h5>
-                                    <p class="text-xs text-neutral-200 leading-relaxed font-light">
-                                        Our specialized Dubai clearing desks handle your files directly through local land departments. We secure your long-term 10-year residency cards and Emirates ID quickly.
-                                    </p>
-                                    <p class="text-xs text-neutral-200 leading-relaxed font-light">
-                                        We guide you through required medical tests, document attestations, and government approvals without any stress or waiting in long queues.
-                                    </p>
-                                    <p class="text-xs text-neutral-200 leading-relaxed font-light">
-                                        Experience a seamless journey to long-term stability and tax-free living in Dubai with our trusted, professional advisory team.
-                                    </p>
-                                </div>
-                                <div class="relative z-10 pt-6">
-                                    <a href="programs/residencybyinvestment/uae/index.html" class="inline-block px-6 py-3 bg-luxury-gold text-white rounded-xl text-xs uppercase tracking-wider font-semibold premium-btn-hover hover:bg-white hover:text-luxury-dark transition">Know More</a>
-                                </div>
-                            </div>
-                        </div>
-
-                        <!-- REAL ESTATE STREAM -->
-                        <div class="space-y-12 scroll-group-block pt-12" data-service="real-estate" data-desc="Strategic property investments approved for regional golden visas. We pre-vet development projects for title authenticity." data-title="Property Services" data-pre="Property Desk" data-image="https://therealtytoday.com/media/Dubai_realestate_market_soars.jpg">
-                            <h4 class="text-xs uppercase tracking-widest text-luxury-gold font-bold border-b border-neutral-200 pb-2">Global Property Assets</h4>
-                            
-                            <div class="relative p-8 md:p-10 rounded-3xl border border-neutral-200/50 shadow-lg overflow-hidden premium-hover text-white flex flex-col justify-between min-h-[380px] bg-neutral-900">
-                                <div class="absolute inset-0 z-0">
-                                    <img src="https://therealtytoday.com/media/Dubai_realestate_market_soars.jpg" alt="Property Services" class="w-full h-full object-cover opacity-60">
-                                    <div class="absolute inset-0 bg-gradient-to-br from-neutral-950/40 via-neutral-950/60 to-neutral-950/80"></div>
-                                </div>
-                                <div class="relative z-10 space-y-4">
-                                    <h5 class="text-2xl font-serif font-bold">Trusted Property Investments</h5>
-                                    <p class="text-xs text-neutral-200 leading-relaxed font-light">
-                                        We source, inspect, and analyze high-quality properties in Dubai and Europe that qualify you for local residency and golden visa programs.
-                                    </p>
-                                    <p class="text-xs text-neutral-200 leading-relaxed font-light">
-                                        Our real estate experts pre-vet every single development project for title authenticity, builder reputation, and strong future rental returns.
-                                    </p>
-                                    <p class="text-xs text-neutral-200 leading-relaxed font-light">
-                                        We offer complete, end-to-end purchasing support so you can invest with absolute confidence and peace of mind.
-                                    </p>
-                                </div>
-                                <div class="relative z-10 pt-6">
-                                    <a href="realestate/index.html" class="inline-block px-6 py-3 bg-luxury-gold text-white rounded-xl text-xs uppercase tracking-wider font-semibold premium-btn-hover hover:bg-white hover:text-luxury-dark transition">Know More</a>
-                                </div>
-                            </div>
-                        </div>
-
-                        <!-- EDUCATION ADVISORY STREAM -->
-                        <div class="space-y-12 scroll-group-block pt-12 pb-[45vh]" data-service="education" data-desc="Use alternative citizenship statuses to secure school placements and lower domestic tuition rates." data-title="Education Advisory" data-pre="Academic Board" data-image="https://images.unsplash.com/photo-1541339907198-e08756dedf3f?auto=format&fit=crop&q=80&w=800">
-                            <h4 class="text-xs uppercase tracking-widest text-luxury-gold font-bold border-b border-neutral-200 pb-2">Global Placements</h4>
-                            
-                            <div class="relative p-8 md:p-10 rounded-3xl border border-neutral-200/50 shadow-lg overflow-hidden premium-hover text-white flex flex-col justify-between min-h-[380px] bg-neutral-900">
-                                <div class="absolute inset-0 z-0">
-                                    <img src="https://images.unsplash.com/photo-1541339907198-e08756dedf3f?auto=format&fit=crop&q=80&w=800" alt="Education Advisory" class="w-full h-full object-cover opacity-60">
-                                    <div class="absolute inset-0 bg-gradient-to-br from-neutral-950/40 via-neutral-950/60 to-neutral-950/80"></div>
-                                </div>
-                                <div class="relative z-10 space-y-4">
-                                    <h5 class="text-2xl font-serif font-bold">School & University Guidance</h5>
-                                    <p class="text-xs text-neutral-200 leading-relaxed font-light">
-                                        Our academic advisors provide expert guidance to help your children secure admission slots in top international schools and universities.
-                                    </p>
-                                    <p class="text-xs text-neutral-200 leading-relaxed font-light">
-                                        By utilizing an alternative second citizenship or global residency status, you can unlock local domestic tuition rates at prestigious institutions.
-                                    </p>
-                                    <p class="text-xs text-neutral-200 leading-relaxed font-light">
-                                        We support you through every stage of application matching, entrance preparation, and enrollment planning for a brilliant academic future.
-                                    </p>
-                                </div>
-                                <div class="relative z-10 pt-6">
-                                    <a href="educationaladvisory/index.html" class="inline-block px-6 py-3 bg-luxury-gold text-white rounded-xl text-xs uppercase tracking-wider font-semibold premium-btn-hover hover:bg-white hover:text-luxury-dark transition">Know More</a>
-                                </div>
-                            </div>
-                        </div>
-
                     </div>
                 </div>
+
+                <!-- Pillar 02: Residency By Investment -->
+                <div class="focus-acc-item relative rounded-[2rem] border border-white/10 bg-[#0c1424]/60 shadow-xl overflow-hidden cursor-pointer" onmouseenter="activateFocusCard(this)" onmouseleave="deactivateFocusCard(this)">
+                    <div class="absolute inset-0 bg-cover bg-center opacity-15 transition-transform duration-700 pointer-events-none" style="background-image: url('residencybyinvestment.png');"></div>
+                    <div class="absolute inset-0 bg-gradient-to-r from-[#070E1A]/95 via-[#0c1424]/90 to-transparent pointer-events-none"></div>
+
+                    <div class="relative z-10 p-5 sm:p-8">
+                        <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+                            <div class="flex items-start sm:items-center gap-3.5">
+                                <div class="focus-acc-icon w-11 h-11 sm:w-12 sm:h-12 rounded-xl bg-white/10 text-neutral-300 border border-white/15 flex items-center justify-center text-base sm:text-lg shrink-0 mt-0.5 sm:mt-0">
+                                    <i class="fa-solid fa-id-card"></i>
+                                </div>
+                                <div>
+                                    <span class="text-[9px] font-bold uppercase tracking-[0.2em] text-neutral-400 border border-neutral-700/60 px-2.5 py-0.5 rounded-full bg-neutral-900/50 inline-block mb-1">Pillar 02 &bull; Residency</span>
+                                    <h4 class="font-serif text-base sm:text-2xl font-bold text-white leading-snug">Residency by Investment</h4>
+                                </div>
+                            </div>
+                            <span class="focus-badge hidden sm:inline-block text-[10px] font-bold uppercase tracking-widest px-4 py-1.5 rounded-full border border-neutral-700 text-neutral-400 shrink-0 transition-all duration-500">HOVER TO EXPAND</span>
+                        </div>
+
+                        <div class="focus-body-grid">
+                            <div class="focus-body-inner pt-6 space-y-4">
+                                <p class="text-xs sm:text-sm text-neutral-300 font-light leading-relaxed max-w-3xl">
+                                    Establish strategic residential bases and obtain Golden Visas in top global destinations. Secure full freedom of movement across Europe's Schengen Zone and access favorable tax regimes.
+                                </p>
+                                
+                                <!-- 1-by-1 Itemized Residency Programs -->
+                                <div class="space-y-3 pt-3">
+                                    
+                                    <!-- 1. Portugal -->
+                                    <div class="program-neon-item p-4 sm:p-5 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
+                                        <div class="space-y-1 text-left">
+                                            <h5 class="font-serif text-lg font-bold text-white">Portugal | Golden Visa</h5>
+                                            <p class="text-xs text-neutral-300 font-light max-w-2xl">
+                                                European residency through regulated fund investments with a minimal 7 days per year stay requirement leading to EU citizenship.
+                                            </p>
+                                        </div>
+                                        <a href="programs/residencybyinvestment/portugal/index.html" class="px-5 py-2.5 rounded-xl bg-[#786142] hover:bg-luxury-gold text-white text-[10px] font-bold uppercase tracking-widest whitespace-nowrap transition shadow-md shrink-0">
+                                            Know More <i class="fa-solid fa-arrow-right ml-1"></i>
+                                        </a>
+                                    </div>
+
+                                    <!-- 2. Greece -->
+                                    <div class="program-neon-item p-4 sm:p-5 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
+                                        <div class="space-y-1 text-left">
+                                            <h5 class="font-serif text-lg font-bold text-white">Greece | Golden Visa</h5>
+                                            <p class="text-xs text-neutral-300 font-light max-w-2xl">
+                                                Permanent European residence cards and Schengen zone access granted through vetted real estate acquisitions.
+                                            </p>
+                                        </div>
+                                        <a href="programs/residencybyinvestment/greece/index.html" class="px-5 py-2.5 rounded-xl bg-[#786142] hover:bg-luxury-gold text-white text-[10px] font-bold uppercase tracking-widest whitespace-nowrap transition shadow-md shrink-0">
+                                            Know More <i class="fa-solid fa-arrow-right ml-1"></i>
+                                        </a>
+                                    </div>
+
+                                    <!-- 3. Panama -->
+                                    <div class="program-neon-item p-4 sm:p-5 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
+                                        <div class="space-y-1 text-left">
+                                            <h5 class="font-serif text-lg font-bold text-white">Panama | Golden Visa</h5>
+                                            <p class="text-xs text-neutral-300 font-light max-w-2xl">
+                                                International banking hub offering rapid permanent residency and complete offshore corporate tax exemptions.
+                                            </p>
+                                        </div>
+                                        <a href="programs/residencybyinvestment/panama/index.html" class="px-5 py-2.5 rounded-xl bg-[#786142] hover:bg-luxury-gold text-white text-[10px] font-bold uppercase tracking-widest whitespace-nowrap transition shadow-md shrink-0">
+                                            Know More <i class="fa-solid fa-arrow-right ml-1"></i>
+                                        </a>
+                                    </div>
+
+                                    <!-- 4. UAE -->
+                                    <div class="program-neon-item p-4 sm:p-5 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
+                                        <div class="space-y-1 text-left">
+                                            <h5 class="font-serif text-lg font-bold text-white">United Arab Emirates | Golden Visa</h5>
+                                            <p class="text-xs text-neutral-300 font-light max-w-2xl">
+                                                Secure 10-year residency for you and your family with zero personal income tax, world-class infrastructure, and direct Dubai clearing lanes.
+                                            </p>
+                                        </div>
+                                        <a href="programs/residencybyinvestment/uae/index.html" class="px-5 py-2.5 rounded-xl bg-[#786142] hover:bg-luxury-gold text-white text-[10px] font-bold uppercase tracking-widest whitespace-nowrap transition shadow-md shrink-0">
+                                            Know More <i class="fa-solid fa-arrow-right ml-1"></i>
+                                        </a>
+                                    </div>
+
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Pillar 03: UAE 10-Year Golden Visa -->
+                <div class="focus-acc-item relative rounded-[2rem] border border-white/10 bg-[#0c1424]/60 shadow-xl overflow-hidden cursor-pointer" onmouseenter="activateFocusCard(this)" onmouseleave="deactivateFocusCard(this)">
+                    <div class="absolute inset-0 bg-cover bg-center opacity-15 transition-transform duration-700 pointer-events-none" style="background-image: url('https://webapi.bnw.ae/uploads/UAE_Golden_Visa_2f718c69d8.jpg');"></div>
+                    <div class="absolute inset-0 bg-gradient-to-r from-[#070E1A]/95 via-[#0c1424]/90 to-transparent pointer-events-none"></div>
+
+                    <div class="relative z-10 p-5 sm:p-8">
+                        <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+                            <div class="flex items-start sm:items-center gap-3.5">
+                                <div class="focus-acc-icon w-11 h-11 sm:w-12 sm:h-12 rounded-xl bg-white/10 text-neutral-300 border border-white/15 flex items-center justify-center text-base sm:text-lg shrink-0 mt-0.5 sm:mt-0">
+                                    <i class="fa-solid fa-award"></i>
+                                </div>
+                                <div>
+                                    <span class="text-[9px] font-bold uppercase tracking-[0.2em] text-neutral-400 border border-neutral-700/60 px-2.5 py-0.5 rounded-full bg-neutral-900/50 inline-block mb-1">Pillar 03 &bull; Dubai Direct</span>
+                                    <h4 class="font-serif text-base sm:text-2xl font-bold text-white leading-snug">UAE 10-Year Golden Visa</h4>
+                                </div>
+                            </div>
+                            <span class="focus-badge hidden sm:inline-block text-[10px] font-bold uppercase tracking-widest px-4 py-1.5 rounded-full border border-neutral-700 text-neutral-400 shrink-0 transition-all duration-500">HOVER TO EXPAND</span>
+                        </div>
+
+                        <div class="focus-body-grid">
+                            <div class="focus-body-inner pt-6 space-y-4">
+                                <p class="text-xs sm:text-sm text-neutral-300 font-light leading-relaxed max-w-3xl">
+                                    Direct high-speed document clearing through Dubai Land Department and immigration authorities. We handle property evaluation, medical testing, and Emirates ID issuance for complete 10-year residency security.
+                                </p>
+                                <div class="pt-2 flex flex-wrap gap-3">
+                                    <a href="programs/residencybyinvestment/uae/index.html" class="px-5 py-2.5 rounded-xl bg-[#786142] hover:bg-luxury-gold text-white text-[10px] font-bold uppercase tracking-widest transition shadow-md">View UAE Process</a>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Pillar 04: Prime Real Estate Advisory -->
+                <div class="focus-acc-item relative rounded-[2rem] border border-white/10 bg-[#0c1424]/60 shadow-xl overflow-hidden cursor-pointer" onmouseenter="activateFocusCard(this)" onmouseleave="deactivateFocusCard(this)">
+                    <div class="absolute inset-0 bg-cover bg-center opacity-15 transition-transform duration-700 pointer-events-none" style="background-image: url('https://therealtytoday.com/media/Dubai_realestate_market_soars.jpg');"></div>
+                    <div class="absolute inset-0 bg-gradient-to-r from-[#070E1A]/95 via-[#0c1424]/90 to-transparent pointer-events-none"></div>
+
+                    <div class="relative z-10 p-5 sm:p-8">
+                        <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+                            <div class="flex items-start sm:items-center gap-3.5">
+                                <div class="focus-acc-icon w-11 h-11 sm:w-12 sm:h-12 rounded-xl bg-white/10 text-neutral-300 border border-white/15 flex items-center justify-center text-base sm:text-lg shrink-0 mt-0.5 sm:mt-0">
+                                    <i class="fa-solid fa-building"></i>
+                                </div>
+                                <div>
+                                    <span class="text-[9px] font-bold uppercase tracking-[0.2em] text-neutral-400 border border-neutral-700/60 px-2.5 py-0.5 rounded-full bg-neutral-900/50 inline-block mb-1">Pillar 04 &bull; Property Desk</span>
+                                    <h4 class="font-serif text-base sm:text-2xl font-bold text-white leading-snug">Prime Real Estate Advisory</h4>
+                                </div>
+                            </div>
+                            <span class="focus-badge hidden sm:inline-block text-[10px] font-bold uppercase tracking-widest px-4 py-1.5 rounded-full border border-neutral-700 text-neutral-400 shrink-0 transition-all duration-500">HOVER TO EXPAND</span>
+                        </div>
+
+                        <div class="focus-body-grid">
+                            <div class="focus-body-inner pt-6 space-y-4">
+                                <p class="text-xs sm:text-sm text-neutral-300 font-light leading-relaxed max-w-3xl">
+                                    Pre-vetted luxury properties in Dubai and Europe that qualify you for local residency. We inspect developments for title authenticity, builder reputation, and high rental ROI.
+                                </p>
+                                <div class="pt-2 flex flex-wrap gap-3">
+                                    <a href="realestate/index.html" class="px-5 py-2.5 rounded-xl bg-[#786142] hover:bg-luxury-gold text-white text-[10px] font-bold uppercase tracking-widest transition shadow-md">Explore Properties</a>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Pillar 05: Educational Advisory -->
+                <div class="focus-acc-item relative rounded-[2rem] border border-white/10 bg-[#0c1424]/60 shadow-xl overflow-hidden cursor-pointer" onmouseenter="activateFocusCard(this)" onmouseleave="deactivateFocusCard(this)">
+                    <div class="absolute inset-0 bg-cover bg-center opacity-15 transition-transform duration-700 pointer-events-none" style="background-image: url('https://images.unsplash.com/photo-1541339907198-e08756dedf3f?auto=format&fit=crop&q=80&w=800');"></div>
+                    <div class="absolute inset-0 bg-gradient-to-r from-[#070E1A]/95 via-[#0c1424]/90 to-transparent pointer-events-none"></div>
+
+                    <div class="relative z-10 p-5 sm:p-8">
+                        <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+                            <div class="flex items-start sm:items-center gap-3.5">
+                                <div class="focus-acc-icon w-11 h-11 sm:w-12 sm:h-12 rounded-xl bg-white/10 text-neutral-300 border border-white/15 flex items-center justify-center text-base sm:text-lg shrink-0 mt-0.5 sm:mt-0">
+                                    <i class="fa-solid fa-graduation-cap"></i>
+                                </div>
+                                <div>
+                                    <span class="text-[9px] font-bold uppercase tracking-[0.2em] text-neutral-400 border border-neutral-700/60 px-2.5 py-0.5 rounded-full bg-neutral-900/50 inline-block mb-1">Pillar 05 &bull; Academic Board</span>
+                                    <h4 class="font-serif text-base sm:text-2xl font-bold text-white leading-snug">Educational Advisory</h4>
+                                </div>
+                            </div>
+                            <span class="focus-badge hidden sm:inline-block text-[10px] font-bold uppercase tracking-widest px-4 py-1.5 rounded-full border border-neutral-700 text-neutral-400 shrink-0 transition-all duration-500">HOVER TO EXPAND</span>
+                        </div>
+
+                        <div class="focus-body-grid">
+                            <div class="focus-body-inner pt-6 space-y-4">
+                                <p class="text-xs sm:text-sm text-neutral-300 font-light leading-relaxed max-w-3xl">
+                                    Unlock local domestic tuition rates and secure placements in prestigious British and American universities by pairing applications with alternative citizenship statuses.
+                                </p>
+                                <div class="pt-2 flex flex-wrap gap-3">
+                                    <a href="educationaladvisory/index.html" class="px-5 py-2.5 rounded-xl bg-[#786142] hover:bg-luxury-gold text-white text-[10px] font-bold uppercase tracking-widest transition shadow-md">View Academic Advisory</a>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
             </div>
         </section>
 
-		<!-- SOCIAL RESPONSIBILITY HIGHLIGHT BAR -->
-        <section class="py-16 px-6 bg-[#070E1A] border-b border-neutral-800 relative overflow-hidden">
-            <div class="max-w-7xl mx-auto relative rounded-[2.5rem] overflow-hidden border border-luxury-gold/40 shadow-2xl p-8 sm:p-12 flex flex-col md:flex-row items-center justify-between gap-8 neon-card-hover group">
+		<!-- SOCIAL RESPONSIBILITY HIGHLIGHT BAR (YELLOW COPPER BACKGROUND) -->
+        <section class="py-16 px-6 bg-[#FAF6EE] border-b border-neutral-200/80 relative overflow-hidden">
+            <div class="max-w-7xl mx-auto relative rounded-[2.5rem] overflow-hidden border border-luxury-gold/50 shadow-2xl p-8 sm:p-12 flex flex-col md:flex-row items-center justify-between gap-8 bg-[#070E1A] group">
                 <div class="absolute inset-0 bg-cover bg-center opacity-30 transition-transform duration-700 group-hover:scale-105 pointer-events-none" style="background-image: url('https://images.unsplash.com/photo-1488521787991-ed7bbaae773c?auto=format&fit=crop&q=80&w=500');"></div>
                 <div class="absolute inset-0 bg-gradient-to-r from-[#050B14]/98 via-[#070E1A]/92 to-[#050B14]/75 pointer-events-none"></div>
 
@@ -1625,7 +1663,7 @@
                 <div id="review-slider-track" class="flex transition-transform duration-700 ease-in-out w-full">
                     
                     <!-- Slide 1 -->
-                    <div class="w-full shrink-0 px-4">
+                    <div class="review-slide-card w-full shrink-0 px-4">
                         <div class="bg-neutral-900/90 rounded-3xl border border-luxury-gold/30 shadow-2xl p-6 md:p-10 grid grid-cols-1 md:grid-cols-12 gap-8 items-center backdrop-blur-xl">
                             <div class="md:col-span-5 space-y-6 text-left">
                                 <div class="text-luxury-gold text-2xl"><i class="fa-solid fa-quote-left"></i></div>
@@ -1641,7 +1679,7 @@
                     </div>
 
                     <!-- Slide 2 -->
-                    <div class="w-full shrink-0 px-4">
+                    <div class="review-slide-card w-full shrink-0 px-4">
                         <div class="bg-neutral-900/90 rounded-3xl border border-luxury-gold/30 shadow-2xl p-6 md:p-10 grid grid-cols-1 md:grid-cols-12 gap-8 items-center backdrop-blur-xl">
                             <div class="md:col-span-5 space-y-6 text-left">
                                 <div class="text-luxury-gold text-2xl"><i class="fa-solid fa-quote-left"></i></div>
@@ -1657,7 +1695,7 @@
                     </div>
 
                     <!-- Slide 3 -->
-                    <div class="w-full shrink-0 px-4">
+                    <div class="review-slide-card w-full shrink-0 px-4">
                         <div class="bg-neutral-900/90 rounded-3xl border border-luxury-gold/30 shadow-2xl p-6 md:p-10 grid grid-cols-1 md:grid-cols-12 gap-8 items-center backdrop-blur-xl">
                             <div class="md:col-span-5 space-y-6 text-left">
                                 <div class="text-luxury-gold text-2xl"><i class="fa-solid fa-quote-left"></i></div>
@@ -1673,7 +1711,7 @@
                     </div>
 
                     <!-- Slide 4 -->
-                    <div class="w-full shrink-0 px-4">
+                    <div class="review-slide-card w-full shrink-0 px-4">
                         <div class="bg-neutral-900/90 rounded-3xl border border-luxury-gold/30 shadow-2xl p-6 md:p-10 grid grid-cols-1 md:grid-cols-12 gap-8 items-center backdrop-blur-xl">
                             <div class="md:col-span-5 space-y-6 text-left">
                                 <div class="text-luxury-gold text-2xl"><i class="fa-solid fa-quote-left"></i></div>
@@ -1689,7 +1727,7 @@
                     </div>
 
                     <!-- Slide 5 -->
-                    <div class="w-full shrink-0 px-4">
+                    <div class="review-slide-card w-full shrink-0 px-4">
                         <div class="bg-neutral-900/90 rounded-3xl border border-luxury-gold/30 shadow-2xl p-6 md:p-10 grid grid-cols-1 md:grid-cols-12 gap-8 items-center backdrop-blur-xl">
                             <div class="md:col-span-5 space-y-6 text-left">
                                 <div class="text-luxury-gold text-2xl"><i class="fa-solid fa-quote-left"></i></div>
@@ -1705,7 +1743,7 @@
                     </div>
 
                     <!-- Slide 6 -->
-                    <div class="w-full shrink-0 px-4">
+                    <div class="review-slide-card w-full shrink-0 px-4">
                         <div class="bg-neutral-900/90 rounded-3xl border border-luxury-gold/30 shadow-2xl p-6 md:p-10 grid grid-cols-1 md:grid-cols-12 gap-8 items-center backdrop-blur-xl">
                             <div class="md:col-span-5 space-y-6 text-left">
                                 <div class="text-luxury-gold text-2xl"><i class="fa-solid fa-quote-left"></i></div>
@@ -1721,7 +1759,7 @@
                     </div>
 
                     <!-- Slide 7 -->
-                    <div class="w-full shrink-0 px-4">
+                    <div class="review-slide-card w-full shrink-0 px-4">
                         <div class="bg-neutral-900/90 rounded-3xl border border-luxury-gold/30 shadow-2xl p-6 md:p-10 grid grid-cols-1 md:grid-cols-12 gap-8 items-center backdrop-blur-xl">
                             <div class="md:col-span-5 space-y-6 text-left">
                                 <div class="text-luxury-gold text-2xl"><i class="fa-solid fa-quote-left"></i></div>
@@ -2464,7 +2502,6 @@
 
             initHeroSlideshow();
             initCounters();
-            observeStickyServices();
             initReviewSlider();
         });
 
@@ -2473,136 +2510,6 @@
             preloaderDismissed = true;
 
             sessionStorage.setItem('sharif_preloader_shown', 'true');
-
-            const preloader = document.getElementById('preloader');
-            const logo = document.getElementById('preloader-logo');
-            const navLogo = document.getElementById('nav-logo');
-
-            const tl = gsap.timeline({
-                onComplete: () => {
-                    if (preloader) preloader.style.display = 'none';
-                    document.body.style.overflow = 'auto';
-                }
-            });
-
-            tl.to(["#preloader-title", "#preloader-footer"], { opacity: 0, y: -10, duration: 0.35, stagger: 0.05, ease: "power2.in" });
-            tl.to(logo, { scale: 0.5, y: -40, opacity: 0, duration: 0.7, ease: "power2.inOut" }, "-=0.15");
-            tl.to(preloader, { opacity: 0, duration: 0.65, ease: "power2.inOut" }, "-=0.45");
-            tl.to(navLogo, { opacity: 1, duration: 0.6, ease: "power2.out" }, "-=0.35");
-        }
-
-        function initReviewSlider() {
-            const track = document.getElementById('review-slider-track');
-            if (!track) return;
-            
-            // Clone first slide and append to track for a seamless infinite loop forward
-            if (!track.dataset.cloned) {
-                const firstClone = track.firstElementChild.cloneNode(true);
-                track.appendChild(firstClone);
-                track.dataset.cloned = "true";
-            }
-
-            const slides = track.children;
-            const totalSlides = slides.length;
-            let slideIndex = 0;
-            let isTransitioning = true;
-
-            if (window._reviewInterval) clearInterval(window._reviewInterval);
-            
-            window._reviewInterval = setInterval(() => {
-                slideIndex++;
-                const slideWidth = slides[0].getBoundingClientRect().width;
-                
-                track.style.transition = "transform 0.7s cubic-bezier(0.16, 1, 0.3, 1)";
-                track.style.transform = `translate3d(-${slideIndex * slideWidth}px, 0, 0)`;
-
-                // When it reaches the clone of the first slide, instantly snap back to 0 without animation
-                if (slideIndex === totalSlides - 1) {
-                    setTimeout(() => {
-                        track.style.transition = "none";
-                        slideIndex = 0;
-                        track.style.transform = `translate3d(0px, 0, 0)`;
-                    }, 700); // matches transition duration
-                }
-            }, 4500);
-        }
-
-        // Add this helper function below your other functions:
-        function observeStickyServices() {
-            const blocks = document.querySelectorAll('.scroll-group-block');
-            if(!blocks.length) return;
-
-            let activeBlock = null;
-
-            function updateStickyPanel() {
-                const triggerPoint = window.innerHeight * 0.30; 
-                let currentBlock = null;
-
-                blocks.forEach(block => {
-                    const rect = block.getBoundingClientRect();
-                    if (rect.top <= triggerPoint && rect.bottom > 120) {
-                        currentBlock = block;
-                    }
-                });
-
-                if (!currentBlock && blocks[0]) {
-                    const firstRect = blocks[0].getBoundingClientRect();
-                    if (firstRect.top > triggerPoint) {
-                        currentBlock = blocks[0];
-                    }
-                }
-
-                if (currentBlock && currentBlock !== activeBlock) {
-                    activeBlock = currentBlock;
-
-                    const serviceKey = currentBlock.getAttribute('data-service');
-                    const pre = currentBlock.getAttribute('data-pre');
-                    const title = currentBlock.getAttribute('data-title');
-                    const desc = currentBlock.getAttribute('data-desc');
-                    const bgImage = currentBlock.getAttribute('data-image');
-
-                    const stickyTheaterImg = document.getElementById('sticky-theater-img');
-                    const stickyPre = document.getElementById('sticky-service-pre-title');
-                    const stickyTitle = document.getElementById('sticky-service-title');
-                    const stickyDesc = document.getElementById('sticky-service-desc');
-
-                    if (stickyTheaterImg && bgImage) {
-                        stickyTheaterImg.style.opacity = '0';
-                        setTimeout(() => {
-                            stickyTheaterImg.src = bgImage;
-                            stickyTheaterImg.style.opacity = '0.8';
-                        }, 120);
-                    }
-
-                    if(stickyPre) stickyPre.innerText = pre;
-                    if(stickyTitle) stickyTitle.innerText = title;
-                    if(stickyDesc) stickyDesc.innerText = desc;
-
-                    const indicators = ['citizenship', 'residency', 'golden-visa', 'real-estate', 'education'];
-                    indicators.forEach(ind => {
-                        const indEl = document.getElementById(`nav-indicator-${ind}`);
-                        if(indEl) {
-                            if (ind === serviceKey) {
-                                indEl.classList.remove('opacity-40');
-                                indEl.querySelector('span:first-child').className = 'w-3 h-3 rounded-full bg-luxury-gold';
-                                indEl.querySelector('span:last-child').className = 'font-bold text-neutral-900';
-                            } else {
-                                indEl.classList.add('opacity-40');
-                                indEl.querySelector('span:first-child').className = 'w-3 h-3 rounded-full bg-neutral-300';
-                                indEl.querySelector('span:last-child').className = '';
-                            }
-                        }
-                    });
-                }
-            }
-
-            window.addEventListener('scroll', updateStickyPanel, { passive: true });
-            updateStickyPanel();
-        }
-
-        function dismissPreloader() {
-            if (preloaderDismissed) return;
-            preloaderDismissed = true;
 
             const preloader = document.getElementById('preloader');
             const logo = document.getElementById('preloader-logo');
@@ -2651,6 +2558,66 @@
                 });
             }, { threshold: 0.5 });
             counters.forEach(c => observer.observe(c));
+        }
+
+        function activateFocusCard(card) {
+            const allCards = document.querySelectorAll('.focus-acc-item');
+            allCards.forEach(c => {
+                if (c !== card) {
+                    c.classList.remove('is-active');
+                    const badge = c.querySelector('.focus-badge');
+                    if (badge) {
+                        badge.className = 'focus-badge hidden sm:inline-block text-[10px] font-bold uppercase tracking-widest px-4 py-1.5 rounded-full border border-neutral-700 text-neutral-400 shrink-0 transition-all duration-500';
+                        badge.textContent = 'HOVER TO EXPAND';
+                    }
+                }
+            });
+
+            card.classList.add('is-active');
+            const activeBadge = card.querySelector('.focus-badge');
+            if (activeBadge) {
+                activeBadge.className = 'focus-badge hidden sm:inline-block text-[10px] font-bold uppercase tracking-widest px-4 py-1.5 rounded-full border border-luxury-gold bg-luxury-gold/20 text-luxury-gold shrink-0 transition-all duration-500';
+                activeBadge.textContent = 'ACTIVE UNIT';
+            }
+        }
+
+        function deactivateFocusCard(card) {
+            card.classList.remove('is-active');
+            const badge = card.querySelector('.focus-badge');
+            if (badge) {
+                badge.className = 'focus-badge hidden sm:inline-block text-[10px] font-bold uppercase tracking-widest px-4 py-1.5 rounded-full border border-neutral-700 text-neutral-400 shrink-0 transition-all duration-500';
+                badge.textContent = 'HOVER TO EXPAND';
+            }
+        }
+
+       function initReviewSlider() {
+            const track = document.getElementById('review-slider-track');
+            if (!track || !track.children.length) return;
+
+            if (!track.dataset.cloned) {
+                const firstClone = track.firstElementChild.cloneNode(true);
+                track.appendChild(firstClone);
+                track.dataset.cloned = "true";
+            }
+
+            const totalSlides = track.children.length;
+            let currentIndex = 0;
+
+            if (window._reviewInterval) clearInterval(window._reviewInterval);
+
+            window._reviewInterval = setInterval(() => {
+                currentIndex++;
+                track.style.transition = "transform 0.8s cubic-bezier(0.22, 1, 0.36, 1)";
+                track.style.transform = "translate3d(-" + (currentIndex * 100) + "%, 0, 0)";
+
+                if (currentIndex >= totalSlides - 1) {
+                    setTimeout(() => {
+                        track.style.transition = "none";
+                        currentIndex = 0;
+                        track.style.transform = "translate3d(0%, 0, 0)";
+                    }, 800);
+                }
+            }, 3500);
         }
     </script>
 
