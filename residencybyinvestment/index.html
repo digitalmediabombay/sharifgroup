@@ -302,13 +302,13 @@
                 <span class="hidden xl:inline text-neutral-300 font-light">|</span>
                 <nav class="hidden xl:flex items-center space-x-4 text-[11px] font-bold tracking-[0.18em] uppercase text-neutral-600 whitespace-nowrap" onmouseleave="scheduleCloseMegaMenus()">
                     <div class="relative py-2" onmouseenter="openMegaMenu('citizenship-menu')">
-                        <a href="index.html" class="hover:text-luxury-gold transition duration-200 flex items-center gap-1.5">
+                        <a href="../citizenshipbyinvestment/index.html" class="hover:text-luxury-gold transition duration-200 flex items-center gap-1.5">
                             Citizenship <i class="fa-solid fa-chevron-down text-[8px] transition-transform duration-300" id="arrow-citizenship-menu"></i>
                         </a>
                     </div>
                     <span class="text-neutral-300 font-light">|</span>
                     <div class="relative py-2" onmouseenter="openMegaMenu('residency-menu')">
-                        <a href="../residencybyinvestment/index.html" class="hover:text-luxury-gold transition duration-200 flex items-center gap-1.5">
+                        <a href="../residencybyinvestment/index.html" class="text-luxury-gold transition duration-200 flex items-center gap-1.5">
                             Residency <i class="fa-solid fa-chevron-down text-[8px] transition-transform duration-300" id="arrow-residency-menu"></i>
                         </a>
                     </div>
@@ -333,7 +333,7 @@
 
             <!-- Right Action Pill Buttons -->
             <div class="hidden lg:flex items-center space-x-3 shrink-0">
-                <a href="../eligibilitychecker/index.html" class="px-5 py-2.5 rounded-full border border-[#786142] text-[#786142] text-[11px] font-bold uppercase tracking-[0.18em] hover:bg-[#786142] hover:text-white transition-all duration-300 whitespace-nowrap">
+                <a href="../contact/index.html" class="px-5 py-2.5 rounded-full border border-[#786142] text-[#786142] text-[11px] font-bold uppercase tracking-[0.18em] hover:bg-[#786142] hover:text-white transition-all duration-300 whitespace-nowrap">
                     Eligibility Checker
                 </a>
                 <a href="../contact/index.html" class="px-5 py-2.5 rounded-full border border-neutral-900 text-neutral-900 text-[11px] font-bold uppercase tracking-[0.18em] hover:bg-luxury-gold hover:border-luxury-gold hover:text-white transition-all duration-300 whitespace-nowrap">
@@ -342,7 +342,7 @@
             </div>
 
             <!-- Mobile Navigation Toggle Button -->
-            <button onclick="toggleMobileMenu()" class="xl:hidden flex flex-col items-end space-y-1.5 focus:outline-none z-[110]">
+            <button onclick="toggleMobileMenu()" aria-label="Toggle Menu" class="xl:hidden flex flex-col items-end space-y-1.5 focus:outline-none z-[110]">
                 <span class="w-6 h-[2px] bg-luxury-dark transition-all duration-300" id="mob-bar1"></span>
                 <span class="w-4 h-[2px] bg-luxury-dark transition-all duration-300" id="mob-bar2"></span>
                 <span class="w-6 h-[2px] bg-luxury-dark transition-all duration-300" id="mob-bar3"></span>
@@ -351,39 +351,90 @@
 
         <!-- MOBILE SLIDE-OUT MENU DRAWER -->
         <div id="mobile-menu-drawer" class="fixed top-20 left-0 w-full h-[calc(100vh-80px)] bg-white z-[120] flex flex-col justify-between p-6 sm:p-8 opacity-0 pointer-events-none transition-all duration-300 translate-y-[-10px] xl:hidden overflow-y-auto shadow-2xl">
-            <div class="space-y-6 pb-6">
-                <nav class="flex flex-col space-y-2 text-xs font-bold tracking-[0.18em] uppercase text-neutral-900">
-                    <a href="index.html" onclick="toggleMobileMenu()" class="py-3.5 border-b border-neutral-200 text-neutral-900 active:text-luxury-gold hover:text-luxury-gold transition flex items-center justify-between">
-                        <span class="font-bold">Citizenship Programs</span>
+            <div class="space-y-4 pb-6">
+                <nav class="flex flex-col text-xs font-bold tracking-[0.18em] uppercase text-neutral-900">
+                    
+                    <!-- 1. Citizenship Accordion -->
+                    <div class="border-b border-neutral-200">
+                        <div class="py-3.5 flex items-center justify-between cursor-pointer" onclick="toggleMobileSubmenu('mob-citizenship-sub', 'mob-arrow-cit')">
+                            <a href="../citizenshipbyinvestment/index.html" class="hover:text-luxury-gold transition font-bold">CITIZENSHIP BY INVESTMENT</a>
+                            <button type="button" class="p-1 focus:outline-none">
+                                <i class="fa-solid fa-chevron-down text-[10px] text-neutral-400 transition-transform duration-300" id="mob-arrow-cit"></i>
+                            </button>
+                        </div>
+                        <div id="mob-citizenship-sub" class="hidden pl-4 pb-3 space-y-2.5 text-[11px] text-neutral-600 font-semibold lowercase">
+                            <a href="../programs/citizenshipbyinvestment/dominica/index.html" class="block uppercase hover:text-luxury-gold transition">DOMINICA | PASSPORT</a>
+                            <a href="../programs/citizenshipbyinvestment/stkittis/index.html" class="block uppercase hover:text-luxury-gold transition">ST. KITTS & NEVIS | PASSPORT</a>
+                            <a href="../programs/citizenshipbyinvestment/antiguaandbarbuda/index.html" class="block uppercase hover:text-luxury-gold transition">ANTIGUA & BARBUDA | PASSPORT</a>
+                            <a href="../programs/citizenshipbyinvestment/stlucia/index.html" class="block uppercase hover:text-luxury-gold transition">SAINT LUCIA | PASSPORT</a>
+                            <a href="../programs/citizenshipbyinvestment/greneda/index.html" class="block uppercase hover:text-luxury-gold transition">GRENADA | PASSPORT</a>
+                            <a href="../programs/citizenshipbyinvestment/vanuatu/index.html" class="block uppercase hover:text-luxury-gold transition">VANUATU | PASSPORT</a>
+                            <a href="../programs/citizenshipbyinvestment/sãotoméandpríncipe/index.html" class="block uppercase hover:text-luxury-gold transition">SÃO TOMÉ AND PRÍNCIPE | PASSPORT</a>
+                            <a href="../programs/citizenshipbyinvestment/nauru/index.html" class="block uppercase hover:text-luxury-gold transition">REPUBLIC OF NAURU | PASSPORT</a>
+                        </div>
+                    </div>
+
+                    <!-- 2. Residency Accordion -->
+                    <div class="border-b border-neutral-200">
+                        <div class="py-3.5 flex items-center justify-between cursor-pointer" onclick="toggleMobileSubmenu('mob-residency-sub', 'mob-arrow-res')">
+                            <a href="../residencybyinvestment/index.html" class="text-luxury-gold transition font-bold">RESIDENCY BY INVESTMENT</a>
+                            <button type="button" class="p-1 focus:outline-none">
+                                <i class="fa-solid fa-chevron-down text-[10px] text-[#C5A880] transition-transform duration-300" id="mob-arrow-res"></i>
+                            </button>
+                        </div>
+                        <div id="mob-residency-sub" class="hidden pl-4 pb-3 space-y-2.5 text-[11px] text-neutral-600 font-semibold lowercase">
+                            <a href="../programs/residencybyinvestment/portugal/index.html" class="block uppercase hover:text-luxury-gold transition">PORTUGAL | GOLDEN VISA</a>
+                            <a href="../programs/residencybyinvestment/greece/index.html" class="block uppercase hover:text-luxury-gold transition">GREECE | GOLDEN VISA</a>
+                            <a href="../programs/residencybyinvestment/panama/index.html" class="block uppercase hover:text-luxury-gold transition">PANAMA | GOLDEN VISA</a>
+                            <a href="../programs/residencybyinvestment/uae/index.html" class="block uppercase hover:text-luxury-gold transition">UNITED ARAB EMIRATES | GOLDEN VISA</a>
+                        </div>
+                    </div>
+
+                    <!-- 3. More Services Accordion -->
+                    <div class="border-b border-neutral-200">
+                        <div class="py-3.5 flex items-center justify-between cursor-pointer" onclick="toggleMobileSubmenu('mob-services-sub', 'mob-arrow-ser')">
+                            <span class="hover:text-luxury-gold transition font-bold">MORE SERVICES</span>
+                            <button type="button" class="p-1 focus:outline-none">
+                                <i class="fa-solid fa-chevron-down text-[10px] text-neutral-400 transition-transform duration-300" id="mob-arrow-ser"></i>
+                            </button>
+                        </div>
+                        <div id="mob-services-sub" class="hidden pl-4 pb-3 space-y-2.5 text-[11px] text-neutral-600 font-semibold">
+                            <a href="../realestate/index.html" class="block uppercase hover:text-luxury-gold transition">REAL ESTATE</a>
+                            <a href="../educationaladvisory/index.html" class="block uppercase hover:text-luxury-gold transition">EDUCATIONAL ADVISORY</a>
+                        </div>
+                    </div>
+
+                    <!-- 4. About Us Accordion -->
+                    <div class="border-b border-neutral-200">
+                        <div class="py-3.5 flex items-center justify-between cursor-pointer" onclick="toggleMobileSubmenu('mob-about-sub', 'mob-arrow-abt')">
+                            <span class="hover:text-luxury-gold transition font-bold">ABOUT US</span>
+                            <button type="button" class="p-1 focus:outline-none">
+                                <i class="fa-solid fa-chevron-down text-[10px] text-neutral-400 transition-transform duration-300" id="mob-arrow-abt"></i>
+                            </button>
+                        </div>
+                        <div id="mob-about-sub" class="hidden pl-4 pb-3 space-y-2.5 text-[11px] text-neutral-600 font-semibold">
+                            <a href="../aboutus/index.html" class="block uppercase hover:text-luxury-gold transition">SHARIF GROUP</a>
+                            <a href="../aboutfounder/index.html" class="block uppercase hover:text-luxury-gold transition">FOUNDER | ALI SHARIF</a>
+                        </div>
+                    </div>
+
+                    <!-- 5. Single Links -->
+                    <a href="../socialresponsibility/index.html" class="py-3.5 border-b border-neutral-200 hover:text-luxury-gold transition flex items-center justify-between">
+                        <span class="font-bold">SOCIAL RESPONSIBILITY</span>
                         <i class="fa-solid fa-chevron-right text-[10px] text-neutral-400"></i>
                     </a>
-                    <a href="../residencybyinvestment/index.html" onclick="toggleMobileMenu()" class="py-3.5 border-b border-neutral-200 text-neutral-900 active:text-luxury-gold hover:text-luxury-gold transition flex items-center justify-between">
-                        <span class="font-bold">Residency Programs</span>
+                    <a href="../contact/index.html" class="py-3.5 border-b border-neutral-200 hover:text-luxury-gold transition flex items-center justify-between">
+                        <span class="font-bold">CONTACT US</span>
                         <i class="fa-solid fa-chevron-right text-[10px] text-neutral-400"></i>
                     </a>
-                    <a href="../realestate/index.html" onclick="toggleMobileMenu()" class="py-3.5 border-b border-neutral-200 text-neutral-900 active:text-luxury-gold hover:text-luxury-gold transition flex items-center justify-between">
-                        <span class="font-bold">More Services</span>
-                        <i class="fa-solid fa-chevron-right text-[10px] text-neutral-400"></i>
-                    </a>
-                    <a href="../aboutus/index.html" onclick="toggleMobileMenu()" class="py-3.5 border-b border-neutral-200 text-neutral-900 active:text-luxury-gold hover:text-luxury-gold transition flex items-center justify-between">
-                        <span class="font-bold">About Us</span>
-                        <i class="fa-solid fa-chevron-right text-[10px] text-neutral-400"></i>
-                    </a>
-                    <a href="../socialresponsibility/index.html" onclick="toggleMobileMenu()" class="py-3.5 border-b border-neutral-200 text-neutral-900 active:text-luxury-gold hover:text-luxury-gold transition flex items-center justify-between">
-                        <span class="font-bold">Social Responsibility</span>
-                        <i class="fa-solid fa-chevron-right text-[10px] text-neutral-400"></i>
-                    </a>
-                    <a href="../contact/index.html" onclick="toggleMobileMenu()" class="py-3.5 border-b border-neutral-200 text-[#C5A880] flex items-center justify-between">
-                        <span class="font-bold">Contact Us</span>
-                        <i class="fa-solid fa-chevron-right text-[10px] text-[#C5A880]"></i>
-                    </a>
-                    <a href="../blog/index.html" onclick="toggleMobileMenu()" class="py-3.5 border-b border-neutral-200 text-neutral-900 active:text-luxury-gold hover:text-luxury-gold transition flex items-center justify-between">
-                        <span class="font-bold">Blog</span>
+                    <a href="../blog/index.html" class="py-3.5 border-b border-neutral-200 hover:text-luxury-gold transition flex items-center justify-between">
+                        <span class="font-bold">BLOG</span>
                         <i class="fa-solid fa-chevron-right text-[10px] text-neutral-400"></i>
                     </a>
                 </nav>
-                <div class="flex flex-col gap-3 pt-2">
-                    <a href="../eligibilitychecker/index.html" class="w-full text-center py-3.5 rounded-full border border-[#786142] text-[#786142] text-[11px] font-bold uppercase tracking-widest bg-white shadow-sm">
+
+                <div class="flex flex-col gap-3 pt-4">
+                    <a href="../contact/index.html" class="w-full text-center py-3.5 rounded-full border border-[#786142] text-[#786142] text-[11px] font-bold uppercase tracking-widest bg-white shadow-sm">
                         Eligibility Checker
                     </a>
                     <a href="../contact/index.html" class="w-full text-center py-3.5 rounded-full bg-luxury-dark text-white text-[11px] font-bold uppercase tracking-widest shadow-md">
@@ -401,7 +452,7 @@
             <div class="max-w-7xl mx-auto px-8 py-10 grid grid-cols-12 gap-4">
                 <div class="col-span-3 flex flex-col items-center justify-center text-center pr-4 border-r border-neutral-200">
                     <h3 class="font-serif text-3xl text-neutral-900 font-bold leading-tight mb-4">Citizenship<br>By<br>Investment</h3>
-                    <a href="index.html" class="px-4 py-1.5 border border-neutral-400 text-[11px] font-bold tracking-[0.18em] uppercase rounded-full hover:bg-luxury-dark hover:text-white transition whitespace-nowrap">View All Programs</a>
+                    <a href="../citizenshipbyinvestment/index.html" class="px-4 py-1.5 border border-neutral-400 text-[11px] font-bold tracking-[0.18em] uppercase rounded-full hover:bg-luxury-dark hover:text-white transition whitespace-nowrap">View All Programs</a>
                 </div>
                 <div class="col-span-5 px-6">
                     <h4 class="text-[11px] font-bold tracking-[0.18em] uppercase text-luxury-gold mb-6 text-center lg:text-left">Caribbean Portfolios</h4>
@@ -530,7 +581,7 @@
             </div>
         </div>
 
-        <!-- MEGA MENU ABOUT (WITH SOCIAL RESPONSIBILITY CONTAINER INCLUDED) -->
+        <!-- MEGA MENU ABOUT -->
         <div id="about-menu" class="mega-dropdown absolute left-0 w-full bg-white border-b border-neutral-200 shadow-2xl opacity-0 translate-y-[-10px] pointer-events-none transition-all duration-300 z-40">
             <div class="max-w-7xl mx-auto px-8 py-10 grid grid-cols-12 gap-4">
                 <div class="col-span-3 flex flex-col items-center justify-center text-center pr-4 border-r border-neutral-200">
@@ -544,7 +595,7 @@
                         <a href="../aboutus/index.html" class="relative z-10 text-[11px] font-bold tracking-[0.18em] text-white block text-center leading-tight py-12 px-4 uppercase">Sharif Group</a>
                     </div>
                     <div class="relative flex-1 max-w-[260px] rounded-[20px] shadow-md overflow-hidden group border border-luxury-gold/50">
-                        <img src="../alirezasharif.svg" alt="Founder" class="absolute inset-0 w-full h-full object-cover transition-transform duration-500 group-hover:scale-110">
+                        <img src="../aboutfounder/alirezasharif.svg" alt="Founder" class="absolute inset-0 w-full h-full object-cover transition-transform duration-500 group-hover:scale-110">
                         <div class="absolute inset-0 bg-neutral-950/65 group-hover:bg-neutral-950/50 transition-colors duration-300"></div>
                         <a href="../aboutfounder/index.html" class="relative z-10 text-[11px] font-bold tracking-[0.18em] text-white block text-center leading-tight py-12 px-4 uppercase">Founder | Ali Sharif</a>
                     </div>
@@ -604,13 +655,13 @@
                 </p>
                 
                 <div class="flex items-center space-x-4 pt-4">
-    <a href="#program-consult-form-section" class="px-8 py-3.5 bg-luxury-gold text-white text-xs uppercase tracking-widest font-bold hover:bg-neutral-900 transition duration-300 rounded-md">
-        APPLY NOW
-    </a>
-    <a href="../eligibilitychecker/index.html" class="px-8 py-3.5 border border-luxury-gold text-neutral-800 text-xs uppercase tracking-widest font-bold hover:bg-luxury-gold hover:text-white transition duration-300 rounded-md flex items-center gap-2">
-        CHECK ELIGIBILITY &darr;
-    </a>
-</div>
+                    <a href="#program-consult-form-section" class="px-8 py-3.5 bg-luxury-gold text-white text-xs uppercase tracking-widest font-bold hover:bg-neutral-900 transition duration-300 rounded-md">
+                        APPLY NOW
+                    </a>
+                    <a href="../contact/index.html" class="px-8 py-3.5 border border-luxury-gold text-neutral-800 text-xs uppercase tracking-widest font-bold hover:bg-luxury-gold hover:text-white transition duration-300 rounded-md flex items-center gap-2">
+                        CHECK ELIGIBILITY &darr;
+                    </a>
+                </div>
             </div>
 
             <!-- Right Grid Image Mosaic Column with Neon Hover Effect -->
@@ -737,10 +788,10 @@
                 </div>
 
                 <div class="flex flex-col sm:flex-row items-center gap-4 shrink-0 relative z-10 w-full md:w-auto">
-    <a href="../eligibilitychecker/index.html" class="w-full sm:w-auto px-8 py-4 bg-luxury-gold text-white text-xs uppercase tracking-widest font-bold rounded-xl hover:bg-white hover:text-luxury-dark transition duration-300 text-center shadow-lg">
-        CHECK ELIGIBILITY
-    </a>
-</div>
+                    <a href="../contact/index.html" class="w-full sm:w-auto px-8 py-4 bg-luxury-gold text-white text-xs uppercase tracking-widest font-bold rounded-xl hover:bg-white hover:text-luxury-dark transition duration-300 text-center shadow-lg">
+                        CHECK ELIGIBILITY
+                    </a>
+                </div>
             </div>
         </div>
     </section>
@@ -982,7 +1033,7 @@
                     <p class="flex items-center"><i class="fa-solid fa-envelope mr-3 text-luxury-gold text-sm"></i> <a href="mailto:contact@sharifgroup.ae" class="hover:text-white transition">contact@sharifgroup.ae</a></p>
                 </div>
 
-                <!-- Official Social Media Links Added -->
+                <!-- Official Social Media Links -->
                 <div class="flex items-center space-x-3 pt-2">
                     <a href="https://www.linkedin.com/company/sharif-group-uae/" target="_blank" rel="noopener noreferrer" class="w-8 h-8 rounded-full bg-white/10 border border-white/20 flex items-center justify-center text-white hover:bg-luxury-gold hover:border-luxury-gold transition"><i class="fa-brands fa-linkedin-in text-xs"></i></a>
                     <a href="https://www.instagram.com/sharifgroup.uae" target="_blank" rel="noopener noreferrer" class="w-8 h-8 rounded-full bg-white/10 border border-white/20 flex items-center justify-center text-white hover:bg-luxury-gold hover:border-luxury-gold transition"><i class="fa-brands fa-instagram text-xs"></i></a>
@@ -991,7 +1042,7 @@
                 </div>
             </div>
 
-            <!-- Col 2: Quick Links (With Social Responsibility Included) -->
+            <!-- Col 2: Quick Links -->
             <div>
                 <h4 class="text-[11px] uppercase tracking-[0.2em] text-luxury-gold font-bold mb-6">Quick Links</h4>
                 <ul class="space-y-2.5 text-xs text-neutral-300">
@@ -999,13 +1050,13 @@
                     <li><a href="../aboutus/index.html" class="hover:text-luxury-gold transition">About | Sharif Group</a></li>
                     <li><a href="../aboutfounder/index.html" class="hover:text-luxury-gold transition">About | Ali Sharif</a></li>
                     <li><a href="../socialresponsibility/index.html" class="hover:text-luxury-gold transition">Social Responsibility</a></li>
-                    <li><a href="index.html" class="hover:text-luxury-gold transition">Citizenship Programs</a></li>
+                    <li><a href="../citizenshipbyinvestment/index.html" class="hover:text-luxury-gold transition">Citizenship Programs</a></li>
                     <li><a href="../residencybyinvestment/index.html" class="hover:text-luxury-gold transition">Residency Programs</a></li>
                     <li><a href="../realestate/index.html" class="hover:text-luxury-gold transition">Real Estate</a></li>
                     <li><a href="../educationaladvisory/index.html" class="hover:text-luxury-gold transition">Educational Advisory</a></li>
                     <li><a href="../contact/index.html" class="hover:text-luxury-gold transition">Contact Us</a></li>
                     <li><a href="../blog/index.html" class="hover:text-luxury-gold transition">Insights & Blog</a></li>
-                    <li><a href="../eligibilitychecker/index.html" class="hover:text-luxury-gold transition">Eligibility Checker</a></li>
+                    <li><a href="../contact/index.html" class="hover:text-luxury-gold transition">Eligibility Checker</a></li>
                 </ul>
             </div>
 
@@ -1225,6 +1276,20 @@
                 activeIndex = (activeIndex + 1) % slides.length;
                 slides[activeIndex].style.opacity = '1';
             }, 3000);
+        }
+
+	function toggleMobileSubmenu(submenuId, arrowId) {
+            const sub = document.getElementById(submenuId);
+            const arrow = document.getElementById(arrowId);
+            if (!sub) return;
+            
+            if (sub.classList.contains('hidden')) {
+                sub.classList.remove('hidden');
+                if (arrow) arrow.style.transform = 'rotate(180deg)';
+            } else {
+                sub.classList.add('hidden');
+                if (arrow) arrow.style.transform = 'rotate(0deg)';
+            }
         }
 
         // Mobile Drawer Toggle Handler
