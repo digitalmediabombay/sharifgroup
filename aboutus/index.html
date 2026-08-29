@@ -333,8 +333,7 @@
 </head>
 <body class="bg-luxury-light text-luxury-dark font-sans overflow-x-hidden">
 
-    <!-- HEADER COMPONENT -->
-    <!-- FIND EXACTLY FROM LINE 280 TO 520 IN aboutus/index.html -->
+<!-- HEADER COMPONENT -->
     <header id="main-header" class="fixed top-0 left-0 w-full z-[100] border-b border-neutral-200 transition-all duration-500 bg-white mega-blur">
         <div class="max-w-[1440px] mx-auto px-4 sm:px-8 h-20 flex items-center justify-between relative">
             <div class="flex items-center space-x-5">
@@ -384,62 +383,92 @@
             </div>
 
             <!-- Mobile Navigation Toggle Button -->
-            <button onclick="toggleMobileMenu()" class="xl:hidden flex flex-col items-end space-y-1.5 focus:outline-none z-[110]">
+            <button onclick="toggleMobileMenu()" class="xl:hidden flex flex-col items-end space-y-1.5 focus:outline-none z-[110]" aria-label="Toggle Menu">
                 <span class="w-6 h-[2px] bg-luxury-dark transition-all duration-300" id="mob-bar1"></span>
                 <span class="w-4 h-[2px] bg-luxury-dark transition-all duration-300" id="mob-bar2"></span>
                 <span class="w-6 h-[2px] bg-luxury-dark transition-all duration-300" id="mob-bar3"></span>
             </button>
         </div>
 
-        <!-- MOBILE SLIDE-OUT MENU DRAWER -->
-        <div id="mobile-menu-drawer" class="fixed top-20 left-0 w-full h-[calc(100vh-80px)] bg-white z-[120] flex flex-col justify-between p-6 sm:p-8 opacity-0 pointer-events-none transition-all duration-300 translate-y-[-10px] xl:hidden overflow-y-auto shadow-2xl">
-            <div class="space-y-6 pb-6">
-                <nav class="flex flex-col space-y-2 text-xs font-bold tracking-[0.18em] uppercase text-neutral-900">
-                    <a href="../citizenshipbyinvestment/index.html" onclick="toggleMobileMenu()" class="py-3.5 border-b border-neutral-200 text-neutral-900 active:text-luxury-gold hover:text-luxury-gold transition flex items-center justify-between">
-                        <span class="font-bold">Citizenship Programs</span>
-                        <i class="fa-solid fa-chevron-right text-[10px] text-neutral-400"></i>
+        <!-- MOBILE ACCORDION SLIDE-OUT DRAWER -->
+        <div id="mobile-menu-drawer" class="fixed top-20 left-0 w-full h-[calc(100vh-80px)] bg-white z-[120] flex flex-col justify-between p-6 sm:p-8 opacity-0 pointer-events-none transition-all duration-300 -translate-y-2.5 xl:hidden overflow-y-auto shadow-2xl">
+            <div class="space-y-6 pb-6 text-left">
+                <!-- Top Action Button -->
+                <div>
+                    <a href="../eligibilitychecker/index.html" class="w-full block text-center py-3.5 rounded-full border border-neutral-900 text-neutral-900 text-[11px] font-bold uppercase tracking-[0.18em] hover:bg-neutral-900 hover:text-white transition">
+                        Eligibility Assessment
                     </a>
-                    <a href="../residencybyinvestment/index.html" onclick="toggleMobileMenu()" class="py-3.5 border-b border-neutral-200 text-neutral-900 active:text-luxury-gold hover:text-luxury-gold transition flex items-center justify-between">
-                        <span class="font-bold">Residency Programs</span>
-                        <i class="fa-solid fa-chevron-right text-[10px] text-neutral-400"></i>
-                    </a>
-                    <a href="../realestate/index.html" onclick="toggleMobileMenu()" class="py-3.5 border-b border-neutral-200 text-neutral-900 active:text-luxury-gold hover:text-luxury-gold transition flex items-center justify-between">
-                        <span class="font-bold">More Services</span>
-                        <i class="fa-solid fa-chevron-right text-[10px] text-neutral-400"></i>
-                    </a>
-                    <a href="index.html" onclick="toggleMobileMenu()" class="py-3.5 border-b border-neutral-200 text-neutral-900 active:text-luxury-gold hover:text-luxury-gold transition flex items-center justify-between">
-                        <span class="font-bold">About Us</span>
-                        <i class="fa-solid fa-chevron-right text-[10px] text-neutral-400"></i>
-                    </a>
-                    <a href="../socialresponsibility/index.html" onclick="toggleMobileMenu()" class="py-3.5 border-b border-neutral-200 text-neutral-900 active:text-luxury-gold hover:text-luxury-gold transition flex items-center justify-between">
-                        <span class="font-bold">Social Responsibility</span>
-                        <i class="fa-solid fa-chevron-right text-[10px] text-neutral-400"></i>
-                    </a>
-                    <a href="../contact/index.html" onclick="toggleMobileMenu()" class="py-3.5 border-b border-neutral-200 text-[#C5A880] flex items-center justify-between">
-                        <span class="font-bold">Contact Us</span>
-                        <i class="fa-solid fa-chevron-right text-[10px] text-[#C5A880]"></i>
-                    </a>
-                    <a href="../blog/index.html" onclick="toggleMobileMenu()" class="py-3.5 border-b border-neutral-200 text-neutral-900 active:text-luxury-gold hover:text-luxury-gold transition flex items-center justify-between">
-                        <span class="font-bold">Blog</span>
-                        <i class="fa-solid fa-chevron-right text-[10px] text-neutral-400"></i>
-                    </a>
+                </div>
+
+                <!-- Navigation List with Expandable Sub-programs -->
+                <nav class="flex flex-col space-y-1 text-xs font-bold tracking-[0.18em] uppercase">
+                    <!-- Dual Citizenship Accordion -->
+                    <div class="border-b border-neutral-200">
+                        <button onclick="toggleMobileSubMenu('mob-cbi')" class="w-full py-4 flex items-center justify-between text-[#C5A880] focus:outline-none">
+                            <span>Dual Citizenship</span>
+                            <i id="mob-arrow-cbi" class="fa-solid fa-chevron-down text-[10px] transition-transform duration-300"></i>
+                        </button>
+                        <div id="mob-cbi" class="hidden flex-col space-y-3 pb-4 pl-3 text-[11px] tracking-wider text-neutral-600 font-medium lowercase first-letter:capitalize">
+                            <a href="../citizenshipbyinvestment/index.html" onclick="toggleMobileMenu()" class="font-bold uppercase text-neutral-900 hover:text-[#C5A880] py-1">All Citizenship Programs</a>
+                            <a href="../programs/citizenshipbyinvestment/dominica/index.html" onclick="toggleMobileMenu()" class="hover:text-[#C5A880]">Dominica | Passport</a>
+                            <a href="../programs/citizenshipbyinvestment/stkittis/index.html" onclick="toggleMobileMenu()" class="hover:text-[#C5A880]">St. Kitts & Nevis | Passport</a>
+                            <a href="../programs/citizenshipbyinvestment/antiguaandbarbuda/index.html" onclick="toggleMobileMenu()" class="hover:text-[#C5A880]">Antigua & Barbuda | Passport</a>
+                            <a href="../programs/citizenshipbyinvestment/stlucia/index.html" onclick="toggleMobileMenu()" class="hover:text-[#C5A880]">Saint Lucia | Passport</a>
+                            <a href="../programs/citizenshipbyinvestment/greneda/index.html" onclick="toggleMobileMenu()" class="hover:text-[#C5A880]">Grenada | Passport</a>
+                            <a href="../programs/citizenshipbyinvestment/vanuatu/index.html" onclick="toggleMobileMenu()" class="hover:text-[#C5A880]">Vanuatu | Passport</a>
+                            <a href="../programs/citizenshipbyinvestment/sãotoméandpríncipe/index.html" onclick="toggleMobileMenu()" class="hover:text-[#C5A880]">São Tomé and Príncipe | Passport</a>
+                            <a href="../programs/citizenshipbyinvestment/nauru/index.html" onclick="toggleMobileMenu()" class="hover:text-[#C5A880]">Republic of Nauru | Passport</a>
+                        </div>
+                    </div>
+
+                    <!-- Global Residency Accordion -->
+                    <div class="border-b border-neutral-200">
+                        <button onclick="toggleMobileSubMenu('mob-rbi')" class="w-full py-4 flex items-center justify-between text-[#C5A880] focus:outline-none">
+                            <span>Global Residency</span>
+                            <i id="mob-arrow-rbi" class="fa-solid fa-chevron-down text-[10px] transition-transform duration-300"></i>
+                        </button>
+                        <div id="mob-rbi" class="hidden flex-col space-y-3 pb-4 pl-3 text-[11px] tracking-wider text-neutral-600 font-medium">
+                            <a href="../residencybyinvestment/index.html" onclick="toggleMobileMenu()" class="font-bold uppercase text-neutral-900 hover:text-[#C5A880] py-1">All Residency Programs</a>
+                            <a href="../programs/residencybyinvestment/portugal/index.html" onclick="toggleMobileMenu()" class="hover:text-[#C5A880]">Portugal | Golden Visa</a>
+                            <a href="../programs/residencybyinvestment/greece/index.html" onclick="toggleMobileMenu()" class="hover:text-[#C5A880]">Greece | Golden Visa</a>
+                            <a href="../programs/residencybyinvestment/panama/index.html" onclick="toggleMobileMenu()" class="hover:text-[#C5A880]">Panama | Golden Visa</a>
+                            <a href="../programs/residencybyinvestment/uae/index.html" onclick="toggleMobileMenu()" class="hover:text-[#C5A880]">United Arab Emirates | Golden Visa</a>
+                        </div>
+                    </div>
+
+                    <!-- Other Services Group -->
+                    <div class="pt-3 border-b border-neutral-200 pb-4 space-y-3">
+                        <span class="block text-[10px] font-bold text-[#C5A880] uppercase tracking-widest mb-1">Other Services</span>
+                        <a href="../realestate/index.html" onclick="toggleMobileMenu()" class="block text-neutral-800 hover:text-[#C5A880] pl-3">Real Estate Advisory</a>
+                        <a href="../educationaladvisory/index.html" onclick="toggleMobileMenu()" class="block text-neutral-800 hover:text-[#C5A880] pl-3">Educational Advisory</a>
+                    </div>
+
+                    <!-- Sharif Group / Company Links -->
+                    <div class="pt-3 space-y-3 pb-4">
+                        <span class="block text-[10px] font-bold text-[#C5A880] uppercase tracking-widest mb-1">Sharif Group</span>
+                        <a href="index.html" onclick="toggleMobileMenu()" class="block text-neutral-800 hover:text-[#C5A880] pl-3">About Sharif Group</a>
+                        <a href="../aboutfounder/index.html" onclick="toggleMobileMenu()" class="block text-neutral-800 hover:text-[#C5A880] pl-3">About Founder | Ali Sharif</a>
+                        <a href="../socialresponsibility/index.html" onclick="toggleMobileMenu()" class="block text-neutral-800 hover:text-[#C5A880] pl-3">Social Responsibility</a>
+                        <a href="../blog/index.html" onclick="toggleMobileMenu()" class="block text-neutral-800 hover:text-[#C5A880] pl-3">Insights & Blog</a>
+                        <a href="../contact/index.html" onclick="toggleMobileMenu()" class="block text-neutral-800 hover:text-[#C5A880] pl-3">Contact Us</a>
+                    </div>
                 </nav>
-                <div class="flex flex-col gap-3 pt-2">
-                    <a href="../eligibilitychecker/index.html" class="w-full text-center py-3.5 rounded-full border border-[#786142] text-[#786142] text-[11px] font-bold uppercase tracking-widest bg-white shadow-sm">
-                        Eligibility Checker
-                    </a>
-                    <a href="../contact/index.html" onclick="toggleMobileMenu()" class="w-full text-center py-3.5 rounded-full bg-luxury-dark text-white text-[11px] font-bold uppercase tracking-widest shadow-md">
+
+                <!-- Bottom Consultation Pill -->
+                <div class="pt-2">
+                    <a href="../contact/index.html" onclick="toggleMobileMenu()" class="w-full block text-center py-4 rounded-full bg-luxury-dark text-white text-[11px] font-bold uppercase tracking-widest shadow-md">
                         Book Consultation
                     </a>
                 </div>
             </div>
+
             <div class="py-4 border-t border-neutral-200 text-center text-xs text-neutral-600 font-semibold bg-white">
                 <p>+971 4 357 8737 &bull; contact@sharifgroup.ae</p>
             </div>
         </div>
 
         <!-- MEGA MENU CITIZENSHIP -->
-        <div id="citizenship-menu" class="mega-dropdown absolute left-0 w-full bg-white border-b border-neutral-200 shadow-2xl opacity-0 translate-y-[-10px] pointer-events-none transition-all duration-300 z-40">
+        <div id="citizenship-menu" class="mega-dropdown absolute left-0 w-full bg-white border-b border-neutral-200 shadow-2xl opacity-0 -translate-y-2.5 pointer-events-none transition-all duration-300 z-40">
             <div class="max-w-7xl mx-auto px-8 py-10 grid grid-cols-12 gap-4">
                 <div class="col-span-3 flex flex-col items-center justify-center text-center pr-4 border-r border-neutral-200">
                     <h3 class="font-serif text-3xl text-neutral-900 font-bold leading-tight mb-4">Citizenship<br>By<br>Investment</h3>
@@ -507,7 +536,7 @@
         </div>
 
         <!-- MEGA MENU RESIDENCY -->
-        <div id="residency-menu" class="mega-dropdown absolute left-0 w-full bg-white border-b border-neutral-200 shadow-2xl opacity-0 translate-y-[-10px] pointer-events-none transition-all duration-300 z-40">
+        <div id="residency-menu" class="mega-dropdown absolute left-0 w-full bg-white border-b border-neutral-200 shadow-2xl opacity-0 -translate-y-2.5 pointer-events-none transition-all duration-300 z-40">
             <div class="max-w-7xl mx-auto px-8 py-10 grid grid-cols-12 gap-4">
                 <div class="col-span-3 flex flex-col items-center justify-center text-center pr-4 border-r border-neutral-200">
                     <h3 class="font-serif text-3xl text-neutral-900 font-bold leading-tight mb-4">Residency<br>By<br>Investment</h3>
@@ -551,7 +580,7 @@
         </div>
 
         <!-- MEGA MENU MORE SERVICES -->
-        <div id="services-menu" class="mega-dropdown absolute left-0 w-full bg-white border-b border-neutral-200 shadow-2xl opacity-0 translate-y-[-10px] pointer-events-none transition-all duration-300 z-40">
+        <div id="services-menu" class="mega-dropdown absolute left-0 w-full bg-white border-b border-neutral-200 shadow-2xl opacity-0 -translate-y-2.5 pointer-events-none transition-all duration-300 z-40">
             <div class="max-w-7xl mx-auto px-8 py-10 grid grid-cols-12 gap-4">
                 <div class="col-span-3 flex flex-col items-center justify-center text-center pr-4 border-r border-neutral-200">
                     <h3 class="font-serif text-3xl text-neutral-900 font-bold leading-tight mb-4">Other<br>Services</h3>
@@ -572,8 +601,8 @@
             </div>
         </div>
 
-        <!-- MEGA MENU ABOUT (WITH SOCIAL RESPONSIBILITY CONTAINER INCLUDED) -->
-        <div id="about-menu" class="mega-dropdown absolute left-0 w-full bg-white border-b border-neutral-200 shadow-2xl opacity-0 translate-y-[-10px] pointer-events-none transition-all duration-300 z-40">
+        <!-- MEGA MENU ABOUT -->
+        <div id="about-menu" class="mega-dropdown absolute left-0 w-full bg-white border-b border-neutral-200 shadow-2xl opacity-0 -translate-y-2.5 pointer-events-none transition-all duration-300 z-40">
             <div class="max-w-7xl mx-auto px-8 py-10 grid grid-cols-12 gap-4">
                 <div class="col-span-3 flex flex-col items-center justify-center text-center pr-4 border-r border-neutral-200">
                     <h3 class="font-serif text-3xl text-neutral-900 font-bold leading-tight mb-4">Corporate<br>Identity</h3>
@@ -992,15 +1021,13 @@
                         <div class="marquee-track flex items-center gap-6">
                             
                             <!-- ================= SET 1 ================= -->
-                            <!-- Citizenship Title Divider Badge -->
                             <div class="shrink-0 w-64 h-32 rounded-2xl bg-[#091222] border border-luxury-gold/50 shadow-xl p-5 flex flex-col justify-center items-center text-center program-card-neon">
                                 <span class="text-[9px] font-bold uppercase tracking-widest text-luxury-gold mb-1">Global Portfolios</span>
                                 <h4 class="font-serif text-lg font-bold text-white leading-tight">Citizenship By Investment</h4>
                                 <div class="w-8 h-[2px] bg-luxury-gold mt-2"></div>
                             </div>
 
-                            <!-- 8 Citizenship Program Cards -->
-                            <a href="programs/dominica.html" class="shrink-0 w-52 h-32 rounded-2xl border border-neutral-300 shadow-md relative group program-card-neon bg-neutral-900 block">
+                            <a href="../programs/citizenshipbyinvestment/dominica/index.html" class="shrink-0 w-52 h-32 rounded-2xl border border-neutral-300 shadow-md relative group program-card-neon bg-neutral-900 block">
                                 <div class="program-img-wrapper">
                                     <img src="https://www.commonwealthlawyers.com/wp-content/uploads/2023/11/Dominica-Americas-Hub.png" alt="Dominica" class="w-full h-full object-cover transition-transform duration-500 group-hover:scale-110">
                                     <div class="absolute inset-0 bg-gradient-to-t from-black/90 via-black/35 to-transparent flex items-end p-3.5">
@@ -1009,7 +1036,7 @@
                                 </div>
                             </a>
 
-                            <a href="programs/st-kitts.html" class="shrink-0 w-52 h-32 rounded-2xl border border-neutral-300 shadow-md relative group program-card-neon bg-neutral-900 block">
+                            <a href="../programs/citizenshipbyinvestment/stkittis/index.html" class="shrink-0 w-52 h-32 rounded-2xl border border-neutral-300 shadow-md relative group program-card-neon bg-neutral-900 block">
                                 <div class="program-img-wrapper">
                                     <img src="https://knightsbridge.ae/wp-content/uploads/2025/08/St-Kitts-and-Nevis-Passport.png" alt="St. Kitts" class="w-full h-full object-cover transition-transform duration-500 group-hover:scale-110">
                                     <div class="absolute inset-0 bg-gradient-to-t from-black/90 via-black/35 to-transparent flex items-end p-3.5">
@@ -1018,7 +1045,7 @@
                                 </div>
                             </a>
 
-                            <a href="programs/antigua.html" class="shrink-0 w-52 h-32 rounded-2xl border border-neutral-300 shadow-md relative group program-card-neon bg-neutral-900 block">
+                            <a href="../programs/citizenshipbyinvestment/antiguaandbarbuda/index.html" class="shrink-0 w-52 h-32 rounded-2xl border border-neutral-300 shadow-md relative group program-card-neon bg-neutral-900 block">
                                 <div class="program-img-wrapper">
                                     <img src="https://iworld.com/wp-content/uploads/2022/12/passport-investment-antigua-barbuda-900x467.jpg" alt="Antigua" class="w-full h-full object-cover transition-transform duration-500 group-hover:scale-110">
                                     <div class="absolute inset-0 bg-gradient-to-t from-black/90 via-black/35 to-transparent flex items-end p-3.5">
@@ -1027,7 +1054,7 @@
                                 </div>
                             </a>
 
-                            <a href="programs/saint-lucia.html" class="shrink-0 w-52 h-32 rounded-2xl border border-neutral-300 shadow-md relative group program-card-neon bg-neutral-900 block">
+                            <a href="../programs/citizenshipbyinvestment/stlucia/index.html" class="shrink-0 w-52 h-32 rounded-2xl border border-neutral-300 shadow-md relative group program-card-neon bg-neutral-900 block">
                                 <div class="program-img-wrapper">
                                     <img src="https://reachimmigration.com/wp-content/uploads/2021/09/610fd15b02a12.png" alt="Saint Lucia" class="w-full h-full object-cover transition-transform duration-500 group-hover:scale-110">
                                     <div class="absolute inset-0 bg-gradient-to-t from-black/90 via-black/35 to-transparent flex items-end p-3.5">
@@ -1036,7 +1063,7 @@
                                 </div>
                             </a>
 
-                            <a href="programs/grenada.html" class="shrink-0 w-52 h-32 rounded-2xl border border-neutral-300 shadow-md relative group program-card-neon bg-neutral-900 block">
+                            <a href="../programs/citizenshipbyinvestment/greneda/index.html" class="shrink-0 w-52 h-32 rounded-2xl border border-neutral-300 shadow-md relative group program-card-neon bg-neutral-900 block">
                                 <div class="program-img-wrapper">
                                     <img src="https://iworld.com/wp-content/uploads/2022/12/citizenship-passport-investment-grenada-900x467.jpg" alt="Grenada" class="w-full h-full object-cover transition-transform duration-500 group-hover:scale-110">
                                     <div class="absolute inset-0 bg-gradient-to-t from-black/90 via-black/35 to-transparent flex items-end p-3.5">
@@ -1045,7 +1072,7 @@
                                 </div>
                             </a>
 
-                            <a href="programs/vanuatu.html" class="shrink-0 w-52 h-32 rounded-2xl border border-neutral-300 shadow-md relative group program-card-neon bg-neutral-900 block">
+                            <a href="../programs/citizenshipbyinvestment/vanuatu/index.html" class="shrink-0 w-52 h-32 rounded-2xl border border-neutral-300 shadow-md relative group program-card-neon bg-neutral-900 block">
                                 <div class="program-img-wrapper">
                                     <img src="https://fca.vu/wp-content/uploads/2020/01/how-to-get-vanuatu-citizenship-en-449126643.jpeg" alt="Vanuatu" class="w-full h-full object-cover transition-transform duration-500 group-hover:scale-110">
                                     <div class="absolute inset-0 bg-gradient-to-t from-black/90 via-black/35 to-transparent flex items-end p-3.5">
@@ -1054,7 +1081,7 @@
                                 </div>
                             </a>
 
-                            <a href="#" class="shrink-0 w-52 h-32 rounded-2xl border border-neutral-300 shadow-md relative group program-card-neon bg-neutral-900 block">
+                            <a href="../programs/citizenshipbyinvestment/sãotoméandpríncipe/index.html" class="shrink-0 w-52 h-32 rounded-2xl border border-neutral-300 shadow-md relative group program-card-neon bg-neutral-900 block">
                                 <div class="program-img-wrapper">
                                     <img src="https://b3052398.smushcdn.com/3052398/wp-content/uploads/Sao_Tome_passport.png?lossy=2&strip=1&webp=1" alt="São Tomé" class="w-full h-full object-cover transition-transform duration-500 group-hover:scale-110">
                                     <div class="absolute inset-0 bg-gradient-to-t from-black/90 via-black/35 to-transparent flex items-end p-3.5">
@@ -1063,7 +1090,7 @@
                                 </div>
                             </a>
 
-                            <a href="#" class="shrink-0 w-52 h-32 rounded-2xl border border-neutral-300 shadow-md relative group program-card-neon bg-neutral-900 block">
+                            <a href="../programs/citizenshipbyinvestment/nauru/index.html" class="shrink-0 w-52 h-32 rounded-2xl border border-neutral-300 shadow-md relative group program-card-neon bg-neutral-900 block">
                                 <div class="program-img-wrapper">
                                     <img src="https://reloc8.online/wp-content/uploads/2024/12/reloc8-online-nauru-passport-citizenship-climate.jpg" alt="Nauru" class="w-full h-full object-cover transition-transform duration-500 group-hover:scale-110">
                                     <div class="absolute inset-0 bg-gradient-to-t from-black/90 via-black/35 to-transparent flex items-end p-3.5">
@@ -1072,15 +1099,13 @@
                                 </div>
                             </a>
 
-                            <!-- Residency Title Divider Badge -->
                             <div class="shrink-0 w-64 h-32 rounded-2xl bg-[#091222] border border-luxury-gold/50 shadow-xl p-5 flex flex-col justify-center items-center text-center program-card-neon">
                                 <span class="text-[9px] font-bold uppercase tracking-widest text-luxury-gold mb-1">European & Global</span>
                                 <h4 class="font-serif text-lg font-bold text-white leading-tight">Residency By Investment</h4>
                                 <div class="w-8 h-[2px] bg-luxury-gold mt-2"></div>
                             </div>
 
-                            <!-- 4 Residency Program Cards -->
-                            <a href="#" class="shrink-0 w-52 h-32 rounded-2xl border border-neutral-300 shadow-md relative group program-card-neon bg-neutral-900 block">
+                            <a href="../programs/residencybyinvestment/portugal/index.html" class="shrink-0 w-52 h-32 rounded-2xl border border-neutral-300 shadow-md relative group program-card-neon bg-neutral-900 block">
                                 <div class="program-img-wrapper">
                                     <img src="https://www.bilimoriaassociate.com/images/portugal-golden-vsa.png" alt="Portugal Golden Visa" class="w-full h-full object-cover transition-transform duration-500 group-hover:scale-110">
                                     <div class="absolute inset-0 bg-gradient-to-t from-black/90 via-black/35 to-transparent flex items-end p-3.5">
@@ -1089,7 +1114,7 @@
                                 </div>
                             </a>
 
-                            <a href="#" class="shrink-0 w-52 h-32 rounded-2xl border border-neutral-300 shadow-md relative group program-card-neon bg-neutral-900 block">
+                            <a href="../programs/residencybyinvestment/greece/index.html" class="shrink-0 w-52 h-32 rounded-2xl border border-neutral-300 shadow-md relative group program-card-neon bg-neutral-900 block">
                                 <div class="program-img-wrapper">
                                     <img src="https://theluxuryplaybook.com/wp-content/uploads/2024/07/golden-visa-greece-threshold.jpg" alt="Greece Golden Visa" class="w-full h-full object-cover transition-transform duration-500 group-hover:scale-110">
                                     <div class="absolute inset-0 bg-gradient-to-t from-black/90 via-black/35 to-transparent flex items-end p-3.5">
@@ -1098,7 +1123,7 @@
                                 </div>
                             </a>
 
-                            <a href="#" class="shrink-0 w-52 h-32 rounded-2xl border border-neutral-300 shadow-md relative group program-card-neon bg-neutral-900 block">
+                            <a href="../programs/residencybyinvestment/panama/index.html" class="shrink-0 w-52 h-32 rounded-2xl border border-neutral-300 shadow-md relative group program-card-neon bg-neutral-900 block">
                                 <div class="program-img-wrapper">
                                     <img src="https://offshore-freedom.com/wp-content/uploads/2024/05/panama-golden-visa-program-citizenship-flag.webp" alt="Panama Golden Visa" class="w-full h-full object-cover transition-transform duration-500 group-hover:scale-110">
                                     <div class="absolute inset-0 bg-gradient-to-t from-black/90 via-black/35 to-transparent flex items-end p-3.5">
@@ -1107,7 +1132,7 @@
                                 </div>
                             </a>
 
-                            <a href="#" class="shrink-0 w-52 h-32 rounded-2xl border border-neutral-300 shadow-md relative group program-card-neon bg-neutral-900 block">
+                            <a href="../programs/residencybyinvestment/uae/index.html" class="shrink-0 w-52 h-32 rounded-2xl border border-neutral-300 shadow-md relative group program-card-neon bg-neutral-900 block">
                                 <div class="program-img-wrapper">
                                     <img src="https://lawbridgecorporate.com/wp-content/uploads/2023/10/uae-residence-visa.jpg" alt="UAE Golden Visa" class="w-full h-full object-cover transition-transform duration-500 group-hover:scale-110">
                                     <div class="absolute inset-0 bg-gradient-to-t from-black/90 via-black/35 to-transparent flex items-end p-3.5">
@@ -1123,7 +1148,7 @@
                                 <div class="w-8 h-[2px] bg-luxury-gold mt-2"></div>
                             </div>
 
-                            <a href="programs/dominica.html" class="shrink-0 w-52 h-32 rounded-2xl border border-neutral-300 shadow-md relative group program-card-neon bg-neutral-900 block" aria-hidden="true">
+                            <a href="../programs/citizenshipbyinvestment/dominica/index.html" class="shrink-0 w-52 h-32 rounded-2xl border border-neutral-300 shadow-md relative group program-card-neon bg-neutral-900 block" aria-hidden="true">
                                 <div class="program-img-wrapper">
                                     <img src="https://www.commonwealthlawyers.com/wp-content/uploads/2023/11/Dominica-Americas-Hub.png" alt="Dominica" class="w-full h-full object-cover transition-transform duration-500 group-hover:scale-110">
                                     <div class="absolute inset-0 bg-gradient-to-t from-black/90 via-black/35 to-transparent flex items-end p-3.5">
@@ -1132,7 +1157,7 @@
                                 </div>
                             </a>
 
-                            <a href="programs/st-kitts.html" class="shrink-0 w-52 h-32 rounded-2xl border border-neutral-300 shadow-md relative group program-card-neon bg-neutral-900 block" aria-hidden="true">
+                            <a href="../programs/citizenshipbyinvestment/stkittis/index.html" class="shrink-0 w-52 h-32 rounded-2xl border border-neutral-300 shadow-md relative group program-card-neon bg-neutral-900 block" aria-hidden="true">
                                 <div class="program-img-wrapper">
                                     <img src="https://knightsbridge.ae/wp-content/uploads/2025/08/St-Kitts-and-Nevis-Passport.png" alt="St. Kitts" class="w-full h-full object-cover transition-transform duration-500 group-hover:scale-110">
                                     <div class="absolute inset-0 bg-gradient-to-t from-black/90 via-black/35 to-transparent flex items-end p-3.5">
@@ -1141,7 +1166,7 @@
                                 </div>
                             </a>
 
-                            <a href="programs/antigua.html" class="shrink-0 w-52 h-32 rounded-2xl border border-neutral-300 shadow-md relative group program-card-neon bg-neutral-900 block" aria-hidden="true">
+                            <a href="../programs/citizenshipbyinvestment/antiguaandbarbuda/index.html" class="shrink-0 w-52 h-32 rounded-2xl border border-neutral-300 shadow-md relative group program-card-neon bg-neutral-900 block" aria-hidden="true">
                                 <div class="program-img-wrapper">
                                     <img src="https://iworld.com/wp-content/uploads/2022/12/passport-investment-antigua-barbuda-900x467.jpg" alt="Antigua" class="w-full h-full object-cover transition-transform duration-500 group-hover:scale-110">
                                     <div class="absolute inset-0 bg-gradient-to-t from-black/90 via-black/35 to-transparent flex items-end p-3.5">
@@ -1150,7 +1175,7 @@
                                 </div>
                             </a>
 
-                            <a href="programs/saint-lucia.html" class="shrink-0 w-52 h-32 rounded-2xl border border-neutral-300 shadow-md relative group program-card-neon bg-neutral-900 block" aria-hidden="true">
+                            <a href="../programs/citizenshipbyinvestment/stlucia/index.html" class="shrink-0 w-52 h-32 rounded-2xl border border-neutral-300 shadow-md relative group program-card-neon bg-neutral-900 block" aria-hidden="true">
                                 <div class="program-img-wrapper">
                                     <img src="https://reachimmigration.com/wp-content/uploads/2021/09/610fd15b02a12.png" alt="Saint Lucia" class="w-full h-full object-cover transition-transform duration-500 group-hover:scale-110">
                                     <div class="absolute inset-0 bg-gradient-to-t from-black/90 via-black/35 to-transparent flex items-end p-3.5">
@@ -1159,7 +1184,7 @@
                                 </div>
                             </a>
 
-                            <a href="programs/grenada.html" class="shrink-0 w-52 h-32 rounded-2xl border border-neutral-300 shadow-md relative group program-card-neon bg-neutral-900 block" aria-hidden="true">
+                            <a href="../programs/citizenshipbyinvestment/greneda/index.html" class="shrink-0 w-52 h-32 rounded-2xl border border-neutral-300 shadow-md relative group program-card-neon bg-neutral-900 block" aria-hidden="true">
                                 <div class="program-img-wrapper">
                                     <img src="https://iworld.com/wp-content/uploads/2022/12/citizenship-passport-investment-grenada-900x467.jpg" alt="Grenada" class="w-full h-full object-cover transition-transform duration-500 group-hover:scale-110">
                                     <div class="absolute inset-0 bg-gradient-to-t from-black/90 via-black/35 to-transparent flex items-end p-3.5">
@@ -1168,7 +1193,7 @@
                                 </div>
                             </a>
 
-                            <a href="programs/vanuatu.html" class="shrink-0 w-52 h-32 rounded-2xl border border-neutral-300 shadow-md relative group program-card-neon bg-neutral-900 block" aria-hidden="true">
+                            <a href="../programs/citizenshipbyinvestment/vanuatu/index.html" class="shrink-0 w-52 h-32 rounded-2xl border border-neutral-300 shadow-md relative group program-card-neon bg-neutral-900 block" aria-hidden="true">
                                 <div class="program-img-wrapper">
                                     <img src="https://fca.vu/wp-content/uploads/2020/01/how-to-get-vanuatu-citizenship-en-449126643.jpeg" alt="Vanuatu" class="w-full h-full object-cover transition-transform duration-500 group-hover:scale-110">
                                     <div class="absolute inset-0 bg-gradient-to-t from-black/90 via-black/35 to-transparent flex items-end p-3.5">
@@ -1177,7 +1202,7 @@
                                 </div>
                             </a>
 
-                            <a href="#" class="shrink-0 w-52 h-32 rounded-2xl border border-neutral-300 shadow-md relative group program-card-neon bg-neutral-900 block" aria-hidden="true">
+                            <a href="../programs/citizenshipbyinvestment/sãotoméandpríncipe/index.html" class="shrink-0 w-52 h-32 rounded-2xl border border-neutral-300 shadow-md relative group program-card-neon bg-neutral-900 block" aria-hidden="true">
                                 <div class="program-img-wrapper">
                                     <img src="https://b3052398.smushcdn.com/3052398/wp-content/uploads/Sao_Tome_passport.png?lossy=2&strip=1&webp=1" alt="São Tomé" class="w-full h-full object-cover transition-transform duration-500 group-hover:scale-110">
                                     <div class="absolute inset-0 bg-gradient-to-t from-black/90 via-black/35 to-transparent flex items-end p-3.5">
@@ -1186,7 +1211,7 @@
                                 </div>
                             </a>
 
-                            <a href="#" class="shrink-0 w-52 h-32 rounded-2xl border border-neutral-300 shadow-md relative group program-card-neon bg-neutral-900 block" aria-hidden="true">
+                            <a href="../programs/citizenshipbyinvestment/nauru/index.html" class="shrink-0 w-52 h-32 rounded-2xl border border-neutral-300 shadow-md relative group program-card-neon bg-neutral-900 block" aria-hidden="true">
                                 <div class="program-img-wrapper">
                                     <img src="https://reloc8.online/wp-content/uploads/2024/12/reloc8-online-nauru-passport-citizenship-climate.jpg" alt="Nauru" class="w-full h-full object-cover transition-transform duration-500 group-hover:scale-110">
                                     <div class="absolute inset-0 bg-gradient-to-t from-black/90 via-black/35 to-transparent flex items-end p-3.5">
@@ -1201,7 +1226,7 @@
                                 <div class="w-8 h-[2px] bg-luxury-gold mt-2"></div>
                             </div>
 
-                            <a href="#" class="shrink-0 w-52 h-32 rounded-2xl border border-neutral-300 shadow-md relative group program-card-neon bg-neutral-900 block" aria-hidden="true">
+                            <a href="../programs/residencybyinvestment/portugal/index.html" class="shrink-0 w-52 h-32 rounded-2xl border border-neutral-300 shadow-md relative group program-card-neon bg-neutral-900 block" aria-hidden="true">
                                 <div class="program-img-wrapper">
                                     <img src="https://www.bilimoriaassociate.com/images/portugal-golden-vsa.png" alt="Portugal Golden Visa" class="w-full h-full object-cover transition-transform duration-500 group-hover:scale-110">
                                     <div class="absolute inset-0 bg-gradient-to-t from-black/90 via-black/35 to-transparent flex items-end p-3.5">
@@ -1210,7 +1235,7 @@
                                 </div>
                             </a>
 
-                            <a href="#" class="shrink-0 w-52 h-32 rounded-2xl border border-neutral-300 shadow-md relative group program-card-neon bg-neutral-900 block" aria-hidden="true">
+                            <a href="../programs/residencybyinvestment/greece/index.html" class="shrink-0 w-52 h-32 rounded-2xl border border-neutral-300 shadow-md relative group program-card-neon bg-neutral-900 block" aria-hidden="true">
                                 <div class="program-img-wrapper">
                                     <img src="https://theluxuryplaybook.com/wp-content/uploads/2024/07/golden-visa-greece-threshold.jpg" alt="Greece Golden Visa" class="w-full h-full object-cover transition-transform duration-500 group-hover:scale-110">
                                     <div class="absolute inset-0 bg-gradient-to-t from-black/90 via-black/35 to-transparent flex items-end p-3.5">
@@ -1219,7 +1244,7 @@
                                 </div>
                             </a>
 
-                            <a href="#" class="shrink-0 w-52 h-32 rounded-2xl border border-neutral-300 shadow-md relative group program-card-neon bg-neutral-900 block" aria-hidden="true">
+                            <a href="../programs/residencybyinvestment/panama/index.html" class="shrink-0 w-52 h-32 rounded-2xl border border-neutral-300 shadow-md relative group program-card-neon bg-neutral-900 block" aria-hidden="true">
                                 <div class="program-img-wrapper">
                                     <img src="https://offshore-freedom.com/wp-content/uploads/2024/05/panama-golden-visa-program-citizenship-flag.webp" alt="Panama Golden Visa" class="w-full h-full object-cover transition-transform duration-500 group-hover:scale-110">
                                     <div class="absolute inset-0 bg-gradient-to-t from-black/90 via-black/35 to-transparent flex items-end p-3.5">
@@ -1228,132 +1253,7 @@
                                 </div>
                             </a>
 
-                            <a href="#" class="shrink-0 w-52 h-32 rounded-2xl border border-neutral-300 shadow-md relative group program-card-neon bg-neutral-900 block" aria-hidden="true">
-                                <div class="program-img-wrapper">
-                                    <img src="https://lawbridgecorporate.com/wp-content/uploads/2023/10/uae-residence-visa.jpg" alt="UAE Golden Visa" class="w-full h-full object-cover transition-transform duration-500 group-hover:scale-110">
-                                    <div class="absolute inset-0 bg-gradient-to-t from-black/90 via-black/35 to-transparent flex items-end p-3.5">
-                                        <span class="text-[11px] font-bold tracking-wider text-white uppercase">UAE | Golden Visa</span>
-                                    </div>
-                                </div>
-                            </a>
-
-			<!-- ================= SET 3 ================= -->
-                            <!-- Citizenship Title Divider Badge -->
-                            <div class="shrink-0 w-64 h-32 rounded-2xl bg-[#091222] border border-luxury-gold/50 shadow-xl p-5 flex flex-col justify-center items-center text-center program-card-neon">
-                                <span class="text-[9px] font-bold uppercase tracking-widest text-luxury-gold mb-1">Global Portfolios</span>
-                                <h4 class="font-serif text-lg font-bold text-white leading-tight">Citizenship By Investment</h4>
-                                <div class="w-8 h-[2px] bg-luxury-gold mt-2"></div>
-                            </div>
-
-                            <!-- 8 Citizenship Program Cards -->
-                            <a href="programs/dominica.html" class="shrink-0 w-52 h-32 rounded-2xl border border-neutral-300 shadow-md relative group program-card-neon bg-neutral-900 block">
-                                <div class="program-img-wrapper">
-                                    <img src="https://www.commonwealthlawyers.com/wp-content/uploads/2023/11/Dominica-Americas-Hub.png" alt="Dominica" class="w-full h-full object-cover transition-transform duration-500 group-hover:scale-110">
-                                    <div class="absolute inset-0 bg-gradient-to-t from-black/90 via-black/35 to-transparent flex items-end p-3.5">
-                                        <span class="text-[11px] font-bold tracking-wider text-white uppercase">Dominica | Passport</span>
-                                    </div>
-                                </div>
-                            </a>
-
-                            <a href="programs/st-kitts.html" class="shrink-0 w-52 h-32 rounded-2xl border border-neutral-300 shadow-md relative group program-card-neon bg-neutral-900 block">
-                                <div class="program-img-wrapper">
-                                    <img src="https://knightsbridge.ae/wp-content/uploads/2025/08/St-Kitts-and-Nevis-Passport.png" alt="St. Kitts" class="w-full h-full object-cover transition-transform duration-500 group-hover:scale-110">
-                                    <div class="absolute inset-0 bg-gradient-to-t from-black/90 via-black/35 to-transparent flex items-end p-3.5">
-                                        <span class="text-[11px] font-bold tracking-wider text-white uppercase">St. Kitts & Nevis</span>
-                                    </div>
-                                </div>
-                            </a>
-
-                            <a href="programs/antigua.html" class="shrink-0 w-52 h-32 rounded-2xl border border-neutral-300 shadow-md relative group program-card-neon bg-neutral-900 block">
-                                <div class="program-img-wrapper">
-                                    <img src="https://iworld.com/wp-content/uploads/2022/12/passport-investment-antigua-barbuda-900x467.jpg" alt="Antigua" class="w-full h-full object-cover transition-transform duration-500 group-hover:scale-110">
-                                    <div class="absolute inset-0 bg-gradient-to-t from-black/90 via-black/35 to-transparent flex items-end p-3.5">
-                                        <span class="text-[11px] font-bold tracking-wider text-white uppercase">Antigua & Barbuda</span>
-                                    </div>
-                                </div>
-                            </a>
-
-                            <a href="programs/saint-lucia.html" class="shrink-0 w-52 h-32 rounded-2xl border border-neutral-300 shadow-md relative group program-card-neon bg-neutral-900 block">
-                                <div class="program-img-wrapper">
-                                    <img src="https://reachimmigration.com/wp-content/uploads/2021/09/610fd15b02a12.png" alt="Saint Lucia" class="w-full h-full object-cover transition-transform duration-500 group-hover:scale-110">
-                                    <div class="absolute inset-0 bg-gradient-to-t from-black/90 via-black/35 to-transparent flex items-end p-3.5">
-                                        <span class="text-[11px] font-bold tracking-wider text-white uppercase">Saint Lucia</span>
-                                    </div>
-                                </div>
-                            </a>
-
-                            <a href="programs/grenada.html" class="shrink-0 w-52 h-32 rounded-2xl border border-neutral-300 shadow-md relative group program-card-neon bg-neutral-900 block">
-                                <div class="program-img-wrapper">
-                                    <img src="https://iworld.com/wp-content/uploads/2022/12/citizenship-passport-investment-grenada-900x467.jpg" alt="Grenada" class="w-full h-full object-cover transition-transform duration-500 group-hover:scale-110">
-                                    <div class="absolute inset-0 bg-gradient-to-t from-black/90 via-black/35 to-transparent flex items-end p-3.5">
-                                        <span class="text-[11px] font-bold tracking-wider text-white uppercase">Grenada | Passport</span>
-                                    </div>
-                                </div>
-                            </a>
-
-                            <a href="programs/vanuatu.html" class="shrink-0 w-52 h-32 rounded-2xl border border-neutral-300 shadow-md relative group program-card-neon bg-neutral-900 block">
-                                <div class="program-img-wrapper">
-                                    <img src="https://fca.vu/wp-content/uploads/2020/01/how-to-get-vanuatu-citizenship-en-449126643.jpeg" alt="Vanuatu" class="w-full h-full object-cover transition-transform duration-500 group-hover:scale-110">
-                                    <div class="absolute inset-0 bg-gradient-to-t from-black/90 via-black/35 to-transparent flex items-end p-3.5">
-                                        <span class="text-[11px] font-bold tracking-wider text-white uppercase">Vanuatu | Passport</span>
-                                    </div>
-                                </div>
-                            </a>
-
-                            <a href="#" class="shrink-0 w-52 h-32 rounded-2xl border border-neutral-300 shadow-md relative group program-card-neon bg-neutral-900 block">
-                                <div class="program-img-wrapper">
-                                    <img src="https://b3052398.smushcdn.com/3052398/wp-content/uploads/Sao_Tome_passport.png?lossy=2&strip=1&webp=1" alt="São Tomé" class="w-full h-full object-cover transition-transform duration-500 group-hover:scale-110">
-                                    <div class="absolute inset-0 bg-gradient-to-t from-black/90 via-black/35 to-transparent flex items-end p-3.5">
-                                        <span class="text-[11px] font-bold tracking-wider text-white uppercase truncate">São Tomé & Príncipe</span>
-                                    </div>
-                                </div>
-                            </a>
-
-                            <a href="#" class="shrink-0 w-52 h-32 rounded-2xl border border-neutral-300 shadow-md relative group program-card-neon bg-neutral-900 block">
-                                <div class="program-img-wrapper">
-                                    <img src="https://reloc8.online/wp-content/uploads/2024/12/reloc8-online-nauru-passport-citizenship-climate.jpg" alt="Nauru" class="w-full h-full object-cover transition-transform duration-500 group-hover:scale-110">
-                                    <div class="absolute inset-0 bg-gradient-to-t from-black/90 via-black/35 to-transparent flex items-end p-3.5">
-                                        <span class="text-[11px] font-bold tracking-wider text-white uppercase">Republic of Nauru</span>
-                                    </div>
-                                </div>
-                            </a>
-
-                            <!-- Residency Title Divider Badge -->
-                            <div class="shrink-0 w-64 h-32 rounded-2xl bg-[#091222] border border-luxury-gold/50 shadow-xl p-5 flex flex-col justify-center items-center text-center program-card-neon">
-                                <span class="text-[9px] font-bold uppercase tracking-widest text-luxury-gold mb-1">European & Global</span>
-                                <h4 class="font-serif text-lg font-bold text-white leading-tight">Residency By Investment</h4>
-                                <div class="w-8 h-[2px] bg-luxury-gold mt-2"></div>
-                            </div>
-
-                            <!-- 4 Residency Program Cards -->
-                            <a href="#" class="shrink-0 w-52 h-32 rounded-2xl border border-neutral-300 shadow-md relative group program-card-neon bg-neutral-900 block">
-                                <div class="program-img-wrapper">
-                                    <img src="https://www.bilimoriaassociate.com/images/portugal-golden-vsa.png" alt="Portugal Golden Visa" class="w-full h-full object-cover transition-transform duration-500 group-hover:scale-110">
-                                    <div class="absolute inset-0 bg-gradient-to-t from-black/90 via-black/35 to-transparent flex items-end p-3.5">
-                                        <span class="text-[11px] font-bold tracking-wider text-white uppercase">Portugal | Golden Visa</span>
-                                    </div>
-                                </div>
-                            </a>
-
-                            <a href="#" class="shrink-0 w-52 h-32 rounded-2xl border border-neutral-300 shadow-md relative group program-card-neon bg-neutral-900 block">
-                                <div class="program-img-wrapper">
-                                    <img src="https://theluxuryplaybook.com/wp-content/uploads/2024/07/golden-visa-greece-threshold.jpg" alt="Greece Golden Visa" class="w-full h-full object-cover transition-transform duration-500 group-hover:scale-110">
-                                    <div class="absolute inset-0 bg-gradient-to-t from-black/90 via-black/35 to-transparent flex items-end p-3.5">
-                                        <span class="text-[11px] font-bold tracking-wider text-white uppercase">Greece | Golden Visa</span>
-                                    </div>
-                                </div>
-                            </a>
-
-                            <a href="#" class="shrink-0 w-52 h-32 rounded-2xl border border-neutral-300 shadow-md relative group program-card-neon bg-neutral-900 block">
-                                <div class="program-img-wrapper">
-                                    <img src="https://offshore-freedom.com/wp-content/uploads/2024/05/panama-golden-visa-program-citizenship-flag.webp" alt="Panama Golden Visa" class="w-full h-full object-cover transition-transform duration-500 group-hover:scale-110">
-                                    <div class="absolute inset-0 bg-gradient-to-t from-black/90 via-black/35 to-transparent flex items-end p-3.5">
-                                        <span class="text-[11px] font-bold tracking-wider text-white uppercase">Panama | Golden Visa</span>
-                                    </div>
-                                </div>
-                            </a>
-
-                            <a href="#" class="shrink-0 w-52 h-32 rounded-2xl border border-neutral-300 shadow-md relative group program-card-neon bg-neutral-900 block">
+                            <a href="../programs/residencybyinvestment/uae/index.html" class="shrink-0 w-52 h-32 rounded-2xl border border-neutral-300 shadow-md relative group program-card-neon bg-neutral-900 block" aria-hidden="true">
                                 <div class="program-img-wrapper">
                                     <img src="https://lawbridgecorporate.com/wp-content/uploads/2023/10/uae-residence-visa.jpg" alt="UAE Golden Visa" class="w-full h-full object-cover transition-transform duration-500 group-hover:scale-110">
                                     <div class="absolute inset-0 bg-gradient-to-t from-black/90 via-black/35 to-transparent flex items-end p-3.5">
@@ -1971,7 +1871,7 @@
             isMobileMenuOpen = !isMobileMenuOpen;
             
             if (isMobileMenuOpen) {
-                drawer.classList.remove('opacity-0', 'pointer-events-none', 'translate-y-[-100%]');
+                drawer.classList.remove('opacity-0', 'pointer-events-none', '-translate-y-2.5');
                 drawer.classList.add('opacity-100', 'pointer-events-auto', 'translate-y-0');
                 if (bar1 && bar2 && bar3) {
                     bar1.style.transform = 'translateY(6.5px) rotate(45deg)';
@@ -1981,13 +1881,31 @@
                 document.body.style.overflow = 'hidden';
             } else {
                 drawer.classList.remove('opacity-100', 'pointer-events-auto', 'translate-y-0');
-                drawer.classList.add('opacity-0', 'pointer-events-none', 'translate-y-[-100%]');
+                drawer.classList.add('opacity-0', 'pointer-events-none', '-translate-y-2.5');
                 if (bar1 && bar2 && bar3) {
                     bar1.style.transform = 'none';
                     bar2.style.opacity = '1';
                     bar3.style.transform = 'none';
                 }
                 document.body.style.overflow = '';
+            }
+        }
+
+        // Mobile Accordion Dropdown Handler for Programs
+        function toggleMobileSubMenu(menuId) {
+            const menu = document.getElementById(menuId);
+            const arrow = document.getElementById(menuId === 'mob-cbi' ? 'mob-arrow-cbi' : 'mob-arrow-rbi');
+            
+            if (menu) {
+                if (menu.classList.contains('hidden')) {
+                    menu.classList.remove('hidden');
+                    menu.classList.add('flex');
+                    if (arrow) arrow.style.transform = 'rotate(180deg)';
+                } else {
+                    menu.classList.remove('flex');
+                    menu.classList.add('hidden');
+                    if (arrow) arrow.style.transform = 'rotate(0deg)';
+                }
             }
         }
 
