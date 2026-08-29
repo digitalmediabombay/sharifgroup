@@ -293,7 +293,6 @@
 <body class="bg-luxury-light text-luxury-dark font-sans overflow-x-hidden">
 
     <!-- HEADER COMPONENT -->
-    <!-- FIND EXACTLY FROM LINE 280 TO 520 IN citizenshipbyinvestment/index.html -->
     <header id="main-header" class="fixed top-0 left-0 w-full z-[100] border-b border-neutral-200 transition-all duration-500 bg-white mega-blur">
         <div class="max-w-[1440px] mx-auto px-4 sm:px-8 h-20 flex items-center justify-between relative">
             <div class="flex items-center space-x-5">
@@ -303,47 +302,47 @@
                 <span class="hidden xl:inline text-neutral-300 font-light">|</span>
                 <nav class="hidden xl:flex items-center space-x-4 text-[11px] font-bold tracking-[0.18em] uppercase text-neutral-600 whitespace-nowrap" onmouseleave="scheduleCloseMegaMenus()">
                     <div class="relative py-2" onmouseenter="openMegaMenu('citizenship-menu')">
-                        <a href="index.html" class="hover:text-luxury-gold transition duration-200 flex items-center gap-1.5">
-                            Citizenship <i class="fa-solid fa-chevron-down text-[8px] transition-transform duration-300" id="arrow-citizenship-menu"></i>
+                        <a href="index.html" class="hover:text-luxury-gold transition duration-200 flex items-center gap-1.5 text-luxury-gold">
+                            CITIZENSHIP <i class="fa-solid fa-chevron-down text-[8px] transition-transform duration-300" id="arrow-citizenship-menu"></i>
                         </a>
                     </div>
                     <span class="text-neutral-300 font-light">|</span>
                     <div class="relative py-2" onmouseenter="openMegaMenu('residency-menu')">
                         <a href="../residencybyinvestment/index.html" class="hover:text-luxury-gold transition duration-200 flex items-center gap-1.5">
-                            Residency <i class="fa-solid fa-chevron-down text-[8px] transition-transform duration-300" id="arrow-residency-menu"></i>
+                            RESIDENCY <i class="fa-solid fa-chevron-down text-[8px] transition-transform duration-300" id="arrow-residency-menu"></i>
                         </a>
                     </div>
                     <span class="text-neutral-300 font-light">|</span>
                     <div class="relative py-2" onmouseenter="openMegaMenu('services-menu')">
                         <a href="../realestate/index.html" class="hover:text-luxury-gold transition duration-200 flex items-center gap-1.5">
-                            More Services <i class="fa-solid fa-chevron-down text-[8px] transition-transform duration-300" id="arrow-services-menu"></i>
+                            MORE SERVICES <i class="fa-solid fa-chevron-down text-[8px] transition-transform duration-300" id="arrow-services-menu"></i>
                         </a>
                     </div>
                     <span class="text-neutral-300 font-light">|</span>
                     <div class="relative py-2" onmouseenter="openMegaMenu('about-menu')">
                         <a href="../aboutus/index.html" class="hover:text-luxury-gold transition duration-200 flex items-center gap-1.5">
-                            About Us <i class="fa-solid fa-chevron-down text-[8px] transition-transform duration-300" id="arrow-about-menu"></i>
+                            ABOUT US <i class="fa-solid fa-chevron-down text-[8px] transition-transform duration-300" id="arrow-about-menu"></i>
                         </a>
                     </div>
                     <span class="text-neutral-300 font-light">|</span>
-                    <a href="../contact/index.html" onmouseenter="closeAllMegaMenus()" class="hover:text-luxury-gold transition duration-200 py-2">Contact Us</a>
+                    <a href="../contact/index.html" onmouseenter="closeAllMegaMenus()" class="hover:text-luxury-gold transition duration-200 py-2">CONTACT US</a>
                     <span class="text-neutral-300 font-light">|</span>
-                    <a href="../blog/index.html" onmouseenter="closeAllMegaMenus()" class="hover:text-luxury-gold transition duration-200 py-2">Blog</a>
+                    <a href="../blog/index.html" onmouseenter="closeAllMegaMenus()" class="hover:text-luxury-gold transition duration-200 py-2">BLOG</a>
                 </nav>
             </div>
 
             <!-- Right Action Pill Buttons -->
             <div class="hidden lg:flex items-center space-x-3 shrink-0">
                 <a href="../eligibilitychecker/index.html" class="px-5 py-2.5 rounded-full border border-[#786142] text-[#786142] text-[11px] font-bold uppercase tracking-[0.18em] hover:bg-[#786142] hover:text-white transition-all duration-300 whitespace-nowrap">
-                    Eligibility Checker
+                    ELIGIBILITY CHECKER
                 </a>
                 <a href="../contact/index.html" class="px-5 py-2.5 rounded-full border border-neutral-900 text-neutral-900 text-[11px] font-bold uppercase tracking-[0.18em] hover:bg-luxury-gold hover:border-luxury-gold hover:text-white transition-all duration-300 whitespace-nowrap">
-                    Book Consultation
+                    BOOK CONSULTATION
                 </a>
             </div>
 
             <!-- Mobile Navigation Toggle Button -->
-            <button onclick="toggleMobileMenu()" class="xl:hidden flex flex-col items-end space-y-1.5 focus:outline-none z-[110]">
+            <button onclick="toggleMobileMenu()" class="xl:hidden flex flex-col items-end space-y-1.5 focus:outline-none z-[110]" aria-label="Toggle navigation menu">
                 <span class="w-6 h-[2px] bg-luxury-dark transition-all duration-300" id="mob-bar1"></span>
                 <span class="w-4 h-[2px] bg-luxury-dark transition-all duration-300" id="mob-bar2"></span>
                 <span class="w-6 h-[2px] bg-luxury-dark transition-all duration-300" id="mob-bar3"></span>
@@ -352,43 +351,85 @@
 
         <!-- MOBILE SLIDE-OUT MENU DRAWER -->
         <div id="mobile-menu-drawer" class="fixed top-20 left-0 w-full h-[calc(100vh-80px)] bg-white z-[120] flex flex-col justify-between p-6 sm:p-8 opacity-0 pointer-events-none transition-all duration-300 translate-y-[-10px] xl:hidden overflow-y-auto shadow-2xl">
-            <div class="space-y-6 pb-6">
-                <nav class="flex flex-col space-y-2 text-xs font-bold tracking-[0.18em] uppercase text-neutral-900">
-                    <a href="index.html" onclick="toggleMobileMenu()" class="py-3.5 border-b border-neutral-200 text-neutral-900 active:text-luxury-gold hover:text-luxury-gold transition flex items-center justify-between">
-                        <span class="font-bold">Citizenship Programs</span>
+            <div class="space-y-4 pb-6">
+                <nav class="flex flex-col text-xs font-bold tracking-[0.18em] uppercase text-neutral-900">
+                    <!-- Citizenship Accordion -->
+                    <div class="border-b border-neutral-200">
+                        <div class="flex items-center justify-between py-3.5 cursor-pointer text-luxury-gold" onclick="toggleMobileSubmenu('mob-cit-sub', 'mob-cit-arr')">
+                            <a href="index.html" class="font-bold flex-1">CITIZENSHIP PROGRAMS</a>
+                            <i id="mob-cit-arr" class="fa-solid fa-chevron-down text-[10px] transition-transform duration-300"></i>
+                        </div>
+                        <div id="mob-cit-sub" class="hidden pl-4 pb-3 space-y-2.5 text-[11px] text-neutral-600 font-semibold normal-case">
+                            <a href="../programs/citizenshipbyinvestment/dominica/index.html" class="block hover:text-luxury-gold">Dominica | Passport</a>
+                            <a href="../programs/citizenshipbyinvestment/stkittis/index.html" class="block hover:text-luxury-gold">St. Kitts & Nevis | Passport</a>
+                            <a href="../programs/citizenshipbyinvestment/antiguaandbarbuda/index.html" class="block hover:text-luxury-gold">Antigua & Barbuda | Passport</a>
+                            <a href="../programs/citizenshipbyinvestment/stlucia/index.html" class="block hover:text-luxury-gold">Saint Lucia | Passport</a>
+                            <a href="../programs/citizenshipbyinvestment/greneda/index.html" class="block hover:text-luxury-gold">Grenada | Passport</a>
+                            <a href="../programs/citizenshipbyinvestment/vanuatu/index.html" class="block hover:text-luxury-gold">Vanuatu | Passport</a>
+                            <a href="../programs/citizenshipbyinvestment/sãotoméandpríncipe/index.html" class="block hover:text-luxury-gold">São Tomé and Príncipe | Passport</a>
+                            <a href="../programs/citizenshipbyinvestment/nauru/index.html" class="block hover:text-luxury-gold">Republic of Nauru | Passport</a>
+                        </div>
+                    </div>
+
+                    <!-- Residency Accordion -->
+                    <div class="border-b border-neutral-200">
+                        <div class="flex items-center justify-between py-3.5 cursor-pointer text-neutral-900" onclick="toggleMobileSubmenu('mob-res-sub', 'mob-res-arr')">
+                            <a href="../residencybyinvestment/index.html" class="font-bold flex-1 hover:text-luxury-gold">RESIDENCY PROGRAMS</a>
+                            <i id="mob-res-arr" class="fa-solid fa-chevron-down text-[10px] text-neutral-400 transition-transform duration-300"></i>
+                        </div>
+                        <div id="mob-res-sub" class="hidden pl-4 pb-3 space-y-2.5 text-[11px] text-neutral-600 font-semibold normal-case">
+                            <a href="../programs/residencybyinvestment/portugal/index.html" class="block hover:text-luxury-gold">Portugal | Golden Visa</a>
+                            <a href="../programs/residencybyinvestment/greece/index.html" class="block hover:text-luxury-gold">Greece | Golden Visa</a>
+                            <a href="../programs/residencybyinvestment/panama/index.html" class="block hover:text-luxury-gold">Panama | Golden Visa</a>
+                            <a href="../programs/residencybyinvestment/uae/index.html" class="block hover:text-luxury-gold">United Arab Emirates | Golden Visa</a>
+                        </div>
+                    </div>
+
+                    <!-- More Services Accordion -->
+                    <div class="border-b border-neutral-200">
+                        <div class="flex items-center justify-between py-3.5 cursor-pointer text-neutral-900" onclick="toggleMobileSubmenu('mob-ser-sub', 'mob-ser-arr')">
+                            <span class="font-bold flex-1 hover:text-luxury-gold">MORE SERVICES</span>
+                            <i id="mob-ser-arr" class="fa-solid fa-chevron-down text-[10px] text-neutral-400 transition-transform duration-300"></i>
+                        </div>
+                        <div id="mob-ser-sub" class="hidden pl-4 pb-3 space-y-2.5 text-[11px] text-neutral-600 font-semibold uppercase">
+                            <a href="../realestate/index.html" class="block hover:text-luxury-gold">REAL ESTATE</a>
+                            <a href="../educationaladvisory/index.html" class="block hover:text-luxury-gold">EDUCATIONAL ADVISORY</a>
+                        </div>
+                    </div>
+
+                    <!-- About Us Accordion -->
+                    <div class="border-b border-neutral-200">
+                        <div class="flex items-center justify-between py-3.5 cursor-pointer text-neutral-900" onclick="toggleMobileSubmenu('mob-abt-sub', 'mob-abt-arr')">
+                            <span class="font-bold flex-1 hover:text-luxury-gold">ABOUT US</span>
+                            <i id="mob-abt-arr" class="fa-solid fa-chevron-down text-[10px] text-neutral-400 transition-transform duration-300"></i>
+                        </div>
+                        <div id="mob-abt-sub" class="hidden pl-4 pb-3 space-y-2.5 text-[11px] text-neutral-600 font-semibold uppercase">
+                            <a href="../aboutus/index.html" class="block hover:text-luxury-gold">SHARIF GROUP</a>
+                            <a href="../aboutfounder/index.html" class="block hover:text-luxury-gold">FOUNDER | ALI SHARIF</a>
+                            <a href="../socialresponsibility/index.html" class="block hover:text-luxury-gold">SOCIAL RESPONSIBILITY</a>
+                        </div>
+                    </div>
+
+                    <a href="../socialresponsibility/index.html" class="py-3.5 border-b border-neutral-200 text-neutral-900 active:text-luxury-gold hover:text-luxury-gold transition flex items-center justify-between">
+                        <span class="font-bold">SOCIAL RESPONSIBILITY</span>
                         <i class="fa-solid fa-chevron-right text-[10px] text-neutral-400"></i>
                     </a>
-                    <a href="../residencybyinvestment/index.html" onclick="toggleMobileMenu()" class="py-3.5 border-b border-neutral-200 text-neutral-900 active:text-luxury-gold hover:text-luxury-gold transition flex items-center justify-between">
-                        <span class="font-bold">Residency Programs</span>
+                    <a href="../contact/index.html" class="py-3.5 border-b border-neutral-200 text-neutral-900 active:text-luxury-gold hover:text-luxury-gold transition flex items-center justify-between">
+                        <span class="font-bold">CONTACT US</span>
                         <i class="fa-solid fa-chevron-right text-[10px] text-neutral-400"></i>
                     </a>
-                    <a href="../realestate/index.html" onclick="toggleMobileMenu()" class="py-3.5 border-b border-neutral-200 text-neutral-900 active:text-luxury-gold hover:text-luxury-gold transition flex items-center justify-between">
-                        <span class="font-bold">More Services</span>
-                        <i class="fa-solid fa-chevron-right text-[10px] text-neutral-400"></i>
-                    </a>
-                    <a href="../aboutus/index.html" onclick="toggleMobileMenu()" class="py-3.5 border-b border-neutral-200 text-neutral-900 active:text-luxury-gold hover:text-luxury-gold transition flex items-center justify-between">
-                        <span class="font-bold">About Us</span>
-                        <i class="fa-solid fa-chevron-right text-[10px] text-neutral-400"></i>
-                    </a>
-                    <a href="../socialresponsibility/index.html" onclick="toggleMobileMenu()" class="py-3.5 border-b border-neutral-200 text-neutral-900 active:text-luxury-gold hover:text-luxury-gold transition flex items-center justify-between">
-                        <span class="font-bold">Social Responsibility</span>
-                        <i class="fa-solid fa-chevron-right text-[10px] text-neutral-400"></i>
-                    </a>
-                    <a href="../contact/index.html" onclick="toggleMobileMenu()" class="py-3.5 border-b border-neutral-200 text-[#C5A880] flex items-center justify-between">
-                        <span class="font-bold">Contact Us</span>
-                        <i class="fa-solid fa-chevron-right text-[10px] text-[#C5A880]"></i>
-                    </a>
-                    <a href="../blog/index.html" onclick="toggleMobileMenu()" class="py-3.5 border-b border-neutral-200 text-neutral-900 active:text-luxury-gold hover:text-luxury-gold transition flex items-center justify-between">
-                        <span class="font-bold">Blog</span>
+                    <a href="../blog/index.html" class="py-3.5 border-b border-neutral-200 text-neutral-900 active:text-luxury-gold hover:text-luxury-gold transition flex items-center justify-between">
+                        <span class="font-bold">BLOG</span>
                         <i class="fa-solid fa-chevron-right text-[10px] text-neutral-400"></i>
                     </a>
                 </nav>
+
                 <div class="flex flex-col gap-3 pt-2">
-                    <a href="../eligibilitychecker/index.html" class="w-full text-center py-3.5 rounded-full border border-[#786142] text-[#786142] text-[11px] font-bold uppercase tracking-widest bg-white shadow-sm">
-                        Eligibility Checker
+                    <a href="../eligibilitychecker/index.html" class="w-full text-center py-3.5 rounded-full border border-[#786142] text-[#786142] text-[11px] font-bold uppercase tracking-widest bg-white shadow-sm hover:bg-[#786142] hover:text-white transition">
+                        ELIGIBILITY CHECKER
                     </a>
-                    <a href="../contact/index.html" onclick="toggleMobileMenu()" class="w-full text-center py-3.5 rounded-full bg-luxury-dark text-white text-[11px] font-bold uppercase tracking-widest shadow-md">
-                        Book Consultation
+                    <a href="../contact/index.html" class="w-full text-center py-3.5 rounded-full bg-luxury-dark text-white text-[11px] font-bold uppercase tracking-widest shadow-md hover:bg-luxury-gold transition">
+                        BOOK CONSULTATION
                     </a>
                 </div>
             </div>
@@ -401,11 +442,11 @@
         <div id="citizenship-menu" class="mega-dropdown absolute left-0 w-full bg-white border-b border-neutral-200 shadow-2xl opacity-0 translate-y-[-10px] pointer-events-none transition-all duration-300 z-40">
             <div class="max-w-7xl mx-auto px-8 py-10 grid grid-cols-12 gap-4">
                 <div class="col-span-3 flex flex-col items-center justify-center text-center pr-4 border-r border-neutral-200">
-                    <h3 class="font-serif text-3xl text-neutral-900 font-bold leading-tight mb-4">Citizenship<br>By<br>Investment</h3>
-                    <a href="index.html" class="px-4 py-1.5 border border-neutral-400 text-[11px] font-bold tracking-[0.18em] uppercase rounded-full hover:bg-luxury-dark hover:text-white transition whitespace-nowrap">View All Programs</a>
+                    <h3 class="font-serif text-3xl text-neutral-900 font-bold leading-tight mb-4">CITIZENSHIP<br>BY<br>INVESTMENT</h3>
+                    <a href="index.html" class="px-4 py-1.5 border border-neutral-400 text-[11px] font-bold tracking-[0.18em] uppercase rounded-full hover:bg-luxury-dark hover:text-white transition whitespace-nowrap">VIEW ALL PROGRAMS</a>
                 </div>
                 <div class="col-span-5 px-6">
-                    <h4 class="text-[11px] font-bold tracking-[0.18em] uppercase text-luxury-gold mb-6 text-center lg:text-left">Caribbean Portfolios</h4>
+                    <h4 class="text-[11px] font-bold tracking-[0.18em] uppercase text-luxury-gold mb-6 text-center lg:text-left">CARIBBEAN PORTFOLIOS</h4>
                     <ul class="space-y-4">
                         <li class="flex items-center group">
                             <div class="flex items-center space-x-3">
@@ -440,7 +481,7 @@
                     </ul>
                 </div>
                 <div class="col-span-4 px-6">
-                    <h4 class="text-[11px] font-bold tracking-[0.18em] uppercase text-neutral-400 mb-6 text-center lg:text-left">Global Portfolios</h4>
+                    <h4 class="text-[11px] font-bold tracking-[0.18em] uppercase text-neutral-400 mb-6 text-center lg:text-left">GLOBAL PORTFOLIOS</h4>
                     <ul class="space-y-4">
                         <li class="flex items-center group">
                             <div class="flex items-center space-x-3">
@@ -469,11 +510,11 @@
         <div id="residency-menu" class="mega-dropdown absolute left-0 w-full bg-white border-b border-neutral-200 shadow-2xl opacity-0 translate-y-[-10px] pointer-events-none transition-all duration-300 z-40">
             <div class="max-w-7xl mx-auto px-8 py-10 grid grid-cols-12 gap-4">
                 <div class="col-span-3 flex flex-col items-center justify-center text-center pr-4 border-r border-neutral-200">
-                    <h3 class="font-serif text-3xl text-neutral-900 font-bold leading-tight mb-4">Residency<br>By<br>Investment</h3>
-                    <a href="../residencybyinvestment/index.html" onclick="closeAllMegaMenus()" class="px-4 py-1.5 border border-neutral-400 text-[11px] font-bold tracking-[0.18em] uppercase rounded-full hover:bg-luxury-dark hover:text-white transition whitespace-nowrap">View All Programs</a>
+                    <h3 class="font-serif text-3xl text-neutral-900 font-bold leading-tight mb-4">RESIDENCY<br>BY<br>INVESTMENT</h3>
+                    <a href="../residencybyinvestment/index.html" onclick="closeAllMegaMenus()" class="px-4 py-1.5 border border-neutral-400 text-[11px] font-bold tracking-[0.18em] uppercase rounded-full hover:bg-luxury-dark hover:text-white transition whitespace-nowrap">VIEW ALL PROGRAMS</a>
                 </div>
                 <div class="col-span-5 px-6">
-                    <h4 class="text-[11px] font-bold tracking-[0.18em] uppercase text-luxury-gold mb-6 text-center lg:text-left">European Portfolios</h4>
+                    <h4 class="text-[11px] font-bold tracking-[0.18em] uppercase text-luxury-gold mb-6 text-center lg:text-left">EUROPEAN PORTFOLIOS</h4>
                     <ul class="space-y-4">
                         <li class="flex items-center group">
                             <div class="flex items-center space-x-3">
@@ -490,7 +531,7 @@
                     </ul>
                 </div>
                 <div class="col-span-4 px-6">
-                    <h4 class="text-[11px] font-bold tracking-[0.18em] uppercase text-neutral-400 mb-6 text-center lg:text-left">Americas & UAE</h4>
+                    <h4 class="text-[11px] font-bold tracking-[0.18em] uppercase text-neutral-400 mb-6 text-center lg:text-left">AMERICAS & UAE</h4>
                     <ul class="space-y-4">
                         <li class="flex items-center group">
                             <div class="flex items-center space-x-3">
@@ -513,46 +554,46 @@
         <div id="services-menu" class="mega-dropdown absolute left-0 w-full bg-white border-b border-neutral-200 shadow-2xl opacity-0 translate-y-[-10px] pointer-events-none transition-all duration-300 z-40">
             <div class="max-w-7xl mx-auto px-8 py-10 grid grid-cols-12 gap-4">
                 <div class="col-span-3 flex flex-col items-center justify-center text-center pr-4 border-r border-neutral-200">
-                    <h3 class="font-serif text-3xl text-neutral-900 font-bold leading-tight mb-4">Other<br>Services</h3>
-                    <a href="../realestate/index.html" onclick="closeAllMegaMenus()" class="px-4 py-1.5 border border-neutral-400 text-[11px] font-bold tracking-[0.18em] uppercase rounded-full hover:bg-luxury-dark hover:text-white transition whitespace-nowrap">View All Services</a>
+                    <h3 class="font-serif text-3xl text-neutral-900 font-bold leading-tight mb-4">OTHER<br>SERVICES</h3>
+                    <a href="../realestate/index.html" onclick="closeAllMegaMenus()" class="px-4 py-1.5 border border-neutral-400 text-[11px] font-bold tracking-[0.18em] uppercase rounded-full hover:bg-luxury-dark hover:text-white transition whitespace-nowrap">VIEW ALL SERVICES</a>
                 </div>
                 <div class="col-span-9 px-6 flex items-center justify-start gap-4">
                     <div class="relative flex-1 max-w-[220px] rounded-[20px] shadow-md overflow-hidden group border border-luxury-gold/50">
                         <img src="https://teslaproperties.ae/storage/blog-images/is-dubai-real-estate-a-good-investment-in-2026-trends-roi-and-key-areas-to-watch/isdubairealestateagoodinvestmentin2026.webp" alt="Real Estate" class="absolute inset-0 w-full h-full object-cover transition-transform duration-500 group-hover:scale-110">
                         <div class="absolute inset-0 bg-neutral-950/65 group-hover:bg-neutral-950/50 transition-colors duration-300"></div>
-                        <a href="../realestate/index.html" class="relative z-10 text-[11px] font-bold tracking-[0.18em] text-white block text-center leading-tight py-12 px-4 uppercase">Real<br>Estate</a>
+                        <a href="../realestate/index.html" class="relative z-10 text-[11px] font-bold tracking-[0.18em] text-white block text-center leading-tight py-12 px-4 uppercase">REAL<br>ESTATE</a>
                     </div>
                     <div class="relative flex-1 max-w-[220px] rounded-[20px] shadow-md overflow-hidden group border border-luxury-gold/50">
                         <img src="https://images.unsplash.com/photo-1541339907198-e08756dedf3f?auto=format&fit=crop&q=80&w=500" alt="Educational Advisory" class="absolute inset-0 w-full h-full object-cover transition-transform duration-500 group-hover:scale-110">
                         <div class="absolute inset-0 bg-neutral-950/65 group-hover:bg-neutral-950/50 transition-colors duration-300"></div>
-                        <a href="../educationaladvisory/index.html" class="relative z-10 text-[11px] font-bold tracking-[0.18em] text-white block text-center leading-tight py-12 px-4 uppercase">Educational<br>Advisory</a>
+                        <a href="../educationaladvisory/index.html" class="relative z-10 text-[11px] font-bold tracking-[0.18em] text-white block text-center leading-tight py-12 px-4 uppercase">EDUCATIONAL<br>ADVISORY</a>
                     </div>
                 </div>
             </div>
         </div>
 
-        <!-- MEGA MENU ABOUT (WITH SOCIAL RESPONSIBILITY CONTAINER INCLUDED) -->
+        <!-- MEGA MENU ABOUT -->
         <div id="about-menu" class="mega-dropdown absolute left-0 w-full bg-white border-b border-neutral-200 shadow-2xl opacity-0 translate-y-[-10px] pointer-events-none transition-all duration-300 z-40">
             <div class="max-w-7xl mx-auto px-8 py-10 grid grid-cols-12 gap-4">
                 <div class="col-span-3 flex flex-col items-center justify-center text-center pr-4 border-r border-neutral-200">
-                    <h3 class="font-serif text-3xl text-neutral-900 font-bold leading-tight mb-4">Corporate<br>Identity</h3>
-                    <a href="../aboutus/index.html" class="px-4 py-1.5 border border-neutral-400 text-[11px] font-bold tracking-[0.18em] uppercase rounded-full hover:bg-luxury-dark hover:text-white transition whitespace-nowrap">Overview</a>
+                    <h3 class="font-serif text-3xl text-neutral-900 font-bold leading-tight mb-4">CORPORATE<br>IDENTITY</h3>
+                    <a href="../aboutus/index.html" class="px-4 py-1.5 border border-neutral-400 text-[11px] font-bold tracking-[0.18em] uppercase rounded-full hover:bg-luxury-dark hover:text-white transition whitespace-nowrap">OVERVIEW</a>
                 </div>
                 <div class="col-span-9 px-6 flex items-center justify-start gap-4">
                     <div class="relative flex-1 max-w-[260px] rounded-[20px] shadow-md overflow-hidden group border border-luxury-gold/50">
                         <img src="https://sharifgroup.ae/wp-content/uploads/2026/05/dubai-office-2.jpg.webp" alt="Sharif Group" class="absolute inset-0 w-full h-full object-cover transition-transform duration-500 group-hover:scale-110">
                         <div class="absolute inset-0 bg-neutral-950/65 group-hover:bg-neutral-950/50 transition-colors duration-300"></div>
-                        <a href="../aboutus/index.html" class="relative z-10 text-[11px] font-bold tracking-[0.18em] text-white block text-center leading-tight py-12 px-4 uppercase">Sharif Group</a>
+                        <a href="../aboutus/index.html" class="relative z-10 text-[11px] font-bold tracking-[0.18em] text-white block text-center leading-tight py-12 px-4 uppercase">SHARIF GROUP</a>
                     </div>
                     <div class="relative flex-1 max-w-[260px] rounded-[20px] shadow-md overflow-hidden group border border-luxury-gold/50">
                         <img src="../alirezasharif.svg" alt="Founder" class="absolute inset-0 w-full h-full object-cover transition-transform duration-500 group-hover:scale-110">
                         <div class="absolute inset-0 bg-neutral-950/65 group-hover:bg-neutral-950/50 transition-colors duration-300"></div>
-                        <a href="../aboutfounder/index.html" class="relative z-10 text-[11px] font-bold tracking-[0.18em] text-white block text-center leading-tight py-12 px-4 uppercase">Founder | Ali Sharif</a>
+                        <a href="../aboutfounder/index.html" class="relative z-10 text-[11px] font-bold tracking-[0.18em] text-white block text-center leading-tight py-12 px-4 uppercase">FOUNDER | ALI SHARIF</a>
                     </div>
                     <div class="relative flex-1 max-w-[260px] rounded-[20px] shadow-md overflow-hidden group border border-luxury-gold/50">
                         <img src="https://images.unsplash.com/photo-1488521787991-ed7bbaae773c?auto=format&fit=crop&q=80&w=500" alt="Social Responsibility" class="absolute inset-0 w-full h-full object-cover transition-transform duration-500 group-hover:scale-110">
                         <div class="absolute inset-0 bg-neutral-950/65 group-hover:bg-neutral-950/50 transition-colors duration-300"></div>
-                        <a href="../socialresponsibility/index.html" class="relative z-10 text-[11px] font-bold tracking-[0.18em] text-white block text-center leading-tight py-12 px-4 uppercase">Social<br>Responsibility</a>
+                        <a href="../socialresponsibility/index.html" class="relative z-10 text-[11px] font-bold tracking-[0.18em] text-white block text-center leading-tight py-12 px-4 uppercase">SOCIAL<br>RESPONSIBILITY</a>
                     </div>
                 </div>
             </div>
@@ -1309,23 +1350,39 @@
             isMobileMenuOpen = !isMobileMenuOpen;
             
             if (isMobileMenuOpen) {
-                drawer.classList.remove('opacity-0', 'pointer-events-none', 'translate-y-[-100%]');
+                drawer.classList.remove('opacity-0', 'pointer-events-none', 'translate-y-[-10px]');
                 drawer.classList.add('opacity-100', 'pointer-events-auto', 'translate-y-0');
                 if (bar1 && bar2 && bar3) {
-                    bar1.style.transform = 'translateY(6.5px) rotate(45deg)';
+                    bar1.style.transform = 'translateY(8px) rotate(45deg)';
                     bar2.style.opacity = '0';
-                    bar3.style.transform = 'translateY(-6.5px) rotate(-45deg)';
+                    bar3.style.transform = 'translateY(-8px) rotate(-45deg)';
                 }
                 document.body.style.overflow = 'hidden';
             } else {
                 drawer.classList.remove('opacity-100', 'pointer-events-auto', 'translate-y-0');
-                drawer.classList.add('opacity-0', 'pointer-events-none', 'translate-y-[-100%]');
+                drawer.classList.add('opacity-0', 'pointer-events-none', 'translate-y-[-10px]');
                 if (bar1 && bar2 && bar3) {
                     bar1.style.transform = 'none';
                     bar2.style.opacity = '1';
                     bar3.style.transform = 'none';
                 }
                 document.body.style.overflow = '';
+            }
+        }
+
+        // Mobile Drawer Submenu Accordion Handler
+        function toggleMobileSubmenu(submenuId, arrowId) {
+            const submenu = document.getElementById(submenuId);
+            const arrow = document.getElementById(arrowId);
+            if (!submenu) return;
+
+            const isClosed = submenu.classList.contains('hidden');
+            if (isClosed) {
+                submenu.classList.remove('hidden');
+                if (arrow) arrow.style.transform = 'rotate(180deg)';
+            } else {
+                submenu.classList.add('hidden');
+                if (arrow) arrow.style.transform = 'rotate(0deg)';
             }
         }
 
