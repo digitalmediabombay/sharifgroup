@@ -394,7 +394,7 @@
                         <li class="flex items-center group">
                             <div class="flex items-center space-x-3">
                                 <img src="https://b3052398.smushcdn.com/3052398/wp-content/uploads/Sao_Tome_passport.png?lossy=2&strip=1&webp=1" alt="" class="w-12 h-8 object-cover rounded-sm border border-neutral-200 shadow-sm">
-                                <a href="../programs/citizenshipbyinvestment/sãotoméandprincipe/index.html" class="text-[11px] font-bold tracking-[0.18em] uppercase text-neutral-700 group-hover:text-luxury-gold transition">São Tomé and Príncipe | Passport</a>
+                                <a href="../programs/citizenshipbyinvestment/sãotoméandpríncipe/index.html" class="text-[11px] font-bold tracking-[0.18em] uppercase text-neutral-700 group-hover:text-luxury-gold transition">São Tomé and Príncipe | Passport</a>
                             </div>
                         </li>
                         <li class="flex items-center group">
@@ -474,7 +474,7 @@
             </div>
         </div>
 
-        <!-- MEGA MENU ABOUT (WITH SOCIAL RESPONSIBILITY CONTAINER INCLUDED) -->
+        <!-- MEGA MENU ABOUT -->
         <div id="about-menu" onmouseenter="clearMenuCloseTimer()" onmouseleave="scheduleMenuClose()" class="mega-dropdown absolute left-0 w-full bg-white border-b border-neutral-200 shadow-2xl opacity-0 translate-y-[-10px] pointer-events-none transition-all duration-300 z-40">
             <div class="max-w-7xl mx-auto px-8 py-10 grid grid-cols-12 gap-4">
                 <div class="col-span-3 flex flex-col items-center justify-center text-center pr-4 border-r border-neutral-200">
@@ -498,6 +498,93 @@
                         <a href="../socialresponsibility/index.html" class="relative z-10 text-[11px] font-bold tracking-[0.18em] text-white block text-center leading-tight py-12 px-4 uppercase">Social<br>Responsibility</a>
                     </div>
                 </div>
+            </div>
+        </div>
+
+        <!-- FULL-SCREEN MOBILE NAVIGATION DRAWER -->
+        <div id="mobile-menu-drawer" class="fixed inset-0 bg-white z-[105] transform translate-x-full transition-transform duration-500 ease-in-out flex flex-col justify-between overflow-y-auto lg:hidden">
+            <div class="p-6 space-y-6">
+                <!-- Top Brand Header & Close Button inside drawer -->
+                <div class="flex items-center justify-between border-b border-neutral-100 pb-4">
+                    <a href="../index.html" onclick="toggleMobileMenu()">
+                        <img src="https://shariftrip.com/wp-content/uploads/2024/06/Group-427321462.svg" alt="Sharif Group" class="h-12 w-auto">
+                    </a>
+                    <button onclick="toggleMobileMenu()" class="text-2xl text-neutral-900 p-2 focus:outline-none" aria-label="Close Mobile Menu">
+                        <i class="fa-solid fa-xmark"></i>
+                    </button>
+                </div>
+
+                <!-- Eligibility Assessment Top Button -->
+                <a href="../eligibilitychecker/index.html" onclick="toggleMobileMenu()" class="block w-full py-3.5 px-4 text-center rounded-full border border-neutral-900 text-neutral-900 text-xs font-bold uppercase tracking-[0.2em] hover:bg-neutral-900 hover:text-white transition shadow-sm">
+                    ELIGIBILITY ASSESSMENT
+                </a>
+
+                <!-- Navigation Accordion Lists -->
+                <div class="space-y-6 pt-2">
+                    
+                    <!-- 1. DUAL CITIZENSHIP -->
+                    <div class="border-b border-neutral-100 pb-4">
+                        <button onclick="toggleMobileSubmenu('mob-cit-sub', this)" class="w-full flex justify-between items-center text-left text-xs font-bold uppercase tracking-[0.2em] text-[#C5A880] focus:outline-none py-1">
+                            <span>Dual Citizenship</span>
+                            <i class="fa-solid fa-chevron-down text-[10px] transition-transform duration-300"></i>
+                        </button>
+                        <div id="mob-cit-sub" class="hidden pt-3 pl-2 space-y-3">
+                            <a href="../citizenshipbyinvestment/index.html" onclick="toggleMobileMenu()" class="block text-[11px] font-bold uppercase tracking-wider text-neutral-900 hover:text-luxury-gold">ALL CITIZENSHIP PROGRAMS</a>
+                            <a href="../programs/citizenshipbyinvestment/dominica/index.html" onclick="toggleMobileMenu()" class="block text-[11px] font-medium uppercase tracking-wider text-neutral-700 hover:text-luxury-gold">DOMINICA | PASSPORT</a>
+                            <a href="../programs/citizenshipbyinvestment/stkittis/index.html" onclick="toggleMobileMenu()" class="block text-[11px] font-medium uppercase tracking-wider text-neutral-700 hover:text-luxury-gold">ST. KITTS &amp; NEVIS | PASSPORT</a>
+                            <a href="../programs/citizenshipbyinvestment/antiguaandbarbuda/index.html" onclick="toggleMobileMenu()" class="block text-[11px] font-medium uppercase tracking-wider text-neutral-700 hover:text-luxury-gold">ANTIGUA &amp; BARBUDA | PASSPORT</a>
+                            <a href="../programs/citizenshipbyinvestment/stlucia/index.html" onclick="toggleMobileMenu()" class="block text-[11px] font-medium uppercase tracking-wider text-neutral-700 hover:text-luxury-gold">SAINT LUCIA | PASSPORT</a>
+                            <a href="../programs/citizenshipbyinvestment/greneda/index.html" onclick="toggleMobileMenu()" class="block text-[11px] font-medium uppercase tracking-wider text-neutral-700 hover:text-luxury-gold">GRENADA | PASSPORT</a>
+                            <a href="../programs/citizenshipbyinvestment/vanuatu/index.html" onclick="toggleMobileMenu()" class="block text-[11px] font-medium uppercase tracking-wider text-neutral-700 hover:text-luxury-gold">VANUATU | PASSPORT</a>
+                            <a href="../programs/citizenshipbyinvestment/sãotoméandpríncipe/index.html" onclick="toggleMobileMenu()" class="block text-[11px] font-medium uppercase tracking-wider text-neutral-700 hover:text-luxury-gold">SÃO TOMÉ AND PRÍNCIPE | PASSPORT</a>
+                            <a href="../programs/citizenshipbyinvestment/nauru/index.html" onclick="toggleMobileMenu()" class="block text-[11px] font-medium uppercase tracking-wider text-neutral-700 hover:text-luxury-gold">REPUBLIC OF NAURU | PASSPORT</a>
+                        </div>
+                    </div>
+
+                    <!-- 2. GLOBAL RESIDENCY -->
+                    <div class="border-b border-neutral-100 pb-4">
+                        <button onclick="toggleMobileSubmenu('mob-res-sub', this)" class="w-full flex justify-between items-center text-left text-xs font-bold uppercase tracking-[0.2em] text-[#C5A880] focus:outline-none py-1">
+                            <span>Global Residency</span>
+                            <i class="fa-solid fa-chevron-down text-[10px] transition-transform duration-300"></i>
+                        </button>
+                        <div id="mob-res-sub" class="hidden pt-3 pl-2 space-y-3">
+                            <a href="../residencybyinvestment/index.html" onclick="toggleMobileMenu()" class="block text-[11px] font-bold uppercase tracking-wider text-neutral-900 hover:text-luxury-gold">ALL RESIDENCY PROGRAMS</a>
+                            <a href="../programs/residencybyinvestment/portugal/index.html" onclick="toggleMobileMenu()" class="block text-[11px] font-medium uppercase tracking-wider text-neutral-700 hover:text-luxury-gold">PORTUGAL | GOLDEN VISA</a>
+                            <a href="../programs/residencybyinvestment/greece/index.html" onclick="toggleMobileMenu()" class="block text-[11px] font-medium uppercase tracking-wider text-neutral-700 hover:text-luxury-gold">GREECE | GOLDEN VISA</a>
+                            <a href="../programs/residencybyinvestment/panama/index.html" onclick="toggleMobileMenu()" class="block text-[11px] font-medium uppercase tracking-wider text-neutral-700 hover:text-luxury-gold">PANAMA | GOLDEN VISA</a>
+                            <a href="../programs/residencybyinvestment/uae/index.html" onclick="toggleMobileMenu()" class="block text-[11px] font-medium uppercase tracking-wider text-neutral-700 hover:text-luxury-gold">UNITED ARAB EMIRATES | GOLDEN VISA</a>
+                        </div>
+                    </div>
+
+                    <!-- 3. OTHER SERVICES -->
+                    <div class="border-b border-neutral-100 pb-4 space-y-3">
+                        <span class="block text-xs font-bold uppercase tracking-[0.2em] text-[#C5A880]">OTHER SERVICES</span>
+                        <div class="pl-2 space-y-3">
+                            <a href="../realestate/index.html" onclick="toggleMobileMenu()" class="block text-[11px] font-bold uppercase tracking-wider text-neutral-900 hover:text-luxury-gold">REAL ESTATE ADVISORY</a>
+                            <a href="index.html" onclick="toggleMobileMenu()" class="block text-[11px] font-bold uppercase tracking-wider text-[#786142]">EDUCATIONAL ADVISORY</a>
+                        </div>
+                    </div>
+
+                    <!-- 4. SHARIF GROUP -->
+                    <div class="space-y-3">
+                        <span class="block text-xs font-bold uppercase tracking-[0.2em] text-[#C5A880]">SHARIF GROUP</span>
+                        <div class="pl-2 space-y-3">
+                            <a href="../aboutus/index.html" onclick="toggleMobileMenu()" class="block text-[11px] font-bold uppercase tracking-wider text-neutral-900 hover:text-luxury-gold">ABOUT SHARIF GROUP</a>
+                            <a href="../aboutfounder/index.html" onclick="toggleMobileMenu()" class="block text-[11px] font-bold uppercase tracking-wider text-neutral-900 hover:text-luxury-gold">ABOUT FOUNDER | ALI SHARIF</a>
+                            <a href="../socialresponsibility/index.html" onclick="toggleMobileMenu()" class="block text-[11px] font-bold uppercase tracking-wider text-neutral-900 hover:text-luxury-gold">SOCIAL RESPONSIBILITY</a>
+                            <a href="../blog/index.html" onclick="toggleMobileMenu()" class="block text-[11px] font-bold uppercase tracking-wider text-neutral-900 hover:text-luxury-gold">INSIGHTS &amp; BLOG</a>
+                            <a href="../contact/index.html" onclick="toggleMobileMenu()" class="block text-[11px] font-bold uppercase tracking-wider text-neutral-900 hover:text-luxury-gold">CONTACT US</a>
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+
+            <!-- Mobile Book Consultation Bottom Button -->
+            <div class="p-6 border-t border-neutral-100">
+                <a href="../contact/index.html" onclick="toggleMobileMenu()" class="block w-full py-4 text-center rounded-full bg-neutral-950 text-white text-xs font-bold uppercase tracking-[0.2em] hover:bg-luxury-gold transition shadow-lg">
+                    BOOK CONSULTATION
+                </a>
             </div>
         </div>
     </header>
@@ -2917,7 +3004,7 @@
                         <label class="flex items-start space-x-3 cursor-pointer">
                             <input type="checkbox" required class="mt-0.5 rounded border-neutral-300 text-[#786142] focus:ring-[#786142]">
                             <span class="text-xs text-neutral-600 font-light leading-relaxed">
-                                I agree to let Sharif Group save and process my information for academic assessment and consultation in line with the <a href="../privacy.html" class="text-[#786142] underline font-bold">Privacy Policy</a>. <span class="text-red-500">*</span>
+                                I agree to let Sharif Group save and process my information for academic assessment and consultation in line with the <a href="../privacypolicy/index.html" class="text-[#786142] underline font-bold">Privacy Policy</a>. <span class="text-red-500">*</span>
                             </span>
                         </label>
                     </div>
@@ -2977,7 +3064,7 @@
                     <p class="flex items-center"><i class="fa-solid fa-envelope mr-3 text-luxury-gold text-sm"></i> <a href="mailto:contact@sharifgroup.ae" class="hover:text-white transition">contact@sharifgroup.ae</a></p>
                 </div>
 
-                <!-- Official Social Media Links Added -->
+                <!-- Official Social Media Links -->
                 <div class="flex items-center space-x-3 pt-2">
                     <a href="https://www.linkedin.com/company/sharif-group-uae/" target="_blank" rel="noopener noreferrer" class="w-8 h-8 rounded-full bg-white/10 border border-white/20 flex items-center justify-center text-white hover:bg-luxury-gold hover:border-luxury-gold transition"><i class="fa-brands fa-linkedin-in text-xs"></i></a>
                     <a href="https://www.instagram.com/sharifgroup.uae" target="_blank" rel="noopener noreferrer" class="w-8 h-8 rounded-full bg-white/10 border border-white/20 flex items-center justify-center text-white hover:bg-luxury-gold hover:border-luxury-gold transition"><i class="fa-brands fa-instagram text-xs"></i></a>
@@ -2986,7 +3073,7 @@
                 </div>
             </div>
 
-            <!-- Col 2: Quick Links (With Social Responsibility Included) -->
+            <!-- Col 2: Quick Links -->
             <div>
                 <h4 class="text-[11px] uppercase tracking-[0.2em] text-luxury-gold font-bold mb-6">Quick Links</h4>
                 <ul class="space-y-2.5 text-xs text-neutral-300">
@@ -2999,7 +3086,7 @@
                     <li><a href="../realestate/index.html" class="hover:text-luxury-gold transition">Real Estate</a></li>
                     <li><a href="index.html" class="hover:text-luxury-gold transition">Educational Advisory</a></li>
                     <li><a href="../contact/index.html" class="hover:text-luxury-gold transition">Contact Us</a></li>
-                    <li><a href="../blog/index.html" class="hover:text-luxury-gold transition">Insights & Blog</a></li>
+                    <li><a href="../blog/index.html" class="hover:text-luxury-gold transition">Insights &amp; Blog</a></li>
                     <li><a href="../eligibilitychecker/index.html" class="hover:text-luxury-gold transition">Eligibility Checker</a></li>
                 </ul>
             </div>
@@ -3009,12 +3096,12 @@
                 <h4 class="text-[11px] uppercase tracking-[0.2em] text-luxury-gold font-bold mb-4">Citizenship Programs</h4>
                 <ul class="space-y-2 text-xs text-neutral-300">
                     <li><a href="../programs/citizenshipbyinvestment/dominica/index.html" class="hover:text-luxury-gold transition">Dominica | Passport</a></li>
-                    <li><a href="../programs/citizenshipbyinvestment/stkittis/index.html" class="hover:text-luxury-gold transition">St. Kitts & Nevis | Passport</a></li>
-                    <li><a href="../programs/citizenshipbyinvestment/antiguaandbarbuda/index.html" class="hover:text-luxury-gold transition">Antigua & Barbuda | Passport</a></li>
+                    <li><a href="../programs/citizenshipbyinvestment/stkittis/index.html" class="hover:text-luxury-gold transition">St. Kitts &amp; Nevis | Passport</a></li>
+                    <li><a href="../programs/citizenshipbyinvestment/antiguaandbarbuda/index.html" class="hover:text-luxury-gold transition">Antigua &amp; Barbuda | Passport</a></li>
                     <li><a href="../programs/citizenshipbyinvestment/stlucia/index.html" class="hover:text-luxury-gold transition">Saint Lucia | Passport</a></li>
                     <li><a href="../programs/citizenshipbyinvestment/greneda/index.html" class="hover:text-luxury-gold transition">Grenada | Passport</a></li>
                     <li><a href="../programs/citizenshipbyinvestment/vanuatu/index.html" class="hover:text-luxury-gold transition">Vanuatu | Passport</a></li>
-                    <li><a href="../programs/citizenshipbyinvestment/sãotoméandprincipe/index.html" class="hover:text-luxury-gold transition">São Tomé and Príncipe | Passport</a></li>
+                    <li><a href="../programs/citizenshipbyinvestment/sãotoméandpríncipe/index.html" class="hover:text-luxury-gold transition">São Tomé and Príncipe | Passport</a></li>
                     <li><a href="../programs/citizenshipbyinvestment/nauru/index.html" class="hover:text-luxury-gold transition">Republic of Nauru | Passport</a></li>
                 </ul>
             </div>
