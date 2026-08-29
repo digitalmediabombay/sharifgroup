@@ -501,93 +501,94 @@
             </div>
         </div>
 
-        <!-- FULL-SCREEN MOBILE NAVIGATION DRAWER -->
-        <div id="mobile-menu-drawer" class="fixed inset-0 bg-white z-[105] transform translate-x-full transition-transform duration-500 ease-in-out flex flex-col justify-between overflow-y-auto lg:hidden">
-            <div class="p-6 space-y-6">
-                <!-- Top Brand Header & Close Button inside drawer -->
-                <div class="flex items-center justify-between border-b border-neutral-100 pb-4">
-                    <a href="../index.html" onclick="toggleMobileMenu()">
-                        <img src="https://shariftrip.com/wp-content/uploads/2024/06/Group-427321462.svg" alt="Sharif Group" class="h-12 w-auto">
-                    </a>
-                    <button onclick="toggleMobileMenu()" class="text-2xl text-neutral-900 p-2 focus:outline-none" aria-label="Close Mobile Menu">
-                        <i class="fa-solid fa-xmark"></i>
-                    </button>
-                </div>
+        </header>
 
-                <!-- Eligibility Assessment Top Button -->
-                <a href="../eligibilitychecker/index.html" onclick="toggleMobileMenu()" class="block w-full py-3.5 px-4 text-center rounded-full border border-neutral-900 text-neutral-900 text-xs font-bold uppercase tracking-[0.2em] hover:bg-neutral-900 hover:text-white transition shadow-sm">
-                    ELIGIBILITY ASSESSMENT
+    <!-- FULL-SCREEN MOBILE NAVIGATION DRAWER (Placed outside header with z-[9999]) -->
+    <div id="mobile-menu-drawer" class="fixed inset-0 w-full h-[100dvh] bg-white z-[9999] transform translate-x-full transition-transform duration-300 ease-in-out flex flex-col justify-between overflow-y-auto lg:hidden">
+        <div class="p-6 space-y-6">
+            <!-- Top Brand Header & Close Button inside drawer -->
+            <div class="flex items-center justify-between border-b border-neutral-100 pb-4">
+                <a href="../index.html" onclick="toggleMobileMenu()">
+                    <img src="https://shariftrip.com/wp-content/uploads/2024/06/Group-427321462.svg" alt="Sharif Group" class="h-12 w-auto">
                 </a>
-
-                <!-- Navigation Accordion Lists -->
-                <div class="space-y-6 pt-2">
-                    
-                    <!-- 1. DUAL CITIZENSHIP -->
-                    <div class="border-b border-neutral-100 pb-4">
-                        <button onclick="toggleMobileSubmenu('mob-cit-sub', this)" class="w-full flex justify-between items-center text-left text-xs font-bold uppercase tracking-[0.2em] text-[#C5A880] focus:outline-none py-1">
-                            <span>Dual Citizenship</span>
-                            <i class="fa-solid fa-chevron-down text-[10px] transition-transform duration-300"></i>
-                        </button>
-                        <div id="mob-cit-sub" class="hidden pt-3 pl-2 space-y-3">
-                            <a href="../citizenshipbyinvestment/index.html" onclick="toggleMobileMenu()" class="block text-[11px] font-bold uppercase tracking-wider text-neutral-900 hover:text-luxury-gold">ALL CITIZENSHIP PROGRAMS</a>
-                            <a href="../programs/citizenshipbyinvestment/dominica/index.html" onclick="toggleMobileMenu()" class="block text-[11px] font-medium uppercase tracking-wider text-neutral-700 hover:text-luxury-gold">DOMINICA | PASSPORT</a>
-                            <a href="../programs/citizenshipbyinvestment/stkittis/index.html" onclick="toggleMobileMenu()" class="block text-[11px] font-medium uppercase tracking-wider text-neutral-700 hover:text-luxury-gold">ST. KITTS &amp; NEVIS | PASSPORT</a>
-                            <a href="../programs/citizenshipbyinvestment/antiguaandbarbuda/index.html" onclick="toggleMobileMenu()" class="block text-[11px] font-medium uppercase tracking-wider text-neutral-700 hover:text-luxury-gold">ANTIGUA &amp; BARBUDA | PASSPORT</a>
-                            <a href="../programs/citizenshipbyinvestment/stlucia/index.html" onclick="toggleMobileMenu()" class="block text-[11px] font-medium uppercase tracking-wider text-neutral-700 hover:text-luxury-gold">SAINT LUCIA | PASSPORT</a>
-                            <a href="../programs/citizenshipbyinvestment/greneda/index.html" onclick="toggleMobileMenu()" class="block text-[11px] font-medium uppercase tracking-wider text-neutral-700 hover:text-luxury-gold">GRENADA | PASSPORT</a>
-                            <a href="../programs/citizenshipbyinvestment/vanuatu/index.html" onclick="toggleMobileMenu()" class="block text-[11px] font-medium uppercase tracking-wider text-neutral-700 hover:text-luxury-gold">VANUATU | PASSPORT</a>
-                            <a href="../programs/citizenshipbyinvestment/sãotoméandpríncipe/index.html" onclick="toggleMobileMenu()" class="block text-[11px] font-medium uppercase tracking-wider text-neutral-700 hover:text-luxury-gold">SÃO TOMÉ AND PRÍNCIPE | PASSPORT</a>
-                            <a href="../programs/citizenshipbyinvestment/nauru/index.html" onclick="toggleMobileMenu()" class="block text-[11px] font-medium uppercase tracking-wider text-neutral-700 hover:text-luxury-gold">REPUBLIC OF NAURU | PASSPORT</a>
-                        </div>
-                    </div>
-
-                    <!-- 2. GLOBAL RESIDENCY -->
-                    <div class="border-b border-neutral-100 pb-4">
-                        <button onclick="toggleMobileSubmenu('mob-res-sub', this)" class="w-full flex justify-between items-center text-left text-xs font-bold uppercase tracking-[0.2em] text-[#C5A880] focus:outline-none py-1">
-                            <span>Global Residency</span>
-                            <i class="fa-solid fa-chevron-down text-[10px] transition-transform duration-300"></i>
-                        </button>
-                        <div id="mob-res-sub" class="hidden pt-3 pl-2 space-y-3">
-                            <a href="../residencybyinvestment/index.html" onclick="toggleMobileMenu()" class="block text-[11px] font-bold uppercase tracking-wider text-neutral-900 hover:text-luxury-gold">ALL RESIDENCY PROGRAMS</a>
-                            <a href="../programs/residencybyinvestment/portugal/index.html" onclick="toggleMobileMenu()" class="block text-[11px] font-medium uppercase tracking-wider text-neutral-700 hover:text-luxury-gold">PORTUGAL | GOLDEN VISA</a>
-                            <a href="../programs/residencybyinvestment/greece/index.html" onclick="toggleMobileMenu()" class="block text-[11px] font-medium uppercase tracking-wider text-neutral-700 hover:text-luxury-gold">GREECE | GOLDEN VISA</a>
-                            <a href="../programs/residencybyinvestment/panama/index.html" onclick="toggleMobileMenu()" class="block text-[11px] font-medium uppercase tracking-wider text-neutral-700 hover:text-luxury-gold">PANAMA | GOLDEN VISA</a>
-                            <a href="../programs/residencybyinvestment/uae/index.html" onclick="toggleMobileMenu()" class="block text-[11px] font-medium uppercase tracking-wider text-neutral-700 hover:text-luxury-gold">UNITED ARAB EMIRATES | GOLDEN VISA</a>
-                        </div>
-                    </div>
-
-                    <!-- 3. OTHER SERVICES -->
-                    <div class="border-b border-neutral-100 pb-4 space-y-3">
-                        <span class="block text-xs font-bold uppercase tracking-[0.2em] text-[#C5A880]">OTHER SERVICES</span>
-                        <div class="pl-2 space-y-3">
-                            <a href="../realestate/index.html" onclick="toggleMobileMenu()" class="block text-[11px] font-bold uppercase tracking-wider text-neutral-900 hover:text-luxury-gold">REAL ESTATE ADVISORY</a>
-                            <a href="index.html" onclick="toggleMobileMenu()" class="block text-[11px] font-bold uppercase tracking-wider text-[#786142]">EDUCATIONAL ADVISORY</a>
-                        </div>
-                    </div>
-
-                    <!-- 4. SHARIF GROUP -->
-                    <div class="space-y-3">
-                        <span class="block text-xs font-bold uppercase tracking-[0.2em] text-[#C5A880]">SHARIF GROUP</span>
-                        <div class="pl-2 space-y-3">
-                            <a href="../aboutus/index.html" onclick="toggleMobileMenu()" class="block text-[11px] font-bold uppercase tracking-wider text-neutral-900 hover:text-luxury-gold">ABOUT SHARIF GROUP</a>
-                            <a href="../aboutfounder/index.html" onclick="toggleMobileMenu()" class="block text-[11px] font-bold uppercase tracking-wider text-neutral-900 hover:text-luxury-gold">ABOUT FOUNDER | ALI SHARIF</a>
-                            <a href="../socialresponsibility/index.html" onclick="toggleMobileMenu()" class="block text-[11px] font-bold uppercase tracking-wider text-neutral-900 hover:text-luxury-gold">SOCIAL RESPONSIBILITY</a>
-                            <a href="../blog/index.html" onclick="toggleMobileMenu()" class="block text-[11px] font-bold uppercase tracking-wider text-neutral-900 hover:text-luxury-gold">INSIGHTS &amp; BLOG</a>
-                            <a href="../contact/index.html" onclick="toggleMobileMenu()" class="block text-[11px] font-bold uppercase tracking-wider text-neutral-900 hover:text-luxury-gold">CONTACT US</a>
-                        </div>
-                    </div>
-
-                </div>
+                <button type="button" onclick="toggleMobileMenu()" class="text-2xl text-neutral-900 p-2 focus:outline-none cursor-pointer" aria-label="Close Mobile Menu">
+                    <i class="fa-solid fa-xmark"></i>
+                </button>
             </div>
 
-            <!-- Mobile Book Consultation Bottom Button -->
-            <div class="p-6 border-t border-neutral-100">
-                <a href="../contact/index.html" onclick="toggleMobileMenu()" class="block w-full py-4 text-center rounded-full bg-neutral-950 text-white text-xs font-bold uppercase tracking-[0.2em] hover:bg-luxury-gold transition shadow-lg">
-                    BOOK CONSULTATION
-                </a>
+            <!-- Eligibility Assessment Top Button -->
+            <a href="../eligibilitychecker/index.html" onclick="toggleMobileMenu()" class="block w-full py-3.5 px-4 text-center rounded-full border border-neutral-900 text-neutral-900 text-xs font-bold uppercase tracking-[0.2em] hover:bg-neutral-900 hover:text-white transition shadow-sm">
+                ELIGIBILITY ASSESSMENT
+            </a>
+
+            <!-- Navigation Accordion Lists -->
+            <div class="space-y-6 pt-2">
+                
+                <!-- 1. DUAL CITIZENSHIP -->
+                <div class="border-b border-neutral-100 pb-4">
+                    <button type="button" onclick="toggleMobileSubmenu('mob-cit-sub', this)" class="w-full flex justify-between items-center text-left text-xs font-bold uppercase tracking-[0.2em] text-[#C5A880] focus:outline-none py-1 cursor-pointer">
+                        <span>Dual Citizenship</span>
+                        <i class="fa-solid fa-chevron-down text-[10px] transition-transform duration-300"></i>
+                    </button>
+                    <div id="mob-cit-sub" class="hidden pt-3 pl-2 space-y-3">
+                        <a href="../citizenshipbyinvestment/index.html" onclick="toggleMobileMenu()" class="block text-[11px] font-bold uppercase tracking-wider text-neutral-900 hover:text-luxury-gold">ALL CITIZENSHIP PROGRAMS</a>
+                        <a href="../programs/citizenshipbyinvestment/dominica/index.html" onclick="toggleMobileMenu()" class="block text-[11px] font-medium uppercase tracking-wider text-neutral-700 hover:text-luxury-gold">DOMINICA | PASSPORT</a>
+                        <a href="../programs/citizenshipbyinvestment/stkittis/index.html" onclick="toggleMobileMenu()" class="block text-[11px] font-medium uppercase tracking-wider text-neutral-700 hover:text-luxury-gold">ST. KITTS &amp; NEVIS | PASSPORT</a>
+                        <a href="../programs/citizenshipbyinvestment/antiguaandbarbuda/index.html" onclick="toggleMobileMenu()" class="block text-[11px] font-medium uppercase tracking-wider text-neutral-700 hover:text-luxury-gold">ANTIGUA &amp; BARBUDA | PASSPORT</a>
+                        <a href="../programs/citizenshipbyinvestment/stlucia/index.html" onclick="toggleMobileMenu()" class="block text-[11px] font-medium uppercase tracking-wider text-neutral-700 hover:text-luxury-gold">SAINT LUCIA | PASSPORT</a>
+                        <a href="../programs/citizenshipbyinvestment/greneda/index.html" onclick="toggleMobileMenu()" class="block text-[11px] font-medium uppercase tracking-wider text-neutral-700 hover:text-luxury-gold">GRENADA | PASSPORT</a>
+                        <a href="../programs/citizenshipbyinvestment/vanuatu/index.html" onclick="toggleMobileMenu()" class="block text-[11px] font-medium uppercase tracking-wider text-neutral-700 hover:text-luxury-gold">VANUATU | PASSPORT</a>
+                        <a href="../programs/citizenshipbyinvestment/sãotoméandpríncipe/index.html" onclick="toggleMobileMenu()" class="block text-[11px] font-medium uppercase tracking-wider text-neutral-700 hover:text-luxury-gold">SÃO TOMÉ AND PRÍNCIPE | PASSPORT</a>
+                        <a href="../programs/citizenshipbyinvestment/nauru/index.html" onclick="toggleMobileMenu()" class="block text-[11px] font-medium uppercase tracking-wider text-neutral-700 hover:text-luxury-gold">REPUBLIC OF NAURU | PASSPORT</a>
+                    </div>
+                </div>
+
+                <!-- 2. GLOBAL RESIDENCY -->
+                <div class="border-b border-neutral-100 pb-4">
+                    <button type="button" onclick="toggleMobileSubmenu('mob-res-sub', this)" class="w-full flex justify-between items-center text-left text-xs font-bold uppercase tracking-[0.2em] text-[#C5A880] focus:outline-none py-1 cursor-pointer">
+                        <span>Global Residency</span>
+                        <i class="fa-solid fa-chevron-down text-[10px] transition-transform duration-300"></i>
+                    </button>
+                    <div id="mob-res-sub" class="hidden pt-3 pl-2 space-y-3">
+                        <a href="../residencybyinvestment/index.html" onclick="toggleMobileMenu()" class="block text-[11px] font-bold uppercase tracking-wider text-neutral-900 hover:text-luxury-gold">ALL RESIDENCY PROGRAMS</a>
+                        <a href="../programs/residencybyinvestment/portugal/index.html" onclick="toggleMobileMenu()" class="block text-[11px] font-medium uppercase tracking-wider text-neutral-700 hover:text-luxury-gold">PORTUGAL | GOLDEN VISA</a>
+                        <a href="../programs/residencybyinvestment/greece/index.html" onclick="toggleMobileMenu()" class="block text-[11px] font-medium uppercase tracking-wider text-neutral-700 hover:text-luxury-gold">GREECE | GOLDEN VISA</a>
+                        <a href="../programs/residencybyinvestment/panama/index.html" onclick="toggleMobileMenu()" class="block text-[11px] font-medium uppercase tracking-wider text-neutral-700 hover:text-luxury-gold">PANAMA | GOLDEN VISA</a>
+                        <a href="../programs/residencybyinvestment/uae/index.html" onclick="toggleMobileMenu()" class="block text-[11px] font-medium uppercase tracking-wider text-neutral-700 hover:text-luxury-gold">UNITED ARAB EMIRATES | GOLDEN VISA</a>
+                    </div>
+                </div>
+
+                <!-- 3. OTHER SERVICES -->
+                <div class="border-b border-neutral-100 pb-4 space-y-3">
+                    <span class="block text-xs font-bold uppercase tracking-[0.2em] text-[#C5A880]">OTHER SERVICES</span>
+                    <div class="pl-2 space-y-3">
+                        <a href="../realestate/index.html" onclick="toggleMobileMenu()" class="block text-[11px] font-bold uppercase tracking-wider text-neutral-900 hover:text-luxury-gold">REAL ESTATE ADVISORY</a>
+                        <a href="index.html" onclick="toggleMobileMenu()" class="block text-[11px] font-bold uppercase tracking-wider text-[#786142]">EDUCATIONAL ADVISORY</a>
+                    </div>
+                </div>
+
+                <!-- 4. SHARIF GROUP -->
+                <div class="space-y-3">
+                    <span class="block text-xs font-bold uppercase tracking-[0.2em] text-[#C5A880]">SHARIF GROUP</span>
+                    <div class="pl-2 space-y-3">
+                        <a href="../aboutus/index.html" onclick="toggleMobileMenu()" class="block text-[11px] font-bold uppercase tracking-wider text-neutral-900 hover:text-luxury-gold">ABOUT SHARIF GROUP</a>
+                        <a href="../aboutfounder/index.html" onclick="toggleMobileMenu()" class="block text-[11px] font-bold uppercase tracking-wider text-neutral-900 hover:text-luxury-gold">ABOUT FOUNDER | ALI SHARIF</a>
+                        <a href="../socialresponsibility/index.html" onclick="toggleMobileMenu()" class="block text-[11px] font-bold uppercase tracking-wider text-neutral-900 hover:text-luxury-gold">SOCIAL RESPONSIBILITY</a>
+                        <a href="../blog/index.html" onclick="toggleMobileMenu()" class="block text-[11px] font-bold uppercase tracking-wider text-neutral-900 hover:text-luxury-gold">INSIGHTS &amp; BLOG</a>
+                        <a href="../contact/index.html" onclick="toggleMobileMenu()" class="block text-[11px] font-bold uppercase tracking-wider text-neutral-900 hover:text-luxury-gold">CONTACT US</a>
+                    </div>
+                </div>
+
             </div>
         </div>
-    </header>
+
+        <!-- Mobile Book Consultation Bottom Button -->
+        <div class="p-6 border-t border-neutral-100 bg-white">
+            <a href="../contact/index.html" onclick="toggleMobileMenu()" class="block w-full py-4 text-center rounded-full bg-neutral-950 text-white text-xs font-bold uppercase tracking-[0.2em] hover:bg-luxury-gold transition shadow-lg">
+                BOOK CONSULTATION
+            </a>
+        </div>
+    </div>
 
     <!-- MAIN VIEWPORT CONTAINER -->
     <main id="app-view" class="pt-20 min-h-[70vh]">
@@ -3305,38 +3306,35 @@
 
 	function toggleMobileMenu() {
             const drawer = document.getElementById('mobile-menu-drawer');
-            const bar1 = document.getElementById('mob-bar1');
-            const bar2 = document.getElementById('mob-bar2');
-            const bar3 = document.getElementById('mob-bar3');
             if (!drawer) return;
 
-            const isOpen = !drawer.classList.contains('translate-x-full');
+            const isClosed = drawer.classList.contains('translate-x-full');
 
-            if (!isOpen) {
+            if (isClosed) {
                 drawer.classList.remove('translate-x-full');
                 drawer.classList.add('translate-x-0');
-                document.body.style.overflow = 'hidden';
-                if(bar1) bar1.classList.add('rotate-45', 'translate-y-2');
-                if(bar2) bar2.classList.add('opacity-0');
-                if(bar3) bar3.classList.add('-rotate-45', '-translate-y-2');
+                document.documentElement.classList.add('overflow-hidden');
+                document.body.classList.add('overflow-hidden');
             } else {
                 drawer.classList.remove('translate-x-0');
                 drawer.classList.add('translate-x-full');
-                document.body.style.overflow = '';
-                if(bar1) bar1.classList.remove('rotate-45', 'translate-y-2');
-                if(bar2) bar2.classList.remove('opacity-0');
-                if(bar3) bar3.classList.remove('-rotate-45', '-translate-y-2');
+                document.documentElement.classList.remove('overflow-hidden');
+                document.body.classList.remove('overflow-hidden');
             }
         }
 
-	function toggleMobileSubmenu(submenuId, btn) {
+        function toggleMobileSubmenu(submenuId, btn) {
             const submenu = document.getElementById(submenuId);
-            const icon = btn.querySelector('.fa-chevron-down');
+            const icon = btn ? btn.querySelector('i.fa-chevron-down') : null;
             if (!submenu) return;
             
-            submenu.classList.toggle('hidden');
-            if (icon) {
-                icon.style.transform = submenu.classList.contains('hidden') ? 'rotate(0deg)' : 'rotate(180deg)';
+            const isHidden = submenu.classList.contains('hidden');
+            if (isHidden) {
+                submenu.classList.remove('hidden');
+                if (icon) icon.style.transform = 'rotate(180deg)';
+            } else {
+                submenu.classList.add('hidden');
+                if (icon) icon.style.transform = 'rotate(0deg)';
             }
         }
 
