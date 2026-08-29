@@ -1902,6 +1902,21 @@
             }
         }
 
+        
+        function toggleMobileAccordion(id) {
+            const el = document.getElementById(id);
+            const arrowId = id.replace('-sub', '-arrow');
+            const arrow = document.getElementById(arrowId);
+            if(el) {
+                el.classList.toggle('hidden');
+                if(arrow) {
+                    arrow.style.transform = el.classList.contains('hidden') ? 'rotate(0deg)' : 'rotate(180deg)';
+                }
+            }
+        }
+
+		
+
         // Close country dropdown if clicked outside on mobile/desktop
         document.addEventListener('click', (e) => {
             if (!e.target.closest('.custom-select-wrapper')) {
