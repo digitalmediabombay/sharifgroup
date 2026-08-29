@@ -387,7 +387,7 @@
     <header id="main-header" class="fixed top-0 left-0 w-full z-[100] border-b border-neutral-200 transition-all duration-500 bg-white mega-blur">
         <div class="max-w-[1440px] mx-auto px-4 sm:px-8 h-20 flex items-center justify-between relative">
             <div class="flex items-center space-x-5">
-                <a href="../index.html" class="flex items-center shrink-0">
+                <a href="../index.html" onclick="sessionStorage.setItem('sharif_preloader_shown', 'true');" class="flex items-center shrink-0">
                     <img id="nav-logo" src="https://shariftrip.com/wp-content/uploads/2024/06/Group-427321462.svg" alt="Sharif Group Logo" class="h-14 w-auto object-contain transition-all duration-500 opacity-100">
                 </a>
                 <span class="hidden xl:inline text-neutral-300 font-light">|</span>
@@ -602,7 +602,86 @@
         </div>
     </header>
 
-    <!-- MAIN VIEWPORT CONTAINER -->
+  <!-- MOBILE NAVIGATION DRAWER -->
+  <div id="mobile-menu-drawer" class="fixed inset-0 bg-white z-[105] opacity-0 pointer-events-none translate-y-[-100%] transition-all duration-500 flex flex-col overflow-y-auto px-6 py-8">
+      <div class="flex items-center justify-between pb-6 border-b border-neutral-200">
+          <a href="../index.html" onclick="sessionStorage.setItem('sharif_preloader_shown', 'true');" class="flex items-center space-x-3">
+              <img src="https://shariftrip.com/wp-content/uploads/2024/06/Group-427321462.svg" alt="Logo" class="h-12 w-auto">
+              <div class="flex flex-col font-serif text-neutral-900 tracking-[0.2em] font-bold leading-tight">
+                  <span class="text-xs uppercase">SHARIF</span>
+                  <span class="text-xs uppercase">GROUP</span>
+              </div>
+          </a>
+          <button onclick="toggleMobileMenu()" class="w-10 h-10 rounded-full bg-neutral-100 flex items-center justify-center text-neutral-900 focus:outline-none">
+              <i class="fa-solid fa-xmark text-lg"></i>
+          </button>
+      </div>
+
+      <div class="py-6 space-y-6">
+          <a href="../eligibilitychecker/index.html" class="block w-full text-center py-3.5 rounded-full border border-[#786142] text-[#786142] text-[11px] font-bold uppercase tracking-[0.18em]">
+              Eligibility Assessment
+          </a>
+
+          <!-- Accordion 1: Dual Citizenship -->
+          <div class="border-b border-neutral-200 pb-4">
+              <button onclick="toggleMobileAccordion('mob-citizenship-sub')" class="w-full flex items-center justify-between text-left text-sm font-bold uppercase tracking-widest text-[#786142] py-2">
+                  <span>Dual Citizenship</span>
+                  <i class="fa-solid fa-chevron-down text-xs transition-transform duration-300" id="mob-citizenship-arrow"></i>
+              </button>
+              <div id="mob-citizenship-sub" class="hidden pl-4 pt-3 space-y-3 text-xs uppercase font-bold tracking-wider text-neutral-700">
+                  <a href="../citizenshipbyinvestment/index.html" class="block hover:text-luxury-gold transition py-1">All Citizenship Programs</a>
+                  <a href="../programs/citizenshipbyinvestment/dominica/index.html" class="block hover:text-luxury-gold transition py-1">Dominica | Passport</a>
+                  <a href="../programs/citizenshipbyinvestment/stkittis/index.html" class="block hover:text-luxury-gold transition py-1">St. Kitts & Nevis | Passport</a>
+                  <a href="../programs/citizenshipbyinvestment/antiguaandbarbuda/index.html" class="block hover:text-luxury-gold transition py-1">Antigua & Barbuda | Passport</a>
+                  <a href="../programs/citizenshipbyinvestment/stlucia/index.html" class="block hover:text-luxury-gold transition py-1">Saint Lucia | Passport</a>
+                  <a href="../programs/citizenshipbyinvestment/greneda/index.html" class="block hover:text-luxury-gold transition py-1">Grenada | Passport</a>
+                  <a href="../programs/citizenshipbyinvestment/vanuatu/index.html" class="block hover:text-luxury-gold transition py-1">Vanuatu | Passport</a>
+                  <a href="../programs/citizenshipbyinvestment/sãotoméandpríncipe/index.html" class="block hover:text-luxury-gold transition py-1">São Tomé and Príncipe | Passport</a>
+                  <a href="../programs/citizenshipbyinvestment/nauru/index.html" class="block hover:text-luxury-gold transition py-1">Republic of Nauru | Passport</a>
+              </div>
+          </div>
+
+          <!-- Accordion 2: Global Residency -->
+          <div class="border-b border-neutral-200 pb-4">
+              <button onclick="toggleMobileAccordion('mob-residency-sub')" class="w-full flex items-center justify-between text-left text-sm font-bold uppercase tracking-widest text-[#786142] py-2">
+                  <span>Global Residency</span>
+                  <i class="fa-solid fa-chevron-down text-xs transition-transform duration-300" id="mob-residency-arrow"></i>
+              </button>
+              <div id="mob-residency-sub" class="hidden pl-4 pt-3 space-y-3 text-xs uppercase font-bold tracking-wider text-neutral-700">
+                  <a href="../residencybyinvestment/index.html" class="block hover:text-luxury-gold transition py-1">All Residency Programs</a>
+                  <a href="../programs/residencybyinvestment/portugal/index.html" class="block hover:text-luxury-gold transition py-1">Portugal | Golden Visa</a>
+                  <a href="../programs/residencybyinvestment/greece/index.html" class="block hover:text-luxury-gold transition py-1">Greece | Golden Visa</a>
+                  <a href="../programs/residencybyinvestment/panama/index.html" class="block hover:text-luxury-gold transition py-1">Panama | Golden Visa</a>
+                  <a href="../programs/residencybyinvestment/uae/index.html" class="block hover:text-luxury-gold transition py-1">United Arab Emirates | Golden Visa</a>
+              </div>
+          </div>
+
+          <!-- Other Services -->
+          <div class="space-y-3 pt-2">
+              <span class="block text-[10px] font-bold uppercase tracking-[0.25em] text-[#786142]">Other Services</span>
+              <a href="../realestate/index.html" class="block text-xs font-bold uppercase tracking-widest text-neutral-900 hover:text-luxury-gold transition py-1">Real Estate Advisory</a>
+              <a href="../educationaladvisory/index.html" class="block text-xs font-bold uppercase tracking-widest text-neutral-900 hover:text-luxury-gold transition py-1">Educational Advisory</a>
+          </div>
+
+          <!-- Sharif Group Links -->
+          <div class="space-y-3 pt-4 border-t border-neutral-200">
+              <span class="block text-[10px] font-bold uppercase tracking-[0.25em] text-[#786142]">Sharif Group</span>
+              <a href="../aboutus/index.html" class="block text-xs font-bold uppercase tracking-widest text-neutral-900 hover:text-luxury-gold transition py-1">About Sharif Group</a>
+              <a href="index.html" class="block text-xs font-bold uppercase tracking-widest text-neutral-900 hover:text-luxury-gold transition py-1">About Founder | Ali Sharif</a>
+              <a href="../socialresponsibility/index.html" class="block text-xs font-bold uppercase tracking-widest text-neutral-900 hover:text-luxury-gold transition py-1">Social Responsibility</a>
+              <a href="../blog/index.html" class="block text-xs font-bold uppercase tracking-widest text-neutral-900 hover:text-luxury-gold transition py-1">Insights & Blog</a>
+              <a href="../contact/index.html" class="block text-xs font-bold uppercase tracking-widest text-neutral-900 hover:text-luxury-gold transition py-1">Contact Us</a>
+          </div>
+      </div>
+
+      <div class="pt-6 mt-auto">
+          <a href="../contact/index.html" class="block w-full text-center py-4 rounded-full bg-neutral-900 text-white text-xs font-bold uppercase tracking-widest hover:bg-luxury-gold transition shadow-lg">
+              Book Consultation
+          </a>
+      </div>
+  </div>
+
+  <!-- MAIN VIEWPORT CONTAINER -->
     <main id="app-view" class="pt-20 min-h-[70vh]">
 
         <!-- HERO SECTION: FOUNDER & CEO ALI SHARIF -->
@@ -680,7 +759,7 @@
                             </div>
 
                             <div class="pt-2">
-                                <a href="contact/index.html" class="inline-block px-7 py-3.5 rounded-xl bg-[#786142] text-white text-xs font-bold uppercase tracking-widest hover:bg-luxury-gold transition duration-300 shadow-xl">
+                                <a href="../contact/index.html" class="inline-block px-7 py-3.5 rounded-xl bg-[#786142] text-white text-xs font-bold uppercase tracking-widest hover:bg-luxury-gold transition duration-300 shadow-xl">
                                     Book Meeting With Ali Sharif
                                 </a>
                             </div>
@@ -943,7 +1022,7 @@
 
                         <!-- Quick CTA Action Button -->
                         <div class="pt-3">
-                            <a href="contact/index.html" class="inline-flex items-center justify-center w-full sm:w-auto gap-3 px-8 py-4 bg-luxury-gold text-white text-xs font-bold uppercase tracking-widest rounded-xl hover:bg-neutral-900 transition duration-300 shadow-xl">
+                            <a href="../contact/index.html" class="inline-flex items-center justify-center w-full sm:w-auto gap-3 px-8 py-4 bg-luxury-gold text-white text-xs font-bold uppercase tracking-widest rounded-xl hover:bg-neutral-900 transition duration-300 shadow-xl">
                                 <span>Book Consultation with Ali Sharif</span>
                                 <i class="fa-solid fa-arrow-right text-[10px]"></i>
                             </a>
@@ -956,7 +1035,7 @@
             </div>
         </section>
 
-        <!-- FIND EXACTLY FROM LINE 540 TO 680 IN aboutfounder/index.html -->
+        
         <!-- SECTION 3: OPERATIONAL SCOPE: WHAT DOES ALI SHARIF DO? (4 HOVER-EXPAND ACCORDION CARDS) -->
         <section class="py-24 px-6 bg-[#050B14] border-b border-neutral-800" id="sec-operational-scope">
             <div class="max-w-6xl mx-auto space-y-12">
@@ -1444,7 +1523,7 @@
                             </ul>
 
                             <div class="pt-2">
-                                <a href="contact/index.html" class="inline-flex items-center justify-center w-full gap-2 px-6 py-3.5 bg-neutral-900 text-white text-xs font-bold uppercase tracking-widest rounded-xl hover:bg-luxury-gold transition duration-300 shadow-md">
+                                <a href="../contact/index.html" class="inline-block px-8 py-4 bg-neutral-900 text-white text-xs font-bold uppercase tracking-widest rounded-xl hover:bg-luxury-gold transition duration-300 shadow-xl">
                                     <span>Book Consultation with Ali Sharif</span>
                                     <i class="fa-solid fa-arrow-right text-[10px]"></i>
                                 </a>
@@ -1492,7 +1571,7 @@
                     Connect directly with our executive team at 116, The Binary Tower, Business Bay, Dubai to initialize your confidential case analysis.
                 </p>
                 <div class="pt-4">
-                    <a href="contact/index.html" class="inline-block px-8 py-4 bg-neutral-900 text-white text-xs font-bold uppercase tracking-widest rounded-xl hover:bg-luxury-gold transition duration-300 shadow-xl">
+                    <a href="../contact/index.html" class="inline-block px-8 py-4 bg-neutral-900 text-white text-xs font-bold uppercase tracking-widest rounded-xl hover:bg-luxury-gold transition duration-300 shadow-xl">
                         Book Confidential Briefing
                     </a>
                 </div>
@@ -1518,7 +1597,7 @@
         <div class="max-w-7xl mx-auto px-6 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-8 mb-16 relative z-30 [text-shadow:_0_1px_3px_rgb(0_0_0_/_80%)]">
             <!-- Col 1: Brand Info (Clickable Logo & Text redirecting to Hero Section) -->
             <div class="flex flex-col space-y-6 lg:col-span-1">
-                <a href="#" onclick="window.scrollTo({top: 0, behavior: 'smooth'}); return false;" class="flex items-center space-x-4 group cursor-pointer">
+                <a href="../index.html" onclick="sessionStorage.setItem('sharif_preloader_shown', 'true');" class="flex items-center space-x-4 group cursor-pointer">
                     <img src="https://shariftrip.com/wp-content/uploads/2024/06/Group-427321463.svg" alt="Sharif Group Logo" class="h-14 w-auto">
                     <div class="flex items-center space-x-4 translate-y-1.5">
                         <div class="h-10 w-[1px] bg-neutral-500/50"></div>
