@@ -226,7 +226,7 @@
     <header id="main-header" class="fixed top-0 left-0 w-full z-[100] border-b border-neutral-200 transition-all duration-500 bg-white mega-blur">
         <div class="max-w-[1440px] mx-auto px-4 sm:px-8 h-20 flex items-center justify-between relative">
             <div class="flex items-center space-x-5">
-                <a href="../../../index.html" class="flex items-center shrink-0">
+                <a href="../../../index.html" onclick="sessionStorage.setItem('sharif_preloader_shown', 'true');" class="flex items-center shrink-0">
                     <img id="nav-logo" src="https://shariftrip.com/wp-content/uploads/2024/06/Group-427321462.svg" alt="Sharif Group Logo" class="h-14 w-auto object-contain transition-all duration-500 opacity-100">
                 </a>
                 <span class="hidden xl:inline text-neutral-300 font-light">|</span>
@@ -263,7 +263,7 @@
 
             <!-- Right Action Pill Buttons -->
             <div class="hidden lg:flex items-center space-x-3 shrink-0">
-                <a href="../../../eligibilitychecker/index.html" class="px-5 py-2.5 rounded-full border border-[#786142] text-[#786142] text-[11px] font-bold uppercase tracking-[0.18em] hover:bg-[#786142] hover:text-white transition-all duration-300 whitespace-nowrap">
+                <a href="#program-consult-form-section" class="px-5 py-2.5 rounded-full border border-[#786142] text-[#786142] text-[11px] font-bold uppercase tracking-[0.18em] hover:bg-[#786142] hover:text-white transition-all duration-300 whitespace-nowrap">
                     Eligibility Checker
                 </a>
                 <a href="../../../contact/index.html" class="px-5 py-2.5 rounded-full border border-neutral-900 text-neutral-900 text-[11px] font-bold uppercase tracking-[0.18em] hover:bg-luxury-gold hover:border-luxury-gold hover:text-white transition-all duration-300 whitespace-nowrap">
@@ -272,10 +272,10 @@
             </div>
 
             <!-- Mobile Navigation Toggle Button -->
-            <button onclick="toggleMobileMenu()" class="lg:hidden flex flex-col items-end space-y-1.5 focus:outline-none z-[110]" aria-label="Toggle Navigation">
-                <span class="w-6 h-[2px] bg-luxury-dark transition-transform" id="mob-bar1"></span>
-                <span class="w-4 h-[2px] bg-luxury-dark transition-opacity" id="mob-bar2"></span>
-                <span class="w-6 h-[2px] bg-luxury-dark transition-transform" id="mob-bar3"></span>
+            <button onclick="toggleMobileMenu()" class="lg:hidden flex flex-col items-end space-y-1.5 focus:outline-none p-2 z-[110]" aria-label="Toggle Navigation Menu">
+                <span class="w-6 h-[2px] bg-neutral-900 transition-all duration-300 origin-center" id="mob-bar1"></span>
+                <span class="w-4 h-[2px] bg-neutral-900 transition-all duration-300 origin-center" id="mob-bar2"></span>
+                <span class="w-6 h-[2px] bg-neutral-900 transition-all duration-300 origin-center" id="mob-bar3"></span>
             </button>
         </div>
 
@@ -290,34 +290,34 @@
                     <h4 class="text-[11px] font-bold tracking-[0.18em] uppercase text-luxury-gold mb-6 text-center lg:text-left">Caribbean Portfolios</h4>
                     <ul class="space-y-4">
                         <li class="flex items-center group">
-                            <div class="flex items-center space-x-3">
+                            <a href="../../citizenshipbyinvestment/dominica/index.html" class="flex items-center space-x-3">
                                 <img src="https://www.commonwealthlawyers.com/wp-content/uploads/2023/11/Dominica-Americas-Hub.png" alt="Dominica" class="w-12 h-8 object-cover rounded-sm border border-neutral-200 shadow-sm">
-                                <a href="../dominica/index.html" class="text-[11px] font-bold tracking-[0.18em] uppercase text-neutral-700 group-hover:text-luxury-gold transition">Dominica | Passport</a>
-                            </div>
+                                <span class="text-[11px] font-bold tracking-[0.18em] uppercase text-neutral-700 group-hover:text-luxury-gold transition">Dominica | Passport</span>
+                            </a>
                         </li>
                         <li class="flex items-center group">
-                            <div class="flex items-center space-x-3">
+                            <a href="../../citizenshipbyinvestment/stkittis/index.html" class="flex items-center space-x-3">
                                 <img src="https://knightsbridge.ae/wp-content/uploads/2025/08/St-Kitts-and-Nevis-Passport.png" alt="St. Kitts" class="w-12 h-8 object-cover rounded-sm border border-neutral-200 shadow-sm">
-                                <a href="../stkittis/index.html" class="text-[11px] font-bold tracking-[0.18em] uppercase text-neutral-700 group-hover:text-luxury-gold transition">St. Kitts & Nevis | Passport</a>
-                            </div>
+                                <span class="text-[11px] font-bold tracking-[0.18em] uppercase text-neutral-700 group-hover:text-luxury-gold transition">St. Kitts & Nevis | Passport</span>
+                            </a>
                         </li>
                         <li class="flex items-center group">
-                            <div class="flex items-center space-x-3">
+                            <a href="index.html" class="flex items-center space-x-3">
                                 <img src="https://iworld.com/wp-content/uploads/2022/12/passport-investment-antigua-barbuda-900x467.jpg" alt="Antigua" class="w-12 h-8 object-cover rounded-sm border border-neutral-200 shadow-sm">
-                                <a href="index.html" class="text-[11px] font-bold tracking-[0.18em] uppercase text-luxury-gold transition">Antigua & Barbuda | Passport</a>
-                            </div>
+                                <span class="text-[11px] font-bold tracking-[0.18em] uppercase text-neutral-700 group-hover:text-luxury-gold transition">Antigua & Barbuda | Passport</span>
+                            </a>
                         </li>
                         <li class="flex items-center group">
-                            <div class="flex items-center space-x-3">
+                            <a href="../../citizenshipbyinvestment/stlucia/index.html" class="flex items-center space-x-3">
                                 <img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSN0El-reuKQyKoaHBg-DeMHggoYJ84MdiHYVxCSd2mF3OCTkYO1gEpQfQU&s=10" alt="Saint Lucia" class="w-12 h-8 object-cover rounded-sm border border-neutral-200 shadow-sm">
-                                <a href="../stlucia/index.html" class="text-[11px] font-bold tracking-[0.18em] uppercase text-neutral-700 group-hover:text-luxury-gold transition">Saint Lucia | Passport</a>
-                            </div>
+                                <span class="text-[11px] font-bold tracking-[0.18em] uppercase text-neutral-700 group-hover:text-luxury-gold transition">Saint Lucia | Passport</span>
+                            </a>
                         </li>
                         <li class="flex items-center group">
-                            <div class="flex items-center space-x-3">
+                            <a href="../../citizenshipbyinvestment/greneda/index.html" class="flex items-center space-x-3">
                                 <img src="https://iworld.com/wp-content/uploads/2022/12/citizenship-passport-investment-grenada-900x467.jpg" alt="Grenada" class="w-12 h-8 object-cover rounded-sm border border-neutral-200 shadow-sm">
-                                <a href="../greneda/index.html" class="text-[11px] font-bold tracking-[0.18em] uppercase text-neutral-700 group-hover:text-luxury-gold transition">Grenada | Passport</a>
-                            </div>
+                                <span class="text-[11px] font-bold tracking-[0.18em] uppercase text-neutral-700 group-hover:text-luxury-gold transition">Grenada | Passport</span>
+                            </a>
                         </li>
                     </ul>
                 </div>
@@ -325,22 +325,22 @@
                     <h4 class="text-[11px] font-bold tracking-[0.18em] uppercase text-neutral-400 mb-6 text-center lg:text-left">Global Portfolios</h4>
                     <ul class="space-y-4">
                         <li class="flex items-center group">
-                            <div class="flex items-center space-x-3">
+                            <a href="../../citizenshipbyinvestment/vanuatu/index.html" class="flex items-center space-x-3">
                                 <img src="https://fca.vu/wp-content/uploads/2020/01/how-to-get-vanuatu-citizenship-en-449126643.jpeg" alt="Vanuatu" class="w-12 h-8 object-cover rounded-sm border border-neutral-200 shadow-sm">
-                                <a href="../vanuatu/index.html" class="text-[11px] font-bold tracking-[0.18em] uppercase text-neutral-700 group-hover:text-luxury-gold transition">Vanuatu | Passport</a>
-                            </div>
+                                <span class="text-[11px] font-bold tracking-[0.18em] uppercase text-neutral-700 group-hover:text-luxury-gold transition">Vanuatu | Passport</span>
+                            </a>
                         </li>
                         <li class="flex items-center group">
-                            <div class="flex items-center space-x-3">
-                                <img src="https://b3052398.smushcdn.com/3052398/wp-content/uploads/Sao_Tome_passport.png?lossy=2&strip=1&webp=1" alt="Sao Tome" class="w-12 h-8 object-cover rounded-sm border border-neutral-200 shadow-sm">
-                                <a href="../sãotoméandpríncipe/index.html" class="text-[11px] font-bold tracking-[0.18em] uppercase text-neutral-700 group-hover:text-luxury-gold transition">São Tomé and Príncipe | Passport</a>
-                            </div>
+                            <a href="../../citizenshipbyinvestment/sãotoméandpríncipe/index.html" class="flex items-center space-x-3">
+                                <img src="https://b3052398.smushcdn.com/3052398/wp-content/uploads/Sao_Tome_passport.png?lossy=2&strip=1&webp=1" alt="São Tomé & Príncipe" class="w-12 h-8 object-cover rounded-sm border border-neutral-200 shadow-sm">
+                                <span class="text-[11px] font-bold tracking-[0.18em] uppercase text-neutral-700 group-hover:text-luxury-gold transition">São Tomé & Príncipe | Passport</span>
+                            </a>
                         </li>
                         <li class="flex items-center group">
-                            <div class="flex items-center space-x-3">
-                                <img src="https://reloc8.online/wp-content/uploads/2024/12/reloc8-online-nauru-passport-citizenship-climate.jpg" alt="Nauru" class="w-12 h-8 object-cover rounded-sm border border-neutral-200 shadow-sm">
-                                <a href="../nauru/index.html" class="text-[11px] font-bold tracking-[0.18em] uppercase text-neutral-700 group-hover:text-luxury-gold transition">Republic of Nauru | Passport</a>
-                            </div>
+                            <a href="../../citizenshipbyinvestment/nauru/index.html" class="flex items-center space-x-3">
+                                <img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQt_TU_z9WwK6KHWTIRE0cztOM-HqMxkhJUs6uqoOoh5pdnk3O8lTyr-Zg&s=10" alt="Republic of Nauru" class="w-12 h-8 object-cover rounded-sm border border-neutral-200 shadow-sm">
+                                <span class="text-[11px] font-bold tracking-[0.18em] uppercase text-neutral-700 group-hover:text-luxury-gold transition">Republic of Nauru | Passport</span>
+                            </a>
                         </li>
                     </ul>
                 </div>
@@ -358,16 +358,16 @@
                     <h4 class="text-[11px] font-bold tracking-[0.18em] uppercase text-luxury-gold mb-6 text-center lg:text-left">European Portfolios</h4>
                     <ul class="space-y-4">
                         <li class="flex items-center group">
-                            <div class="flex items-center space-x-3">
+                            <a href="../portugal/index.html" class="flex items-center space-x-3">
                                 <img src="https://www.bilimoriaassociate.com/images/portugal-golden-vsa.png" alt="Portugal" class="w-12 h-8 object-cover rounded-sm border border-neutral-200 shadow-sm">
-                                <a href="../../residencybyinvestment/portugal/index.html" class="text-[11px] font-bold tracking-[0.18em] uppercase text-neutral-700 group-hover:text-luxury-gold transition">Portugal | Golden Visa</a>
-                            </div>
+                                <span class="text-[11px] font-bold tracking-[0.18em] uppercase text-neutral-700 group-hover:text-luxury-gold transition">Portugal | Golden Visa</span>
+                            </a>
                         </li>
                         <li class="flex items-center group">
-                            <div class="flex items-center space-x-3">
+                            <a href="../greece/index.html" class="flex items-center space-x-3">
                                 <img src="https://theluxuryplaybook.com/wp-content/uploads/2024/07/golden-visa-greece-threshold.jpg" alt="Greece" class="w-12 h-8 object-cover rounded-sm border border-neutral-200 shadow-sm">
-                                <a href="../../residencybyinvestment/greece/index.html" class="text-[11px] font-bold tracking-[0.18em] uppercase text-neutral-700 group-hover:text-luxury-gold transition">Greece | Golden Visa</a>
-                            </div>
+                                <span class="text-[11px] font-bold tracking-[0.18em] uppercase text-neutral-700 group-hover:text-luxury-gold transition">Greece | Golden Visa</span>
+                            </a>
                         </li>
                     </ul>
                 </div>
@@ -375,16 +375,16 @@
                     <h4 class="text-[11px] font-bold tracking-[0.18em] uppercase text-neutral-400 mb-6 text-center lg:text-left">Americas & UAE</h4>
                     <ul class="space-y-4">
                         <li class="flex items-center group">
-                            <div class="flex items-center space-x-3">
-                                <img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQlkpBOrKxy_nypaBUd8WsErlwsFO4buofBcHfNKGhBKQ&s=10" alt="Panama" class="w-12 h-8 object-cover rounded-sm border border-neutral-200 shadow-sm">
-                                <a href="../../residencybyinvestment/panama/index.html" class="text-[11px] font-bold tracking-[0.18em] uppercase text-neutral-700 group-hover:text-luxury-gold transition">Panama | Golden Visa</a>
-                            </div>
+                            <a href="../panama/index.html" class="flex items-center space-x-3">
+                                <img src="https://opm01.com/wp-content/uploads/2023/09/Pasaporte-panama.jpg" alt="Panama" class="w-12 h-8 object-cover rounded-sm border border-neutral-200 shadow-sm">
+                                <span class="text-[11px] font-bold tracking-[0.18em] uppercase text-neutral-700 group-hover:text-luxury-gold transition">Panama | Golden Visa</span>
+                            </a>
                         </li>
                         <li class="flex items-center group">
-                            <div class="flex items-center space-x-3">
+                            <a href="../uae/index.html" class="flex items-center space-x-3">
                                 <img src="https://lawbridgecorporate.com/wp-content/uploads/2023/10/uae-residence-visa.jpg" alt="UAE" class="w-12 h-8 object-cover rounded-sm border border-neutral-200 shadow-sm">
-                                <a href="../../residencybyinvestment/uae/index.html" class="text-[11px] font-bold tracking-[0.18em] uppercase text-neutral-700 group-hover:text-luxury-gold transition">United Arab Emirates | Golden Visa</a>
-                            </div>
+                                <span class="text-[11px] font-bold tracking-[0.18em] uppercase text-neutral-700 group-hover:text-luxury-gold transition">United Arab Emirates | Golden Visa</span>
+                            </a>
                         </li>
                     </ul>
                 </div>
@@ -441,66 +441,88 @@
         </div>
     </header>
 
-    <!-- MOBILE MENU COMPONENT DRAWER -->
-    <div id="mobile-menu-drawer" class="fixed inset-0 bg-white z-[99] pt-28 px-8 pb-10 flex flex-col justify-between transform translate-x-full transition-transform duration-500 lg:hidden overflow-y-auto">
-        <div class="space-y-6">
-            <a href="../../../eligibilitychecker/index.html" onclick="toggleMobileMenu()" class="block w-full py-3.5 rounded-full border border-luxury-dark text-[11px] tracking-wider uppercase font-semibold text-center hover:bg-neutral-50 premium-btn-hover">
-                Eligibility Checker
-            </a>
-            <div class="space-y-6">
-                <!-- DUAL CITIZENSHIP -->
+    <!-- MOBILE NAVIGATION DRAWER (OUTSIDE HEADER) -->
+    <div id="mobile-menu-drawer" class="fixed inset-x-0 top-20 bottom-0 bg-white z-[999] transform translate-x-full transition-transform duration-300 ease-in-out overflow-y-auto lg:hidden shadow-2xl">
+        <div class="p-6 space-y-6 bg-white min-h-full">
+            <nav class="space-y-4 text-xs font-bold tracking-[0.18em] uppercase text-neutral-800">
                 <div>
-                    <p class="text-[10px] tracking-widest uppercase text-luxury-gold font-bold mb-2">DUAL CITIZENSHIP</p>
-                    <ul class="space-y-2 text-xs font-semibold uppercase tracking-wider pl-2 text-neutral-700">
-                        <li><a href="../../../citizenshipbyinvestment/index.html" onclick="toggleMobileMenu()" class="hover:text-luxury-gold block py-0.5">ALL PROGRAMS</a></li>
-                        <li><a href="../dominica/index.html" onclick="toggleMobileMenu()" class="hover:text-luxury-gold block py-0.5">DOMINICA | PASSPORT</a></li>
-                        <li><a href="../stkittis/index.html" onclick="toggleMobileMenu()" class="hover:text-luxury-gold block py-0.5">ST. KITTS &amp; NEVIS | PASSPORT</a></li>
-                        <li><a href="index.html" onclick="toggleMobileMenu()" class="text-luxury-gold block py-0.5">ANTIGUA &amp; BARBUDA | PASSPORT</a></li>
-                        <li><a href="../stlucia/index.html" onclick="toggleMobileMenu()" class="hover:text-luxury-gold block py-0.5">SAINT LUCIA | PASSPORT</a></li>
-                        <li><a href="../greneda/index.html" onclick="toggleMobileMenu()" class="hover:text-luxury-gold block py-0.5">GRENADA | PASSPORT</a></li>
-                        <li><a href="../vanuatu/index.html" onclick="toggleMobileMenu()" class="hover:text-luxury-gold block py-0.5">VANUATU | PASSPORT</a></li>
-                        <li><a href="../sãotoméandpríncipe/index.html" onclick="toggleMobileMenu()" class="hover:text-luxury-gold block py-0.5">SÃO TOMÉ AND PRÍNCIPE | PASSPORT</a></li>
-                        <li><a href="../nauru/index.html" onclick="toggleMobileMenu()" class="hover:text-luxury-gold block py-0.5">REPUBLIC OF NAURU | PASSPORT</a></li>
-                    </ul>
+                    <a href="../../../index.html" onclick="sessionStorage.setItem('sharif_preloader_shown', 'true');" class="block py-2.5 border-b border-neutral-100 hover:text-luxury-gold transition">HOME</a>
                 </div>
-                <!-- GLOBAL RESIDENCY -->
+
+                <!-- Citizenship Mobile Dropdown -->
+                <div class="border-b border-neutral-100 pb-2">
+                    <button type="button" onclick="toggleMobileSubmenu('mob-citizenship', this)" class="w-full flex items-center justify-between py-2.5 focus:outline-none hover:text-luxury-gold transition">
+                        <span>CITIZENSHIP BY INVESTMENT</span>
+                        <i class="fa-solid fa-chevron-down text-[10px] transition-transform duration-300"></i>
+                    </button>
+                    <div id="mob-citizenship" class="hidden pl-4 pt-2 space-y-2.5 text-[11px] text-neutral-600">
+                        <a href="../../../citizenshipbyinvestment/index.html" class="block font-bold text-luxury-gold hover:text-luxury-dark transition">VIEW ALL PROGRAMS</a>
+                        <a href="../../citizenshipbyinvestment/dominica/index.html" class="block hover:text-luxury-gold transition">DOMINICA | PASSPORT</a>
+                        <a href="../../citizenshipbyinvestment/stkittis/index.html" class="block hover:text-luxury-gold transition">ST. KITTS & NEVIS | PASSPORT</a>
+                        <a href="index.html" class="block hover:text-luxury-gold transition">ANTIGUA & BARBUDA | PASSPORT</a>
+                        <a href="../../citizenshipbyinvestment/stlucia/index.html" class="block hover:text-luxury-gold transition">SAINT LUCIA | PASSPORT</a>
+                        <a href="../../citizenshipbyinvestment/greneda/index.html" class="block hover:text-luxury-gold transition">GRENADA | PASSPORT</a>
+                        <a href="../../citizenshipbyinvestment/vanuatu/index.html" class="block hover:text-luxury-gold transition">VANUATU | PASSPORT</a>
+                        <a href="../../citizenshipbyinvestment/sãotoméandpríncipe/index.html" class="block hover:text-luxury-gold transition">SÃO TOMÉ AND PRÍNCIPE | PASSPORT</a>
+                        <a href="../../citizenshipbyinvestment/nauru/index.html" class="block hover:text-luxury-gold transition">REPUBLIC OF NAURU | PASSPORT</a>
+                    </div>
+                </div>
+
+                <!-- Residency Mobile Dropdown -->
+                <div class="border-b border-neutral-100 pb-2">
+                    <button type="button" onclick="toggleMobileSubmenu('mob-residency', this)" class="w-full flex items-center justify-between py-2.5 focus:outline-none hover:text-luxury-gold transition">
+                        <span>RESIDENCY BY INVESTMENT</span>
+                        <i class="fa-solid fa-chevron-down text-[10px] transition-transform duration-300"></i>
+                    </button>
+                    <div id="mob-residency" class="hidden pl-4 pt-2 space-y-2.5 text-[11px] text-neutral-600">
+                        <a href="../../../residencybyinvestment/index.html" class="block font-bold text-luxury-gold hover:text-luxury-dark transition">VIEW ALL PROGRAMS</a>
+                        <a href="../portugal/index.html" class="block hover:text-luxury-gold transition">PORTUGAL | GOLDEN VISA</a>
+                        <a href="../greece/index.html" class="block hover:text-luxury-gold transition">GREECE | GOLDEN VISA</a>
+                        <a href="../panama/index.html" class="block hover:text-luxury-gold transition">PANAMA | GOLDEN VISA</a>
+                        <a href="../uae/index.html" class="block text-[#786142] font-bold hover:text-luxury-gold transition">UNITED ARAB EMIRATES | GOLDEN VISA</a>
+                    </div>
+                </div>
+
+                <!-- More Services Mobile Dropdown -->
+                <div class="border-b border-neutral-100 pb-2">
+                    <button type="button" onclick="toggleMobileSubmenu('mob-services', this)" class="w-full flex items-center justify-between py-2.5 focus:outline-none hover:text-luxury-gold transition">
+                        <span>MORE SERVICES</span>
+                        <i class="fa-solid fa-chevron-down text-[10px] transition-transform duration-300"></i>
+                    </button>
+                    <div id="mob-services" class="hidden pl-4 pt-2 space-y-2.5 text-[11px] text-neutral-600">
+                        <a href="../../../realestate/index.html" class="block hover:text-luxury-gold transition">REAL ESTATE</a>
+                        <a href="../../../educationaladvisory/index.html" class="block hover:text-luxury-gold transition">EDUCATIONAL ADVISORY</a>
+                    </div>
+                </div>
+
+                <!-- About Us Mobile Dropdown -->
+                <div class="border-b border-neutral-100 pb-2">
+                    <button type="button" onclick="toggleMobileSubmenu('mob-about', this)" class="w-full flex items-center justify-between py-2.5 focus:outline-none hover:text-luxury-gold transition">
+                        <span>ABOUT US</span>
+                        <i class="fa-solid fa-chevron-down text-[10px] transition-transform duration-300"></i>
+                    </button>
+                    <div id="mob-about" class="hidden pl-4 pt-2 space-y-2.5 text-[11px] text-neutral-600">
+                        <a href="../../../aboutus/index.html" class="block hover:text-luxury-gold transition">SHARIF GROUP OVERVIEW</a>
+                        <a href="../../../aboutfounder/index.html" class="block hover:text-luxury-gold transition">FOUNDER | ALI SHARIF</a>
+                        <a href="../../../socialresponsibility/index.html" class="block hover:text-luxury-gold transition">SOCIAL RESPONSIBILITY</a>
+                    </div>
+                </div>
+
                 <div>
-                    <p class="text-[10px] tracking-widest uppercase text-luxury-gold font-bold mb-2">GLOBAL RESIDENCY</p>
-                    <ul class="space-y-2 text-xs font-semibold uppercase tracking-wider pl-2 text-neutral-700">
-                        <li><a href="../../../residencybyinvestment/index.html" onclick="toggleMobileMenu()" class="hover:text-luxury-gold block py-0.5">ALL PROGRAMS</a></li>
-                        <li><a href="../../residencybyinvestment/portugal/index.html" onclick="toggleMobileMenu()" class="hover:text-luxury-gold block py-0.5">PORTUGAL | GOLDEN VISA</a></li>
-                        <li><a href="../../residencybyinvestment/greece/index.html" onclick="toggleMobileMenu()" class="hover:text-luxury-gold block py-0.5">GREECE | GOLDEN VISA</a></li>
-                        <li><a href="../../residencybyinvestment/panama/index.html" onclick="toggleMobileMenu()" class="hover:text-luxury-gold block py-0.5">PANAMA | GOLDEN VISA</a></li>
-                        <li><a href="../../residencybyinvestment/uae/index.html" onclick="toggleMobileMenu()" class="hover:text-luxury-gold block py-0.5">UNITED ARAB EMIRATES | GOLDEN VISA</a></li>
-                    </ul>
+                    <a href="../../../contact/index.html" class="block py-2.5 border-b border-neutral-100 hover:text-luxury-gold transition">CONTACT US</a>
                 </div>
-                <!-- OTHER SERVICES -->
                 <div>
-                    <p class="text-[10px] tracking-widest uppercase text-luxury-gold font-bold mb-2">OTHER SERVICES</p>
-                    <ul class="space-y-2 text-xs font-semibold uppercase tracking-wider pl-2 text-neutral-700">
-                        <li><a href="../../../realestate/index.html" onclick="toggleMobileMenu()" class="hover:text-luxury-gold block py-0.5">REAL ESTATE</a></li>
-                        <li><a href="../../../educationaladvisory/index.html" onclick="toggleMobileMenu()" class="hover:text-luxury-gold block py-0.5">EDUCATIONAL ADVISORY</a></li>
-                    </ul>
+                    <a href="../../../blog/index.html" class="block py-2.5 border-b border-neutral-100 hover:text-luxury-gold transition">BLOG</a>
                 </div>
-                <!-- CORPORATE & CONTACT -->
-                <div>
-                    <p class="text-[10px] tracking-widest uppercase text-luxury-gold font-bold mb-2">CORPORATE IDENTITY</p>
-                    <ul class="space-y-2 text-xs font-semibold uppercase tracking-wider pl-2 text-neutral-700">
-                        <li><a href="../../../aboutus/index.html" onclick="toggleMobileMenu()" class="hover:text-luxury-gold block py-0.5">ABOUT SHARIF GROUP</a></li>
-                        <li><a href="../../../aboutfounder/index.html" onclick="toggleMobileMenu()" class="hover:text-luxury-gold block py-0.5">FOUNDER | ALI SHARIF</a></li>
-                        <li><a href="../../../socialresponsibility/index.html" onclick="toggleMobileMenu()" class="hover:text-luxury-gold block py-0.5">SOCIAL RESPONSIBILITY</a></li>
-                        <li><a href="../../../blog/index.html" onclick="toggleMobileMenu()" class="hover:text-luxury-gold block py-0.5">INSIGHTS &amp; BLOG</a></li>
-                        <li><a href="../../../contact/index.html" onclick="toggleMobileMenu()" class="hover:text-luxury-gold block py-0.5">CONTACT US</a></li>
-                    </ul>
-                </div>
-            </div>
-        </div>
-        <div class="border-t border-neutral-100 pt-6 mt-6">
-            <a href="../../../contact/index.html" onclick="toggleMobileMenu()" class="block w-full py-3.5 bg-luxury-dark text-white rounded-full text-center text-[11px] tracking-widest uppercase font-semibold premium-btn-hover">
-                Book Consultation
-            </a>
-            <div class="mt-4 text-center text-[10px] text-neutral-400">
-                <p>+971 4 357 8737 | contact@sharifgroup.ae</p>
+            </nav>
+
+            <div class="pt-4 flex flex-col space-y-3 pb-8">
+                <a href="#program-consult-form-section" onclick="toggleMobileMenu()" class="w-full py-3 text-center rounded-full border border-[#786142] text-[#786142] text-xs font-bold uppercase tracking-[0.18em] hover:bg-[#786142] hover:text-white transition">
+                    ELIGIBILITY CHECKER
+                </a>
+                <a href="../../../contact/index.html" class="w-full py-3 text-center rounded-full bg-neutral-900 text-white text-xs font-bold uppercase tracking-[0.18em] hover:bg-luxury-gold transition">
+                    BOOK CONSULTATION
+                </a>
             </div>
         </div>
     </div>
