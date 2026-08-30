@@ -2784,6 +2784,19 @@
             e.target.reset();
         }
 
+	function toggleMobileSubmenu(id, btn) {
+            const submenu = document.getElementById(id);
+            const icon = btn.querySelector('i');
+            if (!submenu) return;
+            if (submenu.classList.contains('hidden')) {
+                submenu.classList.remove('hidden');
+                if (icon) icon.style.transform = 'rotate(180deg)';
+            } else {
+                submenu.classList.add('hidden');
+                if (icon) icon.style.transform = 'rotate(0deg)';
+            }
+        }
+
 	function toggleMobileMenu() {
             const drawer = document.getElementById('mobile-menu-drawer');
             const bar1 = document.getElementById('mob-bar1');
