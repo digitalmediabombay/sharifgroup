@@ -2299,7 +2299,9 @@
       "commonwealthOfDominica": "Commonwealth of Dominica",
       "formNationalityPlaceholder": "e.g. Indian, British, Egyptian, Chinese",
       "formResidencePlaceholder": "e.g. UAE, Saudi Arabia, UK",
-      "formMessagePlaceholder": "Specify any family parameters, target timelines, or specific questions..."
+      "formMessagePlaceholder": "Specify any family parameters, target timelines, or specific questions...",
+      "whoNote1": "* Every applicant undergoes strict official background screening by government due diligence teams.",
+      "whoNote2": "* Applications must be processed via authorized agents like Sharif Group. Direct government submissions are not accepted."
     },
     "antigua": {
       "heroTitle": "Antigua & Barbuda",
@@ -3027,7 +3029,9 @@
       "documents_p27": "[Blank]",
       "documents_a1": "[Blank]",
       "timeline_h41": "[Blank]",
-      "timeline_p1": "[Blank]"
+      "timeline_p1": "[Blank]",
+      "whoNote1": "* Every applicant undergoes strict official background screening by government due diligence teams.",
+      "whoNote2": "* Applications must be processed via authorized agents like Sharif Group. Direct government submissions are not accepted."
     },
     "stlucia": {
       "heroTitle": "Saint Lucia",

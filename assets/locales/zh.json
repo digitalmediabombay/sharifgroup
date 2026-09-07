@@ -2299,7 +2299,9 @@
       "commonwealthOfDominica": "多米尼克国 (Commonwealth of Dominica)",
       "formNationalityPlaceholder": "例如：中国、阿联酋、英国、加拿大",
       "formResidencePlaceholder": "例如：阿联酋迪拜、中国香港、上海、伦敦",
-      "formMessagePlaceholder": "请注明随行家属年龄结构、计划启动时间或具体咨询事宜..."
+      "formMessagePlaceholder": "请注明随行家属年龄结构、计划启动时间或具体咨询事宜...",
+      "whoNote1": "* 每位申请人均须通过政府尽职调查团队的严格官方背景审查。",
+      "whoNote2": "* 申请须通过授权代理机构（如Sharif Group）提交。政府不接受个人直接申请。"
     },
     "antigua": {
       "heroTitle": "安提瓜和巴布达",
@@ -3027,7 +3029,9 @@
       "placeholderPhone": "50 123 4567",
       "placeholderNationality": "选择国籍……",
       "placeholderResidence": "选择居住国家……",
-      "placeholderMessage": "请注明任何家庭情况、目标时间表或具体问题……"
+      "placeholderMessage": "请注明任何家庭情况、目标时间表或具体问题……",
+      "whoNote1": "* 每位申请人均须通过政府尽职调查团队的严格官方背景审查。",
+      "whoNote2": "* 申请须通过授权代理机构（如Sharif Group）提交。政府不接受个人直接申请。"
     },
     "stlucia": {
       "heroTitle": "圣卢西亚",
