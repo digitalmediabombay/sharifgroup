@@ -54,18 +54,18 @@
     }
 
     function getInitialLang() {
+        var urlParams = new URLSearchParams(window.location.search);
+        var urlLang = urlParams.get('lang');
+        if (urlLang) {
+            return normalizeLang(urlLang);
+        }
+
         try {
             var stored = localStorage.getItem('sharif_lang') || localStorage.getItem('sharif_preferred_lang');
             if (stored) {
                 return normalizeLang(stored);
             }
         } catch (e) {}
-
-        var urlParams = new URLSearchParams(window.location.search);
-        var urlLang = urlParams.get('lang');
-        if (urlLang) {
-            return normalizeLang(urlLang);
-        }
 
         return 'en';
     }
@@ -244,7 +244,13 @@
             var key = el.getAttribute('data-i18n');
             var val = getNestedValue(data, key);
             if (val !== null && val !== undefined) {
-                el.textContent = (lang === 'ar' || lang === 'fa') ? localizeNumbers(val, lang) : val;
+                var localized = (lang === 'ar' || lang === 'fa') ? localizeNumbers(val, lang) : val;
+                var heroGlowChild = el.querySelector('.contact-hero-glow, .dominica-hero-glow, .stlucia-hero-glow');
+                if (heroGlowChild && el !== heroGlowChild) {
+                    heroGlowChild.textContent = localized;
+                } else {
+                    el.textContent = localized;
+                }
             }
         });
 
@@ -386,6 +392,145 @@
         }
     });
 
+    // Global RTL-aware carousel navigation for any page with dominica-blog-slider-inner
+    var dominicaBlogSliderIndex = 0;
+    var dominicaBlogAutoScrollTimer = null;
+
+    function updateDominicaBlogSliderGlobal() {
+        var inner = document.getElementById('dominica-blog-slider-inner');
+        if (!inner) return;
+        var card = inner.querySelector('div');
+        if (!card) return;
+
+        var isRTL = document.documentElement.dir === 'rtl';
+        var cardWidth = card.offsetWidth + 24;
+        var visibleCards = window.innerWidth >= 1024 ? 3 : window.innerWidth >= 768 ? 2 : 1;
+        var totalCards = inner.children.length;
+        var maxIndex = Math.max(totalCards - visibleCards, 0);
+
+        dominicaBlogSliderIndex = Math.max(0, Math.min(dominicaBlogSliderIndex, maxIndex));
+
+        if (isRTL) {
+            inner.style.transform = 'translateX(' + (dominicaBlogSliderIndex * cardWidth) + 'px)';
+        } else {
+            inner.style.transform = 'translateX(-' + (dominicaBlogSliderIndex * cardWidth) + 'px)';
+        }
+    }
+
+    function nextDominicaBlogAutoGlobal() {
+        var inner = document.getElementById('dominica-blog-slider-inner');
+        if (!inner) return;
+        var visibleCards = window.innerWidth >= 1024 ? 3 : window.innerWidth >= 768 ? 2 : 1;
+        var totalCards = inner.children.length;
+        var maxIndex = Math.max(totalCards - visibleCards, 0);
+
+        if (dominicaBlogSliderIndex >= maxIndex) {
+            dominicaBlogSliderIndex = 0;
+        } else {
+            dominicaBlogSliderIndex++;
+        }
+        updateDominicaBlogSliderGlobal();
+    }
+
+    function startDominicaBlogAutoScrollGlobal() {
+        stopDominicaBlogAutoScrollGlobal();
+        dominicaBlogAutoScrollTimer = setInterval(nextDominicaBlogAutoGlobal, 3500);
+    }
+
+    function stopDominicaBlogAutoScrollGlobal() {
+        if (dominicaBlogAutoScrollTimer) {
+            clearInterval(dominicaBlogAutoScrollTimer);
+            dominicaBlogAutoScrollTimer = null;
+        }
+    }
+
+    function restartDominicaBlogAutoScrollGlobal() {
+        stopDominicaBlogAutoScrollGlobal();
+        startDominicaBlogAutoScrollGlobal();
+    }
+
+    function setupDominicaBlogHoverPauseGlobal() {
+        var container = document.getElementById('sec-dominica-blogs') || document.getElementById('dominica-blog-slider-inner');
+        if (!container) return;
+        container.addEventListener('mouseenter', stopDominicaBlogAutoScrollGlobal);
+        container.addEventListener('mouseleave', startDominicaBlogAutoScrollGlobal);
+        container.addEventListener('touchstart', stopDominicaBlogAutoScrollGlobal, { passive: true });
+        container.addEventListener('touchend', startDominicaBlogAutoScrollGlobal, { passive: true });
+    }
+
+    function slideDominicaBlogsGlobal(direction) {
+        var inner = document.getElementById('dominica-blog-slider-inner');
+        if (!inner) return;
+        var card = inner.querySelector('div');
+        if (!card) return;
+
+        var isRTL = document.documentElement.dir === 'rtl';
+        var visibleCards = window.innerWidth >= 1024 ? 3 : window.innerWidth >= 768 ? 2 : 1;
+        var totalCards = inner.children.length;
+        var maxIndex = Math.max(totalCards - visibleCards, 0);
+
+        var isNext = isRTL ? (direction === 'left') : (direction === 'right');
+
+        if (isNext) {
+            if (dominicaBlogSliderIndex >= maxIndex) {
+                dominicaBlogSliderIndex = 0;
+            } else {
+                dominicaBlogSliderIndex++;
+            }
+        } else {
+            if (dominicaBlogSliderIndex <= 0) {
+                dominicaBlogSliderIndex = maxIndex;
+            } else {
+                dominicaBlogSliderIndex--;
+            }
+        }
+
+        updateDominicaBlogSliderGlobal();
+        restartDominicaBlogAutoScrollGlobal();
+    }
+
+    try {
+        Object.defineProperty(window, 'slideDominicaBlogs', {
+            get: function () { return slideDominicaBlogsGlobal; },
+            set: function () {},
+            configurable: true
+        });
+    } catch (e) {
+        window.slideDominicaBlogs = slideDominicaBlogsGlobal;
+    }
+
+    // Intercept clicks on slider prev/next buttons globally across all pages
+    document.addEventListener('click', function (e) {
+        var btn = e.target && e.target.closest ? e.target.closest('button, a') : null;
+        if (!btn) return;
+        var onclickAttr = btn.getAttribute('onclick') || '';
+        if (onclickAttr.indexOf('slideDominicaBlogs') !== -1 || btn.id === 'dominica-blog-btn-prev' || btn.id === 'dominica-blog-btn-next') {
+            e.preventDefault();
+            e.stopImmediatePropagation();
+            var dir = (onclickAttr.indexOf("'left'") !== -1 || onclickAttr.indexOf('"left"') !== -1 || btn.id === 'dominica-blog-btn-prev') ? 'left' : 'right';
+            slideDominicaBlogsGlobal(dir);
+        }
+    }, true);
+
+    window.addEventListener('languageChanged', function () {
+        dominicaBlogSliderIndex = 0;
+        updateDominicaBlogSliderGlobal();
+        restartDominicaBlogAutoScrollGlobal();
+    });
+
+    window.addEventListener('resize', function () {
+        updateDominicaBlogSliderGlobal();
+    });
+
+    document.addEventListener('DOMContentLoaded', function () {
+        updateDominicaBlogSliderGlobal();
+        setupDominicaBlogHoverPauseGlobal();
+        startDominicaBlogAutoScrollGlobal();
+    });
+    updateDominicaBlogSliderGlobal();
+    setupDominicaBlogHoverPauseGlobal();
+    startDominicaBlogAutoScrollGlobal();
+
     function init() {
         currentLang = getInitialLang();
         setupCounterInterceptor();
@@ -400,3 +545,4 @@
         init();
     }
 })();
+

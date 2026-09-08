@@ -658,8 +658,8 @@
 </div>
 <div class="absolute inset-0 bg-gradient-to-t from-neutral-950/80 via-transparent to-neutral-950/40 z-0"></div>
 <div class="relative z-10 max-w-5xl mx-auto space-y-6">
-<h1 class="font-serif text-white font-normal tracking-tight drop-shadow-xl flex flex-col items-center gap-3" data-i18n="pages.realEstate.heroTitle">
-<span class="dominica-hero-glow font-serif text-5xl sm:text-7xl md:text-8xl cursor-pointer">Dubai Real Estate</span>
+<h1 class="font-serif text-white font-normal tracking-tight drop-shadow-xl flex flex-col items-center gap-3">
+<span class="dominica-hero-glow font-serif text-5xl sm:text-7xl md:text-8xl cursor-pointer" data-i18n="pages.realEstate.heroTitle">Dubai Real Estate</span>
 <span class="text-xl sm:text-3xl md:text-4xl text-white font-serif tracking-widest uppercase font-semibold">Private Advisory</span>
 </h1>
 <p class="text-xs sm:text-sm md:text-base text-neutral-300 font-light max-w-2xl mx-auto leading-relaxed" data-i18n="pages.realEstate.heroSubtitle">
@@ -1587,9 +1587,9 @@
 <h3 class="font-serif text-3xl md:text-5xl font-bold text-neutral-900 leading-tight" data-i18n-html="pages.realEstate.insights_item2">Expert Guides for <span class="italic text-[#786142] font-serif font-normal">Dubai Property Buyers</span></h3>
 <p class="text-xs md:text-sm text-neutral-600 font-light leading-relaxed max-w-2xl" data-i18n="pages.realEstate.insights_item3">Read our simple guides to learn about off-plan investments, rental returns, taxes, and how to buy property in Dubai.</p>
 </div>
-<div class="flex items-center space-x-3 mt-6 md:mt-0">
-<button class="w-12 h-12 rounded-full border border-neutral-300 bg-white flex items-center justify-center text-neutral-800 hover:bg-[#786142] hover:text-white hover:border-[#786142] transition-all shadow-sm" onclick="slideDominicaBlogs('left')"><i class="fa-solid fa-chevron-left"></i></button>
-<button class="w-12 h-12 rounded-full border border-neutral-300 bg-white flex items-center justify-center text-neutral-800 hover:bg-[#786142] hover:text-white hover:border-[#786142] transition-all shadow-sm" onclick="slideDominicaBlogs('right')"><i class="fa-solid fa-chevron-right"></i></button>
+<div class="flex items-center space-x-3 rtl:space-x-reverse mt-6 md:mt-0">
+<button id="dominica-blog-btn-prev" aria-label="Previous Guides" class="w-12 h-12 rounded-full border border-neutral-300 bg-white flex items-center justify-center text-neutral-800 hover:bg-[#786142] hover:text-white hover:border-[#786142] transition-all shadow-sm cursor-pointer disabled:opacity-40 disabled:cursor-not-allowed" onclick="slideDominicaBlogs('left')"><i class="fa-solid fa-chevron-left"></i></button>
+<button id="dominica-blog-btn-next" aria-label="Next Guides" class="w-12 h-12 rounded-full border border-neutral-300 bg-white flex items-center justify-center text-neutral-800 hover:bg-[#786142] hover:text-white hover:border-[#786142] transition-all shadow-sm cursor-pointer disabled:opacity-40 disabled:cursor-not-allowed" onclick="slideDominicaBlogs('right')"><i class="fa-solid fa-chevron-right"></i></button>
 </div>
 </div>
 <!-- 1-Row Carousel Container -->
@@ -2373,26 +2373,123 @@ You can easily book a free consultation by filling out our online inquiry form o
             }
         }
 
-        // Dominica Blog Carousel Navigation
+        // Dominica Blog Carousel Navigation (Auto-Scroll with RTL & LTR Support)
         let dominicaBlogSliderIndex = 0;
+        let dominicaBlogAutoScrollTimer = null;
+
+        function updateDominicaBlogSlider() {
+            const inner = document.getElementById('dominica-blog-slider-inner');
+            if (!inner) return;
+            const card = inner.querySelector('div');
+            if (!card) return;
+
+            const isRTL = document.documentElement.dir === 'rtl';
+            const cardWidth = card.offsetWidth + 24;
+            const visibleCards = window.innerWidth >= 1024 ? 3 : window.innerWidth >= 768 ? 2 : 1;
+            const totalCards = inner.children.length;
+            const maxIndex = Math.max(totalCards - visibleCards, 0);
+
+            dominicaBlogSliderIndex = Math.max(0, Math.min(dominicaBlogSliderIndex, maxIndex));
+
+            if (isRTL) {
+                inner.style.transform = `translateX(${dominicaBlogSliderIndex * cardWidth}px)`;
+            } else {
+                inner.style.transform = `translateX(-${dominicaBlogSliderIndex * cardWidth}px)`;
+            }
+        }
+
         function slideDominicaBlogs(direction) {
             const inner = document.getElementById('dominica-blog-slider-inner');
             if (!inner) return;
             const card = inner.querySelector('div');
             if (!card) return;
 
-            const cardWidth = card.offsetWidth + 24;
+            const isRTL = document.documentElement.dir === 'rtl';
             const visibleCards = window.innerWidth >= 1024 ? 3 : window.innerWidth >= 768 ? 2 : 1;
             const totalCards = inner.children.length;
-            const maxIndex = totalCards - visibleCards;
+            const maxIndex = Math.max(totalCards - visibleCards, 0);
 
-            if (direction === 'right') {
-                dominicaBlogSliderIndex = Math.min(dominicaBlogSliderIndex + 1, maxIndex);
+            // In RTL (Arabic/Persian), '<' (left arrow) moves forward to next cards, '>' (right arrow) moves back.
+            // In LTR (English), '>' (right arrow) moves forward to next cards, '<' (left arrow) moves back.
+            const isNext = isRTL ? (direction === 'left') : (direction === 'right');
+
+            if (isNext) {
+                if (dominicaBlogSliderIndex >= maxIndex) {
+                    dominicaBlogSliderIndex = 0;
+                } else {
+                    dominicaBlogSliderIndex++;
+                }
             } else {
-                dominicaBlogSliderIndex = Math.max(dominicaBlogSliderIndex - 1, 0);
+                if (dominicaBlogSliderIndex <= 0) {
+                    dominicaBlogSliderIndex = maxIndex;
+                } else {
+                    dominicaBlogSliderIndex--;
+                }
             }
-            inner.style.transform = `translateX(-${dominicaBlogSliderIndex * cardWidth}px)`;
+
+            updateDominicaBlogSlider();
+            restartDominicaBlogAutoScroll();
         }
+
+        function nextDominicaBlogAuto() {
+            const inner = document.getElementById('dominica-blog-slider-inner');
+            if (!inner) return;
+            const visibleCards = window.innerWidth >= 1024 ? 3 : window.innerWidth >= 768 ? 2 : 1;
+            const totalCards = inner.children.length;
+            const maxIndex = Math.max(totalCards - visibleCards, 0);
+
+            if (dominicaBlogSliderIndex >= maxIndex) {
+                dominicaBlogSliderIndex = 0;
+            } else {
+                dominicaBlogSliderIndex++;
+            }
+            updateDominicaBlogSlider();
+        }
+
+        function startDominicaBlogAutoScroll() {
+            stopDominicaBlogAutoScroll();
+            dominicaBlogAutoScrollTimer = setInterval(nextDominicaBlogAuto, 3500);
+        }
+
+        function stopDominicaBlogAutoScroll() {
+            if (dominicaBlogAutoScrollTimer) {
+                clearInterval(dominicaBlogAutoScrollTimer);
+                dominicaBlogAutoScrollTimer = null;
+            }
+        }
+
+        function restartDominicaBlogAutoScroll() {
+            stopDominicaBlogAutoScroll();
+            startDominicaBlogAutoScroll();
+        }
+
+        function setupDominicaBlogHoverPause() {
+            const container = document.getElementById('sec-dominica-blogs');
+            if (!container) return;
+            container.addEventListener('mouseenter', stopDominicaBlogAutoScroll);
+            container.addEventListener('mouseleave', startDominicaBlogAutoScroll);
+            container.addEventListener('touchstart', stopDominicaBlogAutoScroll, { passive: true });
+            container.addEventListener('touchend', startDominicaBlogAutoScroll, { passive: true });
+        }
+
+        window.addEventListener('languageChanged', () => {
+            dominicaBlogSliderIndex = 0;
+            updateDominicaBlogSlider();
+            restartDominicaBlogAutoScroll();
+        });
+
+        window.addEventListener('resize', () => {
+            updateDominicaBlogSlider();
+        });
+
+        document.addEventListener('DOMContentLoaded', () => {
+            updateDominicaBlogSlider();
+            setupDominicaBlogHoverPause();
+            startDominicaBlogAutoScroll();
+        });
+        updateDominicaBlogSlider();
+        setupDominicaBlogHoverPause();
+        startDominicaBlogAutoScroll();
 
         // Country Dial Code Pickers (Comprehensive Global List)
         const countryCodes = [
