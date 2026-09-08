@@ -1,24 +1,40 @@
 {
-  "$schema": "https://openapi.vercel.sh/vercel.json",
-  "cleanUrls": true,
-  "redirects": [
-    { "source": "/index.html/ar", "destination": "/ar", "permanent": false },
-    { "source": "/index.html/zh", "destination": "/zh", "permanent": false },
-    { "source": "/index.html/fa", "destination": "/fa", "permanent": false },
-    { "source": "/index.html/en", "destination": "/", "permanent": false },
-    { "source": "/:path*/index.html/ar", "destination": "/ar/:path*", "permanent": false },
-    { "source": "/:path*/index.html/zh", "destination": "/zh/:path*", "permanent": false },
-    { "source": "/:path*/index.html/fa", "destination": "/fa/:path*", "permanent": false },
-    { "source": "/:path*/index.html/en", "destination": "/:path*", "permanent": false },
-    { "source": "/termsofservice", "destination": "/termsofuse", "permanent": true }
-  ],
   "rewrites": [
-    { "source": "/ar", "destination": "/" },
-    { "source": "/zh", "destination": "/" },
-    { "source": "/fa", "destination": "/" },
-    { "source": "/en", "destination": "/" },
-    { "source": "/(ar|fa|zh|en)/assets/:path*", "destination": "/assets/:path*" },
-    { "source": "/(ar|fa|zh|en)/programs/:prog/:country", "destination": "/programs/:prog/:country" },
-    { "source": "/(ar|fa|zh|en)/:page", "destination": "/:page" }
+    {
+      "source": "/ar",
+      "destination": "/index.html"
+    },
+    {
+      "source": "/ar/",
+      "destination": "/index.html"
+    },
+    {
+      "source": "/zh",
+      "destination": "/index.html"
+    },
+    {
+      "source": "/zh/",
+      "destination": "/index.html"
+    },
+    {
+      "source": "/fa",
+      "destination": "/index.html"
+    },
+    {
+      "source": "/fa/",
+      "destination": "/index.html"
+    },
+    {
+      "source": "/ar/:path*",
+      "destination": "/:path*"
+    },
+    {
+      "source": "/zh/:path*",
+      "destination": "/:path*"
+    },
+    {
+      "source": "/fa/:path*",
+      "destination": "/:path*"
+    }
   ]
 }
