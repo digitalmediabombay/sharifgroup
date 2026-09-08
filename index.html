@@ -161,7 +161,7 @@
 <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/ScrollTrigger.min.js"></script>
 <!-- Multilingual & RTL Support -->
-<link href="assets/css/multilingual.css" rel="stylesheet"/>
+<link href="assets/css/multilingual.css?v=4" rel="stylesheet"/>
 <script defer="" src="assets/js/language-switcher.js"></script>
 <style>
         .glass-card {
@@ -1735,14 +1735,7 @@
 </div>
 </div>
 </div>
-<!-- Slider Controls -->
-<button id="review-prev-btn" type="button" aria-label="Previous review" class="absolute -left-3 md:-left-6 top-1/2 -translate-y-1/2 z-20 w-10 h-10 md:w-12 md:h-12 rounded-full bg-neutral-900/90 border border-luxury-gold/50 text-luxury-gold hover:bg-luxury-gold hover:text-neutral-950 transition duration-300 flex items-center justify-center shadow-2xl backdrop-blur-md cursor-pointer">
-    <i class="fa-solid fa-chevron-left text-xs md:text-sm"></i>
-</button>
-<button id="review-next-btn" type="button" aria-label="Next review" class="absolute -right-3 md:-right-6 top-1/2 -translate-y-1/2 z-20 w-10 h-10 md:w-12 md:h-12 rounded-full bg-neutral-900/90 border border-luxury-gold/50 text-luxury-gold hover:bg-luxury-gold hover:text-neutral-950 transition duration-300 flex items-center justify-center shadow-2xl backdrop-blur-md cursor-pointer">
-    <i class="fa-solid fa-chevron-right text-xs md:text-sm"></i>
-</button>
-<!-- Dots Navigation -->
+<!-- Dots Progress Navigation -->
 <div class="flex items-center justify-center gap-2 mt-8" id="review-slider-dots"></div>
 </div>
 </section>
@@ -2542,16 +2535,12 @@
 
        function initReviewSlider() {
             const track = document.getElementById('review-slider-track');
-            const wrapper = document.getElementById('review-slider-wrapper');
             const dotsContainer = document.getElementById('review-slider-dots');
-            const prevBtn = document.getElementById('review-prev-btn');
-            const nextBtn = document.getElementById('review-next-btn');
             if (!track || !track.children.length) return;
 
-            // Cache original slides count before clone
             const originalCount = 7;
 
-            // Generate dot buttons if container is empty
+            // Generate progress dot indicators
             if (dotsContainer && !dotsContainer.children.length) {
                 for (let i = 0; i < originalCount; i++) {
                     const dot = document.createElement('button');
@@ -2560,7 +2549,6 @@
                     dot.setAttribute('aria-label', 'Review ' + (i + 1));
                     dot.addEventListener('click', () => {
                         goToSlide(i);
-                        resetAutoplay();
                     });
                     dotsContainer.appendChild(dot);
                 }
@@ -2590,12 +2578,12 @@
             let isTransitioning = false;
 
             function updateTransform(withTransition) {
-                track.style.transition = withTransition ? "transform 0.8s cubic-bezier(0.22, 1, 0.36, 1)" : "none";
+                track.style.transition = withTransition ? "transform 0.9s cubic-bezier(0.22, 1, 0.36, 1)" : "none";
                 track.style.transform = "translate3d(-" + (currentIndex * 100) + "%, 0, 0)";
                 updateDots(currentIndex);
             }
 
-            function nextSlide() {
+            function autoScrollNext() {
                 if (isTransitioning) return;
                 currentIndex++;
                 updateTransform(true);
@@ -2606,21 +2594,7 @@
                         currentIndex = 0;
                         updateTransform(false);
                         isTransitioning = false;
-                    }, 800);
-                }
-            }
-
-            function prevSlide() {
-                if (isTransitioning) return;
-                if (currentIndex === 0) {
-                    currentIndex = totalSlides - 1;
-                    updateTransform(false);
-                    track.offsetHeight; // Force browser reflow
-                    currentIndex = totalSlides - 2;
-                    updateTransform(true);
-                } else {
-                    currentIndex--;
-                    updateTransform(true);
+                    }, 900);
                 }
             }
 
@@ -2630,45 +2604,9 @@
                 updateTransform(true);
             }
 
-            if (nextBtn) {
-                nextBtn.addEventListener('click', (e) => {
-                    e.preventDefault();
-                    nextSlide();
-                    resetAutoplay();
-                });
-            }
-
-            if (prevBtn) {
-                prevBtn.addEventListener('click', (e) => {
-                    e.preventDefault();
-                    prevSlide();
-                    resetAutoplay();
-                });
-            }
-
-            function startAutoplay() {
-                if (window._reviewInterval) clearInterval(window._reviewInterval);
-                window._reviewInterval = setInterval(nextSlide, 4000);
-            }
-
-            function stopAutoplay() {
-                if (window._reviewInterval) {
-                    clearInterval(window._reviewInterval);
-                    window._reviewInterval = null;
-                }
-            }
-
-            function resetAutoplay() {
-                stopAutoplay();
-                startAutoplay();
-            }
-
-            if (wrapper) {
-                wrapper.addEventListener('mouseenter', stopAutoplay);
-                wrapper.addEventListener('mouseleave', startAutoplay);
-            }
-
-            startAutoplay();
+            // Continuous auto-scroll every 3.2 seconds
+            if (window._reviewInterval) clearInterval(window._reviewInterval);
+            window._reviewInterval = setInterval(autoScrollNext, 3200);
         }
     </script>
 <!-- FOOTER CANVAS SEAMLESS CROSSFADE SCRIPT -->

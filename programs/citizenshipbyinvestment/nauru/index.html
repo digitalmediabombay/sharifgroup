@@ -259,7 +259,7 @@
         }
         .custom-select-dropdown.active { display: block; }
     </style>
-<link href="../../../assets/css/multilingual.css" rel="stylesheet"/>
+<link href="../../../assets/css/multilingual.css?v=4" rel="stylesheet"/>
 </head>
 <body class="bg-luxury-light text-luxury-dark font-sans overflow-x-hidden">
 <!-- HEADER COMPONENT -->
@@ -497,16 +497,16 @@
 <div class="p-6 space-y-6 bg-white min-h-full">
 <nav class="space-y-4 text-xs font-bold tracking-[0.18em] uppercase text-neutral-800">
 <div>
-<a class="block py-2.5 border-b border-neutral-100 hover:text-luxury-gold transition" href="../../../index.html" onclick="sessionStorage.setItem('sharif_preloader_shown', 'true');">HOME</a>
+<a class="block py-2.5 border-b border-neutral-100 hover:text-luxury-gold transition" data-i18n="nav.home" href="../../../index.html" onclick="sessionStorage.setItem('sharif_preloader_shown', 'true');">HOME</a>
 </div>
 <!-- Citizenship Mobile Dropdown -->
 <div class="border-b border-neutral-100 pb-2">
 <button class="w-full flex items-center justify-between py-2.5 focus:outline-none hover:text-luxury-gold transition" onclick="toggleMobileSubmenu('mob-citizenship', this)" type="button">
-<span>CITIZENSHIP BY INVESTMENT</span>
+<span data-i18n="nav.citizenship">CITIZENSHIP BY INVESTMENT</span>
 <i class="fa-solid fa-chevron-down text-[10px] transition-transform duration-300"></i>
 </button>
 <div class="hidden pl-4 pt-2 space-y-2.5 text-[11px] text-neutral-600" id="mob-citizenship">
-<a class="block font-bold text-luxury-gold hover:text-luxury-dark transition" href="../../../citizenshipbyinvestment/index.html">VIEW ALL PROGRAMS</a>
+<a class="block font-bold text-luxury-gold hover:text-luxury-dark transition" data-i18n="megaMenu.allCitizenshipPrograms" href="../../../citizenshipbyinvestment/index.html">VIEW ALL PROGRAMS</a>
 <a class="block hover:text-luxury-gold transition" data-i18n="services.cbi.dominica" href="../dominica/index.html">DOMINICA | PASSPORT</a>
 <a class="block hover:text-luxury-gold transition" data-i18n="services.cbi.kitts" href="../stkittis/index.html">ST. KITTS &amp; NEVIS | PASSPORT</a>
 <a class="block hover:text-luxury-gold transition" data-i18n="services.cbi.antigua" href="../antiguaandbarbuda/index.html">ANTIGUA &amp; BARBUDA | PASSPORT</a>
@@ -520,52 +520,52 @@
 <!-- Residency Mobile Dropdown -->
 <div class="border-b border-neutral-100 pb-2">
 <button class="w-full flex items-center justify-between py-2.5 focus:outline-none hover:text-luxury-gold transition" onclick="toggleMobileSubmenu('mob-residency', this)" type="button">
-<span>RESIDENCY BY INVESTMENT</span>
+<span data-i18n="nav.residency">RESIDENCY BY INVESTMENT</span>
 <i class="fa-solid fa-chevron-down text-[10px] transition-transform duration-300"></i>
 </button>
 <div class="hidden pl-4 pt-2 space-y-2.5 text-[11px] text-neutral-600" id="mob-residency">
-<a class="block font-bold text-luxury-gold hover:text-luxury-dark transition" href="../../../residencybyinvestment/index.html">VIEW ALL PROGRAMS</a>
-<a class="block hover:text-luxury-gold transition" href="../../residencybyinvestment/portugal/index.html">PORTUGAL | GOLDEN VISA</a>
-<a class="block hover:text-luxury-gold transition" href="../../residencybyinvestment/greece/index.html">GREECE | GOLDEN VISA</a>
-<a class="block hover:text-luxury-gold transition" href="../../residencybyinvestment/panama/index.html">PANAMA | GOLDEN VISA</a>
-<a class="block hover:text-luxury-gold transition" href="../../residencybyinvestment/uae/index.html">UNITED ARAB EMIRATES | GOLDEN VISA</a>
+<a class="block font-bold text-luxury-gold hover:text-luxury-dark transition" data-i18n="megaMenu.allResidencyPrograms" href="../../../residencybyinvestment/index.html">VIEW ALL PROGRAMS</a>
+<a class="block hover:text-luxury-gold transition" data-i18n="services.rbi.portugal" href="../../residencybyinvestment/portugal/index.html">PORTUGAL | GOLDEN VISA</a>
+<a class="block hover:text-luxury-gold transition" data-i18n="services.rbi.greece" href="../../residencybyinvestment/greece/index.html">GREECE | GOLDEN VISA</a>
+<a class="block hover:text-luxury-gold transition" data-i18n="services.rbi.panama" href="../../residencybyinvestment/panama/index.html">PANAMA | GOLDEN VISA</a>
+<a class="block hover:text-luxury-gold transition" data-i18n="services.rbi.uae" href="../../residencybyinvestment/uae/index.html">UNITED ARAB EMIRATES | GOLDEN VISA</a>
 </div>
 </div>
 <!-- More Services Mobile Dropdown -->
 <div class="border-b border-neutral-100 pb-2">
 <button class="w-full flex items-center justify-between py-2.5 focus:outline-none hover:text-luxury-gold transition" onclick="toggleMobileSubmenu('mob-services', this)" type="button">
-<span>MORE SERVICES</span>
+<span data-i18n="nav.moreServices">MORE SERVICES</span>
 <i class="fa-solid fa-chevron-down text-[10px] transition-transform duration-300"></i>
 </button>
 <div class="hidden pl-4 pt-2 space-y-2.5 text-[11px] text-neutral-600" id="mob-services">
-<a class="block hover:text-luxury-gold transition" href="../../../realestate/index.html">REAL ESTATE</a>
-<a class="block hover:text-luxury-gold transition" href="../../../educationaladvisory/index.html">EDUCATIONAL ADVISORY</a>
+<a class="block hover:text-luxury-gold transition" data-i18n="nav.realEstate" href="../../../realestate/index.html">REAL ESTATE</a>
+<a class="block hover:text-luxury-gold transition" data-i18n="nav.educationalAdvisory" href="../../../educationaladvisory/index.html">EDUCATIONAL ADVISORY</a>
 </div>
 </div>
 <!-- About Us Mobile Dropdown -->
 <div class="border-b border-neutral-100 pb-2">
 <button class="w-full flex items-center justify-between py-2.5 focus:outline-none hover:text-luxury-gold transition" onclick="toggleMobileSubmenu('mob-about', this)" type="button">
-<span>ABOUT US</span>
+<span data-i18n="nav.aboutUs">ABOUT US</span>
 <i class="fa-solid fa-chevron-down text-[10px] transition-transform duration-300"></i>
 </button>
 <div class="hidden pl-4 pt-2 space-y-2.5 text-[11px] text-neutral-600" id="mob-about">
-<a class="block hover:text-luxury-gold transition" href="../../../aboutus/index.html">SHARIF GROUP OVERVIEW</a>
-<a class="block hover:text-luxury-gold transition" href="../../../aboutfounder/index.html">FOUNDER | ALI SHARIF</a>
-<a class="block hover:text-luxury-gold transition" href="../../../socialresponsibility/index.html">SOCIAL RESPONSIBILITY</a>
+<a class="block hover:text-luxury-gold transition" data-i18n="megaMenu.aboutTitle" href="../../../aboutus/index.html">SHARIF GROUP OVERVIEW</a>
+<a class="block hover:text-luxury-gold transition" data-i18n="footer.aboutAli" href="../../../aboutfounder/index.html">FOUNDER | ALI SHARIF</a>
+<a class="block hover:text-luxury-gold transition" data-i18n="megaMenu.socialResponsibility" href="../../../socialresponsibility/index.html">SOCIAL RESPONSIBILITY</a>
 </div>
 </div>
 <div>
-<a class="block py-2.5 border-b border-neutral-100 hover:text-luxury-gold transition" href="../../../contact/index.html">CONTACT US</a>
+<a class="block py-2.5 border-b border-neutral-100 hover:text-luxury-gold transition" data-i18n="nav.contact" href="../../../contact/index.html">CONTACT US</a>
 </div>
 <div>
-<a class="block py-2.5 border-b border-neutral-100 hover:text-luxury-gold transition" href="../../../blog/index.html">BLOG</a>
+<a class="block py-2.5 border-b border-neutral-100 hover:text-luxury-gold transition" data-i18n="nav.blog" href="../../../blog/index.html">BLOG</a>
 </div>
 </nav>
 <div class="pt-4 flex flex-col space-y-3 pb-8">
-<a class="w-full py-3 text-center rounded-full border border-[#786142] text-[#786142] text-xs font-bold uppercase tracking-[0.18em] hover:bg-[#786142] hover:text-white transition" href="#program-consult-form-section" onclick="toggleMobileMenu()">
+<a class="w-full py-3 text-center rounded-full border border-[#786142] text-[#786142] text-xs font-bold uppercase tracking-[0.18em] hover:bg-[#786142] hover:text-white transition" data-i18n="nav.eligibilityChecker" href="#program-consult-form-section" onclick="toggleMobileMenu()">
                     ELIGIBILITY CHECKER
                 </a>
-<a class="w-full py-3 text-center rounded-full bg-neutral-900 text-white text-xs font-bold uppercase tracking-[0.18em] hover:bg-luxury-gold transition" href="../../../contact/index.html">
+<a class="w-full py-3 text-center rounded-full bg-neutral-900 text-white text-xs font-bold uppercase tracking-[0.18em] hover:bg-luxury-gold transition" data-i18n="nav.bookConsultation" href="../../../contact/index.html">
                     BOOK CONSULTATION
                 </a>
 </div>
@@ -714,19 +714,6 @@
 <i class="fa-solid fa-clock-rotate-left"></i>
 </div>
 <div class="space-y-1 text-left">
-<!-- Mobile Language Selector -->
-<div class="mb-3">
-<div class="flex items-center justify-between text-[10px] uppercase font-bold tracking-widest text-neutral-400 mb-2 px-1">
-<span data-i18n="programs.nauru.overview_span1">Language / اللغة</span>
-<i class="fa-solid fa-globe text-luxury-gold"></i>
-</div>
-<div class="mobile-lang-grid">
-<button class="mobile-lang-option" data-i18n="langSwitcher.en" data-lang="en" onclick="switchLanguage('en')" type="button">English</button>
-<button class="mobile-lang-option" data-i18n="langSwitcher.ar" data-lang="ar" onclick="switchLanguage('ar')" type="button">العربية</button>
-<button class="mobile-lang-option" data-i18n="langSwitcher.fa" data-lang="fa" onclick="switchLanguage('fa')" type="button">فارسی</button>
-<button class="mobile-lang-option" data-i18n="langSwitcher.zh" data-lang="zh" onclick="switchLanguage('zh')" type="button">中文</button>
-</div>
-</div>
 <span class="text-[10px] font-bold uppercase tracking-wider text-luxury-gold block" data-i18n="programs.nauru.specProcessingTitle">PROCESSING TIME</span>
 <p class="text-xs text-white font-medium leading-relaxed" data-i18n="programs.nauru.specProcessingDesc">3 to 4 months to citizenship approval</p>
 </div>
@@ -954,13 +941,13 @@
 <table class="w-full text-left text-xs md:text-sm text-neutral-300 border-collapse">
 <thead>
 <tr class="bg-neutral-800/50 text-luxury-gold font-bold uppercase text-[10px] md:text-xs tracking-wider border-b border-neutral-800">
-<th class="p-4">Applicant Type</th>
-<th class="p-4">Contribution (USD)</th>
+<th class="p-4" data-i18n="programs.nauru.pricing_th_applicantType">Applicant Type</th>
+<th class="p-4" data-i18n="programs.nauru.pricing_th_contributionUSD">Contribution (USD)</th>
 </tr>
 </thead>
 <tbody class="divide-y divide-neutral-800/80">
 <tr class="hover:bg-white/5 transition-colors">
-<td class="p-4 font-medium text-white">Principal Applicant</td>
+<td class="p-4 font-medium text-white" data-i18n="programs.nauru.pricing_td_principalApplicant">Principal Applicant</td>
 <td class="p-4 font-mono font-bold text-emerald-400">$115,000</td>
 </tr>
 </tbody>
@@ -976,17 +963,17 @@
 <table class="w-full text-left text-xs md:text-sm text-neutral-300 border-collapse">
 <thead>
 <tr class="bg-neutral-800/50 text-luxury-gold font-bold uppercase text-[10px] md:text-xs tracking-wider border-b border-neutral-800">
-<th class="p-4">Applicant Category</th>
-<th class="p-4">Fee (USD)</th>
+<th class="p-4" data-i18n="programs.nauru.pricing_th_applicantCategory">Applicant Category</th>
+<th class="p-4" data-i18n="programs.nauru.pricing_th_feeUSD">Fee (USD)</th>
 </tr>
 </thead>
 <tbody class="divide-y divide-neutral-800/80">
 <tr class="hover:bg-white/5 transition-colors">
-<td class="p-4 font-medium text-white">Principal Applicant</td>
+<td class="p-4 font-medium text-white" data-i18n="programs.nauru.pricing_td_principalApplicant">Principal Applicant</td>
 <td class="p-4 font-mono font-bold text-white">$5,000</td>
 </tr>
 <tr class="hover:bg-white/5 transition-colors">
-<td class="p-4 font-medium text-white">Each Eligible Dependant</td>
+<td class="p-4 font-medium text-white" data-i18n="programs.nauru.pricing_td_eachEligibleDependant">Each Eligible Dependant</td>
 <td class="p-4 font-mono font-bold text-white">$2,000</td>
 </tr>
 </tbody>
@@ -1002,17 +989,17 @@
 <table class="w-full text-left text-xs md:text-sm text-neutral-300 border-collapse">
 <thead>
 <tr class="bg-neutral-800/50 text-luxury-gold font-bold uppercase text-[10px] md:text-xs tracking-wider border-b border-neutral-800">
-<th class="p-4">Applicant Tier</th>
-<th class="p-4">Fee (USD)</th>
+<th class="p-4" data-i18n="programs.nauru.pricing_th_applicantTier">Applicant Tier</th>
+<th class="p-4" data-i18n="programs.nauru.pricing_th_feeUSD">Fee (USD)</th>
 </tr>
 </thead>
 <tbody class="divide-y divide-neutral-800/80">
 <tr class="hover:bg-white/5 transition-colors">
-<td class="p-4 font-medium text-white">Principal Applicant</td>
+<td class="p-4 font-medium text-white" data-i18n="programs.nauru.pricing_td_principalApplicant">Principal Applicant</td>
 <td class="p-4 font-mono font-bold text-white">$6,000</td>
 </tr>
 <tr class="hover:bg-white/5 transition-colors">
-<td class="p-4 font-medium text-white">Each Dependant Aged 16 or Over</td>
+<td class="p-4 font-medium text-white" data-i18n="programs.nauru.pricing_td_dependant16Over">Each Dependant Aged 16 or Over</td>
 <td class="p-4 font-mono font-bold text-white">$3,000</td>
 </tr>
 </tbody>
@@ -1028,18 +1015,18 @@
 <table class="w-full text-left text-xs md:text-sm text-neutral-300 border-collapse">
 <thead>
 <tr class="bg-neutral-800/50 text-luxury-gold font-bold uppercase text-[10px] md:text-xs tracking-wider border-b border-neutral-800">
-<th class="p-4">Application Scale</th>
-<th class="p-4">Fee Structure</th>
+<th class="p-4" data-i18n="programs.nauru.pricing_th_applicationScale">Application Scale</th>
+<th class="p-4" data-i18n="programs.nauru.pricing_th_feeStructure">Fee Structure</th>
 </tr>
 </thead>
 <tbody class="divide-y divide-neutral-800/80">
 <tr class="hover:bg-white/5 transition-colors">
-<td class="p-4 font-medium text-white">Principal Applicant</td>
+<td class="p-4 font-medium text-white" data-i18n="programs.nauru.pricing_td_principalApplicant">Principal Applicant</td>
 <td class="p-4 font-mono font-bold text-white">USD $1,200</td>
 </tr>
 <tr class="hover:bg-white/5 transition-colors">
-<td class="p-4 font-medium text-white">Larger Family Applications</td>
-<td class="p-4 font-mono text-neutral-300">Higher fees apply according to the official schedule</td>
+<td class="p-4 font-medium text-white" data-i18n="programs.nauru.pricing_td_largerFamily">Larger Family Applications</td>
+<td class="p-4 font-mono text-neutral-300" data-i18n="programs.nauru.pricing_td_higherFeesDesc">Higher fees apply according to the official schedule</td>
 </tr>
 </tbody>
 </table>
@@ -1054,17 +1041,17 @@
 <table class="w-full text-left text-xs md:text-sm text-neutral-300 border-collapse">
 <thead>
 <tr class="bg-neutral-800/50 text-luxury-gold font-bold uppercase text-[10px] md:text-xs tracking-wider border-b border-neutral-800">
-<th class="p-4">Item Description</th>
-<th class="p-4">Fee (USD)</th>
+<th class="p-4" data-i18n="programs.nauru.pricing_th_itemDescription">Item Description</th>
+<th class="p-4" data-i18n="programs.nauru.pricing_th_feeUSD">Fee (USD)</th>
 </tr>
 </thead>
 <tbody class="divide-y divide-neutral-800/80">
 <tr class="hover:bg-white/5 transition-colors">
-<td class="p-4 font-medium text-white">Passport Issuance (Per Passport)</td>
+<td class="p-4 font-medium text-white" data-i18n="programs.nauru.pricing_td_passportIssuance">Passport Issuance (Per Passport)</td>
 <td class="p-4 font-mono font-bold text-white">$500</td>
 </tr>
 <tr class="hover:bg-white/5 transition-colors">
-<td class="p-4 font-medium text-white">Additional Sibling of Principal Applicant or Spouse</td>
+<td class="p-4 font-medium text-white" data-i18n="programs.nauru.pricing_td_additionalSibling">Additional Sibling of Principal Applicant or Spouse</td>
 <td class="p-4 font-mono font-bold text-white">$15,000</td>
 </tr>
 </tbody>
@@ -1148,7 +1135,7 @@
 </li>
 </ul>
 </div>
-<div class="pt-4 border-t border-neutral-100 text-xs text-neutral-500 font-light italic">
+<div class="pt-4 border-t border-neutral-100 text-xs text-neutral-500 font-light italic" data-i18n="programs.nauru.whoCanApply_note1">
                             * Applicants must provide clean police clearance records from every country resided in for over six months over the past 10 years.
                         </div>
 </div>
@@ -1183,7 +1170,7 @@
 </li>
 </ul>
 </div>
-<div class="pt-4 border-t border-neutral-100 text-xs text-neutral-500 font-light italic">
+<div class="pt-4 border-t border-neutral-100 text-xs text-neutral-500 font-light italic" data-i18n="programs.nauru.whoCanApply_note2">
                             * Applications must be filed through authorized agents like Sharif Group for government review.
                         </div>
 </div>
@@ -1675,19 +1662,19 @@
 <!-- 4 Breakdown Tiers -->
 <div class="grid grid-cols-2 sm:grid-cols-4 gap-2 pt-1 text-center">
 <div class="bg-[#9EBC9C]/15 border border-[#9EBC9C]/40 rounded-xl p-2.5 transition-transform duration-300 hover:scale-105">
-<div class="text-[10px] font-bold text-[#4B6B4A] uppercase">Visa-Free (41)</div>
+<div class="text-[10px] font-bold text-[#4B6B4A] uppercase"><span data-i18n="programs.nauru.mobility_span12">Visa-Free</span> (41)</div>
 <div class="text-xs font-serif font-bold text-[#2A402A]">20.7%</div>
 </div>
 <div class="bg-[#6DA0A5]/15 border border-[#6DA0A5]/40 rounded-xl p-2.5 transition-transform duration-300 hover:scale-105">
-<div class="text-[10px] font-bold text-[#3B6265] uppercase">VOA (40)</div>
+<div class="text-[10px] font-bold text-[#3B6265] uppercase"><span data-i18n="programs.nauru.mobility_span13">VOA</span> (40)</div>
 <div class="text-xs font-serif font-bold text-[#1E3B3D]">20.2%</div>
 </div>
 <div class="bg-[#E2C07C]/15 border border-[#E2C07C]/40 rounded-xl p-2.5 transition-transform duration-300 hover:scale-105">
-<div class="text-[10px] font-bold text-[#806429] uppercase">eTA (5)</div>
+<div class="text-[10px] font-bold text-[#806429] uppercase"><span data-i18n="programs.nauru.mobility_span14">eTA</span> (5)</div>
 <div class="text-xs font-serif font-bold text-[#4D3D12]">2.5%</div>
 </div>
 <div class="bg-[#C57C6C]/15 border border-[#C57C6C]/40 rounded-xl p-2.5 transition-transform duration-300 hover:scale-105">
-<div class="text-[10px] font-bold text-[#7A3F33] uppercase">Visa Required (112)</div>
+<div class="text-[10px] font-bold text-[#7A3F33] uppercase"><span data-i18n="programs.nauru.mobility_span15">Visa Required</span> (112)</div>
 <div class="text-xs font-serif font-bold text-[#471E17]">56.6%</div>
 </div>
 </div>
@@ -2364,7 +2351,7 @@
 <li><a class="hover:text-luxury-gold transition" data-i18n="megaMenu.socialResponsibility" href="../../../socialresponsibility/index.html">Social Responsibility</a></li>
 <li><a class="hover:text-luxury-gold transition" data-i18n="footer.citizenshipProgramsCol" href="../../../citizenshipbyinvestment/index.html">Citizenship Programs</a></li>
 <li><a class="hover:text-luxury-gold transition" data-i18n="footer.residencyProgramsCol" href="../../../residencybyinvestment/index.html">Residency Programs</a></li>
-<li><a class="hover:text-luxury-gold transition" href="../../../realestate/index.html">Real Estate</a></li>
+<li><a class="hover:text-luxury-gold transition" data-i18n="nav.realEstate" href="../../../realestate/index.html">Real Estate</a></li>
 <li><a class="hover:text-luxury-gold transition" data-i18n="megaMenu.educationalAdvisory" href="../../../educationaladvisory/index.html">Educational Advisory</a></li>
 <li><a class="hover:text-luxury-gold transition" data-i18n="nav.contact" href="../../../contact/index.html">Contact Us</a></li>
 <li><a class="hover:text-luxury-gold transition" data-i18n="megaMenu.insights" href="../../../blog/index.html">Insights &amp; Blog</a></li>
@@ -2396,7 +2383,7 @@
 </ul>
 <h4 class="text-[11px] uppercase tracking-[0.2em] text-luxury-gold font-bold mb-3" data-i18n="megaMenu.moreServicesTitle">Other Services</h4>
 <ul class="space-y-2 text-xs text-neutral-300">
-<li><a class="hover:text-luxury-gold transition" href="../../../realestate/index.html">Real Estate</a></li>
+<li><a class="hover:text-luxury-gold transition" data-i18n="nav.realEstate" href="../../../realestate/index.html">Real Estate</a></li>
 <li><a class="hover:text-luxury-gold transition" data-i18n="megaMenu.educationalAdvisory" href="../../../educationaladvisory/index.html">Educational Advisory</a></li>
 </ul>
 </div>
