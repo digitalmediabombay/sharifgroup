@@ -318,15 +318,34 @@
 
 	@keyframes endlessMarquee {
             0% { transform: translateX(0); }
-            100% { transform: translateX(-50%); }
+            100% { transform: translateX(-100%); }
+        }
+        .marquee-container {
+            position: relative;
+            width: 100%;
+            overflow: hidden;
+            direction: ltr !important;
         }
         .marquee-track {
-            display: flex;
-            width: max-content;
-            animation: endlessMarquee 42s linear infinite;
+            display: flex !important;
+            flex-direction: row !important;
+            width: max-content !important;
+            direction: ltr !important;
+            user-select: none;
         }
-        .marquee-container:hover .marquee-track {
-            animation-play-state: paused;
+        .marquee-group {
+            display: flex !important;
+            flex-direction: row !important;
+            align-items: center !important;
+            gap: 1.5rem !important;
+            padding-right: 1.5rem !important;
+            flex-shrink: 0 !important;
+            direction: ltr !important;
+            animation: endlessMarquee 42s linear infinite !important;
+            will-change: transform;
+        }
+        .marquee-container:hover .marquee-group {
+            animation-play-state: paused !important;
         }
         .program-card-neon {
             position: relative;

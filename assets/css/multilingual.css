@@ -466,3 +466,19 @@ body.lang-fa .founder-hero-desc,
 [dir="rtl"] .inline-flex.items-center.gap-3 {
     direction: rtl !important;
 }
+
+/* 9. Marquee Track RTL Continuous Loop Engine:
+   Force physical LTR coordinates so infinite scroll marquees never empty out or stop in RTL */
+[dir="rtl"] .marquee-container,
+[dir="rtl"] .marquee-track,
+[dir="rtl"] .marquee-group,
+html[dir="rtl"] .marquee-container,
+html[dir="rtl"] .marquee-track,
+html[dir="rtl"] .marquee-group,
+body.lang-ar .marquee-container,
+body.lang-fa .marquee-container,
+body.lang-ar .marquee-track,
+body.lang-fa .marquee-track {
+    direction: ltr !important;
+}
+
