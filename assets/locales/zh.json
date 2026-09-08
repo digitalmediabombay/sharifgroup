@@ -592,7 +592,25 @@
     "lastName": "姓",
     "disclaimerTitle": "法律声明与合规声明",
     "disclaimerText": "本指南提供的信息仅用于信息传递与参考，不构成任何法律、税务或直接投资建议。各国官方政策、最低投资门槛、背调费用及免签国家列表可能根据主权部门规定调整。请直接联系谢里夫集团官方持牌顾问获取最新专属方案。",
-    "registerInquiry": "提交咨询"
+    "registerInquiry": "提交咨询",
+    "badgeLocation": "企业总部位置",
+    "badgeDirect": "直接沟通渠道",
+    "badgeMap": "地图导航指引",
+    "badgeSocial": "在线社交平台",
+    "badgeDesk": "高级咨询服务台",
+    "salutationSelect": "选择称谓",
+    "salutationMr": "先生",
+    "salutationMrs": "女士",
+    "salutationMs": "女士",
+    "salutationMiss": "小姐",
+    "salutationDr": "博士/医生",
+    "salutationProf": "教授",
+    "salutationSir": "爵士",
+    "salutationSheikh": "谢赫",
+    "salutationSheikha": "谢哈",
+    "salutationHE": "阁下",
+    "salutationLord": "勋爵",
+    "salutationLady": "夫人"
   },
   "footer": {
     "quickLinks": "快速链接",
@@ -1984,7 +2002,12 @@
       "whatsappDesk": "WhatsApp 客服",
       "whatsappDeskDesc": "在线即时咨询服务",
       "emailInquiry": "电子邮件咨询",
-      "emailInquiryDesc": "正式书面沟通渠道"
+      "emailInquiryDesc": "正式书面沟通渠道",
+      "badgeLocation": "企业总部位置",
+      "badgeDirect": "直接沟通渠道",
+      "badgeMap": "地图导航指引",
+      "badgeSocial": "在线社交平台",
+      "badgeDesk": "高级咨询服务台"
     },
     "blog": {
       "badge": "深度行业洞察",

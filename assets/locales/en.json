@@ -592,7 +592,25 @@
     "lastName": "Last Name",
     "disclaimerTitle": "Legal Notice & Compliance Disclaimer",
     "disclaimerText": "The information provided in this guide is for informational and educational purposes only and does not constitute legal, tax, or investment advice. Government regulations, qualifying investment amounts, due diligence fees, and visa-free travel lists are subject to change by sovereign authorities. Please consult an authorized Sharif Group advisor for current requirements tailored to your profile.",
-    "registerInquiry": "Register Inquiry"
+    "registerInquiry": "Register Inquiry",
+    "badgeLocation": "CORPORATE LOCATION",
+    "badgeDirect": "DIRECT COMMUNICATION",
+    "badgeMap": "MAP NAVIGATION",
+    "badgeSocial": "CONNECT ONLINE",
+    "badgeDesk": "EXECUTIVE ADVISORY DESK",
+    "salutationSelect": "Select",
+    "salutationMr": "Mr.",
+    "salutationMrs": "Mrs.",
+    "salutationMs": "Ms.",
+    "salutationMiss": "Miss",
+    "salutationDr": "Dr.",
+    "salutationProf": "Prof.",
+    "salutationSir": "Sir",
+    "salutationSheikh": "Sheikh",
+    "salutationSheikha": "Sheikha",
+    "salutationHE": "H.E. (His/Her Excellency)",
+    "salutationLord": "Lord",
+    "salutationLady": "Lady"
   },
   "footer": {
     "quickLinks": "Quick Links",
@@ -1984,7 +2002,12 @@
       "whatsappDesk": "WhatsApp Desk",
       "whatsappDeskDesc": "Direct advisory chat desk",
       "emailInquiry": "Email Inquiry",
-      "emailInquiryDesc": "Direct written correspondence"
+      "emailInquiryDesc": "Direct written correspondence",
+      "badgeLocation": "CORPORATE LOCATION",
+      "badgeDirect": "DIRECT COMMUNICATION",
+      "badgeMap": "MAP NAVIGATION",
+      "badgeSocial": "CONNECT ONLINE",
+      "badgeDesk": "EXECUTIVE ADVISORY DESK"
     },
     "blog": {
       "badge": "INSIGHTS & ARTICLES",

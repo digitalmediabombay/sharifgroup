@@ -592,7 +592,25 @@
     "lastName": "نام خانوادگی",
     "disclaimerTitle": "اطلاعیه حقوقی و سلب مسئولیت قانونی",
     "disclaimerText": "اطلاعات ارائه‌شده در این راهنما صرفاً جنبه آموزشی و اطلاع‌رسانی داشته و به منزله مشاوره حقوقی یا مالیاتی تلقی نمی‌شود. مقررات دولتی، مبالغ سرمایه‌گذاری و لیست‌های بدون ویزا توسط مراجع رسمی ممکن است تغییر یابند. لطفاً جهت دریافت آخرین شرایط متناسب با پرونده خود با مشاوران رسمی گروه شریف در ارتباط باشید.",
-    "registerInquiry": "ثبت درخواست"
+    "registerInquiry": "ثبت درخواست",
+    "badgeLocation": "موقعیت دفتر مرکزی",
+    "badgeDirect": "ارتباط مستقیم",
+    "badgeMap": "مسیریابی روی نقشه",
+    "badgeSocial": "ارتباط آنلاین",
+    "badgeDesk": "میز مشاوره اجرایی",
+    "salutationSelect": "انتخاب عنوان",
+    "salutationMr": "آقای",
+    "salutationMrs": "خانم",
+    "salutationMs": "خانم",
+    "salutationMiss": "دوشیزه",
+    "salutationDr": "دکتر",
+    "salutationProf": "پروفسور",
+    "salutationSir": "جناب",
+    "salutationSheikh": "شیخ",
+    "salutationSheikha": "شیخه",
+    "salutationHE": "جناب عالی / سرکار عالی",
+    "salutationLord": "لرد",
+    "salutationLady": "لیدی"
   },
   "footer": {
     "quickLinks": "لینک‌های سریع",
@@ -1984,7 +2002,12 @@
       "whatsappDesk": "میز واتس‌اپ",
       "whatsappDeskDesc": "میز گفتگوی مستقیم مشاوره",
       "emailInquiry": "استعلام از طریق ایمیل",
-      "emailInquiryDesc": "مکاتبات کتبی مستقیم"
+      "emailInquiryDesc": "مکاتبات کتبی مستقیم",
+      "badgeLocation": "موقعیت دفتر مرکزی",
+      "badgeDirect": "ارتباط مستقیم",
+      "badgeMap": "مسیریابی روی نقشه",
+      "badgeSocial": "ارتباط آنلاین",
+      "badgeDesk": "میز مشاوره اجرایی"
     },
     "blog": {
       "badge": "مقالات و تحلیل‌ها",

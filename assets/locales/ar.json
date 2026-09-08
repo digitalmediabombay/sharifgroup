@@ -592,7 +592,25 @@
     "lastName": "اسم العائلة",
     "disclaimerTitle": "إشعار قانوني وتنويه الامتثال",
     "disclaimerText": "المعلومات الواردة في هذا الدليل هي لأغراض إعلامية وتثقيفية فقط ولا تشكل استشارة قانونية أو ضريبية أو استثمارية. تخضع اللوائح الحكومية ومبالغ الاستثمار المؤهلة ورسوم التدقيق الأمني وقوائم السفر بدون تأشيرة للتغيير من قبل السلطات السيادية. يرجى استشارة مستشار معتمد في مجموعة شريف لمعرفة المتطلبات الحالية المناسبة لملفك.",
-    "registerInquiry": "تسجيل استفسار"
+    "registerInquiry": "تسجيل استفسار",
+    "badgeLocation": "موقع المقر الرئيسي",
+    "badgeDirect": "قنوات الاتصال المباشر",
+    "badgeMap": "خريطة الموقع والاتجاهات",
+    "badgeSocial": "تواصل معنا رقمياً",
+    "badgeDesk": "مكتب الاستشارات التنفيذية",
+    "salutationSelect": "اختر اللقب",
+    "salutationMr": "السيد",
+    "salutationMrs": "السيدة",
+    "salutationMs": "الآنسة",
+    "salutationMiss": "الآنسة",
+    "salutationDr": "د.",
+    "salutationProf": "أستاذ",
+    "salutationSir": "سير",
+    "salutationSheikh": "الشيخ",
+    "salutationSheikha": "الشيخة",
+    "salutationHE": "معالي / سعادة",
+    "salutationLord": "لورد",
+    "salutationLady": "ليدي"
   },
   "footer": {
     "quickLinks": "روابط سريعة",
@@ -1984,7 +2002,12 @@
       "whatsappDesk": "مكتب واتساب",
       "whatsappDeskDesc": "محادثة استشارية مباشرة",
       "emailInquiry": "الاستفسار عبر البريد",
-      "emailInquiryDesc": "مراسلات كتابية مباشرة وموثقة"
+      "emailInquiryDesc": "مراسلات كتابية مباشرة وموثقة",
+      "badgeLocation": "موقع المقر الرئيسي",
+      "badgeDirect": "قنوات الاتصال المباشر",
+      "badgeMap": "خريطة الموقع والاتجاهات",
+      "badgeSocial": "تواصل معنا رقمياً",
+      "badgeDesk": "مكتب الاستشارات التنفيذية"
     },
     "blog": {
       "badge": "المقالات والتحليلات",
