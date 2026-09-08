@@ -1,44 +1,30 @@
 {
   "cleanUrls": true,
   "redirects": [
-    {
-      "source": "/index.html/:lang(ar|fa|zh|en)",
-      "destination": "/:lang/",
-      "permanent": false
-    },
-    {
-      "source": "/:path*/index.html/:lang(ar|fa|zh|en)",
-      "destination": "/:lang/:path*/",
-      "permanent": false
-    },
-    {
-      "source": "/termsofservice",
-      "destination": "/termsofuse/index.html",
-      "permanent": true
-    },
-    {
-      "source": "/termsofservice/index.html",
-      "destination": "/termsofuse/index.html",
-      "permanent": true
-    },
-    {
-      "source": "/termsofservice/(.*)",
-      "destination": "/termsofuse/$1",
-      "permanent": true
-    }
+    { "source": "/index.html/ar", "destination": "/ar/", "permanent": false },
+    { "source": "/index.html/fa", "destination": "/fa/", "permanent": false },
+    { "source": "/index.html/zh", "destination": "/zh/", "permanent": false },
+    { "source": "/index.html/en", "destination": "/en/", "permanent": false },
+    { "source": "/:path*/index.html/ar", "destination": "/ar/:path*/", "permanent": false },
+    { "source": "/:path*/index.html/fa", "destination": "/fa/:path*/", "permanent": false },
+    { "source": "/:path*/index.html/zh", "destination": "/zh/:path*/", "permanent": false },
+    { "source": "/:path*/index.html/en", "destination": "/en/:path*/", "permanent": false },
+    { "source": "/termsofservice", "destination": "/termsofuse/index.html", "permanent": true },
+    { "source": "/termsofservice/index.html", "destination": "/termsofuse/index.html", "permanent": true },
+    { "source": "/termsofservice/(.*)", "destination": "/termsofuse/$1", "permanent": true }
   ],
   "rewrites": [
-    {
-      "source": "/:lang(ar|fa|zh|en)",
-      "destination": "/index.html"
-    },
-    {
-      "source": "/:lang(ar|fa|zh|en)/",
-      "destination": "/index.html"
-    },
-    {
-      "source": "/:lang(ar|fa|zh|en)/:path*",
-      "destination": "/:path*"
-    }
+    { "source": "/ar", "destination": "/index.html" },
+    { "source": "/fa", "destination": "/index.html" },
+    { "source": "/zh", "destination": "/index.html" },
+    { "source": "/en", "destination": "/index.html" },
+    { "source": "/ar/", "destination": "/index.html" },
+    { "source": "/fa/", "destination": "/index.html" },
+    { "source": "/zh/", "destination": "/index.html" },
+    { "source": "/en/", "destination": "/index.html" },
+    { "source": "/ar/:path*", "destination": "/:path*" },
+    { "source": "/fa/:path*", "destination": "/:path*" },
+    { "source": "/zh/:path*", "destination": "/:path*" },
+    { "source": "/en/:path*", "destination": "/:path*" }
   ]
 }
