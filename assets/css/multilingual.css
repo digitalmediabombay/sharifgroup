@@ -390,12 +390,17 @@ body.lang-ar h3, body.lang-fa h3,
     line-height: 1.4 !important;
 }
 
-/* 5. Founder Page Hero Subtitle & Description in RTL */
+/* 5. Founder & About Page Hero Subtitle & Description in RTL */
 html[lang="ar"] .founder-hero-subtitle,
 html[lang="fa"] .founder-hero-subtitle,
 body.lang-ar .founder-hero-subtitle,
 body.lang-fa .founder-hero-subtitle,
-[dir="rtl"] .founder-hero-subtitle {
+[dir="rtl"] .founder-hero-subtitle,
+html[lang="ar"] .about-hero-subtitle,
+html[lang="fa"] .about-hero-subtitle,
+body.lang-ar .about-hero-subtitle,
+body.lang-fa .about-hero-subtitle,
+[dir="rtl"] .about-hero-subtitle {
     font-family: 'Cairo', system-ui, sans-serif !important;
     font-style: normal !important;
     line-height: 1.9 !important;
@@ -404,7 +409,9 @@ body.lang-fa .founder-hero-subtitle,
 }
 
 html[lang="fa"] .founder-hero-subtitle,
-body.lang-fa .founder-hero-subtitle {
+body.lang-fa .founder-hero-subtitle,
+html[lang="fa"] .about-hero-subtitle,
+body.lang-fa .about-hero-subtitle {
     font-family: 'Vazirmatn', system-ui, sans-serif !important;
 }
 
