@@ -1,0 +1,19 @@
+{
+  "redirects": [
+    {
+      "source": "/termsofservice",
+      "destination": "/termsofuse/index.html",
+      "permanent": true
+    },
+    {
+      "source": "/termsofservice/index.html",
+      "destination": "/termsofuse/index.html",
+      "permanent": true
+    },
+    {
+      "source": "/termsofservice/(.*)",
+      "destination": "/termsofuse/$1",
+      "permanent": true
+    }
+  ]
+}
