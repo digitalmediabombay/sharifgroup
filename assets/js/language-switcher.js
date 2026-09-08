@@ -54,12 +54,24 @@
     }
 
     function getInitialLang() {
+        // 1. Check clean path prefix: /ar/, /fa/, /zh/, /en/
+        var pathname = (window.location && window.location.pathname) ? window.location.pathname : '';
+        var segments = pathname.split('/').filter(Boolean);
+        if (segments.length > 0) {
+            var first = segments[0].toLowerCase();
+            if (first === 'ar' || first === 'fa' || first === 'zh' || first === 'en') {
+                return first;
+            }
+        }
+
+        // 2. Check query param: ?lang=ar
         var urlParams = new URLSearchParams(window.location.search);
         var urlLang = urlParams.get('lang');
         if (urlLang) {
             return normalizeLang(urlLang);
         }
 
+        // 3. Check stored preference
         try {
             var stored = localStorage.getItem('sharif_lang') || localStorage.getItem('sharif_preferred_lang');
             if (stored) {
@@ -457,6 +469,44 @@
         });
     }
 
+    function updateUrlPathForLang(lang) {
+        if (!window.history || !window.history.pushState) return;
+        if (window.location && window.location.protocol === 'file:') return;
+
+        var pathname = window.location.pathname || '/';
+        var search = window.location.search || '';
+        var hash = window.location.hash || '';
+
+        var segments = pathname.split('/').filter(Boolean);
+        // If first segment is currently a supported lang code, remove it
+        if (segments.length > 0 && ['ar', 'fa', 'zh', 'en'].indexOf(segments[0].toLowerCase()) !== -1) {
+            segments.shift();
+        }
+
+        var newPathname = '';
+        if (lang === 'en') {
+            newPathname = '/' + segments.join('/');
+        } else {
+            newPathname = '/' + lang + (segments.length > 0 ? '/' + segments.join('/') : '/');
+        }
+
+        if (pathname.endsWith('/') && !newPathname.endsWith('/')) {
+            newPathname += '/';
+        }
+
+        if (search.includes('lang=')) {
+            var params = new URLSearchParams(search);
+            params.delete('lang');
+            var str = params.toString();
+            search = str ? '?' + str : '';
+        }
+
+        var newUrl = newPathname + search + hash;
+        if (newUrl !== (window.location.pathname + window.location.search + window.location.hash)) {
+            window.history.pushState({ lang: lang }, '', newUrl);
+        }
+    }
+
     window.switchLanguage = function (targetLang) {
         var lang = normalizeLang(targetLang);
         currentLang = lang;
@@ -465,6 +515,9 @@
             localStorage.setItem('sharif_lang', lang);
             localStorage.setItem('sharif_preferred_lang', lang);
         } catch (e) {}
+
+        // Update clean URL path in browser address bar (e.g. /ar/, /zh/, /fa/)
+        updateUrlPathForLang(lang);
 
         // Hide dropdown
         var dropdown = document.getElementById('lang-dropdown-menu');
@@ -477,6 +530,16 @@
             applyTranslations(data, lang);
         });
     };
+
+    window.addEventListener('popstate', function () {
+        var lang = getInitialLang();
+        if (lang !== currentLang) {
+            currentLang = lang;
+            loadTranslation(lang, function (data) {
+                applyTranslations(data, lang);
+            });
+        }
+    });
 
     window.toggleLangDropdown = function (event) {
         if (event) {

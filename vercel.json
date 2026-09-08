@@ -1,5 +1,16 @@
 {
+  "cleanUrls": true,
   "redirects": [
+    {
+      "source": "/index.html/:lang(ar|fa|zh|en)",
+      "destination": "/:lang/",
+      "permanent": false
+    },
+    {
+      "source": "/:path*/index.html/:lang(ar|fa|zh|en)",
+      "destination": "/:lang/:path*/",
+      "permanent": false
+    },
     {
       "source": "/termsofservice",
       "destination": "/termsofuse/index.html",
@@ -14,6 +25,20 @@
       "source": "/termsofservice/(.*)",
       "destination": "/termsofuse/$1",
       "permanent": true
+    }
+  ],
+  "rewrites": [
+    {
+      "source": "/:lang(ar|fa|zh|en)",
+      "destination": "/index.html"
+    },
+    {
+      "source": "/:lang(ar|fa|zh|en)/",
+      "destination": "/index.html"
+    },
+    {
+      "source": "/:lang(ar|fa|zh|en)/:path*",
+      "destination": "/:path*"
     }
   ]
 }
