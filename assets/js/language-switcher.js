@@ -248,6 +248,14 @@
                 var heroGlowChild = el.querySelector('.contact-hero-glow, .dominica-hero-glow, .stlucia-hero-glow');
                 if (heroGlowChild && el !== heroGlowChild) {
                     heroGlowChild.textContent = localized;
+                } else if (el.querySelector('span[data-i18n]') && el.querySelector('i, svg, [class*="fa-"]')) {
+                    // Parent container has icons and a child span with data-i18n: do not wipe out icons!
+                    var innerSpan = el.querySelector('span[data-i18n]');
+                    if (innerSpan) innerSpan.textContent = localized;
+                } else if (el.querySelector('i, svg, [class*="fa-"]') && el.querySelector('span')) {
+                    // Parent has icon and inner span: update the span only
+                    var targetSpan = el.querySelector('span');
+                    if (targetSpan) targetSpan.textContent = localized;
                 } else {
                     el.textContent = localized;
                 }
