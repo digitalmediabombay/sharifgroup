@@ -1973,7 +1973,17 @@
       "socialTitle": "Our Official Social Channels",
       "socialDesc": "Stay connected and follow our daily updates, market insights, and program announcements.",
       "heroBadge": "EXECUTIVE BRIEFING DESK",
-      "heroSubtitle": "Dubai Headquarters"
+      "heroSubtitle": "Dubai Headquarters",
+      "globalHq": "Global Headquarters",
+      "clickDirections": "Click for Directions →",
+      "dubaiTz": "Dubai Time Zone (UTC+04:00)",
+      "officialHours": "Official Hours",
+      "linkedinDesc": "Corporate news and updates",
+      "instagramDesc": "Visual portfolios and stories",
+      "whatsappDesk": "WhatsApp Desk",
+      "whatsappDeskDesc": "Direct advisory chat desk",
+      "emailInquiry": "Email Inquiry",
+      "emailInquiryDesc": "Direct written correspondence"
     },
     "blog": {
       "badge": "INSIGHTS & ARTICLES",

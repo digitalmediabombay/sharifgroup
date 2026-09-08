@@ -1973,7 +1973,17 @@
       "socialTitle": "关注官方社交媒体",
       "socialDesc": "获取实时全球移民政策动向、房地产深度报告与权威行业解析。",
       "heroBadge": "执行简报处",
-      "heroSubtitle": "迪拜总部"
+      "heroSubtitle": "迪拜总部",
+      "globalHq": "全球总部",
+      "clickDirections": "点击获取路线指引 →",
+      "dubaiTz": "迪拜时区 (UTC+04:00)",
+      "officialHours": "官方工作时间",
+      "linkedinDesc": "企业新闻与最新动态",
+      "instagramDesc": "视觉作品与精彩故事",
+      "whatsappDesk": "WhatsApp 客服",
+      "whatsappDeskDesc": "在线即时咨询服务",
+      "emailInquiry": "电子邮件咨询",
+      "emailInquiryDesc": "正式书面沟通渠道"
     },
     "blog": {
       "badge": "深度行业洞察",
