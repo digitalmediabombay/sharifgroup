@@ -1,33 +1,85 @@
 {
+  "$schema": "https://openapi.vercel.sh/vercel.json",
   "cleanUrls": true,
-  "routes": [
+  "redirects": [
     {
-      "src": "^/termsofservice/?$",
-      "status": 301,
-      "headers": { "Location": "/termsofuse/index.html" }
+      "source": "/index.html/ar",
+      "destination": "/ar",
+      "permanent": false
     },
     {
-      "src": "^/termsofservice/(.*)$",
-      "status": 301,
-      "headers": { "Location": "/termsofuse/$1" }
+      "source": "/index.html/zh",
+      "destination": "/zh",
+      "permanent": false
     },
     {
-      "src": "^/index\\.html/(ar|fa|zh|en)/?$",
-      "status": 302,
-      "headers": { "Location": "/$1/" }
+      "source": "/index.html/fa",
+      "destination": "/fa",
+      "permanent": false
     },
     {
-      "src": "^/(.*)/index\\.html/(ar|fa|zh|en)/?$",
-      "status": 302,
-      "headers": { "Location": "/$2/$1/" }
+      "source": "/index.html/en",
+      "destination": "/",
+      "permanent": false
     },
     {
-      "src": "^/(ar|fa|zh|en)/?$",
-      "dest": "/index.html"
+      "source": "/termsofservice",
+      "destination": "/termsofuse",
+      "permanent": true
+    }
+  ],
+  "rewrites": [
+    {
+      "source": "/ar",
+      "destination": "/index.html"
     },
     {
-      "src": "^/(ar|fa|zh|en)/(.*)$",
-      "dest": "/$2"
+      "source": "/ar/",
+      "destination": "/index.html"
+    },
+    {
+      "source": "/zh",
+      "destination": "/index.html"
+    },
+    {
+      "source": "/zh/",
+      "destination": "/index.html"
+    },
+    {
+      "source": "/fa",
+      "destination": "/index.html"
+    },
+    {
+      "source": "/fa/",
+      "destination": "/index.html"
+    },
+    {
+      "source": "/en",
+      "destination": "/index.html"
+    },
+    {
+      "source": "/en/",
+      "destination": "/index.html"
+    },
+    {
+      "source": "/(ar|fa|zh|en)/assets/:path*",
+      "destination": "/assets/:path*"
+    },
+    {
+      "source": "/(ar|fa|zh|en)/programs/:prog/:country",
+      "destination": "/programs/:prog/:country/index.html"
+    },
+    {
+      "source": "/(ar|fa|zh|en)/programs/:prog/:country/",
+      "destination": "/programs/:prog/:country/index.html"
+    },
+    {
+      "source": "/(ar|fa|zh|en)/:page",
+      "destination": "/:page/index.html"
+    },
+    {
+      "source": "/(ar|fa|zh|en)/:page/",
+      "destination": "/:page/index.html"
     }
   ]
 }
