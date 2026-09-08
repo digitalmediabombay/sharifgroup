@@ -3423,7 +3423,10 @@
       "mobility_tier1": "Visa-Free (91)",
       "mobility_tier2": "VOA (41)",
       "mobility_tier3": "eTA (5)",
-      "mobility_tier4": "Visa Required (61)"
+      "mobility_tier4": "Visa Required (61)",
+      "documents_cat1": "1. Mandatory Government Forms (For Everyone)",
+      "documents_cat2": "2. Core Documents for the Main Applicant",
+      "documents_cat3": "3. Extra Documents for Family Dependants"
     },
     "grenada": {
       "heroTitle": "Grenada",
@@ -4539,7 +4542,13 @@
       "placeholderNationality": "Select Nationality...",
       "placeholderResidence": "Select Country of Residence...",
       "placeholderMessage": "Specify any family parameters, target timelines, or specific questions...",
-      "mobilitySearchPlaceholder": "Find a country..."
+      "mobilitySearchPlaceholder": "Find a country...",
+      "investment_govFeesTitle": "Government fees and additional costs",
+      "documents_cat1": "1. Mandatory Government Forms & Core Certificates",
+      "documents_cat2": "2. Personal Identity Documents (For Individual & Family)",
+      "documents_cat3": "3. Background Vetting & Health Cleanliness (Adults Only)",
+      "documents_cat4": "4. Financial & Source of Income Proofs (Main Investor Only)",
+      "documents_cat5": "5. Extra Relationship Records for Family (Dependants)"
     },
     "saotome": {
       "heroTitle": "São Tomé & Príncipe",
@@ -4893,7 +4902,12 @@
       "pricingTable3Row2": "Spouse",
       "pricingTable3Row3": "Each Additional Dependant",
       "pricingTable3Row4": "Newborn Child (up to one year old)",
-      "pricingTable3Note": "This structure provides flexibility for applicants whose family circumstances change after citizenship approval."
+      "pricingTable3Note": "This structure provides flexibility for applicants whose family circumstances change after citizenship approval.",
+      "documents_cat1": "1. Mandatory Government & Application Forms (For Everyone)",
+      "documents_cat2": "2. Core Identity Documents (For Individual & Family)",
+      "documents_cat3": "3. Financial Proofs & Source of Wealth (Main Applicant Only)",
+      "documents_cat4": "4. Background & Health Documents (Adults Only)",
+      "documents_cat5": "5. Extra Relationship Records for Family (Dependents)"
     },
     "greece": {
       "heroTitle": "Greece",

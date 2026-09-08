@@ -3423,7 +3423,10 @@
       "mobility_tier1": "免签 (91)",
       "mobility_tier2": "落地签 (41)",
       "mobility_tier3": "电子旅行证 (5)",
-      "mobility_tier4": "需签证 (61)"
+      "mobility_tier4": "需签证 (61)",
+      "documents_cat1": "1. 政府官方必备表格（全员适用）",
+      "documents_cat2": "2. 主申请人核心证明文件",
+      "documents_cat3": "3. 随行家庭受抚养人附加文件"
     },
     "grenada": {
       "heroTitle": "格林纳达",
@@ -4539,7 +4542,13 @@
       "placeholderNationality": "选择国籍……",
       "placeholderResidence": "选择居住国家……",
       "placeholderMessage": "请注明任何家庭情况、目标时间表或具体问题……",
-      "mobilitySearchPlaceholder": "搜索国家或地区..."
+      "mobilitySearchPlaceholder": "搜索国家或地区...",
+      "investment_govFeesTitle": "政府官方规费与附加成本",
+      "documents_cat1": "1. 政府官方必备表格与核心证书",
+      "documents_cat2": "2. 个人身份证明文件（个人与家庭适用）",
+      "documents_cat3": "3. 背景审查与健康体检文件（仅限成年人）",
+      "documents_cat4": "4. 资金与收入来源证明（仅限主投资者）",
+      "documents_cat5": "5. 家庭随行人员亲属关系补充文件（受抚养人）"
     },
     "saotome": {
       "heroTitle": "圣多美和普林西比",
@@ -4893,7 +4902,12 @@
       "pricingTable3Row2": "配偶",
       "pricingTable3Row3": "每位额外受养人",
       "pricingTable3Row4": "新生婴儿（一岁以内）",
-      "pricingTable3Note": "该结构为获得公民身份批准后家庭状况发生变化的申请人提供了灵活性。"
+      "pricingTable3Note": "该结构为获得公民身份批准后家庭状况发生变化的申请人提供了灵活性。",
+      "documents_cat1": "1. 政府官方必备与申请表格（全员适用）",
+      "documents_cat2": "2. 核心身份证明文件（个人与家庭适用）",
+      "documents_cat3": "3. 财务证明与合法财富来源（仅限主申请人）",
+      "documents_cat4": "4. 背景调查与健康证明文件（仅限成年人）",
+      "documents_cat5": "5. 随行家庭直系亲属关系证明（受抚养人）"
     },
     "greece": {
       "heroTitle": "希腊",
