@@ -84,18 +84,71 @@
         return curr;
     }
 
+    function deepMerge(target, source) {
+        if (!source) return target;
+        for (var key in source) {
+            if (Object.prototype.hasOwnProperty.call(source, key)) {
+                if (source[key] && typeof source[key] === 'object' && !Array.isArray(source[key])) {
+                    if (!target[key] || typeof target[key] !== 'object') {
+                        target[key] = {};
+                    }
+                    deepMerge(target[key], source[key]);
+                } else {
+                    target[key] = source[key];
+                }
+            }
+        }
+        return target;
+    }
+
     function getCandidateUrls(lang) {
-        return [
-            'assets/locales/' + lang + '.json',
-            '../assets/locales/' + lang + '.json',
-            '../../assets/locales/' + lang + '.json',
-            '../../../assets/locales/' + lang + '.json',
-            '/assets/locales/' + lang + '.json'
-        ];
+        var path = (window.location && window.location.pathname) ? window.location.pathname : '';
+        var href = (window.location && window.location.href) ? window.location.href : '';
+        var isSub = (path.includes('/') && path.split('/').filter(Boolean).length > 1) ||
+                    href.includes('/privacypolicy/') ||
+                    href.includes('/cookiepolicy/') ||
+                    href.includes('/termsofuse/') ||
+                    href.includes('/citizenship/') ||
+                    href.includes('/realestate/') ||
+                    href.includes('/contact/') ||
+                    href.includes('/about/') ||
+                    href.includes('/programs/');
+
+        if (isSub) {
+            return [
+                '../assets/locales/' + lang + '.json',
+                '../../assets/locales/' + lang + '.json',
+                '../../../assets/locales/' + lang + '.json',
+                'assets/locales/' + lang + '.json',
+                '/assets/locales/' + lang + '.json'
+            ];
+        } else {
+            return [
+                'assets/locales/' + lang + '.json',
+                '../assets/locales/' + lang + '.json',
+                '../../assets/locales/' + lang + '.json',
+                '/assets/locales/' + lang + '.json'
+            ];
+        }
     }
 
     function loadTranslation(lang, callback) {
-        if (translationsCache[lang]) {
+        // If already loaded and has deep content
+        if (translationsCache[lang] && (translationsCache[lang].pages || translationsCache[lang].nav)) {
+            callback(translationsCache[lang]);
+            return;
+        }
+
+        // Initialize from in-memory preloaded legal translations if available
+        if (window.LEGAL_TRANSLATIONS && window.LEGAL_TRANSLATIONS[lang]) {
+            translationsCache[lang] = deepMerge(translationsCache[lang] || {}, JSON.parse(JSON.stringify(window.LEGAL_TRANSLATIONS[lang])));
+        }
+
+        // When running under file:// protocol (local file test), fetch() is blocked by CORS policy.
+        // If we have bundled translations, apply them immediately.
+        var isFileProto = window.location && window.location.protocol === 'file:';
+        if (isFileProto && translationsCache[lang]) {
+            window.translationsCache = translationsCache;
             callback(translationsCache[lang]);
             return;
         }
@@ -105,19 +158,25 @@
 
         function tryNext() {
             if (index >= candidates.length) {
+                if (translationsCache[lang]) {
+                    window.translationsCache = translationsCache;
+                    callback(translationsCache[lang]);
+                    return;
+                }
                 console.error('[i18n] Failed to load locale for ' + lang + ' from all candidates.');
                 return;
             }
             var url = candidates[index++];
-            fetch(url)
+            var fetchUrl = url + (url.indexOf('?') === -1 ? '?v=20260909_5' : '&v=20260909_5');
+            fetch(fetchUrl, { cache: 'no-cache' })
                 .then(function (res) {
                     if (!res.ok) throw new Error('HTTP ' + res.status);
                     return res.json();
                 })
                 .then(function (data) {
-                    translationsCache[lang] = data;
+                    translationsCache[lang] = deepMerge(translationsCache[lang] || {}, data);
                     window.translationsCache = translationsCache;
-                    callback(data);
+                    callback(translationsCache[lang]);
                 })
                 .catch(function () {
                     tryNext();
@@ -159,22 +218,26 @@
 
     // Safe full DOM text node digit localization
     function localizeDomNumbers(lang) {
-        if (!document.body) return;
+        if (!document.body || typeof document.createTreeWalker !== 'function') return;
+        var filterReject = (typeof NodeFilter !== 'undefined' && NodeFilter.FILTER_REJECT) ? NodeFilter.FILTER_REJECT : 2;
+        var filterAccept = (typeof NodeFilter !== 'undefined' && NodeFilter.FILTER_ACCEPT) ? NodeFilter.FILTER_ACCEPT : 1;
+        var showText = (typeof NodeFilter !== 'undefined' && NodeFilter.SHOW_TEXT) ? NodeFilter.SHOW_TEXT : 4;
+
         var walker = document.createTreeWalker(
             document.body,
-            NodeFilter.SHOW_TEXT,
+            showText,
             {
                 acceptNode: function (node) {
                     var parent = node.parentElement;
-                    if (!parent) return NodeFilter.FILTER_REJECT;
-                    var tag = parent.tagName.toLowerCase();
+                    if (!parent) return filterReject;
+                    var tag = (parent.tagName || '').toLowerCase();
                     if (tag === 'script' || tag === 'style' || tag === 'code' || tag === 'pre' || tag === 'noscript') {
-                        return NodeFilter.FILTER_REJECT;
+                        return filterReject;
                     }
-                    if (parent.closest('i, svg, .fa, [class*="fa-"], a[href^="tel:"], [data-no-localize], script, style, img, picture, video, figure')) {
-                        return NodeFilter.FILTER_REJECT;
+                    if (parent.closest && parent.closest('i, svg, .fa, [class*="fa-"], a[href^="tel:"], [data-no-localize], script, style, img, picture, video, figure')) {
+                        return filterReject;
                     }
-                    return NodeFilter.FILTER_ACCEPT;
+                    return filterAccept;
                 }
             },
             false
@@ -228,14 +291,19 @@
         document.body.classList.add('lang-' + cfg.code);
 
         // 3. Update Title & Meta
-        if (data.meta && data.meta.title) {
-            document.title = data.meta.title;
+        var pageTitle = getNestedValue(data, 'pages.privacyPolicy.metaTitle') ||
+                        getNestedValue(data, 'pages.cookiePolicy.metaTitle') ||
+                        getNestedValue(data, 'pages.termsOfUse.metaTitle') ||
+                        (data.meta && data.meta.title);
+        if (pageTitle) {
+            document.title = pageTitle;
         }
-        if (data.meta && data.meta.description) {
+        var pageDesc = getNestedValue(data, 'meta.description') || (data.meta && data.meta.description);
+        if (pageDesc) {
             var descMeta = document.querySelector('meta[name="description"]');
-            if (descMeta) descMeta.setAttribute('content', data.meta.description);
+            if (descMeta) descMeta.setAttribute('content', pageDesc);
             var ogDesc = document.querySelector('meta[property="og:description"]');
-            if (ogDesc) ogDesc.setAttribute('content', data.meta.description);
+            if (ogDesc) ogDesc.setAttribute('content', pageDesc);
         }
 
         // 4. Translate textContent for [data-i18n] with number localization
@@ -303,9 +371,13 @@
         updateLanguageUI(lang);
 
         // Dispatch language change event for any custom components
-        window.dispatchEvent(new CustomEvent('languageChanged', {
-            detail: { lang: lang, config: cfg, data: data }
-        }));
+        if (typeof window.dispatchEvent === 'function' && typeof CustomEvent === 'function') {
+            try {
+                window.dispatchEvent(new CustomEvent('languageChanged', {
+                    detail: { lang: lang, config: cfg, data: data }
+                }));
+            } catch (e) {}
+        }
     }
 
     // Intercept counter animation updates to format in Arabic / Persian digits
