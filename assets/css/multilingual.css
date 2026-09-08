@@ -344,30 +344,86 @@ body.lang-fa .italic,
     font-style: normal !important;
 }
 
-/* 3. Hero Glow Heading: Native Arabic & Persian font override & descender protection */
+/* 3. Hero Glow Heading: Native Arabic & Persian font override & descender protection (All Pages & Programs) */
 html[lang="ar"] .contact-hero-glow,
+html[lang="ar"] .dominica-hero-glow,
+html[lang="ar"] .stlucia-hero-glow,
+html[lang="ar"] [class*="-hero-glow"],
 body.lang-ar .contact-hero-glow,
-html[dir="rtl"] .contact-hero-glow {
+body.lang-ar .dominica-hero-glow,
+body.lang-ar .stlucia-hero-glow,
+body.lang-ar [class*="-hero-glow"],
+html[dir="rtl"] .contact-hero-glow,
+html[dir="rtl"] .dominica-hero-glow,
+html[dir="rtl"] .stlucia-hero-glow,
+html[dir="rtl"] [class*="-hero-glow"],
+[dir="rtl"] .contact-hero-glow,
+[dir="rtl"] .dominica-hero-glow,
+[dir="rtl"] .stlucia-hero-glow,
+[dir="rtl"] [class*="-hero-glow"] {
     font-family: 'Cairo', system-ui, -apple-system, sans-serif !important;
     letter-spacing: normal !important;
-    line-height: 1.35 !important;
-    padding-bottom: 0.5rem !important;
+    line-height: 1.45 !important;
+    padding-bottom: 0.85rem !important;
     display: inline-block !important;
 }
 
 html[lang="fa"] .contact-hero-glow,
-body.lang-fa .contact-hero-glow {
+html[lang="fa"] .dominica-hero-glow,
+html[lang="fa"] .stlucia-hero-glow,
+html[lang="fa"] [class*="-hero-glow"],
+body.lang-fa .contact-hero-glow,
+body.lang-fa .dominica-hero-glow,
+body.lang-fa .stlucia-hero-glow,
+body.lang-fa [class*="-hero-glow"],
+html[lang="fa"] [dir="rtl"] [class*="-hero-glow"],
+body.lang-fa [dir="rtl"] [class*="-hero-glow"] {
     font-family: 'Vazirmatn', system-ui, -apple-system, sans-serif !important;
     letter-spacing: normal !important;
-    line-height: 1.35 !important;
-    padding-bottom: 0.5rem !important;
+    line-height: 1.45 !important;
+    padding-bottom: 0.85rem !important;
     display: inline-block !important;
 }
 
 html[lang="zh"] .contact-hero-glow,
-body.lang-zh .contact-hero-glow {
+html[lang="zh"] .dominica-hero-glow,
+html[lang="zh"] .stlucia-hero-glow,
+html[lang="zh"] [class*="-hero-glow"],
+body.lang-zh .contact-hero-glow,
+body.lang-zh .dominica-hero-glow,
+body.lang-zh .stlucia-hero-glow,
+body.lang-zh [class*="-hero-glow"] {
     font-family: 'Noto Sans SC', system-ui, sans-serif !important;
     letter-spacing: normal !important;
+}
+
+/* Hero Stack & Subtitle Separation: Prevent low Arabic dots (e.g. yaa in 'وبرينسيبي') from overlapping text */
+[dir="rtl"] h1.flex.flex-col,
+html[dir="rtl"] h1.flex.flex-col,
+body.lang-ar h1.flex.flex-col,
+body.lang-fa h1.flex.flex-col {
+    gap: 1.75rem !important;
+}
+
+[dir="rtl"] h1 > span:nth-child(2),
+[dir="rtl"] h1 > span[data-i18n*="heroSubtitle"],
+[dir="rtl"] h1 > span[data-i18n*="Subtitle"],
+html[lang="ar"] h1 > span:nth-child(2),
+body.lang-ar h1 > span:nth-child(2) {
+    font-family: 'Cairo', system-ui, sans-serif !important;
+    letter-spacing: normal !important;
+    margin-top: 0.75rem !important;
+    line-height: 1.6 !important;
+    display: block !important;
+}
+
+html[lang="fa"] h1 > span:nth-child(2),
+body.lang-fa h1 > span:nth-child(2) {
+    font-family: 'Vazirmatn', system-ui, sans-serif !important;
+    letter-spacing: normal !important;
+    margin-top: 0.75rem !important;
+    line-height: 1.6 !important;
+    display: block !important;
 }
 
 /* 4. Headings Line-height in RTL to prevent diacritic dots (e.g. yaa in 'علي') from overlapping text below */
