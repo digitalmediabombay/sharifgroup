@@ -1,4 +1,51 @@
 {
+  "redirects": [
+    {
+      "source": "/index.html/ar",
+      "destination": "/ar/",
+      "permanent": false
+    },
+    {
+      "source": "/index.html/zh",
+      "destination": "/zh/",
+      "permanent": false
+    },
+    {
+      "source": "/index.html/fa",
+      "destination": "/fa/",
+      "permanent": false
+    },
+    {
+      "source": "/:path*/index.html/ar",
+      "destination": "/ar/:path*/",
+      "permanent": false
+    },
+    {
+      "source": "/:path*/index.html/zh",
+      "destination": "/zh/:path*/",
+      "permanent": false
+    },
+    {
+      "source": "/:path*/index.html/fa",
+      "destination": "/fa/:path*/",
+      "permanent": false
+    },
+    {
+      "source": "/termsofservice",
+      "destination": "/termsofuse/index.html",
+      "permanent": true
+    },
+    {
+      "source": "/termsofservice/index.html",
+      "destination": "/termsofuse/index.html",
+      "permanent": true
+    },
+    {
+      "source": "/termsofservice/(.*)",
+      "destination": "/termsofuse/$1",
+      "permanent": true
+    }
+  ],
   "rewrites": [
     {
       "source": "/ar",
