@@ -44,7 +44,9 @@
     "ourStory": "Our Story",
     "aboutFounder": "About Founder | Ali Sharif",
     "insights": "Insights & Blog",
-    "contactUs": "Contact Us"
+    "contactUs": "Contact Us",
+    "corporateIdentity": "Corporate Identity",
+    "otherServices": "Other Services"
   },
   "mobileMenu": {
     "citizenshipByInvestment": "Citizenship By Investment",
@@ -953,7 +955,7 @@
       "findingHome": "Finding The Right Home Starts With A Better List.",
       "trustedBuilders": "Dubai's Most Trusted Builders",
       "requiredDocs": "Required Documents",
-      "heroTitle": "Dubai Real Estate Private Advisory",
+      "heroTitle": "Dubai Real Estate",
       "heroSubtitle": "A considered approach to Dubai property. We guide international investors and families to buy the right off-plan projects, ready luxury homes, and prime commercial assets.",
       "heroBadge1": "DLD & RERA Licensed",
       "heroBadge2": "Off-Plan & Ready Launches",
@@ -1286,7 +1288,8 @@
       "dev_omniyat_name": "OMNIYAT",
       "dev_meraas_name": "MERAAS",
       "dev_beyond_name": "BEYOND",
-      "dev_emaar_name": "EMAAR"
+      "dev_emaar_name": "EMAAR",
+      "heroSubtitleTag": "Private Advisory"
     },
     "education": {
       "badge": "ACADEMIC ADVISORY",
@@ -1298,7 +1301,7 @@
       "destinations": "Top Study Destinations in UK & Europe",
       "packages": "Education Costs & Advisory Packages",
       "exceptionalSchools": "Exceptional Schools. A Deeply Personal Choice.",
-      "heroTitle": "Education ADVISORY &amp; ADMISSIONS",
+      "heroTitle": "Education",
       "heroSubtitle": "Personal guidance for top boarding schools and universities across the UK, Switzerland, and Europe. We help your child find the right school, prepare applications, and get their student visa.",
       "heroBadge1": "UK &amp; Swiss Boarding Schools",
       "heroBadge2": "Bachelor's &amp; Master's Degrees",
@@ -1813,7 +1816,8 @@
       "opt_lang_fr": "French",
       "opt_lang_hi": "Hindi / Urdu",
       "opt_lang_fa": "Persian (Farsi)",
-      "form_label_lang": "Preferred Language"
+      "form_label_lang": "Preferred Language",
+      "heroSubtitleTag": "ADVISORY & ADMISSIONS"
     },
     "socialResp": {
       "badge": "COMMUNITY IMPACT",
@@ -1967,7 +1971,9 @@
       "mapTitle": "Visit Us at The Binary Tower",
       "mapDesc": "Easily locate our private corporate headquarters situated in the heart of Business Bay, Dubai.",
       "socialTitle": "Our Official Social Channels",
-      "socialDesc": "Stay connected and follow our daily updates, market insights, and program announcements."
+      "socialDesc": "Stay connected and follow our daily updates, market insights, and program announcements.",
+      "heroBadge": "EXECUTIVE BRIEFING DESK",
+      "heroSubtitle": "Dubai Headquarters"
     },
     "blog": {
       "badge": "INSIGHTS & ARTICLES",

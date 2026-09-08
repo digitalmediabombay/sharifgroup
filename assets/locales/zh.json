@@ -44,7 +44,9 @@
     "ourStory": "我们的历程",
     "aboutFounder": "关于创始人 | Ali Sharif",
     "insights": "洞察与博客",
-    "contactUs": "联系我们"
+    "contactUs": "联系我们",
+    "corporateIdentity": "企业形象",
+    "otherServices": "其他服务"
   },
   "mobileMenu": {
     "citizenshipByInvestment": "投资入籍计划",
@@ -953,7 +955,7 @@
       "findingHome": "精选优质房源，开启理想置业之旅",
       "trustedBuilders": "迪拜最具信誉的顶级开发商",
       "requiredDocs": "所需申请文件",
-      "heroTitle": "迪拜房地产私人咨询",
+      "heroTitle": "迪拜房地产",
       "heroSubtitle": "以审慎的方式投资迪拜房地产。我们为国际投资者和家庭提供指导，帮助您选择合适的期房项目、现成豪宅以及优质商业资产。",
       "heroBadge1": "持有 DLD 与 RERA 许可",
       "heroBadge2": "期房项目与现房发售",
@@ -1286,7 +1288,8 @@
       "dev_omniyat_name": "奥美亚 (OMNIYAT)",
       "dev_meraas_name": "美拉斯 (MERAAS)",
       "dev_beyond_name": "BEYOND",
-      "dev_emaar_name": "伊玛尔 (EMAAR)"
+      "dev_emaar_name": "伊玛尔 (EMAAR)",
+      "heroSubtitleTag": "私人专属咨询"
     },
     "education": {
       "badge": "国际学术规划",
@@ -1298,7 +1301,7 @@
       "destinations": "英国与欧洲热门留学目的地",
       "packages": "留学费用与专属咨询方案",
       "exceptionalSchools": "卓越名校，契合个人发展的深远选择",
-      "heroTitle": "教育咨询与招生",
+      "heroTitle": "教育咨询",
       "heroSubtitle": "为您提供英国、瑞士及欧洲顶尖寄宿学校和大学的个性化指导。我们帮助您的孩子选择合适的学校、准备申请材料并办理学生签证。",
       "heroBadge1": "英国及瑞士寄宿学校",
       "heroBadge2": "学士与硕士学位",
@@ -1427,24 +1430,24 @@
       "schools_uk_item5": "路径 01",
       "schools_uk_item6": "英国",
       "schools_uk_item7": "课程重点",
-      "schools_uk_item8": "GCSE · A-Level · IB",
+      "schools_uk_item8": "GCSE · A-Level · IB 课程体系",
       "schools_uk_item9": "结构完善、选择广泛，并提供通往顶尖大学的认可路径。",
       "schools_uk_item10": "英国寄宿学校将高水平学术教学与体育、艺术、领导力培养及专业大学升学指导相结合。学校选择从历史悠久的院校到现代国际化校园不等。",
-      "schools_uk_item11": "Millfield",
-      "schools_uk_item12": "Eton College",
-      "schools_uk_item13": "Harrow",
-      "schools_uk_item14": "Westminster",
-      "schools_uk_item15": "Wellington",
+      "schools_uk_item11": "米尔菲尔德学校",
+      "schools_uk_item12": "伊顿公学",
+      "schools_uk_item13": "哈罗公学",
+      "schools_uk_item14": "威斯敏斯特公学",
+      "schools_uk_item15": "惠灵顿公学",
       "schools_uk_item16": "探索英国寄宿学校",
       "schools_uk_item17": "课程重点",
       "schools_uk_item18": "IB · Matura · 美国高中课程",
       "schools_uk_item19": "在真正国际化的阿尔卑斯山环境中获得个性化关注。",
       "schools_uk_item20": "瑞士寄宿学校以多语言教学、小班制、个性化关怀以及学术、户外和文化体验的卓越结合而享誉全球。",
-      "schools_uk_item21": "Le Rosey",
-      "schools_uk_item22": "Beau Soleil",
-      "schools_uk_item23": "Aiglon",
-      "schools_uk_item24": "Brillantmont",
-      "schools_uk_item25": "TASIS",
+      "schools_uk_item21": "萝实学院",
+      "schools_uk_item22": "博苏蕾国际学校",
+      "schools_uk_item23": "艾格隆学院",
+      "schools_uk_item24": "布里蒙国际学校",
+      "schools_uk_item25": "塔西斯瑞士美国学校",
       "schools_uk_item26": "探索瑞士寄宿学校",
       "schools_uk_item27": "卓越阿尔卑斯教育",
       "schools_uk_item28": "路径 02",
@@ -1813,7 +1816,8 @@
       "opt_lang_fr": "法语",
       "opt_lang_hi": "印地语 / 乌尔都语",
       "opt_lang_fa": "波斯语",
-      "form_label_lang": "沟通偏好语言"
+      "form_label_lang": "沟通偏好语言",
+      "heroSubtitleTag": "名校申请与升学指导"
     },
     "socialResp": {
       "badge": "社会责任与公益",
@@ -1967,7 +1971,9 @@
       "mapTitle": "亲临双子塔总部",
       "mapDesc": "坐落于迪拜核心中央商务区商业湾，交通便捷，私密舒适。",
       "socialTitle": "关注官方社交媒体",
-      "socialDesc": "获取实时全球移民政策动向、房地产深度报告与权威行业解析。"
+      "socialDesc": "获取实时全球移民政策动向、房地产深度报告与权威行业解析。",
+      "heroBadge": "执行简报处",
+      "heroSubtitle": "迪拜总部"
     },
     "blog": {
       "badge": "深度行业洞察",
