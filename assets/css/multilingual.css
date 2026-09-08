@@ -314,3 +314,155 @@ html[dir="rtl"] footer a:has(img[src*="Group-427321463"]) .translate-y-1\.5 > *,
     color: #ffffff !important;
     box-shadow: 0 2px 6px rgba(197, 168, 128, 0.4);
 }
+
+/* ==========================================================================
+   ARABIC & PERSIAN TYPOGRAPHY & HERO / ABOUT FOUNDER ENHANCEMENTS
+   ========================================================================== */
+
+/* 1. Prevent Letter-Spacing (Tracking) from breaking Arabic/Persian cursive script */
+html[lang="ar"] [class*="tracking-"],
+html[lang="fa"] [class*="tracking-"],
+body.lang-ar [class*="tracking-"],
+body.lang-fa [class*="tracking-"],
+[dir="rtl"] [class*="tracking-"],
+[dir="rtl"] .tracking-widest,
+[dir="rtl"] .tracking-wider,
+[dir="rtl"] .tracking-wide,
+[dir="rtl"] .tracking-tight,
+[dir="rtl"] .tracking-tighter {
+    letter-spacing: normal !important;
+}
+
+/* 2. Prevent artificial oblique slanting (italic) in Arabic and Persian */
+html[lang="ar"] .italic,
+html[lang="fa"] .italic,
+body.lang-ar .italic,
+body.lang-fa .italic,
+[dir="rtl"] .italic,
+[dir="rtl"] em,
+[dir="rtl"] i:not([class*="fa-"]):not([class*="fa"]) {
+    font-style: normal !important;
+}
+
+/* 3. Hero Glow Heading: Native Arabic & Persian font override & descender protection */
+html[lang="ar"] .contact-hero-glow,
+body.lang-ar .contact-hero-glow,
+html[dir="rtl"] .contact-hero-glow {
+    font-family: 'Cairo', system-ui, -apple-system, sans-serif !important;
+    letter-spacing: normal !important;
+    line-height: 1.35 !important;
+    padding-bottom: 0.5rem !important;
+    display: inline-block !important;
+}
+
+html[lang="fa"] .contact-hero-glow,
+body.lang-fa .contact-hero-glow {
+    font-family: 'Vazirmatn', system-ui, -apple-system, sans-serif !important;
+    letter-spacing: normal !important;
+    line-height: 1.35 !important;
+    padding-bottom: 0.5rem !important;
+    display: inline-block !important;
+}
+
+html[lang="zh"] .contact-hero-glow,
+body.lang-zh .contact-hero-glow {
+    font-family: 'Noto Sans SC', system-ui, sans-serif !important;
+    letter-spacing: normal !important;
+}
+
+/* 4. Headings Line-height in RTL to prevent diacritic dots (e.g. yaa in 'علي') from overlapping text below */
+html[lang="ar"] h1, html[lang="fa"] h1,
+body.lang-ar h1, body.lang-fa h1,
+[dir="rtl"] h1 {
+    line-height: 1.35 !important;
+    margin-bottom: 1rem !important;
+}
+
+html[lang="ar"] h2, html[lang="fa"] h2,
+body.lang-ar h2, body.lang-fa h2,
+[dir="rtl"] h2 {
+    line-height: 1.35 !important;
+}
+
+html[lang="ar"] h3, html[lang="fa"] h3,
+body.lang-ar h3, body.lang-fa h3,
+[dir="rtl"] h3 {
+    line-height: 1.4 !important;
+}
+
+/* 5. Founder Page Hero Subtitle & Description in RTL */
+html[lang="ar"] .founder-hero-subtitle,
+html[lang="fa"] .founder-hero-subtitle,
+body.lang-ar .founder-hero-subtitle,
+body.lang-fa .founder-hero-subtitle,
+[dir="rtl"] .founder-hero-subtitle {
+    font-family: 'Cairo', system-ui, sans-serif !important;
+    font-style: normal !important;
+    line-height: 1.9 !important;
+    margin-top: 0.85rem !important;
+    letter-spacing: normal !important;
+}
+
+html[lang="fa"] .founder-hero-subtitle,
+body.lang-fa .founder-hero-subtitle {
+    font-family: 'Vazirmatn', system-ui, sans-serif !important;
+}
+
+html[lang="ar"] .founder-hero-desc,
+html[lang="fa"] .founder-hero-desc,
+body.lang-ar .founder-hero-desc,
+body.lang-fa .founder-hero-desc,
+[dir="rtl"] .founder-hero-desc {
+    font-weight: 400 !important;
+    line-height: 2 !important;
+    margin-top: 0.75rem !important;
+    max-width: 48rem !important;
+    letter-spacing: normal !important;
+}
+
+/* 6. Executive Overview & Feature Boxes in RTL */
+[dir="rtl"] #sec-founder-overview .text-left,
+[dir="rtl"] #sec-about-overview .text-left,
+[dir="rtl"] #sec-leadership-story .text-left,
+[dir="rtl"] #sec-operational-scope .text-left,
+[dir="rtl"] #sec-rera-broker .text-left,
+[dir="rtl"] #sec-global-benchmarks .text-left,
+[dir="rtl"] #sec-imc-certification .text-left {
+    text-align: right !important;
+}
+
+[dir="rtl"] .about-feature-box {
+    display: flex !important;
+    flex-direction: row !important;
+    align-items: center !important;
+    gap: 1.25rem !important;
+    text-align: right !important;
+}
+
+[dir="rtl"] .about-feature-box .space-y-1,
+[dir="rtl"] .about-feature-box p,
+[dir="rtl"] .about-feature-box span {
+    text-align: right !important;
+    line-height: 1.6 !important;
+}
+
+[dir="rtl"] .about-feature-box .feature-icon-pill {
+    margin-left: 0 !important;
+    margin-right: 0 !important;
+    flex-shrink: 0 !important;
+}
+
+/* 7. Story Cards & Accordion Boxes in RTL */
+[dir="rtl"] #sec-leadership-story .flex.items-center.justify-between {
+    flex-direction: row !important;
+}
+
+[dir="rtl"] .founder-service-item .service-details .text-left {
+    text-align: right !important;
+}
+
+/* 8. Badge alignment and icon gap in RTL */
+[dir="rtl"] .inline-flex.items-center.gap-2,
+[dir="rtl"] .inline-flex.items-center.gap-3 {
+    direction: rtl !important;
+}
