@@ -268,6 +268,20 @@
             }
         });
 
+        // 6b. Ensure footer address is translated across all pages and dynamically loaded footers
+        var footerAddressVal = getNestedValue(data, 'footer.address');
+        if (footerAddressVal) {
+            var localizedFooterAddr = (lang === 'ar' || lang === 'fa') ? localizeNumbers(footerAddressVal, lang) : footerAddressVal;
+            document.querySelectorAll('footer p, .footer p').forEach(function (p) {
+                if (p.querySelector('.fa-location-dot')) {
+                    var span = p.querySelector('span');
+                    if (span) {
+                        span.textContent = localizedFooterAddr;
+                    }
+                }
+            });
+        }
+
         // 7. Apply number localization to counters and numeric displays across DOM
         applyNumberLocalization(lang);
 

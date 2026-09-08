@@ -79,6 +79,13 @@ body.lang-zh *:not(i):not([class*="fa-"]):not([class*="fa"]) {
     display: inline-block !important;
 }
 
+/* Footer Contact Details Spacing in RTL */
+[dir="rtl"] footer .space-y-3 p i,
+[dir="rtl"] .footer .space-y-3 p i {
+    margin-right: 0 !important;
+    margin-left: 0.75rem !important;
+}
+
 /* Switcher button & dropdown luxury styling */
 .lang-switcher-wrapper {
     position: relative;

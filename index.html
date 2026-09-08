@@ -254,6 +254,7 @@
 	#review-slider-track {
             display: flex;
             width: 100%;
+            direction: ltr !important;
             will-change: transform;
             transition: transform 0.7s cubic-bezier(0.22, 1, 0.36, 1);
         }
@@ -262,6 +263,27 @@
             min-width: 100% !important;
             max-width: 100% !important;
             box-sizing: border-box;
+        }
+        [dir="rtl"] .review-slide-card {
+            direction: rtl;
+        }
+        [dir="rtl"] .review-slide-card .review-content-col {
+            text-align: right !important;
+        }
+        .review-dot {
+            width: 8px;
+            height: 8px;
+            border-radius: 9999px;
+            background-color: rgba(255, 255, 255, 0.25);
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            cursor: pointer;
+            border: none;
+            padding: 0;
+        }
+        .review-dot.active {
+            width: 28px;
+            background-color: #C5A880;
+            box-shadow: 0 0 10px rgba(197, 168, 128, 0.5);
         }
 	#blog-slider-inner {
             display: flex;
@@ -507,31 +529,31 @@
 <ul class="space-y-4">
 <li class="flex items-center group">
 <div class="flex items-center space-x-3">
-<img alt="Dominica" class="w-12 h-8 object-cover rounded-sm border border-neutral-200 shadow-sm" src="https://www.commonwealthlawyers.com/wp-content/uploads/2023/11/Dominica-Americas-Hub.png"/>
+<img alt="Dominica" class="w-12 h-8 object-cover rounded-sm border border-neutral-200 shadow-sm" src="https://www.commonwealthlawyers.com/wp-content/uploads/2023/11/Dominica-Americas-Hub.png" loading="lazy" decoding="async"/>
 <a class="text-[11px] font-bold tracking-[0.18em] uppercase text-neutral-700 group-hover:text-luxury-gold transition" data-i18n="services.cbi.dominica" href="programs/citizenshipbyinvestment/dominica/index.html">Dominica | Passport</a>
 </div>
 </li>
 <li class="flex items-center group">
 <div class="flex items-center space-x-3">
-<img alt="St. Kitts" class="w-12 h-8 object-cover rounded-sm border border-neutral-200 shadow-sm" src="https://knightsbridge.ae/wp-content/uploads/2025/08/St-Kitts-and-Nevis-Passport.png"/>
+<img alt="St. Kitts" class="w-12 h-8 object-cover rounded-sm border border-neutral-200 shadow-sm" src="https://knightsbridge.ae/wp-content/uploads/2025/08/St-Kitts-and-Nevis-Passport.png" loading="lazy" decoding="async"/>
 <a class="text-[11px] font-bold tracking-[0.18em] uppercase text-neutral-700 group-hover:text-luxury-gold transition" data-i18n="services.cbi.kitts" href="programs/citizenshipbyinvestment/stkittis/index.html">St. Kitts &amp; Nevis | Passport</a>
 </div>
 </li>
 <li class="flex items-center group">
 <div class="flex items-center space-x-3">
-<img alt="Antigua" class="w-12 h-8 object-cover rounded-sm border border-neutral-200 shadow-sm" src="https://iworld.com/wp-content/uploads/2022/12/passport-investment-antigua-barbuda-900x467.jpg"/>
+<img alt="Antigua" class="w-12 h-8 object-cover rounded-sm border border-neutral-200 shadow-sm" src="https://iworld.com/wp-content/uploads/2022/12/passport-investment-antigua-barbuda-900x467.jpg" loading="lazy" decoding="async"/>
 <a class="text-[11px] font-bold tracking-[0.18em] uppercase text-neutral-700 group-hover:text-luxury-gold transition" data-i18n="services.cbi.antigua" href="programs/citizenshipbyinvestment/antiguaandbarbuda/index.html">Antigua &amp; Barbuda | Passport</a>
 </div>
 </li>
 <li class="flex items-center group">
 <div class="flex items-center space-x-3">
-<img alt="Saint Lucia" class="w-12 h-8 object-cover rounded-sm border border-neutral-200 shadow-sm" src="https://reachimmigration.com/wp-content/uploads/2021/09/610fd15b02a12.png"/>
+<img alt="Saint Lucia" class="w-12 h-8 object-cover rounded-sm border border-neutral-200 shadow-sm" src="https://reachimmigration.com/wp-content/uploads/2021/09/610fd15b02a12.png" loading="lazy" decoding="async"/>
 <a class="text-[11px] font-bold tracking-[0.18em] uppercase text-neutral-700 group-hover:text-luxury-gold transition" data-i18n="services.cbi.lucia" href="programs/citizenshipbyinvestment/stlucia/index.html">Saint Lucia | Passport</a>
 </div>
 </li>
 <li class="flex items-center group">
 <div class="flex items-center space-x-3">
-<img alt="Grenada" class="w-12 h-8 object-cover rounded-sm border border-neutral-200 shadow-sm" src="https://iworld.com/wp-content/uploads/2022/12/citizenship-passport-investment-grenada-900x467.jpg"/>
+<img alt="Grenada" class="w-12 h-8 object-cover rounded-sm border border-neutral-200 shadow-sm" src="https://iworld.com/wp-content/uploads/2022/12/citizenship-passport-investment-grenada-900x467.jpg" loading="lazy" decoding="async"/>
 <a class="text-[11px] font-bold tracking-[0.18em] uppercase text-neutral-700 group-hover:text-luxury-gold transition" data-i18n="services.cbi.grenada" href="programs/citizenshipbyinvestment/greneda/index.html">Grenada | Passport</a>
 </div>
 </li>
@@ -542,19 +564,19 @@
 <ul class="space-y-4">
 <li class="flex items-center group">
 <div class="flex items-center space-x-3">
-<img alt="Vanuatu" class="w-12 h-8 object-cover rounded-sm border border-neutral-200 shadow-sm" src="https://fca.vu/wp-content/uploads/2020/01/how-to-get-vanuatu-citizenship-en-449126643.jpeg"/>
+<img alt="Vanuatu" class="w-12 h-8 object-cover rounded-sm border border-neutral-200 shadow-sm" src="https://fca.vu/wp-content/uploads/2020/01/how-to-get-vanuatu-citizenship-en-449126643.jpeg" loading="lazy" decoding="async"/>
 <a class="text-[11px] font-bold tracking-[0.18em] uppercase text-neutral-700 group-hover:text-luxury-gold transition" data-i18n="services.cbi.vanuatu" href="programs/citizenshipbyinvestment/vanuatu/index.html">Vanuatu | Passport</a>
 </div>
 </li>
 <li class="flex items-center group">
 <div class="flex items-center space-x-3">
-<img alt="Sao Tome" class="w-12 h-8 object-cover rounded-sm border border-neutral-200 shadow-sm" src="https://b3052398.smushcdn.com/3052398/wp-content/uploads/Sao_Tome_passport.png?lossy=2&amp;strip=1&amp;webp=1"/>
+<img alt="Sao Tome" class="w-12 h-8 object-cover rounded-sm border border-neutral-200 shadow-sm" src="https://b3052398.smushcdn.com/3052398/wp-content/uploads/Sao_Tome_passport.png?lossy=2&amp;strip=1&amp;webp=1" loading="lazy" decoding="async"/>
 <a class="text-[11px] font-bold tracking-[0.18em] uppercase text-neutral-700 group-hover:text-luxury-gold transition" data-i18n="services.cbi.saotome" href="programs/citizenshipbyinvestment/sãotoméandpríncipe/index.html">São Tomé and Príncipe | Passport</a>
 </div>
 </li>
 <li class="flex items-center group">
 <div class="flex items-center space-x-3">
-<img alt="Nauru" class="w-12 h-8 object-cover rounded-sm border border-neutral-200 shadow-sm" src="https://reloc8.online/wp-content/uploads/2024/12/reloc8-online-nauru-passport-citizenship-climate.jpg"/>
+<img alt="Nauru" class="w-12 h-8 object-cover rounded-sm border border-neutral-200 shadow-sm" src="https://reloc8.online/wp-content/uploads/2024/12/reloc8-online-nauru-passport-citizenship-climate.jpg" loading="lazy" decoding="async"/>
 <a class="text-[11px] font-bold tracking-[0.18em] uppercase text-neutral-700 group-hover:text-luxury-gold transition" data-i18n="services.cbi.nauru" href="programs/citizenshipbyinvestment/nauru/index.html">Republic of Nauru | Passport</a>
 </div>
 </li>
@@ -574,13 +596,13 @@
 <ul class="space-y-4">
 <li class="flex items-center group">
 <div class="flex items-center space-x-3">
-<img alt="Portugal" class="w-12 h-8 object-cover rounded-sm border border-neutral-200 shadow-sm" src="https://www.bilimoriaassociate.com/images/portugal-golden-vsa.png"/>
+<img alt="Portugal" class="w-12 h-8 object-cover rounded-sm border border-neutral-200 shadow-sm" src="https://www.bilimoriaassociate.com/images/portugal-golden-vsa.png" loading="lazy" decoding="async"/>
 <a class="text-[11px] font-bold tracking-[0.18em] uppercase text-neutral-700 group-hover:text-luxury-gold transition" data-i18n="services.rbi.portugal" href="programs/residencybyinvestment/portugal/index.html">Portugal | Golden Visa</a>
 </div>
 </li>
 <li class="flex items-center group">
 <div class="flex items-center space-x-3">
-<img alt="Greece" class="w-12 h-8 object-cover rounded-sm border border-neutral-200 shadow-sm" src="https://theluxuryplaybook.com/wp-content/uploads/2024/07/golden-visa-greece-threshold.jpg"/>
+<img alt="Greece" class="w-12 h-8 object-cover rounded-sm border border-neutral-200 shadow-sm" src="https://theluxuryplaybook.com/wp-content/uploads/2024/07/golden-visa-greece-threshold.jpg" loading="lazy" decoding="async"/>
 <a class="text-[11px] font-bold tracking-[0.18em] uppercase text-neutral-700 group-hover:text-luxury-gold transition" data-i18n="services.rbi.greece" href="programs/residencybyinvestment/greece/index.html">Greece | Golden Visa</a>
 </div>
 </li>
@@ -591,13 +613,13 @@
 <ul class="space-y-4">
 <li class="flex items-center group">
 <div class="flex items-center space-x-3">
-<img alt="Panama" class="w-12 h-8 object-cover rounded-sm border border-neutral-200 shadow-sm" src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQlkpBOrKxy_nypaBUd8WsErlwsFO4buofBcHfNKGhBKQ&amp;s=10"/>
+<img alt="Panama" class="w-12 h-8 object-cover rounded-sm border border-neutral-200 shadow-sm" src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQlkpBOrKxy_nypaBUd8WsErlwsFO4buofBcHfNKGhBKQ&amp;s=10" loading="lazy" decoding="async"/>
 <a class="text-[11px] font-bold tracking-[0.18em] uppercase text-neutral-700 group-hover:text-luxury-gold transition" data-i18n="services.rbi.panama" href="programs/residencybyinvestment/panama/index.html">Panama | Golden Visa</a>
 </div>
 </li>
 <li class="flex items-center group">
 <div class="flex items-center space-x-3">
-<img alt="UAE" class="w-12 h-8 object-cover rounded-sm border border-neutral-200 shadow-sm" src="https://lawbridgecorporate.com/wp-content/uploads/2023/10/uae-residence-visa.jpg"/>
+<img alt="UAE" class="w-12 h-8 object-cover rounded-sm border border-neutral-200 shadow-sm" src="https://lawbridgecorporate.com/wp-content/uploads/2023/10/uae-residence-visa.jpg" loading="lazy" decoding="async"/>
 <a class="text-[11px] font-bold tracking-[0.18em] uppercase text-neutral-700 group-hover:text-luxury-gold transition" data-i18n="services.rbi.uae" href="programs/residencybyinvestment/uae/index.html">United Arab Emirates | Golden Visa</a>
 </div>
 </li>
@@ -614,12 +636,12 @@
 </div>
 <div class="col-span-9 px-6 flex items-center justify-start gap-4">
 <div class="relative flex-1 max-w-[220px] rounded-[20px] shadow-md overflow-hidden group border border-luxury-gold/50">
-<img alt="Real Estate" class="absolute inset-0 w-full h-full object-cover transition-transform duration-500 group-hover:scale-110" src="https://teslaproperties.ae/storage/blog-images/is-dubai-real-estate-a-good-investment-in-2026-trends-roi-and-key-areas-to-watch/isdubairealestateagoodinvestmentin2026.webp"/>
+<img alt="Real Estate" class="absolute inset-0 w-full h-full object-cover transition-transform duration-500 group-hover:scale-110" src="https://teslaproperties.ae/storage/blog-images/is-dubai-real-estate-a-good-investment-in-2026-trends-roi-and-key-areas-to-watch/isdubairealestateagoodinvestmentin2026.webp" loading="lazy" decoding="async"/>
 <div class="absolute inset-0 bg-neutral-950/65 group-hover:bg-neutral-950/50 transition-colors duration-300"></div>
 <a class="relative z-10 text-[11px] font-bold tracking-[0.18em] text-white block text-center leading-tight py-12 px-4 uppercase" data-i18n="megaMenu.realEstateAdvisory" href="realestate/index.html">Real Estate Advisory</a>
 </div>
 <div class="relative flex-1 max-w-[220px] rounded-[20px] shadow-md overflow-hidden group border border-luxury-gold/50">
-<img alt="Educational Advisory" class="absolute inset-0 w-full h-full object-cover transition-transform duration-500 group-hover:scale-110" src="https://images.unsplash.com/photo-1541339907198-e08756dedf3f?auto=format&amp;fit=crop&amp;q=80&amp;w=500"/>
+<img alt="Educational Advisory" class="absolute inset-0 w-full h-full object-cover transition-transform duration-500 group-hover:scale-110" src="https://images.unsplash.com/photo-1541339907198-e08756dedf3f?auto=format&amp;fit=crop&amp;q=80&amp;w=500" loading="lazy" decoding="async"/>
 <div class="absolute inset-0 bg-neutral-950/65 group-hover:bg-neutral-950/50 transition-colors duration-300"></div>
 <a class="relative z-10 text-[11px] font-bold tracking-[0.18em] text-white block text-center leading-tight py-12 px-4 uppercase" data-i18n="megaMenu.educationalAdvisory" href="educationaladvisory/index.html">Educational Advisory</a>
 </div>
@@ -635,17 +657,17 @@
 </div>
 <div class="col-span-9 px-6 flex items-center justify-start gap-4">
 <div class="relative flex-1 max-w-[260px] rounded-[20px] shadow-md overflow-hidden group border border-luxury-gold/50">
-<img alt="Sharif Group" class="absolute inset-0 w-full h-full object-cover transition-transform duration-500 group-hover:scale-110" src="https://sharifgroup.ae/wp-content/uploads/2026/05/dubai-office-2.jpg.webp"/>
+<img alt="Sharif Group" class="absolute inset-0 w-full h-full object-cover transition-transform duration-500 group-hover:scale-110" src="https://sharifgroup.ae/wp-content/uploads/2026/05/dubai-office-2.jpg.webp" loading="lazy" decoding="async"/>
 <div class="absolute inset-0 bg-neutral-950/65 group-hover:bg-neutral-950/50 transition-colors duration-300"></div>
 <a class="relative z-10 text-[11px] font-bold tracking-[0.18em] text-white block text-center leading-tight py-12 px-4 uppercase" data-i18n="megaMenu.aboutTitle" href="aboutus/index.html">About Sharif Group</a>
 </div>
 <div class="relative flex-1 max-w-[260px] rounded-[20px] shadow-md overflow-hidden group border border-luxury-gold/50">
-<img alt="Founder" class="absolute inset-0 w-full h-full object-cover transition-transform duration-500 group-hover:scale-110" src="alirezasharif.svg"/>
+<img alt="Founder" class="absolute inset-0 w-full h-full object-cover transition-transform duration-500 group-hover:scale-110" src="alirezasharif.svg" loading="lazy" decoding="async"/>
 <div class="absolute inset-0 bg-neutral-950/65 group-hover:bg-neutral-950/50 transition-colors duration-300"></div>
 <a class="relative z-10 text-[11px] font-bold tracking-[0.18em] text-white block text-center leading-tight py-12 px-4 uppercase" data-i18n="megaMenu.aboutFounder" href="aboutfounder/index.html">About Founder | Ali Sharif</a>
 </div>
 <div class="relative flex-1 max-w-[260px] rounded-[20px] shadow-md overflow-hidden group border border-luxury-gold/50">
-<img alt="Social Responsibility" class="absolute inset-0 w-full h-full object-cover transition-transform duration-500 group-hover:scale-110" src="https://images.unsplash.com/photo-1488521787991-ed7bbaae773c?auto=format&amp;fit=crop&amp;q=80&amp;w=500"/>
+<img alt="Social Responsibility" class="absolute inset-0 w-full h-full object-cover transition-transform duration-500 group-hover:scale-110" src="https://images.unsplash.com/photo-1488521787991-ed7bbaae773c?auto=format&amp;fit=crop&amp;q=80&amp;w=500" loading="lazy" decoding="async"/>
 <div class="absolute inset-0 bg-neutral-950/65 group-hover:bg-neutral-950/50 transition-colors duration-300"></div>
 <a class="relative z-10 text-[11px] font-bold tracking-[0.18em] text-white block text-center leading-tight py-12 px-4 uppercase" data-i18n="megaMenu.socialResponsibility" href="socialresponsibility/index.html">Social Responsibility</a>
 </div>
@@ -1193,7 +1215,7 @@
 <div class="bg-neutral-900 rounded-[2rem] border border-luxury-gold/30 overflow-hidden shadow-xl flex flex-col justify-between hover:shadow-[0_0_25px_rgba(197,168,128,0.4)] transition duration-500 min-w-[320px] max-w-[320px] shrink-0 group">
 <div>
 <div class="relative aspect-[16/10] overflow-hidden">
-<img alt="About Sharif Group" class="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110" src="https://sharifgroup.ae/wp-content/uploads/2026/05/dubai-office-2.jpg.webp"/>
+<img alt="About Sharif Group" class="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110" src="https://sharifgroup.ae/wp-content/uploads/2026/05/dubai-office-2.jpg.webp" loading="lazy" decoding="async"/>
 <div class="absolute inset-0 bg-gradient-to-t from-neutral-950 via-transparent to-transparent opacity-60"></div>
 <span class="absolute top-3 left-3 px-3 py-1 bg-black/70 backdrop-blur-md text-[10px] uppercase font-bold tracking-wider text-luxury-gold border border-luxury-gold/30 rounded-full">About Us</span>
 </div>
@@ -1214,7 +1236,7 @@
 <div class="bg-neutral-900 rounded-[2rem] border border-luxury-gold/30 overflow-hidden shadow-xl flex flex-col justify-between hover:shadow-[0_0_25px_rgba(197,168,128,0.4)] transition duration-500 min-w-[320px] max-w-[320px] shrink-0 group">
 <div>
 <div class="relative aspect-[16/10] overflow-hidden">
-<img alt="All Services" class="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110" src="https://media.residency-bond.eu/Images/root/eu/citizenship-by-investment.jpg"/>
+<img alt="All Services" class="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110" src="https://media.residency-bond.eu/Images/root/eu/citizenship-by-investment.jpg" loading="lazy" decoding="async"/>
 <div class="absolute inset-0 bg-gradient-to-t from-neutral-950 via-transparent to-transparent opacity-60"></div>
 <span class="absolute top-3 left-3 px-3 py-1 bg-black/70 backdrop-blur-md text-[10px] uppercase font-bold tracking-wider text-luxury-gold border border-luxury-gold/30 rounded-full">Services</span>
 </div>
@@ -1235,7 +1257,7 @@
 <div class="bg-neutral-900 rounded-[2rem] border border-luxury-gold/30 overflow-hidden shadow-xl flex flex-col justify-between hover:shadow-[0_0_25px_rgba(197,168,128,0.4)] transition duration-500 min-w-[320px] max-w-[320px] shrink-0 group">
 <div>
 <div class="relative aspect-[16/10] overflow-hidden">
-<img alt="Citizenship Guide" class="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110" src="citizenshipbyinvestment.png"/>
+<img alt="Citizenship Guide" class="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110" src="citizenshipbyinvestment.png" loading="lazy" decoding="async"/>
 <div class="absolute inset-0 bg-gradient-to-t from-neutral-950 via-transparent to-transparent opacity-60"></div>
 <span class="absolute top-3 left-3 px-3 py-1 bg-black/70 backdrop-blur-md text-[10px] uppercase font-bold tracking-wider text-luxury-gold border border-luxury-gold/30 rounded-full">Passport Guide</span>
 </div>
@@ -1256,7 +1278,7 @@
 <div class="bg-neutral-900 rounded-[2rem] border border-luxury-gold/30 overflow-hidden shadow-xl flex flex-col justify-between hover:shadow-[0_0_25px_rgba(197,168,128,0.4)] transition duration-500 min-w-[320px] max-w-[320px] shrink-0 group">
 <div>
 <div class="relative aspect-[16/10] overflow-hidden">
-<img alt="Dominica Passport" class="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110" src="https://www.occrp.org/processed/containers/assets/images/stories/CCWatch/daily/Dominica_Passport.jpg/4e539691dea2e94f48a2b207f75c234c/Dominica_Passport.jpg"/>
+<img alt="Dominica Passport" class="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110" src="https://www.occrp.org/processed/containers/assets/images/stories/CCWatch/daily/Dominica_Passport.jpg/4e539691dea2e94f48a2b207f75c234c/Dominica_Passport.jpg" loading="lazy" decoding="async"/>
 <div class="absolute inset-0 bg-gradient-to-t from-neutral-950 via-transparent to-transparent opacity-60"></div>
 <span class="absolute top-3 left-3 px-3 py-1 bg-black/70 backdrop-blur-md text-[10px] uppercase font-bold tracking-wider text-luxury-gold border border-luxury-gold/30 rounded-full">Dominica</span>
 </div>
@@ -1277,7 +1299,7 @@
 <div class="bg-neutral-900 rounded-[2rem] border border-luxury-gold/30 overflow-hidden shadow-xl flex flex-col justify-between hover:shadow-[0_0_25px_rgba(197,168,128,0.4)] transition duration-500 min-w-[320px] max-w-[320px] shrink-0 group">
 <div>
 <div class="relative aspect-[16/10] overflow-hidden">
-<img alt="Sao Tome" class="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110" src="https://citizenshipbay.com/wp-content/uploads/2026/05/Sao-Tome-and-Principe-passport-3.png"/>
+<img alt="Sao Tome" class="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110" src="https://citizenshipbay.com/wp-content/uploads/2026/05/Sao-Tome-and-Principe-passport-3.png" loading="lazy" decoding="async"/>
 <div class="absolute inset-0 bg-gradient-to-t from-neutral-950 via-transparent to-transparent opacity-60"></div>
 <span class="absolute top-3 left-3 px-3 py-1 bg-black/70 backdrop-blur-md text-[10px] uppercase font-bold tracking-wider text-luxury-gold border border-luxury-gold/30 rounded-full">Sao Tome</span>
 </div>
@@ -1298,7 +1320,7 @@
 <div class="bg-neutral-900 rounded-[2rem] border border-luxury-gold/30 overflow-hidden shadow-xl flex flex-col justify-between hover:shadow-[0_0_25px_rgba(197,168,128,0.4)] transition duration-500 min-w-[320px] max-w-[320px] shrink-0 group">
 <div>
 <div class="relative aspect-[16/10] overflow-hidden">
-<img alt="St. Kitts" class="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110" src="https://content.wicnews.com/production/media/2138/responsive-images/St-kitts-nevis-passport___media_library_original_1200_500.jpg"/>
+<img alt="St. Kitts" class="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110" src="https://content.wicnews.com/production/media/2138/responsive-images/St-kitts-nevis-passport___media_library_original_1200_500.jpg" loading="lazy" decoding="async"/>
 <div class="absolute inset-0 bg-gradient-to-t from-neutral-950 via-transparent to-transparent opacity-60"></div>
 <span class="absolute top-3 left-3 px-3 py-1 bg-black/70 backdrop-blur-md text-[10px] uppercase font-bold tracking-wider text-luxury-gold border border-luxury-gold/30 rounded-full">St. Kitts</span>
 </div>
@@ -1319,7 +1341,7 @@
 <div class="bg-neutral-900 rounded-[2rem] border border-luxury-gold/30 overflow-hidden shadow-xl flex flex-col justify-between hover:shadow-[0_0_25px_rgba(197,168,128,0.4)] transition duration-500 min-w-[320px] max-w-[320px] shrink-0 group">
 <div>
 <div class="relative aspect-[16/10] overflow-hidden">
-<img alt="St. Lucia" class="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110" src="https://richeskarayib.com/wp-content/uploads/2025/08/st-lucia-citizenship-passport00.jpg.webp"/>
+<img alt="St. Lucia" class="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110" src="https://richeskarayib.com/wp-content/uploads/2025/08/st-lucia-citizenship-passport00.jpg.webp" loading="lazy" decoding="async"/>
 <div class="absolute inset-0 bg-gradient-to-t from-neutral-950 via-transparent to-transparent opacity-60"></div>
 <span class="absolute top-3 left-3 px-3 py-1 bg-black/70 backdrop-blur-md text-[10px] uppercase font-bold tracking-wider text-luxury-gold border border-luxury-gold/30 rounded-full">St. Lucia</span>
 </div>
@@ -1340,7 +1362,7 @@
 <div class="bg-neutral-900 rounded-[2rem] border border-luxury-gold/30 overflow-hidden shadow-xl flex flex-col justify-between hover:shadow-[0_0_25px_rgba(197,168,128,0.4)] transition duration-500 min-w-[320px] max-w-[320px] shrink-0 group">
 <div>
 <div class="relative aspect-[16/10] overflow-hidden">
-<img alt="Grenada" class="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110" src="https://i.migronis.com/news/2024/7/5/image2024-07-0500-58-07.png?size=2010x1050"/>
+<img alt="Grenada" class="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110" src="https://i.migronis.com/news/2024/7/5/image2024-07-0500-58-07.png?size=2010x1050" loading="lazy" decoding="async"/>
 <div class="absolute inset-0 bg-gradient-to-t from-neutral-950 via-transparent to-transparent opacity-60"></div>
 <span class="absolute top-3 left-3 px-3 py-1 bg-black/70 backdrop-blur-md text-[10px] uppercase font-bold tracking-wider text-luxury-gold border border-luxury-gold/30 rounded-full">Grenada</span>
 </div>
@@ -1361,7 +1383,7 @@
 <div class="bg-neutral-900 rounded-[2rem] border border-luxury-gold/30 overflow-hidden shadow-xl flex flex-col justify-between hover:shadow-[0_0_25px_rgba(197,168,128,0.4)] transition duration-500 min-w-[320px] max-w-[320px] shrink-0 group">
 <div>
 <div class="relative aspect-[16/10] overflow-hidden">
-<img alt="Nauru" class="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110" src="https://www.starjetimmigration.com/uploads/manage/images/2/20250822/f60b94aa49142996dbebfaf7a91d7933.jpg"/>
+<img alt="Nauru" class="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110" src="https://www.starjetimmigration.com/uploads/manage/images/2/20250822/f60b94aa49142996dbebfaf7a91d7933.jpg" loading="lazy" decoding="async"/>
 <div class="absolute inset-0 bg-gradient-to-t from-neutral-950 via-transparent to-transparent opacity-60"></div>
 <span class="absolute top-3 left-3 px-3 py-1 bg-black/70 backdrop-blur-md text-[10px] uppercase font-bold tracking-wider text-luxury-gold border border-luxury-gold/30 rounded-full">Nauru</span>
 </div>
@@ -1382,7 +1404,7 @@
 <div class="bg-neutral-900 rounded-[2rem] border border-luxury-gold/30 overflow-hidden shadow-xl flex flex-col justify-between hover:shadow-[0_0_25px_rgba(197,168,128,0.4)] transition duration-500 min-w-[320px] max-w-[320px] shrink-0 group">
 <div>
 <div class="relative aspect-[16/10] overflow-hidden">
-<img alt="Residency" class="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110" src="residencybyinvestment.png"/>
+<img alt="Residency" class="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110" src="residencybyinvestment.png" loading="lazy" decoding="async"/>
 <div class="absolute inset-0 bg-gradient-to-t from-neutral-950 via-transparent to-transparent opacity-60"></div>
 <span class="absolute top-3 left-3 px-3 py-1 bg-black/70 backdrop-blur-md text-[10px] uppercase font-bold tracking-wider text-luxury-gold border border-luxury-gold/30 rounded-full">Residency</span>
 </div>
@@ -1403,7 +1425,7 @@
 <div class="bg-neutral-900 rounded-[2rem] border border-luxury-gold/30 overflow-hidden shadow-xl flex flex-col justify-between hover:shadow-[0_0_25px_rgba(197,168,128,0.4)] transition duration-500 min-w-[320px] max-w-[320px] shrink-0 group">
 <div>
 <div class="relative aspect-[16/10] overflow-hidden">
-<img alt="Portugal" class="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110" src="https://images.indianexpress.com/2025/08/portugal-visa.png"/>
+<img alt="Portugal" class="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110" src="https://images.indianexpress.com/2025/08/portugal-visa.png" loading="lazy" decoding="async"/>
 <div class="absolute inset-0 bg-gradient-to-t from-neutral-950 via-transparent to-transparent opacity-60"></div>
 <span class="absolute top-3 left-3 px-3 py-1 bg-black/70 backdrop-blur-md text-[10px] uppercase font-bold tracking-wider text-luxury-gold border border-luxury-gold/30 rounded-full">Portugal</span>
 </div>
@@ -1424,7 +1446,7 @@
 <div class="bg-neutral-900 rounded-[2rem] border border-luxury-gold/30 overflow-hidden shadow-xl flex flex-col justify-between hover:shadow-[0_0_25px_rgba(197,168,128,0.4)] transition duration-500 min-w-[320px] max-w-[320px] shrink-0 group">
 <div>
 <div class="relative aspect-[16/10] overflow-hidden">
-<img alt="Greece" class="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110" src="https://www.tovima.com/wp-content/uploads/2025/07/25/Golden-Visa-housing.jpg"/>
+<img alt="Greece" class="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110" src="https://www.tovima.com/wp-content/uploads/2025/07/25/Golden-Visa-housing.jpg" loading="lazy" decoding="async"/>
 <div class="absolute inset-0 bg-gradient-to-t from-neutral-950 via-transparent to-transparent opacity-60"></div>
 <span class="absolute top-3 left-3 px-3 py-1 bg-black/70 backdrop-blur-md text-[10px] uppercase font-bold tracking-wider text-luxury-gold border border-luxury-gold/30 rounded-full">Greece</span>
 </div>
@@ -1445,7 +1467,7 @@
 <div class="bg-neutral-900 rounded-[2rem] border border-luxury-gold/30 overflow-hidden shadow-xl flex flex-col justify-between hover:shadow-[0_0_25px_rgba(197,168,128,0.4)] transition duration-500 min-w-[320px] max-w-[320px] shrink-0 group">
 <div>
 <div class="relative aspect-[16/10] overflow-hidden">
-<img alt="UAE Visa" class="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110" src="https://res.cloudinary.com/dehwy1t1g/image/upload/v1776380987/incorpify/blog/ocxdxtp280tdntfq7qts.jpg"/>
+<img alt="UAE Visa" class="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110" src="https://res.cloudinary.com/dehwy1t1g/image/upload/v1776380987/incorpify/blog/ocxdxtp280tdntfq7qts.jpg" loading="lazy" decoding="async"/>
 <div class="absolute inset-0 bg-gradient-to-t from-neutral-950 via-transparent to-transparent opacity-60"></div>
 <span class="absolute top-3 left-3 px-3 py-1 bg-black/70 backdrop-blur-md text-[10px] uppercase font-bold tracking-wider text-luxury-gold border border-luxury-gold/30 rounded-full">UAE Visa</span>
 </div>
@@ -1466,7 +1488,7 @@
 <div class="bg-neutral-900 rounded-[2rem] border border-luxury-gold/30 overflow-hidden shadow-xl flex flex-col justify-between hover:shadow-[0_0_25px_rgba(197,168,128,0.4)] transition duration-500 min-w-[320px] max-w-[320px] shrink-0 group">
 <div>
 <div class="relative aspect-[16/10] overflow-hidden">
-<img alt="Real Estate" class="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110" src="https://www.shuraa.com/wp-content/uploads/2025/06/how-to-buy-property-in-dubai-uae.webp"/>
+<img alt="Real Estate" class="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110" src="https://www.shuraa.com/wp-content/uploads/2025/06/how-to-buy-property-in-dubai-uae.webp" loading="lazy" decoding="async"/>
 <div class="absolute inset-0 bg-gradient-to-t from-neutral-950 via-transparent to-transparent opacity-60"></div>
 <span class="absolute top-3 left-3 px-3 py-1 bg-black/70 backdrop-blur-md text-[10px] uppercase font-bold tracking-wider text-luxury-gold border border-luxury-gold/30 rounded-full">Real Estate</span>
 </div>
@@ -1487,7 +1509,7 @@
 <div class="bg-neutral-900 rounded-[2rem] border border-luxury-gold/30 overflow-hidden shadow-xl flex flex-col justify-between hover:shadow-[0_0_25px_rgba(197,168,128,0.4)] transition duration-500 min-w-[320px] max-w-[320px] shrink-0 group">
 <div>
 <div class="relative aspect-[16/10] overflow-hidden">
-<img alt="Vanuatu" class="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110" src="https://cbivanuatu.com/wp-content/uploads/2021/06/posts_0001_vanuatu-passport-e1611780144972-560x276.jpg"/>
+<img alt="Vanuatu" class="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110" src="https://cbivanuatu.com/wp-content/uploads/2021/06/posts_0001_vanuatu-passport-e1611780144972-560x276.jpg" loading="lazy" decoding="async"/>
 <div class="absolute inset-0 bg-gradient-to-t from-neutral-950 via-transparent to-transparent opacity-60"></div>
 <span class="absolute top-3 left-3 px-3 py-1 bg-black/70 backdrop-blur-md text-[10px] uppercase font-bold tracking-wider text-luxury-gold border border-luxury-gold/30 rounded-full">Vanuatu</span>
 </div>
@@ -1508,7 +1530,7 @@
 <div class="bg-neutral-900 rounded-[2rem] border border-luxury-gold/30 overflow-hidden shadow-xl flex flex-col justify-between hover:shadow-[0_0_25px_rgba(197,168,128,0.4)] transition duration-500 min-w-[320px] max-w-[320px] shrink-0 group">
 <div>
 <div class="relative aspect-[16/10] overflow-hidden">
-<img alt="Antigua" class="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110" src="https://www.antiguabarbuda-citizenship.com/wp-content/uploads/2026/02/antiguapassport.jpg"/>
+<img alt="Antigua" class="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110" src="https://www.antiguabarbuda-citizenship.com/wp-content/uploads/2026/02/antiguapassport.jpg" loading="lazy" decoding="async"/>
 <div class="absolute inset-0 bg-gradient-to-t from-neutral-950 via-transparent to-transparent opacity-60"></div>
 <span class="absolute top-3 left-3 px-3 py-1 bg-black/70 backdrop-blur-md text-[10px] uppercase font-bold tracking-wider text-luxury-gold border border-luxury-gold/30 rounded-full">Antigua</span>
 </div>
@@ -1529,7 +1551,7 @@
 <div class="bg-neutral-900 rounded-[2rem] border border-luxury-gold/30 overflow-hidden shadow-xl flex flex-col justify-between hover:shadow-[0_0_25px_rgba(197,168,128,0.4)] transition duration-500 min-w-[320px] max-w-[320px] shrink-0 group">
 <div>
 <div class="relative aspect-[16/10] overflow-hidden">
-<img alt="Panama" class="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110" src="https://panamavisaexpert.com/wp-content/uploads/2024/04/panama-passport-1024x576.webp"/>
+<img alt="Panama" class="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110" src="https://panamavisaexpert.com/wp-content/uploads/2024/04/panama-passport-1024x576.webp" loading="lazy" decoding="async"/>
 <div class="absolute inset-0 bg-gradient-to-t from-neutral-950 via-transparent to-transparent opacity-60"></div>
 <span class="absolute top-3 left-3 px-3 py-1 bg-black/70 backdrop-blur-md text-[10px] uppercase font-bold tracking-wider text-luxury-gold border border-luxury-gold/30 rounded-full">Panama</span>
 </div>
@@ -1550,7 +1572,7 @@
 <div class="bg-neutral-900 rounded-[2rem] border border-luxury-gold/30 overflow-hidden shadow-xl flex flex-col justify-between hover:shadow-[0_0_25px_rgba(197,168,128,0.4)] transition duration-500 min-w-[320px] max-w-[320px] shrink-0 group">
 <div>
 <div class="relative aspect-[16/10] overflow-hidden">
-<img alt="Real Estate Audit" class="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110" src="https://images.unsplash.com/photo-1560518883-ce09059eeffa?auto=format&amp;fit=crop&amp;q=80&amp;w=600"/>
+<img alt="Real Estate Audit" class="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110" src="https://images.unsplash.com/photo-1560518883-ce09059eeffa?auto=format&amp;fit=crop&amp;q=80&amp;w=600" loading="lazy" decoding="async"/>
 <div class="absolute inset-0 bg-gradient-to-t from-neutral-950 via-transparent to-transparent opacity-60"></div>
 <span class="absolute top-3 left-3 px-3 py-1 bg-black/70 backdrop-blur-md text-[10px] uppercase font-bold tracking-wider text-luxury-gold border border-luxury-gold/30 rounded-full">Real Estate</span>
 </div>
@@ -1571,7 +1593,7 @@
 <div class="bg-neutral-900 rounded-[2rem] border border-luxury-gold/30 overflow-hidden shadow-xl flex flex-col justify-between hover:shadow-[0_0_25px_rgba(197,168,128,0.4)] transition duration-500 min-w-[320px] max-w-[320px] shrink-0 group">
 <div>
 <div class="relative aspect-[16/10] overflow-hidden">
-<img alt="Education" class="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110" src="https://smapse.com/storage/2026/04/converted/660_464_smapse-oxford-0.png"/>
+<img alt="Education" class="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110" src="https://smapse.com/storage/2026/04/converted/660_464_smapse-oxford-0.png" loading="lazy" decoding="async"/>
 <div class="absolute inset-0 bg-gradient-to-t from-neutral-950 via-transparent to-transparent opacity-60"></div>
 <span class="absolute top-3 left-3 px-3 py-1 bg-black/70 backdrop-blur-md text-[10px] uppercase font-bold tracking-wider text-luxury-gold border border-luxury-gold/30 rounded-full">Education</span>
 </div>
@@ -1603,19 +1625,20 @@
 <h3 class="font-serif text-3xl md:text-5xl text-white font-bold tracking-tight"><span data-i18n="reviews.heading">Success</span> <span class="italic text-luxury-gold font-serif font-normal" data-i18n="reviews.headingItalic">Stories</span></h3>
 <div class="w-12 h-[2px] bg-luxury-gold mx-auto my-2"></div>
 </div>
-<div class="relative max-w-5xl mx-auto overflow-hidden">
-<div class="flex transition-transform duration-700 ease-in-out w-full" id="review-slider-track">
+<div class="relative max-w-5xl mx-auto" id="review-slider-wrapper">
+<div class="relative overflow-hidden rounded-3xl">
+<div class="flex transition-transform duration-700 ease-in-out w-full" id="review-slider-track" style="direction: ltr !important;">
 <!-- Slide 1 -->
 <div class="review-slide-card w-full shrink-0 px-4">
 <div class="bg-neutral-900/90 rounded-3xl border border-luxury-gold/30 shadow-2xl p-6 md:p-10 grid grid-cols-1 md:grid-cols-12 gap-8 items-center backdrop-blur-xl">
-<div class="md:col-span-5 space-y-6 text-left">
+<div class="md:col-span-5 space-y-6 text-left review-content-col">
 <div class="text-luxury-gold text-2xl"><i class="fa-solid fa-quote-left"></i></div>
 <p class="font-serif text-xl md:text-2xl text-white leading-relaxed italic" data-i18n="reviews.r1">"Fast follow-up and straightforward documentation."</p>
-<a class="inline-flex items-center px-6 py-3.5 bg-luxury-gold text-white text-xs uppercase tracking-widest font-bold rounded-full hover:bg-white hover:text-luxury-dark transition duration-300 shadow-lg" href="contact/index.html"><span data-i18n="reviews.startJourney">Start Your Journey Now</span> <i class="fa-solid fa-arrow-right ml-2"></i></a>
+<a class="inline-flex items-center px-6 py-3.5 bg-luxury-gold text-white text-xs uppercase tracking-widest font-bold rounded-full hover:bg-white hover:text-luxury-dark transition duration-300 shadow-lg" href="contact/index.html"><span data-i18n="reviews.startJourney">Start Your Journey Now</span> <i class="fa-solid fa-arrow-right ml-2 rtl:rotate-180 rtl:mr-2 rtl:ml-0"></i></a>
 </div>
 <div class="md:col-span-7 flex justify-center">
 <div class="relative w-full max-w-md rounded-2xl overflow-hidden shadow-2xl border-2 border-luxury-gold/40 bg-neutral-950 aspect-[3/4]">
-<img alt="Client Handover 1" class="w-full h-full object-cover" src="clients/client1.png"/>
+<img alt="Client Handover 1" class="w-full h-full object-cover" src="clients/client1.png" loading="eager" fetchpriority="high" decoding="async" width="448" height="597"/>
 </div>
 </div>
 </div>
@@ -1623,14 +1646,14 @@
 <!-- Slide 2 -->
 <div class="review-slide-card w-full shrink-0 px-4">
 <div class="bg-neutral-900/90 rounded-3xl border border-luxury-gold/30 shadow-2xl p-6 md:p-10 grid grid-cols-1 md:grid-cols-12 gap-8 items-center backdrop-blur-xl">
-<div class="md:col-span-5 space-y-6 text-left">
+<div class="md:col-span-5 space-y-6 text-left review-content-col">
 <div class="text-luxury-gold text-2xl"><i class="fa-solid fa-quote-left"></i></div>
 <p class="font-serif text-xl md:text-2xl text-white leading-relaxed italic" data-i18n="reviews.r2">"Reliable advice based on real experience."</p>
-<a class="inline-flex items-center px-6 py-3.5 bg-luxury-gold text-white text-xs uppercase tracking-widest font-bold rounded-full hover:bg-white hover:text-luxury-dark transition duration-300 shadow-lg" href="contact/index.html"><span data-i18n="reviews.startJourney">Start Your Journey Now</span> <i class="fa-solid fa-arrow-right ml-2"></i></a>
+<a class="inline-flex items-center px-6 py-3.5 bg-luxury-gold text-white text-xs uppercase tracking-widest font-bold rounded-full hover:bg-white hover:text-luxury-dark transition duration-300 shadow-lg" href="contact/index.html"><span data-i18n="reviews.startJourney">Start Your Journey Now</span> <i class="fa-solid fa-arrow-right ml-2 rtl:rotate-180 rtl:mr-2 rtl:ml-0"></i></a>
 </div>
 <div class="md:col-span-7 flex justify-center">
 <div class="relative w-full max-w-md rounded-2xl overflow-hidden shadow-2xl border-2 border-luxury-gold/40 bg-neutral-950 aspect-[3/4]">
-<img alt="Client Handover 2" class="w-full h-full object-cover" src="clients/client2.jpg"/>
+<img alt="Client Handover 2" class="w-full h-full object-cover" src="clients/client2.jpg" loading="lazy" decoding="async" width="448" height="597"/>
 </div>
 </div>
 </div>
@@ -1638,14 +1661,14 @@
 <!-- Slide 3 -->
 <div class="review-slide-card w-full shrink-0 px-4">
 <div class="bg-neutral-900/90 rounded-3xl border border-luxury-gold/30 shadow-2xl p-6 md:p-10 grid grid-cols-1 md:grid-cols-12 gap-8 items-center backdrop-blur-xl">
-<div class="md:col-span-5 space-y-6 text-left">
+<div class="md:col-span-5 space-y-6 text-left review-content-col">
 <div class="text-luxury-gold text-2xl"><i class="fa-solid fa-quote-left"></i></div>
 <p class="font-serif text-xl md:text-2xl text-white leading-relaxed italic" data-i18n="reviews.r3">"Professional, structured, and transparent throughout."</p>
-<a class="inline-flex items-center px-6 py-3.5 bg-luxury-gold text-white text-xs uppercase tracking-widest font-bold rounded-full hover:bg-white hover:text-luxury-dark transition duration-300 shadow-lg" href="contact/index.html"><span data-i18n="reviews.startJourney">Start Your Journey Now</span> <i class="fa-solid fa-arrow-right ml-2"></i></a>
+<a class="inline-flex items-center px-6 py-3.5 bg-luxury-gold text-white text-xs uppercase tracking-widest font-bold rounded-full hover:bg-white hover:text-luxury-dark transition duration-300 shadow-lg" href="contact/index.html"><span data-i18n="reviews.startJourney">Start Your Journey Now</span> <i class="fa-solid fa-arrow-right ml-2 rtl:rotate-180 rtl:mr-2 rtl:ml-0"></i></a>
 </div>
 <div class="md:col-span-7 flex justify-center">
 <div class="relative w-full max-w-md rounded-2xl overflow-hidden shadow-2xl border-2 border-luxury-gold/40 bg-neutral-950 aspect-[3/4]">
-<img alt="Client Handover 3" class="w-full h-full object-cover" src="clients/client3.jpg"/>
+<img alt="Client Handover 3" class="w-full h-full object-cover" src="clients/client3.jpg" loading="lazy" decoding="async" width="448" height="597"/>
 </div>
 </div>
 </div>
@@ -1653,14 +1676,14 @@
 <!-- Slide 4 -->
 <div class="review-slide-card w-full shrink-0 px-4">
 <div class="bg-neutral-900/90 rounded-3xl border border-luxury-gold/30 shadow-2xl p-6 md:p-10 grid grid-cols-1 md:grid-cols-12 gap-8 items-center backdrop-blur-xl">
-<div class="md:col-span-5 space-y-6 text-left">
+<div class="md:col-span-5 space-y-6 text-left review-content-col">
 <div class="text-luxury-gold text-2xl"><i class="fa-solid fa-quote-left"></i></div>
 <p class="font-serif text-xl md:text-2xl text-white leading-relaxed italic" data-i18n="reviews.r4">"Great communication and support until approval."</p>
-<a class="inline-flex items-center px-6 py-3.5 bg-luxury-gold text-white text-xs uppercase tracking-widest font-bold rounded-full hover:bg-white hover:text-luxury-dark transition duration-300 shadow-lg" href="contact/index.html"><span data-i18n="reviews.startJourney">Start Your Journey Now</span> <i class="fa-solid fa-arrow-right ml-2"></i></a>
+<a class="inline-flex items-center px-6 py-3.5 bg-luxury-gold text-white text-xs uppercase tracking-widest font-bold rounded-full hover:bg-white hover:text-luxury-dark transition duration-300 shadow-lg" href="contact/index.html"><span data-i18n="reviews.startJourney">Start Your Journey Now</span> <i class="fa-solid fa-arrow-right ml-2 rtl:rotate-180 rtl:mr-2 rtl:ml-0"></i></a>
 </div>
 <div class="md:col-span-7 flex justify-center">
 <div class="relative w-full max-w-md rounded-2xl overflow-hidden shadow-2xl border-2 border-luxury-gold/40 bg-neutral-950 aspect-[3/4]">
-<img alt="Client Handover 4" class="w-full h-full object-cover" src="clients/client4.png"/>
+<img alt="Client Handover 4" class="w-full h-full object-cover" src="clients/client4.png" loading="lazy" decoding="async" width="448" height="597"/>
 </div>
 </div>
 </div>
@@ -1668,14 +1691,14 @@
 <!-- Slide 5 -->
 <div class="review-slide-card w-full shrink-0 px-4">
 <div class="bg-neutral-900/90 rounded-3xl border border-luxury-gold/30 shadow-2xl p-6 md:p-10 grid grid-cols-1 md:grid-cols-12 gap-8 items-center backdrop-blur-xl">
-<div class="md:col-span-5 space-y-6 text-left">
+<div class="md:col-span-5 space-y-6 text-left review-content-col">
 <div class="text-luxury-gold text-2xl"><i class="fa-solid fa-quote-left"></i></div>
 <p class="font-serif text-xl md:text-2xl text-white leading-relaxed italic" data-i18n="reviews.r5">"Extremely efficient process from start to finish."</p>
-<a class="inline-flex items-center px-6 py-3.5 bg-luxury-gold text-white text-xs uppercase tracking-widest font-bold rounded-full hover:bg-white hover:text-luxury-dark transition duration-300 shadow-lg" href="contact/index.html"><span data-i18n="reviews.startJourney">Start Your Journey Now</span> <i class="fa-solid fa-arrow-right ml-2"></i></a>
+<a class="inline-flex items-center px-6 py-3.5 bg-luxury-gold text-white text-xs uppercase tracking-widest font-bold rounded-full hover:bg-white hover:text-luxury-dark transition duration-300 shadow-lg" href="contact/index.html"><span data-i18n="reviews.startJourney">Start Your Journey Now</span> <i class="fa-solid fa-arrow-right ml-2 rtl:rotate-180 rtl:mr-2 rtl:ml-0"></i></a>
 </div>
 <div class="md:col-span-7 flex justify-center">
 <div class="relative w-full max-w-md rounded-2xl overflow-hidden shadow-2xl border-2 border-luxury-gold/40 bg-neutral-950 aspect-[3/4]">
-<img alt="Client Handover 5" class="w-full h-full object-cover" src="clients/client5.jpeg"/>
+<img alt="Client Handover 5" class="w-full h-full object-cover" src="clients/client5.jpeg" loading="lazy" decoding="async" width="448" height="597"/>
 </div>
 </div>
 </div>
@@ -1683,14 +1706,14 @@
 <!-- Slide 6 -->
 <div class="review-slide-card w-full shrink-0 px-4">
 <div class="bg-neutral-900/90 rounded-3xl border border-luxury-gold/30 shadow-2xl p-6 md:p-10 grid grid-cols-1 md:grid-cols-12 gap-8 items-center backdrop-blur-xl">
-<div class="md:col-span-5 space-y-6 text-left">
+<div class="md:col-span-5 space-y-6 text-left review-content-col">
 <div class="text-luxury-gold text-2xl"><i class="fa-solid fa-quote-left"></i></div>
 <p class="font-serif text-xl md:text-2xl text-white leading-relaxed italic" data-i18n="reviews.r6">"Clear expectations and seamless delivery."</p>
-<a class="inline-flex items-center px-6 py-3.5 bg-luxury-gold text-white text-xs uppercase tracking-widest font-bold rounded-full hover:bg-white hover:text-luxury-dark transition duration-300 shadow-lg" href="contact/index.html"><span data-i18n="reviews.startJourney">Start Your Journey Now</span> <i class="fa-solid fa-arrow-right ml-2"></i></a>
+<a class="inline-flex items-center px-6 py-3.5 bg-luxury-gold text-white text-xs uppercase tracking-widest font-bold rounded-full hover:bg-white hover:text-luxury-dark transition duration-300 shadow-lg" href="contact/index.html"><span data-i18n="reviews.startJourney">Start Your Journey Now</span> <i class="fa-solid fa-arrow-right ml-2 rtl:rotate-180 rtl:mr-2 rtl:ml-0"></i></a>
 </div>
 <div class="md:col-span-7 flex justify-center">
 <div class="relative w-full max-w-md rounded-2xl overflow-hidden shadow-2xl border-2 border-luxury-gold/40 bg-neutral-950 aspect-[3/4]">
-<img alt="Client Handover 6" class="w-full h-full object-cover" src="clients/client6.jpeg"/>
+<img alt="Client Handover 6" class="w-full h-full object-cover" src="clients/client6.jpeg" loading="lazy" decoding="async" width="448" height="597"/>
 </div>
 </div>
 </div>
@@ -1698,20 +1721,29 @@
 <!-- Slide 7 -->
 <div class="review-slide-card w-full shrink-0 px-4">
 <div class="bg-neutral-900/90 rounded-3xl border border-luxury-gold/30 shadow-2xl p-6 md:p-10 grid grid-cols-1 md:grid-cols-12 gap-8 items-center backdrop-blur-xl">
-<div class="md:col-span-5 space-y-6 text-left">
+<div class="md:col-span-5 space-y-6 text-left review-content-col">
 <div class="text-luxury-gold text-2xl"><i class="fa-solid fa-quote-left"></i></div>
 <p class="font-serif text-xl md:text-2xl text-white leading-relaxed italic" data-i18n="reviews.r7">"Exceptional guidance and advisory every step of the way."</p>
-<a class="inline-flex items-center px-6 py-3.5 bg-luxury-gold text-white text-xs uppercase tracking-widest font-bold rounded-full hover:bg-white hover:text-luxury-dark transition duration-300 shadow-lg" href="contact/index.html"><span data-i18n="reviews.startJourney">Start Your Journey Now</span> <i class="fa-solid fa-arrow-right ml-2"></i></a>
+<a class="inline-flex items-center px-6 py-3.5 bg-luxury-gold text-white text-xs uppercase tracking-widest font-bold rounded-full hover:bg-white hover:text-luxury-dark transition duration-300 shadow-lg" href="contact/index.html"><span data-i18n="reviews.startJourney">Start Your Journey Now</span> <i class="fa-solid fa-arrow-right ml-2 rtl:rotate-180 rtl:mr-2 rtl:ml-0"></i></a>
 </div>
 <div class="md:col-span-7 flex justify-center">
 <div class="relative w-full max-w-md rounded-2xl overflow-hidden shadow-2xl border-2 border-luxury-gold/40 bg-neutral-950 aspect-[3/4]">
-<img alt="Client Handover 7" class="w-full h-full object-cover" src="clients/client7.jpeg"/>
+<img alt="Client Handover 7" class="w-full h-full object-cover" src="clients/client7.jpeg" loading="lazy" decoding="async" width="448" height="597"/>
 </div>
 </div>
 </div>
 </div>
 </div>
 </div>
+<!-- Slider Controls -->
+<button id="review-prev-btn" type="button" aria-label="Previous review" class="absolute -left-3 md:-left-6 top-1/2 -translate-y-1/2 z-20 w-10 h-10 md:w-12 md:h-12 rounded-full bg-neutral-900/90 border border-luxury-gold/50 text-luxury-gold hover:bg-luxury-gold hover:text-neutral-950 transition duration-300 flex items-center justify-center shadow-2xl backdrop-blur-md cursor-pointer">
+    <i class="fa-solid fa-chevron-left text-xs md:text-sm"></i>
+</button>
+<button id="review-next-btn" type="button" aria-label="Next review" class="absolute -right-3 md:-right-6 top-1/2 -translate-y-1/2 z-20 w-10 h-10 md:w-12 md:h-12 rounded-full bg-neutral-900/90 border border-luxury-gold/50 text-luxury-gold hover:bg-luxury-gold hover:text-neutral-950 transition duration-300 flex items-center justify-center shadow-2xl backdrop-blur-md cursor-pointer">
+    <i class="fa-solid fa-chevron-right text-xs md:text-sm"></i>
+</button>
+<!-- Dots Navigation -->
+<div class="flex items-center justify-center gap-2 mt-8" id="review-slider-dots"></div>
 </div>
 </section>
 <!-- ADVISORY REGISTRATION DESK (WITH MAP BACKDROP & UNBOXED FORM) -->
@@ -1921,7 +1953,7 @@
 <!-- Col 1: Brand Info -->
 <div class="flex flex-col space-y-6 lg:col-span-1">
 <a class="flex items-center space-x-2 group cursor-pointer" href="#hero-section">
-<img alt="Sharif Group Logo" class="h-14 w-auto group-hover:scale-105 transition-transform duration-300" src="https://shariftrip.com/wp-content/uploads/2024/06/Group-427321463.svg"/>
+<img alt="Sharif Group Logo" class="h-14 w-auto group-hover:scale-105 transition-transform duration-300" src="https://shariftrip.com/wp-content/uploads/2024/06/Group-427321463.svg" loading="lazy" decoding="async"/>
 <div class="flex items-center space-x-2 translate-y-1.5">
 <div class="h-10 w-[1px] bg-neutral-500/50"></div>
 <div class="flex flex-col justify-center font-serif text-white tracking-[0.2em] font-bold leading-tight group-hover:text-luxury-gold transition">
@@ -1931,10 +1963,10 @@
 </div>
 </a>
 <div class="pt-2">
-<img alt="Investment Migration Council" class="h-10 w-auto brightness-0 invert object-contain" src="imclogo.png"/>
+<img alt="Investment Migration Council" class="h-10 w-auto brightness-0 invert object-contain" src="imclogo.png" loading="lazy" decoding="async"/>
 </div>
 <div class="text-xs text-neutral-300 space-y-3 pt-2">
-<p class="flex items-start"><i class="fa-solid fa-location-dot mt-1 mr-3 text-luxury-gold text-sm"></i> <span>116, The Binary Tower, Business Bay, Dubai, United Arab Emirates</span></p>
+<p class="flex items-start"><i class="fa-solid fa-location-dot mt-1 mr-3 text-luxury-gold text-sm"></i> <span data-i18n="footer.address">116, The Binary Tower, Business Bay, Dubai, United Arab Emirates</span></p>
 <p class="flex items-center"><i class="fa-solid fa-phone mr-3 text-luxury-gold text-sm"></i> <a class="hover:text-white transition" href="tel:+97143578737">+971 4 357 8737</a></p>
 <p class="flex items-center"><i class="fa-solid fa-envelope mr-3 text-luxury-gold text-sm"></i> <a class="hover:text-white transition" href="mailto:contact@sharifgroup.ae">contact@sharifgroup.ae</a></p>
 </div>
@@ -2510,7 +2542,42 @@
 
        function initReviewSlider() {
             const track = document.getElementById('review-slider-track');
+            const wrapper = document.getElementById('review-slider-wrapper');
+            const dotsContainer = document.getElementById('review-slider-dots');
+            const prevBtn = document.getElementById('review-prev-btn');
+            const nextBtn = document.getElementById('review-next-btn');
             if (!track || !track.children.length) return;
+
+            // Cache original slides count before clone
+            const originalCount = 7;
+
+            // Generate dot buttons if container is empty
+            if (dotsContainer && !dotsContainer.children.length) {
+                for (let i = 0; i < originalCount; i++) {
+                    const dot = document.createElement('button');
+                    dot.type = 'button';
+                    dot.className = 'review-dot' + (i === 0 ? ' active' : '');
+                    dot.setAttribute('aria-label', 'Review ' + (i + 1));
+                    dot.addEventListener('click', () => {
+                        goToSlide(i);
+                        resetAutoplay();
+                    });
+                    dotsContainer.appendChild(dot);
+                }
+            }
+
+            function updateDots(index) {
+                if (!dotsContainer) return;
+                const dots = dotsContainer.children;
+                const activeIdx = index % originalCount;
+                for (let i = 0; i < dots.length; i++) {
+                    if (i === activeIdx) {
+                        dots[i].classList.add('active');
+                    } else {
+                        dots[i].classList.remove('active');
+                    }
+                }
+            }
 
             if (!track.dataset.cloned) {
                 const firstClone = track.firstElementChild.cloneNode(true);
@@ -2520,22 +2587,88 @@
 
             const totalSlides = track.children.length;
             let currentIndex = 0;
+            let isTransitioning = false;
 
-            if (window._reviewInterval) clearInterval(window._reviewInterval);
-
-            window._reviewInterval = setInterval(() => {
-                currentIndex++;
-                track.style.transition = "transform 0.8s cubic-bezier(0.22, 1, 0.36, 1)";
+            function updateTransform(withTransition) {
+                track.style.transition = withTransition ? "transform 0.8s cubic-bezier(0.22, 1, 0.36, 1)" : "none";
                 track.style.transform = "translate3d(-" + (currentIndex * 100) + "%, 0, 0)";
+                updateDots(currentIndex);
+            }
+
+            function nextSlide() {
+                if (isTransitioning) return;
+                currentIndex++;
+                updateTransform(true);
 
                 if (currentIndex >= totalSlides - 1) {
+                    isTransitioning = true;
                     setTimeout(() => {
-                        track.style.transition = "none";
                         currentIndex = 0;
-                        track.style.transform = "translate3d(0%, 0, 0)";
+                        updateTransform(false);
+                        isTransitioning = false;
                     }, 800);
                 }
-            }, 3500);
+            }
+
+            function prevSlide() {
+                if (isTransitioning) return;
+                if (currentIndex === 0) {
+                    currentIndex = totalSlides - 1;
+                    updateTransform(false);
+                    track.offsetHeight; // Force browser reflow
+                    currentIndex = totalSlides - 2;
+                    updateTransform(true);
+                } else {
+                    currentIndex--;
+                    updateTransform(true);
+                }
+            }
+
+            function goToSlide(index) {
+                if (isTransitioning) return;
+                currentIndex = index;
+                updateTransform(true);
+            }
+
+            if (nextBtn) {
+                nextBtn.addEventListener('click', (e) => {
+                    e.preventDefault();
+                    nextSlide();
+                    resetAutoplay();
+                });
+            }
+
+            if (prevBtn) {
+                prevBtn.addEventListener('click', (e) => {
+                    e.preventDefault();
+                    prevSlide();
+                    resetAutoplay();
+                });
+            }
+
+            function startAutoplay() {
+                if (window._reviewInterval) clearInterval(window._reviewInterval);
+                window._reviewInterval = setInterval(nextSlide, 4000);
+            }
+
+            function stopAutoplay() {
+                if (window._reviewInterval) {
+                    clearInterval(window._reviewInterval);
+                    window._reviewInterval = null;
+                }
+            }
+
+            function resetAutoplay() {
+                stopAutoplay();
+                startAutoplay();
+            }
+
+            if (wrapper) {
+                wrapper.addEventListener('mouseenter', stopAutoplay);
+                wrapper.addEventListener('mouseleave', startAutoplay);
+            }
+
+            startAutoplay();
         }
     </script>
 <!-- FOOTER CANVAS SEAMLESS CROSSFADE SCRIPT -->
