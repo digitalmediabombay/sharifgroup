@@ -290,20 +290,69 @@
         document.body.classList.remove('lang-en', 'lang-ar', 'lang-fa', 'lang-zh');
         document.body.classList.add('lang-' + cfg.code);
 
-        // 3. Update Title & Meta
-        var pageTitle = getNestedValue(data, 'pages.privacyPolicy.metaTitle') ||
-                        getNestedValue(data, 'pages.cookiePolicy.metaTitle') ||
-                        getNestedValue(data, 'pages.termsOfUse.metaTitle') ||
-                        (data.meta && data.meta.title);
+        // 3. Update Title & Meta based on current page
+        var pathname = (window.location && window.location.pathname) ? window.location.pathname.toLowerCase() : '';
+        var href = (window.location && window.location.href) ? window.location.href.toLowerCase() : '';
+
+        var titleAttrEl = document.querySelector('title[data-i18n]');
+        var pageTitle = null;
+        if (titleAttrEl) {
+            var titleKey = titleAttrEl.getAttribute('data-i18n');
+            pageTitle = getNestedValue(data, titleKey);
+        }
+
+        if (!pageTitle) {
+
+            if (pathname.includes('/privacypolicy/') || href.includes('/privacypolicy/')) {
+                pageTitle = getNestedValue(data, 'pages.privacyPolicy.metaTitle');
+            } else if (pathname.includes('/cookiepolicy/') || href.includes('/cookiepolicy/')) {
+                pageTitle = getNestedValue(data, 'pages.cookiePolicy.metaTitle');
+            } else if (pathname.includes('/termsofuse/') || href.includes('/termsofuse/') || pathname.includes('/termsofservice/') || href.includes('/termsofservice/')) {
+                pageTitle = getNestedValue(data, 'pages.termsOfUse.metaTitle');
+            } else if (pathname.includes('/contact/') || href.includes('/contact/')) {
+                pageTitle = getNestedValue(data, 'pages.contact.metaTitle');
+            } else {
+                var isHomePage = (pathname === '' || pathname === '/' || pathname.endsWith('/index.html')) &&
+                                 !pathname.includes('/programs/') &&
+                                 !pathname.includes('/citizenship') &&
+                                 !pathname.includes('/residency') &&
+                                 !pathname.includes('/about') &&
+                                 !pathname.includes('/realestate') &&
+                                 !pathname.includes('/educational') &&
+                                 !pathname.includes('/social') &&
+                                 !pathname.includes('/blog') &&
+                                 !pathname.includes('/contact');
+                if (isHomePage) {
+                    pageTitle = (data.meta && data.meta.title);
+                }
+            }
+        }
+
         if (pageTitle) {
             document.title = pageTitle;
         }
-        var pageDesc = getNestedValue(data, 'meta.description') || (data.meta && data.meta.description);
-        if (pageDesc) {
-            var descMeta = document.querySelector('meta[name="description"]');
-            if (descMeta) descMeta.setAttribute('content', pageDesc);
-            var ogDesc = document.querySelector('meta[property="og:description"]');
-            if (ogDesc) ogDesc.setAttribute('content', pageDesc);
+
+        var isHomeForDesc = (pathname === '' || pathname === '/' || (pathname && pathname.endsWith('/index.html'))) &&
+                            !pathname.includes('/programs/') &&
+                            !pathname.includes('/citizenship') &&
+                            !pathname.includes('/residency') &&
+                            !pathname.includes('/about') &&
+                            !pathname.includes('/realestate') &&
+                            !pathname.includes('/educational') &&
+                            !pathname.includes('/social') &&
+                            !pathname.includes('/blog') &&
+                            !pathname.includes('/privacypolicy') &&
+                            !pathname.includes('/cookiepolicy') &&
+                            !pathname.includes('/termsof') &&
+                            !pathname.includes('/contact');
+        if (isHomeForDesc) {
+            var pageDesc = getNestedValue(data, 'meta.description') || (data.meta && data.meta.description);
+            if (pageDesc) {
+                var descMeta = document.querySelector('meta[name="description"]');
+                if (descMeta) descMeta.setAttribute('content', pageDesc);
+                var ogDesc = document.querySelector('meta[property="og:description"]');
+                if (ogDesc) ogDesc.setAttribute('content', pageDesc);
+            }
         }
 
         // 4. Translate textContent for [data-i18n] with number localization
