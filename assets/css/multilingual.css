@@ -108,30 +108,48 @@ body[dir="rtl"] [class*="space-x-"] > :not([hidden]) ~ :not([hidden]),
 [dir="rtl"] .space-x-6 > :not([hidden]) ~ :not([hidden]) { margin-right: 1.5rem !important; margin-left: 0 !important; }
 [dir="rtl"] .space-x-8 > :not([hidden]) ~ :not([hidden]) { margin-right: 2rem !important; margin-left: 0 !important; }
 
-/* 2. Site-wide Footer Brand Mark (SVG + Vertical Divider + "SHARIF GROUP" text) */
-/* Force clean LTR orientation for trademark brand lockup and zero margin collisions */
+/* 2. Site-wide Footer Brand Mark & Column Alignment in RTL */
+html[dir="rtl"] footer .lg\:col-span-1,
+html[dir="rtl"] .footer .lg\:col-span-1,
+[dir="rtl"] footer .lg\:col-span-1,
+[dir="rtl"] .footer .lg\:col-span-1,
+html[dir="rtl"] footer div:has(> a:has(img[src*="Group-427321463"])),
+[dir="rtl"] footer div:has(> a:has(img[src*="Group-427321463"])),
+html[dir="rtl"] footer div:has(> a:has(img[alt*="Sharif Group Logo"])),
+[dir="rtl"] footer div:has(> a:has(img[alt*="Sharif Group Logo"])) {
+    align-items: flex-start !important;
+    text-align: right !important;
+}
+
 html[dir="rtl"] footer a.group,
 html[dir="rtl"] .footer a.group,
 html[dir="rtl"] footer a[href*="hero"],
 html[dir="rtl"] footer a:has(img[src*="Group-427321463"]),
+html[dir="rtl"] footer a:has(img[alt*="Sharif Group Logo"]),
 [dir="rtl"] footer a.group,
 [dir="rtl"] .footer a.group,
 [dir="rtl"] footer a[href*="hero"],
-[dir="rtl"] footer a:has(img[src*="Group-427321463"]) {
-    direction: ltr !important;
+[dir="rtl"] footer a:has(img[src*="Group-427321463"]),
+[dir="rtl"] footer a:has(img[alt*="Sharif Group Logo"]) {
     display: inline-flex !important;
+    flex-direction: row-reverse !important;
     align-items: center !important;
     gap: 0.75rem !important;
+    margin-left: auto !important;
+    margin-right: 0 !important;
+    align-self: flex-start !important;
 }
 
 html[dir="rtl"] footer a.group > *,
 html[dir="rtl"] .footer a.group > *,
 html[dir="rtl"] footer a[href*="hero"] > *,
 html[dir="rtl"] footer a:has(img[src*="Group-427321463"]) > *,
+html[dir="rtl"] footer a:has(img[alt*="Sharif Group Logo"]) > *,
 [dir="rtl"] footer a.group > *,
 [dir="rtl"] .footer a.group > *,
 [dir="rtl"] footer a[href*="hero"] > *,
-[dir="rtl"] footer a:has(img[src*="Group-427321463"]) > * {
+[dir="rtl"] footer a:has(img[src*="Group-427321463"]) > *,
+[dir="rtl"] footer a:has(img[alt*="Sharif Group Logo"]) > * {
     margin-left: 0 !important;
     margin-right: 0 !important;
 }
@@ -140,12 +158,14 @@ html[dir="rtl"] footer a.group .translate-y-1\.5,
 html[dir="rtl"] .footer a.group .translate-y-1\.5,
 html[dir="rtl"] footer a[href*="hero"] .translate-y-1\.5,
 html[dir="rtl"] footer a:has(img[src*="Group-427321463"]) .translate-y-1\.5,
+html[dir="rtl"] footer a:has(img[alt*="Sharif Group Logo"]) .translate-y-1\.5,
 [dir="rtl"] footer a.group .translate-y-1\.5,
 [dir="rtl"] .footer a.group .translate-y-1\.5,
 [dir="rtl"] footer a[href*="hero"] .translate-y-1\.5,
-[dir="rtl"] footer a:has(img[src*="Group-427321463"]) .translate-y-1\.5 {
-    direction: ltr !important;
+[dir="rtl"] footer a:has(img[src*="Group-427321463"]) .translate-y-1\.5,
+[dir="rtl"] footer a:has(img[alt*="Sharif Group Logo"]) .translate-y-1\.5 {
     display: inline-flex !important;
+    flex-direction: row-reverse !important;
     align-items: center !important;
     gap: 0.5rem !important;
     margin-left: 0 !important;
@@ -156,12 +176,32 @@ html[dir="rtl"] footer a.group .translate-y-1\.5 > *,
 html[dir="rtl"] .footer a.group .translate-y-1\.5 > *,
 html[dir="rtl"] footer a[href*="hero"] .translate-y-1\.5 > *,
 html[dir="rtl"] footer a:has(img[src*="Group-427321463"]) .translate-y-1\.5 > *,
+html[dir="rtl"] footer a:has(img[alt*="Sharif Group Logo"]) .translate-y-1\.5 > *,
 [dir="rtl"] footer a.group .translate-y-1\.5 > *,
 [dir="rtl"] .footer a.group .translate-y-1\.5 > *,
 [dir="rtl"] footer a[href*="hero"] .translate-y-1\.5 > *,
-[dir="rtl"] footer a:has(img[src*="Group-427321463"]) .translate-y-1\.5 > * {
+[dir="rtl"] footer a:has(img[src*="Group-427321463"]) .translate-y-1\.5 > *,
+[dir="rtl"] footer a:has(img[alt*="Sharif Group Logo"]) .translate-y-1\.5 > * {
     margin-left: 0 !important;
     margin-right: 0 !important;
+}
+
+html[dir="rtl"] footer a.group span,
+html[dir="rtl"] .footer a.group span,
+[dir="rtl"] footer a.group span,
+[dir="rtl"] .footer a.group span {
+    direction: ltr !important;
+    text-align: right !important;
+    display: block !important;
+}
+
+html[dir="rtl"] footer img[alt*="Investment Migration Council"],
+html[dir="rtl"] .footer img[alt*="Investment Migration Council"],
+[dir="rtl"] footer img[alt*="Investment Migration Council"],
+[dir="rtl"] .footer img[alt*="Investment Migration Council"] {
+    margin-left: auto !important;
+    margin-right: 0 !important;
+    display: block !important;
 }
 
 /* 3. Site-wide Header Logo & Menu Spacing in RTL */
