@@ -16,7 +16,7 @@ This file contains all the English text elements for the **Cookie Policy** page 
 
 * **Persian**: سیاست کوکی‌ها و ردیابی دیجیتال | گروه شریف دبی
 
-* **Chinese**: Cookie 政策与数字追踪 | 迪拜 Sharif Group
+* **Chinese**: 信息记录程序政策与数字追踪 | 迪拜 Sharif Group
 
 **## Section 2: Hero Header (Top Banner)**
 
@@ -42,7 +42,7 @@ This file contains all the English text elements for the **Cookie Policy** page 
 
 * **Persian**: سیاست کوکی‌ها
 
-* **Chinese**: Cookie 政策
+* **Chinese**: 信息记录程序政策
 
 **### Hero Dubai Subtitle**
 
@@ -54,7 +54,7 @@ This file contains all the English text elements for the **Cookie Policy** page 
 
 * **Persian**: گروه شریف دبی
 
-* **Chinese**: 迪拜 Sharif Group
+* **Chinese**: 迪拜谢里夫集团
 
 **### Hero Description**
 
