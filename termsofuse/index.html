@@ -5,6 +5,23 @@
 <head>
     <meta charset="utf-8" />
     <meta content="width=device-width, initial-scale=1.0" name="viewport" />
+    <script>
+        (function() {
+            try {
+                var l = localStorage.getItem('sharif_lang') || localStorage.getItem('sharif_preferred_lang') || 'en';
+                if (l === 'ar' || l === 'fa') {
+                    document.documentElement.dir = 'rtl';
+                    document.documentElement.lang = l;
+                } else if (l === 'zh') {
+                    document.documentElement.dir = 'ltr';
+                    document.documentElement.lang = 'zh';
+                }
+                if (l !== 'en') {
+                    document.documentElement.classList.add('i18n-pending');
+                }
+            } catch(e) {}
+        })();
+    </script>
     <!-- Primary Meta Tags (Global SEO / Google, Bing, Yahoo & GEO / AEO Optimization) -->
     <title data-i18n="pages.termsOfUse.metaTitle">Terms of Use &amp; Legal Conditions | Sharif Group Dubai 2026</title>
     <meta content="Terms of Use &amp; Legal Conditions | Sharif Group Dubai 2026" name="title" />
@@ -248,6 +265,8 @@
         }
     </style>
     <link href="../assets/css/multilingual.css?v=4" rel="stylesheet" />
+    <script defer src="../assets/js/legal-translations.js"></script>
+    <script defer src="../assets/js/language-switcher.js"></script>
 </head>
 
 <body class="bg-luxury-light text-luxury-dark font-sans overflow-x-hidden">
@@ -1908,8 +1927,6 @@
         // Flag that the user is coming from an internal page of Sharif Group website
         sessionStorage.setItem('sharif_preloader_shown', 'true');
     </script>
-    <script src="../assets/js/legal-translations.js"></script>
-    <script src="../assets/js/language-switcher.js"></script>
 </body>
 
 </html>

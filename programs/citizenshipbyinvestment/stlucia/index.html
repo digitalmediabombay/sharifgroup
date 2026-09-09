@@ -1,9 +1,26 @@
-<!DOCTYPE html>
+﻿<!DOCTYPE html>
 
 <html class="scroll-smooth" lang="en">
 <head>
 <meta charset="utf-8"/>
 <meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<script>
+    (function() {
+        try {
+            var l = localStorage.getItem('sharif_lang') || localStorage.getItem('sharif_preferred_lang') || 'en';
+            if (l === 'ar' || l === 'fa') {
+                document.documentElement.dir = 'rtl';
+                document.documentElement.lang = l;
+            } else if (l === 'zh') {
+                document.documentElement.dir = 'ltr';
+                document.documentElement.lang = 'zh';
+            }
+            if (l !== 'en') {
+                document.documentElement.classList.add('i18n-pending');
+            }
+        } catch(e) {}
+    })();
+</script>
 <title>Saint Lucia Citizenship by Investment Dubai | Sharif Group</title>
 <meta content="Obtain your Saint Lucia second passport with Sharif Group, Business Bay, Dubai. Official Caribbean CBI program starting from $240,000 for single applicants. Enjoy visa-free travel to 140+ countries. Apply with certified Dubai advisors." name="description"/>
 <meta content="saint lucia citizenship by investment dubai, st lucia second passport uae, st lucia cbi price 2026, national economic fund st lucia, st lucia real estate investment dubai, caribbean passport dubai, sharif group st lucia, st lucia golden visa dubai" name="keywords"/>

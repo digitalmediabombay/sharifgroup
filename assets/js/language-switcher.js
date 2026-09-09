@@ -144,16 +144,35 @@
         }
     }
 
+    var I18N_VERSION = '20260909_v10';
+
     function loadTranslation(lang, callback) {
-        // If already loaded and has deep content
+        // 1. If already loaded in memory and has deep content
         if (translationsCache[lang] && (translationsCache[lang].pages || translationsCache[lang].nav)) {
             callback(translationsCache[lang]);
             return;
         }
 
-        // Initialize from in-memory preloaded legal translations if available
+        // 2. Initialize from in-memory preloaded legal translations if available
         if (window.LEGAL_TRANSLATIONS && window.LEGAL_TRANSLATIONS[lang]) {
             translationsCache[lang] = deepMerge(translationsCache[lang] || {}, JSON.parse(JSON.stringify(window.LEGAL_TRANSLATIONS[lang])));
+        }
+
+        // 3. Check persistent localStorage cache for instant 0ms zero-network retrieval
+        var storageKey = 'sharif_i18n_' + lang + '_' + I18N_VERSION;
+        try {
+            var cachedJson = localStorage.getItem(storageKey);
+            if (cachedJson) {
+                var parsedData = JSON.parse(cachedJson);
+                if (parsedData && (parsedData.pages || parsedData.nav || parsedData.services || parsedData.footer)) {
+                    translationsCache[lang] = deepMerge(translationsCache[lang] || {}, parsedData);
+                    window.translationsCache = translationsCache;
+                    callback(translationsCache[lang]);
+                    return; // Return immediately from browser storage!
+                }
+            }
+        } catch (e) {
+            // Storage access blocked or parsing error; continue to fetch
         }
 
         // When running under file:// protocol (local file test), fetch() is blocked by CORS policy.
@@ -176,11 +195,14 @@
                     return;
                 }
                 console.error('[i18n] Failed to load locale for ' + lang + ' from all candidates.');
+                // Safety: remove pending class if load fails
+                document.documentElement.classList.remove('i18n-pending');
                 return;
             }
             var url = candidates[index++];
-            var fetchUrl = url + (url.indexOf('?') === -1 ? '?v=20260909_5' : '&v=20260909_5');
-            fetch(fetchUrl, { cache: 'no-cache' })
+            var fetchUrl = url + (url.indexOf('?') === -1 ? '?v=' + I18N_VERSION : '&v=' + I18N_VERSION);
+            // Allow browser caching instead of forcing uncached roundtrip on every page
+            fetch(fetchUrl, { cache: 'default' })
                 .then(function (res) {
                     if (!res.ok) throw new Error('HTTP ' + res.status);
                     return res.json();
@@ -188,6 +210,21 @@
                 .then(function (data) {
                     translationsCache[lang] = deepMerge(translationsCache[lang] || {}, data);
                     window.translationsCache = translationsCache;
+
+                    // Save to localStorage for instant subsequent loads
+                    try {
+                        // Purge old versions of this language to keep storage tidy
+                        for (var i = localStorage.length - 1; i >= 0; i--) {
+                            var k = localStorage.key(i);
+                            if (k && k.indexOf('sharif_i18n_' + lang) === 0 && k !== storageKey) {
+                                localStorage.removeItem(k);
+                            }
+                        }
+                        localStorage.setItem(storageKey, JSON.stringify(translationsCache[lang]));
+                    } catch (err) {
+                        // In case of quota limit or private mode, gracefully continue
+                    }
+
                     callback(translationsCache[lang]);
                 })
                 .catch(function () {
@@ -430,6 +467,9 @@
 
         // 8. Update UI switcher states
         updateLanguageUI(lang);
+
+        // 9. Reveal translated content instantly without any English flicker
+        document.documentElement.classList.remove('i18n-pending');
 
         // Dispatch language change event for any custom components
         if (typeof window.dispatchEvent === 'function' && typeof CustomEvent === 'function') {
@@ -725,10 +765,18 @@
 
     function init() {
         currentLang = getInitialLang();
+        if (currentLang === 'en') {
+            document.documentElement.classList.remove('i18n-pending');
+        }
         setupCounterInterceptor();
         loadTranslation(currentLang, function (data) {
             applyTranslations(data, currentLang);
         });
+
+        // Safety fallback: if anything stalls, unmask the UI so user is never blocked
+        setTimeout(function () {
+            document.documentElement.classList.remove('i18n-pending');
+        }, 1500);
     }
 
     if (document.readyState === 'loading') {

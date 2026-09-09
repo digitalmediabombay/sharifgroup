@@ -1,9 +1,26 @@
-<!DOCTYPE html>
+﻿<!DOCTYPE html>
 
 <html class="scroll-smooth" lang="en">
 <head>
 <meta charset="utf-8"/>
 <meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<script>
+    (function() {
+        try {
+            var l = localStorage.getItem('sharif_lang') || localStorage.getItem('sharif_preferred_lang') || 'en';
+            if (l === 'ar' || l === 'fa') {
+                document.documentElement.dir = 'rtl';
+                document.documentElement.lang = l;
+            } else if (l === 'zh') {
+                document.documentElement.dir = 'ltr';
+                document.documentElement.lang = 'zh';
+            }
+            if (l !== 'en') {
+                document.documentElement.classList.add('i18n-pending');
+            }
+        } catch(e) {}
+    })();
+</script>
 <title>Antigua &amp; Barbuda Citizenship by Investment Dubai | Sharif Group</title>
 <meta content="Obtain your Antigua &amp; Barbuda second passport with Sharif Group, Business Bay, Dubai. Official Caribbean CBI program starting from $230,000 for families of up to 4. Enjoy visa-free travel to 150+ countries. Apply with certified Dubai advisors." name="description"/>
 <meta content="antigua citizenship by investment dubai, antigua second passport uae, antigua cbi price 2026, ndf contribution antigua, uwi fund antigua, antigua real estate investment dubai, caribbean passport dubai, sharif group antigua" name="keywords"/>

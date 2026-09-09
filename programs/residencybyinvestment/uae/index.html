@@ -1,9 +1,26 @@
-<!DOCTYPE html>
+﻿<!DOCTYPE html>
 
 <html class="scroll-smooth" lang="en">
 <head>
 <meta charset="utf-8"/>
 <meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<script>
+    (function() {
+        try {
+            var l = localStorage.getItem('sharif_lang') || localStorage.getItem('sharif_preferred_lang') || 'en';
+            if (l === 'ar' || l === 'fa') {
+                document.documentElement.dir = 'rtl';
+                document.documentElement.lang = l;
+            } else if (l === 'zh') {
+                document.documentElement.dir = 'ltr';
+                document.documentElement.lang = 'zh';
+            }
+            if (l !== 'en') {
+                document.documentElement.classList.add('i18n-pending');
+            }
+        } catch(e) {}
+    })();
+</script>
 <!-- Primary Meta Tags (SEO / Search Engines / GEO / AEO) -->
 <title>UAE Golden Visa Dubai 2026 | 10-Year UAE Residency by Investment | Sharif Group</title>
 <meta content="UAE Golden Visa Dubai 2026 | 10-Year UAE Residency by Investment | Sharif Group" name="title"/>

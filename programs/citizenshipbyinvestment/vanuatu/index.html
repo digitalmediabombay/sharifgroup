@@ -1,8 +1,25 @@
-<!DOCTYPE html>
+﻿<!DOCTYPE html>
 <html lang="en" class="scroll-smooth">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+<script>
+    (function() {
+        try {
+            var l = localStorage.getItem('sharif_lang') || localStorage.getItem('sharif_preferred_lang') || 'en';
+            if (l === 'ar' || l === 'fa') {
+                document.documentElement.dir = 'rtl';
+                document.documentElement.lang = l;
+            } else if (l === 'zh') {
+                document.documentElement.dir = 'ltr';
+                document.documentElement.lang = 'zh';
+            }
+            if (l !== 'en') {
+                document.documentElement.classList.add('i18n-pending');
+            }
+        } catch(e) {}
+    })();
+</script>
     <title>Vanuatu Citizenship by Investment Dubai 2026 | Sharif Group</title>
     <meta name="description" content="Get fast-track Vanuatu dual citizenship & second passport in 30-45 days with Sharif Group, Business Bay, Dubai. Official DSP & CIIP program starting at $130,000. Enjoy visa-free travel to 110+ countries, zero tax, and 100% remote processing.">
     <meta name="keywords" content="vanuatu citizenship by investment dubai, vanuatu second passport uae, vanuatu dsp program 2026, vanuatu ciip option, fast second passport dubai, vanuatu passport cost uae, vanuatu tax residency dubai, pacific passport sharif group">

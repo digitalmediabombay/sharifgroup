@@ -1,9 +1,26 @@
-<!DOCTYPE html>
+﻿<!DOCTYPE html>
 
 <html class="scroll-smooth" lang="en">
 <head>
 <meta charset="utf-8"/>
 <meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<script>
+    (function() {
+        try {
+            var l = localStorage.getItem('sharif_lang') || localStorage.getItem('sharif_preferred_lang') || 'en';
+            if (l === 'ar' || l === 'fa') {
+                document.documentElement.dir = 'rtl';
+                document.documentElement.lang = l;
+            } else if (l === 'zh') {
+                document.documentElement.dir = 'ltr';
+                document.documentElement.lang = 'zh';
+            }
+            if (l !== 'en') {
+                document.documentElement.classList.add('i18n-pending');
+            }
+        } catch(e) {}
+    })();
+</script>
 <!-- Advanced Search Engine, GEO & LLM/AEO Optimization Meta Tags -->
 <title>About Sharif Group Dubai | Global Migration, Citizenship &amp; Investment Advisory</title>
 <meta content="Sharif Group is a premier citizenship by investment, European Golden Visa, real estate, and educational advisory platform based in Business Bay, Dubai. Learn about our licensed corporate divisions, team, and global pathways." name="description"/>

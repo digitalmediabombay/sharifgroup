@@ -1,6 +1,13 @@
 /* Sharif Group Multilingual & RTL Stylesheet */
 @import url('https://fonts.googleapis.com/css2?family=Cairo:wght@300;400;500;600;700;800&family=Noto+Sans+SC:wght@300;400;500;700&family=Vazirmatn:wght@300;400;500;600;700;800&display=swap');
 
+/* Anti-FOUC (Zero English Flicker) state for non-English page transitions */
+html.i18n-pending [data-i18n],
+html.i18n-pending [data-i18n-html] {
+    opacity: 0 !important;
+    visibility: hidden !important;
+}
+
 /* Font Family mappings for Arabic (preserving Font Awesome icons) */
 html[lang="ar"],
 html[lang="ar"] body,

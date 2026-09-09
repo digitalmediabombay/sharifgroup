@@ -1,9 +1,26 @@
-<!DOCTYPE html>
+﻿<!DOCTYPE html>
 
 <html class="scroll-smooth" lang="en">
 <head>
 <meta charset="utf-8"/>
 <meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<script>
+    (function() {
+        try {
+            var l = localStorage.getItem('sharif_lang') || localStorage.getItem('sharif_preferred_lang') || 'en';
+            if (l === 'ar' || l === 'fa') {
+                document.documentElement.dir = 'rtl';
+                document.documentElement.lang = l;
+            } else if (l === 'zh') {
+                document.documentElement.dir = 'ltr';
+                document.documentElement.lang = 'zh';
+            }
+            if (l !== 'en') {
+                document.documentElement.classList.add('i18n-pending');
+            }
+        } catch(e) {}
+    })();
+</script>
 <title>St. Kitts &amp; Nevis Citizenship by Investment Dubai | Sharif Group</title>
 <meta content="Secure your St. Kitts &amp; Nevis second passport with Sharif Group, Business Bay, Dubai. Official Platinum Standard CBI program starting from $250,000. Enjoy visa-free travel to 155+ countries. Apply with certified Dubai advisors." name="description"/>
 <meta content="st kitts citizenship by investment dubai, st kitts second passport uae, st kitts cbi price 2026, sisc contribution st kitts, st kitts real estate investment dubai, platinum standard passport caribbean, sharif group st kitts" name="keywords"/>

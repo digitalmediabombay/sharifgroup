@@ -1,9 +1,26 @@
-<!DOCTYPE html>
+﻿<!DOCTYPE html>
 
 <html class="scroll-smooth" lang="en">
 <head>
 <meta charset="utf-8"/>
 <meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<script>
+    (function() {
+        try {
+            var l = localStorage.getItem('sharif_lang') || localStorage.getItem('sharif_preferred_lang') || 'en';
+            if (l === 'ar' || l === 'fa') {
+                document.documentElement.dir = 'rtl';
+                document.documentElement.lang = l;
+            } else if (l === 'zh') {
+                document.documentElement.dir = 'ltr';
+                document.documentElement.lang = 'zh';
+            }
+            if (l !== 'en') {
+                document.documentElement.classList.add('i18n-pending');
+            }
+        } catch(e) {}
+    })();
+</script>
 <!-- Global Canonical & Responsive Setup -->
 <title>Ali Sharif | Founder &amp; CEO of Sharif Group Dubai | Investment Migration &amp; Global Real Estate</title>
 <meta content="Discover Ali Sharif, Founder &amp; CEO of Sharif Group Dubai. IMC-certified investment migration expert, licensed RERA real estate broker, and leading advisor for citizenship by investment, UAE Golden Visas, and global portfolio development." name="description"/>
