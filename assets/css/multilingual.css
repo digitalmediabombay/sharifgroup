@@ -608,3 +608,102 @@ nav.scrollbar-none,
     scrollbar-width: none !important;
 }
 
+/* RTL Program Shortcut Tabs Alignment & Overflow Fix (Nauru, Sao Tome & All Program Pages) */
+[dir="rtl"] nav.scrollbar-none,
+html[dir="rtl"] nav.scrollbar-none,
+[dir="rtl"] nav[class*="scrollbar-none"],
+html[dir="rtl"] nav[class*="scrollbar-none"],
+body.lang-ar nav.scrollbar-none,
+body.lang-fa nav.scrollbar-none {
+    justify-content: flex-start !important;
+    gap: 0.85rem !important;
+    padding-left: 1rem !important;
+    padding-right: 1rem !important;
+    -webkit-overflow-scrolling: touch;
+}
+
+[dir="rtl"] nav.scrollbar-none > *,
+html[dir="rtl"] nav.scrollbar-none > *,
+[dir="rtl"] nav[class*="scrollbar-none"] > *,
+html[dir="rtl"] nav[class*="scrollbar-none"] > * {
+    margin-left: 0 !important;
+    margin-right: 0 !important;
+}
+
+[dir="rtl"] nav.scrollbar-none button span,
+html[dir="rtl"] nav.scrollbar-none button span,
+[dir="rtl"] nav[class*="scrollbar-none"] button span,
+html[dir="rtl"] nav[class*="scrollbar-none"] button span {
+    font-size: 8.5px !important;
+    line-height: 1.25 !important;
+    white-space: nowrap !important;
+}
+
+@media (min-width: 1400px) {
+    [dir="rtl"] nav.scrollbar-none,
+    html[dir="rtl"] nav.scrollbar-none,
+    [dir="rtl"] nav[class*="scrollbar-none"],
+    html[dir="rtl"] nav[class*="scrollbar-none"] {
+        justify-content: center !important;
+    }
+}
+
+/* ==========================================================================
+   11. Force Standard LTR Phone Number & Country Code Field across all RTL pages (Arabic & Farsi)
+   ========================================================================== */
+[dir="rtl"] input[type="tel"],
+html[dir="rtl"] input[type="tel"],
+body.lang-ar input[type="tel"],
+body.lang-fa input[type="tel"] {
+    direction: ltr !important;
+    text-align: left !important;
+    unicode-bidi: isolate !important;
+}
+
+[dir="rtl"] .custom-select-wrapper,
+html[dir="rtl"] .custom-select-wrapper,
+body.lang-ar .custom-select-wrapper,
+body.lang-fa .custom-select-wrapper,
+[dir="rtl"] .custom-select-wrapper button,
+[dir="rtl"] .selected-country-span {
+    direction: ltr !important;
+    text-align: left !important;
+}
+
+[dir="rtl"] .selected-country-span,
+html[dir="rtl"] .selected-country-span,
+body.lang-ar .selected-country-span,
+body.lang-fa .selected-country-span {
+    direction: ltr !important;
+    unicode-bidi: isolate !important;
+    display: inline-flex !important;
+    align-items: center !important;
+    text-align: left !important;
+}
+
+[dir="rtl"] div.flex:has(> input[type="tel"]),
+html[dir="rtl"] div.flex:has(> input[type="tel"]),
+[dir="rtl"] div.flex:has(.custom-select-wrapper),
+html[dir="rtl"] div.flex:has(.custom-select-wrapper),
+[dir="rtl"] div.flex[dir="ltr"],
+html[dir="rtl"] div.flex[dir="ltr"] {
+    direction: ltr !important;
+}
+
+[dir="rtl"] .custom-select-wrapper button {
+    border-top-left-radius: 0.75rem !important;
+    border-bottom-left-radius: 0.75rem !important;
+    border-top-right-radius: 0 !important;
+    border-bottom-right-radius: 0 !important;
+    border-right-width: 1px !important;
+}
+
+[dir="rtl"] input[type="tel"] {
+    border-top-right-radius: 0.75rem !important;
+    border-bottom-right-radius: 0.75rem !important;
+    border-top-left-radius: 0 !important;
+    border-bottom-left-radius: 0 !important;
+    border-left-width: 0 !important;
+}
+
+

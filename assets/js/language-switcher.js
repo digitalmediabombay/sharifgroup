@@ -283,7 +283,7 @@
                     if (tag === 'script' || tag === 'style' || tag === 'code' || tag === 'pre' || tag === 'noscript') {
                         return filterReject;
                     }
-                    if (parent.closest && parent.closest('i, svg, .fa, [class*="fa-"], a[href^="tel:"], [data-no-localize], script, style, img, picture, video, figure')) {
+                    if (parent.closest && parent.closest('i, svg, .fa, [class*="fa-"], a[href^="tel:"], [data-no-localize], input[type="tel"], .custom-select-wrapper, .selected-country-span, [dir="ltr"], script, style, img, picture, video, figure')) {
                         return filterReject;
                     }
                     return filterAccept;
@@ -444,7 +444,8 @@
             var key = el.getAttribute('data-i18n-placeholder');
             var val = getNestedValue(data, key);
             if (val !== null && val !== undefined) {
-                el.setAttribute('placeholder', (lang === 'ar' || lang === 'fa') ? localizeNumbers(val, lang) : val);
+                var isTel = el.type === 'tel' || el.getAttribute('type') === 'tel';
+                el.setAttribute('placeholder', (!isTel && (lang === 'ar' || lang === 'fa')) ? localizeNumbers(val, lang) : val);
             }
         });
 
@@ -464,6 +465,23 @@
 
         // 7. Apply number localization to counters and numeric displays across DOM
         applyNumberLocalization(lang);
+
+        // 7b. Force LTR on Phone Number and Country Code inputs across all forms
+        document.querySelectorAll('input[type="tel"]').forEach(function (el) {
+            el.setAttribute('dir', 'ltr');
+            var parentFlex = el.closest('.flex');
+            if (parentFlex) {
+                parentFlex.setAttribute('dir', 'ltr');
+            }
+        });
+
+        // Normalize country dial codes in dropdown buttons back to standard Western digits
+        document.querySelectorAll('.selected-country-span').forEach(function (el) {
+            var txt = el.textContent || '';
+            el.textContent = txt
+                .replace(/[٠-٩]/g, function (d) { return ARABIC_DIGITS.indexOf(d); })
+                .replace(/[۰-۹]/g, function (d) { return PERSIAN_DIGITS.indexOf(d); });
+        });
 
         // 8. Update UI switcher states
         updateLanguageUI(lang);
@@ -761,7 +779,17 @@
     });
     updateDominicaBlogSliderGlobal();
     setupDominicaBlogHoverPauseGlobal();
-    startDominicaBlogAutoScrollGlobal();
+    // Enforce standard Western digits in phone inputs on live typing/pasting
+    document.addEventListener('input', function (e) {
+        if (e.target && (e.target.type === 'tel' || e.target.getAttribute('type') === 'tel')) {
+            var val = e.target.value;
+            if (/[٠-٩۰-۹]/.test(val)) {
+                e.target.value = val
+                    .replace(/[٠-٩]/g, function (d) { return ARABIC_DIGITS.indexOf(d); })
+                    .replace(/[۰-۹]/g, function (d) { return PERSIAN_DIGITS.indexOf(d); });
+            }
+        }
+    }, true);
 
     function init() {
         currentLang = getInitialLang();

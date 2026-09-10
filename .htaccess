@@ -12,6 +12,11 @@
     RewriteRule ^termsofservice/index\.html$ /termsofuse/index.html [R=301,L]
     RewriteRule ^termsofservice/(.*)$ /termsofuse/$1 [R=301,L]
 
+    # Redirect aboutfounder to ali-sharif
+    RewriteRule ^aboutfounder/?$ /ali-sharif/ [R=301,L]
+    RewriteRule ^aboutfounder/index\.html$ /ali-sharif/ [R=301,L]
+    RewriteRule ^aboutfounder/(.*)$ /ali-sharif/$1 [R=301,L]
+
     # Clean Language Path Rewrites (/ar/, /fa/, /zh/)
     RewriteRule ^(ar|fa|zh)/?$ /index.html [L,QSA]
     RewriteRule ^(ar|fa|zh)/(.*)$ /$2 [L,QSA]

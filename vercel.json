@@ -44,6 +44,21 @@
       "source": "/termsofservice/(.*)",
       "destination": "/termsofuse/$1",
       "permanent": true
+    },
+    {
+      "source": "/aboutfounder",
+      "destination": "/ali-sharif/",
+      "permanent": true
+    },
+    {
+      "source": "/aboutfounder/",
+      "destination": "/ali-sharif/",
+      "permanent": true
+    },
+    {
+      "source": "/aboutfounder/index.html",
+      "destination": "/ali-sharif/",
+      "permanent": true
     }
   ],
   "rewrites": [
