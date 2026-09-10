@@ -1,4 +1,4 @@
-﻿<!DOCTYPE html>
+<!DOCTYPE html>
 
 <html class="scroll-smooth" lang="en">
 <head>
@@ -229,6 +229,8 @@
             box-shadow: 0 4px 12px rgba(0,0,0,0.1);
         }
         .custom-select-dropdown.active { display: block; }
+        .scrollbar-none::-webkit-scrollbar { display: none; width: 0; height: 0; }
+        .scrollbar-none { -ms-overflow-style: none; scrollbar-width: none; }
     </style>
 <link href="../../../assets/css/multilingual.css?v=4" rel="stylesheet"/>
 </head>
@@ -550,62 +552,62 @@
 <nav class="flex items-center justify-start md:justify-center space-x-3 md:space-x-5 py-3 overflow-x-auto scrollbar-none">
 <button class="flex flex-col items-center group text-neutral-600 hover:text-luxury-gold transition-colors duration-200 shrink-0 cursor-pointer focus:outline-none"  onclick="scrollToSection('sec-overview')">
 <i class="fa-regular fa-compass text-xs md:text-sm mb-1 transition-transform duration-300 group-hover:scale-110 group-hover:text-luxury-gold text-neutral-500"></i>
-<span data-i18n="programNav.overview"><span class="text-[9px] font-bold uppercase tracking-[0.15em]">OVERVIEW</span></span>
+<span class="text-[9px] font-bold uppercase tracking-[0.15em]" data-i18n="programNav.overview">OVERVIEW</span>
 </button>
 <span class="text-neutral-300 font-light text-xs shrink-0">|</span>
 <button class="flex flex-col items-center group text-neutral-600 hover:text-luxury-gold transition-colors duration-200 shrink-0 cursor-pointer focus:outline-none"  onclick="scrollToSection('sec-benefits')">
 <i class="fa-solid fa-gem text-xs md:text-sm mb-1 transition-transform duration-300 group-hover:scale-110 group-hover:text-luxury-gold text-neutral-500"></i>
-<span data-i18n="programNav.benefits"><span class="text-[9px] font-bold uppercase tracking-[0.15em]">BENEFITS</span></span>
+<span class="text-[9px] font-bold uppercase tracking-[0.15em]" data-i18n="programNav.benefits">BENEFITS</span>
 </button>
 <span class="text-neutral-300 font-light text-xs shrink-0">|</span>
 <button class="flex flex-col items-center group text-neutral-600 hover:text-luxury-gold transition-colors duration-200 shrink-0 cursor-pointer focus:outline-none"  onclick="scrollToSection('sec-investment')">
 <i class="fa-solid fa-chart-line text-xs md:text-sm mb-1 transition-transform duration-300 group-hover:scale-110 group-hover:text-luxury-gold text-neutral-500"></i>
-<span data-i18n="programNav.investment"><span class="text-[9px] font-bold uppercase tracking-[0.15em]">INVESTMENT OPTIONS</span></span>
+<span class="text-[9px] font-bold uppercase tracking-[0.15em]" data-i18n="programNav.investment">INVESTMENT OPTIONS</span>
 </button>
 <span class="text-neutral-300 font-light text-xs shrink-0">|</span>
 <button class="flex flex-col items-center group text-neutral-600 hover:text-luxury-gold transition-colors duration-200 shrink-0 cursor-pointer focus:outline-none"  onclick="scrollToSection('sec-pricing-grid')">
 <i class="fa-solid fa-file-invoice-dollar text-xs md:text-sm mb-1 transition-transform duration-300 group-hover:scale-110 group-hover:text-luxury-gold text-neutral-500"></i>
-<span data-i18n="programNav.pricing"><span class="text-[9px] font-bold uppercase tracking-[0.15em]">PRICING</span></span>
+<span class="text-[9px] font-bold uppercase tracking-[0.15em]" data-i18n="programNav.pricing">PRICING</span>
 </button>
 <span class="text-neutral-300 font-light text-xs shrink-0">|</span>
 <button class="flex flex-col items-center group text-neutral-600 hover:text-luxury-gold transition-colors duration-200 shrink-0 cursor-pointer focus:outline-none"  onclick="scrollToSection('sec-who-can-apply')">
 <i class="fa-solid fa-user-check text-xs md:text-sm mb-1 transition-transform duration-300 group-hover:scale-110 group-hover:text-luxury-gold text-neutral-500"></i>
-<span data-i18n="programNav.whoCanApply"><span class="text-[9px] font-bold uppercase tracking-[0.15em]">WHO CAN APPLY</span></span>
+<span class="text-[9px] font-bold uppercase tracking-[0.15em]" data-i18n="programNav.whoCanApply">WHO CAN APPLY</span>
 </button>
 <span class="text-neutral-300 font-light text-xs shrink-0">|</span>
 <button class="flex flex-col items-center group text-neutral-600 hover:text-luxury-gold transition-colors duration-200 shrink-0 cursor-pointer focus:outline-none"  onclick="scrollToSection('sec-required-documents')">
 <i class="fa-solid fa-folder-open text-xs md:text-sm mb-1 transition-transform duration-300 group-hover:scale-110 group-hover:text-luxury-gold text-neutral-500"></i>
-<span data-i18n="programNav.documents"><span class="text-[9px] font-bold uppercase tracking-[0.15em]">DOCUMENTS</span></span>
+<span class="text-[9px] font-bold uppercase tracking-[0.15em]" data-i18n="programNav.documents">DOCUMENTS</span>
 </button>
 <span class="text-neutral-300 font-light text-xs shrink-0">|</span>
 <button class="flex flex-col items-center group text-neutral-600 hover:text-luxury-gold transition-colors duration-200 shrink-0 cursor-pointer focus:outline-none"  onclick="scrollToSection('sec-timeline')">
 <i class="fa-regular fa-clock text-xs md:text-sm mb-1 transition-transform duration-300 group-hover:scale-110 group-hover:text-luxury-gold text-neutral-500"></i>
-<span data-i18n="programNav.timeline"><span class="text-[9px] font-bold uppercase tracking-[0.15em]">TIMELINE</span></span>
+<span class="text-[9px] font-bold uppercase tracking-[0.15em]" data-i18n="programNav.timeline">TIMELINE</span>
 </button>
 <span class="text-neutral-300 font-light text-xs shrink-0">|</span>
 <button class="flex flex-col items-center group text-neutral-600 hover:text-luxury-gold transition-colors duration-200 shrink-0 cursor-pointer focus:outline-none"  onclick="scrollToSection('sec-dominica-map')">
 <i class="fa-solid fa-earth-americas text-xs md:text-sm mb-1 transition-transform duration-300 group-hover:scale-110 group-hover:text-luxury-gold text-neutral-500"></i>
-<span data-i18n="programNav.mobility"><span class="text-[9px] font-bold uppercase tracking-[0.15em]">MOBILITY MAP</span></span>
+<span class="text-[9px] font-bold uppercase tracking-[0.15em]" data-i18n="programNav.mobility">MOBILITY MAP</span>
 </button>
 <span class="text-neutral-300 font-light text-xs shrink-0">|</span>
 <button class="flex flex-col items-center group text-neutral-600 hover:text-luxury-gold transition-colors duration-200 shrink-0 cursor-pointer focus:outline-none"  onclick="scrollToSection('sec-why-choose')">
 <i class="fa-solid fa-shield-halved text-xs md:text-sm mb-1 transition-transform duration-300 group-hover:scale-110 group-hover:text-luxury-gold text-neutral-500"></i>
-<span data-i18n="programNav.whyUs"><span class="text-[9px] font-bold uppercase tracking-[0.15em]">WHY US</span></span>
+<span class="text-[9px] font-bold uppercase tracking-[0.15em]" data-i18n="programNav.whyUs">WHY US</span>
 </button>
 <span class="text-neutral-300 font-light text-xs shrink-0">|</span>
 <button class="flex flex-col items-center group text-neutral-600 hover:text-luxury-gold transition-colors duration-200 shrink-0 cursor-pointer focus:outline-none"  onclick="scrollToSection('sec-dominica-blogs')">
 <i class="fa-regular fa-newspaper text-xs md:text-sm mb-1 transition-transform duration-300 group-hover:scale-110 group-hover:text-luxury-gold text-neutral-500"></i>
-<span data-i18n="programNav.insights"><span class="text-[9px] font-bold uppercase tracking-[0.15em]">INSIGHTS</span></span>
+<span class="text-[9px] font-bold uppercase tracking-[0.15em]" data-i18n="programNav.insights">INSIGHTS</span>
 </button>
 <span class="text-neutral-300 font-light text-xs shrink-0">|</span>
 <button class="flex flex-col items-center group text-neutral-600 hover:text-luxury-gold transition-colors duration-200 shrink-0 cursor-pointer focus:outline-none"  onclick="scrollToSection('program-faq-section')">
 <i class="fa-regular fa-circle-question text-xs md:text-sm mb-1 transition-transform duration-300 group-hover:scale-110 group-hover:text-luxury-gold text-neutral-500"></i>
-<span data-i18n="programNav.faq"><span class="text-[9px] font-bold uppercase tracking-[0.15em]">FAQ</span></span>
+<span class="text-[9px] font-bold uppercase tracking-[0.15em]" data-i18n="programNav.faq">FAQ</span>
 </button>
 <span class="text-neutral-300 font-light text-xs shrink-0">|</span>
 <button class="flex flex-col items-center group text-neutral-600 hover:text-luxury-gold transition-colors duration-200 shrink-0 cursor-pointer focus:outline-none"  onclick="scrollToSection('program-consult-form-section')">
 <i class="fa-regular fa-envelope-open text-xs md:text-sm mb-1 transition-transform duration-300 group-hover:scale-110 group-hover:text-luxury-gold text-neutral-500"></i>
-<span data-i18n="programNav.form"><span class="text-[9px] font-bold uppercase tracking-[0.15em]">FORM</span></span>
+<span class="text-[9px] font-bold uppercase tracking-[0.15em]" data-i18n="programNav.form">FORM</span>
 </button>
 </nav>
 </div>

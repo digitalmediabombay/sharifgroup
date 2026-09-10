@@ -592,3 +592,19 @@ body.lang-fa .marquee-track {
     direction: ltr !important;
 }
 
+/* 10. Program Shortcut Bar & Scrollbar Reset across all pages */
+.scrollbar-none::-webkit-scrollbar,
+nav.scrollbar-none::-webkit-scrollbar,
+[class*="scrollbar-none"]::-webkit-scrollbar {
+    display: none !important;
+    width: 0 !important;
+    height: 0 !important;
+}
+
+.scrollbar-none,
+nav.scrollbar-none,
+[class*="scrollbar-none"] {
+    -ms-overflow-style: none !important;
+    scrollbar-width: none !important;
+}
+
