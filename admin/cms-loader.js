@@ -441,37 +441,230 @@
   }
 
   
+  function mapCategoryToDataCat(catName, subCat) {
+    if (!catName) return 'sharif';
+    const c = catName.trim().toLowerCase();
+    let tokens = [];
+    if (c === 'citizenship' || c.includes('citizenship')) tokens.push('citizenship');
+    if (c === 'residency' || c.includes('residency')) tokens.push('residency');
+    if (c.includes('golden') || c.includes('golden-visa')) { tokens.push('golden-visa'); tokens.push('residency'); }
+    if (c.includes('real estate') || c.includes('real-estate')) tokens.push('real-estate');
+    if (c.includes('educational')) tokens.push('educational');
+    if (c.includes('corporate') || c.includes('tax') || c.includes('company')) tokens.push('company');
+    if (c.includes('sharif') || c.includes('insight')) tokens.push('sharif');
+    if (!tokens.length) tokens.push('sharif');
+    if (subCat) tokens.push(subCat.trim().toLowerCase().replace(/[^a-z0-9]+/g, '-'));
+    return tokens.join(' ');
+  }
+
+  function updateLiveBlogDraft(draft) {
+    if (!draft) return;
+    const grid = document.getElementById('all-blogs-grid');
+    if (!grid) return;
+
+    window.articlesDatabase = window.articlesDatabase || {};
+
+    const title = draft.title || 'New Strategic Insight Article';
+    const excerpt = draft.excerpt || '';
+    const category = draft.category || 'Citizenship';
+    const subcat = draft.subcategory ? ' · ' + draft.subcategory : '';
+    const author = draft.author || 'Sharif Group Advisory';
+    const date = draft.publish_date || draft.date || new Date().toISOString().split('T')[0];
+    const img = draft.featured_img || 'https://images.unsplash.com/photo-1541872703-74c5e44368f9?auto=format&fit=crop&w=1200&q=80';
+    const slug = draft.slug || 'live-draft-preview';
+    const dataCat = mapCategoryToDataCat(category, draft.subcategory);
+
+    // Register into client-side database so clicking 'READ MORE' works instantly
+    const draftArticleObj = {
+      title: title,
+      category: category + subcat,
+      author: author,
+      date: date,
+      updated: date,
+      image: img,
+      content: draft.body || (excerpt ? `<p>${excerpt}</p>` : '<p>Article content preview will appear here...</p>'),
+      faqs: []
+    };
+    window.articlesDatabase[slug] = draftArticleObj;
+    window.articlesDatabase['live-draft-preview'] = draftArticleObj;
+    if (draft.id) window.articlesDatabase[draft.id] = draftArticleObj;
+
+    let card = document.getElementById('cms-live-draft-card');
+    const isNewCard = !card;
+    if (!card) {
+      card = document.createElement('article');
+      card.id = 'cms-live-draft-card';
+      card.className = 'space-y-4 text-left flex flex-col justify-between blog-item dynamic-cms-blog live-draft-active';
+      grid.prepend(card);
+      setTimeout(() => {
+        try { card.scrollIntoView({ behavior: 'smooth', block: 'center' }); } catch (e) {}
+      }, 100);
+    }
+
+    card.setAttribute('data-cat', dataCat);
+    card.style.display = 'flex';
+    card.setAttribute('data-paginated', 'true');
+
+    card.innerHTML = `
+      <div class="space-y-3">
+        <div class="aspect-[4/3] rounded-2xl overflow-hidden bg-neutral-100 shadow-xl border-2 border-[#C5A880] relative group">
+          <img alt="${escH(title)}" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" src="${img}" onerror="this.src='https://sharifgroup.ae/wp-content/uploads/2026/05/dubai-office-2.jpg.webp'">
+          <div style="position:absolute;top:10px;left:10px;background:linear-gradient(135deg,#B38E5D,#8a6839);color:#fff;font-size:10px;font-weight:700;padding:3px 10px;border-radius:999px;display:flex;align-items:center;gap:6px;box-shadow:0 3px 10px rgba(0,0,0,.35);letter-spacing:.05em">
+            <span style="width:7px;height:7px;border-radius:50%;background:#4ade80;box-shadow:0 0 8px #4ade80;display:inline-block"></span>
+            LIVE ARTICLE PREVIEW
+          </div>
+        </div>
+        <div class="flex items-center gap-2 text-[10px] text-[#786142] font-semibold uppercase tracking-wider">
+          <span class="blog-card-cat font-bold text-[#9C7744]">${escH(category + subcat)}</span>
+          <span>•</span>
+          <span class="blog-card-date">${escH(date)}</span>
+          <span>•</span>
+          <span class="blog-card-author text-neutral-400 font-normal">${escH(author)}</span>
+        </div>
+        <h4 class="font-serif font-bold text-base text-neutral-900 leading-snug">
+          ${escH(title)}
+        </h4>
+        ${excerpt ? `<p class="text-xs text-neutral-500 font-light line-clamp-2">${escH(excerpt)}</p>` : ''}
+      </div>
+      <a class="inline-block text-[11px] font-bold uppercase tracking-wider text-neutral-800 border-b border-neutral-800 hover:text-luxury-gold hover:border-luxury-gold transition-colors pb-0.5 self-start cursor-pointer" href="javascript:void(0)" onclick="openBlogDetailBySlug('${slug}')">
+        READ MORE
+      </a>
+    `;
+
+    // Also update detail drawer if it's currently open
+    const detailView = document.getElementById('blog-detail-view-container');
+    if (detailView && !detailView.classList.contains('hidden')) {
+      const dt = document.getElementById('detail-title'); if (dt) dt.innerText = title;
+      const dc = document.getElementById('detail-category-badge'); if (dc) dc.innerText = category + subcat;
+      const da = document.getElementById('detail-author'); if (da) da.innerText = author;
+      const dd = document.getElementById('detail-date'); if (dd) dd.innerText = date;
+      const di = document.getElementById('detail-image'); if (di) di.src = img;
+      const db = document.getElementById('detail-content-body'); if (db && draft.body) db.innerHTML = draft.body;
+    }
+  }
+
   function hydrateBlog(lang) {
     const blogs = store('sgcms_blog') || [];
-    if (!Array.isArray(blogs) || !blogs.length) return;
     const l = lang || getLang();
-    const first = blogs[0];
-    const ld = first[l] || first.en || {};
 
-    // Update main featured post if present
-    if (ld.title) {
-      const titleEl = document.querySelector('#detail-title, .blog-hero-title, [data-cms="blog-title"]');
-      if (titleEl) titleEl.textContent = ld.title;
+    // Ensure articlesDatabase exists so dynamically added articles can open in detail reader
+    window.articlesDatabase = window.articlesDatabase || {};
+
+    const grid = document.getElementById('all-blogs-grid');
+    if (!grid) return;
+
+    if (!Array.isArray(blogs) || !blogs.length) return;
+
+    // Process every blog created or edited in CMS
+    blogs.forEach((b) => {
+      const ld = b[l] || b.en || {};
+      if (!ld || !ld.title) return;
+      const slug = ld.slug || b.id;
+      const status = b['status_' + l] || b.status_en || 'published';
+      if (status !== 'published') return;
+
+      const subcat = b.subcategory ? ' · ' + b.subcategory : '';
+      const catDisplay = (b.category || 'Sharif Group Insights') + subcat;
+      const dataCat = mapCategoryToDataCat(b.category, b.subcategory);
+
+      // Register article data in the client-side database
+      const articleData = {
+        title: ld.title || 'Untitled Article',
+        category: catDisplay,
+        author: b.author || 'Sharif Group Advisory',
+        date: b.publish_date || new Date().toLocaleDateString('en-US', { month: 'long', day: 'numeric', year: 'numeric' }),
+        updated: b.publish_date || '',
+        image: b.featured_img || 'https://sharifgroup.ae/wp-content/uploads/2026/05/dubai-office-2.jpg.webp',
+        content: ld.body || `<p>${ld.excerpt || ''}</p>`,
+        faqs: []
+      };
+      window.articlesDatabase[slug] = articleData;
+      window.articlesDatabase[b.id] = articleData;
+
+      let existingCard = document.querySelector(`[data-cms-blog-id="${b.id}"]`);
+      if (!existingCard) {
+        const articleEl = document.createElement('article');
+        articleEl.className = 'space-y-4 text-left flex flex-col justify-between blog-item dynamic-cms-blog';
+        articleEl.setAttribute('data-cms-blog-id', b.id);
+        articleEl.setAttribute('data-cat', dataCat);
+        articleEl.style.display = 'flex';
+        articleEl.setAttribute('data-paginated', 'true');
+
+        articleEl.innerHTML = `
+          <div class="space-y-3">
+            <div class="aspect-[4/3] rounded-2xl overflow-hidden bg-neutral-100 shadow-md neon-card-hover border border-neutral-200/70">
+              <img alt="${escH(ld.title || 'Article')}" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" src="${b.featured_img || 'https://sharifgroup.ae/wp-content/uploads/2026/05/dubai-office-2.jpg.webp'}" onerror="this.src='https://sharifgroup.ae/wp-content/uploads/2026/05/dubai-office-2.jpg.webp'">
+            </div>
+            <div class="flex items-center gap-2 text-[10px] text-[#786142] font-semibold uppercase tracking-wider">
+              <span>${escH(catDisplay)}</span>
+              <span>•</span>
+              <span>${escH(b.publish_date || 'Recent')}</span>
+              <span>•</span>
+              <span class="text-neutral-400 font-normal">${escH(b.author || 'Sharif Group')}</span>
+            </div>
+            <h4 class="font-serif font-bold text-base text-neutral-900 leading-snug">
+              ${escH(ld.title || 'Untitled Article')}
+            </h4>
+            ${ld.excerpt ? `<p class="text-xs text-neutral-500 font-light line-clamp-2">${escH(ld.excerpt)}</p>` : ''}
+          </div>
+          <a class="inline-block text-[11px] font-bold uppercase tracking-wider text-neutral-800 border-b border-neutral-800 hover:text-luxury-gold hover:border-luxury-gold transition-colors pb-0.5 self-start cursor-pointer" href="javascript:void(0)" onclick="openBlogDetailBySlug('${slug}')">
+            READ MORE
+          </a>
+        `;
+        const draftCard = document.getElementById('cms-live-draft-card');
+        if (draftCard && draftCard.nextSibling) {
+          grid.insertBefore(articleEl, draftCard.nextSibling);
+        } else {
+          grid.prepend(articleEl);
+        }
+      } else {
+        // Update existing card
+        existingCard.setAttribute('data-cat', dataCat);
+        existingCard.style.display = 'flex';
+        existingCard.setAttribute('data-paginated', 'true');
+        const img = existingCard.querySelector('img');
+        if (img && b.featured_img) img.src = b.featured_img;
+        const h4 = existingCard.querySelector('h4');
+        if (h4 && ld.title) h4.textContent = ld.title;
+        const p = existingCard.querySelector('p');
+        if (p && ld.excerpt) p.textContent = ld.excerpt;
+      }
+    });
+
+    // Force all CMS-added cards to stay visible at the top of the grid (pinned before hardcoded articles)
+    const draftCard = document.getElementById('cms-live-draft-card');
+    const dynamicCards = grid.querySelectorAll('.dynamic-cms-blog');
+    if (draftCard) {
+      grid.prepend(draftCard);
     }
-    if (ld.excerpt) {
-      const exEl = document.querySelector('#detail-excerpt, .blog-hero-desc, [data-cms="blog-excerpt"]');
-      if (exEl) exEl.textContent = ld.excerpt;
+    Array.from(dynamicCards).reverse().forEach(card => {
+      if (draftCard) {
+        draftCard.after(card);
+      } else {
+        grid.prepend(card);
+      }
+    });
+
+    // Re-run pagination if available
+    if (typeof window.paginateBlogs === 'function') {
+      window.paginateBlogs();
+    } else if (typeof window.initPagination === 'function') {
+      window.initPagination();
     }
-    if (first.category) {
-      const catEl = document.querySelector('#detail-category, .blog-category-badge, [data-cms="blog-cat"]');
-      if (catEl) catEl.textContent = first.category;
-    }
-    if (first.author) {
-      const autEl = document.querySelector('#detail-author, [data-cms="blog-author"]');
-      if (autEl) autEl.textContent = first.author;
-    }
-    if (first.publish_date) {
-      const dateEl = document.querySelector('#detail-date, [data-cms="blog-date"]');
-      if (dateEl) dateEl.textContent = first.publish_date;
-    }
-    if (first.featured_img) {
-      const imgEl = document.querySelector('#detail-image, [data-cms="blog-img"]');
-      if (imgEl) imgEl.src = first.featured_img;
+    // Always guarantee all CMS dynamic cards and live draft stay visible
+    grid.querySelectorAll('.dynamic-cms-blog, #cms-live-draft-card').forEach(el => {
+      el.style.display = 'flex';
+      el.setAttribute('data-paginated', 'true');
+    });
+
+    // Update single-article detail view if currently reading
+    const first = blogs[0];
+    if (first) {
+      const firstLd = first[l] || first.en || {};
+      if (firstLd.title) {
+        const titleEl = document.querySelector('[data-cms="blog-title"]');
+        if (titleEl) titleEl.textContent = firstLd.title;
+      }
     }
   }
 
@@ -1211,6 +1404,12 @@
         applyLanguage(msg.lang, 'parent');
       } else if (msg.type === 'CMS_SET_MODE') {
         setEditMode(msg.mode === 'edit', false, false);
+      } else if (msg.type === 'CMS_UPDATE_BLOG_DRAFT') {
+        updateLiveBlogDraft(msg.draft);
+      } else if (msg.type === 'CMS_BLOG_SAVED') {
+        const dc = document.getElementById('cms-live-draft-card');
+        if (dc) dc.remove();
+        hydrateBlog(getLang());
       } else if (msg.type === 'CMS_UPDATE_FIELD') {
         const { field, value } = msg;
         if (typeof value === 'undefined' || value === null) return;
@@ -1254,11 +1453,39 @@
         } else if (field === 'benefits_desc') {
           setText('#sec-benefits p.max-w-2xl, [data-i18n*="benefitsDesc"]', value);
         } else if (field === 'investment_badge') {
-          setText('#sec-investment span.uppercase, [data-i18n*="investmentBadge"]', value);
+          setText('#sec-investment span.uppercase, [data-i18n*="investmentBadge"], #sec-pricing-grid span.uppercase, [data-i18n*="pricingBadge"]', value);
         } else if (field === 'investment_title') {
-          setText('#sec-investment h2, [data-i18n*="investmentTitle"]', value);
+          setText('#sec-investment h2, [data-i18n*="investmentTitle"], #sec-pricing-grid h3, [data-i18n*="pricingTitle"]', value);
         } else if (field === 'investment_desc') {
-          setText('#sec-investment p.max-w-2xl, [data-i18n*="investmentDesc"]', value);
+          setText('#sec-investment p.max-w-2xl, [data-i18n*="investmentDesc"], #sec-pricing-grid p.max-w-2xl, [data-i18n*="pricingDesc"]', value);
+        } else if (field === 'r1_title') {
+          setText('[data-i18n*="edfTitle"], [data-i18n*="pricingOptionATitle"]', value);
+        } else if (field === 'r1_amt') {
+          setText('[data-i18n*="pricingSingleApplicant"] ~ p, [data-i18n*="edfDesc"] strong', value);
+        } else if (field === 'r1_desc') {
+          setText('[data-i18n*="edfDesc"]', value);
+        } else if (field === 'r1_fam') {
+          setText('[data-i18n*="pricingFamilyOf4"] ~ p', value);
+        } else if (field === 'r1_add') {
+          setText('[data-i18n*="pricingAdditionalUnder18"] ~ p', value);
+        } else if (field === 'r2_title') {
+          setText('[data-i18n*="realEstateTitle"], [data-i18n*="pricingOptionBTitle"]', value);
+        } else if (field === 'r2_amt') {
+          setText('[data-i18n*="pricingMinAssetValue"] ~ p, [data-i18n*="realEstateDesc"] strong', value);
+        } else if (field === 'r2_desc') {
+          setText('[data-i18n*="realEstateDesc"]', value);
+        } else if (field === 'r2_hold') {
+          setText('[data-i18n*="pricingHoldingYears"]', value);
+        } else if (field === 'r2_fee') {
+          setText('[data-i18n*="pricingGovFeeSingle"] ~ p', value);
+        } else if (field === 'fee_dd_main') {
+          setText('[data-i18n*="pricingFeeDueDiligenceMain"] ~ span', value);
+        } else if (field === 'fee_dd_dep') {
+          setText('[data-i18n*="pricingFeeDueDiligenceDep"] ~ span', value);
+        } else if (field === 'fee_interview') {
+          setText('[data-i18n*="pricingFeeInterview"] ~ span', value);
+        } else if (field === 'fee_cert') {
+          setText('[data-i18n*="pricingFeeNaturalisation"] ~ span', value);
         } else if (field === 'who_can_apply_badge') {
           setText('#sec-who-can-apply span.uppercase, [data-i18n*="whoCanApplyBadge"]', value);
         } else if (field === 'who_can_apply_title') {
@@ -1288,22 +1515,24 @@
         }
         // ── Real-time Blog Fields ───────────────────────────
         else if (field === 'blog_title') {
-          const els = document.querySelectorAll('#detail-title, .blog-hero-title, [data-cms="blog-title"], .blog-card:first-child h3, .blog-card:first-child h4');
+          const els = document.querySelectorAll('#detail-title, .blog-hero-title, [data-cms="blog-title"], #cms-live-draft-card h4');
           els.forEach(el => { el.textContent = value; });
         } else if (field === 'blog_excerpt') {
-          const els = document.querySelectorAll('#detail-excerpt, .blog-hero-desc, [data-cms="blog-excerpt"], .blog-card:first-child p');
+          const els = document.querySelectorAll('#detail-excerpt, .blog-hero-desc, [data-cms="blog-excerpt"], #cms-live-draft-card p');
           els.forEach(el => { el.textContent = value; });
         } else if (field === 'blog_category') {
-          const els = document.querySelectorAll('#detail-category, .blog-category-badge, [data-cms="blog-cat"], .blog-card:first-child span.badge');
+          const els = document.querySelectorAll('#detail-category, .blog-category-badge, [data-cms="blog-cat"], #cms-live-draft-card .blog-card-cat');
           els.forEach(el => { el.textContent = value; });
+          const card = document.getElementById('cms-live-draft-card');
+          if (card) card.setAttribute('data-cat', mapCategoryToDataCat(value));
         } else if (field === 'blog_img') {
-          const els = document.querySelectorAll('#detail-image, [data-cms="blog-img"], .blog-card:first-child img, article.blog-item:first-child img');
+          const els = document.querySelectorAll('#detail-image, [data-cms="blog-img"], #cms-live-draft-card img');
           els.forEach(el => { el.src = value; });
         } else if (field === 'blog_author') {
-          const els = document.querySelectorAll('#detail-author, [data-cms="blog-author"]');
+          const els = document.querySelectorAll('#detail-author, [data-cms="blog-author"], #cms-live-draft-card .blog-card-author');
           els.forEach(el => { el.textContent = value; });
         } else if (field === 'blog_date') {
-          const els = document.querySelectorAll('#detail-date, [data-cms="blog-date"]');
+          const els = document.querySelectorAll('#detail-date, [data-cms="blog-date"], #cms-live-draft-card .blog-card-date');
           els.forEach(el => { el.textContent = value; });
         }
         // ── Team Real-time Fields ───────────────────────────

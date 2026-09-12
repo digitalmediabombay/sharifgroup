@@ -117,6 +117,7 @@
         var path = (window.location && window.location.pathname) ? window.location.pathname : '';
         var href = (window.location && window.location.href) ? window.location.href : '';
         var isSub = (path.includes('/') && path.split('/').filter(Boolean).length > 1) ||
+                    href.includes('/eligibilitychecker') ||
                     href.includes('/privacypolicy/') ||
                     href.includes('/cookiepolicy/') ||
                     href.includes('/termsofuse/') ||
@@ -125,6 +126,16 @@
                     href.includes('/contact/') ||
                     href.includes('/about/') ||
                     href.includes('/programs/');
+
+        var isFileProto = window.location && window.location.protocol === 'file:';
+        if (!isFileProto && window.location && window.location.origin) {
+            return [
+                '/assets/locales/' + lang + '.json',
+                '../assets/locales/' + lang + '.json',
+                '../../assets/locales/' + lang + '.json',
+                'assets/locales/' + lang + '.json'
+            ];
+        }
 
         if (isSub) {
             return [
@@ -144,13 +155,19 @@
         }
     }
 
-    var I18N_VERSION = '20260909_v10';
+    var I18N_VERSION = '20260912_v15';
 
     function loadTranslation(lang, callback) {
+        var pathname = (window.location && window.location.pathname) ? window.location.pathname.toLowerCase() : '';
+        var href = (window.location && window.location.href) ? window.location.href.toLowerCase() : '';
+        var isEligibilityChecker = pathname.includes('/eligibilitychecker') || href.includes('/eligibilitychecker');
+
         // 1. If already loaded in memory and has deep content
         if (translationsCache[lang] && (translationsCache[lang].pages || translationsCache[lang].nav)) {
-            callback(translationsCache[lang]);
-            return;
+            if (!isEligibilityChecker || (translationsCache[lang].pages && translationsCache[lang].pages.eligibilityChecker)) {
+                callback(translationsCache[lang]);
+                return;
+            }
         }
 
         // 2. Initialize from in-memory preloaded legal translations if available
@@ -158,13 +175,30 @@
             translationsCache[lang] = deepMerge(translationsCache[lang] || {}, JSON.parse(JSON.stringify(window.LEGAL_TRANSLATIONS[lang])));
         }
 
+        // Proactively clean any outdated cache that lacks eligibilityChecker translations
+        try {
+            for (var i = localStorage.length - 1; i >= 0; i--) {
+                var k = localStorage.key(i);
+                if (k && k.indexOf('sharif_i18n_') === 0) {
+                    try {
+                        var d = JSON.parse(localStorage.getItem(k));
+                        if (d && (!d.pages || !d.pages.eligibilityChecker)) {
+                            localStorage.removeItem(k);
+                        }
+                    } catch (e) {}
+                }
+            }
+        } catch (e) {}
+
         // 3. Check persistent localStorage cache for instant 0ms zero-network retrieval
         var storageKey = 'sharif_i18n_' + lang + '_' + I18N_VERSION;
         try {
             var cachedJson = localStorage.getItem(storageKey);
             if (cachedJson) {
                 var parsedData = JSON.parse(cachedJson);
-                if (parsedData && (parsedData.pages || parsedData.nav || parsedData.services || parsedData.footer)) {
+                if (isEligibilityChecker && (!parsedData.pages || !parsedData.pages.eligibilityChecker)) {
+                    // Stale cache missing eligibility checker translations: discard and re-fetch fresh!
+                } else if (parsedData && (parsedData.pages || parsedData.nav || parsedData.services || parsedData.footer)) {
                     translationsCache[lang] = deepMerge(translationsCache[lang] || {}, parsedData);
                     window.translationsCache = translationsCache;
                     callback(translationsCache[lang]);
@@ -360,6 +394,8 @@
                 pageTitle = getNestedValue(data, 'pages.termsOfUse.metaTitle');
             } else if (pathname.includes('/contact/') || href.includes('/contact/')) {
                 pageTitle = getNestedValue(data, 'pages.contact.metaTitle');
+            } else if (pathname.includes('/eligibilitychecker') || href.includes('/eligibilitychecker')) {
+                pageTitle = getNestedValue(data, 'pages.eligibilityChecker.metaTitle');
             } else {
                 var isHomePage = (pathname === '' || pathname === '/' || pathname.endsWith('/index.html')) &&
                                  !pathname.includes('/programs/') &&
@@ -370,6 +406,7 @@
                                  !pathname.includes('/educational') &&
                                  !pathname.includes('/social') &&
                                  !pathname.includes('/blog') &&
+                                 !pathname.includes('/eligibilitychecker') &&
                                  !pathname.includes('/contact');
                 if (isHomePage) {
                     pageTitle = (data.meta && data.meta.title);
@@ -379,6 +416,16 @@
 
         if (pageTitle) {
             document.title = pageTitle;
+        }
+
+        if (pathname.includes('/eligibilitychecker') || href.includes('/eligibilitychecker')) {
+            var ecDesc = getNestedValue(data, 'pages.eligibilityChecker.metaDescription');
+            if (ecDesc) {
+                var descMetaEC = document.querySelector('meta[name="description"]');
+                if (descMetaEC) descMetaEC.setAttribute('content', ecDesc);
+                var ogDescEC = document.querySelector('meta[property="og:description"]');
+                if (ogDescEC) ogDescEC.setAttribute('content', ecDesc);
+            }
         }
 
         var isHomeForDesc = (pathname === '' || pathname === '/' || (pathname && pathname.endsWith('/index.html'))) &&
@@ -393,6 +440,7 @@
                             !pathname.includes('/privacypolicy') &&
                             !pathname.includes('/cookiepolicy') &&
                             !pathname.includes('/termsof') &&
+                            !pathname.includes('/eligibilitychecker') &&
                             !pathname.includes('/contact');
         if (isHomeForDesc) {
             var pageDesc = getNestedValue(data, 'meta.description') || (data.meta && data.meta.description);

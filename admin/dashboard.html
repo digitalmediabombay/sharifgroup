@@ -95,60 +95,100 @@ html,body{height:100%;overflow:hidden;font-family:'Inter',sans-serif;background:
 .sb-children.open{display:block}
 .sb-sub-group{margin-bottom:1px}
 .sb-sub-lbl{font-size:9px;font-weight:700;color:var(--muted2);text-transform:uppercase;letter-spacing:.1em;padding:6px 9px 3px;display:flex;align-items:center;justify-content:space-between}
-.sb-item{display:flex;align-items:center;gap:7px;padding:6px 9px;border-radius:8px;cursor:pointer;transition:all .2s;color:var(--muted);font-size:11px;margin-bottom:1px}
+.sb-item{display:flex;align-items:center;gap:8px;padding:7px 10px;border-radius:8px;cursor:pointer;transition:all .2s;color:var(--muted);font-size:12px;margin-bottom:2px;position:relative}
 .sb-item:hover{background:var(--gold-glow);color:var(--text)}
 .sb-item.active{background:var(--gold-dim);color:var(--gold);font-weight:600}
-.sb-item-flag{width:16px;height:12px;object-fit:cover;border-radius:2px;flex-shrink:0}
-.sb-item-dot{width:5px;height:5px;border-radius:50%;flex-shrink:0}
+.sb-item-flag{width:18px;height:13px;object-fit:cover;border-radius:2px;flex-shrink:0;box-shadow:0 1px 2px rgba(0,0,0,0.15)}
+.sb-item-flag-icon{width:18px;font-size:11px;color:var(--gold);text-align:center;flex-shrink:0;display:inline-flex;align-items:center;justify-content:center}
+.sb-item-dot{width:6px;height:6px;border-radius:50%;flex-shrink:0}
 .sb-item-dot.published{background:var(--green)}
 .sb-item-dot.draft{background:var(--yellow)}
 .sb-item-title{flex:1;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.sb-item-del{opacity:0;background:none;border:none;color:#94A3B8;font-size:11px;cursor:pointer;padding:3px 5px;border-radius:5px;transition:all .2s;margin-left:auto;display:flex;align-items:center;justify-content:center}
+.sb-item:hover .sb-item-del{opacity:0.75}
+.sb-item-del:hover{opacity:1 !important;color:#ef4444;background:rgba(239,68,68,0.12)}
 
 /* ═══ MAIN EDITOR (Slide-in Drawer) ════════════════ */
-#ed{grid-area:ed;height:100%;width:100%;max-width:100%;background:var(--surface);border-right:1px solid var(--border);box-shadow:4px 0 20px rgba(0,0,0,0.06);z-index:50;overflow-y:auto;overflow-x:hidden;display:none;flex-direction:column;min-width:0;position:relative}
+#ed{grid-area:ed;height:100%;width:100%;max-width:100%;background:var(--surface);border-right:1px solid var(--border);box-shadow:4px 0 24px rgba(0,0,0,0.06);z-index:50;overflow-y:auto;overflow-x:hidden;display:none;flex-direction:column;min-width:0;position:relative}
 #app.drawer-open #ed,#ed.open{display:flex}
 #ed-resizer{position:absolute;top:0;right:-4px;width:8px;height:100%;cursor:col-resize;z-index:90;transition:background .2s}
 #ed-resizer:hover,#ed-resizer.dragging{background:var(--gold);box-shadow:0 0 10px rgba(197,168,128,.5)}
 .pv-frame-wrap.scaled-fit{border-radius:10px;box-shadow:0 16px 48px rgba(0,0,0,.75);border:1px solid var(--border);overflow:hidden;flex-shrink:0}
-#ed-drawer-topbar{position:sticky;top:0;background:#F8FAFC;border-bottom:1px solid var(--border);padding:12px 18px;display:flex;align-items:center;justify-content:space-between;z-index:10;flex-shrink:0}
-#ed::-webkit-scrollbar{width:4px}
-#ed::-webkit-scrollbar-thumb{background:var(--gold-dim);border-radius:2px}
-#editor{padding:20px 24px 60px;flex:1}
+#ed-drawer-topbar{position:sticky;top:0;background:#FFFFFF;border-bottom:1px solid var(--border);padding:14px 24px;display:flex;align-items:center;justify-content:space-between;z-index:10;flex-shrink:0;box-shadow:0 1px 3px rgba(0,0,0,0.03)}
+#ed::-webkit-scrollbar{width:5px}
+#ed::-webkit-scrollbar-thumb{background:var(--gold-dim);border-radius:3px}
+#editor{padding:26px 32px 100px;flex:1}
 
 /* Page heading in editor */
-.ed-page-title{font-family:'Playfair Display',serif;font-size:22px;font-weight:700;color:var(--text);margin-bottom:4px}
-.ed-page-desc{font-size:12px;color:var(--muted);margin-bottom:24px;line-height:1.6}
+.ed-page-title{font-family:'Playfair Display',serif;font-size:24px;font-weight:700;color:var(--text);margin-bottom:6px;letter-spacing:-0.01em}
+.ed-page-desc{font-size:13px;color:var(--muted);margin-bottom:28px;line-height:1.6}
 
-/* Section Cards */
-.ec-block{background:var(--card);border:1px solid var(--border);border-radius:var(--radius-lg);margin-bottom:14px;overflow:hidden;transition:border-color .2s}
-.ec-block:hover{border-color:var(--gold-dim)}
-.ec-block{background:#FFFFFF;border:1px solid #E2E8F0;border-radius:var(--radius-lg);margin-bottom:14px;overflow:hidden;box-shadow:0 1px 3px rgba(0,0,0,0.04);transition:border-color .2s}
-.ec-block:hover{border-color:var(--gold-dim)}
-.ec-block-hd{display:flex;align-items:center;gap:11px;padding:14px 18px;cursor:pointer;border-bottom:1px solid #E2E8F0;background:#F8FAFC;user-select:none}
-.ec-block-ico{width:30px;height:30px;border-radius:8px;display:flex;align-items:center;justify-content:center;font-size:12px;flex-shrink:0}
-.ec-block-title{font-size:13px;font-weight:600;color:var(--text);flex:1}
-.ec-block-badge{font-size:10px;padding:2px 8px;border-radius:999px;background:var(--gold-glow);color:var(--gold);border:1px solid var(--border);font-weight:600}
-.ec-block-tog{font-size:10px;color:var(--muted);transition:transform .2s}
+/* Section Cards - Clean, breathable & light */
+.ec-block{background:#FFFFFF;border:1px solid #E2E8F0;border-radius:14px;margin-bottom:24px;overflow:hidden;box-shadow:0 2px 8px -2px rgba(15,23,42,0.04);transition:all .25s ease}
+.ec-block:hover{border-color:#CBD5E1;box-shadow:0 4px 14px -2px rgba(15,23,42,0.07)}
+.ec-block-hd{display:flex;align-items:center;gap:12px;padding:16px 22px;cursor:pointer;border-bottom:1px solid #F1F5F9;background:#FAFBFD;user-select:none;transition:background .2s}
+.ec-block-hd:hover{background:#F8FAFC}
+.ec-block-ico{width:32px;height:32px;border-radius:8px;display:flex;align-items:center;justify-content:center;font-size:13px;flex-shrink:0}
+.ec-block-title{font-size:14px;font-weight:600;color:var(--text);flex:1;letter-spacing:-0.01em}
+.ec-block-badge{font-size:11px;padding:3px 10px;border-radius:999px;background:var(--gold-glow);color:var(--gold-h);border:1px solid rgba(179,142,93,0.25);font-weight:600}
+.ec-block-tog{font-size:11px;color:var(--muted);transition:transform .2s}
 .ec-block.collapsed .ec-block-tog{transform:rotate(-90deg)}
 .ec-block.collapsed .ec-block-body{display:none}
-.ec-block-body{padding:18px 20px 16px}
+.ec-block-body{padding:26px 26px 22px}
 
-/* Forms */
-.form-row{display:grid;gap:12px;margin-bottom:12px}
+/* Forms - Spacious & effortless to fill */
+.form-row{display:grid;gap:18px;margin-bottom:20px}
 .form-row-2{grid-template-columns:1fr 1fr}
 .form-row-3{grid-template-columns:1fr 1fr 1fr}
-.form-group{display:flex;flex-direction:column;gap:5px}
-.form-label{font-size:10px;font-weight:700;color:var(--muted);text-transform:uppercase;letter-spacing:.12em;display:flex;justify-content:space-between;align-items:center}
-.form-lang-tag{color:var(--gold);font-size:9px;font-weight:700;padding:1px 6px;border:1px solid var(--gold-dim);border-radius:999px}
-.form-input,.form-select,.form-textarea{background:#FFFFFF;border:1px solid #CBD5E1;color:#0F172A;border-radius:8px;padding:8px 12px;font-size:12px;font-family:'Inter',sans-serif;transition:all .2s;outline:none;width:100%;box-shadow:0 1px 2px rgba(0,0,0,0.03)}
-.form-input:focus,.form-select:focus,.form-textarea:focus{border-color:var(--gold);box-shadow:0 0 0 3px rgba(179,142,93,.18)}
-.form-select option{background:#FFFFFF;color:#0F172A}
-.form-input-headline{font-family:'Playfair Display',serif;font-size:18px;font-weight:700;padding:10px 12px;background:#F8FAFC;border:1px solid #CBD5E1;color:#0F172A}
-.form-input::placeholder,.form-textarea::placeholder{color:var(--muted2)}
-.form-input:focus,.form-select:focus,.form-textarea:focus{border-color:var(--gold);box-shadow:0 0 0 2px rgba(197,168,128,.12)}
-.form-select option{background:#1C1C1C;color:var(--text)}
-.form-textarea{resize:vertical;min-height:80px;line-height:1.6}
-.form-input-headline{font-family:'Playfair Display',serif;font-size:20px;font-weight:700;padding:12px 14px;background:rgba(197,168,128,.04)}
+.form-group{display:flex;flex-direction:column;gap:8px}
+.form-label{font-size:11px;font-weight:600;color:#475569;text-transform:uppercase;letter-spacing:.05em;display:flex;justify-content:space-between;align-items:center}
+.form-lang-tag{color:var(--gold);font-size:10px;font-weight:700;padding:2px 8px;border:1px solid var(--gold-dim);border-radius:999px}
+.form-input,.form-select,.form-textarea{background:#FFFFFF;border:1px solid #D0D9E5;color:#0F172A;border-radius:10px;padding:11px 14px;font-size:13px;font-family:'Inter',sans-serif;transition:all .2s;outline:none;width:100%;box-shadow:0 1px 2px rgba(0,0,0,0.03)}
+.form-input:hover,.form-select:hover,.form-textarea:hover{border-color:#94A3B8}
+.form-input:focus,.form-select:focus,.form-textarea:focus{border-color:var(--gold);box-shadow:0 0 0 3px rgba(179,142,93,.16);background:#FFFFFF}
+.form-input::placeholder,.form-textarea::placeholder{color:#94A3B8}
+.form-input-headline{font-family:'Playfair Display',serif;font-size:17px;font-weight:600;padding:12px 14px;background:#FAF8F5;border:1px solid #E2E8F0;color:#0F172A;border-radius:10px}
+.form-textarea{resize:vertical;min-height:90px;line-height:1.6}
+
+/* Custom Dropdown / Select - 100% Crisp Visible Options on Bright Background */
+.form-select{
+  appearance:none;-webkit-appearance:none;-moz-appearance:none;
+  background-color:#FFFFFF !important;
+  background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='16' height='16' viewBox='0 0 24 24' fill='none' stroke='%23475569' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpolyline points='6 9 12 15 18 9'%3E%3C/polyline%3E%3C/svg%3E") !important;
+  background-repeat:no-repeat !important;
+  background-position:right 14px center !important;
+  background-size:14px !important;
+  padding-right:38px !important;
+  cursor:pointer;
+  color:#0F172A !important;
+}
+.form-select option{
+  background-color:#FFFFFF !important;
+  color:#0F172A !important;
+  padding:12px 14px !important;
+  font-size:13px !important;
+}
+.form-select optgroup{
+  background-color:#F8FAFC !important;
+  color:#64748B !important;
+  font-weight:700 !important;
+}
+
+/* Image Uploader Component */
+.image-uploader-box{display:flex;gap:16px;align-items:flex-start;padding:14px;background:#F8FAFC;border:1px dashed #CBD5E1;border-radius:12px;transition:border-color .2s}
+.image-uploader-box:hover{border-color:var(--gold)}
+.img-preview-wrap{width:76px;height:54px;border-radius:8px;overflow:hidden;background:#FFFFFF;border:1px solid #E2E8F0;display:flex;align-items:center;justify-content:center;flex-shrink:0;box-shadow:0 1px 3px rgba(0,0,0,0.06)}
+.img-preview-wrap img{width:100%;height:100%;object-fit:cover}
+.img-preview-empty{display:flex;flex-direction:column;align-items:center;justify-content:center;color:#94A3B8;font-size:9px;text-align:center;padding:4px;gap:3px}
+.img-preview-empty i{font-size:16px}
+.img-actions-wrap{flex:1;display:flex;flex-direction:column;gap:8px;min-width:0}
+.img-url-fallback input{font-size:11px;padding:7px 11px;height:34px;background:#FFFFFF}
+.btn-upload-img{background:#FFFFFF !important;color:var(--gold-dark) !important;border:1px solid rgba(179,142,93,0.35) !important;font-weight:600;font-size:11px;padding:7px 13px;border-radius:8px;cursor:pointer;display:inline-flex;align-items:center;gap:6px;transition:all .2s}
+.btn-upload-img:hover{background:var(--gold-glow) !important;border-color:var(--gold) !important}
+.btn-add-section-sb{width:100%;padding:7px 9px;background:none;border:1px dashed rgba(179,142,93,0.35);border-radius:8px;color:var(--gold-dark);font-size:11px;font-weight:600;display:flex;align-items:center;justify-content:center;gap:6px;cursor:pointer;transition:all .2s;font-family:inherit;margin-top:6px}
+.btn-add-section-sb:hover{background:var(--gold-glow);border-color:var(--gold);color:var(--gold-h)}
+.program-type-pill{padding:10px 14px;background:#F8FAFC;border:1px solid #E2E8F0;border-radius:10px;font-size:13px;font-weight:600;color:var(--text);display:flex;align-items:center;gap:8px}
+.program-type-pill i{color:var(--gold);font-size:14px}
 
 /* List Builder (+/-) */
 .list-builder{display:flex;flex-direction:column;gap:5px;margin-bottom:8px}
@@ -511,8 +551,9 @@ if (!session) window.location.href = 'index.html';
 if (session) {
   const nl = document.getElementById('user-name-label');
   const ui = document.getElementById('user-initials');
-  if (nl) nl.textContent = session.name.split(' ')[0];
-  if (ui) ui.textContent = session.name.split(' ').map(n => n[0]).join('').slice(0, 2).toUpperCase();
+  const adminName = session.name || session.email || 'Admin User';
+  if (nl) nl.textContent = adminName.split(' ')[0];
+  if (ui) ui.textContent = adminName.split(' ').filter(Boolean).map(n => n[0]).join('').slice(0, 2).toUpperCase();
 }
 
 // ══════════════════════════════════════════════════════════
@@ -660,7 +701,12 @@ function loadPreviewPage() {
     url = PAGE_URLS.blog;
   }
   const currentSrc = url + '?cms_editor=1';
-  iframe.src = currentSrc;
+  const cleanUrl = url.replace(/^\.\.\//, '');
+  if (!iframe.src || iframe.src.indexOf(cleanUrl) === -1 || iframe.src === 'about:blank') {
+    iframe.src = currentSrc;
+  } else {
+    syncActiveFormToLivePreview();
+  }
 }
 
 function refreshPreview() {
@@ -837,36 +883,289 @@ function handleInlineEdit(section, field, value) {
 }
 
 // ══════════════════════════════════════════════════════════
+// PORTFOLIO & CUSTOM SECTION MANAGER
+// ══════════════════════════════════════════════════════════
+const PortfolioManager = {
+  getDefaults(type) {
+    return type === 'citizenship'
+      ? [
+          { key: 'caribbean', label: 'Caribbean' },
+          { key: 'global', label: 'Global' },
+          { key: 'european', label: 'European' }
+        ]
+      : [
+          { key: 'european', label: 'European' },
+          { key: 'uae', label: 'UAE & Americas' },
+          { key: 'global', label: 'Global' }
+        ];
+  },
+  getSections(type) {
+    const defaults = this.getDefaults(type);
+    let custom = [];
+    try {
+      custom = JSON.parse(localStorage.getItem('sgcms_sections_' + type)) || [];
+    } catch(e) {}
+
+    const list = window.CMS.getData(window.CMS.KEYS[type.toUpperCase()]) || window.CMS.DEFAULTS[type] || [];
+    const fromProgs = [];
+    list.forEach(p => {
+      if (p.portfolio && !defaults.some(d => d.key === p.portfolio) && !custom.some(c => c.key === p.portfolio)) {
+        const label = p.portfolio_label || (p.portfolio.charAt(0).toUpperCase() + p.portfolio.slice(1));
+        fromProgs.push({ key: p.portfolio, label });
+      }
+    });
+
+    return [...defaults, ...custom, ...fromProgs];
+  },
+  addSection(type, label) {
+    if (!label || !label.trim()) return null;
+    const cleanLabel = label.trim();
+    const key = cleanLabel.toLowerCase().replace(/[^a-z0-9]/g, '');
+    const current = this.getSections(type);
+    const existing = current.find(s => s.key === key);
+    if (existing) return existing.key;
+
+    let custom = [];
+    try {
+      custom = JSON.parse(localStorage.getItem('sgcms_sections_' + type)) || [];
+    } catch(e) {}
+    custom.push({ key, label: cleanLabel });
+    localStorage.setItem('sgcms_sections_' + type, JSON.stringify(custom));
+    return key;
+  }
+};
+
+function promptAddSection(type) {
+  const typeName = type === 'citizenship' ? 'Citizenship' : 'Residency';
+  const name = prompt(`Enter new section/category name for ${typeName} (e.g. Asia Pacific, Middle East, Americas):`);
+  if (!name || !name.trim()) return;
+  const key = PortfolioManager.addSection(type, name);
+  populateSidebar();
+  showToast(`Section "${name.trim()}" added!`);
+  addProgram(type, key);
+}
+
+function handlePortfolioSelectChange(selectEl, customInputWrapId) {
+  const wrap = document.getElementById(customInputWrapId);
+  if (selectEl.value === '__new__') {
+    if (wrap) {
+      wrap.style.display = 'block';
+      const inp = wrap.querySelector('input');
+      if (inp) inp.focus();
+    }
+  } else {
+    if (wrap) wrap.style.display = 'none';
+  }
+  markUnsaved();
+}
+
+// ══════════════════════════════════════════════════════════
+// IMAGE UPLOAD & FILE PICKER HELPERS
+// ══════════════════════════════════════════════════════════
+function makeImageUploadField(id, label, currentVal, placeholder, helpText) {
+  const hasImg = !!(currentVal && currentVal.trim());
+  return `
+    <div class="form-group" style="margin-bottom:18px">
+      <label class="form-label">${label}</label>
+      <div class="image-uploader-box">
+        <div class="img-preview-wrap">
+          <img id="${id}-preview" src="${escH(currentVal || '')}" style="display:${hasImg ? 'block' : 'none'}" onerror="this.style.display='none';document.getElementById('${id}-placeholder').style.display='flex'">
+          <div id="${id}-placeholder" class="img-preview-empty" style="display:${hasImg ? 'none' : 'flex'}">
+            <i class="fa-regular fa-image"></i>
+            <span>No Image</span>
+          </div>
+        </div>
+        <div class="img-actions-wrap">
+          <div style="display:flex;gap:8px;flex-wrap:wrap;align-items:center">
+            <input type="file" id="${id}-file" accept="image/*,image/svg+xml" style="display:none" onchange="handleFileSelect(this, '${id}')">
+            <button type="button" class="btn-upload-img" onclick="document.getElementById('${id}-file').click()">
+              <i class="fa-solid fa-cloud-arrow-up"></i> Choose Image from Computer
+            </button>
+            <button type="button" class="btn btn-ghost" id="${id}-clear-btn" style="display:${hasImg ? 'inline-flex' : 'none'};color:#ef4444;border-color:rgba(239,68,68,0.3);padding:6px 10px;font-size:11px" onclick="clearImageField('${id}')">
+              <i class="fa-solid fa-xmark"></i> Remove
+            </button>
+          </div>
+          <div class="img-url-fallback">
+            <input class="form-input" id="${id}" value="${escH(currentVal || '')}" placeholder="${placeholder || 'Or paste external image/SVG URL...'}" oninput="handleImageUrlInput(this, '${id}')">
+          </div>
+          ${helpText ? `<p style="font-size:11px;color:var(--muted);margin-top:2px">${helpText}</p>` : ''}
+        </div>
+      </div>
+    </div>
+  `;
+}
+
+function handleFileSelect(input, targetId) {
+  const file = input.files && input.files[0];
+  if (!file) return;
+  if (file.size > 8 * 1024 * 1024) {
+    showToast('File size must be under 8MB', 'error');
+    return;
+  }
+  const reader = new FileReader();
+  reader.onload = (e) => {
+    const dataUrl = e.target.result;
+    const targetInput = document.getElementById(targetId);
+    if (targetInput) targetInput.value = dataUrl;
+    
+    const preview = document.getElementById(targetId + '-preview');
+    const placeholder = document.getElementById(targetId + '-placeholder');
+    const clearBtn = document.getElementById(targetId + '-clear-btn');
+    
+    if (preview) { preview.src = dataUrl; preview.style.display = 'block'; }
+    if (placeholder) placeholder.style.display = 'none';
+    if (clearBtn) clearBtn.style.display = 'inline-flex';
+    
+    markUnsaved();
+    showToast('Image loaded and ready to save!');
+    if (typeof liveUpdateField === 'function') {
+      if (targetId.includes('hero-img1') || targetId.includes('hero_img1')) liveUpdateField('hero_img1', dataUrl);
+      if (targetId.includes('flag')) liveUpdateField('flag', dataUrl);
+    }
+  };
+  reader.readAsDataURL(file);
+}
+
+function clearImageField(targetId) {
+  const targetInput = document.getElementById(targetId);
+  if (targetInput) targetInput.value = '';
+  const preview = document.getElementById(targetId + '-preview');
+  const placeholder = document.getElementById(targetId + '-placeholder');
+  const clearBtn = document.getElementById(targetId + '-clear-btn');
+  const fileInput = document.getElementById(targetId + '-file');
+  
+  if (preview) { preview.src = ''; preview.style.display = 'none'; }
+  if (placeholder) placeholder.style.display = 'flex';
+  if (clearBtn) clearBtn.style.display = 'none';
+  if (fileInput) fileInput.value = '';
+  
+  markUnsaved();
+}
+
+function handleImageUrlInput(input, targetId) {
+  const url = input.value.trim();
+  const preview = document.getElementById(targetId + '-preview');
+  const placeholder = document.getElementById(targetId + '-placeholder');
+  const clearBtn = document.getElementById(targetId + '-clear-btn');
+  
+  if (url) {
+    if (preview) { preview.src = url; preview.style.display = 'block'; }
+    if (placeholder) placeholder.style.display = 'none';
+    if (clearBtn) clearBtn.style.display = 'inline-flex';
+  } else {
+    if (preview) { preview.src = ''; preview.style.display = 'none'; }
+    if (placeholder) placeholder.style.display = 'flex';
+    if (clearBtn) clearBtn.style.display = 'none';
+  }
+  markUnsaved();
+}
+
+// ══════════════════════════════════════════════════════════
 // SIDEBAR POPULATION
 // ══════════════════════════════════════════════════════════
+function deleteProgram(type, id) {
+  if (!confirm('Are you sure you want to permanently delete this program?')) return;
+  const key = window.CMS.KEYS[type.toUpperCase()];
+  let list = window.CMS.getData(key) || window.CMS.DEFAULTS[type] || [];
+  list = list.filter(p => p.id !== id);
+  window.CMS.saveData(key, list);
+  populateSidebar();
+  if (state.itemId === id) {
+    navigate('homepage');
+  }
+  showToast('Program deleted successfully');
+}
+
 function populateSidebar() {
-  const ci = window.CMS.getData(window.CMS.KEYS.CITIZENSHIP) || window.CMS.DEFAULTS.citizenship;
-  const ri = window.CMS.getData(window.CMS.KEYS.RESIDENCY) || window.CMS.DEFAULTS.residency;
+  let ci = window.CMS.getData(window.CMS.KEYS.CITIZENSHIP) || window.CMS.DEFAULTS.citizenship;
+  let ri = window.CMS.getData(window.CMS.KEYS.RESIDENCY) || window.CMS.DEFAULTS.residency;
+
+  // Prune any completely empty ghost test items with no content
+  const origCiLen = ci.length;
+  ci = ci.filter(p => !(p.id && p.id.startsWith('id-') && !p.en?.title && !p.en?.nav_label && !p.hero_title && !p.name));
+  if (ci.length !== origCiLen) window.CMS.saveData(window.CMS.KEYS.CITIZENSHIP, ci);
+
+  const origRiLen = ri.length;
+  ri = ri.filter(p => !(p.id && p.id.startsWith('id-') && !p.en?.title && !p.en?.nav_label && !p.hero_title && !p.name));
+  if (ri.length !== origRiLen) window.CMS.saveData(window.CMS.KEYS.RESIDENCY, ri);
 
   function makeProgItem(p, type) {
     const ld = p[state.lang] || p.en || {};
-    const title = ld.nav_label || ld.title || p.id;
+    let title = ld.nav_label || ld.title || (p.en && (p.en.nav_label || p.en.title)) || p.name || '';
+    if (!title || title.startsWith('id-')) {
+      if (p.hero_title) {
+        title = p.hero_title + (type === 'citizenship' ? ' | Passport' : ' | Golden Visa');
+      } else if (p.id && !p.id.startsWith('id-')) {
+        title = p.id.charAt(0).toUpperCase() + p.id.slice(1) + (type === 'citizenship' ? ' | Passport' : ' | Golden Visa');
+      } else {
+        title = 'Custom Program';
+      }
+    }
     const dot = `<span class="sb-item-dot ${p.status === 'published' ? 'published' : 'draft'}"></span>`;
     const fallback = FLAG_CODES[p.id] ? `https://flagcdn.com/${FLAG_CODES[p.id]}.svg` : '';
     const flagSrc = (p.flag && !p.flag.includes('Flag_of_Sao_Tome_and_Principe.svg')) ? p.flag : fallback;
-    const flag = flagSrc ? `<img class="sb-item-flag" src="${flagSrc}" onerror="if(this.src!=='${fallback}'){this.src='${fallback}'}else{this.style.display='none'}">` : '';
+    const flag = flagSrc ? `<img class="sb-item-flag" src="${flagSrc}" onerror="if(this.src!=='${fallback}'){this.src='${fallback}'}else{this.style.display='none'}">` : `<span class="sb-item-flag-icon"><i class="fa-solid fa-passport"></i></span>`;
+    
+    // Allow deleting any custom-created programs easily
+    const isBuiltin = ['dominica','stkitts','antigua','grenada','stlucia','vanuatu','saotome','nauru','portugal','greece','panama','uae'].includes(p.id);
+    const delBtn = !isBuiltin ? `<button type="button" class="sb-item-del" title="Delete program" onclick="event.stopPropagation();deleteProgram('${type}','${p.id}')"><i class="fa-solid fa-trash-can"></i></button>` : '';
+
     return `<div class="sb-item" id="sb-prog-${p.id}" onclick="navigate('program','${type}','${p.id}')">
-      ${flag}${dot}<span class="sb-item-title">${escH(title)}</span>
+      ${flag}${dot}<span class="sb-item-title">${escH(title)}</span>${delBtn}
     </div>`;
   }
 
-  document.getElementById('sb-ci-caribbean').innerHTML = ci.filter(p => p.portfolio === 'caribbean').sort((a, b) => (a.nav_sort || 0) - (b.nav_sort || 0)).map(p => makeProgItem(p, 'citizenship')).join('') || '<div style="padding:4px 10px;color:var(--muted2);font-size:11px">No programs yet</div>';
-  document.getElementById('sb-ci-global').innerHTML = ci.filter(p => p.portfolio === 'global').sort((a, b) => (a.nav_sort || 0) - (b.nav_sort || 0)).map(p => makeProgItem(p, 'citizenship')).join('') || '<div style="padding:4px 10px;color:var(--muted2);font-size:11px">No programs yet</div>';
-
-  const euCi = ci.filter(p => p.portfolio === 'european');
-  const euCiGroup = document.getElementById('sb-ci-european')?.closest('.sb-sub-group');
-  if (euCiGroup) euCiGroup.style.display = euCi.length ? '' : 'none';
-  if (euCi.length) {
-    document.getElementById('sb-ci-european').innerHTML = euCi.sort((a, b) => (a.nav_sort || 0) - (b.nav_sort || 0)).map(p => makeProgItem(p, 'citizenship')).join('');
+  // Render Dynamic Sections for Citizenship
+  const ciContainer = document.getElementById('sbc-citizenship');
+  if (ciContainer) {
+    const ciSections = PortfolioManager.getSections('citizenship');
+    ciContainer.innerHTML = ciSections.map(sec => {
+      const progs = ci.filter(p => (p.portfolio || 'global') === sec.key).sort((a, b) => (a.nav_sort || 0) - (b.nav_sort || 0));
+      return `
+        <div class="sb-sub-group" id="sb-group-ci-${sec.key}">
+          <div class="sb-sub-lbl">
+            <span>${escH(sec.label)}</span>
+            <button class="sb-add-btn" style="width:16px;height:16px;font-size:8px" title="Add program to ${escH(sec.label)}" onclick="addProgram('citizenship','${sec.key}')">
+              <i class="fa-solid fa-plus"></i>
+            </button>
+          </div>
+          <div id="sb-ci-${sec.key}">${progs.map(p => makeProgItem(p, 'citizenship')).join('') || '<div style="padding:4px 10px;color:var(--muted2);font-size:11px">No programs yet</div>'}</div>
+        </div>
+      `;
+    }).join('') + `
+      <div style="padding:4px 4px 6px">
+        <button type="button" class="btn-add-section-sb" onclick="promptAddSection('citizenship')">
+          <i class="fa-solid fa-folder-plus"></i> Add New Section
+        </button>
+      </div>
+    `;
   }
 
-  document.getElementById('sb-ri-european').innerHTML = ri.filter(p => p.portfolio === 'european').sort((a, b) => (a.nav_sort || 0) - (b.nav_sort || 0)).map(p => makeProgItem(p, 'residency')).join('') || '<div style="padding:4px 10px;color:var(--muted2);font-size:11px">No programs yet</div>';
-  document.getElementById('sb-ri-uae').innerHTML = ri.filter(p => p.portfolio === 'uae' || p.portfolio === 'americas').sort((a, b) => (a.nav_sort || 0) - (b.nav_sort || 0)).map(p => makeProgItem(p, 'residency')).join('') || '<div style="padding:4px 10px;color:var(--muted2);font-size:11px">No programs yet</div>';
+  // Render Dynamic Sections for Residency
+  const riContainer = document.getElementById('sbc-residency');
+  if (riContainer) {
+    const riSections = PortfolioManager.getSections('residency');
+    riContainer.innerHTML = riSections.map(sec => {
+      const progs = ri.filter(p => (p.portfolio || 'european') === sec.key).sort((a, b) => (a.nav_sort || 0) - (b.nav_sort || 0));
+      return `
+        <div class="sb-sub-group" id="sb-group-ri-${sec.key}">
+          <div class="sb-sub-lbl">
+            <span>${escH(sec.label)}</span>
+            <button class="sb-add-btn" style="width:16px;height:16px;font-size:8px" title="Add program to ${escH(sec.label)}" onclick="addProgram('residency','${sec.key}')">
+              <i class="fa-solid fa-plus"></i>
+            </button>
+          </div>
+          <div id="sb-ri-${sec.key}">${progs.map(p => makeProgItem(p, 'residency')).join('') || '<div style="padding:4px 10px;color:var(--muted2);font-size:11px">No programs yet</div>'}</div>
+        </div>
+      `;
+    }).join('') + `
+      <div style="padding:4px 4px 6px">
+        <button type="button" class="btn-add-section-sb" onclick="promptAddSection('residency')">
+          <i class="fa-solid fa-folder-plus"></i> Add New Section
+        </button>
+      </div>
+    `;
+  }
 }
 
 function toggleGroup(group) {
@@ -1756,12 +2055,14 @@ function renderProgramEditor(l, rtl) {
   ];
 
   // 1. Identity & Navigation Settings
+  const sectionsForEditor = (typeof PortfolioManager !== 'undefined') ? PortfolioManager.getSections(itemType) : [];
   const identityBody = `
+    ${makeImageUploadField('prog-flag', 'Country Flag Image (SVG / PNG / WebP)', prog.flag, 'https://flagcdn.com/...svg', 'Choose an SVG or PNG from your computer or paste an external URL.')}
     <div class="form-row form-row-2">
-      <div class="form-group">
-        <label class="form-label">Flag Image URL</label>
-        <input class="form-input" id="prog-flag" value="${escH(prog.flag)}" placeholder="https://flagcdn.com/...svg" oninput="markUnsaved()">
-        <span style="font-size:10px;color:var(--muted)">Tip: Use https://flagcdn.com/{2-letter-code}.svg</span>
+      <div class="form-group"><label class="form-label">Portfolio Group / Section</label>
+        <select class="form-select" id="prog-portfolio" onchange="markUnsaved()">
+          ${sectionsForEditor.map(s => `<option value="${s.key}" ${(prog.portfolio||'').toLowerCase() === s.key ? 'selected' : ''}>${escH(s.name)}</option>`).join('')}
+        </select>
       </div>
       <div class="form-group"><label class="form-label">Publish Status</label>
         <select class="form-select" id="prog-status" onchange="markUnsaved()">
@@ -1769,14 +2070,6 @@ function renderProgramEditor(l, rtl) {
           <option value="draft" ${prog.status === 'draft' ? 'selected' : ''}>Draft (Hidden)</option>
         </select>
       </div>
-    </div>
-    <div class="form-row form-row-2">
-      <div class="form-group"><label class="form-label">Portfolio Group</label>
-        <select class="form-select" id="prog-portfolio" onchange="markUnsaved()">
-          ${itemType === 'citizenship' ? `<option value="caribbean" ${prog.portfolio==='caribbean'?'selected':''}>Caribbean</option><option value="global" ${prog.portfolio==='global'?'selected':''}>Global</option><option value="european" ${prog.portfolio==='european'?'selected':''}>European</option>` : `<option value="european" ${prog.portfolio==='european'?'selected':''}>European</option><option value="uae" ${prog.portfolio==='uae'?'selected':''}>UAE</option><option value="americas" ${prog.portfolio==='americas'?'selected':''}>Americas</option>`}
-        </select>
-      </div>
-      <div class="form-group"><label class="form-label">Navigation Sort Order</label><input type="number" class="form-input" id="prog-nav-sort" value="${prog.nav_sort || 1}" oninput="markUnsaved()"></div>
     </div>
     <div class="form-row form-row-2">
       <div class="form-group">
@@ -1789,6 +2082,9 @@ function renderProgramEditor(l, rtl) {
           <option value="false" ${prog.nav_visible===false?'selected':''}>No — hidden from menu</option>
         </select>
       </div>
+    </div>
+    <div class="form-row form-row-2">
+      <div class="form-group"><label class="form-label">Navigation Sort Order</label><input type="number" class="form-input" id="prog-nav-sort" value="${prog.nav_sort || 1}" oninput="markUnsaved()"></div>
     </div>`;
 
   // 2. Hero Header & Badges
@@ -1804,41 +2100,17 @@ function renderProgramEditor(l, rtl) {
       </div>
       <div class="form-group">
         <label class="form-label">Hero Category Subtitle</label>
-        <input class="form-input" ${dir} id="prog-hero-sub" value="${escH(ld.hero_subtitle || (itemType==='citizenship'?'Citizenship By Investment':'Residency By Investment'))}" oninput="markUnsaved()">
+        <input class="form-input" ${dir} id="prog-hero-sub" value="${escH(ld.hero_subtitle || (itemType==='citizenship'?'Citizenship By Investment':'Residency By Investment'))}" oninput="markUnsaved();liveUpdateField('hero_subtitle',this.value)">
       </div>
-    </div>
-    <div class="form-group" style="margin-bottom:12px">
-      <label class="form-label">Hero Lead Narrative / Tagline</label>
-      <textarea class="form-textarea" ${dir} id="prog-hero-tagline" placeholder="Detailed headline value proposition..." style="min-height:55px" oninput="markUnsaved()">${escH(ld.hero_tagline || 'Attain premier second citizenship granting unrestricted settlement, global travel freedom, and sovereign protection.')}</textarea>
     </div>
     <div style="margin-bottom:12px">
       <label class="form-label" style="margin-bottom:6px">5 Hero Stat Badges (Header Quick Pills)</label>
       <div style="display:grid;grid-template-columns:1fr;gap:6px">
-        <input class="form-input" id="prog-badge-1" value="${escH(defaultBadges[0] || '')}" placeholder="Badge 1: Fully Remote, No Presence Requirements" oninput="markUnsaved()">
-        <input class="form-input" id="prog-badge-2" value="${escH(defaultBadges[1] || '')}" placeholder="Badge 2: 6-9 Months Time To Passport" oninput="markUnsaved()">
-        <input class="form-input" id="prog-badge-3" value="${escH(defaultBadges[2] || '')}" placeholder="Badge 3: Contribution Starting from $200,000" oninput="markUnsaved()">
-        <input class="form-input" id="prog-badge-4" value="${escH(defaultBadges[3] || '')}" placeholder="Badge 4: 2 Investment Routes" oninput="markUnsaved()">
-        <input class="form-input" id="prog-badge-5" value="${escH(defaultBadges[4] || '')}" placeholder="Badge 5: 16+ Mandatory Interview Age" oninput="markUnsaved()">
-      </div>
-    </div>
-    <div class="form-row form-row-2">
-      <div class="form-group">
-        <label class="form-label">Primary Hero Button Text</label>
-        <input class="form-input" id="prog-cta1-text" value="${escH(ld.hero_cta1_text || 'Download Official Guide')}" oninput="markUnsaved()">
-      </div>
-      <div class="form-group">
-        <label class="form-label">Primary Hero Button Link</label>
-        <input class="form-input" id="prog-cta1-link" value="${escH(ld.hero_cta1_link || 'contact/index.html')}" oninput="markUnsaved()">
-      </div>
-    </div>
-    <div class="form-row form-row-2">
-      <div class="form-group">
-        <label class="form-label">Secondary Hero Button Text</label>
-        <input class="form-input" id="prog-cta2-text" value="${escH(ld.hero_cta2_text || 'Book Confidential Assessment')}" oninput="markUnsaved()">
-      </div>
-      <div class="form-group">
-        <label class="form-label">Secondary Hero Button Link</label>
-        <input class="form-input" id="prog-cta2-link" value="${escH(ld.hero_cta2_link || 'contact/index.html')}" oninput="markUnsaved()">
+        <input class="form-input" id="prog-badge-1" value="${escH(defaultBadges[0] || '')}" placeholder="Badge 1: Fully Remote, No Presence Requirements" oninput="markUnsaved();liveUpdateField('badge1',this.value)">
+        <input class="form-input" id="prog-badge-2" value="${escH(defaultBadges[1] || '')}" placeholder="Badge 2: 6-9 Months Time To Passport" oninput="markUnsaved();liveUpdateField('badge2',this.value)">
+        <input class="form-input" id="prog-badge-3" value="${escH(defaultBadges[2] || '')}" placeholder="Badge 3: Contribution Starting from $200,000" oninput="markUnsaved();liveUpdateField('badge3',this.value)">
+        <input class="form-input" id="prog-badge-4" value="${escH(defaultBadges[3] || '')}" placeholder="Badge 4: 2 Investment Routes" oninput="markUnsaved();liveUpdateField('badge4',this.value)">
+        <input class="form-input" id="prog-badge-5" value="${escH(defaultBadges[4] || '')}" placeholder="Badge 5: 16+ Mandatory Interview Age" oninput="markUnsaved();liveUpdateField('badge5',this.value)">
       </div>
     </div>`;
 
@@ -1848,62 +2120,47 @@ function renderProgramEditor(l, rtl) {
     <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:10px">
       <div style="background:rgba(0,0,0,.25);border:1px solid var(--border);border-radius:8px;padding:10px">
         <div style="font-weight:700;font-size:11px;color:var(--gold);margin-bottom:6px">Card 1: Processing Time</div>
-        <div class="form-group" style="margin-bottom:6px"><label class="form-label">Value</label><input class="form-input" id="prog-spec1-val" value="${escH(defaultSpecs[0]?.value || ld.processing_time || '6–9 Months')}" oninput="markUnsaved();liveUpdateField('processing_time',this.value)"></div>
-        <div class="form-group"><label class="form-label">Description</label><input class="form-input" id="prog-spec1-desc" value="${escH(defaultSpecs[0]?.desc || 'Approximately 6-9 months to complete')}" oninput="markUnsaved()"></div>
+        <input class="form-input" id="prog-spec1-val" value="${escH(defaultSpecs[0]?.desc || defaultSpecs[0]?.value || ld.processing_time || 'Approximately 6-9 months to complete')}" oninput="markUnsaved();liveUpdateField('processing_time',this.value)">
       </div>
       <div style="background:rgba(0,0,0,.25);border:1px solid var(--border);border-radius:8px;padding:10px">
         <div style="font-weight:700;font-size:11px;color:var(--gold);margin-bottom:6px">Card 2: Visa-Free Travel</div>
-        <div class="form-group" style="margin-bottom:6px"><label class="form-label">Value</label><input class="form-input" id="prog-spec2-val" value="${escH(defaultSpecs[1]?.value || ld.visa_free || '140+')}" oninput="markUnsaved();liveUpdateField('visa_free',this.value)"></div>
-        <div class="form-group"><label class="form-label">Description</label><input class="form-input" id="prog-spec2-desc" value="${escH(defaultSpecs[1]?.desc || 'Access to over 140+ countries worldwide')}" oninput="markUnsaved()"></div>
+        <input class="form-input" id="prog-spec2-val" value="${escH(defaultSpecs[1]?.desc || defaultSpecs[1]?.value || ld.visa_free || 'Access to over 140+ countries worldwide')}" oninput="markUnsaved();liveUpdateField('visa_free',this.value)">
       </div>
       <div style="background:rgba(0,0,0,.25);border:1px solid var(--border);border-radius:8px;padding:10px">
         <div style="font-weight:700;font-size:11px;color:var(--gold);margin-bottom:6px">Card 3: Investment Type</div>
-        <div class="form-group" style="margin-bottom:6px"><label class="form-label">Value</label><input class="form-input" id="prog-spec3-val" value="${escH(defaultSpecs[2]?.value || '2 Routes')}" oninput="markUnsaved()"></div>
-        <div class="form-group"><label class="form-label">Description</label><input class="form-input" id="prog-spec3-desc" value="${escH(defaultSpecs[2]?.desc || 'Choose from economic donation or approved real estate')}" oninput="markUnsaved()"></div>
+        <input class="form-input" id="prog-spec3-val" value="${escH(defaultSpecs[2]?.desc || defaultSpecs[2]?.value || 'Choose from economic donation or approved real estate')}" oninput="markUnsaved();liveUpdateField('spec_investment_type',this.value)">
       </div>
       <div style="background:rgba(0,0,0,.25);border:1px solid var(--border);border-radius:8px;padding:10px">
         <div style="font-weight:700;font-size:11px;color:var(--gold);margin-bottom:6px">Card 4: Investment Cost</div>
-        <div class="form-group" style="margin-bottom:6px"><label class="form-label">Value</label><input class="form-input" id="prog-spec4-val" value="${escH(defaultSpecs[3]?.value || ld.investment_from || '$200,000 USD')}" oninput="markUnsaved();liveUpdateField('investment_from',this.value)"></div>
-        <div class="form-group"><label class="form-label">Description</label><input class="form-input" id="prog-spec4-desc" value="${escH(defaultSpecs[3]?.desc || 'USD 200,000 for single or USD 250,000 for family')}" oninput="markUnsaved()"></div>
+        <input class="form-input" id="prog-spec4-val" value="${escH(defaultSpecs[3]?.desc || defaultSpecs[3]?.value || ld.investment_from || 'USD 200,000 for single or USD 250,000 for family')}" oninput="markUnsaved();liveUpdateField('investment_from',this.value)">
       </div>
       <div style="background:rgba(0,0,0,.25);border:1px solid var(--border);border-radius:8px;padding:10px">
         <div style="font-weight:700;font-size:11px;color:var(--gold);margin-bottom:6px">Card 5: Family Dependents</div>
-        <div class="form-group" style="margin-bottom:6px"><label class="form-label">Value</label><input class="form-input" id="prog-spec5-val" value="${escH(defaultSpecs[4]?.value || 'Spouse & Dependents')}" oninput="markUnsaved()"></div>
-        <div class="form-group"><label class="form-label">Description</label><input class="form-input" id="prog-spec5-desc" value="${escH(defaultSpecs[4]?.desc || 'Includes spouse, dependent children under 30, and parents over 65')}" oninput="markUnsaved()"></div>
+        <input class="form-input" id="prog-spec5-val" value="${escH(defaultSpecs[4]?.desc || defaultSpecs[4]?.value || 'Includes spouse, dependent children under 30, and parents over 65')}" oninput="markUnsaved();liveUpdateField('spec_family',this.value)">
       </div>
       <div style="background:rgba(0,0,0,.25);border:1px solid var(--border);border-radius:8px;padding:10px">
         <div style="font-weight:700;font-size:11px;color:var(--gold);margin-bottom:6px">Card 6: Physical Presence</div>
-        <div class="form-group" style="margin-bottom:6px"><label class="form-label">Value</label><input class="form-input" id="prog-spec6-val" value="${escH(defaultSpecs[5]?.value || '0 Days')}" oninput="markUnsaved()"></div>
-        <div class="form-group"><label class="form-label">Description</label><input class="form-input" id="prog-spec6-desc" value="${escH(defaultSpecs[5]?.desc || 'No mandatory visit or physical residency required')}" oninput="markUnsaved()"></div>
+        <input class="form-input" id="prog-spec6-val" value="${escH(defaultSpecs[5]?.desc || defaultSpecs[5]?.value || 'No mandatory visit or physical residency required')}" oninput="markUnsaved();liveUpdateField('spec_presence',this.value)">
       </div>
     </div>`;
 
   // 4. Executive Overview & Briefing
   const overviewBody = `
     <div class="form-row form-row-2">
-      <div class="form-group"><label class="form-label">Section Badge</label><input class="form-input" ${dir} id="prog-ov-badge" value="${escH(ld.overview_badge || 'EXECUTIVE BRIEFING')}" oninput="markUnsaved()"></div>
-      <div class="form-group"><label class="form-label">Main Section Heading</label><input class="form-input" ${dir} id="prog-ov-title" value="${escH(ld.overview_title || 'Program Overview: Sharif Group\'s Guide')}" oninput="markUnsaved()"></div>
+      <div class="form-group"><label class="form-label">Section Badge</label><input class="form-input" ${dir} id="prog-ov-badge" value="${escH(ld.overview_badge || 'EXECUTIVE BRIEFING')}" oninput="markUnsaved();liveUpdateField('overview_badge',this.value)"></div>
+      <div class="form-group"><label class="form-label">Main Section Heading</label><input class="form-input" ${dir} id="prog-ov-title" value="${escH(ld.overview_title || 'Program Overview: Sharif Group\'s Guide')}" oninput="markUnsaved();liveUpdateField('overview_title',this.value)"></div>
     </div>
     <div class="form-group" style="margin-bottom:12px">
-      <label class="form-label">Narrative Paragraph 1 <span class="form-lang-tag">${l.toUpperCase()}</span></label>
-      <textarea class="form-textarea" style="min-height:90px" ${dir} id="prog-ov-p1" oninput="markUnsaved();liveUpdateField('overview',this.value)">${escH(ld.overview_p1 || ld.overview)}</textarea>
-    </div>
-    <div class="form-group" style="margin-bottom:12px">
-      <label class="form-label">Narrative Paragraph 2 (Strategic Value)</label>
-      <textarea class="form-textarea" style="min-height:90px" ${dir} id="prog-ov-p2" oninput="markUnsaved()">${escH(ld.overview_p2 || 'Our legal firm in Business Bay Dubai guides your family securely from preliminary file preparation through to direct government passport delivery.')}</textarea>
-    </div>
-    <div class="form-row form-row-2">
-      <div class="form-group"><label class="form-label">Overview Button Label</label><input class="form-input" id="prog-ov-cta-text" value="${escH(ld.overview_cta_text || 'Download Official Dossier')}" oninput="markUnsaved()"></div>
-      <div class="form-group"><label class="form-label">Overview Button Link</label><input class="form-input" id="prog-ov-cta-link" value="${escH(ld.overview_cta_link || 'contact/index.html')}" oninput="markUnsaved()"></div>
+      <label class="form-label">Program Overview Description (Narrative) <span class="form-lang-tag">${l.toUpperCase()}</span></label>
+      <textarea class="form-textarea" style="min-height:95px" ${dir} id="prog-ov-p1" oninput="markUnsaved();liveUpdateField('overview_p1',this.value);liveUpdateField('overview',this.value)">${escH(ld.overview_p1 || ld.overview)}</textarea>
     </div>`;
 
   // 5. Program Strategic Benefits Cards Grid
   const benefitsBody = `
     <div class="form-row form-row-2" style="margin-bottom:12px">
-      <div class="form-group"><label class="form-label">Section Badge</label><input class="form-input" id="prog-ben-badge" value="${escH(ld.benefits_badge || 'STRATEGIC ADVANTAGES')}" oninput="markUnsaved()"></div>
-      <div class="form-group"><label class="form-label">Section Heading</label><input class="form-input" id="prog-ben-title" value="${escH(ld.benefits_title || 'Why Global Investors Choose This Program')}" oninput="markUnsaved()"></div>
+      <div class="form-group"><label class="form-label">Section Badge</label><input class="form-input" id="prog-ben-badge" value="${escH(ld.benefits_badge || 'KEY BENEFITS')}" oninput="markUnsaved();liveUpdateField('benefits_badge',this.value)"></div>
+      <div class="form-group"><label class="form-label">Section Heading</label><input class="form-input" id="prog-ben-title" value="${escH(ld.benefits_title || 'Why Global Investors Choose This Program')}" oninput="markUnsaved();liveUpdateField('benefits_title',this.value)"></div>
     </div>
-    <div class="form-group" style="margin-bottom:12px"><label class="form-label">Section Subtitle</label><input class="form-input" id="prog-ben-desc" value="${escH(ld.benefits_desc || 'Key lifestyle, taxation, and mobility benefits designed for international investors.')}" oninput="markUnsaved()"></div>
     ${renderBenefitCardsBuilder('benefits-builder', defaultBenefits)}`;
 
   // 6. Investment Routes & Options
@@ -2071,52 +2328,58 @@ function renderNewProgramView(type, portfolio) {
   ];
 
   // 1. Identity & Navigation Settings
+  const sectionsForNew = (typeof PortfolioManager !== 'undefined') ? PortfolioManager.getSections(type) : [];
+  const currentSectionKey = (portfolio || (sectionsForNew[0] ? sectionsForNew[0].key : 'global')).toLowerCase();
+
   const identityBody = `
-    <div class="form-group" style="margin-bottom:12px">
+    <div class="form-group" style="margin-bottom:18px">
       <label class="form-label">Program Name (e.g. "${isCBI ? 'Malta Citizenship by Investment' : 'Portugal Golden Visa'}")</label>
       <input class="form-input form-input-headline" id="np-name" placeholder="Enter program name..." oninput="
         markUnsaved();
-        const base = this.value.replace(/\s+(citizenship|residency|golden visa).*$/i, '').trim();
+        const base = this.value.replace(/\\s+(citizenship|residency|golden visa).*$/i, '').trim();
         document.getElementById('np-hero-title').value = base;
         document.getElementById('np-nav-label').value = base + ' | ' + (document.getElementById('np-type').value === 'citizenship' ? 'Passport' : 'Golden Visa');
         liveUpdateField('hero_title', base);
         liveUpdateField('title', base);
       ">
     </div>
+
+    <!-- Hidden Program Type + Sleek Program Type Indicator Pill -->
+    <input type="hidden" id="np-type" value="${type}">
     <div class="form-row form-row-2">
       <div class="form-group">
-        <label class="form-label">Program Type (Switches Form & Live Preview)</label>
-        <select class="form-select" id="np-type" onchange="navigate('new-program', this.value, document.getElementById('np-portfolio').value)">
-          <option value="citizenship" ${isCBI ? 'selected' : ''}>Citizenship by Investment (Passport & Sovereignty)</option>
-          <option value="residency" ${!isCBI ? 'selected' : ''}>Residency by Investment (Golden Visa & Schengen)</option>
-        </select>
+        <label class="form-label">Program Category</label>
+        <div class="program-type-pill">
+          <i class="fa-solid ${isCBI ? 'fa-passport' : 'fa-id-card'}"></i>
+          <div>
+            <strong>${isCBI ? 'Citizenship by Investment' : 'Residency & Golden Visa'}</strong>
+            <span style="display:block;font-size:10px;color:var(--muted);font-weight:normal">Configuring ${isCBI ? 'Passport Dossier' : 'Residency Permit'} Page</span>
+          </div>
+        </div>
       </div>
       <div class="form-group">
-        <label class="form-label">Portfolio Group</label>
-        <select class="form-select" id="np-portfolio" onchange="markUnsaved()">
-          ${isCBI ? `
-            <option value="caribbean" ${portfolio==='caribbean'?'selected':''}>Caribbean</option>
-            <option value="european" ${portfolio==='european'?'selected':''}>European</option>
-            <option value="global" ${portfolio==='global'?'selected':''}>Global</option>
-          ` : `
-            <option value="european" ${portfolio==='european'?'selected':''}>European</option>
-            <option value="uae" ${portfolio==='uae'?'selected':''}>UAE & Americas</option>
-            <option value="global" ${portfolio==='global'?'selected':''}>Global</option>
-          `}
+        <label class="form-label">Portfolio Group / Section</label>
+        <select class="form-select" id="np-portfolio" onchange="
+          markUnsaved();
+          const customBox = document.getElementById('np-custom-portfolio-wrap');
+          if (customBox) customBox.style.display = this.value === '__new__' ? 'block' : 'none';
+        ">
+          ${sectionsForNew.map(s => `<option value="${s.key}" ${currentSectionKey === s.key ? 'selected' : ''}>${escH(s.name)}</option>`).join('')}
+          <option value="__new__">+ Create New Section (e.g. Caribbean, Global...)</option>
         </select>
+        <div id="np-custom-portfolio-wrap" style="display:none;margin-top:8px">
+          <input class="form-input" id="np-custom-portfolio" placeholder="Enter new section name (e.g. Caribbean, Middle East)..." oninput="markUnsaved()">
+        </div>
       </div>
     </div>
+
+    ${makeImageUploadField('np-flag', 'Country Flag Image (SVG / PNG / WebP)', '', isCBI ? 'https://flagcdn.com/dm.svg' : 'https://flagcdn.com/pt.svg', 'Upload flag directly from your computer or paste an external URL.')}
+
     <div class="form-row form-row-2">
-      <div class="form-group">
-        <label class="form-label">Flag Image URL (Vector SVG)</label>
-        <input class="form-input" id="np-flag" placeholder="${isCBI ? 'https://flagcdn.com/dm.svg' : 'https://flagcdn.com/pt.svg'}" oninput="markUnsaved()">
-      </div>
       <div class="form-group">
         <label class="form-label">Navigation Menu Label</label>
         <input class="form-input" id="np-nav-label" placeholder="${isCBI ? 'Dominica | Passport' : 'Portugal | Golden Visa'}" oninput="markUnsaved()">
       </div>
-    </div>
-    <div class="form-row form-row-2">
       <div class="form-group">
         <label class="form-label">Publish Status</label>
         <select class="form-select" id="np-status" onchange="markUnsaved()">
@@ -2124,6 +2387,8 @@ function renderNewProgramView(type, portfolio) {
           <option value="draft">Draft (Hidden from Public)</option>
         </select>
       </div>
+    </div>
+    <div class="form-row form-row-2">
       <div class="form-group">
         <label class="form-label">Show in Website Navigation</label>
         <select class="form-select" id="np-nav-vis" onchange="markUnsaved()">
@@ -2145,20 +2410,9 @@ function renderNewProgramView(type, portfolio) {
         <input class="form-input" id="np-hero-sub" value="${isCBI ? 'Citizenship By Investment' : 'Residency By Investment'}" oninput="markUnsaved();liveUpdateField('hero_subtitle', this.value)">
       </div>
     </div>
-    <div class="form-group" style="margin-bottom:12px">
-      <label class="form-label">Hero Lead Tagline / Value Proposition</label>
-      <textarea class="form-textarea" id="np-hero-tagline" style="min-height:55px" oninput="markUnsaved();liveUpdateField('hero_tagline', this.value)">${isCBI ? 'Attain prestigious second citizenship granting unrestricted global mobility, sovereign wealth protection, and generational security.' : 'Secure premier European residency granting unrestricted Schengen mobility, world-class lifestyle, and a legal pathway to full citizenship.'}</textarea>
-    </div>
-    <div class="form-row form-row-2" style="margin-bottom:12px">
-      <div class="form-group">
-        <label class="form-label">Hero Background Slide 1 Image URL</label>
-        <input class="form-input" id="np-hero-img1" placeholder="https://images.unsplash.com/... or images/hero1.jpg" oninput="markUnsaved();liveUpdateField('hero_img1', this.value)">
-      </div>
-      <div class="form-group">
-        <label class="form-label">Hero Background Slide 2 Image URL</label>
-        <input class="form-input" id="np-hero-img2" placeholder="https://images.unsplash.com/... or images/hero2.jpg" oninput="markUnsaved()">
-      </div>
-    </div>
+    
+    ${makeImageUploadField('np-hero-img1', 'Hero Background Slide 1 Image', '', 'https://images.unsplash.com/... or images/hero1.jpg', 'Upload banner photography from your disk or paste an image link.')}
+    ${makeImageUploadField('np-hero-img2', 'Hero Background Slide 2 Image (Optional)', '', 'https://images.unsplash.com/... or images/hero2.jpg', 'Optional alternate slide for hero photography rotation.')}
     <div style="margin-bottom:12px">
       <label class="form-label" style="margin-bottom:6px">5 Hero Stat Badges (Header Quick Pills)</label>
       <div style="display:grid;grid-template-columns:1fr;gap:6px">
@@ -2168,26 +2422,6 @@ function renderNewProgramView(type, portfolio) {
         <input class="form-input" id="np-badge-4" value="${isCBI ? '2 Sovereign Investment Routes' : '29 Schengen Countries Free Access'}" oninput="markUnsaved();liveUpdateField('badge4', this.value)">
         <input class="form-input" id="np-badge-5" value="${isCBI ? '16+ Mandatory Interview Age' : 'EU Passport Path in 5 Years'}" oninput="markUnsaved();liveUpdateField('badge5', this.value)">
       </div>
-    </div>
-    <div class="form-row form-row-2">
-      <div class="form-group">
-        <label class="form-label">Primary Hero Button Text</label>
-        <input class="form-input" id="np-cta1-text" value="Download Official Guide" oninput="markUnsaved()">
-      </div>
-      <div class="form-group">
-        <label class="form-label">Primary Hero Button Link</label>
-        <input class="form-input" id="np-cta1-link" value="contact/index.html" oninput="markUnsaved()">
-      </div>
-    </div>
-    <div class="form-row form-row-2">
-      <div class="form-group">
-        <label class="form-label">Secondary Hero Button Text</label>
-        <input class="form-input" id="np-cta2-text" value="Book Confidential Assessment" oninput="markUnsaved()">
-      </div>
-      <div class="form-group">
-        <label class="form-label">Secondary Hero Button Link</label>
-        <input class="form-input" id="np-cta2-link" value="contact/index.html" oninput="markUnsaved()">
-      </div>
     </div>`;
 
   // 3. Key Specifications Cards (6 Cards)
@@ -2195,65 +2429,53 @@ function renderNewProgramView(type, portfolio) {
     <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:10px">
       <div style="background:#F8FAFC;border:1px solid #E2E8F0;border-radius:8px;padding:12px">
         <div style="font-weight:700;font-size:11px;color:var(--gold);margin-bottom:6px">Card 1: Processing Time</div>
-        <div class="form-group" style="margin-bottom:6px"><label class="form-label">Value</label><input class="form-input" id="np-spec1-val" value="6–9 Months" oninput="markUnsaved();liveUpdateField('processing_time', this.value)"></div>
-        <div class="form-group"><label class="form-label">Detailed Note</label><input class="form-input" id="np-spec1-desc" value="Approximately 6-9 months from submission to passport issuance" oninput="markUnsaved()"></div>
+        <input class="form-input" id="np-spec1-val" value="Approximately 6-9 months to complete" oninput="markUnsaved();liveUpdateField('processing_time', this.value)">
       </div>
       <div style="background:#F8FAFC;border:1px solid #E2E8F0;border-radius:8px;padding:12px">
         <div style="font-weight:700;font-size:11px;color:var(--gold);margin-bottom:6px">Card 2: Visa-Free Travel</div>
-        <div class="form-group" style="margin-bottom:6px"><label class="form-label">Value</label><input class="form-input" id="np-spec2-val" value="140+ Countries" oninput="markUnsaved();liveUpdateField('visa_free', this.value)"></div>
-        <div class="form-group"><label class="form-label">Detailed Note</label><input class="form-input" id="np-spec2-desc" value="Access to over 140+ countries and global financial centers" oninput="markUnsaved()"></div>
+        <input class="form-input" id="np-spec2-val" value="Access to over 140+ countries worldwide" oninput="markUnsaved();liveUpdateField('visa_free', this.value)">
       </div>
       <div style="background:#F8FAFC;border:1px solid #E2E8F0;border-radius:8px;padding:12px">
         <div style="font-weight:700;font-size:11px;color:var(--gold);margin-bottom:6px">Card 3: Investment Type</div>
-        <div class="form-group" style="margin-bottom:6px"><label class="form-label">Value</label><input class="form-input" id="np-spec3-val" value="2 Routes" oninput="markUnsaved();liveUpdateField('spec_investment_type', this.value)"></div>
-        <div class="form-group"><label class="form-label">Detailed Note</label><input class="form-input" id="np-spec3-desc" value="Choose from economic donation or approved real estate" oninput="markUnsaved()"></div>
+        <input class="form-input" id="np-spec3-val" value="Choose from economic donation or approved real estate" oninput="markUnsaved();liveUpdateField('spec_investment_type', this.value)">
       </div>
       <div style="background:#F8FAFC;border:1px solid #E2E8F0;border-radius:8px;padding:12px">
         <div style="font-weight:700;font-size:11px;color:var(--gold);margin-bottom:6px">Card 4: Starting Investment</div>
-        <div class="form-group" style="margin-bottom:6px"><label class="form-label">Value</label><input class="form-input" id="np-spec4-val" value="$200,000 USD" oninput="markUnsaved();liveUpdateField('investment_from', this.value)"></div>
-        <div class="form-group"><label class="form-label">Detailed Note</label><input class="form-input" id="np-spec4-desc" value="USD 200,000 non-refundable sovereign contribution" oninput="markUnsaved()"></div>
+        <input class="form-input" id="np-spec4-val" value="USD 200,000 for single or USD 250,000 for family of 4" oninput="markUnsaved();liveUpdateField('investment_from', this.value)">
       </div>
       <div style="background:#F8FAFC;border:1px solid #E2E8F0;border-radius:8px;padding:12px">
         <div style="font-weight:700;font-size:11px;color:var(--gold);margin-bottom:6px">Card 5: Family Dependents</div>
-        <div class="form-group" style="margin-bottom:6px"><label class="form-label">Value</label><input class="form-input" id="np-spec5-val" value="Spouse & Dependents" oninput="markUnsaved();liveUpdateField('spec_family', this.value)"></div>
-        <div class="form-group"><label class="form-label">Detailed Note</label><input class="form-input" id="np-spec5-desc" value="Includes spouse, dependent children under 30, and parents over 65" oninput="markUnsaved()"></div>
+        <input class="form-input" id="np-spec5-val" value="Includes spouse, dependent children under 30, and parents over 65" oninput="markUnsaved();liveUpdateField('spec_family', this.value)">
       </div>
       <div style="background:#F8FAFC;border:1px solid #E2E8F0;border-radius:8px;padding:12px">
         <div style="font-weight:700;font-size:11px;color:var(--gold);margin-bottom:6px">Card 6: Physical Presence</div>
-        <div class="form-group" style="margin-bottom:6px"><label class="form-label">Value</label><input class="form-input" id="np-spec6-val" value="0 Days" oninput="markUnsaved();liveUpdateField('spec_presence', this.value)"></div>
-        <div class="form-group"><label class="form-label">Detailed Note</label><input class="form-input" id="np-spec6-desc" value="No mandatory visit or physical residency required" oninput="markUnsaved()"></div>
+        <input class="form-input" id="np-spec6-val" value="No mandatory visit or physical residency required" oninput="markUnsaved();liveUpdateField('spec_presence', this.value)">
       </div>
     </div>` : `
     <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:10px">
       <div style="background:#F8FAFC;border:1px solid #E2E8F0;border-radius:8px;padding:12px">
         <div style="font-weight:700;font-size:11px;color:var(--gold);margin-bottom:6px">Card 1: Processing Time</div>
-        <div class="form-group" style="margin-bottom:6px"><label class="form-label">Value</label><input class="form-input" id="np-spec1-val" value="3–6 Months" oninput="markUnsaved();liveUpdateField('processing_time', this.value)"></div>
-        <div class="form-group"><label class="form-label">Detailed Note</label><input class="form-input" id="np-spec1-desc" value="Expedited file submission and biometric appointment scheduling" oninput="markUnsaved()"></div>
+        <input class="form-input" id="np-spec1-val" value="3–6 Months expedited processing" oninput="markUnsaved();liveUpdateField('processing_time', this.value)">
       </div>
       <div style="background:#F8FAFC;border:1px solid #E2E8F0;border-radius:8px;padding:12px">
         <div style="font-weight:700;font-size:11px;color:var(--gold);margin-bottom:6px">Card 2: Schengen Visa-Free</div>
-        <div class="form-group" style="margin-bottom:6px"><label class="form-label">Value</label><input class="form-input" id="np-spec2-val" value="29 Schengen Countries" oninput="markUnsaved();liveUpdateField('visa_free', this.value)"></div>
-        <div class="form-group"><label class="form-label">Detailed Note</label><input class="form-input" id="np-spec2-desc" value="Unrestricted border-free movement across the entire European Schengen zone" oninput="markUnsaved()"></div>
+        <input class="form-input" id="np-spec2-val" value="29 Schengen Countries border-free access" oninput="markUnsaved();liveUpdateField('visa_free', this.value)">
       </div>
       <div style="background:#F8FAFC;border:1px solid #E2E8F0;border-radius:8px;padding:12px">
         <div style="font-weight:700;font-size:11px;color:var(--gold);margin-bottom:6px">Card 3: Residence Type</div>
-        <div class="form-group" style="margin-bottom:6px"><label class="form-label">Value</label><input class="form-input" id="np-spec3-val" value="Golden Visa" oninput="markUnsaved();liveUpdateField('spec_investment_type', this.value)"></div>
-        <div class="form-group"><label class="form-label">Detailed Note</label><input class="form-input" id="np-spec3-desc" value="Official sovereign permanent residence permit with right to live, work, and study" oninput="markUnsaved()"></div>
+        <input class="form-input" id="np-spec3-val" value="Golden Visa residency permit" oninput="markUnsaved();liveUpdateField('spec_investment_type', this.value)">
       </div>
       <div style="background:#F8FAFC;border:1px solid #E2E8F0;border-radius:8px;padding:12px">
         <div style="font-weight:700;font-size:11px;color:var(--gold);margin-bottom:6px">Card 4: Starting Investment</div>
-        <div class="form-group" style="margin-bottom:6px"><label class="form-label">Value</label><input class="form-input" id="np-spec4-val" value="From €250,000" oninput="markUnsaved();liveUpdateField('investment_from', this.value)"></div>
-        <div class="form-group"><label class="form-label">Detailed Note</label><input class="form-input" id="np-spec4-desc" value="Capital investment in approved regulated venture funds or cultural projects" oninput="markUnsaved()"></div>
+        <input class="form-input" id="np-spec4-val" value="From €250,000 regulated investment" oninput="markUnsaved();liveUpdateField('investment_from', this.value)">
       </div>
       <div style="background:#F8FAFC;border:1px solid #E2E8F0;border-radius:8px;padding:12px">
         <div style="font-weight:700;font-size:11px;color:var(--gold);margin-bottom:6px">Card 5: Path to Citizenship</div>
-        <div class="form-group" style="margin-bottom:6px"><label class="form-label">Value</label><input class="form-input" id="np-spec5-val" value="5 Years" oninput="markUnsaved();liveUpdateField('spec_family', this.value)"></div>
-        <div class="form-group"><label class="form-label">Detailed Note</label><input class="form-input" id="np-spec5-desc" value="Eligible to apply for full European Union passport and citizenship after 5 years" oninput="markUnsaved()"></div>
+        <input class="form-input" id="np-spec5-val" value="Eligible for EU passport after 5 years" oninput="markUnsaved();liveUpdateField('spec_family', this.value)">
       </div>
       <div style="background:#F8FAFC;border:1px solid #E2E8F0;border-radius:8px;padding:12px">
         <div style="font-weight:700;font-size:11px;color:var(--gold);margin-bottom:6px">Card 6: Minimum Stay Requirement</div>
-        <div class="form-group" style="margin-bottom:6px"><label class="form-label">Value</label><input class="form-input" id="np-spec6-val" value="7 Days / Year" oninput="markUnsaved();liveUpdateField('spec_presence', this.value)"></div>
-        <div class="form-group"><label class="form-label">Detailed Note</label><input class="form-input" id="np-spec6-desc" value="Spend just 7 days per year in country with zero mandatory relocation" oninput="markUnsaved()"></div>
+        <input class="form-input" id="np-spec6-val" value="Spend just 7 days per year in country" oninput="markUnsaved();liveUpdateField('spec_presence', this.value)">
       </div>
     </div>`;
 
@@ -2264,29 +2486,16 @@ function renderNewProgramView(type, portfolio) {
       <div class="form-group"><label class="form-label">Main Section Heading</label><input class="form-input" id="np-ov-title" value="${isCBI ? "Program Overview: Sharif Group's Guide" : "Golden Visa & Residency: Sharif Group's Guide"}" oninput="markUnsaved();liveUpdateField('overview_title', this.value)"></div>
     </div>
     <div class="form-group" style="margin-bottom:12px">
-      <label class="form-label">Narrative Paragraph 1 (Executive Summary)</label>
-      <textarea class="form-textarea" style="min-height:85px" id="np-ov-p1" oninput="markUnsaved();liveUpdateField('overview_p1', this.value);liveUpdateField('overview', this.value)">${isCBI ? 'This premier sovereign program offers high-net-worth investors and their families instant global mobility, legal certainty, and sovereign asset protection under established constitutional legislation.' : 'This distinguished sovereign residency program grants high-net-worth families the legal freedom to reside, work, and educate their children in top global jurisdictions while enjoying European Schengen mobility.'}</textarea>
-    </div>
-    <div class="form-group" style="margin-bottom:12px">
-      <label class="form-label">Narrative Paragraph 2 (Strategic Value Proposition)</label>
-      <textarea class="form-textarea" style="min-height:85px" id="np-ov-p2" oninput="markUnsaved()">${isCBI ? 'Our legal advisory headquarters in Business Bay Dubai provides white-glove, confidential representation from initial background due diligence through to passport delivery.' : 'Our legal advisory headquarters in Dubai manages every phase of your application, from bank account opening and tax registration to biometrics and card renewal.'}</textarea>
-    </div>
-    <div class="form-row form-row-2" style="margin-bottom:12px">
-      <div class="form-group"><label class="form-label">Capital City / Jurisdiction</label><input class="form-input" id="np-ov-cap" value="${isCBI ? 'Roseau' : 'Lisbon'}" oninput="markUnsaved()"></div>
-      <div class="form-group"><label class="form-label">Official Currency</label><input class="form-input" id="np-ov-curr" value="${isCBI ? 'Eastern Caribbean Dollar (XCD) / USD' : 'Euro (EUR)'}" oninput="markUnsaved()"></div>
-    </div>
-    <div class="form-row form-row-2">
-      <div class="form-group"><label class="form-label">Overview Button Label</label><input class="form-input" id="np-ov-cta-text" value="Download Official Dossier" oninput="markUnsaved()"></div>
-      <div class="form-group"><label class="form-label">Overview Button Link</label><input class="form-input" id="np-ov-cta-link" value="contact/index.html" oninput="markUnsaved()"></div>
+      <label class="form-label">Program Overview Description (Narrative)</label>
+      <textarea class="form-textarea" style="min-height:95px" id="np-ov-p1" oninput="markUnsaved();liveUpdateField('overview_p1', this.value);liveUpdateField('overview', this.value)">${isCBI ? 'Dominica, known as the beautiful Nature Isle of the Caribbean, offers one of the most reliable and efficient second passport programs in the world. With quick processing speeds and a secure legal foundation, this program grants high-net-worth investors and their families instant global mobility. Our Business Bay firm guides your family securely from start to finish.' : 'This distinguished sovereign residency program grants high-net-worth families the legal freedom to reside, work, and educate their children in top global jurisdictions while enjoying European Schengen mobility.'}</textarea>
     </div>`;
 
   // 5. Strategic Benefits (Complete 8 Cards)
   const benefitsBody = `
     <div class="form-row form-row-2" style="margin-bottom:12px">
-      <div class="form-group"><label class="form-label">Section Badge</label><input class="form-input" id="np-ben-badge" value="STRATEGIC ADVANTAGES" oninput="markUnsaved();liveUpdateField('benefits_badge', this.value)"></div>
-      <div class="form-group"><label class="form-label">Section Heading</label><input class="form-input" id="np-ben-title" value="${isCBI ? 'Why Global Investors Choose This Program' : 'Key Advantages of European Residency'}" oninput="markUnsaved();liveUpdateField('benefits_title', this.value)"></div>
+      <div class="form-group"><label class="form-label">Section Badge</label><input class="form-input" id="np-ben-badge" value="KEY BENEFITS" oninput="markUnsaved();liveUpdateField('benefits_badge', this.value)"></div>
+      <div class="form-group"><label class="form-label">Section Heading</label><input class="form-input" id="np-ben-title" value="${isCBI ? 'Unlock the Benefits of Dominica Citizenship' : 'Key Advantages of European Residency'}" oninput="markUnsaved();liveUpdateField('benefits_title', this.value)"></div>
     </div>
-    <div class="form-group" style="margin-bottom:12px"><label class="form-label">Section Subtitle</label><input class="form-input" id="np-ben-desc" value="${isCBI ? 'Key lifestyle, taxation, and mobility benefits designed for international investors.' : 'Explore the exceptional mobility, lifestyle, and European wealth preservation benefits.'}" oninput="markUnsaved();liveUpdateField('benefits_desc', this.value)"></div>
     ${renderBenefitCardsBuilder('np-benefits-builder', defaultBenefits)}`;
 
   // 6. Investment Routes & Complete Pricing Breakdown
@@ -2300,38 +2509,38 @@ function renderNewProgramView(type, portfolio) {
     <div style="background:#F8FAFC;border:1px solid #E2E8F0;border-radius:8px;padding:12px;margin-bottom:12px">
       <div style="font-weight:700;font-size:11px;color:var(--gold);margin-bottom:8px">Route 1: Sovereign Fund / Regulated Capital</div>
       <div class="form-row form-row-2">
-        <div class="form-group"><label class="form-label">Route Title</label><input class="form-input" id="np-r1-title" value="${isCBI ? '1. Economic Diversification Fund (EDF)' : '1. Regulated CMVM Investment Funds'}" oninput="markUnsaved()"></div>
-        <div class="form-group"><label class="form-label">Investment Amount</label><input class="form-input" id="np-r1-amt" value="${isCBI ? '$200,000 USD' : '€500,000 EUR'}" oninput="markUnsaved();liveUpdateField('investment_from', this.value)"></div>
+        <div class="form-group"><label class="form-label">Route Title</label><input class="form-input" id="np-r1-title" value="${isCBI ? '1. Economic Diversification Fund (EDF)' : '1. Regulated CMVM Investment Funds'}" oninput="markUnsaved();liveUpdateField('r1_title', this.value)"></div>
+        <div class="form-group"><label class="form-label">Investment Amount</label><input class="form-input" id="np-r1-amt" value="${isCBI ? '$200,000 USD' : '€500,000 EUR'}" oninput="markUnsaved();liveUpdateField('r1_amt', this.value);liveUpdateField('investment_from', this.value)"></div>
       </div>
-      <div class="form-group" style="margin-bottom:6px"><label class="form-label">Route Description</label><textarea class="form-textarea" style="min-height:55px" id="np-r1-desc" oninput="markUnsaved()">${isCBI ? 'Sovereign non-refundable contribution directly funding national infrastructure, healthcare, and education.' : 'Capital transfer into qualifying venture capital or private equity funds regulated by CMVM.'}</textarea></div>
+      <div class="form-group" style="margin-bottom:6px"><label class="form-label">Route Description</label><textarea class="form-textarea" style="min-height:55px" id="np-r1-desc" oninput="markUnsaved();liveUpdateField('r1_desc', this.value)">${isCBI ? 'Sovereign non-refundable contribution directly funding national infrastructure, healthcare, and education.' : 'Capital transfer into qualifying venture capital or private equity funds regulated by CMVM.'}</textarea></div>
       <div class="form-row form-row-2">
-        <div class="form-group"><label class="form-label">Family of 4 Package Cost</label><input class="form-input" id="np-r1-fam" value="${isCBI ? '$250,000 USD' : 'Included in primary subscription'}" oninput="markUnsaved()"></div>
-        <div class="form-group"><label class="form-label">Additional Dependent Surcharge</label><input class="form-input" id="np-r1-add" value="${isCBI ? '$25,000 USD each' : 'Standard government fee applies'}" oninput="markUnsaved()"></div>
+        <div class="form-group"><label class="form-label">Family of 4 Package Cost</label><input class="form-input" id="np-r1-fam" value="${isCBI ? '$250,000 USD' : 'Included in primary subscription'}" oninput="markUnsaved();liveUpdateField('r1_fam', this.value)"></div>
+        <div class="form-group"><label class="form-label">Additional Dependent Surcharge</label><input class="form-input" id="np-r1-add" value="${isCBI ? '$25,000 USD each' : 'Standard government fee applies'}" oninput="markUnsaved();liveUpdateField('r1_add', this.value)"></div>
       </div>
     </div>
 
     <div style="background:#F8FAFC;border:1px solid #E2E8F0;border-radius:8px;padding:12px;margin-bottom:12px">
       <div style="font-weight:700;font-size:11px;color:var(--gold);margin-bottom:8px">Route 2: Luxury Real Estate / Cultural Production</div>
       <div class="form-row form-row-2">
-        <div class="form-group"><label class="form-label">Route Title</label><input class="form-input" id="np-r2-title" value="${isCBI ? '2. Approved Luxury Real Estate Investment' : '2. Cultural Heritage & Scientific Research'}" oninput="markUnsaved()"></div>
-        <div class="form-group"><label class="form-label">Investment Amount</label><input class="form-input" id="np-r2-amt" value="${isCBI ? '$200,000 USD' : '€250,000 EUR'}" oninput="markUnsaved()"></div>
+        <div class="form-group"><label class="form-label">Route Title</label><input class="form-input" id="np-r2-title" value="${isCBI ? '2. Approved Luxury Real Estate Investment' : '2. Cultural Heritage & Scientific Research'}" oninput="markUnsaved();liveUpdateField('r2_title', this.value)"></div>
+        <div class="form-group"><label class="form-label">Investment Amount</label><input class="form-input" id="np-r2-amt" value="${isCBI ? '$200,000 USD' : '€250,000 EUR'}" oninput="markUnsaved();liveUpdateField('r2_amt', this.value)"></div>
       </div>
-      <div class="form-group" style="margin-bottom:6px"><label class="form-label">Route Description</label><textarea class="form-textarea" style="min-height:55px" id="np-r2-desc" oninput="markUnsaved()">${isCBI ? 'Purchase equity deeds in government-approved 5-star resort with 3-5 year holding period and rental return.' : 'Direct contribution to national artistic production, preservation of cultural heritage, or scientific R&D.'}</textarea></div>
+      <div class="form-group" style="margin-bottom:6px"><label class="form-label">Route Description</label><textarea class="form-textarea" style="min-height:55px" id="np-r2-desc" oninput="markUnsaved();liveUpdateField('r2_desc', this.value)">${isCBI ? 'Purchase equity deeds in government-approved 5-star resort with 3-5 year holding period and rental return.' : 'Direct contribution to national artistic production, preservation of cultural heritage, or scientific R&D.'}</textarea></div>
       <div class="form-row form-row-2">
-        <div class="form-group"><label class="form-label">Mandatory Holding Period</label><input class="form-input" id="np-r2-hold" value="${isCBI ? '3–5 Years' : 'Maintain until citizenship'}" oninput="markUnsaved()"></div>
-        <div class="form-group"><label class="form-label">Gov Processing Surcharge</label><input class="form-input" id="np-r2-fee" value="${isCBI ? '$30,000 USD' : 'Standard statutory processing'}" oninput="markUnsaved()"></div>
+        <div class="form-group"><label class="form-label">Mandatory Holding Period</label><input class="form-input" id="np-r2-hold" value="${isCBI ? '3–5 Years' : 'Maintain until citizenship'}" oninput="markUnsaved();liveUpdateField('r2_hold', this.value)"></div>
+        <div class="form-group"><label class="form-label">Gov Processing Surcharge</label><input class="form-input" id="np-r2-fee" value="${isCBI ? '$30,000 USD' : 'Standard statutory processing'}" oninput="markUnsaved();liveUpdateField('r2_fee', this.value)"></div>
       </div>
     </div>
 
     <div style="background:#F8FAFC;border:1px solid #E2E8F0;border-radius:8px;padding:12px">
       <div style="font-weight:700;font-size:11px;color:var(--gold);margin-bottom:8px">Statutory Government & Due Diligence Fees Dossier</div>
       <div class="form-row form-row-2">
-        <div class="form-group"><label class="form-label">Principal Applicant Due Diligence</label><input class="form-input" id="np-fee-dd-main" value="$7,500 USD" oninput="markUnsaved()"></div>
-        <div class="form-group"><label class="form-label">Spouse & Adult Dependents (16+)</label><input class="form-input" id="np-fee-dd-dep" value="$4,000 USD each" oninput="markUnsaved()"></div>
+        <div class="form-group"><label class="form-label">Principal Applicant Due Diligence</label><input class="form-input" id="np-fee-dd-main" value="$7,500 USD" oninput="markUnsaved();liveUpdateField('fee_dd_main', this.value)"></div>
+        <div class="form-group"><label class="form-label">Spouse & Adult Dependents (16+)</label><input class="form-input" id="np-fee-dd-dep" value="$4,000 USD each" oninput="markUnsaved();liveUpdateField('fee_dd_dep', this.value)"></div>
       </div>
       <div class="form-row form-row-2">
-        <div class="form-group"><label class="form-label">Mandatory Interview & Biometric Fee</label><input class="form-input" id="np-fee-interview" value="$1,000 USD per file" oninput="markUnsaved()"></div>
-        <div class="form-group"><label class="form-label">Naturalization Certificate / Card Fee</label><input class="form-input" id="np-fee-cert" value="$250 USD per applicant" oninput="markUnsaved()"></div>
+        <div class="form-group"><label class="form-label">Mandatory Interview & Biometric Fee</label><input class="form-input" id="np-fee-interview" value="$1,000 USD per file" oninput="markUnsaved();liveUpdateField('fee_interview', this.value)"></div>
+        <div class="form-group"><label class="form-label">Naturalization Certificate / Card Fee</label><input class="form-input" id="np-fee-cert" value="$250 USD per applicant" oninput="markUnsaved();liveUpdateField('fee_cert', this.value)"></div>
       </div>
     </div>`;
 
@@ -2489,8 +2698,23 @@ function executeCreateProgram() {
   const name = document.getElementById('np-name')?.value.trim();
   if (!name) { showToast('Please enter a program name', 'error'); return; }
   const type = document.getElementById('np-type')?.value || 'citizenship';
-  const portfolio = document.getElementById('np-portfolio')?.value || 'global';
+  let portfolio = document.getElementById('np-portfolio')?.value || 'global';
+
+  // Handle on-the-fly custom section creation
+  if (portfolio === '__new__') {
+    const customSecName = document.getElementById('np-custom-portfolio')?.value.trim();
+    if (!customSecName) {
+      showToast('Please specify a section name or choose an existing section', 'error');
+      document.getElementById('np-custom-portfolio')?.focus();
+      return;
+    }
+    const addedKey = PortfolioManager.addSection(type, customSecName);
+    portfolio = addedKey || 'global';
+  }
+
   const flag = document.getElementById('np-flag')?.value.trim() || '';
+  const heroImg1 = document.getElementById('np-hero-img1')?.value.trim() || '';
+  const heroImg2 = document.getElementById('np-hero-img2')?.value.trim() || '';
   const navLabel = document.getElementById('np-nav-label')?.value.trim() || (name.replace(/\s+(citizenship|residency).*$/i, '') + ' | ' + (type === 'citizenship' ? 'Passport' : 'Golden Visa'));
   const status = document.getElementById('np-status')?.value || 'published';
   const navVis = document.getElementById('np-nav-vis')?.value !== 'false';
@@ -2507,18 +2731,18 @@ function executeCreateProgram() {
     document.getElementById('np-badge-5')?.value || ''
   ].filter(b => b.trim());
 
-  const spec1Val = document.getElementById('np-spec1-val')?.value.trim() || '6–9 Months';
-  const spec1Desc = document.getElementById('np-spec1-desc')?.value.trim() || '';
-  const spec2Val = document.getElementById('np-spec2-val')?.value.trim() || '140+';
-  const spec2Desc = document.getElementById('np-spec2-desc')?.value.trim() || '';
-  const spec3Val = document.getElementById('np-spec3-val')?.value.trim() || '2 Routes';
-  const spec3Desc = document.getElementById('np-spec3-desc')?.value.trim() || '';
-  const spec4Val = document.getElementById('np-spec4-val')?.value.trim() || '$200,000 USD';
-  const spec4Desc = document.getElementById('np-spec4-desc')?.value.trim() || '';
-  const spec5Val = document.getElementById('np-spec5-val')?.value.trim() || 'Spouse & Dependents';
-  const spec5Desc = document.getElementById('np-spec5-desc')?.value.trim() || '';
-  const spec6Val = document.getElementById('np-spec6-val')?.value.trim() || '0 Days';
-  const spec6Desc = document.getElementById('np-spec6-desc')?.value.trim() || '';
+  const spec1Val = document.getElementById('np-spec1-val')?.value?.trim() || 'Approximately 6-9 months to complete';
+  const spec1Desc = document.getElementById('np-spec1-desc')?.value?.trim() || spec1Val;
+  const spec2Val = document.getElementById('np-spec2-val')?.value?.trim() || 'Access to over 140+ countries worldwide';
+  const spec2Desc = document.getElementById('np-spec2-desc')?.value?.trim() || spec2Val;
+  const spec3Val = document.getElementById('np-spec3-val')?.value?.trim() || 'Choose from economic donation or approved real estate';
+  const spec3Desc = document.getElementById('np-spec3-desc')?.value?.trim() || spec3Val;
+  const spec4Val = document.getElementById('np-spec4-val')?.value?.trim() || 'USD 200,000 for single or USD 250,000 for family of 4';
+  const spec4Desc = document.getElementById('np-spec4-desc')?.value?.trim() || spec4Val;
+  const spec5Val = document.getElementById('np-spec5-val')?.value?.trim() || 'Includes spouse, dependent children under 30, and parents over 65';
+  const spec5Desc = document.getElementById('np-spec5-desc')?.value?.trim() || spec5Val;
+  const spec6Val = document.getElementById('np-spec6-val')?.value?.trim() || 'No mandatory visit or physical residency required';
+  const spec6Desc = document.getElementById('np-spec6-desc')?.value?.trim() || spec6Val;
 
   const specs = [
     { title: 'PROCESSING TIME', value: spec1Val, desc: spec1Desc },
@@ -2529,25 +2753,25 @@ function executeCreateProgram() {
     { title: 'PHYSICAL PRESENCE', value: spec6Val, desc: spec6Desc }
   ];
 
-  const ovBadge = document.getElementById('np-ov-badge')?.value.trim() || 'EXECUTIVE BRIEFING';
-  const ovTitle = document.getElementById('np-ov-title')?.value.trim() || "Program Overview: Sharif Group's Guide";
-  const ovP1 = document.getElementById('np-ov-p1')?.value.trim() || '';
-  const ovP2 = document.getElementById('np-ov-p2')?.value.trim() || '';
+  const ovBadge = document.getElementById('np-ov-badge')?.value?.trim() || 'EXECUTIVE BRIEFING';
+  const ovTitle = document.getElementById('np-ov-title')?.value?.trim() || "Program Overview: Sharif Group's Guide";
+  const ovP1 = document.getElementById('np-ov-p1')?.value?.trim() || '';
+  const ovP2 = document.getElementById('np-ov-p2')?.value?.trim() || '';
 
-  const benefitsBadge = document.getElementById('np-ben-badge')?.value.trim() || 'STRATEGIC ADVANTAGES';
-  const benefitsTitle = document.getElementById('np-ben-title')?.value.trim() || 'Why Global Investors Choose This Program';
-  const benefitsDesc = document.getElementById('np-ben-desc')?.value.trim() || '';
+  const benefitsBadge = document.getElementById('np-ben-badge')?.value?.trim() || 'KEY BENEFITS';
+  const benefitsTitle = document.getElementById('np-ben-title')?.value?.trim() || 'Unlock the Benefits of This Program';
+  const benefitsDesc = document.getElementById('np-ben-desc')?.value?.trim() || '';
   const benefits = getBenefitCards('np-benefits-builder');
 
-  const invBadge = document.getElementById('np-inv-badge')?.value.trim() || 'QUALIFYING PATHWAYS';
-  const invTitle = document.getElementById('np-inv-title')?.value.trim() || 'Two Clear Investment Routes';
-  const invDesc = document.getElementById('np-inv-desc')?.value.trim() || '';
+  const invBadge = document.getElementById('np-inv-badge')?.value?.trim() || 'QUALIFYING PATHWAYS';
+  const invTitle = document.getElementById('np-inv-title')?.value?.trim() || 'Two Clear Investment Routes';
+  const invDesc = document.getElementById('np-inv-desc')?.value?.trim() || '';
   const investmentOptions = getInvestmentRoutes('np-routes-builder');
-  const govFees = document.getElementById('np-inv-fees')?.value.trim() || '';
+  const govFees = document.getElementById('np-inv-fees')?.value?.trim() || '';
 
-  const eligBadge = document.getElementById('np-elig-badge')?.value.trim() || 'ELIGIBILITY CRITERIA';
-  const eligTitle = document.getElementById('np-elig-title')?.value.trim() || 'Who Can Apply?';
-  const eligDesc = document.getElementById('np-elig-desc')?.value.trim() || '';
+  const eligBadge = document.getElementById('np-elig-badge')?.value?.trim() || 'ELIGIBILITY CRITERIA';
+  const eligTitle = document.getElementById('np-elig-title')?.value?.trim() || 'Who Can Apply?';
+  const eligDesc = document.getElementById('np-elig-desc')?.value?.trim() || '';
   const applicantReqs = [
     document.getElementById('np-elig-req1')?.value || '',
     document.getElementById('np-elig-req2')?.value || '',
@@ -2601,6 +2825,8 @@ function executeCreateProgram() {
     hero_title: heroTitle,
     hero_subtitle: heroSub,
     hero_tagline: heroTagline,
+    hero_img1: heroImg1,
+    hero_img2: heroImg2,
     hero_cta1_text: document.getElementById('np-cta1-text')?.value || 'Download Official Guide',
     hero_cta1_link: document.getElementById('np-cta1-link')?.value || 'contact/index.html',
     hero_cta2_text: document.getElementById('np-cta2-text')?.value || 'Book Confidential Assessment',
@@ -2717,12 +2943,7 @@ function syncActiveFormToLivePreview() {
       const ch = document.getElementById('np-cta-heading')?.value; if (ch) liveUpdateField('consult_heading', ch);
       const cs = document.getElementById('np-cta-sub')?.value; if (cs) liveUpdateField('consult_subheading', cs);
     } else if (state.section === 'blog-new' || state.section === 'blog-edit') {
-      const bt = document.getElementById('blog-title')?.value; if (bt) liveUpdateField('blog_title', bt);
-      const be = document.getElementById('blog-excerpt')?.value; if (be) liveUpdateField('blog_excerpt', be);
-      const bc = document.getElementById('blog-category')?.value; if (bc) liveUpdateField('blog_category', bc);
-      const bi = document.getElementById('blog-img')?.value; if (bi) liveUpdateField('blog_img', bi);
-      const ba = document.getElementById('blog-author')?.value; if (ba) liveUpdateField('blog_author', ba);
-      const bd = document.getElementById('blog-date')?.value; if (bd) liveUpdateField('blog_date', bd);
+      broadcastBlogDraft();
     }
   }, 300);
 }
@@ -2730,6 +2951,78 @@ function syncActiveFormToLivePreview() {
 // ──────────────────────────────────────────────────────────
 // BLOG & ARTICLES DYNAMIC EDITOR SUITE
 // ──────────────────────────────────────────────────────────
+const BLOG_SUBCATEGORIES = {
+  'Citizenship': [
+    { val: '', text: 'All Citizenship Programs' },
+    { val: 'dominica', text: 'Dominica' },
+    { val: 'st-kitts', text: 'St. Kitts & Nevis' },
+    { val: 'antigua', text: 'Antigua & Barbuda' },
+    { val: 'saint-lucia', text: 'Saint Lucia' },
+    { val: 'grenada', text: 'Grenada' },
+    { val: 'vanuatu', text: 'Vanuatu' },
+    { val: 'sao-tome', text: 'São Tomé and Príncipe' },
+    { val: 'nauru', text: 'Republic of Nauru' }
+  ],
+  'Residency': [
+    { val: '', text: 'All Residency Programs' },
+    { val: 'portugal', text: 'Portugal' },
+    { val: 'greece', text: 'Greece' },
+    { val: 'panama', text: 'Panama' },
+    { val: 'uae', text: 'United Arab Emirates' }
+  ]
+};
+
+function updateBlogSubcatOptions(category, selectedSub) {
+  const wrap = document.getElementById('blog-subcat-wrap');
+  const sel = document.getElementById('blog-subcategory');
+  if (!wrap || !sel) return;
+  const list = BLOG_SUBCATEGORIES[category];
+  if (list && list.length) {
+    wrap.style.display = 'block';
+    sel.innerHTML = list.map(opt => `<option value="${opt.val}" ${opt.val === selectedSub ? 'selected' : ''}>${opt.text}</option>`).join('');
+  } else {
+    wrap.style.display = 'none';
+    sel.innerHTML = '';
+  }
+}
+
+function broadcastBlogDraft() {
+  const title = document.getElementById('blog-title')?.value || '';
+  const slug = document.getElementById('blog-slug')?.value || '';
+  const category = document.getElementById('blog-category')?.value || 'Citizenship';
+  const subcategory = document.getElementById('blog-subcategory')?.value || '';
+  const status = document.getElementById('blog-status')?.value || 'published';
+  const featured = document.getElementById('blog-featured')?.value === 'true';
+  const author = document.getElementById('blog-author')?.value || 'Sharif Group Advisory';
+  const authorTitle = document.getElementById('blog-author-title')?.value || 'Senior Immigration Partner';
+  const date = document.getElementById('blog-date')?.value || new Date().toISOString().split('T')[0];
+  const readTime = document.getElementById('blog-read-time')?.value || '5 min read';
+  const img = document.getElementById('blog-img')?.value || '';
+  const excerpt = document.getElementById('blog-excerpt')?.value || '';
+  const body = document.getElementById('blog-body')?.value || '';
+
+  sendToIframe({
+    type: 'CMS_UPDATE_BLOG_DRAFT',
+    draft: {
+      id: state.itemId || 'b_live_draft',
+      title,
+      slug,
+      category,
+      subcategory,
+      status,
+      featured,
+      author,
+      author_title: authorTitle,
+      publish_date: date,
+      date,
+      read_time: readTime,
+      featured_img: img,
+      excerpt,
+      body
+    }
+  });
+}
+
 function renderBlogEditor(l, rtl) {
   setPageTitle('Blog & Articles', 'Manage published and draft blog articles');
   const blogs = window.CMS.getData(window.CMS.KEYS.BLOG) || window.CMS.DEFAULTS.blog || [];
@@ -2755,7 +3048,7 @@ function renderBlogEditor(l, rtl) {
           ${b.featured_img ? `<img src="${b.featured_img}" style="width:48px;height:36px;object-fit:cover;border-radius:6px;flex-shrink:0" onerror="this.style.display='none'">` : '<div style="width:48px;height:36px;border-radius:6px;background:rgba(255,255,255,.05);display:flex;align-items:center;justify-content:center;color:var(--muted);font-size:12px"><i class="fa-solid fa-newspaper"></i></div>'}
           <div style="flex:1;min-width:0">
             <div style="font-weight:600;font-size:12px;color:var(--text);white-space:nowrap;overflow:hidden;text-overflow:ellipsis">${escH(ld.title || 'Untitled Article')}</div>
-            <div style="font-size:10px;color:var(--muted);margin-top:2px">${escH(b.category || 'Citizenship by Investment')} · ${b.publish_date || 'Recent'}</div>
+            <div style="font-size:10px;color:var(--muted);margin-top:2px">${escH(b.category || 'Citizenship')}${b.subcategory ? ' · ' + escH(b.subcategory) : ''} · ${b.publish_date || 'Recent'}</div>
           </div>
           <span class="ec-block-badge" style="background:${isPub?'rgba(34,197,94,.15)':'rgba(245,158,11,.15)'};color:${isPub?'var(--green)':'var(--yellow)'}">${status}</span>
           <i class="fa-solid fa-chevron-right" style="font-size:10px;color:var(--muted)"></i>
@@ -2775,12 +3068,13 @@ function renderNewBlogView() {
     id,
     author: session?.name || 'Sharif Group Advisory',
     author_title: 'Senior Immigration Partner',
-    category: 'Citizenship by Investment',
+    category: 'Citizenship',
+    subcategory: '',
     tags: ['citizenship', 'investment', 'second passport'],
     featured_img: 'https://images.unsplash.com/photo-1541872703-74c5e44368f9?auto=format&fit=crop&w=1200&q=80',
     publish_date: new Date().toISOString().split('T')[0],
     read_time: '5 min read',
-    status_en: 'published',
+    status_en: 'draft',
     status_ar: 'draft',
     status_fa: 'draft',
     status_zh: 'draft',
@@ -2796,11 +3090,16 @@ function renderNewBlogView() {
     fa: { title: '', slug: '', excerpt: '', body: '' },
     zh: { title: '', slug: '', excerpt: '', body: '' }
   };
+  // Pre-save the draft immediately so it shows in the blog list
+  const existingBlogs = window.CMS.getData(window.CMS.KEYS.BLOG) || window.CMS.DEFAULTS.blog || [];
+  existingBlogs.unshift(newArticle);
+  window.CMS.saveData(window.CMS.KEYS.BLOG, existingBlogs);
+
   state.section = 'blog-new';
   state.itemId = id;
   renderBlogArticleForm(newArticle, true);
-  liveUpdateField('blog_title', newArticle.en.title);
-  liveUpdateField('blog_excerpt', newArticle.en.excerpt);
+  // Broadcast draft after a delay to allow iframe to load first
+  setTimeout(() => { broadcastBlogDraft(); }, 800);
 }
 
 function editBlogItem(id) {
@@ -2822,38 +3121,59 @@ function renderBlogArticleForm(b, isNew) {
 
   setPageTitle(isNew ? 'New Blog Article' : (ld.title || 'Edit Article'), 'Blog & Articles');
 
+  // Normalize category to match the 7 tabs on the live blog page
+  let catVal = b.category || 'Citizenship';
+  if (catVal.includes('Citizenship')) catVal = 'Citizenship';
+  else if (catVal.includes('Residency & Golden') || catVal.includes('Golden Visa')) catVal = 'Golden Visa';
+  else if (catVal.includes('Residency')) catVal = 'Residency';
+  else if (catVal.includes('Tax') || catVal.includes('Wealth') || catVal.includes('Corporate')) catVal = 'Corporate & Tax Strategy';
+  else if (catVal.includes('Real Estate')) catVal = 'Real Estate';
+  else if (catVal.includes('Educational')) catVal = 'Educational Advisory';
+  else if (catVal.includes('Sharif') || catVal.includes('Insight')) catVal = 'Sharif Group Insights';
+
+  const subcatVal = b.subcategory || '';
+
   const identityBody = `
     <div class="form-group" style="margin-bottom:12px">
       <label class="form-label">Article Headline / Title <span class="form-lang-tag">${l.toUpperCase()}</span></label>
-      <input class="form-input form-input-headline" ${dir} id="blog-title" value="${escH(ld.title || '')}" placeholder="e.g. 5 European Golden Visas for Global Families in 2026" oninput="markUnsaved();liveUpdateField('blog_title',this.value)">
+      <input class="form-input form-input-headline" ${dir} id="blog-title" value="${escH(ld.title || '')}" placeholder="e.g. 5 European Golden Visas for Global Families in 2026" oninput="markUnsaved();broadcastBlogDraft();liveUpdateField('blog_title',this.value)">
     </div>
     <div class="form-row form-row-2">
       <div class="form-group">
         <label class="form-label">URL Slug</label>
-        <input class="form-input" id="blog-slug" value="${escH(ld.slug || (ld.title?ld.title.toLowerCase().replace(/[^a-z0-9]+/g,'-').replace(/(^-|-$)/g,''):''))}" placeholder="article-url-slug" oninput="markUnsaved()">
+        <input class="form-input" id="blog-slug" value="${escH(ld.slug || (ld.title?ld.title.toLowerCase().replace(/[^a-z0-9]+/g,'-').replace(/(^-|-$)/g,''):''))}" placeholder="article-url-slug" oninput="markUnsaved();broadcastBlogDraft()">
       </div>
       <div class="form-group">
         <label class="form-label">Category</label>
-        <select class="form-select" id="blog-category" onchange="markUnsaved();liveUpdateField('blog_category',this.value)">
-          <option value="Citizenship by Investment" ${(b.category==='Citizenship by Investment'||!b.category)?'selected':''}>Citizenship by Investment</option>
-          <option value="Residency & Golden Visa" ${b.category==='Residency & Golden Visa'?'selected':''}>Residency & Golden Visa</option>
-          <option value="Global Wealth & Tax Planning" ${b.category==='Global Wealth & Tax Planning'?'selected':''}>Global Wealth & Tax Planning</option>
-          <option value="Luxury Real Estate" ${b.category==='Luxury Real Estate'?'selected':''}>Luxury Real Estate</option>
-          <option value="Passports & Global Mobility" ${b.category==='Passports & Global Mobility'?'selected':''}>Passports & Global Mobility</option>
+        <select class="form-select" id="blog-category" onchange="markUnsaved();updateBlogSubcatOptions(this.value);broadcastBlogDraft();liveUpdateField('blog_category',this.value)">
+          <option value="Citizenship" ${catVal==='Citizenship'?'selected':''}>Citizenship</option>
+          <option value="Residency" ${catVal==='Residency'?'selected':''}>Residency</option>
+          <option value="Golden Visa" ${catVal==='Golden Visa'?'selected':''}>Golden Visa</option>
+          <option value="Real Estate" ${catVal==='Real Estate'?'selected':''}>Real Estate</option>
+          <option value="Educational Advisory" ${catVal==='Educational Advisory'?'selected':''}>Educational Advisory</option>
+          <option value="Corporate & Tax Strategy" ${catVal==='Corporate & Tax Strategy'?'selected':''}>Corporate & Tax Strategy</option>
+          <option value="Sharif Group Insights" ${catVal==='Sharif Group Insights'?'selected':''}>Sharif Group Insights</option>
+        </select>
+      </div>
+    </div>
+    <div class="form-row form-row-2" id="blog-subcat-wrap" style="${(catVal==='Citizenship'||catVal==='Residency')?'':'display:none'}">
+      <div class="form-group" style="grid-column:1/-1">
+        <label class="form-label">Program / Country Subcategory</label>
+        <select class="form-select" id="blog-subcategory" onchange="markUnsaved();broadcastBlogDraft()">
         </select>
       </div>
     </div>
     <div class="form-row form-row-2">
       <div class="form-group">
         <label class="form-label">Publish Status</label>
-        <select class="form-select" id="blog-status" onchange="markUnsaved()">
+        <select class="form-select" id="blog-status" onchange="markUnsaved();broadcastBlogDraft()">
           <option value="published" ${(b['status_'+l]||b.status_en)==='published'?'selected':''}>Published (Live on Website)</option>
           <option value="draft" ${(b['status_'+l]||b.status_en)!=='published'?'selected':''}>Draft (Hidden)</option>
         </select>
       </div>
       <div class="form-group">
         <label class="form-label">Featured Article</label>
-        <select class="form-select" id="blog-featured" onchange="markUnsaved()">
+        <select class="form-select" id="blog-featured" onchange="markUnsaved();broadcastBlogDraft()">
           <option value="true" ${b.featured?'selected':''}>Yes — Pin to Top / Hero</option>
           <option value="false" ${!b.featured?'selected':''}>No — Standard Order</option>
         </select>
@@ -2864,21 +3184,21 @@ function renderBlogArticleForm(b, isNew) {
     <div class="form-row form-row-2">
       <div class="form-group">
         <label class="form-label">Author Name</label>
-        <input class="form-input" id="blog-author" value="${escH(b.author || session?.name || 'Sharif Group Advisory')}" oninput="markUnsaved();liveUpdateField('blog_author',this.value)">
+        <input class="form-input" id="blog-author" value="${escH(b.author || session?.name || 'Sharif Group Advisory')}" oninput="markUnsaved();broadcastBlogDraft();liveUpdateField('blog_author',this.value)">
       </div>
       <div class="form-group">
         <label class="form-label">Author Role / Title</label>
-        <input class="form-input" id="blog-author-title" value="${escH(b.author_title || 'Senior Immigration Partner')}" oninput="markUnsaved()">
+        <input class="form-input" id="blog-author-title" value="${escH(b.author_title || 'Senior Immigration Partner')}" oninput="markUnsaved();broadcastBlogDraft()">
       </div>
     </div>
     <div class="form-row form-row-2">
       <div class="form-group">
         <label class="form-label">Publication Date</label>
-        <input type="date" class="form-input" id="blog-date" value="${b.publish_date || new Date().toISOString().split('T')[0]}" oninput="markUnsaved();liveUpdateField('blog_date',this.value)">
+        <input type="date" class="form-input" id="blog-date" value="${b.publish_date || new Date().toISOString().split('T')[0]}" oninput="markUnsaved();broadcastBlogDraft();liveUpdateField('blog_date',this.value)">
       </div>
       <div class="form-group">
         <label class="form-label">Estimated Reading Time</label>
-        <input class="form-input" id="blog-read-time" value="${escH(b.read_time || '5 min read')}" placeholder="e.g. 5 min read" oninput="markUnsaved()">
+        <input class="form-input" id="blog-read-time" value="${escH(b.read_time || '5 min read')}" placeholder="e.g. 5 min read" oninput="markUnsaved();broadcastBlogDraft()">
       </div>
     </div>`;
 
@@ -2887,6 +3207,7 @@ function renderBlogArticleForm(b, isNew) {
       <label class="form-label">Featured Cover Image URL</label>
       <input class="form-input" id="blog-img" value="${escH(b.featured_img || '')}" placeholder="https://images.unsplash.com/... or images/blog1.jpg" oninput="
         markUnsaved();
+        broadcastBlogDraft();
         liveUpdateField('blog_img', this.value);
         const prev = document.getElementById('blog-img-prev');
         if (prev) { prev.src = this.value; prev.style.display = this.value ? 'block' : 'none'; }
@@ -2903,11 +3224,11 @@ function renderBlogArticleForm(b, isNew) {
   const contentBody = `
     <div class="form-group" style="margin-bottom:12px">
       <label class="form-label">Article Excerpt / Teaser <span class="form-lang-tag">${l.toUpperCase()}</span></label>
-      <textarea class="form-textarea" ${dir} id="blog-excerpt" style="min-height:70px" oninput="markUnsaved();liveUpdateField('blog_excerpt',this.value)">${escH(ld.excerpt || '')}</textarea>
+      <textarea class="form-textarea" ${dir} id="blog-excerpt" style="min-height:70px" oninput="markUnsaved();broadcastBlogDraft();liveUpdateField('blog_excerpt',this.value)">${escH(ld.excerpt || '')}</textarea>
     </div>
     <div class="form-group">
       <label class="form-label">Full Article Body Content (HTML or Formatted Text) <span class="form-lang-tag">${l.toUpperCase()}</span></label>
-      <textarea class="form-textarea" style="min-height:220px;font-family:monospace;font-size:12px;line-height:1.6" ${dir} id="blog-body" oninput="markUnsaved()">${escH(ld.body || '')}</textarea>
+      <textarea class="form-textarea" style="min-height:220px;font-family:monospace;font-size:12px;line-height:1.6" ${dir} id="blog-body" oninput="markUnsaved();broadcastBlogDraft()">${escH(ld.body || '')}</textarea>
     </div>`;
 
   const seoBody = `
@@ -2947,6 +3268,9 @@ function renderBlogArticleForm(b, isNew) {
         <button class="btn btn-primary" onclick="saveBlogItem('${id}')"><i class="fa-solid fa-circle-check"></i> ${isNew ? 'Publish Article' : 'Save Changes'}</button>
       </div>
     </div>`;
+
+  updateBlogSubcatOptions(catVal, subcatVal);
+  setTimeout(() => { broadcastBlogDraft(); }, 150);
 }
 
 function saveBlogItem(id) {
@@ -2955,11 +3279,12 @@ function saveBlogItem(id) {
   const isNew = idx < 0;
   const l = state.lang;
 
-  const item = isNew ? { id, en: {}, ar: {}, fa: {}, zh: {} } : blogs[idx];
+  const item = isNew ? { id, en: {}, ar: {}, fa: {}, zh: {} } : { ...blogs[idx] };
 
   item.author = document.getElementById('blog-author')?.value.trim() || item.author || 'Sharif Group Advisory';
   item.author_title = document.getElementById('blog-author-title')?.value.trim() || 'Senior Immigration Partner';
-  item.category = document.getElementById('blog-category')?.value || 'Citizenship by Investment';
+  item.category = document.getElementById('blog-category')?.value || 'Citizenship';
+  item.subcategory = document.getElementById('blog-subcategory')?.value || '';
   item.publish_date = document.getElementById('blog-date')?.value || new Date().toISOString().split('T')[0];
   item.read_time = document.getElementById('blog-read-time')?.value.trim() || '5 min read';
   item.featured_img = document.getElementById('blog-img')?.value.trim() || '';
@@ -2970,27 +3295,50 @@ function saveBlogItem(id) {
   item.tags = rawTags.split(',').map(t => t.trim()).filter(Boolean);
 
   const status = document.getElementById('blog-status')?.value || 'published';
-  item['status_' + l] = status;
-  if (l === 'en') item.status_en = status;
+  // Set status for all languages as published when user clicks Publish
+  item.status_en = status;
+  item.status_ar = status;
+  item.status_fa = status;
+  item.status_zh = status;
 
   if (!item[l]) item[l] = {};
   item[l].title = document.getElementById('blog-title')?.value.trim() || '';
-  item[l].slug = document.getElementById('blog-slug')?.value.trim() || (item[l].title.toLowerCase().replace(/[^a-z0-9]+/g,'-').replace(/(^-|-$)/g,''));
+  item[l].slug = document.getElementById('blog-slug')?.value.trim() || (item[l].title.toLowerCase().replace(/[^a-z0-9]+/g,'-').replace(/(^-|-$)/g,'')) || id;
   item[l].excerpt = document.getElementById('blog-excerpt')?.value.trim() || '';
   item[l].body = document.getElementById('blog-body')?.value.trim() || '';
   item[l].meta_title = document.getElementById('blog-meta-title')?.value.trim() || '';
   item[l].meta_desc = document.getElementById('blog-meta-desc')?.value.trim() || '';
 
-  if (isNew) {
-    blogs.unshift(item);
-  } else {
-    blogs[idx] = item;
+  // Mirror title/slug/excerpt/body to en if en is still empty
+  if (!item.en) item.en = {};
+  if (!item.en.title) {
+    item.en.title = item[l].title;
+    item.en.slug = item[l].slug;
+    item.en.excerpt = item[l].excerpt;
+    item.en.body = item[l].body;
   }
 
-  window.CMS.saveData(window.CMS.KEYS.BLOG, blogs);
+  if (isNew) {
+    // Remove any pre-saved draft stub first, then add finalized article
+    const cleanedBlogs = blogs.filter(b => b.id !== id);
+    cleanedBlogs.unshift(item);
+    window.CMS.saveData(window.CMS.KEYS.BLOG, cleanedBlogs);
+  } else {
+    blogs[idx] = item;
+    window.CMS.saveData(window.CMS.KEYS.BLOG, blogs);
+  }
+
   markSaved();
-  showToast(isNew ? 'Article created and published!' : 'Article saved successfully!');
+  showToast(isNew ? 'Article published successfully!' : 'Article saved successfully!');
+
+  // Notify preview iframe: remove draft card and inject the saved article
+  sendToIframe({ type: 'CMS_BLOG_SAVED', id, blog: item });
+
+  // Navigate to blog list (renders updated list immediately from localStorage)
   navigate('blog');
+
+  // Refresh preview after a short delay to ensure the iframe re-hydrates
+  setTimeout(() => { refreshPreview(); }, 150);
 }
 
 function deleteBlogItem(id) {
@@ -2999,6 +3347,7 @@ function deleteBlogItem(id) {
   blogs = blogs.filter(b => b.id !== id);
   window.CMS.saveData(window.CMS.KEYS.BLOG, blogs);
   navigate('blog');
+  refreshPreview();
   showToast('Article deleted', 'info');
 }
 
@@ -3749,6 +4098,11 @@ function saveCurrentPage() {
   const { section, itemType, itemId, lang } = state;
   const l = lang;
 
+  if (section === 'new-program') {
+    executeCreateProgram();
+    return;
+  }
+
   if (section === 'homepage') {
     const d = window.CMS.getData(window.CMS.KEYS.HOMEPAGE) || window.CMS.DEFAULTS.homepage;
 
@@ -3911,12 +4265,12 @@ function saveCurrentPage() {
       list[idx][l].investment_from = s4Val || list[idx][l].investment_from;
 
       list[idx][l].specs = [
-        { title: 'PROCESSING TIME', value: s1Val, desc: document.getElementById('prog-spec1-desc')?.value || '' },
-        { title: 'VISA-FREE TRAVEL', value: s2Val, desc: document.getElementById('prog-spec2-desc')?.value || '' },
-        { title: 'INVESTMENT TYPE', value: s3Val, desc: document.getElementById('prog-spec3-desc')?.value || '' },
-        { title: 'INVESTMENT COST', value: s4Val, desc: document.getElementById('prog-spec4-desc')?.value || '' },
-        { title: 'FAMILY DEPENDENTS', value: s5Val, desc: document.getElementById('prog-spec5-desc')?.value || '' },
-        { title: 'PHYSICAL PRESENCE', value: s6Val, desc: document.getElementById('prog-spec6-desc')?.value || '' }
+        { title: 'PROCESSING TIME', value: s1Val, desc: document.getElementById('prog-spec1-desc')?.value || s1Val },
+        { title: 'VISA-FREE TRAVEL', value: s2Val, desc: document.getElementById('prog-spec2-desc')?.value || s2Val },
+        { title: 'INVESTMENT TYPE', value: s3Val, desc: document.getElementById('prog-spec3-desc')?.value || s3Val },
+        { title: 'INVESTMENT COST', value: s4Val, desc: document.getElementById('prog-spec4-desc')?.value || s4Val },
+        { title: 'FAMILY DEPENDENTS', value: s5Val, desc: document.getElementById('prog-spec5-desc')?.value || s5Val },
+        { title: 'PHYSICAL PRESENCE', value: s6Val, desc: document.getElementById('prog-spec6-desc')?.value || s6Val }
       ];
 
       // Overview

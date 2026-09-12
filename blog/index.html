@@ -1,4 +1,4 @@
-﻿<!DOCTYPE html>
+<!DOCTYPE html>
 
 <html class="scroll-smooth" lang="en">
 <head>
@@ -7588,6 +7588,7 @@
             });
             checkLoadMoreVisibility();
         }
+        window.initPagination = initPagination;
 
         function loadMoreArticles() {
             const items = Array.from(document.querySelectorAll('.blog-item')).filter(item => {
