@@ -6,7 +6,7 @@
     <meta charset="utf-8" />
     <meta content="width=device-width, initial-scale=1.0" name="viewport" />
     <script>
-        (function() {
+        (function () {
             try {
                 var l = localStorage.getItem('sharif_lang') || localStorage.getItem('sharif_preferred_lang') || 'en';
                 if (l === 'ar' || l === 'fa') {
@@ -19,7 +19,7 @@
                 if (l !== 'en') {
                     document.documentElement.classList.add('i18n-pending');
                 }
-            } catch(e) {}
+            } catch (e) { }
         })();
     </script>
     <!-- Primary Meta Tags (Global SEO / Google, Bing, Yahoo & GEO / AEO Optimization) -->
@@ -101,12 +101,9 @@
     }
     </script>
     <!-- Favicon & App Icons -->
-    <link href="/assets/images/shariftrip-logo-1.svg" rel="icon"
-        type="image/svg+xml" />
-    <link href="/assets/images/shariftrip-logo-1.svg" rel="alternate icon"
-        type="image/x-icon" />
-    <link href="/assets/images/shariftrip-logo-1.svg" rel="apple-touch-icon"
-        sizes="180x180" />
+    <link href="/assets/images/shariftrip-logo-1.svg" rel="icon" type="image/svg+xml" />
+    <link href="/assets/images/shariftrip-logo-1.svg" rel="alternate icon" type="image/x-icon" />
+    <link href="/assets/images/shariftrip-logo-1.svg" rel="apple-touch-icon" sizes="180x180" />
     <!-- Tailwind CSS -->
     <script src="https://cdn.tailwindcss.com"></script>
     <script>
@@ -301,8 +298,8 @@
                     <span class="text-neutral-300 font-light">|</span>
                     <div class="relative py-2" onmouseenter="openMegaMenu('services-menu')">
                         <a class="hover:text-luxury-gold transition duration-200 flex items-center gap-1.5"
-                            href="../realestate/index.html"><span data-i18n="nav.moreServices">More Services</span> <i
-                                class="fa-solid fa-chevron-down text-[8px] transition-transform duration-300"
+                            href="../realestate/index.html"><span data-i18n="nav.moreServices">VIEW ALL SERVICEs</span>
+                            <i class="fa-solid fa-chevron-down text-[8px] transition-transform duration-300"
                                 id="arrow-services-menu"></i></a>
                     </div>
                     <span class="text-neutral-300 font-light">|</span>
@@ -460,12 +457,12 @@
                                 onclick="toggleMobileMenu()">UNITED ARAB EMIRATES</a>
                         </div>
                     </div>
-                    <!-- More Services Accordion -->
+                    <!-- VIEW ALL SERVICEs Accordion -->
                     <div class="border-b border-neutral-200 py-3">
                         <button
                             class="w-full flex items-center justify-between text-neutral-900 active:text-luxury-gold hover:text-luxury-gold transition text-left uppercase font-bold text-xs tracking-[0.18em]"
                             onclick="toggleMobileSubmenu('mob-services-sub', 'mob-services-arrow')" type="button">
-                            <span data-i18n="nav.moreServices">MORE SERVICES</span>
+                            <span data-i18n="nav.moreServices">VIEW ALL SERVICES</span>
                             <i class="fa-solid fa-chevron-down text-[10px] text-neutral-400 transition-transform duration-300"
                                 id="mob-services-arrow"></i>
                         </button>
@@ -491,8 +488,8 @@
                             id="mob-about-sub">
                             <a class="py-1 hover:text-luxury-gold" data-i18n="megaMenu.aboutTitle"
                                 href="../aboutus/index.html" onclick="toggleMobileMenu()">SHARIF GROUP</a>
-                            <a class="py-1 hover:text-luxury-gold" data-i18n="megaMenu.aboutFounder"
-                                href="/ali-sharif/" onclick="toggleMobileMenu()">FOUNDER | ALI SHARIF</a>
+                            <a class="py-1 hover:text-luxury-gold" data-i18n="megaMenu.aboutFounder" href="/ali-sharif/"
+                                onclick="toggleMobileMenu()">FOUNDER | ALI SHARIF</a>
                             <a class="py-1 hover:text-luxury-gold" data-i18n="nav.socialResp"
                                 href="../socialresponsibility/index.html" onclick="toggleMobileMenu()">SOCIAL
                                 RESPONSIBILITY</a>
@@ -697,7 +694,7 @@
                 </div>
             </div>
         </div>
-        <!-- MEGA MENU MORE SERVICES -->
+        <!-- MEGA MENU VIEW ALL SERVICES -->
         <div class="mega-dropdown absolute left-0 w-full bg-white border-b border-neutral-200 shadow-2xl opacity-0 translate-y-[-10px] pointer-events-none transition-all duration-300 z-40"
             id="services-menu">
             <div class="max-w-7xl mx-auto px-8 py-10 grid grid-cols-12 gap-4">
@@ -1268,8 +1265,7 @@
             <div class="flex flex-col space-y-6 lg:col-span-1">
                 <a class="flex items-center space-x-4 group cursor-pointer" href="#"
                     onclick="window.scrollTo({top: 0, behavior: 'smooth'}); return false;">
-                    <img alt="Sharif Group Logo" class="h-14 w-auto"
-                        src="/assets/images/vector_2d09c4bb.svg" />
+                    <img alt="Sharif Group Logo" class="h-14 w-auto" src="/assets/images/vector_2d09c4bb.svg" />
                     <div class="flex items-center space-x-4 translate-y-1.5">
                         <div class="h-10 w-[1px] bg-neutral-500/50"></div>
                         <div

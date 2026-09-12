@@ -351,7 +351,7 @@ This section provides a 1-to-1 mapping of **every page on the website**, **what 
 │                                                                                  │
 │  When creating or editing ANY page, the admin gets a "Navbar Settings" card:     │
 │  [✔] Include in Website Navigation                                               │
-│  ├── Parent Menu:  [ Citizenship ▼ | Residency ▼ | More Services ▼ | Main Bar ] │
+│  ├── Parent Menu:  [ Citizenship ▼ | Residency ▼ | VIEW ALL SERVICEs ▼ | Main Bar ] │
 │  ├── Sub-Column:   [ Caribbean Portfolios ▼ | Global ▼ | European ▼ | Custom ]  │
 │  ├── Menu Label:   [ English | العربية | فارسی | 中文 ]                           │
 │  ├── Menu Icon:    [ Upload Country Flag or Badge Image ]                        │
@@ -462,7 +462,7 @@ This section provides a 1-to-1 mapping of **every page on the website**, **what 
   - **Why Invest in Dubai Real Estate:** 4 customizable value propositions.
   - **Consultation Form Trigger:** Custom inquiry form routing.
 - **Navbar & Mega Menu Integration:**
-  - Appears under `More Services` mega menu with an image card.
+  - Appears under `VIEW ALL SERVICEs` mega menu with an image card.
   - Configurable sort order and label.
 
 ---
@@ -475,7 +475,7 @@ This section provides a 1-to-1 mapping of **every page on the website**, **what 
   - **Service Offerings:** School placement, visa processing, family relocation assistance.
   - **Brochure Download & Inquiry CTA:** Form customization.
 - **Navbar & Mega Menu Integration:**
-  - Appears under `More Services` mega menu.
+  - Appears under `VIEW ALL SERVICEs` mega menu.
 
 ---
 

@@ -165,11 +165,11 @@ const DEFAULTS = {
     about: {
       en: {
         badge: 'INTRODUCTION',
-        heading: 'Our Story & Background:',
+        heading: 'OVERVIEW & Background:',
         subheading: 'Sharif Group',
         p1: 'Sharif Group is a trusted private consulting company based in Business Bay, Dubai. We help international clients and families secure legal second passports, residency visas, premium property investments, and student placements in top international universities.',
         p2: 'Our experienced team takes care of document preparation, background legal checks, and government clearance from start to finish, ensuring a straightforward, secure, and completely stress-free experience.',
-        btn1_text: 'Read Our Story',
+        btn1_text: 'Read OVERVIEW',
         btn1_link: 'aboutus/index.html',
         btn2_text: 'Book Consultation',
         btn2_link: 'contact/index.html'
@@ -692,7 +692,7 @@ const DEFAULTS = {
         slug: 'about-sharif-group',
         excerpt: 'Discover how our expert team in Business Bay, Dubai guides international families through secure legal second passport and residency pathways.',
         body: '<p>Discover how our expert team in Business Bay, Dubai guides international families through secure legal second passport and residency pathways...</p>',
-        meta_title: 'About Sharif Group | Dubai Advisory',
+        meta_title: 'CORPORATE IDENTITY| Dubai Advisory',
         meta_desc: 'Who we are and how we help.'
       },
       ar: { title: 'عن مجموعة شريف: من نحن وكيف نساعدك', slug: 'about-sharif-group', excerpt: '', body: '', meta_title: '', meta_desc: '' },
