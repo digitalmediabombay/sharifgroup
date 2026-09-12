@@ -65,7 +65,7 @@ body.lang-zh *:not(i):not([class*="fa-"]):not([class*="fa"]) {
 [dir="rtl"] .counter-value,
 [dir="rtl"] .counter-element,
 [dir="rtl"] .stat-counter-wrap,
-[dir="rtl"] h3 > span[dir="ltr"] {
+[dir="rtl"] h3>span[dir="ltr"] {
     direction: ltr !important;
     unicode-bidi: isolate !important;
     display: inline-flex !important;
@@ -98,22 +98,61 @@ body.lang-zh *:not(i):not([class*="fa-"]):not([class*="fa"]) {
    ========================================================================== */
 
 /* 1. Reset and invert Tailwind space-x-* in RTL mode so elements never overlap */
-html[dir="rtl"] [class*="space-x-"] > :not([hidden]) ~ :not([hidden]),
-body[dir="rtl"] [class*="space-x-"] > :not([hidden]) ~ :not([hidden]),
-[dir="rtl"] [class*="space-x-"] > :not([hidden]) ~ :not([hidden]) {
+html[dir="rtl"] [class*="space-x-"]> :not([hidden])~ :not([hidden]),
+body[dir="rtl"] [class*="space-x-"]> :not([hidden])~ :not([hidden]),
+[dir="rtl"] [class*="space-x-"]> :not([hidden])~ :not([hidden]) {
     --tw-space-x-reverse: 1 !important;
 }
 
-[dir="rtl"] .space-x-1 > :not([hidden]) ~ :not([hidden]) { margin-right: 0.25rem !important; margin-left: 0 !important; }
-[dir="rtl"] .space-x-1\.5 > :not([hidden]) ~ :not([hidden]) { margin-right: 0.375rem !important; margin-left: 0 !important; }
-[dir="rtl"] .space-x-2 > :not([hidden]) ~ :not([hidden]) { margin-right: 0.5rem !important; margin-left: 0 !important; }
-[dir="rtl"] .space-x-2\.5 > :not([hidden]) ~ :not([hidden]) { margin-right: 0.625rem !important; margin-left: 0 !important; }
-[dir="rtl"] .space-x-3 > :not([hidden]) ~ :not([hidden]) { margin-right: 0.75rem !important; margin-left: 0 !important; }
-[dir="rtl"] .space-x-3\.5 > :not([hidden]) ~ :not([hidden]) { margin-right: 0.875rem !important; margin-left: 0 !important; }
-[dir="rtl"] .space-x-4 > :not([hidden]) ~ :not([hidden]) { margin-right: 1rem !important; margin-left: 0 !important; }
-[dir="rtl"] .space-x-5 > :not([hidden]) ~ :not([hidden]) { margin-right: 1.25rem !important; margin-left: 0 !important; }
-[dir="rtl"] .space-x-6 > :not([hidden]) ~ :not([hidden]) { margin-right: 1.5rem !important; margin-left: 0 !important; }
-[dir="rtl"] .space-x-8 > :not([hidden]) ~ :not([hidden]) { margin-right: 2rem !important; margin-left: 0 !important; }
+[dir="rtl"] .space-x-1> :not([hidden])~ :not([hidden]) {
+    margin-right: 0.25rem !important;
+    margin-left: 0 !important;
+}
+
+[dir="rtl"] .space-x-1\.5> :not([hidden])~ :not([hidden]) {
+    margin-right: 0.375rem !important;
+    margin-left: 0 !important;
+}
+
+[dir="rtl"] .space-x-2> :not([hidden])~ :not([hidden]) {
+    margin-right: 0.5rem !important;
+    margin-left: 0 !important;
+}
+
+[dir="rtl"] .space-x-2\.5> :not([hidden])~ :not([hidden]) {
+    margin-right: 0.625rem !important;
+    margin-left: 0 !important;
+}
+
+[dir="rtl"] .space-x-3> :not([hidden])~ :not([hidden]) {
+    margin-right: 0.75rem !important;
+    margin-left: 0 !important;
+}
+
+[dir="rtl"] .space-x-3\.5> :not([hidden])~ :not([hidden]) {
+    margin-right: 0.875rem !important;
+    margin-left: 0 !important;
+}
+
+[dir="rtl"] .space-x-4> :not([hidden])~ :not([hidden]) {
+    margin-right: 1rem !important;
+    margin-left: 0 !important;
+}
+
+[dir="rtl"] .space-x-5> :not([hidden])~ :not([hidden]) {
+    margin-right: 1.25rem !important;
+    margin-left: 0 !important;
+}
+
+[dir="rtl"] .space-x-6> :not([hidden])~ :not([hidden]) {
+    margin-right: 1.5rem !important;
+    margin-left: 0 !important;
+}
+
+[dir="rtl"] .space-x-8> :not([hidden])~ :not([hidden]) {
+    margin-right: 2rem !important;
+    margin-left: 0 !important;
+}
 
 /* 2. Site-wide Footer Brand Mark & Column Alignment in RTL */
 html[dir="rtl"] footer .lg\:col-span-1,
@@ -147,16 +186,16 @@ html[dir="rtl"] footer a:has(img[alt*="Sharif Group Logo"]),
     align-self: flex-start !important;
 }
 
-html[dir="rtl"] footer a.group > *,
-html[dir="rtl"] .footer a.group > *,
-html[dir="rtl"] footer a[href*="hero"] > *,
-html[dir="rtl"] footer a:has(img[src*="Group-427321463"]) > *,
-html[dir="rtl"] footer a:has(img[alt*="Sharif Group Logo"]) > *,
-[dir="rtl"] footer a.group > *,
-[dir="rtl"] .footer a.group > *,
-[dir="rtl"] footer a[href*="hero"] > *,
-[dir="rtl"] footer a:has(img[src*="Group-427321463"]) > *,
-[dir="rtl"] footer a:has(img[alt*="Sharif Group Logo"]) > * {
+html[dir="rtl"] footer a.group>*,
+html[dir="rtl"] .footer a.group>*,
+html[dir="rtl"] footer a[href*="hero"]>*,
+html[dir="rtl"] footer a:has(img[src*="Group-427321463"])>*,
+html[dir="rtl"] footer a:has(img[alt*="Sharif Group Logo"])>*,
+[dir="rtl"] footer a.group>*,
+[dir="rtl"] .footer a.group>*,
+[dir="rtl"] footer a[href*="hero"]>*,
+[dir="rtl"] footer a:has(img[src*="Group-427321463"])>*,
+[dir="rtl"] footer a:has(img[alt*="Sharif Group Logo"])>* {
     margin-left: 0 !important;
     margin-right: 0 !important;
 }
@@ -179,16 +218,16 @@ html[dir="rtl"] footer a:has(img[alt*="Sharif Group Logo"]) .translate-y-1\.5,
     margin-right: 0 !important;
 }
 
-html[dir="rtl"] footer a.group .translate-y-1\.5 > *,
-html[dir="rtl"] .footer a.group .translate-y-1\.5 > *,
-html[dir="rtl"] footer a[href*="hero"] .translate-y-1\.5 > *,
-html[dir="rtl"] footer a:has(img[src*="Group-427321463"]) .translate-y-1\.5 > *,
-html[dir="rtl"] footer a:has(img[alt*="Sharif Group Logo"]) .translate-y-1\.5 > *,
-[dir="rtl"] footer a.group .translate-y-1\.5 > *,
-[dir="rtl"] .footer a.group .translate-y-1\.5 > *,
-[dir="rtl"] footer a[href*="hero"] .translate-y-1\.5 > *,
-[dir="rtl"] footer a:has(img[src*="Group-427321463"]) .translate-y-1\.5 > *,
-[dir="rtl"] footer a:has(img[alt*="Sharif Group Logo"]) .translate-y-1\.5 > * {
+html[dir="rtl"] footer a.group .translate-y-1\.5>*,
+html[dir="rtl"] .footer a.group .translate-y-1\.5>*,
+html[dir="rtl"] footer a[href*="hero"] .translate-y-1\.5>*,
+html[dir="rtl"] footer a:has(img[src*="Group-427321463"]) .translate-y-1\.5>*,
+html[dir="rtl"] footer a:has(img[alt*="Sharif Group Logo"]) .translate-y-1\.5>*,
+[dir="rtl"] footer a.group .translate-y-1\.5>*,
+[dir="rtl"] .footer a.group .translate-y-1\.5>*,
+[dir="rtl"] footer a[href*="hero"] .translate-y-1\.5>*,
+[dir="rtl"] footer a:has(img[src*="Group-427321463"]) .translate-y-1\.5>*,
+[dir="rtl"] footer a:has(img[alt*="Sharif Group Logo"]) .translate-y-1\.5>* {
     margin-left: 0 !important;
     margin-right: 0 !important;
 }
@@ -217,8 +256,8 @@ html[dir="rtl"] .footer img[alt*="Investment Migration Council"],
     gap: 1.25rem !important;
 }
 
-[dir="rtl"] header .min-w-0 > *,
-[dir="rtl"] header .flex.items-center:has(#nav-logo) > * {
+[dir="rtl"] header .min-w-0>*,
+[dir="rtl"] header .flex.items-center:has(#nav-logo)>* {
     margin-left: 0 !important;
     margin-right: 0 !important;
 }
@@ -227,33 +266,111 @@ html[dir="rtl"] .footer img[alt*="Investment Migration Council"],
     gap: 1rem !important;
 }
 
-[dir="rtl"] header nav.hidden.xl\:flex > * {
+[dir="rtl"] header nav.hidden.xl\:flex>* {
     margin-left: 0 !important;
     margin-right: 0 !important;
 }
 
 /* 4. Flip mr-* and ml-* margins in RTL mode across the site */
-[dir="rtl"] .mr-1 { margin-right: 0 !important; margin-left: 0.25rem !important; }
-[dir="rtl"] .mr-1\.5 { margin-right: 0 !important; margin-left: 0.375rem !important; }
-[dir="rtl"] .mr-2 { margin-right: 0 !important; margin-left: 0.5rem !important; }
-[dir="rtl"] .mr-2\.5 { margin-right: 0 !important; margin-left: 0.625rem !important; }
-[dir="rtl"] .mr-3 { margin-right: 0 !important; margin-left: 0.75rem !important; }
-[dir="rtl"] .mr-3\.5 { margin-right: 0 !important; margin-left: 0.875rem !important; }
-[dir="rtl"] .mr-4 { margin-right: 0 !important; margin-left: 1rem !important; }
-[dir="rtl"] .mr-5 { margin-right: 0 !important; margin-left: 1.25rem !important; }
-[dir="rtl"] .mr-6 { margin-right: 0 !important; margin-left: 1.5rem !important; }
-[dir="rtl"] .mr-8 { margin-right: 0 !important; margin-left: 2rem !important; }
+[dir="rtl"] .mr-1 {
+    margin-right: 0 !important;
+    margin-left: 0.25rem !important;
+}
 
-[dir="rtl"] .ml-1 { margin-left: 0 !important; margin-right: 0.25rem !important; }
-[dir="rtl"] .ml-1\.5 { margin-left: 0 !important; margin-right: 0.375rem !important; }
-[dir="rtl"] .ml-2 { margin-left: 0 !important; margin-right: 0.5rem !important; }
-[dir="rtl"] .ml-2\.5 { margin-left: 0 !important; margin-right: 0.625rem !important; }
-[dir="rtl"] .ml-3 { margin-left: 0 !important; margin-right: 0.75rem !important; }
-[dir="rtl"] .ml-3\.5 { margin-left: 0 !important; margin-right: 0.875rem !important; }
-[dir="rtl"] .ml-4 { margin-left: 0 !important; margin-right: 1rem !important; }
-[dir="rtl"] .ml-5 { margin-left: 0 !important; margin-right: 1.25rem !important; }
-[dir="rtl"] .ml-6 { margin-left: 0 !important; margin-right: 1.5rem !important; }
-[dir="rtl"] .ml-8 { margin-left: 0 !important; margin-right: 2rem !important; }
+[dir="rtl"] .mr-1\.5 {
+    margin-right: 0 !important;
+    margin-left: 0.375rem !important;
+}
+
+[dir="rtl"] .mr-2 {
+    margin-right: 0 !important;
+    margin-left: 0.5rem !important;
+}
+
+[dir="rtl"] .mr-2\.5 {
+    margin-right: 0 !important;
+    margin-left: 0.625rem !important;
+}
+
+[dir="rtl"] .mr-3 {
+    margin-right: 0 !important;
+    margin-left: 0.75rem !important;
+}
+
+[dir="rtl"] .mr-3\.5 {
+    margin-right: 0 !important;
+    margin-left: 0.875rem !important;
+}
+
+[dir="rtl"] .mr-4 {
+    margin-right: 0 !important;
+    margin-left: 1rem !important;
+}
+
+[dir="rtl"] .mr-5 {
+    margin-right: 0 !important;
+    margin-left: 1.25rem !important;
+}
+
+[dir="rtl"] .mr-6 {
+    margin-right: 0 !important;
+    margin-left: 1.5rem !important;
+}
+
+[dir="rtl"] .mr-8 {
+    margin-right: 0 !important;
+    margin-left: 2rem !important;
+}
+
+[dir="rtl"] .ml-1 {
+    margin-left: 0 !important;
+    margin-right: 0.25rem !important;
+}
+
+[dir="rtl"] .ml-1\.5 {
+    margin-left: 0 !important;
+    margin-right: 0.375rem !important;
+}
+
+[dir="rtl"] .ml-2 {
+    margin-left: 0 !important;
+    margin-right: 0.5rem !important;
+}
+
+[dir="rtl"] .ml-2\.5 {
+    margin-left: 0 !important;
+    margin-right: 0.625rem !important;
+}
+
+[dir="rtl"] .ml-3 {
+    margin-left: 0 !important;
+    margin-right: 0.75rem !important;
+}
+
+[dir="rtl"] .ml-3\.5 {
+    margin-left: 0 !important;
+    margin-right: 0.875rem !important;
+}
+
+[dir="rtl"] .ml-4 {
+    margin-left: 0 !important;
+    margin-right: 1rem !important;
+}
+
+[dir="rtl"] .ml-5 {
+    margin-left: 0 !important;
+    margin-right: 1.25rem !important;
+}
+
+[dir="rtl"] .ml-6 {
+    margin-left: 0 !important;
+    margin-right: 1.5rem !important;
+}
+
+[dir="rtl"] .ml-8 {
+    margin-left: 0 !important;
+    margin-right: 2rem !important;
+}
 
 /* 5. Feature Boxes (Icon Pill + Text) across all pages */
 [dir="rtl"] .about-feature-box,
@@ -264,9 +381,9 @@ html[dir="rtl"] .footer img[alt*="Investment Migration Council"],
     gap: 1.25rem !important;
 }
 
-[dir="rtl"] .about-feature-box > *,
-[dir="rtl"] .feature-box > *,
-[dir="rtl"] .feature-card > * {
+[dir="rtl"] .about-feature-box>*,
+[dir="rtl"] .feature-box>*,
+[dir="rtl"] .feature-card>* {
     margin-left: 0 !important;
     margin-right: 0 !important;
 }
@@ -297,7 +414,7 @@ html[dir="rtl"] .footer img[alt*="Investment Migration Council"],
     gap: 6px;
 }
 
-[dir="rtl"] #lang-switcher-btn > * {
+[dir="rtl"] #lang-switcher-btn>* {
     margin: 0 !important;
 }
 
@@ -452,11 +569,11 @@ body.lang-fa h1.flex.flex-col {
     gap: 1.75rem !important;
 }
 
-[dir="rtl"] h1 > span:nth-child(2),
-[dir="rtl"] h1 > span[data-i18n*="heroSubtitle"],
-[dir="rtl"] h1 > span[data-i18n*="Subtitle"],
-html[lang="ar"] h1 > span:nth-child(2),
-body.lang-ar h1 > span:nth-child(2) {
+[dir="rtl"] h1>span:nth-child(2),
+[dir="rtl"] h1>span[data-i18n*="heroSubtitle"],
+[dir="rtl"] h1>span[data-i18n*="Subtitle"],
+html[lang="ar"] h1>span:nth-child(2),
+body.lang-ar h1>span:nth-child(2) {
     font-family: 'Cairo', system-ui, sans-serif !important;
     letter-spacing: normal !important;
     margin-top: 0.75rem !important;
@@ -464,8 +581,8 @@ body.lang-ar h1 > span:nth-child(2) {
     display: block !important;
 }
 
-html[lang="fa"] h1 > span:nth-child(2),
-body.lang-fa h1 > span:nth-child(2) {
+html[lang="fa"] h1>span:nth-child(2),
+body.lang-fa h1>span:nth-child(2) {
     font-family: 'Vazirmatn', system-ui, sans-serif !important;
     letter-spacing: normal !important;
     margin-top: 0.75rem !important;
@@ -474,21 +591,27 @@ body.lang-fa h1 > span:nth-child(2) {
 }
 
 /* 4. Headings Line-height in RTL to prevent diacritic dots (e.g. yaa in 'علي') from overlapping text below */
-html[lang="ar"] h1, html[lang="fa"] h1,
-body.lang-ar h1, body.lang-fa h1,
+html[lang="ar"] h1,
+html[lang="fa"] h1,
+body.lang-ar h1,
+body.lang-fa h1,
 [dir="rtl"] h1 {
     line-height: 1.35 !important;
     margin-bottom: 1rem !important;
 }
 
-html[lang="ar"] h2, html[lang="fa"] h2,
-body.lang-ar h2, body.lang-fa h2,
+html[lang="ar"] h2,
+html[lang="fa"] h2,
+body.lang-ar h2,
+body.lang-fa h2,
 [dir="rtl"] h2 {
     line-height: 1.35 !important;
 }
 
-html[lang="ar"] h3, html[lang="fa"] h3,
-body.lang-ar h3, body.lang-fa h3,
+html[lang="ar"] h3,
+html[lang="fa"] h3,
+body.lang-ar h3,
+body.lang-fa h3,
 [dir="rtl"] h3 {
     line-height: 1.4 !important;
 }
@@ -622,10 +745,10 @@ body.lang-fa nav.scrollbar-none {
     -webkit-overflow-scrolling: touch;
 }
 
-[dir="rtl"] nav.scrollbar-none > *,
-html[dir="rtl"] nav.scrollbar-none > *,
-[dir="rtl"] nav[class*="scrollbar-none"] > *,
-html[dir="rtl"] nav[class*="scrollbar-none"] > * {
+[dir="rtl"] nav.scrollbar-none>*,
+html[dir="rtl"] nav.scrollbar-none>*,
+[dir="rtl"] nav[class*="scrollbar-none"]>*,
+html[dir="rtl"] nav[class*="scrollbar-none"]>* {
     margin-left: 0 !important;
     margin-right: 0 !important;
 }
@@ -640,6 +763,7 @@ html[dir="rtl"] nav[class*="scrollbar-none"] button span {
 }
 
 @media (min-width: 1400px) {
+
     [dir="rtl"] nav.scrollbar-none,
     html[dir="rtl"] nav.scrollbar-none,
     [dir="rtl"] nav[class*="scrollbar-none"],
@@ -706,4 +830,37 @@ html[dir="rtl"] div.flex[dir="ltr"] {
     border-left-width: 0 !important;
 }
 
+/* ==========================================================================
+   MEGA MENU RTL ADJUSTMENTS
+   ========================================================================== */
+html[dir="rtl"] .mega-dropdown h4,
+body[dir="rtl"] .mega-dropdown h4,
+[dir="rtl"] .mega-dropdown h4 {
+    text-align: right !important;
+}
 
+html[dir="rtl"] .mega-dropdown .col-span-3.border-r,
+body[dir="rtl"] .mega-dropdown .col-span-3.border-r,
+[dir="rtl"] .mega-dropdown .col-span-3.border-r,
+html[dir="rtl"] .mega-dropdown div[class*="border-r"],
+body[dir="rtl"] .mega-dropdown div[class*="border-r"],
+[dir="rtl"] .mega-dropdown div[class*="border-r"] {
+    border-right: none !important;
+    border-left: 1px solid #e5e5e5 !important;
+    padding-right: 0 !important;
+    padding-left: 1.5rem !important;
+}
+
+/* General responsive text alignment overrides for RTL */
+html[dir="rtl"] .lg\:text-left,
+html[dir="rtl"] .md\:text-left,
+html[dir="rtl"] .sm\:text-left,
+html[dir="rtl"] .xl\:text-left,
+html[dir="rtl"] .xl\:text-left,
+[dir="rtl"] .lg\:text-left,
+[dir="rtl"] .md\:text-left,
+[dir="rtl"] .sm\:text-left,
+[dir="rtl"] .xl\:text-left,
+[dir="rtl"] .xl\:text-left {
+    text-align: right !important;
+}
