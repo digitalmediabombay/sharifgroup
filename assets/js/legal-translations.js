@@ -9,7 +9,7 @@ window.LEGAL_TRANSLATIONS = {
     "nav": {
       "citizenship": "Citizenship",
       "residency": "Residency",
-      "moreServices": "VIEW ALL SERVICEs",
+      "moreServices": "MORE SERVICES",
       "aboutUs": "About Us",
       "contact": "Contact",
       "bookConsultation": "Book Consultation",
@@ -37,7 +37,7 @@ window.LEGAL_TRANSLATIONS = {
       "europeanPortfolios": "European Portfolios",
       "americasUAE": "Americas & UAE",
       "allResidencyPrograms": "All Residency Programs",
-      "moreServicesTitle": "VIEW ALL SERVICEs",
+      "moreServicesTitle": "MORE SERVICES",
       "realEstateAdvisory": "Real Estate Advisory",
       "educationalAdvisory": "Educational Advisory",
       "socialResponsibility": "Social Responsibility",
