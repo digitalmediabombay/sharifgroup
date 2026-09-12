@@ -303,65 +303,62 @@
     <header
         class="fixed top-0 left-0 w-full z-[100] border-b border-neutral-200 transition-all duration-500 bg-white mega-blur"
         id="main-header">
-        <div
-            class="max-w-[1600px] w-full mx-auto px-4 sm:px-6 lg:px-8 h-20 flex items-center justify-between gap-3 xl:gap-4 relative">
-            <!-- Left Group: Logo + Left-Aligned Menu with Dropdown Arrows -->
-            <div class="flex items-center space-x-3 2xl:space-x-5 min-w-0">
-                <a class="flex items-center shrink-0" href="index.html">
+        <div class="max-w-[1440px] mx-auto px-4 sm:px-8 h-20 flex items-center justify-between relative">
+            <div class="flex items-center space-x-5">
+                <a class="flex items-center shrink-0" href="../../../index.html"
+                    onclick="sessionStorage.setItem('sharif_preloader_shown', 'true');">
                     <img alt="Sharif Group Logo"
-                        class="h-12 xl:h-14 w-auto object-contain transition-all duration-500 opacity-100" id="nav-logo"
+                        class="h-14 w-auto object-contain transition-all duration-500 opacity-100" id="nav-logo"
                         src="/assets/images/vector_b5a81734.svg" />
                 </a>
                 <span class="hidden lg:inline text-neutral-300 font-light">|</span>
                 <nav
-                    class="hidden lg:flex items-center space-x-2.5 2xl:space-x-4 text-[10px] 2xl:text-[11px] font-bold tracking-[0.1em] 2xl:tracking-[0.18em] uppercase text-neutral-600 whitespace-nowrap">
-                    <div class="relative group py-2" data-menu="citizenship-menu">
-                        <a class="hover:text-luxury-gold transition duration-200 cursor-pointer flex items-center gap-1.5"
-                            href="citizenshipbyinvestment/index.html">
-                            <span data-i18n="nav.citizenship">Citizenship</span> <i
-                                class="fa-solid fa-chevron-down text-[8px] transition-transform duration-200 group-hover:rotate-180 text-neutral-400 group-hover:text-luxury-gold"></i>
-                        </a>
+                    class="hidden lg:flex items-center space-x-4 text-[11px] font-bold tracking-[0.18em] uppercase text-neutral-600 whitespace-nowrap">
+                    <div class="relative py-6" onmouseenter="openMegaMenu('citizenship-menu')">
+                        <a class="hover:text-luxury-gold transition duration-200 flex items-center gap-1.5"
+                            href="../../../citizenshipbyinvestment/index.html"><span
+                                data-i18n="nav.citizenship">Citizenship</span> <i
+                                class="fa-solid fa-chevron-down text-[8px] transition-transform duration-300"
+                                id="arrow-citizenship-menu"></i></a>
                     </div>
                     <span class="text-neutral-300 font-light">|</span>
-                    <div class="relative group py-2" data-menu="residency-menu">
-                        <a class="hover:text-luxury-gold transition duration-200 cursor-pointer flex items-center gap-1.5"
-                            href="residencybyinvestment/index.html">
-                            <span data-i18n="nav.residency">Residency</span> <i
-                                class="fa-solid fa-chevron-down text-[8px] transition-transform duration-200 group-hover:rotate-180 text-neutral-400 group-hover:text-luxury-gold"></i>
-                        </a>
+                    <div class="relative py-6" onmouseenter="openMegaMenu('residency-menu')">
+                        <a class="hover:text-luxury-gold transition duration-200 flex items-center gap-1.5"
+                            href="../../../residencybyinvestment/index.html"><span
+                                data-i18n="nav.residency">Residency</span> <i
+                                class="fa-solid fa-chevron-down text-[8px] transition-transform duration-300"
+                                id="arrow-residency-menu"></i></a>
                     </div>
                     <span class="text-neutral-300 font-light">|</span>
-                    <div class="relative group py-2" data-menu="services-menu">
-                        <a class="hover:text-luxury-gold transition duration-200 cursor-pointer flex items-center gap-1.5"
-                            href="realestate/index.html">
-                            <span data-i18n="nav.moreServices">MORE SERVICES</span> <i
-                                class="fa-solid fa-chevron-down text-[8px] transition-transform duration-200 group-hover:rotate-180 text-neutral-400 group-hover:text-luxury-gold"></i>
-                        </a>
+                    <div class="relative py-6" onmouseenter="openMegaMenu('services-menu')">
+                        <a class="hover:text-luxury-gold transition duration-200 flex items-center gap-1.5"
+                            href="../../../realestate/index.html"><span data-i18n="nav.moreServices">MORE SERVICES</span> <i
+                                class="fa-solid fa-chevron-down text-[8px] transition-transform duration-300"
+                                id="arrow-services-menu"></i></a>
                     </div>
                     <span class="text-neutral-300 font-light">|</span>
-                    <div class="relative group py-2" data-menu="about-menu">
-                        <a class="hover:text-luxury-gold transition duration-200 cursor-pointer flex items-center gap-1.5"
-                            href="aboutus/index.html">
-                            <span data-i18n="nav.aboutUs">About Us</span> <i
-                                class="fa-solid fa-chevron-down text-[8px] transition-transform duration-200 group-hover:rotate-180 text-neutral-400 group-hover:text-luxury-gold"></i>
-                        </a>
+                    <div class="relative py-6" onmouseenter="openMegaMenu('about-menu')">
+                        <a class="hover:text-luxury-gold transition duration-200 flex items-center gap-1.5"
+                            href="../../../aboutus/index.html"><span data-i18n="nav.aboutUs">About Us</span> <i
+                                class="fa-solid fa-chevron-down text-[8px] transition-transform duration-300"
+                                id="arrow-about-menu"></i></a>
                     </div>
                     <span class="text-neutral-300 font-light">|</span>
-                    <a class="hover:text-luxury-gold transition duration-200 py-2" data-i18n="nav.contact"
-                        href="contact/index.html">Contact Us</a>
+                    <a class="hover:text-luxury-gold transition duration-200 py-6" data-i18n="nav.contact"
+                        href="../../../contact/index.html" onmouseenter="scheduleMenuClose()">Contact Us</a>
                     <span class="text-neutral-300 font-light">|</span>
-                    <a class="hover:text-luxury-gold transition duration-200 py-2" data-i18n="nav.blog"
-                        href="blog/index.html">Blog</a>
+                    <a class="hover:text-luxury-gold transition duration-200 py-6" data-i18n="nav.blog"
+                        href="../../../blog/index.html" onmouseenter="scheduleMenuClose()">Blog</a>
                 </nav>
             </div>
-            <!-- Right Action Pill Buttons & Language Switcher -->
-            <div class="hidden lg:flex items-center space-x-2 2xl:space-x-3 shrink-0">
-                <a class="px-3.5 2xl:px-5 py-2 2xl:py-2.5 rounded-full border border-[#786142] text-[#786142] text-[10px] 2xl:text-[11px] font-bold uppercase tracking-[0.1em] 2xl:tracking-[0.18em] hover:bg-[#786142] hover:text-white transition-all duration-300 whitespace-nowrap"
+            <!-- Right Action Pill Buttons -->
+            <div class="hidden lg:flex items-center space-x-3 shrink-0">
+                <a class="px-5 py-2.5 rounded-full border border-[#786142] text-[#786142] text-[11px] font-bold uppercase tracking-[0.18em] hover:bg-[#786142] hover:text-white transition-all duration-300 whitespace-nowrap"
                     data-i18n="nav.eligibilityChecker" href="/eligibilitychecker/index.html">
                     Eligibility Checker
                 </a>
-                <a class="px-3.5 2xl:px-5 py-2 2xl:py-2.5 rounded-full border border-neutral-900 text-neutral-900 text-[10px] 2xl:text-[11px] font-bold uppercase tracking-[0.1em] 2xl:tracking-[0.18em] hover:bg-luxury-gold hover:border-luxury-gold hover:text-white transition-all duration-300 whitespace-nowrap"
-                    data-i18n="nav.bookConsultation" href="contact/index.html">
+                <a class="px-5 py-2.5 rounded-full border border-neutral-900 text-neutral-900 text-[11px] font-bold uppercase tracking-[0.18em] hover:bg-luxury-gold hover:border-luxury-gold hover:text-white transition-all duration-300 whitespace-nowrap"
+                    data-i18n="nav.bookConsultation" href="../../../contact/index.html">
                     Book Consultation
                 </a>
                 <!-- Language Switcher Dropdown -->
@@ -395,84 +392,80 @@
                     </div>
                 </div>
             </div>
-            <button class="lg:hidden flex flex-col items-end space-y-1.5 focus:outline-none z-[110]"
+            <!-- Mobile Navigation Toggle Button -->
+            <button aria-label="Toggle Navigation Menu"
+                class="lg:hidden flex flex-col items-end space-y-1.5 focus:outline-none p-2 z-[110]"
                 onclick="toggleMobileMenu()">
-                <span class="w-6 h-[2px] bg-luxury-dark transition-transform" id="mob-bar1"></span>
-                <span class="w-4 h-[2px] bg-luxury-dark transition-opacity" id="mob-bar2"></span>
-                <span class="w-6 h-[2px] bg-luxury-dark transition-transform" id="mob-bar3"></span>
+                <span class="w-6 h-[2px] bg-neutral-900 transition-all duration-300 origin-center" id="mob-bar1"></span>
+                <span class="w-4 h-[2px] bg-neutral-900 transition-all duration-300 origin-center" id="mob-bar2"></span>
+                <span class="w-6 h-[2px] bg-neutral-900 transition-all duration-300 origin-center" id="mob-bar3"></span>
             </button>
         </div>
         <!-- MEGA MENU CITIZENSHIP -->
         <div class="mega-dropdown absolute left-0 w-full bg-white border-b border-neutral-200 shadow-2xl opacity-0 translate-y-[-10px] pointer-events-none transition-all duration-300 z-40"
-            id="citizenship-menu">
+            id="citizenship-menu" onmouseenter="clearMenuCloseTimer()" onmouseleave="scheduleMenuClose()">
             <div class="max-w-7xl mx-auto px-8 py-10 grid grid-cols-12 gap-4">
                 <div
                     class="col-span-3 flex flex-col items-center justify-center text-center pr-4 border-r border-neutral-200">
                     <h3 class="font-serif text-3xl text-neutral-900 font-bold leading-tight mb-4"
-                        data-i18n="megaMenu.citizenshipTitle">Citizenship By Investment</h3>
+                        data-i18n="nav.citizenship">Citizenship<br />By<br />Investment</h3>
                     <a class="px-4 py-1.5 border border-neutral-400 text-[11px] font-bold tracking-[0.18em] uppercase rounded-full hover:bg-luxury-dark hover:text-white transition whitespace-nowrap"
-                        data-i18n="megaMenu.allCitizenshipPrograms" href="citizenshipbyinvestment/index.html"
-                        onclick="closeAllMegaMenus()">VIEW ALL PROGRAMS</a>
+                        data-i18n="megaMenu.allCitizenshipPrograms"
+                        href="../../../citizenshipbyinvestment/index.html">View All Programs</a>
                 </div>
                 <div class="col-span-5 px-6">
                     <h4 class="text-[11px] font-bold tracking-[0.18em] uppercase text-luxury-gold mb-6 text-center lg:text-left"
                         data-i18n="megaMenu.caribbeanPortfolios">Caribbean Portfolios</h4>
                     <ul class="space-y-4">
                         <li class="flex items-center group">
-                            <div class="flex items-center space-x-3">
+                            <a class="flex items-center space-x-3" href="../dominica/index.html">
                                 <img alt="Dominica"
                                     class="w-12 h-8 object-cover rounded-sm border border-neutral-200 shadow-sm"
-                                    src="/assets/images/Dominica-Americas-Hu_10e82c.webp" loading="lazy"
-                                    decoding="async" />
-                                <a class="text-[11px] font-bold tracking-[0.18em] uppercase text-neutral-700 group-hover:text-luxury-gold transition"
-                                    data-i18n="services.cbi.dominica"
-                                    href="programs/citizenshipbyinvestment/dominica/index.html">Dominica | Passport</a>
-                            </div>
+                                    src="/assets/images/Dominica-Americas-Hu_10e82c.webp" />
+                                <span
+                                    class="text-[11px] font-bold tracking-[0.18em] uppercase text-neutral-700 group-hover:text-luxury-gold transition"
+                                    data-i18n="services.cbi.dominica">Dominica | Passport</span>
+                            </a>
                         </li>
                         <li class="flex items-center group">
-                            <div class="flex items-center space-x-3">
+                            <a class="flex items-center space-x-3" href="../stkittis/index.html">
                                 <img alt="St. Kitts"
                                     class="w-12 h-8 object-cover rounded-sm border border-neutral-200 shadow-sm"
-                                    src="/assets/images/st-kitts-passport.webp" loading="lazy" decoding="async" />
-                                <a class="text-[11px] font-bold tracking-[0.18em] uppercase text-neutral-700 group-hover:text-luxury-gold transition"
-                                    data-i18n="services.cbi.kitts"
-                                    href="programs/citizenshipbyinvestment/stkittis/index.html">St. Kitts &amp; Nevis |
-                                    Passport</a>
-                            </div>
+                                    src="/assets/images/st-kitts-passport.webp" />
+                                <span
+                                    class="text-[11px] font-bold tracking-[0.18em] uppercase text-neutral-700 group-hover:text-luxury-gold transition"
+                                    data-i18n="services.cbi.kitts">St. Kitts &amp; Nevis | Passport</span>
+                            </a>
                         </li>
                         <li class="flex items-center group">
-                            <div class="flex items-center space-x-3">
+                            <a class="flex items-center space-x-3" href="../antiguaandbarbuda/index.html">
                                 <img alt="Antigua"
                                     class="w-12 h-8 object-cover rounded-sm border border-neutral-200 shadow-sm"
-                                    src="/assets/images/passport-investment-_6f41c1.webp" loading="lazy"
-                                    decoding="async" />
-                                <a class="text-[11px] font-bold tracking-[0.18em] uppercase text-neutral-700 group-hover:text-luxury-gold transition"
-                                    data-i18n="services.cbi.antigua"
-                                    href="programs/citizenshipbyinvestment/antiguaandbarbuda/index.html">Antigua &amp;
-                                    Barbuda | Passport</a>
-                            </div>
+                                    src="/assets/images/passport-investment-_6f41c1.webp" />
+                                <span
+                                    class="text-[11px] font-bold tracking-[0.18em] uppercase text-neutral-700 group-hover:text-luxury-gold transition"
+                                    data-i18n="services.cbi.antigua">Antigua &amp; Barbuda | Passport</span>
+                            </a>
                         </li>
                         <li class="flex items-center group">
-                            <div class="flex items-center space-x-3">
+                            <a class="flex items-center space-x-3" href="../stlucia/index.html">
                                 <img alt="Saint Lucia"
                                     class="w-12 h-8 object-cover rounded-sm border border-neutral-200 shadow-sm"
-                                    src="/assets/images/610fd15b02a12_38ea93.webp" loading="lazy" decoding="async" />
-                                <a class="text-[11px] font-bold tracking-[0.18em] uppercase text-neutral-700 group-hover:text-luxury-gold transition"
-                                    data-i18n="services.cbi.lucia"
-                                    href="programs/citizenshipbyinvestment/stlucia/index.html">Saint Lucia |
-                                    Passport</a>
-                            </div>
+                                    src="/assets/images/610fd15b02a12_38ea93.webp" />
+                                <span
+                                    class="text-[11px] font-bold tracking-[0.18em] uppercase text-neutral-700 group-hover:text-luxury-gold transition"
+                                    data-i18n="services.cbi.lucia">Saint Lucia | Passport</span>
+                            </a>
                         </li>
                         <li class="flex items-center group">
-                            <div class="flex items-center space-x-3">
+                            <a class="flex items-center space-x-3" href="../greneda/index.html">
                                 <img alt="Grenada"
                                     class="w-12 h-8 object-cover rounded-sm border border-neutral-200 shadow-sm"
-                                    src="/assets/images/citizenship-passport_35b3b6.webp" loading="lazy"
-                                    decoding="async" />
-                                <a class="text-[11px] font-bold tracking-[0.18em] uppercase text-neutral-700 group-hover:text-luxury-gold transition"
-                                    data-i18n="services.cbi.grenada"
-                                    href="programs/citizenshipbyinvestment/greneda/index.html">Grenada | Passport</a>
-                            </div>
+                                    src="/assets/images/citizenship-passport_35b3b6.webp" />
+                                <span
+                                    class="text-[11px] font-bold tracking-[0.18em] uppercase text-neutral-700 group-hover:text-luxury-gold transition"
+                                    data-i18n="services.cbi.grenada">Grenada | Passport</span>
+                            </a>
                         </li>
                     </ul>
                 </div>
@@ -481,39 +474,34 @@
                         data-i18n="megaMenu.globalPortfolios">Global Portfolios</h4>
                     <ul class="space-y-4">
                         <li class="flex items-center group">
-                            <div class="flex items-center space-x-3">
+                            <a class="flex items-center space-x-3" href="../vanuatu/index.html">
                                 <img alt="Vanuatu"
                                     class="w-12 h-8 object-cover rounded-sm border border-neutral-200 shadow-sm"
-                                    src="/assets/images/how-to-get-vanuatu-c_adddfe.webp" loading="lazy"
-                                    decoding="async" />
-                                <a class="text-[11px] font-bold tracking-[0.18em] uppercase text-neutral-700 group-hover:text-luxury-gold transition"
-                                    data-i18n="services.cbi.vanuatu"
-                                    href="programs/citizenshipbyinvestment/vanuatu/index.html">Vanuatu | Passport</a>
-                            </div>
+                                    src="/assets/images/how-to-get-vanuatu-c_adddfe.webp" />
+                                <span
+                                    class="text-[11px] font-bold tracking-[0.18em] uppercase text-neutral-700 group-hover:text-luxury-gold transition"
+                                    data-i18n="services.cbi.vanuatu">Vanuatu | Passport</span>
+                            </a>
                         </li>
                         <li class="flex items-center group">
-                            <div class="flex items-center space-x-3">
-                                <img alt="Sao Tome"
+                            <a class="flex items-center space-x-3" href="index.html">
+                                <img alt="São Tomé &amp; Príncipe"
                                     class="w-12 h-8 object-cover rounded-sm border border-neutral-200 shadow-sm"
-                                    src="/assets/images/Sao_Tome_passport_7c536c.webp" loading="lazy"
-                                    decoding="async" />
-                                <a class="text-[11px] font-bold tracking-[0.18em] uppercase text-neutral-700 group-hover:text-luxury-gold transition"
-                                    data-i18n="services.cbi.saotome"
-                                    href="programs/citizenshipbyinvestment/sãotoméandpríncipe/index.html">São Tomé and
-                                    Príncipe | Passport</a>
-                            </div>
+                                    src="/assets/images/Sao_Tome_passport_7c536c.webp" />
+                                <span
+                                    class="text-[11px] font-bold tracking-[0.18em] uppercase text-neutral-700 group-hover:text-luxury-gold transition"
+                                    data-i18n="services.cbi.saotome">São Tomé &amp; Príncipe | Passport</span>
+                            </a>
                         </li>
                         <li class="flex items-center group">
-                            <div class="flex items-center space-x-3">
-                                <img alt="Nauru"
+                            <a class="flex items-center space-x-3" href="../nauru/index.html">
+                                <img alt="Republic of Nauru"
                                     class="w-12 h-8 object-cover rounded-sm border border-neutral-200 shadow-sm"
-                                    src="/assets/images/reloc8-online-nauru-_16c98e.webp" loading="lazy"
-                                    decoding="async" />
-                                <a class="text-[11px] font-bold tracking-[0.18em] uppercase text-neutral-700 group-hover:text-luxury-gold transition"
-                                    data-i18n="services.cbi.nauru"
-                                    href="programs/citizenshipbyinvestment/nauru/index.html">Republic of Nauru |
-                                    Passport</a>
-                            </div>
+                                    src="/assets/images/images_82f4a7.webp" />
+                                <span
+                                    class="text-[11px] font-bold tracking-[0.18em] uppercase text-neutral-700 group-hover:text-luxury-gold transition"
+                                    data-i18n="services.cbi.nauru">Republic of Nauru | Passport</span>
+                            </a>
                         </li>
                     </ul>
                 </div>
@@ -521,41 +509,40 @@
         </div>
         <!-- MEGA MENU RESIDENCY -->
         <div class="mega-dropdown absolute left-0 w-full bg-white border-b border-neutral-200 shadow-2xl opacity-0 translate-y-[-10px] pointer-events-none transition-all duration-300 z-40"
-            id="residency-menu">
+            id="residency-menu" onmouseenter="clearMenuCloseTimer()" onmouseleave="scheduleMenuClose()">
             <div class="max-w-7xl mx-auto px-8 py-10 grid grid-cols-12 gap-4">
                 <div
                     class="col-span-3 flex flex-col items-center justify-center text-center pr-4 border-r border-neutral-200">
                     <h3 class="font-serif text-3xl text-neutral-900 font-bold leading-tight mb-4"
-                        data-i18n="megaMenu.residencyTitle">Residency By Investment</h3>
+                        data-i18n="nav.residency">Residency<br />By<br />Investment</h3>
                     <a class="px-4 py-1.5 border border-neutral-400 text-[11px] font-bold tracking-[0.18em] uppercase rounded-full hover:bg-luxury-dark hover:text-white transition whitespace-nowrap"
-                        data-i18n="megaMenu.allResidencyPrograms" href="residencybyinvestment/index.html"
-                        onclick="closeAllMegaMenus()">All Residency Programs</a>
+                        data-i18n="megaMenu.allCitizenshipPrograms"
+                        href="../../../residencybyinvestment/index.html">View All Programs</a>
                 </div>
                 <div class="col-span-5 px-6">
                     <h4 class="text-[11px] font-bold tracking-[0.18em] uppercase text-luxury-gold mb-6 text-center lg:text-left"
                         data-i18n="megaMenu.europeanPortfolios">European Portfolios</h4>
                     <ul class="space-y-4">
                         <li class="flex items-center group">
-                            <div class="flex items-center space-x-3">
+                            <a class="flex items-center space-x-3"
+                                href="../../residencybyinvestment/portugal/index.html">
                                 <img alt="Portugal"
                                     class="w-12 h-8 object-cover rounded-sm border border-neutral-200 shadow-sm"
-                                    src="/assets/images/portugal-golden-vsa_47319a.webp" loading="lazy"
-                                    decoding="async" />
-                                <a class="text-[11px] font-bold tracking-[0.18em] uppercase text-neutral-700 group-hover:text-luxury-gold transition"
-                                    data-i18n="services.rbi.portugal"
-                                    href="programs/residencybyinvestment/portugal/index.html">Portugal | Golden Visa</a>
-                            </div>
+                                    src="/assets/images/portugal-golden-vsa_47319a.webp" />
+                                <span
+                                    class="text-[11px] font-bold tracking-[0.18em] uppercase text-neutral-700 group-hover:text-luxury-gold transition"
+                                    data-i18n="services.rbi.portugal">Portugal | Golden Visa</span>
+                            </a>
                         </li>
                         <li class="flex items-center group">
-                            <div class="flex items-center space-x-3">
+                            <a class="flex items-center space-x-3" href="../../residencybyinvestment/greece/index.html">
                                 <img alt="Greece"
                                     class="w-12 h-8 object-cover rounded-sm border border-neutral-200 shadow-sm"
-                                    src="/assets/images/golden-visa-greece-t_12b60b.webp" loading="lazy"
-                                    decoding="async" />
-                                <a class="text-[11px] font-bold tracking-[0.18em] uppercase text-neutral-700 group-hover:text-luxury-gold transition"
-                                    data-i18n="services.rbi.greece"
-                                    href="programs/residencybyinvestment/greece/index.html">Greece | Golden Visa</a>
-                            </div>
+                                    src="/assets/images/golden-visa-greece-t_12b60b.webp" />
+                                <span
+                                    class="text-[11px] font-bold tracking-[0.18em] uppercase text-neutral-700 group-hover:text-luxury-gold transition"
+                                    data-i18n="services.rbi.greece">Greece | Golden Visa</span>
+                            </a>
                         </li>
                     </ul>
                 </div>
@@ -564,26 +551,24 @@
                         data-i18n="megaMenu.americasUAE">Americas &amp; UAE</h4>
                     <ul class="space-y-4">
                         <li class="flex items-center group">
-                            <div class="flex items-center space-x-3">
+                            <a class="flex items-center space-x-3" href="../../residencybyinvestment/panama/index.html">
                                 <img alt="Panama"
                                     class="w-12 h-8 object-cover rounded-sm border border-neutral-200 shadow-sm"
-                                    src="/assets/images/images_5d28a7.webp" loading="lazy" decoding="async" />
-                                <a class="text-[11px] font-bold tracking-[0.18em] uppercase text-neutral-700 group-hover:text-luxury-gold transition"
-                                    data-i18n="services.rbi.panama"
-                                    href="programs/residencybyinvestment/panama/index.html">Panama | Golden Visa</a>
-                            </div>
+                                    src="/assets/images/images_5d28a7.webp" />
+                                <span
+                                    class="text-[11px] font-bold tracking-[0.18em] uppercase text-neutral-700 group-hover:text-luxury-gold transition"
+                                    data-i18n="services.rbi.panama">Panama | Golden Visa</span>
+                            </a>
                         </li>
                         <li class="flex items-center group">
-                            <div class="flex items-center space-x-3">
+                            <a class="flex items-center space-x-3" href="../../residencybyinvestment/uae/index.html">
                                 <img alt="UAE"
                                     class="w-12 h-8 object-cover rounded-sm border border-neutral-200 shadow-sm"
-                                    src="/assets/images/uae-residence-visa_df80b3.webp" loading="lazy"
-                                    decoding="async" />
-                                <a class="text-[11px] font-bold tracking-[0.18em] uppercase text-neutral-700 group-hover:text-luxury-gold transition"
-                                    data-i18n="services.rbi.uae"
-                                    href="programs/residencybyinvestment/uae/index.html">United Arab Emirates | Golden
-                                    Visa</a>
-                            </div>
+                                    src="/assets/images/uae-residence-visa_df80b3.webp" />
+                                <span
+                                    class="text-[11px] font-bold tracking-[0.18em] uppercase text-neutral-700 group-hover:text-luxury-gold transition"
+                                    data-i18n="services.rbi.uae">United Arab Emirates | Golden Visa</span>
+                            </a>
                         </li>
                     </ul>
                 </div>
@@ -591,89 +576,90 @@
         </div>
         <!-- MEGA MENU MORE SERVICES -->
         <div class="mega-dropdown absolute left-0 w-full bg-white border-b border-neutral-200 shadow-2xl opacity-0 translate-y-[-10px] pointer-events-none transition-all duration-300 z-40"
-            id="services-menu">
+            id="services-menu" onmouseenter="clearMenuCloseTimer()" onmouseleave="scheduleMenuClose()">
             <div class="max-w-7xl mx-auto px-8 py-10 grid grid-cols-12 gap-4">
                 <div
                     class="col-span-3 flex flex-col items-center justify-center text-center pr-4 border-r border-neutral-200">
-                    <h3 class="font-serif text-3xl text-neutral-900 font-bold leading-tight mb-4"
-                        data-i18n="megaMenu.moreServicesTitle">MORE SERVICES</h3>
+                    <h3 data-i18n="megaMenu.otherServices"
+                        class="font-serif text-3xl text-neutral-900 font-bold leading-tight mb-4"
+                        data-i18n="megaMenu.otherServices">Other<br />Services</h3>
                     <a class="px-4 py-1.5 border border-neutral-400 text-[11px] font-bold tracking-[0.18em] uppercase rounded-full hover:bg-luxury-dark hover:text-white transition whitespace-nowrap"
-                        data-i18n="megaMenu.moreServicesTitle" href="realestate/index.html"
-                        onclick="closeAllMegaMenus()">MORE SERVICES</a>
+                        data-i18n="megaMenu.moreServicesTitle" href="../../../realestate/index.html">MORE SERVICES</a>
                 </div>
                 <div class="col-span-9 px-6 flex items-center justify-start gap-4">
                     <div
                         class="relative flex-1 max-w-[220px] rounded-[20px] shadow-md overflow-hidden group border border-luxury-gold/50">
                         <img alt="Real Estate"
                             class="absolute inset-0 w-full h-full object-cover transition-transform duration-500 group-hover:scale-110"
-                            src="/assets/images/isdubairealestateago_3194a5.webp" loading="lazy" decoding="async" />
+                            src="/assets/images/isdubairealestateago_3194a5.webp" />
                         <div
                             class="absolute inset-0 bg-neutral-950/65 group-hover:bg-neutral-950/50 transition-colors duration-300">
                         </div>
                         <a class="relative z-10 text-[11px] font-bold tracking-[0.18em] text-white block text-center leading-tight py-12 px-4 uppercase"
-                            data-i18n="megaMenu.realEstateAdvisory" href="realestate/index.html">Real Estate
-                            Advisory</a>
+                            href="../../../realestate/index.html" data-i18n="megaMenu.realEstateAdvisory">Real
+                            Estate</a>
                     </div>
                     <div
                         class="relative flex-1 max-w-[220px] rounded-[20px] shadow-md overflow-hidden group border border-luxury-gold/50">
                         <img alt="Educational Advisory"
                             class="absolute inset-0 w-full h-full object-cover transition-transform duration-500 group-hover:scale-110"
-                            src="/assets/images/photo-154133990719_46b647.webp" loading="lazy" decoding="async" />
+                            src="/assets/images/photo-154133990719_46b647.webp" />
                         <div
                             class="absolute inset-0 bg-neutral-950/65 group-hover:bg-neutral-950/50 transition-colors duration-300">
                         </div>
                         <a class="relative z-10 text-[11px] font-bold tracking-[0.18em] text-white block text-center leading-tight py-12 px-4 uppercase"
-                            data-i18n="megaMenu.educationalAdvisory" href="educationaladvisory/index.html">Educational
-                            Advisory</a>
+                            href="../../../educationaladvisory/index.html"
+                            data-i18n="megaMenu.educationalAdvisory">Educational Advisory</a>
                     </div>
                 </div>
             </div>
         </div>
         <!-- MEGA MENU ABOUT -->
         <div class="mega-dropdown absolute left-0 w-full bg-white border-b border-neutral-200 shadow-2xl opacity-0 translate-y-[-10px] pointer-events-none transition-all duration-300 z-40"
-            id="about-menu">
+            id="about-menu" onmouseenter="clearMenuCloseTimer()" onmouseleave="scheduleMenuClose()">
             <div class="max-w-7xl mx-auto px-8 py-10 grid grid-cols-12 gap-4">
                 <div
                     class="col-span-3 flex flex-col items-center justify-center text-center pr-4 border-r border-neutral-200">
-                    <h3 class="font-serif text-3xl text-neutral-900 font-bold leading-tight mb-4"
-                        data-i18n="megaMenu.aboutTitle">Corporate Identity</h3>
+                    <h3 data-i18n="megaMenu.corporateIdentity"
+                        class="font-serif text-3xl text-neutral-900 font-bold leading-tight mb-4"
+                        data-i18n="megaMenu.corporateIdentity">Corporate<br />Identity</h3>
                     <a class="px-4 py-1.5 border border-neutral-400 text-[11px] font-bold tracking-[0.18em] uppercase rounded-full hover:bg-luxury-dark hover:text-white transition whitespace-nowrap"
-                        data-i18n="megaMenu.ourStory" href="aboutus/index.html">OVERVIEW</a>
+                        data-i18n="megaMenu.aboutTitle" href="../../../aboutus/index.html">Overview</a>
                 </div>
                 <div class="col-span-9 px-6 flex items-center justify-start gap-4">
                     <div
                         class="relative flex-1 max-w-[260px] rounded-[20px] shadow-md overflow-hidden group border border-luxury-gold/50">
                         <img alt="Sharif Group"
                             class="absolute inset-0 w-full h-full object-cover transition-transform duration-500 group-hover:scale-110"
-                            src="/assets/images/dubai-office-2.webp" loading="lazy" decoding="async" />
+                            src="/assets/images/dubai-office-2.webp" />
                         <div
                             class="absolute inset-0 bg-neutral-950/65 group-hover:bg-neutral-950/50 transition-colors duration-300">
                         </div>
                         <a class="relative z-10 text-[11px] font-bold tracking-[0.18em] text-white block text-center leading-tight py-12 px-4 uppercase"
-                            data-i18n="megaMenu.aboutTitle" href="aboutus/index.html">ABOUT US</a>
+                            data-i18n="megaMenu.aboutTitle" href="../../../aboutus/index.html">Sharif Group</a>
                     </div>
                     <div
                         class="relative flex-1 max-w-[260px] rounded-[20px] shadow-md overflow-hidden group border border-luxury-gold/50">
                         <img alt="Founder"
                             class="absolute inset-0 w-full h-full object-cover transition-transform duration-500 group-hover:scale-110"
-                            src="alirezasharif.svg" loading="lazy" decoding="async" />
+                            src="../../../alirezasharif.svg" />
                         <div
                             class="absolute inset-0 bg-neutral-950/65 group-hover:bg-neutral-950/50 transition-colors duration-300">
                         </div>
                         <a class="relative z-10 text-[11px] font-bold tracking-[0.18em] text-white block text-center leading-tight py-12 px-4 uppercase"
-                            data-i18n="megaMenu.aboutFounder" href="/ali-sharif/">About Founder | Ali Sharif</a>
+                            data-i18n="megaMenu.aboutFounder" href="/ali-sharif/">Founder | Ali Sharif</a>
                     </div>
                     <div
                         class="relative flex-1 max-w-[260px] rounded-[20px] shadow-md overflow-hidden group border border-luxury-gold/50">
                         <img alt="Social Responsibility"
                             class="absolute inset-0 w-full h-full object-cover transition-transform duration-500 group-hover:scale-110"
-                            src="/assets/images/photo-148852178799_7302db.webp" loading="lazy" decoding="async" />
+                            src="/assets/images/photo-148852178799_7302db.webp" />
                         <div
                             class="absolute inset-0 bg-neutral-950/65 group-hover:bg-neutral-950/50 transition-colors duration-300">
                         </div>
                         <a class="relative z-10 text-[11px] font-bold tracking-[0.18em] text-white block text-center leading-tight py-12 px-4 uppercase"
-                            data-i18n="megaMenu.socialResponsibility" href="socialresponsibility/index.html">Social
-                            Responsibility</a>
+                            href="../../../socialresponsibility/index.html"
+                            data-i18n="megaMenu.socialResponsibility">Social Responsibility</a>
                     </div>
                 </div>
             </div>
