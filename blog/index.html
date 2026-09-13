@@ -8862,7 +8862,7 @@
 
             // Update URL history seamlessly without page reload
             if (window.location.protocol !== 'file:' && window.history && window.history.pushState) {
-                window.history.pushState({ articleSlug: slug }, article.title, `/ blog / ${ slug } `);
+                window.history.pushState({ articleSlug: slug }, article.title, `/blog/${slug}`);
             }
 
             // Switch Views
