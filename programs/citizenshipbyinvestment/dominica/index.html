@@ -1998,15 +1998,15 @@ Read Full Guide →
 <!-- Row 1 -->
 <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
 <div>
-<label class="block text-[10px] uppercase tracking-wider text-neutral-700 font-bold mb-1.5"><span data-i18n="programs.dominica.formFullName">Full Name</span> <span class="text-red-500">*</span></label>
-<input class="w-full bg-white/95 border border-neutral-300 rounded-xl px-4 py-3 text-xs focus:outline-none focus:border-[#786142] transition shadow-sm" data-i18n-placeholder="contact.namePlaceholder" placeholder="John Doe" required="" type="text"/>
+<label class="block text-[10px] uppercase tracking-wider text-neutral-700 font-bold mb-1.5" data-i18n-html="programs.dominica.form_label1">Full Name <span class="text-red-500">*</span></label>
+<input name="fullName" class="w-full bg-white/95 border border-neutral-300 rounded-xl px-4 py-3 text-xs focus:outline-none focus:border-[#786142] transition shadow-sm" placeholder="John Doe" data-i18n-placeholder="programs.dominica.placeholderName" required="" type="text"/>
 </div>
 <div>
-<label class="block text-[10px] uppercase tracking-wider text-neutral-700 font-bold mb-1.5"><span data-i18n="programs.dominica.formEmail">Email Address</span> <span class="text-red-500">*</span></label>
-<input class="w-full bg-white/95 border border-neutral-300 rounded-xl px-4 py-3 text-xs focus:outline-none focus:border-[#786142] transition shadow-sm" data-i18n-placeholder="contact.emailPlaceholder" placeholder="name@domain.com" required="" type="email"/>
+<label class="block text-[10px] uppercase tracking-wider text-neutral-700 font-bold mb-1.5" data-i18n-html="programs.dominica.form_label2">Email Address <span class="text-red-500">*</span></label>
+<input name="email" class="w-full bg-white/95 border border-neutral-300 rounded-xl px-4 py-3 text-xs focus:outline-none focus:border-[#786142] transition shadow-sm" placeholder="name@domain.com" data-i18n-placeholder="programs.dominica.placeholderEmail" required="" type="email"/>
 </div>
 <div>
-<label class="block text-[10px] uppercase tracking-wider text-neutral-700 font-bold mb-1.5"><span data-i18n="programs.dominica.formPhone">Mobile / WhatsApp Number</span> <span class="text-red-500">*</span></label>
+<label class="block text-[10px] uppercase tracking-wider text-neutral-700 font-bold mb-1.5" data-i18n-html="programs.dominica.form_label3">Mobile / WhatsApp Number <span class="text-red-500">*</span></label>
 <div class="flex" dir="ltr">
 <div class="custom-select-wrapper w-32 overflow-visible">
 <button class="w-full bg-white/95 border border-neutral-300 rounded-l-xl px-2.5 py-3 text-left text-xs focus:outline-none flex justify-between items-center whitespace-nowrap shadow-sm" onclick="toggleCountryDropdown(this)" type="button">
@@ -2019,100 +2019,92 @@ Read Full Guide →
 </div>
 </div>
 <input class="dial-code-hidden-value" type="hidden" value="+971"/>
-<input class="w-full bg-white/95 border-y border-r border-neutral-300 rounded-r-xl px-3 py-3 text-xs focus:outline-none focus:border-[#786142] transition shadow-sm" data-i18n-placeholder="contact.phonePlaceholder" placeholder="50 123 4567" required="" type="tel" dir="ltr"/>
+<input name="phone" class="w-full bg-white/95 border-y border-r border-neutral-300 rounded-r-xl px-3 py-3 text-xs focus:outline-none focus:border-[#786142] transition shadow-sm" placeholder="50 123 4567" data-i18n-placeholder="programs.dominica.placeholderPhone" required="" type="tel" dir="ltr"/>
 </div>
 </div>
 </div>
 <!-- Row 2 -->
 <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
 <div>
-<label class="block text-[10px] uppercase tracking-wider text-neutral-700 font-bold mb-1.5"><span data-i18n="programs.dominica.formNationality">Current Nationality</span> <span class="text-red-500">*</span></label>
-<input class="w-full bg-white/95 border border-neutral-300 rounded-xl px-4 py-3 text-xs focus:outline-none focus:border-[#786142] transition shadow-sm" data-i18n-placeholder="programs.dominica.formNationalityPlaceholder" placeholder="e.g. Indian, British, Egyptian" required="" type="text"/>
+<label class="block text-[10px] uppercase tracking-wider text-neutral-700 font-bold mb-1.5" data-i18n-html="programs.dominica.form_label4">Current Nationality <span class="text-red-500">*</span></label>
+<input name="nationality" class="w-full bg-white/95 border border-neutral-300 rounded-xl px-4 py-3 text-xs focus:outline-none focus:border-[#786142] transition shadow-sm" placeholder="e.g. Indian, Pakistani, Nigerian" data-i18n-placeholder="programs.dominica.placeholderNationality" required="" type="text"/>
 </div>
 <div>
-<label class="block text-[10px] uppercase tracking-wider text-neutral-700 font-bold mb-1.5"><span data-i18n="programs.dominica.formResidence">Country of Residence</span> <span class="text-red-500">*</span></label>
-<input class="w-full bg-white/95 border border-neutral-300 rounded-xl px-4 py-3 text-xs focus:outline-none focus:border-[#786142] transition shadow-sm" data-i18n-placeholder="programs.dominica.formResidencePlaceholder" placeholder="e.g. UAE, Saudi Arabia, UK" required="" type="text"/>
+<label class="block text-[10px] uppercase tracking-wider text-neutral-700 font-bold mb-1.5" data-i18n-html="programs.dominica.form_label5">Country of Residence <span class="text-red-500">*</span></label>
+<input name="residence" class="w-full bg-white/95 border border-neutral-300 rounded-xl px-4 py-3 text-xs focus:outline-none focus:border-[#786142] transition shadow-sm" placeholder="e.g. UAE, Saudi Arabia, Qatar" data-i18n-placeholder="programs.dominica.placeholderResidence" required="" type="text"/>
 </div>
 <div>
-<label class="block text-[10px] uppercase tracking-wider text-neutral-700 font-bold mb-1.5"><span data-i18n="programs.dominica.formPreferredLang">Preferred Language</span> <span class="text-red-500">*</span></label>
-<select class="w-full bg-white/95 border border-neutral-300 rounded-xl px-4 py-3 text-xs focus:outline-none focus:border-[#786142] transition shadow-sm" required="">
-<option data-i18n="programs.dominica.optLangEn" value="english">English</option>
-<option data-i18n="programs.dominica.optLangAr" value="arabic">Arabic</option>
-<option data-i18n="programs.dominica.optLangRu" value="russian">Russian</option>
-<option data-i18n="programs.dominica.optLangFr" value="french">French</option>
-<option data-i18n="programs.dominica.optLangHi" value="hindi">Hindi / Urdu</option>
-<option data-i18n="programs.dominica.optLangFa" value="farsi">Persian (Farsi)</option>
-<option data-i18n="programs.dominica.optLangZh" value="chinese">Chinese (中文)</option>
+<label class="block text-[10px] uppercase tracking-wider text-neutral-700 font-bold mb-1.5" data-i18n-html="programs.dominica.form_label6">Preferred Language <span class="text-red-500">*</span></label>
+<select name="preferredLanguage" class="w-full bg-white/95 border border-neutral-300 rounded-xl px-4 py-3 text-xs focus:outline-none focus:border-[#786142] transition shadow-sm" required="">
+<option value="english" data-i18n="programs.dominica.form_option1">English</option>
+<option value="arabic" data-i18n="programs.dominica.form_option2">Arabic</option>
+<option value="russian" data-i18n="programs.dominica.form_option3">Russian</option>
+<option value="french" data-i18n="programs.dominica.form_option4">French</option>
+<option value="hindi" data-i18n="programs.dominica.form_option5">Hindi / Urdu</option>
+<option value="farsi" data-i18n="programs.dominica.form_option6">Persian (Farsi)</option>
 </select>
 </div>
 <div>
-<label class="block text-[10px] uppercase tracking-wider text-neutral-700 font-bold mb-1.5"><span data-i18n="programs.dominica.formFamilyMembers">Family Members / Dependants</span> <span class="text-red-500">*</span></label>
-<select class="w-full bg-white/95 border border-neutral-300 rounded-xl px-4 py-3 text-xs focus:outline-none focus:border-[#786142] transition shadow-sm" required="">
-<option data-i18n="programs.dominica.optFamSingle" value="single">Single Applicant</option>
-<option data-i18n="programs.dominica.optFamCouple" value="couple">Applicant + Spouse</option>
-<option data-i18n="programs.dominica.optFamSmall" value="family_small">Family up to 4</option>
-<option data-i18n="programs.dominica.optFamLarge" value="family_large">Family of 5+</option>
+<label class="block text-[10px] uppercase tracking-wider text-neutral-700 font-bold mb-1.5" data-i18n-html="programs.dominica.form_label7">Family Members / Dependants <span class="text-red-500">*</span></label>
+<select name="familyMembers" class="w-full bg-white/95 border border-neutral-300 rounded-xl px-4 py-3 text-xs focus:outline-none focus:border-[#786142] transition shadow-sm" required="">
+<option value="single" data-i18n="programs.dominica.form_option7">Single Applicant</option>
+<option value="couple" data-i18n="programs.dominica.form_option8">Applicant + Spouse</option>
+<option value="family_small" data-i18n="programs.dominica.form_option9">Family up to 4</option>
+<option value="family_large" data-i18n="programs.dominica.form_option10">Family of 5+</option>
 </select>
 </div>
 </div>
 <!-- Row 3 -->
 <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
 <div>
-<label class="block text-[10px] uppercase tracking-wider text-neutral-700 font-bold mb-1.5"><span data-i18n="programs.dominica.formInvestmentRoute">Investment Route</span> <span class="text-red-500">*</span></label>
-<select class="w-full bg-white/95 border border-neutral-300 rounded-xl px-4 py-3 text-xs focus:outline-none focus:border-[#786142] transition shadow-sm" required="">
-<option data-i18n="programs.dominica.optRouteEdf" selected="" value="edf">EDF Government Contribution ($200k+)</option>
-<option data-i18n="programs.dominica.optRouteRe" value="real-estate">Approved Real Estate ($200k+)</option>
+<label class="block text-[10px] uppercase tracking-wider text-neutral-700 font-bold mb-1.5" data-i18n-html="programs.dominica.form_label8">Investment Route <span class="text-red-500">*</span></label>
+<select name="investmentRoute" class="w-full bg-white/95 border border-neutral-300 rounded-xl px-4 py-3 text-xs focus:outline-none focus:border-[#786142] transition shadow-sm" required="">
+<option selected="" value="edf-donation" data-i18n="programs.dominica.form_option11">Economic Diversification Fund ($200k+)</option>
+<option value="real-estate" data-i18n="programs.dominica.form_option12">Approved Real Estate Project ($200k+)</option>
 </select>
 </div>
 <div>
-<label class="block text-[10px] uppercase tracking-wider text-neutral-700 font-bold mb-1.5"><span data-i18n="programs.dominica.formBudget">Approx. Investment Budget</span> <span class="text-red-500">*</span></label>
-<select class="w-full bg-white/95 border border-neutral-300 rounded-xl px-4 py-3 text-xs focus:outline-none focus:border-[#786142] transition shadow-sm" required="">
-<option data-i18n="programs.dominica.optBudget1" value="200k-250k">$200,000 – $250,000</option>
-<option data-i18n="programs.dominica.optBudget2" value="250k-350k">$250,000 – $350,000</option>
-<option data-i18n="programs.dominica.optBudget3" value="350k-500k">$350,000 – $500,000</option>
-<option data-i18n="programs.dominica.optBudget4" value="500k+">$500,000 or more</option>
+<label class="block text-[10px] uppercase tracking-wider text-neutral-700 font-bold mb-1.5" data-i18n-html="programs.dominica.form_label9">Approx. Investment Budget <span class="text-red-500">*</span></label>
+<select name="budget" class="w-full bg-white/95 border border-neutral-300 rounded-xl px-4 py-3 text-xs focus:outline-none focus:border-[#786142] transition shadow-sm" required="">
+<option value="200k-250k" data-i18n="programs.dominica.form_option13">$200,000 – $250,000</option>
+<option value="250k-350k" data-i18n="programs.dominica.form_option14">$250,000 – $350,000</option>
+<option value="350k+" data-i18n="programs.dominica.form_option15">$350,000+</option>
 </select>
 </div>
 <div>
-<label class="block text-[10px] uppercase tracking-wider text-neutral-700 font-bold mb-1.5"><span data-i18n="programs.dominica.formObjective">Primary Objective</span> <span class="text-red-500">*</span></label>
-<select class="w-full bg-white/95 border border-neutral-300 rounded-xl px-4 py-3 text-xs focus:outline-none focus:border-[#786142] transition shadow-sm" required="">
-<option data-i18n="programs.dominica.optObjMobility" value="mobility">Global Visa-Free Mobility (130+ Countries)</option>
-<option data-i18n="programs.dominica.optObjSecurity" value="security">Family Safety &amp; Plan B Second Passport</option>
-<option data-i18n="programs.dominica.optObjTax" value="tax">Tax Efficiency &amp; Wealth Protection</option>
-<option data-i18n="programs.dominica.optObjRe" value="real-estate">Eco-Resort &amp; Property Investment</option>
+<label class="block text-[10px] uppercase tracking-wider text-neutral-700 font-bold mb-1.5" data-i18n-html="programs.dominica.form_label10">Primary Objective <span class="text-red-500">*</span></label>
+<select name="objective" class="w-full bg-white/95 border border-neutral-300 rounded-xl px-4 py-3 text-xs focus:outline-none focus:border-[#786142] transition shadow-sm" required="">
+<option value="global-mobility" data-i18n="programs.dominica.form_option16">Global Mobility & Visa-Free Travel</option>
+<option value="plan-b" data-i18n="programs.dominica.form_option17">Secure Second Passport (Plan B)</option>
+<option value="tax-optimization" data-i18n="programs.dominica.form_option18">Wealth Preservation & Tax Structuring</option>
+<option value="family-future" data-i18n="programs.dominica.form_option19">Security & Future for Children</option>
 </select>
 </div>
 <div>
-<label class="block text-[10px] uppercase tracking-wider text-neutral-700 font-bold mb-1.5"><span data-i18n="programs.dominica.formTimeline">Planning Timeline</span> <span class="text-red-500">*</span></label>
-<select class="w-full bg-white/95 border border-neutral-300 rounded-xl px-4 py-3 text-xs focus:outline-none focus:border-[#786142] transition shadow-sm" required="">
-<option data-i18n="programs.dominica.optTimeImm" value="immediate">Immediately (0–3 months)</option>
-<option data-i18n="programs.dominica.optTimeShort" value="short_term">3–6 months</option>
-<option data-i18n="programs.dominica.optTimePlan" value="planning">6–12 months</option>
+<label class="block text-[10px] uppercase tracking-wider text-neutral-700 font-bold mb-1.5" data-i18n-html="programs.dominica.form_label11">Planning Timeline <span class="text-red-500">*</span></label>
+<select name="timeline" class="w-full bg-white/95 border border-neutral-300 rounded-xl px-4 py-3 text-xs focus:outline-none focus:border-[#786142] transition shadow-sm" required="">
+<option value="immediate" data-i18n="programs.dominica.form_option20">Immediately (0–3 months)</option>
+<option value="short_term" data-i18n="programs.dominica.form_option21">3–6 months</option>
+<option value="planning" data-i18n="programs.dominica.form_option22">6–12 months</option>
 </select>
 </div>
 </div>
 <!-- Row 4 -->
 <div>
-<label class="block text-[10px] uppercase tracking-wider text-neutral-700 font-bold mb-1.5"><span data-i18n="programs.dominica.formMessage">Optional Message / Special Considerations</span></label>
-<textarea class="w-full bg-white/95 border border-neutral-300 rounded-xl p-4 text-xs focus:outline-none focus:border-[#786142] transition shadow-sm" data-i18n-placeholder="programs.dominica.formMessagePlaceholder" placeholder="Specify any family parameters, target timelines, or specific questions..." rows="3"></textarea>
+<label class="block text-[10px] uppercase tracking-wider text-neutral-700 font-bold mb-1.5" data-i18n="programs.dominica.form_label12">Optional Message / Special Considerations</label>
+<textarea name="notes" class="w-full bg-white/95 border border-neutral-300 rounded-xl p-4 text-xs focus:outline-none focus:border-[#786142] transition shadow-sm" placeholder="Specify any family parameters, target timelines, or specific questions..." data-i18n-placeholder="programs.dominica.placeholderMessage" rows="3"></textarea>
 </div>
 <!-- Row 5 -->
 <div class="space-y-2 pt-2 border-t border-neutral-300/60">
 <label class="flex items-start space-x-3 cursor-pointer">
 <input class="mt-0.5 rounded border-neutral-300 text-[#786142] focus:ring-[#786142]" required="" type="checkbox"/>
-<span class="text-xs text-neutral-600 font-light leading-relaxed" data-i18n-html="programs.dominica.formConsent">
-                                I consent to Sharif Group storing and processing my personal details for consultation and pre-screening purposes in accordance with the <a class="text-[#786142] underline font-bold" data-i18n="footer.privacyPolicy" href="../../../privacypolicy/index.html">Privacy Policy</a>. <span class="text-red-500">*</span>
-</span>
+<span class="text-xs text-neutral-600 font-light leading-relaxed" data-i18n-html="programs.dominica.formConsent">I consent to Sharif Group storing and processing my personal details for consultation and pre-screening purposes in accordance with the <a class="text-[#786142] underline font-bold" href="../../../privacypolicy/index.html">Privacy Policy</a>. <span class="text-red-500">*</span></span>
 </label>
 </div>
 <div class="pt-2 text-center">
-<button class="px-12 py-4 bg-[#786142] text-white text-xs uppercase tracking-widest font-bold hover:bg-neutral-900 transition duration-300 rounded-xl shadow-lg" data-i18n="programs.dominica.formSubmit" type="submit">
-                            Submit Confidential Request →
-                        </button>
+<button class="px-12 py-4 bg-[#786142] text-white text-xs uppercase tracking-widest font-bold hover:bg-neutral-900 transition duration-300 rounded-xl shadow-lg" type="submit" data-i18n="programs.dominica.formSubmit">Submit Confidential Request →</button>
 </div>
-<div class="hidden text-xs text-green-700 font-bold text-center mt-3 bg-green-50 p-3 rounded-lg border border-green-200" data-i18n="programs.dominica.formSuccess" id="contact-form-success">
-                        Thank you. Your inquiry has been sent successfully. An advisory partner will reach out within 2 hours.
-                    </div>
+<div class="hidden text-xs text-green-700 font-bold text-center mt-3 bg-green-50 p-3 rounded-lg border border-green-200" id="contact-form-success" data-i18n="programs.dominica.formSuccess">Thank you. Your inquiry has been sent successfully. An advisory partner will reach out within 2 hours.</div>
 </form>
 </div>
 </section>
@@ -3088,5 +3080,6 @@ Read Full Guide →
 <script src="../../../assets/js/language-switcher.js"></script>
 <!-- Sharif Group CMS Live Preview Loader -->
 <script src="../../../admin/cms-loader.js"></script>
+<script src="../../../assets/js/forms.js"></script>
 </body>
 </html>
