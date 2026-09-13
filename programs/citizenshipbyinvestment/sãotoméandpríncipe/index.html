@@ -3289,7 +3289,7 @@
                 </div>
             </div>
         </section>
-        <!-- PROGRAM CONSULTATION FORM SECTION -->
+       <!-- PROGRAM CONSULTATION FORM SECTION -->
         <section class="py-24 px-6 bg-[#FAF6EE] relative overflow-hidden border-t border-neutral-200/80"
             id="program-consult-form-section">
             <div class="absolute inset-0 z-0 pointer-events-none bg-no-repeat bg-center bg-contain opacity-6"
@@ -3324,6 +3324,7 @@
                                 data-i18n-html="programs.saotome.form_label1">Full Name <span
                                     class="text-red-500">*</span></label>
                             <input
+                                name="fullName"
                                 class="w-full bg-white/95 border border-neutral-300 rounded-xl px-4 py-3 text-xs focus:outline-none focus:border-[#786142] transition shadow-sm"
                                 placeholder="John Doe" data-i18n-placeholder="programs.saotome.placeholderName"
                                 required="" type="text" />
@@ -3333,6 +3334,7 @@
                                 data-i18n-html="programs.saotome.form_label2">Email Address <span
                                     class="text-red-500">*</span></label>
                             <input
+                                name="email"
                                 class="w-full bg-white/95 border border-neutral-300 rounded-xl px-4 py-3 text-xs focus:outline-none focus:border-[#786142] transition shadow-sm"
                                 placeholder="name@domain.com" data-i18n-placeholder="programs.saotome.placeholderEmail"
                                 required="" type="email" />
@@ -3359,6 +3361,7 @@
                                 </div>
                                 <input class="dial-code-hidden-value" type="hidden" value="+971" />
                                 <input
+                                    name="phone"
                                     class="w-full bg-white/95 border-y border-r border-neutral-300 rounded-r-xl px-3 py-3 text-xs focus:outline-none focus:border-[#786142] transition shadow-sm"
                                     placeholder="50 123 4567" data-i18n-placeholder="programs.saotome.placeholderPhone"
                                     required="" type="tel" dir="ltr" />
@@ -3372,6 +3375,7 @@
                                 data-i18n-html="programs.saotome.form_label4">Current Nationality <span
                                     class="text-red-500">*</span></label>
                             <input
+                                name="nationality"
                                 class="w-full bg-white/95 border border-neutral-300 rounded-xl px-4 py-3 text-xs focus:outline-none focus:border-[#786142] transition shadow-sm"
                                 placeholder="e.g. Indian, British, Egyptian"
                                 data-i18n-placeholder="programs.saotome.placeholderNationality" required=""
@@ -3382,6 +3386,7 @@
                                 data-i18n-html="programs.saotome.form_label5">Country of Residence <span
                                     class="text-red-500">*</span></label>
                             <input
+                                name="residence"
                                 class="w-full bg-white/95 border border-neutral-300 rounded-xl px-4 py-3 text-xs focus:outline-none focus:border-[#786142] transition shadow-sm"
                                 placeholder="e.g. UAE, Saudi Arabia, UK"
                                 data-i18n-placeholder="programs.saotome.placeholderResidence" required="" type="text" />
@@ -3391,6 +3396,7 @@
                                 data-i18n-html="programs.saotome.form_label6">Preferred Language <span
                                     class="text-red-500">*</span></label>
                             <select
+                                name="preferredLanguage"
                                 class="w-full bg-white/95 border border-neutral-300 rounded-xl px-4 py-3 text-xs focus:outline-none focus:border-[#786142] transition shadow-sm"
                                 required="">
                                 <option data-i18n="programs.saotome.form_option1" value="english">English</option>
@@ -3406,6 +3412,7 @@
                                 data-i18n-html="programs.saotome.form_label7">Family Members / Dependants <span
                                     class="text-red-500">*</span></label>
                             <select
+                                name="familyMembers"
                                 class="w-full bg-white/95 border border-neutral-300 rounded-xl px-4 py-3 text-xs focus:outline-none focus:border-[#786142] transition shadow-sm"
                                 required="">
                                 <option data-i18n="programs.saotome.form_option7" value="single">Single Applicant
@@ -3426,6 +3433,7 @@
                                 data-i18n-html="programs.saotome.form_label8">Investment Route <span
                                     class="text-red-500">*</span></label>
                             <select
+                                name="investmentRoute"
                                 class="w-full bg-white/95 border border-neutral-300 rounded-xl px-4 py-3 text-xs focus:outline-none focus:border-[#786142] transition shadow-sm"
                                 required="">
                                 <option data-i18n="programs.saotome.form_option11" selected="" value="ntf">National
@@ -3437,6 +3445,7 @@
                                 data-i18n-html="programs.saotome.form_label9">Approx. Investment Budget <span
                                     class="text-red-500">*</span></label>
                             <select
+                                name="budget"
                                 class="w-full bg-white/95 border border-neutral-300 rounded-xl px-4 py-3 text-xs focus:outline-none focus:border-[#786142] transition shadow-sm"
                                 required="">
                                 <option data-i18n="programs.saotome.form_option12" value="90k-100k">$90,000 – $100,000
@@ -3452,6 +3461,7 @@
                                 data-i18n-html="programs.saotome.form_label10">Primary Objective <span
                                     class="text-red-500">*</span></label>
                             <select
+                                name="objective"
                                 class="w-full bg-white/95 border border-neutral-300 rounded-xl px-4 py-3 text-xs focus:outline-none focus:border-[#786142] transition shadow-sm"
                                 required="">
                                 <option data-i18n="programs.saotome.form_option15" value="mobility">Global Visa-Free
@@ -3469,6 +3479,7 @@
                                 data-i18n-html="programs.saotome.form_label11">Planning Timeline <span
                                     class="text-red-500">*</span></label>
                             <select
+                                name="timeline"
                                 class="w-full bg-white/95 border border-neutral-300 rounded-xl px-4 py-3 text-xs focus:outline-none focus:border-[#786142] transition shadow-sm"
                                 required="">
                                 <option data-i18n="programs.saotome.form_option19" value="immediate">Immediately (0–3
@@ -3484,6 +3495,7 @@
                         <label class="block text-[10px] uppercase tracking-wider text-neutral-700 font-bold mb-1.5"
                             data-i18n="programs.saotome.form_label12">Optional Message / Special Considerations</label>
                         <textarea
+                            name="notes"
                             class="w-full bg-white/95 border border-neutral-300 rounded-xl p-4 text-xs focus:outline-none focus:border-[#786142] transition shadow-sm"
                             placeholder="Specify any family parameters, target timelines, or specific questions..."
                             rows="3"></textarea>
@@ -4525,6 +4537,7 @@
     </script>
     <script src="../../../assets/js/language-switcher.js"></script>
     <script src="../../../admin/cms-loader.js"></script>
+	<script src="../../../assets/js/forms.js"></script>
 </body>
 
 </html>
