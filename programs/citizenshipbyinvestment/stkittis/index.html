@@ -2259,11 +2259,11 @@
 <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
 <div>
 <label class="block text-[10px] uppercase tracking-wider text-neutral-700 font-bold mb-1.5" data-i18n-html="programs.stkitts.form_label1">Full Name <span class="text-red-500">*</span></label>
-<input class="w-full bg-white/95 border border-neutral-300 rounded-xl px-4 py-3 text-xs focus:outline-none focus:border-[#786142] transition shadow-sm" data-i18n-placeholder="programs.stkitts.placeholderName" placeholder="John Doe" required="" type="text"/>
+<input name="fullName" class="w-full bg-white/95 border border-neutral-300 rounded-xl px-4 py-3 text-xs focus:outline-none focus:border-[#786142] transition shadow-sm" placeholder="John Doe" data-i18n-placeholder="programs.stkitts.placeholderName" required="" type="text"/>
 </div>
 <div>
 <label class="block text-[10px] uppercase tracking-wider text-neutral-700 font-bold mb-1.5" data-i18n-html="programs.stkitts.form_label2">Email Address <span class="text-red-500">*</span></label>
-<input class="w-full bg-white/95 border border-neutral-300 rounded-xl px-4 py-3 text-xs focus:outline-none focus:border-[#786142] transition shadow-sm" data-i18n-placeholder="programs.stkitts.placeholderEmail" placeholder="name@domain.com" required="" type="email"/>
+<input name="email" class="w-full bg-white/95 border border-neutral-300 rounded-xl px-4 py-3 text-xs focus:outline-none focus:border-[#786142] transition shadow-sm" placeholder="name@domain.com" data-i18n-placeholder="programs.stkitts.placeholderEmail" required="" type="email"/>
 </div>
 <div>
 <label class="block text-[10px] uppercase tracking-wider text-neutral-700 font-bold mb-1.5" data-i18n-html="programs.stkitts.form_label3">Mobile / WhatsApp Number <span class="text-red-500">*</span></label>
@@ -2279,7 +2279,7 @@
 </div>
 </div>
 <input class="dial-code-hidden-value" type="hidden" value="+971"/>
-<input class="w-full bg-white/95 border-y border-r border-neutral-300 rounded-r-xl px-3 py-3 text-xs focus:outline-none focus:border-[#786142] transition shadow-sm" data-i18n-placeholder="programs.stkitts.placeholderPhone" placeholder="50 123 4567" required="" type="tel" dir="ltr"/>
+<input name="phone" class="w-full bg-white/95 border-y border-r border-neutral-300 rounded-r-xl px-3 py-3 text-xs focus:outline-none focus:border-[#786142] transition shadow-sm" placeholder="50 123 4567" data-i18n-placeholder="programs.stkitts.placeholderPhone" required="" type="tel" dir="ltr"/>
 </div>
 </div>
 </div>
@@ -2287,30 +2287,30 @@
 <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
 <div>
 <label class="block text-[10px] uppercase tracking-wider text-neutral-700 font-bold mb-1.5" data-i18n-html="programs.stkitts.form_label4">Current Nationality <span class="text-red-500">*</span></label>
-<input class="w-full bg-white/95 border border-neutral-300 rounded-xl px-4 py-3 text-xs focus:outline-none focus:border-[#786142] transition shadow-sm" data-i18n-placeholder="programs.stkitts.placeholderNationality" placeholder="e.g. Indian, British, Egyptian" required="" type="text"/>
+<input name="nationality" class="w-full bg-white/95 border border-neutral-300 rounded-xl px-4 py-3 text-xs focus:outline-none focus:border-[#786142] transition shadow-sm" placeholder="e.g. Indian, Nigerian, Russian" data-i18n-placeholder="programs.stkitts.placeholderNationality" required="" type="text"/>
 </div>
 <div>
 <label class="block text-[10px] uppercase tracking-wider text-neutral-700 font-bold mb-1.5" data-i18n-html="programs.stkitts.form_label5">Country of Residence <span class="text-red-500">*</span></label>
-<input class="w-full bg-white/95 border border-neutral-300 rounded-xl px-4 py-3 text-xs focus:outline-none focus:border-[#786142] transition shadow-sm" data-i18n-placeholder="programs.stkitts.placeholderResidence" placeholder="e.g. UAE, Saudi Arabia, UK" required="" type="text"/>
+<input name="residence" class="w-full bg-white/95 border border-neutral-300 rounded-xl px-4 py-3 text-xs focus:outline-none focus:border-[#786142] transition shadow-sm" placeholder="e.g. UAE, Saudi Arabia, UK" data-i18n-placeholder="programs.stkitts.placeholderResidence" required="" type="text"/>
 </div>
 <div>
 <label class="block text-[10px] uppercase tracking-wider text-neutral-700 font-bold mb-1.5" data-i18n-html="programs.stkitts.form_label6">Preferred Language <span class="text-red-500">*</span></label>
-<select class="w-full bg-white/95 border border-neutral-300 rounded-xl px-4 py-3 text-xs focus:outline-none focus:border-[#786142] transition shadow-sm" required="">
-<option data-i18n="programs.stkitts.form_option1" value="english">English</option>
-<option data-i18n="programs.stkitts.form_option2" value="arabic">Arabic</option>
-<option data-i18n="programs.stkitts.form_option3" value="russian">Russian</option>
-<option data-i18n="programs.stkitts.form_option4" value="french">French</option>
-<option data-i18n="programs.stkitts.form_option5" value="hindi">Hindi / Urdu</option>
-<option data-i18n="programs.stkitts.form_option6" value="farsi">Persian (Farsi)</option>
+<select name="preferredLanguage" class="w-full bg-white/95 border border-neutral-300 rounded-xl px-4 py-3 text-xs focus:outline-none focus:border-[#786142] transition shadow-sm" required="">
+<option value="english" data-i18n="programs.stkitts.form_option1">English</option>
+<option value="arabic" data-i18n="programs.stkitts.form_option2">Arabic</option>
+<option value="russian" data-i18n="programs.stkitts.form_option3">Russian</option>
+<option value="french" data-i18n="programs.stkitts.form_option4">French</option>
+<option value="hindi" data-i18n="programs.stkitts.form_option5">Hindi / Urdu</option>
+<option value="farsi" data-i18n="programs.stkitts.form_option6">Persian (Farsi)</option>
 </select>
 </div>
 <div>
 <label class="block text-[10px] uppercase tracking-wider text-neutral-700 font-bold mb-1.5" data-i18n-html="programs.stkitts.form_label7">Family Members / Dependants <span class="text-red-500">*</span></label>
-<select class="w-full bg-white/95 border border-neutral-300 rounded-xl px-4 py-3 text-xs focus:outline-none focus:border-[#786142] transition shadow-sm" required="">
-<option data-i18n="programs.stkitts.form_option7" value="single">Single Applicant</option>
-<option data-i18n="programs.stkitts.form_option8" value="couple">Applicant + Spouse</option>
-<option data-i18n="programs.stkitts.form_option9" value="family_small">Family up to 4</option>
-<option data-i18n="programs.stkitts.form_option10" value="family_large">Family of 5+</option>
+<select name="familyMembers" class="w-full bg-white/95 border border-neutral-300 rounded-xl px-4 py-3 text-xs focus:outline-none focus:border-[#786142] transition shadow-sm" required="">
+<option value="single" data-i18n="programs.stkitts.form_option7">Single Applicant</option>
+<option value="couple" data-i18n="programs.stkitts.form_option8">Applicant + Spouse</option>
+<option value="family_small" data-i18n="programs.stkitts.form_option9">Family up to 4</option>
+<option value="family_large" data-i18n="programs.stkitts.form_option10">Family of 5+</option>
 </select>
 </div>
 </div>
@@ -2318,62 +2318,54 @@
 <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
 <div>
 <label class="block text-[10px] uppercase tracking-wider text-neutral-700 font-bold mb-1.5" data-i18n-html="programs.stkitts.form_label8">Investment Route <span class="text-red-500">*</span></label>
-<select class="w-full bg-white/95 border border-neutral-300 rounded-xl px-4 py-3 text-xs focus:outline-none focus:border-[#786142] transition shadow-sm" required="">
-<option data-i18n="programs.stkitts.form_option11" selected="" value="sisc">SISC Government Contribution ($250k+)</option>
-<option data-i18n="programs.stkitts.form_option12" value="pbo">Public Benefit Option - PBO ($250k+)</option>
-<option data-i18n="programs.stkitts.form_option13" value="developer-re">Developer Real Estate ($400k+)</option>
-<option data-i18n="programs.stkitts.form_option14" value="private-re">Approved Private Home ($800k+)</option>
+<select name="investmentRoute" class="w-full bg-white/95 border border-neutral-300 rounded-xl px-4 py-3 text-xs focus:outline-none focus:border-[#786142] transition shadow-sm" required="">
+<option selected="" value="sisc-donation" data-i18n="programs.stkitts.form_option11">Sustainable Island State Contribution ($250k+)</option>
+<option value="real-estate" data-i18n="programs.stkitts.form_option12">Approved Real Estate ($400k+)</option>
+<option value="public-benefit" data-i18n="programs.stkitts.form_option13">Approved Public Benefit Option ($250k+)</option>
 </select>
 </div>
 <div>
 <label class="block text-[10px] uppercase tracking-wider text-neutral-700 font-bold mb-1.5" data-i18n-html="programs.stkitts.form_label9">Approx. Investment Budget <span class="text-red-500">*</span></label>
-<select class="w-full bg-white/95 border border-neutral-300 rounded-xl px-4 py-3 text-xs focus:outline-none focus:border-[#786142] transition shadow-sm" required="">
-<option data-i18n="programs.stkitts.form_option15" value="250k-300k">$250,000 – $300,000</option>
-<option data-i18n="programs.stkitts.form_option16" value="300k-450k">$300,000 – $450,000</option>
-<option data-i18n="programs.stkitts.form_option17" value="450k-850k">$450,000 – $850,000</option>
-<option data-i18n="programs.stkitts.form_option18" value="850k+">$850,000 or more</option>
+<select name="budget" class="w-full bg-white/95 border border-neutral-300 rounded-xl px-4 py-3 text-xs focus:outline-none focus:border-[#786142] transition shadow-sm" required="">
+<option value="250k-350k" data-i18n="programs.stkitts.form_option14">$250,000 – $350,000</option>
+<option value="350k-500k" data-i18n="programs.stkitts.form_option15">$350,000 – $500,000</option>
+<option value="500k+" data-i18n="programs.stkitts.form_option16">$500,000+</option>
 </select>
 </div>
 <div>
 <label class="block text-[10px] uppercase tracking-wider text-neutral-700 font-bold mb-1.5" data-i18n-html="programs.stkitts.form_label10">Primary Objective <span class="text-red-500">*</span></label>
-<select class="w-full bg-white/95 border border-neutral-300 rounded-xl px-4 py-3 text-xs focus:outline-none focus:border-[#786142] transition shadow-sm" required="">
-<option data-i18n="programs.stkitts.form_option19" value="mobility">Global Visa-Free Mobility (145+ Countries)</option>
-<option data-i18n="programs.stkitts.form_option20" value="security">Platinum Standard Family Safety &amp; Plan B</option>
-<option data-i18n="programs.stkitts.form_option21" value="tax">Tax Optimization &amp; Wealth Protection</option>
-<option data-i18n="programs.stkitts.form_option22" value="real-estate">Luxury Resort Property Asset Acquisition</option>
+<select name="objective" class="w-full bg-white/95 border border-neutral-300 rounded-xl px-4 py-3 text-xs focus:outline-none focus:border-[#786142] transition shadow-sm" required="">
+<option value="global-mobility" data-i18n="programs.stkitts.form_option17">Platinum Standard Global Mobility (150+ Countries)</option>
+<option value="plan-b" data-i18n="programs.stkitts.form_option18">Secure Caribbean Citizenship & Passport</option>
+<option value="tax-freedom" data-i18n="programs.stkitts.form_option19">Zero Tax on Worldwide Income & Capital Gains</option>
+<option value="family-legacy" data-i18n="programs.stkitts.form_option20">Lifelong Citizenship for Generations</option>
 </select>
 </div>
 <div>
 <label class="block text-[10px] uppercase tracking-wider text-neutral-700 font-bold mb-1.5" data-i18n-html="programs.stkitts.form_label11">Planning Timeline <span class="text-red-500">*</span></label>
-<select class="w-full bg-white/95 border border-neutral-300 rounded-xl px-4 py-3 text-xs focus:outline-none focus:border-[#786142] transition shadow-sm" required="">
-<option data-i18n="programs.stkitts.form_option23" value="immediate">Immediately (0–3 months)</option>
-<option data-i18n="programs.stkitts.form_option24" value="short_term">3–6 months</option>
-<option data-i18n="programs.stkitts.form_option25" value="planning">6–12 months</option>
+<select name="timeline" class="w-full bg-white/95 border border-neutral-300 rounded-xl px-4 py-3 text-xs focus:outline-none focus:border-[#786142] transition shadow-sm" required="">
+<option value="immediate" data-i18n="programs.stkitts.form_option21">Immediately (0–3 months)</option>
+<option value="short_term" data-i18n="programs.stkitts.form_option22">3–6 months</option>
+<option value="planning" data-i18n="programs.stkitts.form_option23">6–12 months</option>
 </select>
 </div>
 </div>
 <!-- Row 4 -->
 <div>
 <label class="block text-[10px] uppercase tracking-wider text-neutral-700 font-bold mb-1.5" data-i18n="programs.stkitts.form_label12">Optional Message / Special Considerations</label>
-<textarea class="w-full bg-white/95 border border-neutral-300 rounded-xl p-4 text-xs focus:outline-none focus:border-[#786142] transition shadow-sm" data-i18n-placeholder="programs.stkitts.placeholderMessage" placeholder="Specify any family parameters, target timelines, or specific questions..." rows="3"></textarea>
+<textarea name="notes" class="w-full bg-white/95 border border-neutral-300 rounded-xl p-4 text-xs focus:outline-none focus:border-[#786142] transition shadow-sm" placeholder="Specify any family parameters, target timelines, or specific questions..." data-i18n-placeholder="programs.stkitts.placeholderMessage" rows="3"></textarea>
 </div>
 <!-- Row 5 -->
 <div class="space-y-2 pt-2 border-t border-neutral-300/60">
 <label class="flex items-start space-x-3 cursor-pointer">
 <input class="mt-0.5 rounded border-neutral-300 text-[#786142] focus:ring-[#786142]" required="" type="checkbox"/>
-<span class="text-xs text-neutral-600 font-light leading-relaxed" data-i18n-html="programs.stkitts.formConsent">
-                                I consent to Sharif Group storing and processing my personal details for consultation and pre-screening purposes in accordance with the <a class="text-[#786142] underline font-bold" data-i18n="footer.privacyPolicy" href="../../../privacypolicy/index.html">Privacy Policy</a>. <span class="text-red-500">*</span>
-</span>
+<span class="text-xs text-neutral-600 font-light leading-relaxed" data-i18n-html="programs.stkitts.formConsent">I consent to Sharif Group storing and processing my personal details for consultation and pre-screening purposes in accordance with the <a class="text-[#786142] underline font-bold" href="../../../privacypolicy/index.html">Privacy Policy</a>. <span class="text-red-500">*</span></span>
 </label>
 </div>
 <div class="pt-2 text-center">
-<button class="px-12 py-4 bg-[#786142] text-white text-xs uppercase tracking-widest font-bold hover:bg-neutral-900 transition duration-300 rounded-xl shadow-lg" data-i18n="programs.stkitts.formSubmit" type="submit">
-                            Submit Confidential Request →
-                        </button>
+<button class="px-12 py-4 bg-[#786142] text-white text-xs uppercase tracking-widest font-bold hover:bg-neutral-900 transition duration-300 rounded-xl shadow-lg" type="submit" data-i18n="programs.stkitts.formSubmit">Submit Confidential Request →</button>
 </div>
-<div class="hidden text-xs text-green-700 font-bold text-center mt-3 bg-green-50 p-3 rounded-lg border border-green-200" id="contact-form-success">
-                        Thank you. Your inquiry has been sent successfully. An advisory partner will reach out within 2 hours.
-                    </div>
+<div class="hidden text-xs text-green-700 font-bold text-center mt-3 bg-green-50 p-3 rounded-lg border border-green-200" id="contact-form-success" data-i18n="programs.stkitts.formSuccess">Thank you. Your inquiry has been sent successfully. An advisory partner will reach out within 2 hours.</div>
 </form>
 </div>
 </section>
@@ -3349,5 +3341,6 @@
 </script>
 <script src="../../../assets/js/language-switcher.js"></script>
 <script src="../../../admin/cms-loader.js"></script>
+<script src="../../../assets/js/forms.js"></script>
 </body>
 </html>
