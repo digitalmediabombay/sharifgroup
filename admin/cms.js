@@ -48,34 +48,95 @@ const Store = {
 
 // ─── SETTINGS ─────────────────────────────────────────────────
 const Settings = {
-  get() { return Store.getOrDefault(KEYS.SETTINGS, { gemini_api_key: '', site_name: 'Sharif Group', preview_url: '' }); },
+  get() {
+    return Store.getOrDefault(KEYS.SETTINGS, {
+      openrouter_api_key: '',
+      gemini_api_key: '',
+      ai_provider: 'openrouter',
+      site_name: 'Sharif Group',
+      preview_url: ''
+    });
+  },
   set(data) { Store.set(KEYS.SETTINGS, data); },
-  getGeminiKey() { return this.get().gemini_api_key || ''; }
+  getOpenRouterKey() { return this.get().openrouter_api_key || ''; },
+  getGeminiKey() { return this.get().gemini_api_key || ''; },
+  getAiKey() { return this.getOpenRouterKey() || this.getGeminiKey(); },
+  getAiProvider() {
+    if (this.getOpenRouterKey()) return 'openrouter';
+    if (this.getGeminiKey()) return 'gemini';
+    return this.get().ai_provider || 'openrouter';
+  }
 };
 
-// ─── GEMINI AI TRANSLATION ────────────────────────────────────
+// ─── AI TRANSLATION ENGINE (OpenRouter & Gemini) ───────────────
 const AI = {
   LANG_NAMES: { en: 'English', ar: 'Arabic', fa: 'Farsi (Persian)', zh: 'Chinese (Simplified)' },
 
   async translate(text, targetLang, sourceLang = 'en') {
-    const apiKey = Settings.getGeminiKey();
-    if (!apiKey) throw new Error('No Gemini API key configured. Go to Settings to add your key.');
+    const openrouterKey = Settings.getOpenRouterKey();
+    const geminiKey = Settings.getGeminiKey();
+    const provider = openrouterKey ? 'openrouter' : 'gemini';
+    const apiKey = openrouterKey || geminiKey;
+
+    if (!apiKey) throw new Error('No AI key configured. Please enter your OpenRouter or Gemini API key in Settings.');
     if (!text || !text.trim()) return '';
 
-    const prompt = `You are a professional translator for a luxury citizenship and residency investment advisory firm. Translate the following text from ${this.LANG_NAMES[sourceLang]} to ${this.LANG_NAMES[targetLang]}. Maintain a formal, premium, high-end advisory tone appropriate for ultra-high-net-worth clients. Return ONLY the translated text, nothing else.\n\nText:\n${text}`;
+    // 1. Attempt server-side PHP API backend first (avoids CORS & hides keys)
+    try {
+      const res = await fetch('api/ai.php?action=translate', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          provider,
+          api_key: apiKey,
+          text,
+          targetLang,
+          sourceLang
+        })
+      });
+      if (res.ok) {
+        const json = await res.json();
+        if (json && json.success && typeof json.translated === 'string') {
+          return json.translated.trim();
+        }
+      }
+    } catch (e) {
+      // Proceed to direct browser fallback if offline
+    }
 
-    const res = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key=${apiKey}`, {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ contents: [{ parts: [{ text: prompt }] }] })
-    });
-    if (!res.ok) { const err = await res.json(); throw new Error(err?.error?.message || 'Translation failed'); }
-    const data = await res.json();
-    return data?.candidates?.[0]?.content?.parts?.[0]?.text?.trim() || '';
+    // 2. Client-side direct fallback
+    const prompt = `You are a professional luxury translator for a premier investment migration, second citizenship, and residency advisory firm (Sharif Group, Dubai). Translate the following text from ${this.LANG_NAMES[sourceLang]} to ${this.LANG_NAMES[targetLang]}. Maintain a formal, premium, high-end advisory tone appropriate for ultra-high-net-worth clients. Return ONLY the translated text, nothing else.\n\nText:\n${text}`;
+
+    if (provider === 'openrouter') {
+      const res = await fetch('https://openrouter.ai/api/v1/chat/completions', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': 'Bearer ' + apiKey,
+          'HTTP-Referer': 'https://sharifgroup.ae',
+          'X-Title': 'Sharif Group CMS'
+        },
+        body: JSON.stringify({
+          model: 'google/gemini-flash-1.5',
+          messages: [{ role: 'user', content: prompt }]
+        })
+      });
+      if (!res.ok) { const err = await res.json(); throw new Error(err?.error?.message || 'OpenRouter translation failed'); }
+      const data = await res.json();
+      return data?.choices?.[0]?.message?.content?.trim() || '';
+    } else {
+      const res = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key=${apiKey}`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ contents: [{ parts: [{ text: prompt }] }] })
+      });
+      if (!res.ok) { const err = await res.json(); throw new Error(err?.error?.message || 'Gemini translation failed'); }
+      const data = await res.json();
+      return data?.candidates?.[0]?.content?.parts?.[0]?.text?.trim() || '';
+    }
   },
 
   async translateAllFields(fields, targetLang, onProgress) {
-    // fields: [{key, value}] — translates each and returns {key: translated}
     const results = {};
     for (let i = 0; i < fields.length; i++) {
       const f = fields[i];
@@ -89,7 +150,48 @@ const AI = {
     return results;
   },
 
+  async testOpenRouterKey(apiKey) {
+    try {
+      const res = await fetch('api/ai.php?action=test', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ provider: 'openrouter', api_key: apiKey })
+      });
+      if (res.ok) {
+        const json = await res.json();
+        return json.success === true;
+      }
+    } catch(e) {}
+
+    // Direct fallback
+    const res = await fetch('https://openrouter.ai/api/v1/chat/completions', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        'Authorization': 'Bearer ' + apiKey,
+        'HTTP-Referer': 'https://sharifgroup.ae'
+      },
+      body: JSON.stringify({
+        model: 'google/gemini-flash-1.5',
+        messages: [{ role: 'user', content: 'Say "OK"' }]
+      })
+    });
+    return res.ok;
+  },
+
   async testKey(apiKey) {
+    try {
+      const res = await fetch('api/ai.php?action=test', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ provider: 'gemini', api_key: apiKey })
+      });
+      if (res.ok) {
+        const json = await res.json();
+        return json.success === true;
+      }
+    } catch(e) {}
+
     const res = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key=${apiKey}`, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
@@ -821,6 +923,43 @@ function getData(key) {
 function saveData(key, data) {
   const storeKey = key.startsWith('sgcms_') ? key : 'sgcms_' + key;
   Store.set(storeKey, data);
+
+  // Asynchronously synchronize with MySQL backend api/save.php
+  try {
+    const token = sessionStorage.getItem('sgcms_token');
+    fetch('api/save.php', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        ...(token ? { 'Authorization': 'Bearer ' + token } : {})
+      },
+      body: JSON.stringify({ key: storeKey, data })
+    }).catch(() => {});
+  } catch (e) {}
 }
 
-window.CMS = { Auth, Store, KEYS, DEFAULTS, getData, saveData, AI, Settings };
+// ─── BACKEND SYNC ADAPTER ───────────────────────────────────────
+const Backend = {
+  async syncFromDb(mode = 'draft') {
+    try {
+      const res = await fetch(`api/content.php?mode=${mode}`);
+      if (res.ok) {
+        const json = await res.json();
+        if (json && json.success && json.data) {
+          for (const k in json.data) {
+            const valStr = JSON.stringify(json.data[k]);
+            if (mode === 'live') {
+              localStorage.setItem(k + '_live', valStr);
+            } else {
+              localStorage.setItem(k, valStr);
+            }
+          }
+          return true;
+        }
+      }
+    } catch (e) {}
+    return false;
+  }
+};
+
+window.CMS = { Auth, Store, KEYS, DEFAULTS, getData, saveData, AI, Settings, Backend };

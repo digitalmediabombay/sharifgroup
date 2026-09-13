@@ -1,0 +1,22 @@
+# Sharif Group CMS - API Security & Rewrite Configuration
+<Files "config.php">
+    Order Allow,Deny
+    Deny from all
+</Files>
+
+# Ensure PHP errors are logged, not leaked
+php_flag display_errors off
+php_flag log_errors on
+
+# Optional Pretty URL rewrites
+<IfModule mod_rewrite.c>
+    RewriteEngine On
+    RewriteCond %{REQUEST_FILENAME} !-f
+    RewriteCond %{REQUEST_FILENAME} !-d
+    RewriteRule ^publish/?$ publish.php [L,QSA]
+    RewriteRule ^save/?$ save.php [L,QSA]
+    RewriteRule ^content/?$ content.php [L,QSA]
+    RewriteRule ^auth/?$ auth.php [L,QSA]
+    RewriteRule ^upload/?$ upload.php [L,QSA]
+    RewriteRule ^ai/?$ ai.php [L,QSA]
+</IfModule>

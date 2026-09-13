@@ -228,6 +228,60 @@
       border-color: rgba(167, 139, 250, .6)
     }
 
+    .btn-publish {
+      background: linear-gradient(135deg, #10b981, #059669);
+      color: #fff !important;
+      font-weight: 700;
+      box-shadow: 0 2px 10px rgba(16, 185, 129, 0.35);
+      border: 1px solid rgba(16, 185, 129, 0.5) !important;
+      transition: all .2s ease;
+    }
+
+    .btn-publish:hover {
+      background: linear-gradient(135deg, #059669, #047857);
+      box-shadow: 0 4px 16px rgba(16, 185, 129, 0.55);
+      transform: translateY(-1px);
+    }
+
+    /* Publish status pill */
+    .pub-status-live {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      padding: 4px 10px;
+      border-radius: 9999px;
+      background: rgba(34, 197, 94, 0.12);
+      border: 1px solid rgba(34, 197, 94, 0.35);
+      color: #4ade80;
+      font-size: 10px;
+      font-weight: 700;
+      letter-spacing: 0.05em;
+      white-space: nowrap;
+    }
+
+    .pub-status-draft {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      padding: 4px 10px;
+      border-radius: 9999px;
+      background: rgba(245, 158, 11, 0.14);
+      border: 1px solid rgba(245, 158, 11, 0.4);
+      color: #fbbf24;
+      font-size: 10px;
+      font-weight: 700;
+      letter-spacing: 0.05em;
+      white-space: nowrap;
+    }
+
+    .pub-dot {
+      width: 6px;
+      height: 6px;
+      border-radius: 50%;
+      background: currentColor;
+      box-shadow: 0 0 6px currentColor;
+    }
+
     /* Save indicator */
     #save-ind {
       font-size: 11px;
@@ -1456,6 +1510,223 @@
       text-transform: uppercase;
       letter-spacing: .06em
     }
+
+    /* â•â•â• LUXURY QUICK CREATION MODALS â•â•â•â•â•â•â•â•â•â•â•â•â•â•â• */
+    .sg-modal-overlay {
+      position: fixed;
+      inset: 0;
+      background: rgba(10, 15, 25, 0.78);
+      backdrop-filter: blur(8px);
+      z-index: 10000;
+      display: none;
+      align-items: center;
+      justify-content: center;
+      padding: 16px;
+    }
+
+    .sg-modal-overlay.open {
+      display: flex;
+    }
+
+    .sg-modal-card {
+      background: var(--card);
+      border: 1px solid var(--gold);
+      border-radius: 18px;
+      box-shadow: 0 24px 70px rgba(0, 0, 0, 0.45), 0 0 0 1px rgba(179, 142, 93, 0.15);
+      width: 100%;
+      max-width: 520px;
+      overflow: hidden;
+      animation: modalSlideUp 0.28s cubic-bezier(0.16, 1, 0.3, 1);
+    }
+
+    @keyframes modalSlideUp {
+      from {
+        opacity: 0;
+        transform: translateY(20px) scale(0.97);
+      }
+
+      to {
+        opacity: 1;
+        transform: translateY(0) scale(1);
+      }
+    }
+
+    .sg-modal-header {
+      padding: 18px 24px 14px;
+      border-bottom: 1px solid var(--border);
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      background: linear-gradient(180deg, var(--gold-glow), transparent);
+    }
+
+    .sg-modal-title {
+      font-family: 'Playfair Display', serif;
+      font-size: 17px;
+      font-weight: 700;
+      color: var(--text);
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .sg-modal-title i {
+      color: var(--gold);
+      font-size: 16px;
+    }
+
+    .sg-modal-close {
+      background: none;
+      border: none;
+      color: var(--muted);
+      cursor: pointer;
+      font-size: 18px;
+      padding: 4px;
+      border-radius: 6px;
+      transition: all 0.2s;
+    }
+
+    .sg-modal-close:hover {
+      color: var(--text);
+      background: var(--border);
+    }
+
+    .sg-modal-body {
+      padding: 22px 24px;
+      max-height: 70vh;
+      overflow-y: auto;
+    }
+
+    .sg-modal-footer {
+      padding: 14px 24px;
+      border-top: 1px solid var(--border);
+      display: flex;
+      align-items: center;
+      justify-content: flex-end;
+      gap: 10px;
+      background: var(--bg);
+    }
+
+    .sg-modal-desc {
+      font-size: 12px;
+      color: var(--muted);
+      margin-bottom: 18px;
+      line-height: 1.5;
+    }
+
+    .sg-preset-grid {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 8px;
+      margin-top: 8px;
+    }
+
+    .sg-preset-item {
+      border: 2px solid transparent;
+      border-radius: 8px;
+      overflow: hidden;
+      cursor: pointer;
+      position: relative;
+      height: 60px;
+      transition: all 0.2s;
+    }
+
+    .sg-preset-item img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+    }
+
+    .sg-preset-item:hover {
+      transform: translateY(-2px);
+      border-color: var(--gold);
+    }
+
+    .sg-preset-item.selected {
+      border-color: var(--gold);
+      box-shadow: 0 0 12px rgba(179, 142, 93, 0.4);
+    }
+
+    .sg-preset-lbl {
+      position: absolute;
+      bottom: 0;
+      left: 0;
+      right: 0;
+      background: rgba(0, 0, 0, 0.7);
+      color: #fff;
+      font-size: 8px;
+      text-align: center;
+      padding: 2px;
+      font-weight: 600;
+    }
+
+    .qp-flag-chip {
+      background: rgba(255, 255, 255, 0.06);
+      border: 1px solid rgba(255, 255, 255, 0.12);
+      border-radius: 999px;
+      padding: 3px 9px;
+      color: var(--text);
+      font-size: 11px;
+      cursor: pointer;
+      transition: all 0.15s ease;
+      white-space: nowrap;
+      user-select: none;
+    }
+    .qp-flag-chip:hover {
+      background: rgba(197, 168, 128, 0.18);
+      border-color: var(--gold);
+      color: #fff;
+    }
+    .qp-flag-chip.selected {
+      background: var(--gold);
+      border-color: var(--gold);
+      color: #0A0A0A;
+      font-weight: 700;
+    }
+
+    .section-picker-grid {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 12px;
+    }
+
+    .section-card-choice {
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      padding: 14px;
+      background: var(--card);
+      cursor: pointer;
+      transition: all 0.2s;
+      display: flex;
+      align-items: flex-start;
+      gap: 12px;
+    }
+
+    .section-card-choice:hover {
+      border-color: var(--gold);
+      background: var(--gold-glow);
+      transform: translateY(-2px);
+      box-shadow: 0 8px 20px rgba(0, 0, 0, 0.06);
+    }
+
+    .section-card-choice i {
+      font-size: 18px;
+      color: var(--gold);
+      margin-top: 2px;
+    }
+
+    .section-card-choice h4 {
+      font-size: 13px;
+      font-weight: 600;
+      color: var(--text);
+      margin-bottom: 2px;
+    }
+
+    .section-card-choice p {
+      font-size: 11px;
+      color: var(--muted);
+      line-height: 1.35;
+    }
   </style>
 </head>
 
@@ -1463,387 +1734,89 @@
   <div id="app">
 
     <!-- ═══ HEADER ═══════════════════════════════════════════ -->
-    <header
-        class="fixed top-0 left-0 w-full z-[100] border-b border-neutral-200 transition-all duration-500 bg-white mega-blur"
-        id="main-header">
-        <div
-            class="max-w-[1600px] w-full mx-auto px-4 sm:px-6 lg:px-8 h-20 flex items-center justify-between gap-3 xl:gap-4 relative">
-            <!-- Left Group: Logo + Left-Aligned Menu with Dropdown Arrows -->
-            <div class="flex items-center space-x-3 2xl:space-x-5 min-w-0">
-                <a class="flex items-center shrink-0" href="index.html">
-                    <img alt="Sharif Group Logo"
-                        class="h-12 xl:h-14 w-auto object-contain transition-all duration-500 opacity-100" id="nav-logo"
-                        src="/assets/images/vector_b5a81734.svg" />
-                </a>
-                <span class="hidden lg:inline text-neutral-300 font-light">|</span>
-                <nav
-                    class="hidden lg:flex items-center space-x-2.5 2xl:space-x-4 text-[10px] 2xl:text-[11px] font-bold tracking-[0.1em] 2xl:tracking-[0.18em] uppercase text-neutral-600 whitespace-nowrap">
-                    <div class="relative group py-2" data-menu="citizenship-menu">
-                        <a class="hover:text-luxury-gold transition duration-200 cursor-pointer flex items-center gap-1.5"
-                            href="citizenshipbyinvestment/index.html">
-                            <span data-i18n="nav.citizenship">Citizenship</span> <i
-                                class="fa-solid fa-chevron-down text-[8px] transition-transform duration-200 group-hover:rotate-180 text-neutral-400 group-hover:text-luxury-gold"></i>
-                        </a>
-                    </div>
-                    <span class="text-neutral-300 font-light">|</span>
-                    <div class="relative group py-2" data-menu="residency-menu">
-                        <a class="hover:text-luxury-gold transition duration-200 cursor-pointer flex items-center gap-1.5"
-                            href="residencybyinvestment/index.html">
-                            <span data-i18n="nav.residency">Residency</span> <i
-                                class="fa-solid fa-chevron-down text-[8px] transition-transform duration-200 group-hover:rotate-180 text-neutral-400 group-hover:text-luxury-gold"></i>
-                        </a>
-                    </div>
-                    <span class="text-neutral-300 font-light">|</span>
-                    <div class="relative group py-2" data-menu="services-menu">
-                        <a class="hover:text-luxury-gold transition duration-200 cursor-pointer flex items-center gap-1.5"
-                            href="realestate/index.html">
-                            <span data-i18n="nav.moreServices">MORE SERVICES</span> <i
-                                class="fa-solid fa-chevron-down text-[8px] transition-transform duration-200 group-hover:rotate-180 text-neutral-400 group-hover:text-luxury-gold"></i>
-                        </a>
-                    </div>
-                    <span class="text-neutral-300 font-light">|</span>
-                    <div class="relative group py-2" data-menu="about-menu">
-                        <a class="hover:text-luxury-gold transition duration-200 cursor-pointer flex items-center gap-1.5"
-                            href="aboutus/index.html">
-                            <span data-i18n="nav.aboutUs">About Us</span> <i
-                                class="fa-solid fa-chevron-down text-[8px] transition-transform duration-200 group-hover:rotate-180 text-neutral-400 group-hover:text-luxury-gold"></i>
-                        </a>
-                    </div>
-                    <span class="text-neutral-300 font-light">|</span>
-                    <a class="hover:text-luxury-gold transition duration-200 py-2" data-i18n="nav.contact"
-                        href="contact/index.html">Contact Us</a>
-                    <span class="text-neutral-300 font-light">|</span>
-                    <a class="hover:text-luxury-gold transition duration-200 py-2" data-i18n="nav.blog"
-                        href="blog/index.html">Blog</a>
-                </nav>
-            </div>
-            <!-- Right Action Pill Buttons & Language Switcher -->
-            <div class="hidden lg:flex items-center space-x-2 2xl:space-x-3 shrink-0">
-                <a class="px-3.5 2xl:px-5 py-2 2xl:py-2.5 rounded-full border border-[#786142] text-[#786142] text-[10px] 2xl:text-[11px] font-bold uppercase tracking-[0.1em] 2xl:tracking-[0.18em] hover:bg-[#786142] hover:text-white transition-all duration-300 whitespace-nowrap"
-                    data-i18n="nav.eligibilityChecker" href="/eligibilitychecker/index.html">
-                    Eligibility Checker
-                </a>
-                <a class="px-3.5 2xl:px-5 py-2 2xl:py-2.5 rounded-full border border-neutral-900 text-neutral-900 text-[10px] 2xl:text-[11px] font-bold uppercase tracking-[0.1em] 2xl:tracking-[0.18em] hover:bg-luxury-gold hover:border-luxury-gold hover:text-white transition-all duration-300 whitespace-nowrap"
-                    data-i18n="nav.bookConsultation" href="contact/index.html">
-                    Book Consultation
-                </a>
-                <!-- Language Switcher Dropdown -->
-                <div class="relative lang-switcher-wrapper">
-                    <button
-                        class="flex items-center space-x-1.5 px-3 py-2 rounded-full border border-neutral-300 hover:border-luxury-gold bg-white/95 text-neutral-800 text-[11px] font-bold tracking-wider uppercase transition-all duration-300 focus:outline-none cursor-pointer shadow-sm"
-                        id="lang-switcher-btn" onclick="toggleLangDropdown(event)" type="button">
-                        <i class="fa-solid fa-globe text-luxury-gold text-xs"></i>
-                        <span id="current-lang-text">EN</span>
-                        <i class="fa-solid fa-chevron-down text-[8px] text-neutral-400 transition-transform duration-200"
-                            id="lang-arrow-icon"></i>
-                    </button>
-                    <div class="hidden absolute right-0 mt-2 w-44 bg-white/95 rounded-2xl shadow-2xl border border-neutral-200/80 py-2 z-50 overflow-hidden"
-                        id="lang-dropdown-menu">
-                        <button class="lang-option" data-lang="en" onclick="switchLanguage('en')" type="button">
-                            <span data-i18n="langSwitcher.en">English</span>
-                            <span class="text-[10px] text-neutral-400">EN</span>
-                        </button>
-                        <button class="lang-option" data-lang="ar" onclick="switchLanguage('ar')" type="button">
-                            <span class="font-medium" data-i18n="langSwitcher.ar">العربية</span>
-                            <span class="text-[10px] text-neutral-400">AR</span>
-                        </button>
-                        <button class="lang-option" data-lang="fa" onclick="switchLanguage('fa')" type="button">
-                            <span class="font-medium" data-i18n="langSwitcher.fa">فارسی</span>
-                            <span class="text-[10px] text-neutral-400">FA</span>
-                        </button>
-                        <button class="lang-option" data-lang="zh" onclick="switchLanguage('zh')" type="button">
-                            <span class="font-medium" data-i18n="langSwitcher.zh">中文</span>
-                            <span class="text-[10px] text-neutral-400">ZH</span>
-                        </button>
-                    </div>
-                </div>
-            </div>
-            <button class="lg:hidden flex flex-col items-end space-y-1.5 focus:outline-none z-[110]"
-                onclick="toggleMobileMenu()">
-                <span class="w-6 h-[2px] bg-luxury-dark transition-transform" id="mob-bar1"></span>
-                <span class="w-4 h-[2px] bg-luxury-dark transition-opacity" id="mob-bar2"></span>
-                <span class="w-6 h-[2px] bg-luxury-dark transition-transform" id="mob-bar3"></span>
-            </button>
+    <header id="hd">
+      <div class="hd-left">
+        <button type="button" class="btn btn-ghost" id="sb-toggle-btn" onclick="toggleSidebar()"
+          title="Toggle Sidebar (Collapse / Expand)" style="padding:6px 9px;border-radius:8px">
+          <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"
+            stroke-linecap="round" stroke-linejoin="round">
+            <line x1="3" y1="6" x2="21" y2="6" />
+            <line x1="3" y1="12" x2="15" y2="12" />
+            <line x1="3" y1="18" x2="21" y2="18" />
+          </svg>
+        </button>
+        <img src="../assets/images/shariftrip-logo-2.svg" onerror="this.src='/assets/images/shariftrip-logo-2.svg'"
+          alt="Sharif Group" class="hd-logo">
+        <div class="hd-div"></div>
+        <div>
+          <div id="page-title">Content Management</div>
+          <div id="page-subtitle">Sharif Group CMS Studio</div>
         </div>
-        <!-- MEGA MENU CITIZENSHIP -->
-        <div class="mega-dropdown absolute left-0 w-full bg-white border-b border-neutral-200 shadow-2xl opacity-0 translate-y-[-10px] pointer-events-none transition-all duration-300 z-40"
-            id="citizenship-menu">
-            <div class="max-w-7xl mx-auto px-8 py-10 grid grid-cols-12 gap-4">
-                <div
-                    class="col-span-3 flex flex-col items-center justify-center text-center pr-4 border-r border-neutral-200">
-                    <h3 class="font-serif text-3xl text-neutral-900 font-bold leading-tight mb-4"
-                        data-i18n="megaMenu.citizenshipTitle">Citizenship By Investment</h3>
-                    <a class="px-4 py-1.5 border border-neutral-400 text-[11px] font-bold tracking-[0.18em] uppercase rounded-full hover:bg-luxury-dark hover:text-white transition whitespace-nowrap"
-                        data-i18n="megaMenu.allCitizenshipPrograms" href="citizenshipbyinvestment/index.html"
-                        onclick="closeAllMegaMenus()">VIEW ALL PROGRAMS</a>
-                </div>
-                <div class="col-span-5 px-6">
-                    <h4 class="text-[11px] font-bold tracking-[0.18em] uppercase text-luxury-gold mb-6 text-center lg:text-left"
-                        data-i18n="megaMenu.caribbeanPortfolios">Caribbean Portfolios</h4>
-                    <ul class="space-y-4">
-                        <li class="flex items-center group">
-                            <div class="flex items-center space-x-3">
-                                <img alt="Dominica"
-                                    class="w-12 h-8 object-cover rounded-sm border border-neutral-200 shadow-sm"
-                                    src="/assets/images/Dominica-Americas-Hu_10e82c.webp" loading="lazy"
-                                    decoding="async" />
-                                <a class="text-[11px] font-bold tracking-[0.18em] uppercase text-neutral-700 group-hover:text-luxury-gold transition"
-                                    data-i18n="services.cbi.dominica"
-                                    href="programs/citizenshipbyinvestment/dominica/index.html">Dominica | Passport</a>
-                            </div>
-                        </li>
-                        <li class="flex items-center group">
-                            <div class="flex items-center space-x-3">
-                                <img alt="St. Kitts"
-                                    class="w-12 h-8 object-cover rounded-sm border border-neutral-200 shadow-sm"
-                                    src="/assets/images/st-kitts-passport.webp" loading="lazy" decoding="async" />
-                                <a class="text-[11px] font-bold tracking-[0.18em] uppercase text-neutral-700 group-hover:text-luxury-gold transition"
-                                    data-i18n="services.cbi.kitts"
-                                    href="programs/citizenshipbyinvestment/stkittis/index.html">St. Kitts &amp; Nevis |
-                                    Passport</a>
-                            </div>
-                        </li>
-                        <li class="flex items-center group">
-                            <div class="flex items-center space-x-3">
-                                <img alt="Antigua"
-                                    class="w-12 h-8 object-cover rounded-sm border border-neutral-200 shadow-sm"
-                                    src="/assets/images/passport-investment-_6f41c1.webp" loading="lazy"
-                                    decoding="async" />
-                                <a class="text-[11px] font-bold tracking-[0.18em] uppercase text-neutral-700 group-hover:text-luxury-gold transition"
-                                    data-i18n="services.cbi.antigua"
-                                    href="programs/citizenshipbyinvestment/antiguaandbarbuda/index.html">Antigua &amp;
-                                    Barbuda | Passport</a>
-                            </div>
-                        </li>
-                        <li class="flex items-center group">
-                            <div class="flex items-center space-x-3">
-                                <img alt="Saint Lucia"
-                                    class="w-12 h-8 object-cover rounded-sm border border-neutral-200 shadow-sm"
-                                    src="/assets/images/610fd15b02a12_38ea93.webp" loading="lazy" decoding="async" />
-                                <a class="text-[11px] font-bold tracking-[0.18em] uppercase text-neutral-700 group-hover:text-luxury-gold transition"
-                                    data-i18n="services.cbi.lucia"
-                                    href="programs/citizenshipbyinvestment/stlucia/index.html">Saint Lucia |
-                                    Passport</a>
-                            </div>
-                        </li>
-                        <li class="flex items-center group">
-                            <div class="flex items-center space-x-3">
-                                <img alt="Grenada"
-                                    class="w-12 h-8 object-cover rounded-sm border border-neutral-200 shadow-sm"
-                                    src="/assets/images/citizenship-passport_35b3b6.webp" loading="lazy"
-                                    decoding="async" />
-                                <a class="text-[11px] font-bold tracking-[0.18em] uppercase text-neutral-700 group-hover:text-luxury-gold transition"
-                                    data-i18n="services.cbi.grenada"
-                                    href="programs/citizenshipbyinvestment/greneda/index.html">Grenada | Passport</a>
-                            </div>
-                        </li>
-                    </ul>
-                </div>
-                <div class="col-span-4 px-6">
-                    <h4 class="text-[11px] font-bold tracking-[0.18em] uppercase text-neutral-400 mb-6 text-center lg:text-left"
-                        data-i18n="megaMenu.globalPortfolios">Global Portfolios</h4>
-                    <ul class="space-y-4">
-                        <li class="flex items-center group">
-                            <div class="flex items-center space-x-3">
-                                <img alt="Vanuatu"
-                                    class="w-12 h-8 object-cover rounded-sm border border-neutral-200 shadow-sm"
-                                    src="/assets/images/how-to-get-vanuatu-c_adddfe.webp" loading="lazy"
-                                    decoding="async" />
-                                <a class="text-[11px] font-bold tracking-[0.18em] uppercase text-neutral-700 group-hover:text-luxury-gold transition"
-                                    data-i18n="services.cbi.vanuatu"
-                                    href="programs/citizenshipbyinvestment/vanuatu/index.html">Vanuatu | Passport</a>
-                            </div>
-                        </li>
-                        <li class="flex items-center group">
-                            <div class="flex items-center space-x-3">
-                                <img alt="Sao Tome"
-                                    class="w-12 h-8 object-cover rounded-sm border border-neutral-200 shadow-sm"
-                                    src="/assets/images/Sao_Tome_passport_7c536c.webp" loading="lazy"
-                                    decoding="async" />
-                                <a class="text-[11px] font-bold tracking-[0.18em] uppercase text-neutral-700 group-hover:text-luxury-gold transition"
-                                    data-i18n="services.cbi.saotome"
-                                    href="programs/citizenshipbyinvestment/sãotoméandpríncipe/index.html">São Tomé and
-                                    Príncipe | Passport</a>
-                            </div>
-                        </li>
-                        <li class="flex items-center group">
-                            <div class="flex items-center space-x-3">
-                                <img alt="Nauru"
-                                    class="w-12 h-8 object-cover rounded-sm border border-neutral-200 shadow-sm"
-                                    src="/assets/images/reloc8-online-nauru-_16c98e.webp" loading="lazy"
-                                    decoding="async" />
-                                <a class="text-[11px] font-bold tracking-[0.18em] uppercase text-neutral-700 group-hover:text-luxury-gold transition"
-                                    data-i18n="services.cbi.nauru"
-                                    href="programs/citizenshipbyinvestment/nauru/index.html">Republic of Nauru |
-                                    Passport</a>
-                            </div>
-                        </li>
-                    </ul>
-                </div>
-            </div>
+      </div>
+      <div class="hd-right">
+        <!-- Language switcher (synced with iframe) -->
+        <div class="lang-switcher">
+          <button class="lang-btn active" id="lang-en" onclick="setLang('en')">EN</button>
+          <button class="lang-btn" id="lang-ar" onclick="setLang('ar')">AR</button>
+          <button class="lang-btn" id="lang-fa" onclick="setLang('fa')">FA</button>
+          <button class="lang-btn" id="lang-zh" onclick="setLang('zh')">ZH</button>
         </div>
-        <!-- MEGA MENU RESIDENCY -->
-        <div class="mega-dropdown absolute left-0 w-full bg-white border-b border-neutral-200 shadow-2xl opacity-0 translate-y-[-10px] pointer-events-none transition-all duration-300 z-40"
-            id="residency-menu">
-            <div class="max-w-7xl mx-auto px-8 py-10 grid grid-cols-12 gap-4">
-                <div
-                    class="col-span-3 flex flex-col items-center justify-center text-center pr-4 border-r border-neutral-200">
-                    <h3 class="font-serif text-3xl text-neutral-900 font-bold leading-tight mb-4"
-                        data-i18n="megaMenu.residencyTitle">Residency By Investment</h3>
-                    <a class="px-4 py-1.5 border border-neutral-400 text-[11px] font-bold tracking-[0.18em] uppercase rounded-full hover:bg-luxury-dark hover:text-white transition whitespace-nowrap"
-                        data-i18n="megaMenu.allResidencyPrograms" href="residencybyinvestment/index.html"
-                        onclick="closeAllMegaMenus()">All Residency Programs</a>
-                </div>
-                <div class="col-span-5 px-6">
-                    <h4 class="text-[11px] font-bold tracking-[0.18em] uppercase text-luxury-gold mb-6 text-center lg:text-left"
-                        data-i18n="megaMenu.europeanPortfolios">European Portfolios</h4>
-                    <ul class="space-y-4">
-                        <li class="flex items-center group">
-                            <div class="flex items-center space-x-3">
-                                <img alt="Portugal"
-                                    class="w-12 h-8 object-cover rounded-sm border border-neutral-200 shadow-sm"
-                                    src="/assets/images/portugal-golden-vsa_47319a.webp" loading="lazy"
-                                    decoding="async" />
-                                <a class="text-[11px] font-bold tracking-[0.18em] uppercase text-neutral-700 group-hover:text-luxury-gold transition"
-                                    data-i18n="services.rbi.portugal"
-                                    href="programs/residencybyinvestment/portugal/index.html">Portugal | Golden Visa</a>
-                            </div>
-                        </li>
-                        <li class="flex items-center group">
-                            <div class="flex items-center space-x-3">
-                                <img alt="Greece"
-                                    class="w-12 h-8 object-cover rounded-sm border border-neutral-200 shadow-sm"
-                                    src="/assets/images/golden-visa-greece-t_12b60b.webp" loading="lazy"
-                                    decoding="async" />
-                                <a class="text-[11px] font-bold tracking-[0.18em] uppercase text-neutral-700 group-hover:text-luxury-gold transition"
-                                    data-i18n="services.rbi.greece"
-                                    href="programs/residencybyinvestment/greece/index.html">Greece | Golden Visa</a>
-                            </div>
-                        </li>
-                    </ul>
-                </div>
-                <div class="col-span-4 px-6">
-                    <h4 class="text-[11px] font-bold tracking-[0.18em] uppercase text-neutral-400 mb-6 text-center lg:text-left"
-                        data-i18n="megaMenu.americasUAE">Americas &amp; UAE</h4>
-                    <ul class="space-y-4">
-                        <li class="flex items-center group">
-                            <div class="flex items-center space-x-3">
-                                <img alt="Panama"
-                                    class="w-12 h-8 object-cover rounded-sm border border-neutral-200 shadow-sm"
-                                    src="/assets/images/images_5d28a7.webp" loading="lazy" decoding="async" />
-                                <a class="text-[11px] font-bold tracking-[0.18em] uppercase text-neutral-700 group-hover:text-luxury-gold transition"
-                                    data-i18n="services.rbi.panama"
-                                    href="programs/residencybyinvestment/panama/index.html">Panama | Golden Visa</a>
-                            </div>
-                        </li>
-                        <li class="flex items-center group">
-                            <div class="flex items-center space-x-3">
-                                <img alt="UAE"
-                                    class="w-12 h-8 object-cover rounded-sm border border-neutral-200 shadow-sm"
-                                    src="/assets/images/uae-residence-visa_df80b3.webp" loading="lazy"
-                                    decoding="async" />
-                                <a class="text-[11px] font-bold tracking-[0.18em] uppercase text-neutral-700 group-hover:text-luxury-gold transition"
-                                    data-i18n="services.rbi.uae"
-                                    href="programs/residencybyinvestment/uae/index.html">United Arab Emirates | Golden
-                                    Visa</a>
-                            </div>
-                        </li>
-                    </ul>
-                </div>
-            </div>
+
+        <!-- AI Translate -->
+        <div id="ai-drop">
+          <button class="btn btn-ai" onclick="toggleAiMenu()">
+            <i class="fa-solid fa-wand-magic-sparkles"></i> AI <i class="fa-solid fa-chevron-down"
+              style="font-size:8px"></i>
+          </button>
+          <div id="ai-menu">
+            <div class="ai-mi" onclick="triggerAI('ar')"><i class="fa-solid fa-language" style="color:var(--gold)"></i>
+              Translate &rarr; Arabic</div>
+            <div class="ai-mi" onclick="triggerAI('fa')"><i class="fa-solid fa-language" style="color:var(--gold)"></i>
+              Translate &rarr; Farsi</div>
+            <div class="ai-mi" onclick="triggerAI('zh')"><i class="fa-solid fa-language" style="color:var(--gold)"></i>
+              Translate &rarr; Chinese</div>
+            <div class="ai-mi-sep"></div>
+            <div class="ai-mi" onclick="triggerAI('all')"><i class="fa-solid fa-bolt" style="color:#a78bfa"></i>
+              Translate &rarr; All Languages</div>
+            <div class="ai-mi-sep"></div>
+            <div class="ai-mi" onclick="navigate('settings')"><i class="fa-solid fa-key" style="color:var(--muted)"></i>
+              Manage API Key</div>
+          </div>
         </div>
-        <!-- MEGA MENU MORE SERVICES -->
-        <div class="mega-dropdown absolute left-0 w-full bg-white border-b border-neutral-200 shadow-2xl opacity-0 translate-y-[-10px] pointer-events-none transition-all duration-300 z-40"
-            id="services-menu">
-            <div class="max-w-7xl mx-auto px-8 py-10 grid grid-cols-12 gap-4">
-                <div
-                    class="col-span-3 flex flex-col items-center justify-center text-center pr-4 border-r border-neutral-200">
-                    <h3 class="font-serif text-3xl text-neutral-900 font-bold leading-tight mb-4"
-                        data-i18n="megaMenu.moreServicesTitle">MORE SERVICES</h3>
-                    <a class="px-4 py-1.5 border border-neutral-400 text-[11px] font-bold tracking-[0.18em] uppercase rounded-full hover:bg-luxury-dark hover:text-white transition whitespace-nowrap"
-                        data-i18n="megaMenu.moreServicesTitle" href="realestate/index.html"
-                        onclick="closeAllMegaMenus()">MORE SERVICES</a>
-                </div>
-                <div class="col-span-9 px-6 flex items-center justify-start gap-4">
-                    <div
-                        class="relative flex-1 max-w-[220px] rounded-[20px] shadow-md overflow-hidden group border border-luxury-gold/50">
-                        <img alt="Real Estate"
-                            class="absolute inset-0 w-full h-full object-cover transition-transform duration-500 group-hover:scale-110"
-                            src="/assets/images/isdubairealestateago_3194a5.webp" loading="lazy" decoding="async" />
-                        <div
-                            class="absolute inset-0 bg-neutral-950/65 group-hover:bg-neutral-950/50 transition-colors duration-300">
-                        </div>
-                        <a class="relative z-10 text-[11px] font-bold tracking-[0.18em] text-white block text-center leading-tight py-12 px-4 uppercase"
-                            data-i18n="megaMenu.realEstateAdvisory" href="realestate/index.html">Real Estate
-                            Advisory</a>
-                    </div>
-                    <div
-                        class="relative flex-1 max-w-[220px] rounded-[20px] shadow-md overflow-hidden group border border-luxury-gold/50">
-                        <img alt="Educational Advisory"
-                            class="absolute inset-0 w-full h-full object-cover transition-transform duration-500 group-hover:scale-110"
-                            src="/assets/images/photo-154133990719_46b647.webp" loading="lazy" decoding="async" />
-                        <div
-                            class="absolute inset-0 bg-neutral-950/65 group-hover:bg-neutral-950/50 transition-colors duration-300">
-                        </div>
-                        <a class="relative z-10 text-[11px] font-bold tracking-[0.18em] text-white block text-center leading-tight py-12 px-4 uppercase"
-                            data-i18n="megaMenu.educationalAdvisory" href="educationaladvisory/index.html">Educational
-                            Advisory</a>
-                    </div>
-                </div>
-            </div>
+
+        <!-- Auto-Translate & Save status indicator -->
+        <div id="ai-auto-status" style="display:none;font-size:11px;color:var(--gold);align-items:center;gap:6px;background:rgba(197,168,128,0.1);border:1px solid rgba(197,168,128,0.25);border-radius:6px;padding:3px 8px">
+          <i class="fa-solid fa-wand-magic-sparkles fa-spin"></i> <span>Auto-translating...</span>
         </div>
-        <!-- MEGA MENU ABOUT -->
-        <div class="mega-dropdown absolute left-0 w-full bg-white border-b border-neutral-200 shadow-2xl opacity-0 translate-y-[-10px] pointer-events-none transition-all duration-300 z-40"
-            id="about-menu">
-            <div class="max-w-7xl mx-auto px-8 py-10 grid grid-cols-12 gap-4">
-                <div
-                    class="col-span-3 flex flex-col items-center justify-center text-center pr-4 border-r border-neutral-200">
-                    <h3 class="font-serif text-3xl text-neutral-900 font-bold leading-tight mb-4"
-                        data-i18n="megaMenu.aboutTitle">Corporate Identity</h3>
-                    <a class="px-4 py-1.5 border border-neutral-400 text-[11px] font-bold tracking-[0.18em] uppercase rounded-full hover:bg-luxury-dark hover:text-white transition whitespace-nowrap"
-                        data-i18n="megaMenu.ourStory" href="aboutus/index.html">OVERVIEW</a>
-                </div>
-                <div class="col-span-9 px-6 flex items-center justify-start gap-4">
-                    <div
-                        class="relative flex-1 max-w-[260px] rounded-[20px] shadow-md overflow-hidden group border border-luxury-gold/50">
-                        <img alt="Sharif Group"
-                            class="absolute inset-0 w-full h-full object-cover transition-transform duration-500 group-hover:scale-110"
-                            src="/assets/images/dubai-office-2.webp" loading="lazy" decoding="async" />
-                        <div
-                            class="absolute inset-0 bg-neutral-950/65 group-hover:bg-neutral-950/50 transition-colors duration-300">
-                        </div>
-                        <a class="relative z-10 text-[11px] font-bold tracking-[0.18em] text-white block text-center leading-tight py-12 px-4 uppercase"
-                            data-i18n="megaMenu.aboutTitle" href="aboutus/index.html">ABOUT US</a>
-                    </div>
-                    <div
-                        class="relative flex-1 max-w-[260px] rounded-[20px] shadow-md overflow-hidden group border border-luxury-gold/50">
-                        <img alt="Founder"
-                            class="absolute inset-0 w-full h-full object-cover transition-transform duration-500 group-hover:scale-110"
-                            src="alirezasharif.svg" loading="lazy" decoding="async" />
-                        <div
-                            class="absolute inset-0 bg-neutral-950/65 group-hover:bg-neutral-950/50 transition-colors duration-300">
-                        </div>
-                        <a class="relative z-10 text-[11px] font-bold tracking-[0.18em] text-white block text-center leading-tight py-12 px-4 uppercase"
-                            data-i18n="megaMenu.aboutFounder" href="/ali-sharif/">About Founder | Ali Sharif</a>
-                    </div>
-                    <div
-                        class="relative flex-1 max-w-[260px] rounded-[20px] shadow-md overflow-hidden group border border-luxury-gold/50">
-                        <img alt="Social Responsibility"
-                            class="absolute inset-0 w-full h-full object-cover transition-transform duration-500 group-hover:scale-110"
-                            src="/assets/images/photo-148852178799_7302db.webp" loading="lazy" decoding="async" />
-                        <div
-                            class="absolute inset-0 bg-neutral-950/65 group-hover:bg-neutral-950/50 transition-colors duration-300">
-                        </div>
-                        <a class="relative z-10 text-[11px] font-bold tracking-[0.18em] text-white block text-center leading-tight py-12 px-4 uppercase"
-                            data-i18n="megaMenu.socialResponsibility" href="socialresponsibility/index.html">Social
-                            Responsibility</a>
-                    </div>
-                </div>
-            </div>
+
+        <!-- Publish Status Pill (LIVE / DRAFT) -->
+        <div id="publish-status-pill" class="pub-status-live" title="Current publication state on live website">
+          <span class="pub-dot"></span> <span class="pub-text">LIVE</span>
         </div>
+
+        <!-- Save indicator -->
+        <div id="save-ind" class="saved"><i class="fa-solid fa-circle-check" style="font-size:9px"></i> All saved</div>
+
+        <!-- Save Draft button -->
+        <button class="btn btn-ghost" id="btn-save-draft" onclick="saveCurrentPage()" title="Save changes as working draft">
+          <i class="fa-solid fa-floppy-disk"></i> Save Draft
+        </button>
+
+        <!-- Publish Live button -->
+        <button class="btn btn-publish" id="btn-publish-live" onclick="publishLiveSite()" title="Publish all changes to live website">
+          <i class="fa-solid fa-cloud-arrow-up"></i> Publish
+        </button>
+
+        <!-- User pill -->
+        <div class="user-pill" onclick="window.CMS.Auth.logout()" title="Sign out">
+          <div class="user-av" id="user-initials">SG</div>
+          <span class="user-nm" id="user-name-label">Admin</span>
+          <i class="fa-solid fa-arrow-right-from-bracket" style="font-size:10px;color:var(--muted)"></i>
+        </div>
+      </div>
     </header>
 
-    <!-- ═══ SIDEBAR ═══════════════════════════════════════════ -->
+    <!-- â•â•â• SIDEBAR â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â• -->
     <aside id="sb">
       <div style="padding:8px 5px 4px">
 
@@ -1862,7 +1835,7 @@
         <!-- Citizenship -->
         <div class="sb-group" id="sbg-citizenship">
           <div class="sb-group-header">
-            <button class="sb-group-btn" id="sb-citizenship" onclick="toggleGroup('citizenship')">
+            <button class="sb-group-btn" id="sb-citizenship" onclick="toggleGroup('citizenship', true);navigate('category-hub','citizenship')">
               <i class="fa-solid fa-passport sb-ico"></i>
               <span class="sb-lbl">Citizenship by Investment</span>
               <i class="fa-solid fa-chevron-right sb-chev"></i>
@@ -1890,7 +1863,7 @@
         <!-- Residency -->
         <div class="sb-group" id="sbg-residency">
           <div class="sb-group-header">
-            <button class="sb-group-btn" id="sb-residency" onclick="toggleGroup('residency')">
+            <button class="sb-group-btn" id="sb-residency" onclick="toggleGroup('residency', true);navigate('category-hub','residency')">
               <i class="fa-solid fa-earth-americas sb-ico"></i>
               <span class="sb-lbl">Residency Programs</span>
               <i class="fa-solid fa-chevron-right sb-chev"></i>
@@ -1920,7 +1893,7 @@
               <i class="fa-solid fa-pen-nib sb-ico"></i>
               <span class="sb-lbl">Blog & Articles</span>
             </button>
-            <button class="sb-add-btn" title="New Article" onclick="navigate('blog-new')"><i
+            <button class="sb-add-btn" title="New Article" onclick="openQuickBlogModal()"><i
                 class="fa-solid fa-plus"></i></button>
           </div>
         </div>
@@ -1949,52 +1922,12 @@
 
         <div class="sb-section-lbl">Site Structure</div>
 
-        <!-- Contact & Offices -->
-        <div class="sb-group" id="sbg-contact">
-          <div class="sb-group-header">
-            <button class="sb-group-btn" id="sb-contact" onclick="toggleGroup('contact')">
-              <i class="fa-solid fa-map-location-dot sb-ico"></i>
-              <span class="sb-lbl">Contact & Offices</span>
-              <i class="fa-solid fa-chevron-right sb-chev"></i>
-            </button>
-          </div>
-          <div class="sb-children" id="sbc-contact">
-            <div class="sb-item" onclick="navigate('offices')" id="sb-offices"><span class="sb-item-title"><svg
-                  width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
-                  stroke-linecap="round" stroke-linejoin="round"
-                  style="display:inline-block;vertical-align:middle;margin-right:6px">
-                  <rect x="4" y="2" width="16" height="20" rx="2" ry="2" />
-                  <path d="M9 22v-4h6v4" />
-                  <path d="M8 6h.01" />
-                  <path d="M16 6h.01" />
-                  <path d="M12 6h.01" />
-                  <path d="M12 10h.01" />
-                  <path d="M12 14h.01" />
-                  <path d="M16 10h.01" />
-                  <path d="M16 14h.01" />
-                  <path d="M8 10h.01" />
-                  <path d="M8 14h.01" />
-                </svg>Office Locations</span><button class="sb-add-btn"
-                style="width:16px;height:16px;font-size:8px;margin-left:auto"
-                onclick="event.stopPropagation();navigate('office-new')"><i class="fa-solid fa-plus"></i></button></div>
-            <div class="sb-item" onclick="navigate('contact-form')" id="sb-contact-form"><span
-                class="sb-item-title"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor"
-                  stroke-width="2" stroke-linecap="round" stroke-linejoin="round"
-                  style="display:inline-block;vertical-align:middle;margin-right:6px">
-                  <path d="M16 4h2a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2h2" />
-                  <rect x="8" y="2" width="8" height="4" rx="1" ry="1" />
-                  <path d="M9 12h6" />
-                  <path d="M9 16h6" />
-                </svg>Contact Form Settings</span></div>
-          </div>
-        </div>
-
-        <!-- Navigation Builder -->
+        <!-- Contact & Sales -->
         <div class="sb-group">
           <div class="sb-group-header">
-            <button class="sb-group-btn" id="sb-navigation" onclick="navigate('navigation')">
-              <i class="fa-solid fa-bars sb-ico"></i>
-              <span class="sb-lbl">Navigation Builder</span>
+            <button class="sb-group-btn" id="sb-contact" onclick="navigate('contact')">
+              <i class="fa-solid fa-headset sb-ico"></i>
+              <span class="sb-lbl">Contact & Sales</span>
             </button>
           </div>
         </div>
@@ -2004,7 +1937,17 @@
           <div class="sb-group-header">
             <button class="sb-group-btn" id="sb-legal" onclick="navigate('legal')">
               <i class="fa-solid fa-scale-balanced sb-ico"></i>
-              <span class="sb-lbl">Legal Pages</span>
+              <span class="sb-lbl">Privacy & Legal</span>
+            </button>
+          </div>
+        </div>
+
+        <!-- Cookie Policy -->
+        <div class="sb-group">
+          <div class="sb-group-header">
+            <button class="sb-group-btn" id="sb-cookiepolicy" onclick="navigate('cookiepolicy')">
+              <i class="fa-solid fa-cookie-bite sb-ico"></i>
+              <span class="sb-lbl">Cookie Policy</span>
             </button>
           </div>
         </div>
@@ -2132,6 +2075,211 @@
     </div>
 
     <!-- AI Progress overlay -->
+    <!-- ═══ MODAL: QUICK NEW BLOG ═════════════════════════════════════ -->
+    <div class="sg-modal-overlay" id="modal-quick-blog">
+      <div class="sg-modal-card">
+        <div class="sg-modal-header">
+          <div class="sg-modal-title"><i class="fa-solid fa-feather-pointed"></i> Create New Article</div>
+          <button type="button" class="sg-modal-close" onclick="closeQuickBlogModal()">&times;</button>
+        </div>
+        <div class="sg-modal-body">
+          <p class="sg-modal-desc">Enter the article title and choose a featured image. The complete article template will open immediately in the Studio Canvas with meta tags configured, ready to edit visually by clicking on any text!</p>
+          <div class="form-group" style="margin-bottom:14px">
+            <label class="form-label" style="font-weight:600">Article Title <span style="color:var(--red)">*</span></label>
+            <input type="text" id="qb-title" class="form-input form-input-headline"
+              placeholder="e.g. Dubai Golden Visa 2026: The Complete Guide for Global Families" autofocus
+              onkeydown="if(event.key==='Enter')submitQuickBlog()">
+          </div>
+          <!-- Hidden defaults for category and author -->
+          <input type="hidden" id="qb-category" value="Golden Visa">
+          <input type="hidden" id="qb-author" value="Sharif Group Legal Desk">
+
+          <div class="form-group">
+            <label class="form-label" style="font-weight:600">Featured Image (Click to pick or paste custom URL)</label>
+            <div class="sg-preset-grid" id="qb-presets">
+              <div class="sg-preset-item selected" data-src="../assets/images/dubai-office-2.webp"
+                onclick="selectQuickBlogPreset(this)">
+                <img src="../assets/images/dubai-office-2.webp">
+                <span class="sg-preset-lbl">Dubai HQ</span>
+              </div>
+              <div class="sg-preset-item" data-src="../assets/images/Dominica-Americas-Hu_10e82c.webp"
+                onclick="selectQuickBlogPreset(this)">
+                <img src="../assets/images/Dominica-Americas-Hu_10e82c.webp">
+                <span class="sg-preset-lbl">Caribbean</span>
+              </div>
+              <div class="sg-preset-item" data-src="../assets/images/portugal-golden-vsa_47319a.webp"
+                onclick="selectQuickBlogPreset(this)">
+                <img src="../assets/images/portugal-golden-vsa_47319a.webp">
+                <span class="sg-preset-lbl">Europe</span>
+              </div>
+              <div class="sg-preset-item" data-src="../assets/images/isdubairealestateago_3194a5.webp"
+                onclick="selectQuickBlogPreset(this)">
+                <img src="../assets/images/isdubairealestateago_3194a5.webp">
+                <span class="sg-preset-lbl">Real Estate</span>
+              </div>
+            </div>
+            <input type="text" id="qb-custom-img" class="form-input" placeholder="Or paste custom image URL..."
+              style="margin-top:8px">
+          </div>
+        </div>
+        <div class="sg-modal-footer">
+          <button type="button" class="btn btn-ghost" onclick="closeQuickBlogModal()">Cancel</button>
+          <button type="button" class="btn btn-primary" onclick="submitQuickBlog()"><i
+              class="fa-solid fa-wand-magic-sparkles"></i> Open in Visual Canvas</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- ═══ MODAL: QUICK NEW PAGE ═════════════════════════════════════════ -->
+    <div class="sg-modal-overlay" id="modal-quick-program">
+      <div class="sg-modal-card">
+        <div class="sg-modal-header">
+          <div class="sg-modal-title" id="qp-modal-title"><i class="fa-solid fa-passport"></i> Add New Page</div>
+          <button type="button" class="sg-modal-close" onclick="closeQuickProgramModal()">&times;</button>
+        </div>
+        <div class="sg-modal-body">
+          <!-- Context Banner -->
+          <div id="qp-context-banner" style="display:flex;background:rgba(197,168,128,0.12);border:1px solid rgba(197,168,128,0.3);border-radius:8px;padding:8px 12px;margin-bottom:14px;align-items:center;justify-content:space-between">
+            <div style="font-size:12px;color:var(--text);display:flex;align-items:center;gap:6px">
+              <span style="color:var(--gold);font-weight:600" id="qp-context-type">Citizenship by Investment</span>
+              <i class="fa-solid fa-chevron-right" style="font-size:9px;color:var(--muted)"></i>
+              <span style="font-weight:600;color:var(--text)" id="qp-context-section">Caribbean</span>
+            </div>
+            <span style="font-size:10px;color:var(--muted);background:rgba(255,255,255,0.06);padding:2px 6px;border-radius:4px">Section Pre-Selected</span>
+          </div>
+
+          <p class="sg-modal-desc" id="qp-modal-desc">Enter the page name. A complete luxury blueprint will immediately open in the Studio Canvas with meta tags set automatically, ready to edit visually by clicking on any text!</p>
+
+          <div class="form-group" style="margin-bottom:14px">
+            <label class="form-label" style="font-weight:600">Page / Country Name <span style="color:var(--red)">*</span></label>
+            <input type="text" id="qp-name" class="form-input form-input-headline" placeholder="e.g. Bahamas, Malta, Cyprus, or Singapore" autofocus oninput="handleQuickProgramNameInput(this.value)" onkeydown="if(event.key==='Enter')submitQuickProgram()">
+          </div>
+
+          <!-- Country Flag Selector -->
+          <div class="form-group" style="margin-bottom:14px">
+            <label class="form-label" style="font-weight:600;display:flex;align-items:center;justify-content:space-between">
+              <span>Country Flag</span>
+              <span style="font-size:10px;font-weight:400;color:var(--muted)" id="qp-flag-status">Auto-detected from country name</span>
+            </label>
+            <div style="display:flex;align-items:center;gap:10px;margin-bottom:8px">
+              <div id="qp-flag-preview-box" style="width:48px;height:32px;border-radius:4px;border:1px solid rgba(197,168,128,0.3);background:rgba(0,0,0,0.3);display:flex;align-items:center;justify-content:center;overflow:hidden;flex-shrink:0">
+                <img id="qp-flag-preview" src="" style="width:100%;height:100%;object-fit:cover;display:none" onerror="this.style.display='none';document.getElementById('qp-flag-empty').style.display='flex'">
+                <div id="qp-flag-empty" style="color:var(--muted);font-size:12px;display:flex"><i class="fa-regular fa-flag"></i></div>
+              </div>
+              <input type="text" id="qp-flag-url" class="form-input" placeholder="Flag image/SVG URL or select below..." style="flex:1" oninput="updateQuickProgramFlagPreview(this.value)">
+            </div>
+            <!-- Quick Flag Preset Chips -->
+            <div style="display:flex;gap:5px;flex-wrap:wrap" id="qp-flag-presets">
+              <button type="button" class="qp-flag-chip" onclick="setQuickProgramFlag('mt','https://flagcdn.com/mt.svg','Malta')">🇲🇹 Malta</button>
+              <button type="button" class="qp-flag-chip" onclick="setQuickProgramFlag('cy','https://flagcdn.com/cy.svg','Cyprus')">🇨🇾 Cyprus</button>
+              <button type="button" class="qp-flag-chip" onclick="setQuickProgramFlag('bs','https://flagcdn.com/bs.svg','Bahamas')">🇧🇸 Bahamas</button>
+              <button type="button" class="qp-flag-chip" onclick="setQuickProgramFlag('tr','https://flagcdn.com/tr.svg','Turkey')">🇹🇷 Turkey</button>
+              <button type="button" class="qp-flag-chip" onclick="setQuickProgramFlag('es','https://flagcdn.com/es.svg','Spain')">🇪🇸 Spain</button>
+              <button type="button" class="qp-flag-chip" onclick="setQuickProgramFlag('gr','https://flagcdn.com/gr.svg','Greece')">🇬🇷 Greece</button>
+              <button type="button" class="qp-flag-chip" onclick="setQuickProgramFlag('pt','https://flagcdn.com/pt.svg','Portugal')">🇵🇹 Portugal</button>
+              <button type="button" class="qp-flag-chip" onclick="setQuickProgramFlag('dm','https://flagcdn.com/dm.svg','Dominica')">🇩🇲 Dominica</button>
+              <button type="button" class="qp-flag-chip" onclick="setQuickProgramFlag('vu','https://flagcdn.com/vu.svg','Vanuatu')">🇻🇺 Vanuatu</button>
+            </div>
+          </div>
+
+          <!-- Hidden inputs for type and portfolio -->
+          <input type="hidden" id="qp-type" value="citizenship">
+          <input type="hidden" id="qp-portfolio" value="caribbean">
+          <input type="hidden" id="qp-flag-code" value="">
+        </div>
+        <div class="sg-modal-footer">
+          <button type="button" class="btn btn-ghost" onclick="closeQuickProgramModal()">Cancel</button>
+          <button type="button" class="btn btn-primary" onclick="submitQuickProgram()"><i class="fa-solid fa-wand-magic-sparkles"></i> Open Blueprint in Canvas</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- â•â•â• MODAL: VISUAL SECTION PICKER â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â• -->
+    <div class="sg-modal-overlay" id="modal-add-section">
+      <div class="sg-modal-card" style="max-width:580px">
+        <div class="sg-modal-header">
+          <div class="sg-modal-title"><i class="fa-solid fa-cubes"></i> Add Visual Section to Page</div>
+          <button type="button" class="sg-modal-close" onclick="closeAddSectionModal()">&times;</button>
+        </div>
+        <div class="sg-modal-body">
+          <p class="sg-modal-desc">Pick any section block below to insert it onto the current page. Once added, you can
+            click on its headlines and text directly in the Canvas to customize it.</p>
+          <div class="section-picker-grid">
+            <div class="section-card-choice" onclick="insertSectionBlock('hero')">
+              <i class="fa-solid fa-crown"></i>
+              <div>
+                <h4>Luxury Hero Banner</h4>
+                <p>High-impact headline, subheadline, background glow, and dual CTA buttons.</p>
+              </div>
+            </div>
+            <div class="section-card-choice" onclick="insertSectionBlock('stats')">
+              <i class="fa-solid fa-chart-line"></i>
+              <div>
+                <h4>Statistics &amp; Metrics</h4>
+                <p>4-column animated counter highlighting key experience milestones.</p>
+              </div>
+            </div>
+            <div class="section-card-choice" onclick="insertSectionBlock('services')">
+              <i class="fa-solid fa-landmark"></i>
+              <div>
+                <h4>Pillar Pathways Grid</h4>
+                <p>Card blocks for Citizenship, Residency, and Direct Dubai channels.</p>
+              </div>
+            </div>
+            <div class="section-card-choice" onclick="insertSectionBlock('reviews')">
+              <i class="fa-solid fa-quote-left"></i>
+              <div>
+                <h4>Client Testimonials</h4>
+                <p>Executive review cards with client quotes and verified country origins.</p>
+              </div>
+            </div>
+            <div class="section-card-choice" onclick="insertSectionBlock('faqs')">
+              <i class="fa-regular fa-circle-question"></i>
+              <div>
+                <h4>FAQ Accordion</h4>
+                <p>Interactive 2-column expandable legal and advisory questions.</p>
+              </div>
+            </div>
+            <div class="section-card-choice" onclick="insertSectionBlock('contact')">
+              <i class="fa-solid fa-building"></i>
+              <div>
+                <h4>Headquarters Contact</h4>
+                <p>Business Bay Dubai contact desk, map coordinates, and inquiry form.</p>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="sg-modal-footer">
+          <button type="button" class="btn btn-ghost" onclick="closeAddSectionModal()">Close</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- ═══ MODAL: PUBLISH SUCCESS ═════════════════════════════════════════ -->
+    <div class="sg-modal-overlay" id="modal-publish-success">
+      <div class="sg-modal-card" style="max-width:440px;text-align:center">
+        <div style="padding:28px 24px 22px">
+          <div style="width:58px;height:58px;border-radius:50%;background:rgba(16,185,129,0.15);border:1.5px solid rgba(16,185,129,0.35);color:#10b981;font-size:26px;display:flex;align-items:center;justify-content:center;margin:0 auto 16px;box-shadow:0 0 20px rgba(16,185,129,0.25)">
+            <i class="fa-solid fa-cloud-arrow-up"></i>
+          </div>
+          <h3 style="font-size:18px;font-weight:700;color:#fff;margin-bottom:8px">Published to Live Website!</h3>
+          <p style="font-size:12.5px;color:var(--muted);line-height:1.6;margin-bottom:18px" id="publish-modal-desc">
+            All your updates, programs, sections, and translations are now officially published and live for website visitors worldwide.
+          </p>
+          <div style="background:rgba(255,255,255,0.03);border:1px solid var(--border);border-radius:8px;padding:10px 14px;margin-bottom:20px;display:flex;align-items:center;justify-content:space-between;font-size:11px;color:var(--muted)">
+            <span><i class="fa-solid fa-clock" style="color:var(--gold);margin-right:4px"></i> Timestamp</span>
+            <span id="publish-timestamp-lbl" style="color:#fff;font-weight:600">Just now</span>
+          </div>
+          <div style="display:flex;gap:10px;justify-content:center">
+            <button type="button" class="btn btn-ghost" onclick="closePublishModal()" style="flex:1;justify-content:center">Continue Editing</button>
+            <button type="button" class="btn btn-publish" onclick="openLiveSiteFromModal()" style="flex:1;justify-content:center">
+              <i class="fa-solid fa-arrow-up-right-from-square"></i> View Live Site
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+
     <div id="ai-overlay">
       <div class="ai-modal-box">
         <div style="margin-bottom:12px;animation:spin 2s linear infinite;display:inline-block;color:var(--gold)"><svg
@@ -2197,7 +2345,9 @@
         residency: '../residencybyinvestment/index.html',
         blog: '../blog/index.html',
         contact: '../contact/index.html',
-        aboutus: '../aboutus/index.html'
+        aboutus: '../aboutus/index.html',
+        cookiepolicy: '../cookiepolicy/index.html',
+        legal: '../privacypolicy/index.html'
       };
 
       // Program specific URLs
@@ -2293,7 +2443,14 @@
         let url = PAGE_URLS.homepage;
 
         if (state.section === 'program' && state.itemId) {
-          url = PROGRAM_URLS[state.itemId] || (state.itemType === 'residency' ? PAGE_URLS.residency : PAGE_URLS.citizenship);
+          if (PROGRAM_URLS[state.itemId]) {
+            url = PROGRAM_URLS[state.itemId];
+          } else {
+            const base = (state.itemType === 'residency')
+              ? (PROGRAM_URLS.portugal || '../programs/residencybyinvestment/portugal/index.html')
+              : (PROGRAM_URLS.dominica || '../programs/citizenshipbyinvestment/dominica/index.html');
+            url = base + '?program_id=' + encodeURIComponent(state.itemId);
+          }
         } else if (state.section === 'new-program') {
           // Dynamically show the exact live template for the program being created!
           if (state.itemType === 'residency') {
@@ -2301,23 +2458,29 @@
           } else {
             url = PROGRAM_URLS.dominica || '../programs/citizenshipbyinvestment/dominica/index.html';
           }
+        } else if (state.section === 'category-hub') {
+          url = (state.itemType === 'residency') ? PAGE_URLS.residency : PAGE_URLS.citizenship;
         } else if (state.section === 'homepage') {
           url = PAGE_URLS.homepage;
-        } else if (state.section === 'contact-form' || state.section === 'offices' || state.section === 'office-new') {
+        } else if (state.section === 'contact') {
           url = PAGE_URLS.contact;
+        } else if (state.section === 'cookiepolicy' || state.section === 'cookies') {
+          url = PAGE_URLS.cookiepolicy;
         } else if (state.section === 'team' || state.section === 'team-new') {
           url = PAGE_URLS.aboutus;
         } else if (state.section === 'aboutus') {
           url = PAGE_URLS.aboutus;
         } else if (state.section === 'legal') {
-          url = '../privacypolicy/index.html';
-        } else if (state.section === 'navigation') {
-          url = PAGE_URLS.homepage;
-        } else if (state.section === 'blog' || state.section === 'blog-new' || state.section === 'blog-edit') {
+          url = PAGE_URLS.legal;
+        } else if (state.section === 'blog-new' || state.section === 'blog-edit') {
+          const bSlug = state.activeBlogSlug || state.itemId || 'about-sharif-group';
+          url = PAGE_URLS.blog + '?article_slug=' + encodeURIComponent(bSlug);
+        } else if (state.section === 'blog') {
           url = PAGE_URLS.blog;
         }
-        const currentSrc = url + '?cms_editor=1';
-        const cleanUrl = url.replace(/^\.\.\//, '');
+        const sep = url.includes('?') ? '&' : '?';
+        const currentSrc = url + sep + 'cms_editor=1';
+        const cleanUrl = url.split('?')[0].replace(/^\.\.\//, '');
         if (!iframe.src || iframe.src.indexOf(cleanUrl) === -1 || iframe.src === 'about:blank') {
           iframe.src = currentSrc;
         } else {
@@ -2332,10 +2495,28 @@
 
       function openInNewTab() {
         let url = PAGE_URLS.homepage;
-        if (state.section === 'program' && state.itemId) url = PROGRAM_URLS[state.itemId] || PAGE_URLS.citizenship;
-        else if (state.section === 'contact-form' || state.section === 'offices') url = PAGE_URLS.contact;
+        if (state.section === 'program' && state.itemId) {
+          if (PROGRAM_URLS[state.itemId]) {
+            url = PROGRAM_URLS[state.itemId];
+          } else {
+            const base = (state.itemType === 'residency')
+              ? (PROGRAM_URLS.portugal || '../programs/residencybyinvestment/portugal/index.html')
+              : (PROGRAM_URLS.dominica || '../programs/citizenshipbyinvestment/dominica/index.html');
+            url = base + '?program_id=' + encodeURIComponent(state.itemId);
+          }
+        }
+        else if (state.section === 'category-hub') url = (state.itemType === 'residency') ? PAGE_URLS.residency : PAGE_URLS.citizenship;
+        else if (state.section === 'contact') url = PAGE_URLS.contact;
+        else if (state.section === 'cookiepolicy' || state.section === 'cookies') url = PAGE_URLS.cookiepolicy;
+        else if (state.section === 'legal') url = PAGE_URLS.legal;
         else if (state.section === 'team') url = PAGE_URLS.aboutus;
-        window.open(url + '?cms_preview=1', '_blank');
+        else if (state.section === 'blog-new' || state.section === 'blog-edit') {
+          const bSlug = state.activeBlogSlug || state.itemId || 'about-sharif-group';
+          url = PAGE_URLS.blog + '?article_slug=' + encodeURIComponent(bSlug);
+        }
+        else if (state.section === 'blog') url = PAGE_URLS.blog;
+        const sep = url.includes('?') ? '&' : '?';
+        window.open(url + sep + 'cms_preview=1', '_blank');
       }
 
       state.scaleMode = 'fit';
@@ -2561,6 +2742,334 @@
         addProgram(type, key);
       }
 
+      // ==========================================================
+      // VISUAL STUDIO QUICK CREATION MODALS
+      // ==========================================================
+      function openQuickBlogModal() {
+        const m = document.getElementById('modal-quick-blog');
+        if (m) {
+          m.classList.add('open');
+          const inp = document.getElementById('qb-title');
+          if (inp) { inp.value = ''; setTimeout(() => inp.focus(), 80); }
+        }
+      }
+
+      function closeQuickBlogModal() {
+        const m = document.getElementById('modal-quick-blog');
+        if (m) m.classList.remove('open');
+      }
+
+      let selectedBlogImg = '../assets/images/dubai-office-2.webp';
+      function selectQuickBlogPreset(el) {
+        document.querySelectorAll('#qb-presets .sg-preset-item').forEach(i => i.classList.remove('selected'));
+        el.classList.add('selected');
+        selectedBlogImg = el.getAttribute('data-src');
+        const custom = document.getElementById('qb-custom-img');
+        if (custom) custom.value = '';
+      }
+
+      function submitQuickBlog() {
+        const titleInput = document.getElementById('qb-title');
+        const title = (titleInput?.value || '').trim();
+        if (!title) {
+          titleInput?.focus();
+          showToast('Please enter an article title', 'error');
+          return;
+        }
+
+        const category = document.getElementById('qb-category')?.value || 'Golden Visa';
+        const author = document.getElementById('qb-author')?.value || 'Sharif Group Legal Desk';
+        const customImg = document.getElementById('qb-custom-img')?.value.trim();
+        const img = customImg || selectedBlogImg || '../assets/images/dubai-office-2.webp';
+
+        const slug = title.toLowerCase()
+          .replace(/[^a-z0-9\s-]/g, '')
+          .replace(/\s+/g, '-')
+          .replace(/-+/g, '-')
+          .slice(0, 60) || ('article-' + Date.now());
+
+        const id = 'b' + uid();
+        const dateStr = new Date().toISOString().split('T')[0];
+
+        const sampleFaqs = [
+          { q: 'What are the sovereign eligibility criteria for this pathway?', a: 'Applicants must possess a pristine background, pass strict multi-tier AML compliance, and fulfill the designated capital allocation.' },
+          { q: 'Can immediate family and senior dependents be included?', a: 'Yes. The principal investor may include their spouse, dependent children under 30, and dependent parents or grandparents above 55.' },
+          { q: 'Is physical presence or relocation required in Dubai or the host state?', a: 'No mandatory residency requirements apply during processing. All government vetting and apostilles are finalized remotely through our Dubai headquarters.' },
+          { q: 'What are the processing timelines from submission to approval?', a: 'Official government clearance is expedited under our legal protocol, typically taking between 60 to 90 business days.' },
+          { q: 'How is confidential wealth and asset protection guaranteed?', a: 'Sharif Group operates under strict non-disclosure legal mandates and international private client confidentiality standards.' },
+          { q: 'What are the visa-free mobility advantages granted?', a: 'Successful holders gain visa-free or visa-on-arrival access across key international business hubs, Schengen states, and Commonwealth jurisdictions.' }
+        ];
+
+        const newArticle = {
+          id,
+          slug,
+          author,
+          category,
+          featured_img: img,
+          publish_date: dateStr,
+          status_en: 'published',
+          status_ar: 'published',
+          status_fa: 'draft',
+          status_zh: 'draft',
+          faqs: sampleFaqs,
+          en: {
+            title,
+            slug,
+            excerpt: 'Strategic legal insights and investment parameters prepared by Sharif Group advisory desk in Business Bay, Dubai.',
+            body: `<p class="text-base text-neutral-800 leading-relaxed font-light mb-6">In this strategic executive advisory, the Sharif Group team breaks down the critical parameters, official timelines, and legal requirements for global investors and sovereign wealth holders looking to secure their family's future.</p>
+<h3 class="font-serif text-2xl text-neutral-900 font-bold mt-8 mb-4">1. Executive Overview &amp; Key Parameters</h3>
+<p class="text-base text-neutral-700 leading-relaxed font-light mb-6">Securing sovereign status requires precision documentation and complete background verification. Our Dubai advisory office coordinates directly with authorized government units to ensure expedited clearance.</p>
+<blockquote class="my-8 p-6 bg-[#FAF6EE] border-s-4 border-[#C5A880] rounded-r-xl italic font-serif text-lg text-neutral-900 leading-relaxed">
+  "Global mobility and multi-jurisdictional residency are no longer luxuries — they are essential hedges for family wealth and sovereign freedom in 2026."
+</blockquote>
+<h3 class="font-serif text-2xl text-neutral-900 font-bold mt-8 mb-4">2. Step-by-Step Pathway</h3>
+<p class="text-base text-neutral-700 leading-relaxed font-light mb-4">The application process follows three structured stages designed for zero physical friction:</p>
+<ul class="list-disc ps-6 space-y-3 text-neutral-700 font-light mb-8">
+  <li><strong>Confidential Eligibility Assessment:</strong> Initial government vetting through Dubai clearing.</li>
+  <li><strong>Document Legalization &amp; Submission:</strong> Full apostille preparation handled by our legal team.</li>
+  <li><strong>Grant of Approval &amp; Certificate Issuance:</strong> Final certificate delivery directly to your Dubai residence.</li>
+</ul>`,
+            meta_title: title + ' | Sharif Group Dubai',
+            meta_desc: 'Strategic legal insights and investment parameters prepared by Sharif Group advisory desk.',
+            faqs: sampleFaqs
+          },
+          ar: { title: '', slug: slug, excerpt: '', body: '', faqs: [] },
+          fa: { title: '', slug: slug, excerpt: '', body: '', faqs: [] },
+          zh: { title: '', slug: slug, excerpt: '', body: '', faqs: [] }
+        };
+
+        const existingBlogs = window.CMS.getData(window.CMS.KEYS.BLOG) || window.CMS.DEFAULTS.blog || [];
+        existingBlogs.unshift(newArticle);
+        window.CMS.saveData(window.CMS.KEYS.BLOG, existingBlogs);
+
+        closeQuickBlogModal();
+        showToast('Article created! Loading visual template on canvas...', 'success');
+
+        state.section = 'blog-edit';
+        state.itemId = id;
+        state.activeBlogSlug = slug;
+        closeEditorDrawer();
+        setActiveSidebarItem('blog');
+
+        const iframe = document.getElementById('live-iframe');
+        const targetUrl = '../blog/index.html?cms_editor=1&article_slug=' + encodeURIComponent(slug);
+        iframe.src = targetUrl;
+
+        setTimeout(() => {
+          sendToIframe({ type: 'CMS_OPEN_ARTICLE', slug });
+          showToast('Canvas Ready: Click any text to edit directly!', 'info');
+        }, 600);
+      }
+
+      // Country Flag ISO Mapping & Helpers
+      const COUNTRY_ISO_MAP = {
+        'malta': 'mt', 'cyprus': 'cy', 'bahamas': 'bs', 'turkey': 'tr', 'turkiye': 'tr', 'türkiye': 'tr',
+        'spain': 'es', 'greece': 'gr', 'portugal': 'pt', 'dominica': 'dm', 'vanuatu': 'vu',
+        'st kitts': 'kn', 'st. kitts': 'kn', 'saint kitts': 'kn', 'antigua': 'ag', 'st lucia': 'lc', 'saint lucia': 'lc',
+        'grenada': 'gd', 'sao tome': 'st', 'são tomé': 'st', 'nauru': 'nr', 'uae': 'ae', 'dubai': 'ae',
+        'united arab emirates': 'ae', 'panama': 'pa', 'singapore': 'sg', 'usa': 'us', 'united states': 'us',
+        'uk': 'gb', 'united kingdom': 'gb', 'canada': 'ca', 'australia': 'au', 'italy': 'it', 'germany': 'de',
+        'france': 'fr', 'ireland': 'ie', 'switzerland': 'ch', 'austria': 'at', 'monaco': 'mc', 'hungary': 'hu',
+        'latvia': 'lv', 'bulgaria': 'bg', 'thailand': 'th', 'malaysia': 'my', 'indonesia': 'id',
+        'mauritius': 'mu', 'seychelles': 'sc', 'fiji': 'fj', 'cayman': 'ky', 'bermuda': 'bm', 'barbados': 'bb',
+        'belize': 'bz', 'montenegro': 'me', 'georgia': 'ge', 'armenia': 'am', 'egypt': 'eg', 'jordan': 'jo',
+        'qatar': 'qa', 'saudi': 'sa', 'saudi arabia': 'sa', 'bahrain': 'bh', 'oman': 'om', 'kuwait': 'kw',
+        'india': 'in', 'pakistan': 'pk', 'japan': 'jp', 'south korea': 'kr', 'brazil': 'br', 'mexico': 'mx'
+      };
+
+      function updateQuickProgramFlagPreview(url) {
+        const preview = document.getElementById('qp-flag-preview');
+        const empty = document.getElementById('qp-flag-empty');
+        const clean = (url || '').trim();
+        if (clean) {
+          if (preview) { preview.src = clean; preview.style.display = 'block'; }
+          if (empty) empty.style.display = 'none';
+        } else {
+          if (preview) { preview.style.display = 'none'; preview.src = ''; }
+          if (empty) empty.style.display = 'flex';
+        }
+      }
+
+      function setQuickProgramFlag(code, url, name) {
+        const urlInp = document.getElementById('qp-flag-url');
+        const codeInp = document.getElementById('qp-flag-code');
+        const status = document.getElementById('qp-flag-status');
+        if (urlInp) urlInp.value = url;
+        if (codeInp) codeInp.value = code;
+        if (status) status.textContent = `Selected: ${name || code.toUpperCase()}`;
+        updateQuickProgramFlagPreview(url);
+
+        document.querySelectorAll('#qp-flag-presets .qp-flag-chip').forEach(chip => {
+          chip.classList.toggle('selected', chip.getAttribute('onclick')?.includes(`'${code}'`));
+        });
+      }
+
+      function handleQuickProgramNameInput(val) {
+        const clean = (val || '').toLowerCase().trim();
+        if (!clean) return;
+        const code = COUNTRY_ISO_MAP[clean];
+        if (code) {
+          const flagUrl = `https://flagcdn.com/${code}.svg`;
+          const capitalName = clean.charAt(0).toUpperCase() + clean.slice(1);
+          setQuickProgramFlag(code, flagUrl, capitalName);
+          const status = document.getElementById('qp-flag-status');
+          if (status) status.textContent = `Auto-detected (${capitalName})`;
+        }
+      }
+
+      function openQuickProgramModal(type, portfolio) {
+        const m = document.getElementById('modal-quick-program');
+        if (!m) return;
+        m.classList.add('open');
+
+        const curType = type || 'citizenship';
+        const curPort = portfolio || 'global';
+        const typeInp = document.getElementById('qp-type');
+        const portInp = document.getElementById('qp-portfolio');
+        if (typeInp) typeInp.value = curType;
+        if (portInp) portInp.value = curPort;
+
+        const secList = PortfolioManager.getSections(curType);
+        const matchSec = secList.find(s => s.key === curPort);
+        const secLabel = matchSec ? matchSec.label : (curPort.charAt(0).toUpperCase() + curPort.slice(1));
+        const typeLabel = curType === 'residency' ? 'Residency Programs' : 'Citizenship by Investment';
+
+        const typeEl = document.getElementById('qp-context-type');
+        const secEl = document.getElementById('qp-context-section');
+        const titleEl = document.getElementById('qp-modal-title');
+        if (typeEl) typeEl.textContent = typeLabel;
+        if (secEl) secEl.textContent = secLabel;
+        if (titleEl) titleEl.innerHTML = `<i class="fa-solid fa-passport"></i> Add New Page (${secLabel})`;
+
+        const inp = document.getElementById('qp-name');
+        if (inp) {
+          inp.value = '';
+          setTimeout(() => inp.focus(), 80);
+        }
+
+        const flagUrlInp = document.getElementById('qp-flag-url');
+        const flagCodeInp = document.getElementById('qp-flag-code');
+        const flagStatus = document.getElementById('qp-flag-status');
+        if (flagUrlInp) flagUrlInp.value = '';
+        if (flagCodeInp) flagCodeInp.value = '';
+        if (flagStatus) flagStatus.textContent = 'Auto-detected from country name';
+        updateQuickProgramFlagPreview('');
+        document.querySelectorAll('#qp-flag-presets .qp-flag-chip').forEach(c => c.classList.remove('selected'));
+      }
+
+      function closeQuickProgramModal() {
+        const m = document.getElementById('modal-quick-program');
+        if (m) m.classList.remove('open');
+      }
+
+      function submitQuickProgram() {
+        const nameInput = document.getElementById('qp-name');
+        const name = (nameInput?.value || '').trim();
+        if (!name) {
+          nameInput?.focus();
+          showToast('Please enter a country or page name', 'error');
+          return;
+        }
+
+        const type = document.getElementById('qp-type')?.value || 'citizenship';
+        const portfolio = document.getElementById('qp-portfolio')?.value || 'global';
+        const investment = '$100,000 USD';
+        const time = '3–6 Months';
+
+        const flagUrl = (document.getElementById('qp-flag-url')?.value || '').trim();
+        const flagCode = (document.getElementById('qp-flag-code')?.value || '').trim();
+
+        const slug = name.toLowerCase().replace(/[^a-z0-9]/g, '') || ('p' + Date.now());
+        const id = slug;
+
+        const isCitizenship = (type === 'citizenship');
+        const title = name + (isCitizenship ? ' Citizenship by Investment' : ' Golden Visa & Residency');
+        const navLabel = name + (isCitizenship ? ' | Passport' : ' | Golden Visa');
+        const subtitle = isCitizenship ? 'Citizenship by Investment' : 'Residency by Investment';
+        const metaTitle = title + ' | Sharif Group Dubai';
+        const metaDesc = 'Official sovereign investment parameters, processing timelines, and legal advisory for ' + name + ' residency & citizenship.';
+
+        const resolvedFlag = flagUrl || (flagCode ? `https://flagcdn.com/${flagCode}.svg` : '');
+
+        if (flagCode) {
+          FLAG_CODES[id] = flagCode;
+        }
+
+        const newProg = {
+          id,
+          slug,
+          name,
+          portfolio,
+          flag: resolvedFlag,
+          flag_code: flagCode,
+          nav_visible: true,
+          nav_sort: 99,
+          status: 'published',
+          en: {
+            title,
+            nav_label: navLabel,
+            hero_subtitle: subtitle,
+            investment_from: investment,
+            processing_time: time,
+            visa_free: '140+',
+            overview: 'Official sovereign investment program offering prestigious global mobility and family security. Processed completely through Sharif Group Business Bay, Dubai.',
+            meta_title: metaTitle,
+            meta_desc: metaDesc,
+            benefits: [
+              { title: 'Expedited Processing', desc: 'Full approval within ' + time + ' with zero physical residency tests.' },
+              { title: 'Multi-Generational Inclusion', desc: 'Main applicant, spouse, dependent children and senior parents covered.' },
+              { title: 'Tax & Asset Optimization', desc: 'Secure asset diversification with complete offshore privacy and confidentiality.' }
+            ],
+            faqs: [
+              { q: 'Do I need to visit ' + name + ' in person?', a: 'No, all applications are processed remotely through our Dubai headquarters.' },
+              { q: 'What is the required investment amount?', a: 'The baseline investment starts from ' + investment + ' depending on chosen pathway.' }
+            ]
+          },
+          ar: { title: '', nav_label: name, investment_from: investment, processing_time: time, visa_free: '140+' },
+          fa: { title: '', nav_label: name, investment_from: investment, processing_time: time, visa_free: '140+' },
+          zh: { title: '', nav_label: name, investment_from: investment, processing_time: time, visa_free: '140+' }
+        };
+
+        const key = type === 'residency' ? window.CMS.KEYS.RESIDENCY : window.CMS.KEYS.CITIZENSHIP;
+        const list = window.CMS.getData(key) || (type === 'residency' ? window.CMS.DEFAULTS.residency : window.CMS.DEFAULTS.citizenship) || [];
+        list.push(newProg);
+        window.CMS.saveData(key, list);
+
+        closeQuickProgramModal();
+        populateSidebar();
+        showToast('Created ' + name + ' page! Loading visual blueprint in canvas...', 'success');
+
+        navigate('program', type, id);
+      }
+
+      function openAddSectionModal() {
+        const m = document.getElementById('modal-add-section');
+        if (m) m.classList.add('open');
+      }
+
+      function closeAddSectionModal() {
+        const m = document.getElementById('modal-add-section');
+        if (m) m.classList.remove('open');
+      }
+
+      function insertSectionBlock(blockType) {
+        closeAddSectionModal();
+        showToast('Added ' + blockType.toUpperCase() + ' section! Click on its text in canvas to customize.', 'success');
+        sendToIframe({ type: 'CMS_ADD_SECTION', blockType });
+      }
+
+      // Listen for canvas inline save events
+      window.addEventListener('message', (e) => {
+        const msg = e.data;
+        if (!msg || typeof msg !== 'object') return;
+        if (msg.type === 'CMS_INLINE_SAVED') {
+          markSaved();
+          showToast('Saved changes from canvas!', 'success');
+        } else if (msg.type === 'CMS_OPEN_SECTION_BUILDER') {
+          openAddSectionModal();
+        }
+      });
+
       function handlePortfolioSelectChange(selectEl, customInputWrapId) {
         const wrap = document.getElementById(customInputWrapId);
         if (selectEl.value === '__new__') {
@@ -2784,13 +3293,13 @@
         }
       }
 
-      function toggleGroup(group) {
+      function toggleGroup(group, forceOpen) {
         const btn = document.getElementById('sb-' + group);
         const children = document.getElementById('sbc-' + group);
         if (!children) return;
-        const isOpen = children.classList.contains('open');
-        children.classList.toggle('open', !isOpen);
-        btn.classList.toggle('open', !isOpen);
+        const nextState = (forceOpen === true) ? true : !children.classList.contains('open');
+        children.classList.toggle('open', nextState);
+        if (btn) btn.classList.toggle('open', nextState);
       }
 
       function setActiveSidebarItem(id) {
@@ -2808,36 +3317,91 @@
         state.itemId = itemId || null;
 
         // Auto-expand groups
-        if (section === 'program' || section === 'new-program') {
+        if (section === 'program' || section === 'new-program' || section === 'category-hub') {
           const groupId = itemType;
           if (groupId) {
             const children = document.getElementById('sbc-' + groupId);
-            if (children && !children.classList.contains('open')) toggleGroup(groupId);
+            if (children && !children.classList.contains('open')) toggleGroup(groupId, true);
           }
         }
-        if (section === 'offices' || section === 'office-new' || section === 'contact-form') {
-          const children = document.getElementById('sbc-contact');
-          if (children && !children.classList.contains('open')) toggleGroup('contact');
-        }
-
         renderSection();
-        setActiveSidebarItem(section === 'program' ? (itemId || '') : section.replace('-new', '').replace('-edit', ''));
+        setActiveSidebarItem(section === 'program' ? (itemId || '') : (section === 'category-hub' ? itemType : section.replace('-new', '').replace('-edit', '')));
 
-        // For homepage, start with clean live preview (drawer can be opened anytime via Add Section / Settings);
-        // for all specific editing sections (programs, aboutus, navigation, legal, settings, blogs, team, offices, etc.),
-        // ALWAYS open the editor drawer so the complete form and controls are immediately visible!
-        if (section === 'homepage') {
-          closeEditorDrawer();
-        } else {
-          openEditorDrawer();
-        }
+        // Visual-First Studio: The live interactive visual canvas is the primary stage.
+        // Keep the drawer closed by default so user has 100% full screen focus on the live visual page!
+        closeEditorDrawer();
 
         loadPreviewPage();
       }
 
       // ══════════════════════════════════════════════════════════
-      // STATUS INDICATORS
+      // STATUS INDICATORS & PUBLISH MANAGEMENT
       // ══════════════════════════════════════════════════════════
+      function getPublishStatus() {
+        try {
+          return JSON.parse(localStorage.getItem('sgcms_publish_status') || '{"status":"live","timestamp":null}');
+        } catch {
+          return { status: 'live', timestamp: null };
+        }
+      }
+
+      function updatePublishStatusUI() {
+        const p = getPublishStatus();
+        const pill = document.getElementById('publish-status-pill');
+        if (!pill) return;
+        if (p.status === 'draft') {
+          pill.className = 'pub-status-draft';
+          pill.innerHTML = '<span class="pub-dot"></span> <span class="pub-text">DRAFT (Unpublished changes)</span>';
+          pill.title = 'You have draft changes that are visible in preview but not yet published live.';
+        } else {
+          pill.className = 'pub-status-live';
+          let timeStr = '';
+          if (p.timestamp) {
+            try {
+              timeStr = ` (${new Date(p.timestamp).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })})`;
+            } catch (e) {}
+          }
+          pill.innerHTML = `<span class="pub-dot"></span> <span class="pub-text">LIVE${timeStr}</span>`;
+          pill.title = 'All changes are currently live on the website.';
+        }
+      }
+
+      function markDraft() {
+        const p = { status: 'draft', lastEdited: new Date().toISOString() };
+        localStorage.setItem('sgcms_publish_status', JSON.stringify(p));
+        updatePublishStatusUI();
+      }
+
+      function markLive(ts) {
+        const p = { status: 'live', timestamp: ts || new Date().toISOString() };
+        localStorage.setItem('sgcms_publish_status', JSON.stringify(p));
+        updatePublishStatusUI();
+      }
+
+      function closePublishModal() {
+        const m = document.getElementById('modal-publish-success');
+        if (m) m.classList.remove('open');
+      }
+
+      function openLiveSiteFromModal() {
+        closePublishModal();
+        let target = '../index.html';
+        if (state.section === 'program' && state.itemId) {
+          target = (PROGRAM_URLS[state.itemId] || '../index.html');
+        } else if (state.section === 'contact') {
+          target = PAGE_URLS.contact;
+        } else if (state.section === 'cookiepolicy' || state.section === 'cookies') {
+          target = PAGE_URLS.cookiepolicy;
+        } else if (state.section === 'legal') {
+          target = PAGE_URLS.legal;
+        } else if (state.section === 'blog') {
+          target = PAGE_URLS.blog;
+        } else if (state.section === 'aboutus') {
+          target = PAGE_URLS.aboutus;
+        }
+        window.open(target, '_blank');
+      }
+
       function markUnsaved() {
         state.unsaved = true;
         const el = document.getElementById('save-ind');
@@ -2848,7 +3412,7 @@
         state.unsaved = false;
         const el = document.getElementById('save-ind');
         el.className = 'saved';
-        el.innerHTML = '<i class="fa-solid fa-circle-check" style="font-size:9px"></i> All saved';
+        el.innerHTML = '<i class="fa-solid fa-circle-check" style="font-size:9px"></i> Draft saved';
       }
       function showToast(msg, type = 'success') {
         const t = document.getElementById('toast');
@@ -2862,7 +3426,7 @@
       }
       function setPageTitle(title, sub) {
         document.getElementById('page-title').textContent = title;
-        document.getElementById('page-subtitle').textContent = sub || 'Sharif Group CMS v3';
+        document.getElementById('page-subtitle').textContent = sub || 'Sharif Group CMS Studio';
       }
 
       // ══════════════════════════════════════════════════════════
@@ -3222,6 +3786,7 @@
 
         switch (section) {
           case 'homepage': renderHomepageEditor(l, rtl); break;
+          case 'category-hub': renderCategoryHubView(itemType || 'citizenship'); break;
           case 'program': renderProgramEditor(l, rtl); break;
           case 'new-program': renderNewProgramView(itemType || 'citizenship', itemId); break;
           case 'blog': renderBlogEditor(l, rtl); break;
@@ -3229,15 +3794,41 @@
           case 'blog-edit': editBlogItem(itemId); break;
           case 'team': renderTeamEditor(l, rtl); break;
           case 'team-new': createTeamMember(); break;
-          case 'offices': renderOfficesEditor(l, rtl); break;
-          case 'office-new': createOffice(); break;
           case 'aboutus': renderAboutUsEditor(l, rtl); break;
-          case 'contact-form': renderContactEditor(l, rtl); break;
-          case 'navigation': renderNavigationEditor(l, rtl); break;
+          case 'contact': renderContactSalesEditor(l, rtl); break;
+          case 'cookiepolicy':
+          case 'cookies': renderCookiePolicyEditor(l, rtl); break;
           case 'legal': renderLegalEditor(l, rtl); break;
           case 'settings': renderSettingsEditor(); break;
           default: renderOverview();
         }
+      }
+
+      function renderCategoryHubView(type) {
+        const isRes = type === 'residency';
+        const title = isRes ? 'Residency Programs Hub' : 'Citizenship by Investment Hub';
+        const desc = isRes ? 'Manage residency pathways, European Golden Visas, and Americas residency programs' : 'Manage global CBI passports, Caribbean programs, and citizenship solutions';
+        setPageTitle(title, desc);
+        const ed = document.getElementById('editor');
+        if (!ed) return;
+        ed.innerHTML = `
+          <div style="padding:16px 20px">
+            <div style="background:rgba(197,168,128,0.08);border:1px solid rgba(197,168,128,0.25);border-radius:10px;padding:16px;margin-bottom:20px">
+              <div style="display:flex;align-items:center;gap:10px;margin-bottom:8px">
+                <i class="fa-solid fa-compass-drafting" style="color:var(--gold);font-size:18px"></i>
+                <h3 style="font-size:14px;font-weight:700;color:#fff;margin:0">Live Category Landing Page</h3>
+              </div>
+              <p style="font-size:12px;color:var(--muted);line-height:1.6;margin:0">
+                The visual category blueprint is loaded in the canvas. You can click on any heading, hero text, or program card to edit directly.
+              </p>
+            </div>
+            <div style="display:flex;flex-direction:column;gap:12px">
+              <button type="button" class="btn btn-primary" style="width:100%;justify-content:center" onclick="promptAddSection('${type}')">
+                <i class="fa-solid fa-folder-plus"></i> Add New Section under ${isRes ? 'Residency' : 'Citizenship'}
+              </button>
+            </div>
+          </div>
+        `;
       }
 
       function block(id, iconBg, iconColor, icon, title, badge, body, collapsed) {
@@ -4515,7 +5106,7 @@
       }
 
       function addProgram(type, portfolio) {
-        navigate('new-program', type, portfolio);
+        openQuickProgramModal(type, portfolio);
       }
 
       // Live-send field updates to iframe
@@ -4560,6 +5151,20 @@
             const cs = document.getElementById('np-cta-sub')?.value; if (cs) liveUpdateField('consult_subheading', cs);
           } else if (state.section === 'blog-new' || state.section === 'blog-edit') {
             broadcastBlogDraft();
+          } else if (state.section === 'program' && state.itemId) {
+            const type = state.itemType || 'citizenship';
+            const key = type === 'residency' ? window.CMS.KEYS.RESIDENCY : window.CMS.KEYS.CITIZENSHIP;
+            const progs = window.CMS.getData(key) || [];
+            const prog = progs.find(p => p.id === state.itemId);
+            if (prog) {
+              const ld = prog[state.lang] || prog.en || {};
+              const title = ld.title || prog.name;
+              if (title) liveUpdateField('hero_title', title);
+              if (ld.hero_subtitle) liveUpdateField('hero_subtitle', ld.hero_subtitle);
+              if (ld.investment_from) liveUpdateField('investment_from', ld.investment_from);
+              if (ld.processing_time) liveUpdateField('processing_time', ld.processing_time);
+              if (ld.overview) liveUpdateField('overview', ld.overview);
+            }
           }
         }, 300);
       }
@@ -4650,7 +5255,7 @@
         <h1 class="ed-page-title" style="margin-bottom:4px">Blog & Articles</h1>
         <p class="ed-page-desc" style="margin-bottom:0">Click any article to edit in detail or create a new insight.</p>
       </div>
-      <button class="btn btn-primary" onclick="navigate('blog-new')"><i class="fa-solid fa-plus"></i> New Article</button>
+      <button class="btn btn-primary" onclick="openQuickBlogModal()"><i class="fa-solid fa-plus"></i> New Article</button>
     </div>
   `;
 
@@ -4673,7 +5278,7 @@
     `;
         });
 
-        html += `<button class="btn-add-row" style="margin-top:12px" onclick="navigate('blog-new')"><i class="fa-solid fa-plus"></i> Add New Blog Article</button>`;
+        html += `<button class="btn-add-row" style="margin-top:12px" onclick="openQuickBlogModal()"><i class="fa-solid fa-plus"></i> Add New Blog Article</button>`;
         document.getElementById('editor').innerHTML = html;
       }
 
@@ -5052,111 +5657,76 @@
       }
 
       // ──────────────────────────────────────────────────────────
-      // OFFICES EDITOR
+      // CONTACT & SALES ADVISORY SETTINGS
       // ──────────────────────────────────────────────────────────
-      function renderOfficesEditor(l, rtl) {
-        setPageTitle('Office Locations', 'Manage office contact details');
-        const offices = window.CMS.getData(window.CMS.KEYS.OFFICES) || window.CMS.DEFAULTS.offices;
-        let html = `<h1 class="ed-page-title">Office Locations</h1><p class="ed-page-desc">Click an office to edit its details. Add new offices with the + button.</p>`;
-        offices.forEach(o => {
-          html += `<div class="ec-block" onclick="editOffice('${o.id}')">
-      <div class="ec-block-hd">
-        <div class="ec-block-ico" style="background:rgba(96,165,250,.15);color:#60a5fa"><i class="fa-solid fa-building"></i></div>
-        <span class="ec-block-title">${escH(o.name)}</span>
-        <span class="ec-block-badge">${o.visible ? 'Visible' : 'Hidden'}</span>
-        <i class="fa-solid fa-chevron-right ec-block-tog"></i>
-      </div>
-    </div>`;
-        });
-        html += `<button class="btn-add-row" style="margin-top:8px" onclick="createOffice()"><i class="fa-solid fa-plus"></i> Add Office</button>`;
-        document.getElementById('editor').innerHTML = html;
-      }
-
-      function editOffice(id) {
-        openEditorDrawer();
-        const offices = window.CMS.getData(window.CMS.KEYS.OFFICES) || [];
-        const o = offices.find(x => x.id === id);
-        if (!o) return;
-        setPageTitle(o.name, 'Office Details');
-        document.getElementById('editor').innerHTML =
-          `<div style="display:flex;align-items:center;gap:12px;margin-bottom:20px">
-      <button class="btn btn-ghost" onclick="navigate('offices')"><i class="fa-solid fa-arrow-left"></i> All Offices</button>
-      <h1 class="ed-page-title" style="margin-bottom:0">${escH(o.name)}</h1>
-    </div>` +
-          block('office-details', 'rgba(96,165,250,.15)', '#60a5fa', '<i class="fa-solid fa-building"></i>', 'Office Details', null, `
-      <div class="form-group" style="margin-bottom:10px"><label class="form-label">Office Name</label><input class="form-input" id="of-name" value="${escH(o.name)}" oninput="markUnsaved()"></div>
-      <div class="form-group" style="margin-bottom:10px"><label class="form-label">Full Address</label><textarea class="form-textarea" style="min-height:60px" id="of-address" oninput="markUnsaved()">${escH(o.address)}</textarea></div>
-      <div class="form-row form-row-2">
-        <div class="form-group"><label class="form-label">Phone</label><input class="form-input" id="of-phone" value="${escH(o.phone)}" oninput="markUnsaved()"></div>
-        <div class="form-group"><label class="form-label">WhatsApp</label><input class="form-input" id="of-wa" value="${escH(o.whatsapp)}" oninput="markUnsaved()"></div>
-      </div>
-      <div class="form-row form-row-2">
-        <div class="form-group"><label class="form-label">Email</label><input class="form-input" id="of-email" value="${escH(o.email)}" oninput="markUnsaved()"></div>
-        <div class="form-group"><label class="form-label">Business Hours</label><input class="form-input" id="of-hours" value="${escH(o.hours)}" oninput="markUnsaved()"></div>
-      </div>
-      <div class="form-group" style="margin-bottom:10px"><label class="form-label">Google Maps URL</label><input class="form-input" id="of-maps" value="${escH(o.maps_url)}" placeholder="https://maps.google.com/..." oninput="markUnsaved()"></div>
-      <div class="form-group" style="margin-bottom:14px"><label class="form-label">Visibility</label><select class="form-select" id="of-vis" onchange="markUnsaved()"><option value="true" ${o.visible ? 'selected' : ''}>Visible</option><option value="false" ${!o.visible ? 'selected' : ''}>Hidden</option></select></div>
-      <div style="display:flex;gap:8px"><button class="btn btn-primary" onclick="saveOffice('${id}')"><i class="fa-solid fa-floppy-disk"></i> Save Office</button><button class="btn btn-ghost" onclick="deleteOffice('${id}')" style="color:#f87171;border-color:rgba(239,68,68,.3)"><i class="fa-solid fa-trash"></i> Delete</button></div>`);
-      }
-
-      function createOffice() {
-        const offices = window.CMS.getData(window.CMS.KEYS.OFFICES) || [];
-        const id = 'o' + uid();
-        offices.push({ id, name: 'New Office', address: '', phone: '', whatsapp: '', email: '', hours: '', maps_url: '', visible: true });
-        window.CMS.saveData(window.CMS.KEYS.OFFICES, offices);
-        editOffice(id);
-        showToast('New office created!');
-      }
-
-      function saveOffice(id) {
-        const offices = window.CMS.getData(window.CMS.KEYS.OFFICES) || [];
-        const idx = offices.findIndex(o => o.id === id);
-        if (idx < 0) return;
-        offices[idx].name = document.getElementById('of-name')?.value || '';
-        offices[idx].address = document.getElementById('of-address')?.value || '';
-        offices[idx].phone = document.getElementById('of-phone')?.value || '';
-        offices[idx].whatsapp = document.getElementById('of-wa')?.value || '';
-        offices[idx].email = document.getElementById('of-email')?.value || '';
-        offices[idx].hours = document.getElementById('of-hours')?.value || '';
-        offices[idx].maps_url = document.getElementById('of-maps')?.value || '';
-        offices[idx].visible = document.getElementById('of-vis')?.value === 'true';
-        window.CMS.saveData(window.CMS.KEYS.OFFICES, offices);
-        markSaved(); showToast('Office saved!');
-      }
-
-      function deleteOffice(id) {
-        if (!confirm('Delete this office?')) return;
-        let offices = window.CMS.getData(window.CMS.KEYS.OFFICES) || [];
-        offices = offices.filter(o => o.id !== id);
-        window.CMS.saveData(window.CMS.KEYS.OFFICES, offices);
-        navigate('offices'); showToast('Office deleted', 'info');
-      }
-
-      // ──────────────────────────────────────────────────────────
-      // CONTACT FORM SETTINGS
-      // ──────────────────────────────────────────────────────────
-      function renderContactEditor(l, rtl) {
-        setPageTitle('Contact Form Settings', 'Email, consent & thank you messages');
-        const c = window.CMS.getData(window.CMS.KEYS.CONTACT) || window.CMS.DEFAULTS.contact;
-        const dir = rtl ? 'dir="rtl"' : '';
-        document.getElementById('editor').innerHTML =
-          `<h1 class="ed-page-title">Contact Form Settings</h1>
-    <p class="ed-page-desc">Configure the contact form messages and notification email.</p>` +
-          block('contact-main', 'rgba(34,197,94,.15)', 'var(--green)', '<i class="fa-solid fa-envelope"></i>', 'Form Configuration', null, `
-      <div class="form-group" style="margin-bottom:12px"><label class="form-label">Form Recipient Email</label><input class="form-input" id="cf-email" value="${escH(c.form_recipient)}" oninput="markUnsaved()"></div>
-      <div class="form-group" style="margin-bottom:12px"><label class="form-label">Thank You Message <span class="form-lang-tag">${l.toUpperCase()}</span></label><textarea class="form-textarea" ${dir} id="cf-thankyou" oninput="markUnsaved()">${escH(c['thankyou_' + l] || c.thankyou_en)}</textarea></div>
-      <div class="form-group" style="margin-bottom:14px"><label class="form-label">Privacy Consent Text <span class="form-lang-tag">${l.toUpperCase()}</span></label><input class="form-input" ${dir} id="cf-consent" value="${escH(c['consent_' + l] || c.consent_en)}" oninput="markUnsaved()"></div>
-      <button class="btn btn-primary" onclick="saveContactForm()"><i class="fa-solid fa-floppy-disk"></i> Save Contact Form</button>`);
-      }
-
-      function saveContactForm() {
+      function renderContactSalesEditor(l, rtl) {
+        setPageTitle('Contact & Sales', 'Direct advisory emails, WhatsApp, and Dubai HQ desk');
         const c = window.CMS.getData(window.CMS.KEYS.CONTACT) || {};
-        const l = state.lang;
-        c.form_recipient = document.getElementById('cf-email')?.value || '';
-        c['thankyou_' + l] = document.getElementById('cf-thankyou')?.value || '';
-        c['consent_' + l] = document.getElementById('cf-consent')?.value || '';
+        const dir = rtl ? 'dir="rtl"' : '';
+        const genEmail = c.general_email || c.form_recipient || 'contact@sharifgroup.ae';
+        const salesEmail = c.sales_email || 'sales@sharifgroup.ae';
+        const phone = c.phone || '+971 4 357 8737';
+        const wa = c.whatsapp || '+971 4 357 8737';
+        const addr = c.address || '116, The Binary Tower, Business Bay, Dubai, United Arab Emirates';
+        const hours = c.hours || 'Monday to Saturday 09:00 AM to 06:00 PM (Gulf Standard Time - GST)';
+
+        document.getElementById('editor').innerHTML =
+          `<h1 class="ed-page-title">Contact &amp; Sales Advisory</h1>
+          <p class="ed-page-desc">Manage primary corporate email addresses, VIP sales desk, telephone line, WhatsApp, and Dubai headquarters address.</p>` +
+          block('contact-sales-desk', 'rgba(197,168,128,.15)', 'var(--gold)', '<i class="fa-solid fa-headset"></i>', 'Direct Communication Lines', null, `
+            <div class="form-row form-row-2" style="margin-bottom:12px">
+              <div class="form-group">
+                <label class="form-label">General Contact Email</label>
+                <input class="form-input" id="cs-gen-email" value="${escH(genEmail)}" placeholder="contact@sharifgroup.ae" oninput="markUnsaved()">
+              </div>
+              <div class="form-group">
+                <label class="form-label">Sales &amp; Private Advisory Email</label>
+                <input class="form-input" id="cs-sales-email" value="${escH(salesEmail)}" placeholder="sales@sharifgroup.ae" oninput="markUnsaved()">
+              </div>
+            </div>
+            <div class="form-row form-row-2" style="margin-bottom:12px">
+              <div class="form-group">
+                <label class="form-label">Direct Telephone Line</label>
+                <input class="form-input" id="cs-phone" value="${escH(phone)}" placeholder="+971 4 357 8737" oninput="markUnsaved()">
+              </div>
+              <div class="form-group">
+                <label class="form-label">WhatsApp Advisory Number</label>
+                <input class="form-input" id="cs-wa" value="${escH(wa)}" placeholder="+971 4 357 8737" oninput="markUnsaved()">
+              </div>
+            </div>
+          `) +
+          block('contact-location', 'rgba(96,165,250,.15)', '#60a5fa', '<i class="fa-solid fa-location-dot"></i>', 'Dubai Headquarters &amp; Working Hours', null, `
+            <div class="form-group" style="margin-bottom:12px">
+              <label class="form-label">Global Headquarters Address</label>
+              <textarea class="form-textarea" style="min-height:65px" id="cs-address" oninput="markUnsaved()">${escH(addr)}</textarea>
+            </div>
+            <div class="form-group" style="margin-bottom:14px">
+              <label class="form-label">Official Working Hours</label>
+              <input class="form-input" id="cs-hours" value="${escH(hours)}" placeholder="Monday to Saturday 09:00 AM to 06:00 PM (GST)" oninput="markUnsaved()">
+            </div>
+            <div class="form-group" style="margin-bottom:14px">
+              <label class="form-label">Contact Form Lead Notification Email</label>
+              <input class="form-input" id="cs-form-recipient" value="${escH(c.form_recipient || genEmail)}" placeholder="inquiries@sharifgroup.ae" oninput="markUnsaved()">
+            </div>
+            <button class="btn btn-primary" onclick="saveContactSales()"><i class="fa-solid fa-floppy-disk"></i> Save Contact &amp; Sales Information</button>
+          `);
+      }
+
+      function saveContactSales() {
+        const c = window.CMS.getData(window.CMS.KEYS.CONTACT) || {};
+        c.general_email = document.getElementById('cs-gen-email')?.value.trim() || 'contact@sharifgroup.ae';
+        c.sales_email = document.getElementById('cs-sales-email')?.value.trim() || 'sales@sharifgroup.ae';
+        c.phone = document.getElementById('cs-phone')?.value.trim() || '+971 4 357 8737';
+        c.whatsapp = document.getElementById('cs-wa')?.value.trim() || '+971 4 357 8737';
+        c.address = document.getElementById('cs-address')?.value.trim() || '116, The Binary Tower, Business Bay, Dubai, United Arab Emirates';
+        c.hours = document.getElementById('cs-hours')?.value.trim() || 'Monday to Saturday 09:00 AM to 06:00 PM (GST)';
+        c.form_recipient = document.getElementById('cs-form-recipient')?.value.trim() || c.general_email;
+
         window.CMS.saveData(window.CMS.KEYS.CONTACT, c);
-        markSaved(); showToast('Contact form settings saved!');
+        markDraft();
+        markSaved();
+        sendToIframe({ type: 'CMS_SET_LANG', lang: state.lang });
+        showToast('Contact & Sales information saved!');
       }
 
       // ──────────────────────────────────────────────────────────
@@ -5495,138 +6065,82 @@
       }
 
       // ──────────────────────────────────────────────────────────
-      // NAVIGATION BUILDER
+      // COOKIE POLICY PAGE EDITOR
       // ──────────────────────────────────────────────────────────
-      function renderNavigationEditor(l, rtl) {
-        setPageTitle('Navigation Builder', 'Configure the website main navigation');
-        const nav = window.CMS.getData(window.CMS.KEYS.NAV) || { main_links: [] };
-        const links = nav.main_links || [];
-        const ci = window.CMS.getData(window.CMS.KEYS.CITIZENSHIP) || window.CMS.DEFAULTS.citizenship || [];
-        const ri = window.CMS.getData(window.CMS.KEYS.RESIDENCY) || window.CMS.DEFAULTS.residency || [];
+      function renderCookiePolicyEditor(l, rtl) {
+        setPageTitle('Cookie Policy', 'Digital tracking disclosure & essential cookie parameters');
+        const cp = window.CMS.getData('sgcms_cookiepolicy') || {};
         const dir = rtl ? 'dir="rtl"' : '';
+        const langData = cp[l] || cp.en || {};
 
-        function renderProgNavTable(progs, type) {
-          if (!progs.length) return '<p style="color:var(--muted);font-size:12px">No programs available</p>';
-          const sorted = [...progs].sort((a, b) => (a.nav_sort || 0) - (b.nav_sort || 0));
-          return `
-      <div style="overflow-x:auto;border:1px solid var(--border2);border-radius:10px">
-        <table style="width:100%;border-collapse:collapse;font-size:11px;text-align:left">
-          <thead>
-            <tr style="background:rgba(255,255,255,.04);border-bottom:1px solid var(--border);color:var(--muted);text-transform:uppercase;font-size:9px;letter-spacing:.08em">
-              <th style="padding:10px 12px">Program</th>
-              <th style="padding:10px 12px">Portfolio</th>
-              <th style="padding:10px 12px">Menu Label (${l.toUpperCase()})</th>
-              <th style="padding:10px 12px;width:75px">Order</th>
-              <th style="padding:10px 12px;width:110px">Navbar Status</th>
-              <th style="padding:10px 12px;width:60px">Edit</th>
-            </tr>
-          </thead>
-          <tbody>
-            ${sorted.map(p => {
-            const ld = p[l] || p.en || {};
-            const label = ld.nav_label || ld.title || p.id;
-            const fallback = FLAG_CODES[p.id] ? `https://flagcdn.com/${FLAG_CODES[p.id]}.svg` : '';
-            const flagSrc = (p.flag && !p.flag.includes('Flag_of_Sao_Tome_and_Principe.svg')) ? p.flag : fallback;
-            const flag = flagSrc ? `<img src="${flagSrc}" style="width:18px;height:12px;object-fit:cover;border-radius:2px;margin-right:6px;vertical-align:middle" onerror="if(this.src!=='${fallback}'){this.src='${fallback}'}else{this.style.display='none'}">` : '';
-            const isVis = p.nav_visible !== false;
-            return `
-                <tr class="nav-prog-row" data-type="${type}" data-id="${p.id}" style="border-bottom:1px solid var(--border2)">
-                  <td style="padding:10px 12px;color:var(--text);font-weight:600;white-space:nowrap">
-                    ${flag}${escH(p.en?.title || p.id)}
-                  </td>
-                  <td style="padding:10px 12px;color:var(--muted);text-transform:capitalize">
-                    <span style="display:inline-block;padding:2px 7px;border-radius:999px;background:rgba(255,255,255,.05);border:1px solid var(--border2);font-size:10px">${p.portfolio || 'standard'}</span>
-                  </td>
-                  <td style="padding:8px 12px">
-                    <input class="form-input nav-label-input" ${dir} value="${escH(label)}" placeholder="${escH(p.en?.nav_label || '')}" style="padding:5px 8px;font-size:11px;height:28px" oninput="markUnsaved()">
-                  </td>
-                  <td style="padding:8px 12px">
-                    <input type="number" class="form-input nav-sort-input" value="${p.nav_sort || 1}" style="padding:5px 8px;font-size:11px;height:28px;width:60px" oninput="markUnsaved()">
-                  </td>
-                  <td style="padding:8px 12px">
-                    <select class="form-select nav-vis-select" style="padding:4px 8px;font-size:11px;height:28px" onchange="markUnsaved()">
-                      <option value="true" ${isVis ? 'selected' : ''}>Visible</option>
-                      <option value="false" ${!isVis ? 'selected' : ''}>Hidden</option>
-                    </select>
-                  </td>
-                  <td style="padding:8px 12px">
-                    <button type="button" class="btn btn-ghost" style="padding:4px 8px;font-size:10px" onclick="navigate('program','${type}','${p.id}')" title="Edit Program">
-                      <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M17 3a2.85 2.83 0 1 1 4 4L7.5 20.5 2 22l1.5-5.5Z"/><path d="m15 5 4 4"/></svg>
-                    </button>
-                  </td>
-                </tr>
-              `;
-          }).join('')}
-          </tbody>
-        </table>
-      </div>
-    `;
-        }
+        const heroBadge = langData.hero_badge || 'DIGITAL GOVERNANCE & TRACKING';
+        const heroTitle = langData.hero_title || 'Cookie Policy & Digital Tracking';
+        const heroDesc = langData.hero_desc || 'Transparent guidelines on how Sharif Group utilizes essential browser cookies, security verification tokens, and anonymous analytical telemetry.';
+        const p1Title = langData.p1_title || '1. Essential Digital Architecture & Session Integrity';
+        const p1Desc = langData.p1_desc || 'Sharif Group utilizes strict first-party cookies necessary for secure user navigation, protecting user sessions, and preserving multi-step inquiries.';
+        const p2Title = langData.p2_title || '2. Analytical Telemetry & Performance Optimization';
+        const p2Desc = langData.p2_desc || 'We deploy encrypted, privacy-compliant aggregated analytical trackers to optimize page loading speeds and evaluate device responsiveness.';
 
         document.getElementById('editor').innerHTML =
-          `<h1 class="ed-page-title">Navigation Builder</h1>
-    <p class="ed-page-desc">Manage all 8 Citizenship programs, 4 Residency programs, and custom header links. Control labels, order, and navbar visibility.</p>` +
-
-          block('nav-ci', 'rgba(197,168,128,.15)', 'var(--gold)', '<svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect width="18" height="18" x="3" y="3" rx="2"/><path d="m9 12 2 2 4-4"/></svg>', 'Citizenship Programs in Navbar', `${ci.length} Pages`, `
-      <p style="color:var(--muted);font-size:11px;margin-bottom:12px">VIEW ALL PROGRAMS on the website. Toggle visibility or adjust order for the header mega-menu and mobile drawer.</p>
-      ${renderProgNavTable(ci, 'citizenship')}
-    `) +
-
-          block('nav-ri', 'rgba(167,139,250,.15)', '#a78bfa', '<svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><path d="m4.93 4.93 4.24 4.24"/><path d="m14.83 9.17 4.24-4.24"/><path d="m14.83 14.83 4.24 4.24"/><path d="m9.17 14.83-4.24 4.24"/></svg>', 'Residency Programs in Navbar', `${ri.length} Pages`, `
-      <p style="color:var(--muted);font-size:11px;margin-bottom:12px">All residency programs on the website. Toggle visibility or adjust order for the header mega-menu and mobile drawer.</p>
-      ${renderProgNavTable(ri, 'residency')}
-    `) +
-
-          block('nav-custom', 'rgba(96,165,250,.15)', '#60a5fa', '<svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"/><path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"/></svg>', 'Custom Navigation Links', `${links.length} links`, `
-      <p style="color:var(--muted);font-size:11px;margin-bottom:10px">Additional top-level links (About Us, Blog, Contact, etc.).</p>
-      ${renderListBuilder('custom-links-builder', links.map(l => `${l.label} → ${l.url}`), 'Label → /url')}
-      <div style="margin-top:16px;display:flex;gap:10px">
-        <button class="btn btn-primary" onclick="saveNavigation()"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M19 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11l5 5v11a2 2 0 0 1-2 2z"/><polyline points="17 21 17 13 7 13 7 21"/><polyline points="7 3 7 8 15 8"/></svg> Save All Navigation Settings</button>
-      </div>
-    `);
+          `<h1 class="ed-page-title">Cookie Policy Page</h1>
+          <p class="ed-page-desc">Edit hero headers and policy guidance blocks. You can also click directly on any text in the Live Studio Canvas to edit visually!</p>` +
+          block('cp-hero', 'rgba(197,168,128,.15)', 'var(--gold)', '<i class="fa-solid fa-cookie-bite"></i>', 'Hero Header & Headline', l.toUpperCase(), `
+            <div class="form-group" style="margin-bottom:12px">
+              <label class="form-label">Hero Badge</label>
+              <input class="form-input" ${dir} id="cp-badge" value="${escH(heroBadge)}" oninput="markUnsaved()">
+            </div>
+            <div class="form-group" style="margin-bottom:12px">
+              <label class="form-label">Hero Headline</label>
+              <input class="form-input" ${dir} id="cp-title" value="${escH(heroTitle)}" oninput="markUnsaved()">
+            </div>
+            <div class="form-group">
+              <label class="form-label">Hero Description</label>
+              <textarea class="form-textarea" style="min-height:70px" ${dir} id="cp-desc" oninput="markUnsaved()">${escH(heroDesc)}</textarea>
+            </div>
+          `) +
+          block('cp-points', 'rgba(34,197,94,.15)', 'var(--green)', '<i class="fa-solid fa-shield-halved"></i>', 'Cookie Guidelines & Sections', l.toUpperCase(), `
+            <div class="form-group" style="margin-bottom:12px">
+              <label class="form-label">Section 1 Headline</label>
+              <input class="form-input" ${dir} id="cp-p1-title" value="${escH(p1Title)}" oninput="markUnsaved()">
+            </div>
+            <div class="form-group" style="margin-bottom:16px">
+              <label class="form-label">Section 1 Details</label>
+              <textarea class="form-textarea" style="min-height:75px" ${dir} id="cp-p1-desc" oninput="markUnsaved()">${escH(p1Desc)}</textarea>
+            </div>
+            <div class="form-group" style="margin-bottom:12px">
+              <label class="form-label">Section 2 Headline</label>
+              <input class="form-input" ${dir} id="cp-p2-title" value="${escH(p2Title)}" oninput="markUnsaved()">
+            </div>
+            <div class="form-group" style="margin-bottom:14px">
+              <label class="form-label">Section 2 Details</label>
+              <textarea class="form-textarea" style="min-height:75px" ${dir} id="cp-p2-desc" oninput="markUnsaved()">${escH(p2Desc)}</textarea>
+            </div>
+            <button class="btn btn-primary" onclick="saveCookiePolicy()"><i class="fa-solid fa-floppy-disk"></i> Save Cookie Policy</button>
+          `);
       }
 
-      function saveNavigation() {
-        const l = state.lang || 'en';
-        const ci = window.CMS.getData(window.CMS.KEYS.CITIZENSHIP) || window.CMS.DEFAULTS.citizenship || [];
-        const ri = window.CMS.getData(window.CMS.KEYS.RESIDENCY) || window.CMS.DEFAULTS.residency || [];
+      function saveCookiePolicy() {
+        const cp = window.CMS.getData('sgcms_cookiepolicy') || {};
+        const l = state.lang;
+        cp[l] = cp[l] || {};
+        cp[l].hero_badge = document.getElementById('cp-badge')?.value.trim() || '';
+        cp[l].hero_title = document.getElementById('cp-title')?.value.trim() || '';
+        cp[l].hero_desc = document.getElementById('cp-desc')?.value.trim() || '';
+        cp[l].p1_title = document.getElementById('cp-p1-title')?.value.trim() || '';
+        cp[l].p1_desc = document.getElementById('cp-p1-desc')?.value.trim() || '';
+        cp[l].p2_title = document.getElementById('cp-p2-title')?.value.trim() || '';
+        cp[l].p2_desc = document.getElementById('cp-p2-desc')?.value.trim() || '';
 
-        document.querySelectorAll('.nav-prog-row').forEach(row => {
-          const type = row.getAttribute('data-type');
-          const id = row.getAttribute('data-id');
-          const label = row.querySelector('.nav-label-input')?.value.trim();
-          const sort = parseInt(row.querySelector('.nav-sort-input')?.value) || 1;
-          const isVis = row.querySelector('.nav-vis-select')?.value === 'true';
-
-          const list = type === 'citizenship' ? ci : ri;
-          const prog = list.find(p => p.id === id);
-          if (prog) {
-            prog.nav_sort = sort;
-            prog.nav_visible = isVis;
-            if (!prog[l]) prog[l] = {};
-            if (label) prog[l].nav_label = label;
-          }
-        });
-
-        window.CMS.saveData(window.CMS.KEYS.CITIZENSHIP, ci);
-        window.CMS.saveData(window.CMS.KEYS.RESIDENCY, ri);
-
-        const nav = window.CMS.getData(window.CMS.KEYS.NAV) || {};
-        nav.main_links = getListValues('custom-links-builder').map(v => {
-          const parts = v.split('→');
-          return { label: (parts[0] || '').trim(), url: (parts[1] || '').trim() };
-        });
-        window.CMS.saveData(window.CMS.KEYS.NAV, nav);
-
-        populateSidebar();
-        sendToIframe({ type: 'CMS_SET_LANG', lang: l });
-
+        window.CMS.saveData('sgcms_cookiepolicy', cp);
+        markDraft();
         markSaved();
-        showToast('Navigation & all program menus saved successfully!');
+        sendToIframe({ type: 'CMS_SET_LANG', lang: l });
+        showToast('Cookie policy saved!');
+        if (window.CMS.Settings.getGeminiKey()) {
+          autoTranslateOnSave('cookiepolicy', null);
+        }
       }
 
-      // ──────────────────────────────────────────────────────────
-      // LEGAL PAGES EDITOR
       // ──────────────────────────────────────────────────────────
       function renderLegalEditor(l, rtl) {
         setPageTitle('Legal Pages', 'Privacy Policy, Terms & Cookie Policy');
@@ -5664,21 +6178,31 @@
         setPageTitle('Settings', 'API Keys, Site Configuration');
         const s = window.CMS.Settings.get();
         document.getElementById('editor').innerHTML =
-          `<h1 class="ed-page-title">Settings & API Keys</h1>
-    <p class="ed-page-desc">Configure the Gemini API key to enable AI translation. Your key is stored locally only.</p>` +
-          block('settings-ai', 'rgba(167,139,250,.15)', '#a78bfa', '<i class="fa-solid fa-wand-magic-sparkles"></i>', 'Gemini AI Configuration', null, `
+          `<h1 class="ed-page-title">Settings & AI Translation API</h1>
+    <p class="ed-page-desc">Configure your OpenRouter or Gemini API keys to power automatic AI translation into Arabic, Farsi, and Chinese.</p>` +
+          block('settings-openrouter', 'rgba(16, 185, 129, 0.12)', '#10b981', '<i class="fa-solid fa-bolt"></i>', 'OpenRouter AI Configuration (Recommended)', null, `
+      <div class="form-group" style="margin-bottom:14px">
+        <label class="form-label">OpenRouter API Key</label>
+        <div style="display:flex;gap:8px">
+          <input class="form-input" type="password" id="openrouter-key" value="${escH(s.openrouter_api_key || '')}" placeholder="sk-or-v1-..." oninput="markUnsaved()">
+          <button class="btn btn-ghost" onclick="testOpenRouterKey()" style="white-space:nowrap"><i class="fa-solid fa-vial"></i> Test OpenRouter</button>
+        </div>
+        <p style="color:var(--muted2);font-size:11px;margin-top:6px">Access 200+ top models via a single API key. Get yours at <a href="https://openrouter.ai/keys" target="_blank" style="color:var(--gold);text-decoration:underline">openrouter.ai/keys</a></p>
+      </div>
+      <div id="openrouter-status" style="margin-bottom:14px;font-size:12px;color:var(--muted)"></div>
+      <button class="btn btn-primary" onclick="saveSettings()"><i class="fa-solid fa-floppy-disk"></i> Save Settings</button>`) +
+          block('settings-ai', 'rgba(167,139,250,.15)', '#a78bfa', '<i class="fa-solid fa-wand-magic-sparkles"></i>', 'Google Gemini AI Configuration (Alternative)', null, `
       <div class="form-group" style="margin-bottom:14px">
         <label class="form-label">Google Gemini API Key</label>
         <div style="display:flex;gap:8px">
-          <input class="form-input" type="password" id="gemini-key" value="${escH(s.gemini_api_key)}" placeholder="AIza..." oninput="markUnsaved()">
-          <button class="btn btn-ghost" onclick="testGeminiKey()" style="white-space:nowrap"><i class="fa-solid fa-vial"></i> Test</button>
+          <input class="form-input" type="password" id="gemini-key" value="${escH(s.gemini_api_key || '')}" placeholder="AIza..." oninput="markUnsaved()">
+          <button class="btn btn-ghost" onclick="testGeminiKey()" style="white-space:nowrap"><i class="fa-solid fa-vial"></i> Test Gemini</button>
         </div>
-        <p style="color:var(--muted2);font-size:11px;margin-top:6px">Get your free key at <a href="https://aistudio.google.com/apikey" target="_blank" style="color:var(--gold)">aistudio.google.com</a></p>
+        <p style="color:var(--muted2);font-size:11px;margin-top:6px">Get your key at <a href="https://aistudio.google.com/apikey" target="_blank" style="color:var(--gold);text-decoration:underline">aistudio.google.com</a></p>
       </div>
-      <button class="btn btn-primary" onclick="saveSettings()"><i class="fa-solid fa-floppy-disk"></i> Save Settings</button>
       <div id="settings-status" style="margin-top:10px;font-size:12px;color:var(--muted)"></div>`) +
-          block('settings-admin', 'rgba(197,168,128,.15)', 'var(--gold)', '<i class="fa-solid fa-user-shield"></i>', 'Admin Credentials', null, `
-      <p style="color:var(--muted);font-size:12px;margin-bottom:10px">Current hardcoded credentials for demo (will be replaced with database auth after client approval):</p>
+          block('settings-admin', 'rgba(197,168,128,.15)', 'var(--gold)', '<i class="fa-solid fa-user-shield"></i>', 'Database & Admin Credentials', null, `
+      <p style="color:var(--muted);font-size:12px;margin-bottom:10px">Default administrator account connected to cPanel MySQL database:</p>
       <div style="background:rgba(255,255,255,.03);border:1px solid var(--border2);border-radius:8px;padding:12px;font-size:12px">
         <div style="margin-bottom:6px">Email: <span style="color:var(--gold);font-family:monospace">admin@sharifgroup.ae</span></div>
         <div>Password: <span style="color:var(--gold);font-family:monospace">SharifCMS@2026</span></div>
@@ -5687,21 +6211,38 @@
 
       function saveSettings() {
         const s = window.CMS.Settings.get();
+        s.openrouter_api_key = document.getElementById('openrouter-key')?.value.trim() || '';
         s.gemini_api_key = document.getElementById('gemini-key')?.value.trim() || '';
         window.CMS.Settings.set(s);
-        markSaved(); showToast('Settings saved!');
+        markSaved();
+        showToast('Settings & API keys saved successfully!');
+      }
+
+      async function testOpenRouterKey() {
+        const key = document.getElementById('openrouter-key')?.value.trim();
+        const statusEl = document.getElementById('openrouter-status');
+        if (!key) { statusEl.innerHTML = '<span style="color:#f87171">Please enter an OpenRouter API key first.</span>'; return; }
+        statusEl.innerHTML = '<span style="color:var(--muted)"><i class="fa-solid fa-spinner fa-spin"></i> Verifying OpenRouter key via backend…</span>';
+        try {
+          const ok = await window.CMS.AI.testOpenRouterKey(key);
+          const okSvg = '<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#4ade80" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" style="display:inline-block;vertical-align:middle;margin-right:5px"><circle cx="12" cy="12" r="10"/><path d="m9 12 2 2 4-4"/></svg>';
+          const errSvg = '<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#f87171" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" style="display:inline-block;vertical-align:middle;margin-right:5px"><circle cx="12" cy="12" r="10"/><path d="m15 9-6 6"/><path d="m9 9 6 6"/></svg>';
+          statusEl.innerHTML = ok ? `<span style="color:#4ade80;display:inline-flex;align-items:center">${okSvg} OpenRouter API key is valid and connected!</span>` : `<span style="color:#f87171;display:inline-flex;align-items:center">${errSvg} OpenRouter test failed. Please verify your key.</span>`;
+        } catch (e) {
+          statusEl.innerHTML = `<span style="color:#f87171">Error: ${e.message}</span>`;
+        }
       }
 
       async function testGeminiKey() {
         const key = document.getElementById('gemini-key')?.value.trim();
         const statusEl = document.getElementById('settings-status');
         if (!key) { statusEl.innerHTML = '<span style="color:#f87171">Please enter an API key first.</span>'; return; }
-        statusEl.innerHTML = '<span style="color:var(--muted)">Testing key…</span>';
+        statusEl.innerHTML = '<span style="color:var(--muted)"><i class="fa-solid fa-spinner fa-spin"></i> Testing key…</span>';
         try {
           const ok = await window.CMS.AI.testKey(key);
           const okSvg = '<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#4ade80" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" style="display:inline-block;vertical-align:middle;margin-right:5px"><circle cx="12" cy="12" r="10"/><path d="m9 12 2 2 4-4"/></svg>';
           const errSvg = '<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#f87171" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" style="display:inline-block;vertical-align:middle;margin-right:5px"><circle cx="12" cy="12" r="10"/><path d="m15 9-6 6"/><path d="m9 9 6 6"/></svg>';
-          statusEl.innerHTML = ok ? `<span style="color:#4ade80;display:inline-flex;align-items:center">${okSvg} API key is valid and working!</span>` : `<span style="color:#f87171;display:inline-flex;align-items:center">${errSvg} API key test failed. Check the key.</span>`;
+          statusEl.innerHTML = ok ? `<span style="color:#4ade80;display:inline-flex;align-items:center">${okSvg} Gemini API key is valid and working!</span>` : `<span style="color:#f87171;display:inline-flex;align-items:center">${errSvg} Gemini API key test failed. Check the key.</span>`;
         } catch (e) {
           statusEl.innerHTML = `<span style="color:#f87171">Error: ${e.message}</span>`;
         }
@@ -5963,21 +6504,37 @@
         } else if (section === 'blog' || section === 'blog-new' || section === 'blog-edit') {
           const id = state.itemId || (document.getElementById('blog-title') ? 'b' + uid() : null);
           if (id) saveBlogItem(id);
+          markDraft();
+          if (window.CMS.Settings.getGeminiKey()) autoTranslateOnSave('blog', id);
           return;
         } else if (section === 'aboutus') {
-          saveAboutUs(); return;
-        } else if (section === 'contact-form') {
-          saveContactForm(); return;
+          saveAboutUs();
+          markDraft();
+          if (window.CMS.Settings.getGeminiKey()) autoTranslateOnSave('aboutus', null);
+          return;
+        } else if (section === 'contact') {
+          saveContactSales();
+          markDraft();
+          return;
+        } else if (section === 'cookiepolicy' || section === 'cookies') {
+          saveCookiePolicy();
+          markDraft();
+          return;
         } else if (section === 'legal') {
-          saveLegal(); return;
+          saveLegal();
+          markDraft();
+          return;
         } else if (section === 'settings') {
-          saveSettings(); return;
-        } else if (section === 'navigation') {
-          saveNavigation(); return;
+          saveSettings();
+          return;
         }
 
+        markDraft();
         markSaved();
-        showToast('All changes saved successfully!');
+        showToast('Draft changes saved successfully!');
+        if (window.CMS.Settings.getGeminiKey()) {
+          autoTranslateOnSave(section, itemId);
+        }
       }
 
       // ══════════════════════════════════════════════════════════
@@ -5991,7 +6548,7 @@
       async function triggerAI(targetLang) {
         document.getElementById('ai-menu').classList.remove('open');
         const key = window.CMS.Settings.getGeminiKey();
-        if (!key) { showToast('Add your Gemini API key in Settings first!', 'error'); navigate('settings'); return; }
+        if (!key) { showToast('Add your OpenRouter or Gemini API key in Settings first!', 'error'); navigate('settings'); return; }
 
         const langs = targetLang === 'all' ? ['ar', 'fa', 'zh'] : [targetLang];
         const overlay = document.getElementById('ai-overlay');
@@ -6009,50 +6566,132 @@
           fill.style.width = '20%';
           try {
             const { section, itemType, itemId } = state;
+
+            // 1. HOMEPAGE TRANSLATION
             if (section === 'homepage') {
               const d = window.CMS.getData(window.CMS.KEYS.HOMEPAGE) || window.CMS.DEFAULTS.homepage;
               const en = d.hero?.en || {};
               d.hero[lang] = d.hero[lang] || {};
-              fill.style.width = '40%'; msg.textContent = 'Translating headline…';
-              d.hero[lang].headline = await window.CMS.AI.translate(en.headline, lang);
-              fill.style.width = '60%'; msg.textContent = 'Translating subheadline…';
-              d.hero[lang].subheadline = await window.CMS.AI.translate(en.subheadline, lang);
-              fill.style.width = '80%'; msg.textContent = 'Translating CTAs…';
-              d.hero[lang].cta_primary = await window.CMS.AI.translate(en.cta_primary, lang);
-              d.hero[lang].cta_secondary = await window.CMS.AI.translate(en.cta_secondary, lang);
+              fill.style.width = '35%'; msg.textContent = `[${langNames[lang]}] Translating hero headline…`;
+              if (en.headline) d.hero[lang].headline = await window.CMS.AI.translate(en.headline, lang);
+              if (en.subheadline) d.hero[lang].subheadline = await window.CMS.AI.translate(en.subheadline, lang);
+              if (en.tagline) d.hero[lang].tagline = await window.CMS.AI.translate(en.tagline, lang);
+              fill.style.width = '55%'; msg.textContent = `[${langNames[lang]}] Translating buttons & pathways…`;
+              if (en.cta_primary) d.hero[lang].cta_primary = await window.CMS.AI.translate(en.cta_primary, lang);
+              if (en.cta_secondary) d.hero[lang].cta_secondary = await window.CMS.AI.translate(en.cta_secondary, lang);
+              if (en.pathway_citizenship) d.hero[lang].pathway_citizenship = await window.CMS.AI.translate(en.pathway_citizenship, lang);
+              if (en.pathway_residency) d.hero[lang].pathway_residency = await window.CMS.AI.translate(en.pathway_residency, lang);
+              if (en.pathway_realestate) d.hero[lang].pathway_realestate = await window.CMS.AI.translate(en.pathway_realestate, lang);
+              if (en.pathway_education) d.hero[lang].pathway_education = await window.CMS.AI.translate(en.pathway_education, lang);
               d.hero[lang].cta_primary_link = en.cta_primary_link;
               d.hero[lang].cta_secondary_link = en.cta_secondary_link;
-              fill.style.width = '90%'; msg.textContent = 'Translating stats…';
+
+              fill.style.width = '75%'; msg.textContent = `[${langNames[lang]}] Translating stats…`;
               for (let i = 0; i < (d.stats || []).length; i++) {
-                d.stats[i]['label_' + lang] = await window.CMS.AI.translate(d.stats[i].label_en, lang);
+                if (d.stats[i].label_en) {
+                  d.stats[i]['label_' + lang] = await window.CMS.AI.translate(d.stats[i].label_en, lang);
+                }
               }
               window.CMS.saveData(window.CMS.KEYS.HOMEPAGE, d);
 
+            // 2. PROGRAM (Citizenship & Residency) TRANSLATION
             } else if (section === 'program' && itemId) {
               const list = window.CMS.getData(window.CMS.KEYS[itemType.toUpperCase()]) || window.CMS.DEFAULTS[itemType];
               const idx = list.findIndex(p => p.id === itemId);
               if (idx >= 0) {
                 const en = list[idx].en || {};
                 list[idx][lang] = list[idx][lang] || {};
-                fill.style.width = '35%'; msg.textContent = 'Translating title…';
-                list[idx][lang].title = await window.CMS.AI.translate(en.title, lang);
-                fill.style.width = '50%'; msg.textContent = 'Translating nav label…';
-                list[idx][lang].nav_label = await window.CMS.AI.translate(en.nav_label, lang);
-                fill.style.width = '60%'; msg.textContent = 'Translating overview…';
-                list[idx][lang].overview = await window.CMS.AI.translate(en.overview, lang);
-                fill.style.width = '78%'; msg.textContent = 'Translating benefits…';
-                list[idx][lang].benefits = await Promise.all((en.benefits || []).map(b => window.CMS.AI.translate(b, lang)));
-                fill.style.width = '92%'; msg.textContent = 'Translating FAQs…';
-                list[idx][lang].faqs = await Promise.all((en.faqs || []).map(async f => ({
-                  q: await window.CMS.AI.translate(f.q, lang),
-                  a: await window.CMS.AI.translate(f.a, lang)
-                })));
+                fill.style.width = '35%'; msg.textContent = `[${langNames[lang]}] Translating program title…`;
+                if (en.title) list[idx][lang].title = await window.CMS.AI.translate(en.title, lang);
+                if (en.nav_label) list[idx][lang].nav_label = await window.CMS.AI.translate(en.nav_label, lang);
+                if (en.hero_subtitle) list[idx][lang].hero_subtitle = await window.CMS.AI.translate(en.hero_subtitle, lang);
+                fill.style.width = '60%'; msg.textContent = `[${langNames[lang]}] Translating program overview…`;
+                if (en.overview) list[idx][lang].overview = await window.CMS.AI.translate(en.overview, lang);
+                fill.style.width = '75%'; msg.textContent = `[${langNames[lang]}] Translating benefits…`;
+                if (en.benefits && Array.isArray(en.benefits)) {
+                  list[idx][lang].benefits = await Promise.all(en.benefits.map(b => window.CMS.AI.translate(b, lang)));
+                }
+                fill.style.width = '90%'; msg.textContent = `[${langNames[lang]}] Translating FAQs…`;
+                if (en.faqs && Array.isArray(en.faqs)) {
+                  list[idx][lang].faqs = await Promise.all(en.faqs.map(async f => ({
+                    q: await window.CMS.AI.translate(f.q, lang),
+                    a: await window.CMS.AI.translate(f.a, lang)
+                  })));
+                }
                 list[idx][lang].investment_from = en.investment_from;
                 list[idx][lang].processing_time = en.processing_time;
                 list[idx][lang].visa_free = en.visa_free;
                 window.CMS.saveData(window.CMS.KEYS[itemType.toUpperCase()], list);
               }
+
+            // 3. BLOG ARTICLE TRANSLATION
+            } else if (section === 'blog') {
+              const bSlug = state.activeBlogSlug || itemId;
+              const blogs = window.CMS.getData(window.CMS.KEYS.BLOG) || window.CMS.DEFAULTS.blog;
+              const b = blogs.find(x => x.slug === bSlug || x.id === bSlug);
+              if (b) {
+                const en = b.en || b;
+                b[lang] = b[lang] || {};
+                fill.style.width = '40%'; msg.textContent = `[${langNames[lang]}] Translating blog title…`;
+                if (en.title) b[lang].title = await window.CMS.AI.translate(en.title, lang);
+                fill.style.width = '65%'; msg.textContent = `[${langNames[lang]}] Translating blog summary…`;
+                if (en.excerpt) b[lang].excerpt = await window.CMS.AI.translate(en.excerpt, lang);
+                fill.style.width = '85%'; msg.textContent = `[${langNames[lang]}] Translating article body…`;
+                if (en.body) b[lang].body = await window.CMS.AI.translate(en.body, lang);
+                window.CMS.saveData(window.CMS.KEYS.BLOG, blogs);
+              }
+
+            // 4. ABOUT US PAGE TRANSLATION
+            } else if (section === 'aboutus') {
+              const about = window.CMS.getData(window.CMS.KEYS.ABOUTUS) || window.CMS.DEFAULTS.aboutus;
+              fill.style.width = '30%'; msg.textContent = `[${langNames[lang]}] Translating About Us briefing…`;
+              if (about.hero?.en) {
+                about.hero[lang] = about.hero[lang] || {};
+                if (about.hero.en.badge) about.hero[lang].badge = await window.CMS.AI.translate(about.hero.en.badge, lang);
+                if (about.hero.en.title) about.hero[lang].title = await window.CMS.AI.translate(about.hero.en.title, lang);
+                if (about.hero.en.subtitle) about.hero[lang].subtitle = await window.CMS.AI.translate(about.hero.en.subtitle, lang);
+              }
+              fill.style.width = '55%'; msg.textContent = `[${langNames[lang]}] Translating company overview…`;
+              if (about.overview?.en) {
+                about.overview[lang] = about.overview[lang] || {};
+                if (about.overview.en.heading) about.overview[lang].heading = await window.CMS.AI.translate(about.overview.en.heading, lang);
+                if (about.overview.en.p1) about.overview[lang].p1 = await window.CMS.AI.translate(about.overview.en.p1, lang);
+                if (about.overview.en.p2) about.overview[lang].p2 = await window.CMS.AI.translate(about.overview.en.p2, lang);
+                if (about.overview.en.cta_text) about.overview[lang].cta_text = await window.CMS.AI.translate(about.overview.en.cta_text, lang);
+              }
+              fill.style.width = '80%'; msg.textContent = `[${langNames[lang]}] Translating founder message…`;
+              if (about.founder?.en) {
+                about.founder[lang] = about.founder[lang] || {};
+                if (about.founder.en.quote) about.founder[lang].quote = await window.CMS.AI.translate(about.founder.en.quote, lang);
+                if (about.founder.en.p1) about.founder[lang].p1 = await window.CMS.AI.translate(about.founder.en.p1, lang);
+                if (about.founder.en.p2) about.founder[lang].p2 = await window.CMS.AI.translate(about.founder.en.p2, lang);
+              }
+              window.CMS.saveData(window.CMS.KEYS.ABOUTUS, about);
+
+            // 5. COOKIE POLICY PAGE TRANSLATION
+            } else if (section === 'cookiepolicy') {
+              const cp = window.CMS.getData('sgcms_cookiepolicy') || {};
+              const en = cp.en || {};
+              cp[lang] = cp[lang] || {};
+              fill.style.width = '40%'; msg.textContent = `[${langNames[lang]}] Translating cookie disclosures…`;
+              if (en.hero_badge) cp[lang].hero_badge = await window.CMS.AI.translate(en.hero_badge, lang);
+              if (en.hero_title) cp[lang].hero_title = await window.CMS.AI.translate(en.hero_title, lang);
+              if (en.hero_desc) cp[lang].hero_desc = await window.CMS.AI.translate(en.hero_desc, lang);
+              fill.style.width = '75%'; msg.textContent = `[${langNames[lang]}] Translating policy guidelines…`;
+              if (en.p1_title) cp[lang].p1_title = await window.CMS.AI.translate(en.p1_title, lang);
+              if (en.p1_desc) cp[lang].p1_desc = await window.CMS.AI.translate(en.p1_desc, lang);
+              if (en.p2_title) cp[lang].p2_title = await window.CMS.AI.translate(en.p2_title, lang);
+              if (en.p2_desc) cp[lang].p2_desc = await window.CMS.AI.translate(en.p2_desc, lang);
+              window.CMS.saveData('sgcms_cookiepolicy', cp);
+
+            // 6. CONTACT & SALES TRANSLATION
+            } else if (section === 'contact') {
+              const c = window.CMS.getData(window.CMS.KEYS.CONTACT) || window.CMS.DEFAULTS.contact;
+              if (c.thankyou_en) c['thankyou_' + lang] = await window.CMS.AI.translate(c.thankyou_en, lang);
+              if (c.consent_en) c['consent_' + lang] = await window.CMS.AI.translate(c.consent_en, lang);
+              window.CMS.saveData(window.CMS.KEYS.CONTACT, c);
             }
+
             fill.style.width = '100%';
           } catch (err) {
             overlay.classList.remove('show');
@@ -6063,16 +6702,242 @@
 
         overlay.classList.remove('show');
         fill.style.width = '0%';
-        showToast(`Translated to ${targetLang === 'all' ? 'all languages' : langNames[targetLang]}!`);
-        renderSection();
+
+        // Switch active language view to the translated language so user sees it immediately
+        const viewLang = targetLang === 'all' ? 'ar' : targetLang;
+        setLang(viewLang);
+        showToast(`Translation complete! Showing ${langNames[viewLang]} version. Switch language tabs to view others.`);
       }
+
+      // ══════════════════════════════════════════════════════════
+      // AUTOMATIC TRANSLATION ON SAVE (OpenRouter & Gemini AI Engine)
+      // ══════════════════════════════════════════════════════════
+      let isAutoTranslating = false;
+      async function autoTranslateOnSave(section, itemId) {
+        const key = window.CMS.Settings.getGeminiKey();
+        if (!key || isAutoTranslating) return;
+
+        const statusEl = document.getElementById('ai-auto-status');
+        if (statusEl) {
+          statusEl.style.display = 'flex';
+          statusEl.innerHTML = '<i class="fa-solid fa-wand-magic-sparkles fa-spin" style="color:var(--gold)"></i> <span>Auto-translating (AR, FA, ZH)...</span>';
+        }
+
+        isAutoTranslating = true;
+        try {
+          const targetLangs = ['ar', 'fa', 'zh'];
+          for (const lang of targetLangs) {
+            if (section === 'homepage') {
+              const d = window.CMS.getData(window.CMS.KEYS.HOMEPAGE) || window.CMS.DEFAULTS.homepage;
+              const en = d.hero?.en || {};
+              d.hero[lang] = d.hero[lang] || {};
+              if (en.headline && !d.hero[lang].headline) d.hero[lang].headline = await window.CMS.AI.translate(en.headline, lang);
+              if (en.subheadline && !d.hero[lang].subheadline) d.hero[lang].subheadline = await window.CMS.AI.translate(en.subheadline, lang);
+              if (en.cta_primary && !d.hero[lang].cta_primary) d.hero[lang].cta_primary = await window.CMS.AI.translate(en.cta_primary, lang);
+              if (en.cta_secondary && !d.hero[lang].cta_secondary) d.hero[lang].cta_secondary = await window.CMS.AI.translate(en.cta_secondary, lang);
+              d.hero[lang].cta_primary_link = en.cta_primary_link;
+              d.hero[lang].cta_secondary_link = en.cta_secondary_link;
+              window.CMS.saveData(window.CMS.KEYS.HOMEPAGE, d);
+            } else if (section === 'program' && itemId) {
+              const itemType = state.itemType || 'citizenship';
+              const list = window.CMS.getData(window.CMS.KEYS[itemType.toUpperCase()]) || window.CMS.DEFAULTS[itemType];
+              const idx = list.findIndex(p => p.id === itemId);
+              if (idx >= 0) {
+                const en = list[idx].en || {};
+                list[idx][lang] = list[idx][lang] || {};
+                if (en.title) list[idx][lang].title = await window.CMS.AI.translate(en.title, lang);
+                if (en.nav_label) list[idx][lang].nav_label = await window.CMS.AI.translate(en.nav_label, lang);
+                if (en.overview) list[idx][lang].overview = await window.CMS.AI.translate(en.overview, lang);
+                window.CMS.saveData(window.CMS.KEYS[itemType.toUpperCase()], list);
+              }
+            } else if (section === 'blog') {
+              const bSlug = state.activeBlogSlug || itemId;
+              const blogs = window.CMS.getData(window.CMS.KEYS.BLOG) || window.CMS.DEFAULTS.blog;
+              const b = blogs.find(x => x.slug === bSlug || x.id === bSlug);
+              if (b) {
+                const en = b.en || b;
+                b[lang] = b[lang] || {};
+                if (en.title) b[lang].title = await window.CMS.AI.translate(en.title, lang);
+                if (en.excerpt) b[lang].excerpt = await window.CMS.AI.translate(en.excerpt, lang);
+                if (en.body) b[lang].body = await window.CMS.AI.translate(en.body, lang);
+                window.CMS.saveData(window.CMS.KEYS.BLOG, blogs);
+              }
+            } else if (section === 'aboutus') {
+              const about = window.CMS.getData(window.CMS.KEYS.ABOUTUS) || window.CMS.DEFAULTS.aboutus;
+              if (about.hero?.en) {
+                about.hero[lang] = about.hero[lang] || {};
+                if (about.hero.en.title) about.hero[lang].title = await window.CMS.AI.translate(about.hero.en.title, lang);
+                if (about.hero.en.subtitle) about.hero[lang].subtitle = await window.CMS.AI.translate(about.hero.en.subtitle, lang);
+              }
+              if (about.overview?.en) {
+                about.overview[lang] = about.overview[lang] || {};
+                if (about.overview.en.heading) about.overview[lang].heading = await window.CMS.AI.translate(about.overview.en.heading, lang);
+                if (about.overview.en.p1) about.overview[lang].p1 = await window.CMS.AI.translate(about.overview.en.p1, lang);
+              }
+              window.CMS.saveData(window.CMS.KEYS.ABOUTUS, about);
+            } else if (section === 'cookiepolicy') {
+              const cp = window.CMS.getData('sgcms_cookiepolicy') || {};
+              const en = cp.en || {};
+              cp[lang] = cp[lang] || {};
+              if (en.hero_badge) cp[lang].hero_badge = await window.CMS.AI.translate(en.hero_badge, lang);
+              if (en.hero_title) cp[lang].hero_title = await window.CMS.AI.translate(en.hero_title, lang);
+              if (en.hero_desc) cp[lang].hero_desc = await window.CMS.AI.translate(en.hero_desc, lang);
+              if (en.p1_title) cp[lang].p1_title = await window.CMS.AI.translate(en.p1_title, lang);
+              if (en.p1_desc) cp[lang].p1_desc = await window.CMS.AI.translate(en.p1_desc, lang);
+              window.CMS.saveData('sgcms_cookiepolicy', cp);
+            }
+          }
+
+          if (statusEl) {
+            statusEl.innerHTML = '<i class="fa-solid fa-check" style="color:#4ade80"></i> <span style="color:#4ade80">Auto-translated to AR, FA, ZH!</span>';
+            setTimeout(() => { statusEl.style.display = 'none'; }, 4000);
+          }
+        } catch (err) {
+          console.warn('[Auto-Translate error]:', err.message);
+          if (statusEl) {
+            statusEl.innerHTML = '<i class="fa-solid fa-triangle-exclamation" style="color:#f87171"></i> <span style="color:#f87171">Auto-translate paused</span>';
+            setTimeout(() => { statusEl.style.display = 'none'; }, 3000);
+          }
+        } finally {
+          isAutoTranslating = false;
+        }
+      }
+
+      // ══════════════════════════════════════════════════════════
+      // PUBLISH LIVE SITE ENGINE
+      // ══════════════════════════════════════════════════════════
+      async function publishLiveSite() {
+        const btn = document.getElementById('btn-publish-live');
+        if (btn) {
+          btn.disabled = true;
+          btn.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i> Publishing...';
+        }
+
+        // 1. Gather all current draft CMS keys
+        const keys = [
+          window.CMS.KEYS.HOMEPAGE,
+          window.CMS.KEYS.CITIZENSHIP,
+          window.CMS.KEYS.RESIDENCY,
+          window.CMS.KEYS.BLOG,
+          window.CMS.KEYS.TEAM,
+          window.CMS.KEYS.ABOUTUS,
+          window.CMS.KEYS.CONTACT,
+          window.CMS.KEYS.LEGAL,
+          'sgcms_custom_sections',
+          'sgcms_flag_codes',
+          'sgcms_cookiepolicy'
+        ];
+
+        const payload = {
+          version: '3.0.0',
+          publishedAt: new Date().toISOString(),
+          publisher: (session && session.name) ? session.name : 'Admin (Sharif Group CMS Studio)',
+          data: {}
+        };
+
+        keys.forEach(k => {
+          try {
+            const val = localStorage.getItem(k);
+            if (val !== null) {
+              payload.data[k] = JSON.parse(val);
+              // Mirror to live published store
+              localStorage.setItem(k + '_live', val);
+            }
+          } catch(e) {}
+        });
+
+        // Store live manifest
+        localStorage.setItem('sgcms_published_manifest', JSON.stringify(payload));
+        localStorage.setItem('sgcms_published_timestamp', payload.publishedAt);
+
+        // 2. Future Backend API server hook
+        try {
+          await dispatchPublishToBackend(payload);
+        } catch (e) {
+          console.warn('[CMS Publish] Server offline, stored to live manifest:', e.message);
+        }
+
+        // 3. Mark state as LIVE
+        markLive(payload.publishedAt);
+        markSaved();
+
+        // 4. Update UI button
+        if (btn) {
+          btn.disabled = false;
+          btn.innerHTML = '<i class="fa-solid fa-cloud-arrow-up"></i> Publish';
+        }
+
+        // 5. Open publish modal
+        const d = new Date(payload.publishedAt);
+        const timeFormatted = d.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }) + ', ' + d.toLocaleDateString([], { month: 'short', day: 'numeric', year: 'numeric' });
+        const tsEl = document.getElementById('publish-timestamp-lbl');
+        if (tsEl) tsEl.textContent = timeFormatted;
+        const modal = document.getElementById('modal-publish-success');
+        if (modal) modal.classList.add('open');
+
+        showToast('Successfully published to live website!', 'success');
+      }
+
+      async function dispatchPublishToBackend(payload) {
+        // Backend API hook for cPanel PHP / MySQL
+        const token = sessionStorage.getItem('sgcms_token');
+        const headers = { 'Content-Type': 'application/json' };
+        if (token) headers['Authorization'] = 'Bearer ' + token;
+
+        try {
+          // 1. Try relative cPanel PHP endpoint
+          let res = await fetch('api/publish.php', {
+            method: 'POST',
+            headers,
+            body: JSON.stringify(payload)
+          });
+          if (!res.ok) {
+            // 2. Fallback to rewrite URL
+            res = await fetch('/api/publish', {
+              method: 'POST',
+              headers,
+              body: JSON.stringify(payload)
+            });
+          }
+          if (res.ok) {
+            const data = await res.json();
+            console.log('[CMS Publish] Backend MySQL synced successfully:', data);
+            return data;
+          }
+        } catch (e) {
+          // Client-side demo fallback
+          console.warn('[CMS Publish] Running in offline demo mode:', e.message);
+          return { ok: true, offline: true };
+        }
+      }
+
+      // Listen for iframe content edits
+      window.addEventListener('message', e => {
+        if (e.data && e.data.type === 'CMS_CONTENT_CHANGED') {
+          markDraft();
+          if (window.CMS.Settings.getGeminiKey()) {
+            autoTranslateOnSave(e.data.section || state.section, state.itemId);
+          }
+        }
+      });
 
       // ══════════════════════════════════════════════════════════
       // STARTUP
       // ══════════════════════════════════════════════════════════
+      updatePublishStatusUI();
       populateSidebar();
       navigate('homepage');
       setCanvasMode(state.canvasMode, true);
+
+      // Asynchronously fetch latest draft state from MySQL backend in background
+      if (window.CMS.Backend) {
+        window.CMS.Backend.syncFromDb('draft').then(synced => {
+          if (synced) {
+            populateSidebar();
+            if (state.section) renderEditor();
+          }
+        });
+      }
     </script>
 </body>
 

@@ -12,21 +12,59 @@
 (function () {
   'use strict';
 
-  const params = new URLSearchParams(window.location.search);
-  const isEditor = params.get('cms_editor') === '1';
-  const isPreview = params.get('cms_preview') === '1' || isEditor;
-  if (!isPreview) return;
-
-  let _isSyncingLang = false;
-
   // ── Storage Helpers ─────────────────────────────────────
   function store(key) {
-    try { return JSON.parse(localStorage.getItem(key)); } catch { return null; }
+    try {
+      if (!isEditor) {
+        const live = localStorage.getItem(key + '_live');
+        if (live !== null) return JSON.parse(live);
+      }
+      return JSON.parse(localStorage.getItem(key));
+    } catch { return null; }
   }
 
   function saveStore(key, data) {
     try { localStorage.setItem(key, JSON.stringify(data)); } catch(e) {}
   }
+
+  const params = new URLSearchParams(window.location.search);
+  const isEditor = params.get('cms_editor') === '1';
+  const isPreview = params.get('cms_preview') === '1' || isEditor;
+  const hasCmsData = Boolean(store('sgcms_citizenship') || store('sgcms_residency') || store('sgcms_homepage') || store('sgcms_blog'));
+
+  async function syncLiveFromBackend() {
+    try {
+      const candidates = [
+        '/admin/api/content.php?mode=live',
+        '../admin/api/content.php?mode=live',
+        'admin/api/content.php?mode=live',
+        'api/content.php?mode=live'
+      ];
+      for (const url of candidates) {
+        try {
+          const res = await fetch(url);
+          if (res.ok) {
+            const json = await res.json();
+            if (json && json.success && json.data) {
+              for (const k in json.data) {
+                localStorage.setItem(k + '_live', JSON.stringify(json.data[k]));
+              }
+              runHydration();
+              break;
+            }
+          }
+        } catch(e) {}
+      }
+    } catch(e) {}
+  }
+
+  if (!isPreview && !hasCmsData) {
+    // If first-time visit without local cache, sync from backend
+    syncLiveFromBackend();
+    return;
+  }
+
+  let _isSyncingLang = false;
 
   function getLang() {
     return document.documentElement.lang?.split('-')[0] || localStorage.getItem('sharif_lang') || 'en';
@@ -576,7 +614,7 @@
         updated: b.publish_date || '',
         image: b.featured_img || 'https://sharifgroup.ae/wp-content/uploads/2026/05/dubai-office-2.jpg.webp',
         content: ld.body || `<p>${ld.excerpt || ''}</p>`,
-        faqs: []
+        faqs: b.faqs || ld.faqs || (b.en && b.en.faqs) || []
       };
       window.articlesDatabase[slug] = articleData;
       window.articlesDatabase[b.id] = articleData;
@@ -668,61 +706,206 @@
     }
   }
 
+  const escH = s => String(s || '').replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;');
+
+  function getPathPrefix() {
+    const path = window.location.pathname.replace(/\\/g, '/');
+    if (path.includes('/programs/')) return '../../../';
+    if (path.includes('/citizenshipbyinvestment/') || path.includes('/residencybyinvestment/') || path.includes('/blog/') || path.includes('/aboutus/') || path.includes('/contact/') || path.includes('/realestate/') || path.includes('/educationaladvisory/') || path.includes('/privacypolicy/') || path.includes('/socialresponsibility/') || path.includes('/ali-sharif/')) {
+      return '../';
+    }
+    return '';
+  }
+
+  function getCategorySections(type, programs) {
+    const defaults = type === 'citizenship'
+      ? [
+        { key: 'caribbean', label: 'Caribbean' },
+        { key: 'global', label: 'Global' },
+        { key: 'european', label: 'European' }
+      ]
+      : [
+        { key: 'european', label: 'European' },
+        { key: 'uae', label: 'UAE & Americas' },
+        { key: 'global', label: 'Global' }
+      ];
+    let custom = [];
+    try {
+      custom = JSON.parse(localStorage.getItem('sgcms_sections_' + type)) || [];
+    } catch (e) { }
+
+    const fromProgs = [];
+    (programs || []).forEach(p => {
+      const port = (p.portfolio || '').toLowerCase();
+      if (port && !defaults.some(d => d.key === port) && !custom.some(c => c.key === port) && !fromProgs.some(f => f.key === port)) {
+        const label = p.portfolio_label || (port.charAt(0).toUpperCase() + port.slice(1));
+        fromProgs.push({ key: port, label });
+      }
+    });
+
+    return [...defaults, ...custom, ...fromProgs];
+  }
+
+  const KNOWN_PROGRAM_PATHS = {
+    dominica: 'programs/citizenshipbyinvestment/dominica/index.html',
+    stkitts: 'programs/citizenshipbyinvestment/stkittis/index.html',
+    antigua: 'programs/citizenshipbyinvestment/antiguaandbarbuda/index.html',
+    stlucia: 'programs/citizenshipbyinvestment/stlucia/index.html',
+    grenada: 'programs/citizenshipbyinvestment/greneda/index.html',
+    vanuatu: 'programs/citizenshipbyinvestment/vanuatu/index.html',
+    saotome: 'programs/citizenshipbyinvestment/sãotoméandpríncipe/index.html',
+    nauru: 'programs/citizenshipbyinvestment/nauru/index.html',
+    portugal: 'programs/residencybyinvestment/portugal/index.html',
+    greece: 'programs/residencybyinvestment/greece/index.html',
+    panama: 'programs/residencybyinvestment/panama/index.html',
+    uae: 'programs/residencybyinvestment/uae/index.html'
+  };
+
+  const BUILTIN_FLAG_CODES = {
+    dominica: 'dm', stkitts: 'kn', antigua: 'ag', stlucia: 'lc', grenada: 'gd',
+    vanuatu: 'vu', saotome: 'st', nauru: 'nr', portugal: 'pt', greece: 'gr',
+    panama: 'pa', uae: 'ae'
+  };
+
+  function getProgramUrl(prog, type, prefix) {
+    if (KNOWN_PROGRAM_PATHS[prog.id]) {
+      return prefix + KNOWN_PROGRAM_PATHS[prog.id];
+    }
+    const base = type === 'residency'
+      ? 'programs/residencybyinvestment/portugal/index.html'
+      : 'programs/citizenshipbyinvestment/dominica/index.html';
+    return prefix + base + '?program_id=' + encodeURIComponent(prog.id);
+  }
+
+  function getProgramFlag(prog, prefix) {
+    if (prog.flag && prog.flag.trim()) {
+      return prog.flag;
+    }
+    const code = prog.flag_code || BUILTIN_FLAG_CODES[prog.id];
+    if (code) {
+      return `https://flagcdn.com/${code}.svg`;
+    }
+    return prefix + 'assets/images/citizenship-passport_35b3b6.webp';
+  }
+
+  function renderMegaMenu(menuEl, type, programs, sections, prefix, l) {
+    if (!menuEl) return;
+    const gridWrap = menuEl.querySelector('.max-w-7xl');
+    if (!gridWrap) return;
+
+    const isCitizenship = (type === 'citizenship');
+    const allUrl = prefix + (isCitizenship ? 'citizenshipbyinvestment/index.html' : 'residencybyinvestment/index.html');
+    const allLabel = isCitizenship ? 'All Citizenship Programs' : 'All Residency Programs';
+    const titleLabel = isCitizenship ? 'Citizenship By Investment' : 'Residency By Investment';
+
+    // Filter sections that have active published programs or are custom-added
+    const activeSections = sections.filter(sec => {
+      return programs.some(p => (p.portfolio || '').toLowerCase() === sec.key.toLowerCase());
+    });
+    const secsToRender = activeSections.length ? activeSections : sections;
+    const numCols = Math.max(1, Math.min(4, secsToRender.length));
+
+    let columnsHtml = secsToRender.map(sec => {
+      const secProgs = programs.filter(p => (p.portfolio || '').toLowerCase() === sec.key.toLowerCase() && p.nav_visible !== false)
+        .sort((a, b) => (a.nav_sort || 0) - (b.nav_sort || 0));
+
+      const secLabel = escH(sec.label || sec.key.charAt(0).toUpperCase() + sec.key.slice(1));
+
+      const itemsHtml = secProgs.map(p => {
+        const pLabel = escH((p[l]?.nav_label || p.en?.nav_label || p.en?.title || p.name || p.id).trim());
+        const pUrl = getProgramUrl(p, type, prefix);
+        const flagImg = getProgramFlag(p, prefix);
+
+        return `
+          <li class="flex items-center group">
+            <div class="flex items-center space-x-3">
+              <img alt="${pLabel}" class="w-12 h-8 object-cover rounded-sm border border-neutral-200 shadow-sm flex-shrink-0" src="${flagImg}" onerror="this.style.display='none'" loading="lazy" decoding="async"/>
+              <a class="text-[11px] font-bold tracking-[0.18em] uppercase text-neutral-700 group-hover:text-luxury-gold transition" href="${pUrl}">${pLabel}</a>
+            </div>
+          </li>
+        `;
+      }).join('');
+
+      return `
+        <div class="px-4">
+          <h4 class="text-[11px] font-bold tracking-[0.18em] uppercase text-luxury-gold mb-6 text-center lg:text-left">${secLabel} Portfolios</h4>
+          <ul class="space-y-4">
+            ${itemsHtml || '<li class="text-xs text-neutral-400">No programs yet</li>'}
+          </ul>
+        </div>
+      `;
+    }).join('');
+
+    gridWrap.innerHTML = `
+      <div class="col-span-3 flex flex-col items-center justify-center text-center pr-4 border-r border-neutral-200">
+        <h3 class="font-serif text-3xl text-neutral-900 font-bold leading-tight mb-4">${titleLabel}</h3>
+        <a class="px-4 py-1.5 border border-neutral-400 text-[11px] font-bold tracking-[0.18em] uppercase rounded-full hover:bg-luxury-dark hover:text-white transition whitespace-nowrap" href="${allUrl}" onclick="if(typeof closeAllMegaMenus==='function')closeAllMegaMenus()">${allLabel}</a>
+      </div>
+      <div class="col-span-9 grid gap-6" style="grid-template-columns: repeat(${numCols}, minmax(0, 1fr));">
+        ${columnsHtml}
+      </div>
+    `;
+  }
+
+  function renderMobileSubmenu(mobUl, type, programs, prefix, l) {
+    if (!mobUl) return;
+    const isCitizenship = (type === 'citizenship');
+    const allUrl = prefix + (isCitizenship ? 'citizenshipbyinvestment/index.html' : 'residencybyinvestment/index.html');
+    const allLabel = isCitizenship ? 'All Citizenship Programs' : 'All Residency Programs';
+
+    const visibleProgs = programs.filter(p => p.nav_visible !== false)
+      .sort((a, b) => (a.nav_sort || 0) - (b.nav_sort || 0));
+
+    const itemsHtml = visibleProgs.map(p => {
+      const pLabel = escH((p[l]?.nav_label || p.en?.nav_label || p.en?.title || p.name || p.id).trim());
+      const pUrl = getProgramUrl(p, type, prefix);
+      return `<li><a class="block hover:text-luxury-gold" href="${pUrl}" onclick="if(typeof toggleMobileMenu==='function')toggleMobileMenu()">${pLabel}</a></li>`;
+    }).join('');
+
+    mobUl.innerHTML = `
+      <li><a class="block font-bold hover:text-luxury-gold" href="${allUrl}" onclick="if(typeof toggleMobileMenu==='function')toggleMobileMenu()">${allLabel}</a></li>
+      ${itemsHtml}
+    `;
+  }
+
   function hydrateNavigation(lang) {
     const l = lang || getLang();
-    const ci = store('sgcms_citizenship');
-    const ri = store('sgcms_residency');
+    const prefix = getPathPrefix();
 
-    function updateMenuLinks(programs, type) {
-      if (!Array.isArray(programs)) return;
-      programs.forEach(p => {
-        if (!p || !p.id) return;
-        const aliases = [p.id, p.slug];
-        if (p.id === 'stkitts') aliases.push('stkittis');
-        if (p.id === 'grenada') aliases.push('greneda');
-        if (p.id === 'antigua') aliases.push('antiguaandbarbuda');
-        if (p.id === 'saotome') aliases.push('sãotoméandpríncipe', 'sao-tome');
+    let ci = store('sgcms_citizenship');
+    let ri = store('sgcms_residency');
 
-        const label = (p[l]?.nav_label || p.en?.nav_label || p.en?.title || '').trim();
-        const isVisible = p.nav_visible !== false;
+    const DEFAULT_CITIZENSHIP = [
+      { id: 'dominica', slug: 'dominica', name: 'Dominica', portfolio: 'caribbean', en: { nav_label: 'Dominica | Passport' } },
+      { id: 'stkitts', slug: 'stkittis', name: 'St. Kitts & Nevis', portfolio: 'caribbean', en: { nav_label: 'St. Kitts & Nevis | Passport' } },
+      { id: 'antigua', slug: 'antiguaandbarbuda', name: 'Antigua & Barbuda', portfolio: 'caribbean', en: { nav_label: 'Antigua & Barbuda | Passport' } },
+      { id: 'stlucia', slug: 'stlucia', name: 'Saint Lucia', portfolio: 'caribbean', en: { nav_label: 'Saint Lucia | Passport' } },
+      { id: 'grenada', slug: 'greneda', name: 'Grenada', portfolio: 'caribbean', en: { nav_label: 'Grenada | Passport' } },
+      { id: 'vanuatu', slug: 'vanuatu', name: 'Vanuatu', portfolio: 'global', en: { nav_label: 'Vanuatu | Passport' } },
+      { id: 'saotome', slug: 'sãotoméandpríncipe', name: 'São Tomé and Príncipe', portfolio: 'global', en: { nav_label: 'São Tomé and Príncipe | Passport' } },
+      { id: 'nauru', slug: 'nauru', name: 'Republic of Nauru', portfolio: 'global', en: { nav_label: 'Republic of Nauru | Passport' } }
+    ];
 
-        document.querySelectorAll('a[href]').forEach(a => {
-          const href = a.getAttribute('href') || '';
-          const matches = aliases.some(alias => href.toLowerCase().includes('/' + alias.toLowerCase() + '/') || href.toLowerCase().endsWith('/' + alias.toLowerCase()) || href.toLowerCase().includes(alias.toLowerCase() + '.html'));
-          if (matches && (href.includes(type) || href.includes('programs'))) {
-            const li = a.closest('li');
-            if (li) {
-              li.style.display = isVisible ? '' : 'none';
-            } else {
-              a.style.display = isVisible ? '' : 'none';
-            }
-            if (label) {
-              const textSpan = a.querySelector('[data-i18n], span, font') || a;
-              if (textSpan && textSpan.children.length === 0) {
-                textSpan.textContent = label;
-              }
-            }
-          }
-        });
-      });
-    }
+    const DEFAULT_RESIDENCY = [
+      { id: 'portugal', slug: 'portugal', name: 'Portugal', portfolio: 'european', en: { nav_label: 'Portugal | Golden Visa' } },
+      { id: 'greece', slug: 'greece', name: 'Greece', portfolio: 'european', en: { nav_label: 'Greece | Golden Visa' } },
+      { id: 'panama', slug: 'panama', name: 'Panama', portfolio: 'uae', en: { nav_label: 'Panama | Golden Visa' } },
+      { id: 'uae', slug: 'uae', name: 'United Arab Emirates', portfolio: 'uae', en: { nav_label: 'United Arab Emirates | Golden Visa' } }
+    ];
 
-    if (ci) {
-      updateMenuLinks(ci, 'citizenship');
-      const ciMenuEl = document.querySelector('[data-cms-nav="citizenship"]');
-      if (ciMenuEl) {
-        const visible = ci.filter(p => p.nav_visible && p.status === 'published').sort((a,b)=>(a.nav_sort||0)-(b.nav_sort||0));
-        ciMenuEl.innerHTML = visible.map(p => `<a href="programs/citizenshipbyinvestment/${p.slug || p.id}/index.html" class="mega-menu-item">${(p[l]?.nav_label || p.en?.nav_label || p.en?.title || '').trim()}</a>`).join('');
-      }
-    }
-    if (ri) {
-      updateMenuLinks(ri, 'residency');
-      const riMenuEl = document.querySelector('[data-cms-nav="residency"]');
-      if (riMenuEl) {
-        const visible = ri.filter(p => p.nav_visible && p.status === 'published').sort((a,b)=>(a.nav_sort||0)-(b.nav_sort||0));
-        riMenuEl.innerHTML = visible.map(p => `<a href="programs/residencybyinvestment/${p.slug || p.id}/index.html" class="mega-menu-item">${(p[l]?.nav_label || p.en?.nav_label || p.en?.title || '').trim()}</a>`).join('');
-      }
-    }
+    const ciList = Array.isArray(ci) && ci.length ? ci : DEFAULT_CITIZENSHIP;
+    const riList = Array.isArray(ri) && ri.length ? ri : DEFAULT_RESIDENCY;
+
+    const ciSections = getCategorySections('citizenship', ciList);
+    const riSections = getCategorySections('residency', riList);
+
+    // 1. Render Desktop Mega-Menus
+    renderMegaMenu(document.getElementById('citizenship-menu'), 'citizenship', ciList, ciSections, prefix, l);
+    renderMegaMenu(document.getElementById('residency-menu'), 'residency', riList, riSections, prefix, l);
+
+    // 2. Render Mobile Submenus
+    renderMobileSubmenu(document.getElementById('mob-cbi'), 'citizenship', ciList, prefix, l);
+    renderMobileSubmenu(document.getElementById('mob-rbi'), 'residency', riList, prefix, l);
   }
 
   function hydrateAboutUs(lang) {
@@ -805,12 +988,79 @@
     if (cta.btn_text) setText('[data-i18n="pages.aboutUs.about_cta_item4"]', cta.btn_text);
   }
 
+  function hydrateContact(lang) {
+    const data = store('sgcms_contact');
+    if (!data) return;
+    const l = lang || getLang();
+
+    const genEmail = data.general_email || data.form_recipient;
+    const salesEmail = data.sales_email || genEmail;
+    const phone = data.phone;
+    const wa = data.whatsapp;
+    const addr = data.address;
+    const hours = data.hours;
+
+    if (phone) {
+      document.querySelectorAll('a[href^="tel:"]').forEach(a => {
+        a.textContent = phone;
+        a.href = 'tel:' + phone.replace(/\s+/g, '');
+      });
+      setText('[data-i18n="pages.contact.telVal"]', phone);
+    }
+
+    if (wa) {
+      document.querySelectorAll('a[href*="wa.me"]').forEach(a => {
+        a.href = 'https://wa.me/' + wa.replace(/\D/g, '');
+      });
+    }
+
+    if (genEmail) {
+      document.querySelectorAll('a[href^="mailto:"]').forEach(a => {
+        if (!a.href.includes('sales')) {
+          a.textContent = genEmail;
+          a.href = 'mailto:' + genEmail;
+        }
+      });
+      setText('[data-i18n="pages.contact.emailVal"]', genEmail);
+    }
+
+    if (salesEmail) {
+      document.querySelectorAll('.sales-email, [data-cms="contact-sales-email"]').forEach(el => {
+        el.textContent = salesEmail;
+        if (el.tagName === 'A') el.href = 'mailto:' + salesEmail;
+      });
+    }
+
+    if (addr) setText('[data-i18n="pages.contact.addressVal"]', addr);
+    if (hours) setText('[data-i18n="pages.contact.hoursVal"]', hours);
+  }
+
+  function hydrateCookiePolicy(lang) {
+    const data = store('sgcms_cookiepolicy');
+    if (!data) return;
+    const l = lang || getLang();
+    const d = data[l] || data.en || data;
+
+    if (d.hero_badge) setText('[data-i18n="pages.cookiePolicy.heroBadge"]', d.hero_badge);
+    if (d.hero_title) setText('[data-i18n="pages.cookiePolicy.heroTitle"], [data-i18n="footer.cookiePolicy"]', d.hero_title);
+    if (d.hero_desc) setText('[data-i18n="pages.cookiePolicy.heroDesc"]', d.hero_desc);
+
+    if (d.p1_title) {
+      const el = document.querySelector('#sec-cookie-content h4, .cookie-p1-title');
+      if (el) el.textContent = d.p1_title;
+    }
+    if (d.p1_desc) {
+      const el = document.querySelector('#sec-cookie-content p, .cookie-p1-desc');
+      if (el) el.textContent = d.p1_desc;
+    }
+  }
+
   function runHydration(lang) {
     const l = lang || getLang();
     const path = window.location.pathname.toLowerCase();
     hydrateNavigation(l);
 
-    const isNonHome = path.includes('/citizenship') || path.includes('/residency') || path.includes('/programs') || path.includes('/about') || path.includes('/contact') || path.includes('/blog') || path.includes('/admin');
+    const isNonHome = path.includes('/citizenship') || path.includes('/residency') || path.includes('/programs') || path.includes('/about') || path.includes('/contact') || path.includes('/blog') || path.includes('/admin') || path.includes('/cookie');
 
     if (!isNonHome) {
       hydrateHomepage(l);
@@ -822,6 +1072,10 @@
       hydrateAboutUs(l);
     } else if (path.includes('blog')) {
       hydrateBlog(l);
+    } else if (path.includes('contact')) {
+      hydrateContact(l);
+    } else if (path.includes('cookie')) {
+      hydrateCookiePolicy(l);
     }
 
     // Apply any arbitrary saved DOM overrides for this page & language
@@ -1031,6 +1285,95 @@
     `;
     document.body.appendChild(toolbar);
 
+    // Image Picker Popover
+    const imagePopover = document.createElement('div');
+    imagePopover.id = 'cms-image-popover';
+    imagePopover.style.cssText = `
+      position: fixed; z-index: 1000001; display: none; background: #181818;
+      border: 1px solid #C5A880; border-radius: 12px; padding: 12px;
+      box-shadow: 0 16px 40px rgba(0,0,0,0.85); font-family: 'Inter', sans-serif;
+      width: 310px; color: #fff; user-select: none;
+    `;
+    imagePopover.innerHTML = `
+      <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:8px">
+        <span style="font-size:11px;font-weight:700;color:#C5A880;text-transform:uppercase;letter-spacing:.05em">Replace Image</span>
+        <button type="button" id="cip-close-btn" style="background:none;border:none;color:#94a3b8;cursor:pointer;font-size:16px">&times;</button>
+      </div>
+      <div style="font-size:10px;color:#94a3b8;margin-bottom:6px">Quick Luxury Presets:</div>
+      <div style="display:grid;grid-template-columns:repeat(4,1fr);gap:6px;margin-bottom:10px" id="cip-presets">
+        <img class="cip-preset-img" data-src="../assets/images/dubai-office-2.webp" src="../assets/images/dubai-office-2.webp" title="Dubai HQ" style="width:100%;height:46px;object-fit:cover;border-radius:6px;cursor:pointer;border:1px solid #333">
+        <img class="cip-preset-img" data-src="../assets/images/Dominica-Americas-Hu_10e82c.webp" src="../assets/images/Dominica-Americas-Hu_10e82c.webp" title="Caribbean" style="width:100%;height:46px;object-fit:cover;border-radius:6px;cursor:pointer;border:1px solid #333">
+        <img class="cip-preset-img" data-src="../assets/images/portugal-golden-vsa_47319a.webp" src="../assets/images/portugal-golden-vsa_47319a.webp" title="Europe" style="width:100%;height:46px;object-fit:cover;border-radius:6px;cursor:pointer;border:1px solid #333">
+        <img class="cip-preset-img" data-src="../assets/images/isdubairealestateago_3194a5.webp" src="../assets/images/isdubairealestateago_3194a5.webp" title="Real Estate" style="width:100%;height:46px;object-fit:cover;border-radius:6px;cursor:pointer;border:1px solid #333">
+      </div>
+      <div style="font-size:10px;color:#94a3b8;margin-bottom:4px">Or Paste Custom Image URL:</div>
+      <div style="display:flex;gap:6px">
+        <input type="text" id="cip-url-input" placeholder="https://images.unsplash.com/..." style="flex:1;background:#262626;border:1px solid #C5A880;color:#fff;font-size:11px;padding:6px 8px;border-radius:6px;outline:none">
+        <button type="button" id="cip-apply-btn" style="background:linear-gradient(135deg,#C5A880,#B3946B);border:none;color:#0A0A0A;font-size:11px;font-weight:700;padding:6px 12px;border-radius:6px;cursor:pointer">Apply</button>
+      </div>
+    `;
+    document.body.appendChild(imagePopover);
+
+    let activeImgEl = null;
+
+    function openImagePickerPopover(imgEl) {
+      activeImgEl = imgEl;
+      const rect = imgEl.getBoundingClientRect();
+      const popW = 310;
+      let left = rect.left + window.scrollX + (rect.width / 2) - (popW / 2);
+      let top = rect.top + window.scrollY + 20;
+
+      left = Math.max(10, Math.min(window.innerWidth - popW - 10, left));
+      top = Math.max(10, top);
+
+      imagePopover.style.left = left + 'px';
+      imagePopover.style.top = top + 'px';
+      imagePopover.style.display = 'block';
+
+      const input = imagePopover.querySelector('#cip-url-input');
+      input.value = imgEl.src || '';
+      input.focus();
+    }
+
+    imagePopover.querySelector('#cip-close-btn').addEventListener('click', () => {
+      imagePopover.style.display = 'none';
+      activeImgEl = null;
+    });
+
+    function applyNewImage(newSrc) {
+      if (!activeImgEl || !newSrc) return;
+      activeImgEl.src = newSrc;
+      imagePopover.style.display = 'none';
+      flashToast('Image updated!');
+
+      const path = window.location.pathname.toLowerCase();
+      if (path.includes('blog')) {
+        const blogs = store('sgcms_blog') || [];
+        const currentSlug = window.currentActiveArticleSlug || extractSlug();
+        const bIdx = blogs.findIndex(b => b.slug === currentSlug || b.id === currentSlug || (b.en && b.en.slug === currentSlug));
+        if (bIdx >= 0) {
+          blogs[bIdx].featured_img = newSrc;
+          saveStore('sgcms_blog', blogs);
+        }
+      }
+
+      if (window.parent && window.parent !== window) {
+        window.parent.postMessage({ type: 'CMS_INLINE_SAVED', selector: 'image', src: newSrc }, '*');
+      }
+      activeImgEl = null;
+    }
+
+    imagePopover.querySelectorAll('.cip-preset-img').forEach(pImg => {
+      pImg.addEventListener('click', () => {
+        applyNewImage(pImg.getAttribute('data-src'));
+      });
+    });
+
+    imagePopover.querySelector('#cip-apply-btn').addEventListener('click', () => {
+      const val = imagePopover.querySelector('#cip-url-input').value.trim();
+      if (val) applyNewImage(val);
+    });
+
     let activeEl = null;
     let originalText = '';
     let hoveredEl = null;
@@ -1178,13 +1521,59 @@
           d.about[l].p2 = newText;
         }
         saveStore('sgcms_homepage', d);
+      } else if (path.includes('blog')) {
+        // Blog article page
+        const blogs = store('sgcms_blog') || [];
+        const urlParams = new URLSearchParams(window.location.search);
+        const currentSlug = window.currentActiveArticleSlug || urlParams.get('article_slug') || urlParams.get('slug') || extractSlug() || 'about-sharif-group';
+        const bIdx = blogs.findIndex(b => b.slug === currentSlug || b.id === currentSlug || (b.en && b.en.slug === currentSlug));
+        if (bIdx >= 0) {
+          if (!blogs[bIdx][l]) blogs[bIdx][l] = {};
+          if (activeEl.id === 'detail-title' || activeEl.closest('#detail-title')) {
+            blogs[bIdx][l].title = newText;
+            if (window.articlesDatabase && window.articlesDatabase[currentSlug]) window.articlesDatabase[currentSlug].title = newText;
+          } else if (activeEl.id === 'detail-category-badge') {
+            blogs[bIdx].category = newText;
+            if (window.articlesDatabase && window.articlesDatabase[currentSlug]) window.articlesDatabase[currentSlug].category = newText;
+          } else if (activeEl.id === 'detail-author') {
+            blogs[bIdx].author = newText;
+            if (window.articlesDatabase && window.articlesDatabase[currentSlug]) window.articlesDatabase[currentSlug].author = newText;
+          } else if (activeEl.id === 'detail-date') {
+            blogs[bIdx].publish_date = newText;
+            if (window.articlesDatabase && window.articlesDatabase[currentSlug]) window.articlesDatabase[currentSlug].date = newText;
+          } else if (activeEl.closest('#detail-content-body')) {
+            const bodyEl = document.getElementById('detail-content-body');
+            if (bodyEl) {
+              blogs[bIdx][l].body = bodyEl.innerHTML;
+              if (window.articlesDatabase && window.articlesDatabase[currentSlug]) window.articlesDatabase[currentSlug].content = bodyEl.innerHTML;
+            }
+          } else if (activeEl.closest('#detail-faq-wrapper')) {
+            const allFaqItems = document.querySelectorAll('#detail-faq-col-1 .border-b, #detail-faq-col-2 .border-b');
+            const updatedFaqs = [];
+            allFaqItems.forEach(item => {
+              const qText = (item.querySelector('button span.uppercase')?.innerText || '').trim();
+              const aText = (item.querySelector('div p')?.innerText || '').trim();
+              if (qText) updatedFaqs.push({ q: qText, a: aText });
+            });
+            if (updatedFaqs.length) {
+              blogs[bIdx].faqs = updatedFaqs;
+              blogs[bIdx][l].faqs = updatedFaqs;
+              if (window.articlesDatabase && window.articlesDatabase[currentSlug]) {
+                window.articlesDatabase[currentSlug].faqs = updatedFaqs;
+              }
+            }
+          }
+          saveStore('sgcms_blog', blogs);
+        }
       } else {
         // Program page
         const type = path.includes('residency') ? 'sgcms_residency' : 'sgcms_citizenship';
         const list = store(type);
         if (list && list.length) {
           const slug = extractSlug();
-          const idx = list.findIndex(p => p.slug === slug || p.id === slug || slug.includes(p.slug || p.id));
+          const urlParams = new URLSearchParams(window.location.search);
+          const progId = urlParams.get('program_id');
+          const idx = list.findIndex(p => (progId && (p.id === progId || p.slug === progId)) || p.slug === slug || p.id === slug || slug.includes(p.slug || p.id));
           if (idx >= 0) {
             if (!list[idx][l]) list[idx][l] = {};
             if (activeEl.closest('h1')) {
@@ -1211,7 +1600,16 @@
           selector,
           lang: l
         }, '*');
+        window.parent.postMessage({
+          type: 'CMS_CONTENT_CHANGED',
+          section: path,
+          lang: l
+        }, '*');
       }
+
+      try {
+        localStorage.setItem('sgcms_publish_status', JSON.stringify({ status: 'draft', lastEdited: new Date().toISOString() }));
+      } catch(e) {}
 
       flashToast('Saved: "' + (newText.length > 20 ? newText.slice(0, 20) + '…' : newText) + '"');
 
@@ -1299,7 +1697,15 @@
       if (!editMode) return; // Allow natural browsing, link clicking, and button interaction!
 
       // If clicking inside toolbar, allow toolbar interaction
-      if (e.target.closest('#cms-inline-toolbar') || e.target.closest('#cms-hover-tooltip')) return;
+      if (e.target.closest('#cms-inline-toolbar') || e.target.closest('#cms-hover-tooltip') || e.target.closest('#cms-image-popover')) return;
+
+      const clickedImg = e.target.closest('img');
+      if (clickedImg) {
+        e.preventDefault();
+        e.stopPropagation();
+        openImagePickerPopover(clickedImg);
+        return;
+      }
 
       const target = e.target.closest('h1, h2, h3, h4, h5, h6, p, a, button, span, label, strong, em, b, i, li, [data-i18n], [data-cms], .counter-value');
 
@@ -1400,8 +1806,27 @@
       const msg = e.data;
       if (!msg || typeof msg !== 'object') return;
 
-      if (msg.type === 'CMS_SET_LANG') {
+      if (msg.type === 'CMS_ADD_SECTION') {
+        const blockType = msg.blockType || 'section';
+        const main = document.querySelector('main') || document.body;
+        const newSec = document.createElement('section');
+        newSec.className = 'py-16 px-6 relative bg-white border-t border-neutral-200 dynamic-cms-section';
+        newSec.innerHTML = `
+          <div class="max-w-6xl mx-auto text-center">
+            <span class="text-xs uppercase font-bold text-luxury-gold tracking-widest">[CUSTOM SECTION: ${blockType.toUpperCase()}]</span>
+            <h2 class="font-serif text-3xl font-bold text-neutral-900 mt-2 mb-4">Click Here to Customize Your New ${blockType.toUpperCase()} Headline</h2>
+            <p class="text-sm text-neutral-600 max-w-2xl mx-auto font-light leading-relaxed">This section was added via the Visual Studio. Click on any of this text to edit inline, and your changes will be saved directly.</p>
+          </div>
+        `;
+        main.appendChild(newSec);
+        newSec.scrollIntoView({ behavior: 'smooth' });
+        flashToast('Section added to canvas! Click text to edit.');
+      } else if (msg.type === 'CMS_SET_LANG') {
         applyLanguage(msg.lang, 'parent');
+      } else if (msg.type === 'CMS_OPEN_ARTICLE') {
+        if (typeof window.openBlogDetailBySlug === 'function') {
+          window.openBlogDetailBySlug(msg.slug);
+        }
       } else if (msg.type === 'CMS_SET_MODE') {
         setEditMode(msg.mode === 'edit', false, false);
       } else if (msg.type === 'CMS_UPDATE_BLOG_DRAFT') {
@@ -1663,6 +2088,9 @@
     showPreviewBadge();
     runHydration();
     setupVisualEditor();
+    if (!isEditor) {
+      syncLiveFromBackend();
+    }
     console.log('%c[Sharif Group CMS Studio] Active mode:', 'color:#C5A880;font-weight:700', isEditor ? 'Visual Editor (Live Studio)' : 'Preview Mode');
   }
 

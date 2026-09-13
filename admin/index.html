@@ -535,7 +535,7 @@ function fillDemoCreds() {
 }
 
 // Login Submission Handler
-function handleLogin(e) {
+async function handleLogin(e) {
   e.preventDefault();
   const email = document.getElementById('login-email').value.trim();
   const pwd = document.getElementById('login-password').value;
@@ -554,34 +554,51 @@ function handleLogin(e) {
   errorBox.style.display = 'none';
   successBox.style.display = 'none';
 
-  setTimeout(() => {
-    let result = { success: false, error: 'Authentication engine not loaded.' };
+  let result = { success: false, error: 'Incorrect email or password.' };
+
+  try {
+    // Attempt PHP backend authentication
+    const res = await fetch('api/auth.php', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ email, password: pwd })
+    });
+    const data = await res.json();
+    if (res.ok && data && data.success) {
+      result = { success: true, user: data.user, token: data.token };
+      if (data.token) sessionStorage.setItem('sgcms_token', data.token);
+      if (data.user) sessionStorage.setItem('sgcms_auth', JSON.stringify(data.user));
+    } else if (data && data.error) {
+      result = { success: false, error: data.error };
+    }
+  } catch (err) {
+    // Fallback for offline demo mode
     if (window.CMS && window.CMS.Auth) {
       result = window.CMS.Auth.login(email, pwd);
     } else if (email.toLowerCase() === 'admin@sharifgroup.ae' && pwd === 'SharifCMS@2026') {
       result = { success: true };
     }
+  }
 
-    if (result.success) {
-      successBox.style.display = 'flex';
-      btnLabel.textContent = 'Access Authorized';
-      btnIcon.className = 'fa-solid fa-check';
-      btn.style.background = 'linear-gradient(135deg, #16a34a, #15803d)';
-      btn.style.boxShadow = '0 10px 24px rgba(22, 163, 74, 0.4)';
-      
-      setTimeout(() => {
-        window.location.href = 'dashboard.html';
-      }, 700);
-    } else {
-      btn.disabled = false;
-      btnLabel.textContent = 'Access CMS Dashboard';
-      btnIcon.className = 'fa-solid fa-arrow-right';
-      errorText.textContent = result.error || 'Incorrect email or password.';
-      errorBox.style.display = 'flex';
-      loginCard.classList.add('shake');
-      setTimeout(() => loginCard.classList.remove('shake'), 500);
-    }
-  }, 600);
+  if (result.success) {
+    successBox.style.display = 'flex';
+    btnLabel.textContent = 'Access Authorized';
+    btnIcon.className = 'fa-solid fa-check';
+    btn.style.background = 'linear-gradient(135deg, #16a34a, #15803d)';
+    btn.style.boxShadow = '0 10px 24px rgba(22, 163, 74, 0.4)';
+    
+    setTimeout(() => {
+      window.location.href = 'dashboard.html';
+    }, 700);
+  } else {
+    btn.disabled = false;
+    btnLabel.textContent = 'Access CMS Dashboard';
+    btnIcon.className = 'fa-solid fa-arrow-right';
+    errorText.textContent = result.error || 'Incorrect email or password.';
+    errorBox.style.display = 'flex';
+    loginCard.classList.add('shake');
+    setTimeout(() => loginCard.classList.remove('shake'), 500);
+  }
 }
 </script>
 </body>

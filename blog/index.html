@@ -7652,9 +7652,32 @@
 
             // Single-Page Dynamic Article View Function
             function openBlogDetailBySlug(slug) {
-                const baseArticle = (window.articlesDatabase && window.articlesDatabase[slug]) || articlesDatabase[slug];
+                let baseArticle = (window.articlesDatabase && window.articlesDatabase[slug]) || (typeof articlesDatabase !== 'undefined' && articlesDatabase[slug]);
                 const listingSection = document.getElementById('blog-listing-main');
                 const detailSection = document.getElementById('blog-detail-view-container');
+
+                if (!baseArticle) {
+                    try {
+                        const localBlogs = JSON.parse(localStorage.getItem('sgcms_blog') || '[]');
+                        const found = localBlogs.find(b => b.slug === slug || b.id === slug || (b.en && b.en.slug === slug));
+                        if (found) {
+                            const curLang = (window.getCurrentLanguage && window.getCurrentLanguage()) || 'en';
+                            const ld = found[curLang] || found.en || {};
+                            if (!window.articlesDatabase) window.articlesDatabase = {};
+                            window.articlesDatabase[slug] = {
+                                title: ld.title || found.hero_title || 'Article',
+                                category: found.category || 'Citizenship',
+                                author: found.author || 'Sharif Group Advisory',
+                                date: found.publish_date || '2026-09-01',
+                                updated: found.publish_date || '2026-09-01',
+                                image: found.featured_img || '/assets/images/dubai-office-2.webp',
+                                content: ld.body || '<p>' + (ld.excerpt || 'Article content...') + '</p>',
+                                faqs: []
+                            };
+                            baseArticle = window.articlesDatabase[slug];
+                        }
+                    } catch(e) {}
+                }
 
                 if (!baseArticle) {
                     alert("Article content is being updated. Please check back shortly.");
@@ -7811,18 +7834,24 @@
                 }
             });
 
-            // Route to specific article if URL contains /blog/<slug>
+            // Route to specific article if URL contains /blog/<slug> or ?article_slug=<slug>
             function handleDirectArticleRoute() {
+                var urlParams = new URLSearchParams(window.location.search);
+                var querySlug = urlParams.get('article_slug') || urlParams.get('slug');
+                if (querySlug) {
+                    setTimeout(function() {
+                        openBlogDetailBySlug(querySlug);
+                    }, 80);
+                    return;
+                }
                 var path = window.location.pathname || '';
                 var match = path.match(/\/blog\/([a-zA-Z0-9_-]+)\/?$/);
                 if (match && match[1]) {
                     var slug = match[1];
                     if (slug !== 'index.html' && slug !== 'blog.html') {
-                        if (articlesDatabase && articlesDatabase[slug]) {
-                            setTimeout(function() {
-                                openBlogDetailBySlug(slug);
-                            }, 50);
-                        }
+                        setTimeout(function() {
+                            openBlogDetailBySlug(slug);
+                        }, 50);
                     }
                 }
             }
