@@ -1810,11 +1810,11 @@
 <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
 <div>
 <label class="block text-[10px] uppercase tracking-wider text-neutral-700 font-bold mb-1"><span data-i18n="contact.fullName">Full Identity Name</span> <span class="text-red-500">*</span></label>
-<input class="w-full bg-white/95 border border-neutral-300 rounded-xl px-4 py-3 text-xs focus:outline-none focus:border-[#786142] transition shadow-sm" placeholder="John Doe" required="" type="text"/>
+<input name="fullName" class="w-full bg-white/95 border border-neutral-300 rounded-xl px-4 py-3 text-xs focus:outline-none focus:border-[#786142] transition shadow-sm" placeholder="John Doe" required="" type="text"/>
 </div>
 <div>
 <label class="block text-[10px] uppercase tracking-wider text-neutral-700 font-bold mb-1"><span data-i18n="contact.secureEmail">Secure Email Address</span> <span class="text-red-500">*</span></label>
-<input class="w-full bg-white/95 border border-neutral-300 rounded-xl px-4 py-3 text-xs focus:outline-none focus:border-[#786142] transition shadow-sm" placeholder="name@domain.com" required="" type="email"/>
+<input name="email" class="w-full bg-white/95 border border-neutral-300 rounded-xl px-4 py-3 text-xs focus:outline-none focus:border-[#786142] transition shadow-sm" placeholder="name@domain.com" required="" type="email"/>
 </div>
 </div>
 <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
@@ -1832,12 +1832,12 @@
 </div>
 </div>
 <input class="dial-code-hidden-value" type="hidden" value="+971"/>
-<input class="w-full bg-white/95 border-y border-r border-neutral-300 rounded-r-xl px-4 py-3 text-xs focus:outline-none focus:border-[#786142] transition shadow-sm" placeholder="50 123 4567" required="" type="tel" dir="ltr"/>
+<input name="phone" class="w-full bg-white/95 border-y border-r border-neutral-300 rounded-r-xl px-4 py-3 text-xs focus:outline-none focus:border-[#786142] transition shadow-sm" placeholder="50 123 4567" required="" type="tel" dir="ltr"/>
 </div>
 </div>
 <div>
 <label class="block text-[10px] uppercase tracking-wider text-neutral-700 font-bold mb-1"><span data-i18n="contact.programChoice">Program of Choice</span> <span class="text-red-500">*</span></label>
-<select class="w-full bg-white/95 border border-neutral-300 rounded-xl px-4 py-3 text-xs focus:outline-none focus:border-[#786142] transition shadow-sm" id="primary-service-choice" onchange="handleServiceSelectionChange(this)" required="">
+<select name="programChoice" class="w-full bg-white/95 border border-neutral-300 rounded-xl px-4 py-3 text-xs focus:outline-none focus:border-[#786142] transition shadow-sm" id="primary-service-choice" onchange="handleServiceSelectionChange(this)" required="">
 <option data-i18n="contact.selectOption" value="">Select Option</option>
 <option data-i18n="contact.citizenshipCBI" value="citizenship">Citizenship By Investment</option>
 <option data-i18n="contact.residencyRBI" value="residency">Residency By Investment</option>
@@ -1849,13 +1849,13 @@
 <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
 <div>
 <label class="block text-[10px] uppercase tracking-wider text-neutral-700 font-bold mb-1"><span data-i18n="contact.subProgram">Sub-Program Pathway</span> <span class="text-red-500">*</span></label>
-<select class="w-full bg-white/95 border border-neutral-300 rounded-xl px-4 py-3 text-xs focus:outline-none focus:border-[#786142] transition shadow-sm" id="sub-service-choice" required="">
+<select name="subProgram" class="w-full bg-white/95 border border-neutral-300 rounded-xl px-4 py-3 text-xs focus:outline-none focus:border-[#786142] transition shadow-sm" id="sub-service-choice" required="">
 <option data-i18n="contact.selectSubProgram" value="">Select Sub-Program</option>
 </select>
 </div>
 <div>
 <label class="block text-[10px] uppercase tracking-wider text-neutral-700 font-bold mb-1"><span data-i18n="contact.preferredLanguage">Your Preferred Language</span> <span class="text-red-500">*</span></label>
-<select class="w-full bg-white/95 border border-neutral-300 rounded-xl px-4 py-3 text-xs focus:outline-none focus:border-[#786142] transition shadow-sm" required="">
+<select name="preferredLanguage" class="w-full bg-white/95 border border-neutral-300 rounded-xl px-4 py-3 text-xs focus:outline-none focus:border-[#786142] transition shadow-sm" required="">
 <option data-i18n="contact.selectLanguage" value="">Select Language</option>
 <option value="english">English</option>
 <option value="arabic">Arabic</option>
@@ -1871,7 +1871,7 @@
 <div class="grid grid-cols-1 sm:grid-cols-3 gap-4">
 <div>
 <label class="block text-[10px] uppercase tracking-wider text-neutral-700 font-bold mb-1"><span data-i18n="contact.countryTimezone">Country / Time Zone</span> <span class="text-red-500">*</span></label>
-<select class="w-full bg-white/95 border border-neutral-300 rounded-xl px-4 py-3 text-xs focus:outline-none focus:border-[#786142] transition shadow-sm" required="">
+<select name="timezone" class="w-full bg-white/95 border border-neutral-300 rounded-xl px-4 py-3 text-xs focus:outline-none focus:border-[#786142] transition shadow-sm" required="">
 <option data-i18n="contact.selectTimezone" value="">Select Time Zone</option>
 <option value="UTC-12:00">UTC-12:00 (Baker Island)</option>
 <option value="UTC-11:00">UTC-11:00 (American Samoa, Niue)</option>
@@ -1915,11 +1915,11 @@
 </div>
 <div>
 <label class="block text-[10px] uppercase tracking-wider text-neutral-700 font-bold mb-1"><span data-i18n="contact.preferredDate">Preferred Date</span> <span class="text-red-500">*</span></label>
-<input class="w-full bg-white/95 border border-neutral-300 rounded-xl px-4 py-3 text-xs focus:outline-none focus:border-[#786142] transition shadow-sm" required="" type="date"/>
+<input name="preferredDate" class="w-full bg-white/95 border border-neutral-300 rounded-xl px-4 py-3 text-xs focus:outline-none focus:border-[#786142] transition shadow-sm" required="" type="date"/>
 </div>
 <div>
 <label class="block text-[10px] uppercase tracking-wider text-neutral-700 font-bold mb-1"><span data-i18n="contact.preferredContact">Preferred Contact Method</span> <span class="text-red-500">*</span></label>
-<select class="w-full bg-white/95 border border-neutral-300 rounded-xl px-4 py-3 text-xs focus:outline-none focus:border-[#786142] transition shadow-sm" required="">
+<select name="contactMethod" class="w-full bg-white/95 border border-neutral-300 rounded-xl px-4 py-3 text-xs focus:outline-none focus:border-[#786142] transition shadow-sm" required="">
 <option data-i18n="contact.phoneCall" value="call">Phone Call</option>
 <option data-i18n="contact.whatsApp" value="whatsapp">WhatsApp</option>
 <option data-i18n="contact.videoMeeting" value="zoom">Video Meeting</option>
@@ -1929,18 +1929,18 @@
 </div>
 <div>
 <label class="block text-[10px] uppercase tracking-wider text-neutral-700 font-bold mb-1" data-i18n="contact.corporateAddress">Corporate Physical Address (Optional)</label>
-<input class="w-full bg-white/95 border border-neutral-300 rounded-xl px-4 py-3 text-xs focus:outline-none focus:border-[#786142] transition shadow-sm" placeholder="Suite, Tower, Landmark, City, Country" type="text"/>
+<input name="address" class="w-full bg-white/95 border border-neutral-300 rounded-xl px-4 py-3 text-xs focus:outline-none focus:border-[#786142] transition shadow-sm" placeholder="Suite, Tower, Landmark, City, Country" type="text"/>
 </div>
 <div>
 <label class="block text-[10px] uppercase tracking-wider text-neutral-700 font-bold mb-1" data-i18n="contact.confidentialNotes">Confidential Notes (Optional)</label>
-<textarea class="w-full bg-white/95 border border-neutral-300 rounded-xl p-4 text-xs focus:outline-none focus:border-[#786142] transition shadow-sm" placeholder="Share any specific family rules, constraints, or timelines..." rows="3"></textarea>
+<textarea name="notes" class="w-full bg-white/95 border border-neutral-300 rounded-xl p-4 text-xs focus:outline-none focus:border-[#786142] transition shadow-sm" placeholder="Please outline your objectives, family composition, timeline, or specific questions..." rows="3"></textarea>
 </div>
 <button class="w-full py-4 bg-[#786142] text-white text-xs uppercase tracking-widest font-bold hover:bg-neutral-900 transition duration-300 rounded-xl shadow-lg" data-i18n="contact.submitBtn" type="submit">
-                                    Submit Confidential Request
-                                </button>
+    Submit Confidential Request
+</button>
 <div class="hidden text-xs text-green-700 font-bold text-center mt-3 bg-green-50 p-3 rounded-lg border border-green-200" data-i18n="contact.successMsg" id="contact-form-success">
-                                    Thank you. Your inquiry has been sent successfully. An advisory partner will reach out within 2 hours.
-                                </div>
+    Thank you. Your inquiry has been sent successfully. An advisory partner will reach out within 2 hours.
+</div>
 </form>
 </div>
 </div>
@@ -2684,5 +2684,6 @@
     </script>
     <!-- Sharif Group CMS Live Preview Loader -->
     <script src="admin/cms-loader.js"></script>
+<script src="assets/js/forms.js"></script>
 </body>
 </html>
