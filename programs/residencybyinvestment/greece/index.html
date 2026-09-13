@@ -1893,11 +1893,11 @@
 <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
 <div>
 <label class="block text-[10px] uppercase tracking-wider text-neutral-700 font-bold mb-1.5" data-i18n-html="programs.greece.form_label1">Full Name <span class="text-red-500">*</span></label>
-<input class="w-full bg-white/95 border border-neutral-300 rounded-xl px-4 py-3 text-xs focus:outline-none focus:border-[#786142] transition shadow-sm" placeholder="John Doe" data-i18n-placeholder="programs.greece.placeholderName" required="" type="text"/>
+<input name="fullName" class="w-full bg-white/95 border border-neutral-300 rounded-xl px-4 py-3 text-xs focus:outline-none focus:border-[#786142] transition shadow-sm" placeholder="John Doe" data-i18n-placeholder="programs.greece.placeholderName" required="" type="text"/>
 </div>
 <div>
 <label class="block text-[10px] uppercase tracking-wider text-neutral-700 font-bold mb-1.5" data-i18n-html="programs.greece.form_label2">Email Address <span class="text-red-500">*</span></label>
-<input class="w-full bg-white/95 border border-neutral-300 rounded-xl px-4 py-3 text-xs focus:outline-none focus:border-[#786142] transition shadow-sm" placeholder="name@domain.com" data-i18n-placeholder="programs.greece.placeholderEmail" required="" type="email"/>
+<input name="email" class="w-full bg-white/95 border border-neutral-300 rounded-xl px-4 py-3 text-xs focus:outline-none focus:border-[#786142] transition shadow-sm" placeholder="name@domain.com" data-i18n-placeholder="programs.greece.placeholderEmail" required="" type="email"/>
 </div>
 <div>
 <label class="block text-[10px] uppercase tracking-wider text-neutral-700 font-bold mb-1.5" data-i18n-html="programs.greece.form_label3">Mobile / WhatsApp Number <span class="text-red-500">*</span></label>
@@ -1913,7 +1913,7 @@
 </div>
 </div>
 <input class="dial-code-hidden-value" type="hidden" value="+971"/>
-<input class="w-full bg-white/95 border-y border-r border-neutral-300 rounded-r-xl px-3 py-3 text-xs focus:outline-none focus:border-[#786142] transition shadow-sm" placeholder="50 123 4567" data-i18n-placeholder="programs.greece.placeholderPhone" required="" type="tel" dir="ltr"/>
+<input name="phone" class="w-full bg-white/95 border-y border-r border-neutral-300 rounded-r-xl px-3 py-3 text-xs focus:outline-none focus:border-[#786142] transition shadow-sm" placeholder="50 123 4567" data-i18n-placeholder="programs.greece.placeholderPhone" required="" type="tel" dir="ltr"/>
 </div>
 </div>
 </div>
@@ -1921,15 +1921,15 @@
 <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
 <div>
 <label class="block text-[10px] uppercase tracking-wider text-neutral-700 font-bold mb-1.5" data-i18n-html="programs.greece.form_label4">Current Nationality <span class="text-red-500">*</span></label>
-<input class="w-full bg-white/95 border border-neutral-300 rounded-xl px-4 py-3 text-xs focus:outline-none focus:border-[#786142] transition shadow-sm" placeholder="e.g. Indian, British, Egyptian" data-i18n-placeholder="programs.greece.placeholderNationality" required="" type="text"/>
+<input name="nationality" class="w-full bg-white/95 border border-neutral-300 rounded-xl px-4 py-3 text-xs focus:outline-none focus:border-[#786142] transition shadow-sm" placeholder="e.g. Indian, British, American" data-i18n-placeholder="programs.greece.placeholderNationality" required="" type="text"/>
 </div>
 <div>
 <label class="block text-[10px] uppercase tracking-wider text-neutral-700 font-bold mb-1.5" data-i18n-html="programs.greece.form_label5">Country of Residence <span class="text-red-500">*</span></label>
-<input class="w-full bg-white/95 border border-neutral-300 rounded-xl px-4 py-3 text-xs focus:outline-none focus:border-[#786142] transition shadow-sm" placeholder="e.g. UAE, Saudi Arabia, UK" data-i18n-placeholder="programs.greece.placeholderResidence" required="" type="text"/>
+<input name="residence" class="w-full bg-white/95 border border-neutral-300 rounded-xl px-4 py-3 text-xs focus:outline-none focus:border-[#786142] transition shadow-sm" placeholder="e.g. UAE, Saudi Arabia, UK" data-i18n-placeholder="programs.greece.placeholderResidence" required="" type="text"/>
 </div>
 <div>
 <label class="block text-[10px] uppercase tracking-wider text-neutral-700 font-bold mb-1.5" data-i18n-html="programs.greece.form_label6">Preferred Language <span class="text-red-500">*</span></label>
-<select class="w-full bg-white/95 border border-neutral-300 rounded-xl px-4 py-3 text-xs focus:outline-none focus:border-[#786142] transition shadow-sm" required="">
+<select name="preferredLanguage" class="w-full bg-white/95 border border-neutral-300 rounded-xl px-4 py-3 text-xs focus:outline-none focus:border-[#786142] transition shadow-sm" required="">
 <option value="english" data-i18n="programs.greece.form_option1">English</option>
 <option value="arabic" data-i18n="programs.greece.form_option2">Arabic</option>
 <option value="russian" data-i18n="programs.greece.form_option3">Russian</option>
@@ -1940,7 +1940,7 @@
 </div>
 <div>
 <label class="block text-[10px] uppercase tracking-wider text-neutral-700 font-bold mb-1.5" data-i18n-html="programs.greece.form_label7">Family Members / Dependants <span class="text-red-500">*</span></label>
-<select class="w-full bg-white/95 border border-neutral-300 rounded-xl px-4 py-3 text-xs focus:outline-none focus:border-[#786142] transition shadow-sm" required="">
+<select name="familyMembers" class="w-full bg-white/95 border border-neutral-300 rounded-xl px-4 py-3 text-xs focus:outline-none focus:border-[#786142] transition shadow-sm" required="">
 <option value="single" data-i18n="programs.greece.form_option7">Single Applicant</option>
 <option value="couple" data-i18n="programs.greece.form_option8">Applicant + Spouse</option>
 <option value="family_small" data-i18n="programs.greece.form_option9">Family up to 4</option>
@@ -1952,49 +1952,51 @@
 <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
 <div>
 <label class="block text-[10px] uppercase tracking-wider text-neutral-700 font-bold mb-1.5" data-i18n-html="programs.greece.form_label8">Investment Route <span class="text-red-500">*</span></label>
-<select class="w-full bg-white/95 border border-neutral-300 rounded-xl px-4 py-3 text-xs focus:outline-none focus:border-[#786142] transition shadow-sm" required="">
-<option selected="" value="commercial" data-i18n="programs.greece.form_option11">Commercial Conversion / Heritage (€250k+)</option>
-<option value="regional" data-i18n="programs.greece.form_option12">Regional Residential (€400k+)</option>
-<option value="prime" data-i18n="programs.greece.form_option13">Prime Metropolitan Tier-1 (€800k+)</option>
+<select name="investmentRoute" class="w-full bg-white/95 border border-neutral-300 rounded-xl px-4 py-3 text-xs focus:outline-none focus:border-[#786142] transition shadow-sm" required="">
+<option selected="" value="real-estate-tier1" data-i18n="programs.greece.form_option11">Real Estate Tier 1 (€800,000)</option>
+<option value="real-estate-tier2" data-i18n="programs.greece.form_option12">Real Estate Tier 2 (€400,000)</option>
+<option value="commercial-conversion" data-i18n="programs.greece.form_option13">Commercial to Residential (€250,000)</option>
+<option value="listed-building" data-i18n="programs.greece.form_option14">Listed Building Restoration (€250,000)</option>
 </select>
 </div>
 <div>
 <label class="block text-[10px] uppercase tracking-wider text-neutral-700 font-bold mb-1.5" data-i18n-html="programs.greece.form_label9">Approx. Investment Budget <span class="text-red-500">*</span></label>
-<select class="w-full bg-white/95 border border-neutral-300 rounded-xl px-4 py-3 text-xs focus:outline-none focus:border-[#786142] transition shadow-sm" required="">
-<option value="250k-400k" data-i18n="programs.greece.form_option14">€250,000 – €400,000</option>
-<option value="400k-800k" data-i18n="programs.greece.form_option15">€400,000 – €800,000</option>
-<option value="800k+" data-i18n="programs.greece.form_option16">€800,000 or more</option>
+<select name="budget" class="w-full bg-white/95 border border-neutral-300 rounded-xl px-4 py-3 text-xs focus:outline-none focus:border-[#786142] transition shadow-sm" required="">
+<option value="250k-400k" data-i18n="programs.greece.form_option15">€250,000 – €400,000</option>
+<option value="400k-800k" data-i18n="programs.greece.form_option16">€400,000 – €800,000</option>
+<option value="800k-1.5m" data-i18n="programs.greece.form_option17">€800,000 – €1,500,000</option>
+<option value="1.5m+" data-i18n="programs.greece.form_option18">€1,500,000+</option>
 </select>
 </div>
 <div>
 <label class="block text-[10px] uppercase tracking-wider text-neutral-700 font-bold mb-1.5" data-i18n-html="programs.greece.form_label10">Primary Objective <span class="text-red-500">*</span></label>
-<select class="w-full bg-white/95 border border-neutral-300 rounded-xl px-4 py-3 text-xs focus:outline-none focus:border-[#786142] transition shadow-sm" required="">
-<option value="mobility" data-i18n="programs.greece.form_option17">EU Schengen Visa-Free Mobility (29 Nations)</option>
-<option value="security" data-i18n="programs.greece.form_option18">Premier Family Residency & Plan B</option>
-<option value="tax" data-i18n="programs.greece.form_option19">Tax Optimization & Euro Rental Yields</option>
-<option value="real-estate" data-i18n="programs.greece.form_option20">Greek Property Asset Acquisition</option>
+<select name="objective" class="w-full bg-white/95 border border-neutral-300 rounded-xl px-4 py-3 text-xs focus:outline-none focus:border-[#786142] transition shadow-sm" required="">
+<option value="schengen-mobility" data-i18n="programs.greece.form_option19">Schengen Visa-Free Travel</option>
+<option value="rental-yield" data-i18n="programs.greece.form_option20">European Real Estate Rental Yield</option>
+<option value="no-stay-requirement" data-i18n="programs.greece.form_option21">No Minimum Stay Requirement</option>
+<option value="family-inclusion" data-i18n="programs.greece.form_option22">Three-Generation Family Inclusion</option>
+<option value="plan-b" data-i18n="programs.greece.form_option23">European Plan B Residency</option>
 </select>
 </div>
 <div>
 <label class="block text-[10px] uppercase tracking-wider text-neutral-700 font-bold mb-1.5" data-i18n-html="programs.greece.form_label11">Planning Timeline <span class="text-red-500">*</span></label>
-<select class="w-full bg-white/95 border border-neutral-300 rounded-xl px-4 py-3 text-xs focus:outline-none focus:border-[#786142] transition shadow-sm" required="">
-<option value="immediate" data-i18n="programs.greece.form_option21">Immediately (0–3 months)</option>
-<option value="short_term" data-i18n="programs.greece.form_option22">3–6 months</option>
-<option value="planning" data-i18n="programs.greece.form_option23">6–12 months</option>
+<select name="timeline" class="w-full bg-white/95 border border-neutral-300 rounded-xl px-4 py-3 text-xs focus:outline-none focus:border-[#786142] transition shadow-sm" required="">
+<option value="immediate" data-i18n="programs.greece.form_option24">Immediately (0–3 months)</option>
+<option value="short_term" data-i18n="programs.greece.form_option25">3–6 months</option>
+<option value="planning" data-i18n="programs.greece.form_option26">6–12 months</option>
 </select>
 </div>
 </div>
 <!-- Row 4 -->
 <div>
 <label class="block text-[10px] uppercase tracking-wider text-neutral-700 font-bold mb-1.5" data-i18n="programs.greece.form_label12">Optional Message / Special Considerations</label>
-<textarea class="w-full bg-white/95 border border-neutral-300 rounded-xl p-4 text-xs focus:outline-none focus:border-[#786142] transition shadow-sm" placeholder="Specify any family parameters, target timelines, or specific questions..." data-i18n-placeholder="programs.greece.placeholderMessage" rows="3"></textarea>
+<textarea name="notes" class="w-full bg-white/95 border border-neutral-300 rounded-xl p-4 text-xs focus:outline-none focus:border-[#786142] transition shadow-sm" placeholder="Specify any family parameters, target timelines, or specific questions..." data-i18n-placeholder="programs.greece.placeholderMessage" rows="3"></textarea>
 </div>
 <!-- Row 5 -->
 <div class="space-y-2 pt-2 border-t border-neutral-300/60">
 <label class="flex items-start space-x-3 cursor-pointer">
 <input class="mt-0.5 rounded border-neutral-300 text-[#786142] focus:ring-[#786142]" required="" type="checkbox"/>
 <span class="text-xs text-neutral-600 font-light leading-relaxed" data-i18n-html="programs.greece.formConsent">I consent to Sharif Group storing and processing my personal details for consultation and pre-screening purposes in accordance with the <a class="text-[#786142] underline font-bold" href="../../../privacypolicy/index.html">Privacy Policy</a>. <span class="text-red-500">*</span></span>
-</span>
 </label>
 </div>
 <div class="pt-2 text-center">
@@ -2917,5 +2919,6 @@ document.addEventListener('DOMContentLoaded', () => {
 </script>
 <script src="../../../assets/js/language-switcher.js"></script>
 <script src="../../../admin/cms-loader.js"></script>
+<script src="../../../assets/js/forms.js"></script>
 </body>
 </html>
