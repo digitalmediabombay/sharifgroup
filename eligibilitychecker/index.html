@@ -1677,19 +1677,19 @@
                                     <label class="block text-[10px] uppercase tracking-wider text-neutral-400 font-bold mb-1">
                                         ${lblName}
                                     </label>
-                                    <input type="text" id="lead_name" required placeholder="${phName}" class="w-full bg-[#FAF6EE] border border-neutral-200 rounded-xl px-4 py-3 text-xs focus:outline-none focus:border-luxury-gold shadow-sm">
+                                    <input name="fullName" type="text" id="lead_name" required placeholder="${phName}" class="w-full bg-[#FAF6EE] border border-neutral-200 rounded-xl px-4 py-3 text-xs focus:outline-none focus:border-luxury-gold shadow-sm">
                                 </div>
                                 <div>
                                     <label class="block text-[10px] uppercase tracking-wider text-neutral-400 font-bold mb-1">
                                         ${lblEmail}
                                     </label>
-                                    <input type="email" id="lead_email" required placeholder="name@domain.com" class="w-full bg-[#FAF6EE] border border-neutral-200 rounded-xl px-4 py-3 text-xs focus:outline-none focus:border-luxury-gold shadow-sm">
+                                    <input name="email" type="email" id="lead_email" required placeholder="name@domain.com" class="w-full bg-[#FAF6EE] border border-neutral-200 rounded-xl px-4 py-3 text-xs focus:outline-none focus:border-luxury-gold shadow-sm">
                                 </div>
                                 <div>
                                     <label class="block text-[10px] uppercase tracking-wider text-neutral-400 font-bold mb-1">
                                         ${lblPhone}
                                     </label>
-                                    <input type="tel" id="lead_phone" required dir="ltr" placeholder="+971 50 123 4567" class="w-full bg-[#FAF6EE] border border-neutral-200 rounded-xl px-4 py-3 text-xs focus:outline-none focus:border-luxury-gold shadow-sm">
+                                    <input name="phone" type="tel" id="lead_phone" required dir="ltr" placeholder="+971 50 123 4567" class="w-full bg-[#FAF6EE] border border-neutral-200 rounded-xl px-4 py-3 text-xs focus:outline-none focus:border-luxury-gold shadow-sm">
                                 </div>
                             </div>
 
@@ -1697,7 +1697,7 @@
                                 <label class="block text-[10px] uppercase tracking-wider text-neutral-400 font-bold mb-1">
                                     ${lblNotes}
                                 </label>
-                                <textarea id="lead_notes" rows="2" placeholder="${phNotes}" class="w-full bg-[#FAF6EE] border border-neutral-200 rounded-xl p-3 text-xs focus:outline-none focus:border-luxury-gold shadow-sm"></textarea>
+                                <textarea name="notes" id="lead_notes" rows="2" placeholder="${phNotes}" class="w-full bg-[#FAF6EE] border border-neutral-200 rounded-xl p-3 text-xs focus:outline-none focus:border-luxury-gold shadow-sm"></textarea>
                             </div>
 
                             <div class="pt-2">
@@ -1762,7 +1762,7 @@
             function submitOnPageLead(e) {
                 e.preventDefault();
                 const leadData = {
-                    name: document.getElementById("lead_name").value.trim(),
+                    fullName: document.getElementById("lead_name").value.trim(),
                     email: document.getElementById("lead_email").value.trim(),
                     phone: document.getElementById("lead_phone").value.trim(),
                     notes: document.getElementById("lead_notes").value.trim(),
@@ -1776,7 +1776,11 @@
                     submittedAt: new Date().toISOString()
                 };
 
-                // Dispatch to CRM or database endpoint
+                // Dispatch to CRM or backend webhook endpoint
+                if (typeof handleContactSubmit === "function") {
+                    // Integrated with centralized forms.js handler
+                }
+
                 if (LEAD_WEBHOOK_URL) {
                     fetch(LEAD_WEBHOOK_URL, {
                         method: "POST",
@@ -2544,7 +2548,6 @@
             // Bypass Preloader when returning from internal pages
             sessionStorage.setItem('sharif_preloader_shown', 'true');
         </script>
-
+        <script src="../assets/js/forms.js"></script>
 </body>
-
 </html>
