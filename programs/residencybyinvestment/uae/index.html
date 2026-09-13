@@ -1831,11 +1831,11 @@
 <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
 <div>
 <label class="block text-[10px] uppercase tracking-wider text-neutral-700 font-bold mb-1.5" data-i18n-html="programs.uae.form_label1">Full Name <span class="text-red-500">*</span></label>
-<input class="w-full bg-white/95 border border-neutral-300 rounded-xl px-4 py-3 text-xs focus:outline-none focus:border-[#786142] transition shadow-sm" placeholder="John Doe" data-i18n-placeholder="programs.uae.placeholderName" required="" type="text"/>
+<input name="fullName" class="w-full bg-white/95 border border-neutral-300 rounded-xl px-4 py-3 text-xs focus:outline-none focus:border-[#786142] transition shadow-sm" placeholder="John Doe" data-i18n-placeholder="programs.uae.placeholderName" required="" type="text"/>
 </div>
 <div>
 <label class="block text-[10px] uppercase tracking-wider text-neutral-700 font-bold mb-1.5" data-i18n-html="programs.uae.form_label2">Email Address <span class="text-red-500">*</span></label>
-<input class="w-full bg-white/95 border border-neutral-300 rounded-xl px-4 py-3 text-xs focus:outline-none focus:border-[#786142] transition shadow-sm" placeholder="name@domain.com" data-i18n-placeholder="programs.uae.placeholderEmail" required="" type="email"/>
+<input name="email" class="w-full bg-white/95 border border-neutral-300 rounded-xl px-4 py-3 text-xs focus:outline-none focus:border-[#786142] transition shadow-sm" placeholder="name@domain.com" data-i18n-placeholder="programs.uae.placeholderEmail" required="" type="email"/>
 </div>
 <div>
 <label class="block text-[10px] uppercase tracking-wider text-neutral-700 font-bold mb-1.5" data-i18n-html="programs.uae.form_label3">Mobile / WhatsApp Number <span class="text-red-500">*</span></label>
@@ -1851,7 +1851,7 @@
 </div>
 </div>
 <input class="dial-code-hidden-value" type="hidden" value="+971"/>
-<input class="w-full bg-white/95 border-y border-r border-neutral-300 rounded-r-xl px-3 py-3 text-xs focus:outline-none focus:border-[#786142] transition shadow-sm" placeholder="50 123 4567" data-i18n-placeholder="programs.uae.placeholderPhone" required="" type="tel" dir="ltr"/>
+<input name="phone" class="w-full bg-white/95 border-y border-r border-neutral-300 rounded-r-xl px-3 py-3 text-xs focus:outline-none focus:border-[#786142] transition shadow-sm" placeholder="50 123 4567" data-i18n-placeholder="programs.uae.placeholderPhone" required="" type="tel" dir="ltr"/>
 </div>
 </div>
 </div>
@@ -1859,15 +1859,15 @@
 <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
 <div>
 <label class="block text-[10px] uppercase tracking-wider text-neutral-700 font-bold mb-1.5" data-i18n-html="programs.uae.form_label4">Current Nationality <span class="text-red-500">*</span></label>
-<input class="w-full bg-white/95 border border-neutral-300 rounded-xl px-4 py-3 text-xs focus:outline-none focus:border-[#786142] transition shadow-sm" placeholder="e.g. Indian, British, Egyptian" data-i18n-placeholder="programs.uae.placeholderNationality" required="" type="text"/>
+<input name="nationality" class="w-full bg-white/95 border border-neutral-300 rounded-xl px-4 py-3 text-xs focus:outline-none focus:border-[#786142] transition shadow-sm" placeholder="e.g. Indian, British, Egyptian" data-i18n-placeholder="programs.uae.placeholderNationality" required="" type="text"/>
 </div>
 <div>
 <label class="block text-[10px] uppercase tracking-wider text-neutral-700 font-bold mb-1.5" data-i18n-html="programs.uae.form_label5">Country of Residence <span class="text-red-500">*</span></label>
-<input class="w-full bg-white/95 border border-neutral-300 rounded-xl px-4 py-3 text-xs focus:outline-none focus:border-[#786142] transition shadow-sm" placeholder="e.g. UAE, Saudi Arabia, UK" data-i18n-placeholder="programs.uae.placeholderResidence" required="" type="text"/>
+<input name="residence" class="w-full bg-white/95 border border-neutral-300 rounded-xl px-4 py-3 text-xs focus:outline-none focus:border-[#786142] transition shadow-sm" placeholder="e.g. UAE, Saudi Arabia, UK" data-i18n-placeholder="programs.uae.placeholderResidence" required="" type="text"/>
 </div>
 <div>
 <label class="block text-[10px] uppercase tracking-wider text-neutral-700 font-bold mb-1.5" data-i18n-html="programs.uae.form_label6">Preferred Language <span class="text-red-500">*</span></label>
-<select class="w-full bg-white/95 border border-neutral-300 rounded-xl px-4 py-3 text-xs focus:outline-none focus:border-[#786142] transition shadow-sm" required="">
+<select name="preferredLanguage" class="w-full bg-white/95 border border-neutral-300 rounded-xl px-4 py-3 text-xs focus:outline-none focus:border-[#786142] transition shadow-sm" required="">
 <option value="english" data-i18n="programs.uae.form_option1">English</option>
 <option value="arabic" data-i18n="programs.uae.form_option2">Arabic</option>
 <option value="russian" data-i18n="programs.uae.form_option3">Russian</option>
@@ -1878,7 +1878,7 @@
 </div>
 <div>
 <label class="block text-[10px] uppercase tracking-wider text-neutral-700 font-bold mb-1.5" data-i18n-html="programs.uae.form_label7">Family Members / Dependants <span class="text-red-500">*</span></label>
-<select class="w-full bg-white/95 border border-neutral-300 rounded-xl px-4 py-3 text-xs focus:outline-none focus:border-[#786142] transition shadow-sm" required="">
+<select name="familyMembers" class="w-full bg-white/95 border border-neutral-300 rounded-xl px-4 py-3 text-xs focus:outline-none focus:border-[#786142] transition shadow-sm" required="">
 <option value="single" data-i18n="programs.uae.form_option7">Single Applicant</option>
 <option value="couple" data-i18n="programs.uae.form_option8">Applicant + Spouse</option>
 <option value="family_small" data-i18n="programs.uae.form_option9">Family up to 4</option>
@@ -1890,7 +1890,7 @@
 <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
 <div>
 <label class="block text-[10px] uppercase tracking-wider text-neutral-700 font-bold mb-1.5" data-i18n-html="programs.uae.form_label8">Investment Route <span class="text-red-500">*</span></label>
-<select class="w-full bg-white/95 border border-neutral-300 rounded-xl px-4 py-3 text-xs focus:outline-none focus:border-[#786142] transition shadow-sm" required="">
+<select name="investmentRoute" class="w-full bg-white/95 border border-neutral-300 rounded-xl px-4 py-3 text-xs focus:outline-none focus:border-[#786142] transition shadow-sm" required="">
 <option selected="" value="real-estate" data-i18n="programs.uae.form_option11">Real Estate Investment (AED 2M+)</option>
 <option value="public-investment" data-i18n="programs.uae.form_option12">Public Investment & Funds (AED 2M+)</option>
 <option value="bank-deposit" data-i18n="programs.uae.form_option13">Bank Deposit (AED 2M+)</option>
@@ -1899,7 +1899,7 @@
 </div>
 <div>
 <label class="block text-[10px] uppercase tracking-wider text-neutral-700 font-bold mb-1.5" data-i18n-html="programs.uae.form_label9">Approx. Investment Budget <span class="text-red-500">*</span></label>
-<select class="w-full bg-white/95 border border-neutral-300 rounded-xl px-4 py-3 text-xs focus:outline-none focus:border-[#786142] transition shadow-sm" required="">
+<select name="budget" class="w-full bg-white/95 border border-neutral-300 rounded-xl px-4 py-3 text-xs focus:outline-none focus:border-[#786142] transition shadow-sm" required="">
 <option value="2m-3m" data-i18n="programs.uae.form_option15">AED 2,000,000 – AED 3,000,000 ($545k – $820k)</option>
 <option value="3m-5m" data-i18n="programs.uae.form_option16">AED 3,000,000 – AED 5,000,000 ($820k – $1.36M)</option>
 <option value="5m-10m" data-i18n="programs.uae.form_option17">AED 5,000,000 – AED 10,000,000 ($1.36M – $2.72M)</option>
@@ -1908,7 +1908,7 @@
 </div>
 <div>
 <label class="block text-[10px] uppercase tracking-wider text-neutral-700 font-bold mb-1.5" data-i18n-html="programs.uae.form_label10">Primary Objective <span class="text-red-500">*</span></label>
-<select class="w-full bg-white/95 border border-neutral-300 rounded-xl px-4 py-3 text-xs focus:outline-none focus:border-[#786142] transition shadow-sm" required="">
+<select name="objective" class="w-full bg-white/95 border border-neutral-300 rounded-xl px-4 py-3 text-xs focus:outline-none focus:border-[#786142] transition shadow-sm" required="">
 <option value="long-term-residency" data-i18n="programs.uae.form_option19">10-Year Long-Term UAE Residency Security</option>
 <option value="family" data-i18n="programs.uae.form_option20">Full Family & Dependent Sponsorship</option>
 <option value="tax" data-i18n="programs.uae.form_option21">0% Personal Income Tax & Wealth Protection</option>
@@ -1918,7 +1918,7 @@
 </div>
 <div>
 <label class="block text-[10px] uppercase tracking-wider text-neutral-700 font-bold mb-1.5" data-i18n-html="programs.uae.form_label11">Planning Timeline <span class="text-red-500">*</span></label>
-<select class="w-full bg-white/95 border border-neutral-300 rounded-xl px-4 py-3 text-xs focus:outline-none focus:border-[#786142] transition shadow-sm" required="">
+<select name="timeline" class="w-full bg-white/95 border border-neutral-300 rounded-xl px-4 py-3 text-xs focus:outline-none focus:border-[#786142] transition shadow-sm" required="">
 <option value="immediate" data-i18n="programs.uae.form_option24">Immediately (0–3 months)</option>
 <option value="short_term" data-i18n="programs.uae.form_option25">3–6 months</option>
 <option value="planning" data-i18n="programs.uae.form_option26">6–12 months</option>
@@ -1928,14 +1928,13 @@
 <!-- Row 4 -->
 <div>
 <label class="block text-[10px] uppercase tracking-wider text-neutral-700 font-bold mb-1.5" data-i18n="programs.uae.form_label12">Optional Message / Special Considerations</label>
-<textarea class="w-full bg-white/95 border border-neutral-300 rounded-xl p-4 text-xs focus:outline-none focus:border-[#786142] transition shadow-sm" placeholder="Specify any family parameters, target timelines, or specific questions..." data-i18n-placeholder="programs.uae.placeholderMessage" rows="3"></textarea>
+<textarea name="notes" class="w-full bg-white/95 border border-neutral-300 rounded-xl p-4 text-xs focus:outline-none focus:border-[#786142] transition shadow-sm" placeholder="Specify any family parameters, target timelines, or specific questions..." data-i18n-placeholder="programs.uae.placeholderMessage" rows="3"></textarea>
 </div>
 <!-- Row 5 -->
 <div class="space-y-2 pt-2 border-t border-neutral-300/60">
 <label class="flex items-start space-x-3 cursor-pointer">
 <input class="mt-0.5 rounded border-neutral-300 text-[#786142] focus:ring-[#786142]" required="" type="checkbox"/>
 <span class="text-xs text-neutral-600 font-light leading-relaxed" data-i18n-html="programs.uae.formConsent">I consent to Sharif Group storing and processing my personal details for consultation and pre-screening purposes in accordance with the <a class="text-[#786142] underline font-bold" href="../../../privacypolicy/index.html">Privacy Policy</a>. <span class="text-red-500">*</span></span>
-</span>
 </label>
 </div>
 <div class="pt-2 text-center">
@@ -2878,5 +2877,6 @@ document.addEventListener('DOMContentLoaded', () => {
 </script>
 <script src="../../../assets/js/language-switcher.js"></script>
 <script src="../../../admin/cms-loader.js"></script>
+<script src="../../../assets/js/forms.js"></script>
 </body>
 </html>
