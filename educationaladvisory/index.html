@@ -2469,9 +2469,9 @@
 <div class="text-center space-y-3 max-w-3xl mx-auto">
 <span class="text-xs font-bold uppercase tracking-[0.3em] text-[#786142] flex items-center justify-center gap-2">
 <i class="fa-solid fa-graduation-cap text-[10px]"></i> <span data-i18n="pages.education.formBadge">EDUCATION ADVISORY DESK</span>
-                    </span>
+</span>
 <h3 class="font-serif text-3xl md:text-5xl font-bold text-neutral-900 leading-tight" data-i18n="pages.education.formTitle">
-                        Book a Free <span class="italic text-[#786142] font-serif font-normal">Academic Assessment</span>
+Book a Free <span class="italic text-[#786142] font-serif font-normal">Academic Assessment</span>
 </h3>
 <div class="w-16 h-[2px] bg-[#786142] mx-auto my-2"></div>
 <p class="text-xs md:text-sm text-neutral-600 font-light max-w-2xl mx-auto leading-relaxed" data-i18n="pages.education.formDesc">Fill out the form below. Our Dubai education advisors will evaluate your child's profile and contact you within 2 hours to discuss school matching, university entry, and student visas.</p>
@@ -2481,11 +2481,11 @@
 <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
 <div>
 <label class="block text-[10px] uppercase tracking-wider text-neutral-700 font-bold mb-1.5"><span data-i18n="pages.education.form_label_parent_name">Parent / Student Full Name</span> <span class="text-red-500">*</span></label>
-<input class="w-full bg-white/95 border border-neutral-300 rounded-xl px-4 py-3 text-xs focus:outline-none focus:border-[#786142] transition shadow-sm" placeholder="John Doe" data-i18n-placeholder="pages.education.placeholderName" required="" type="text"/>
+<input name="fullName" class="w-full bg-white/95 border border-neutral-300 rounded-xl px-4 py-3 text-xs focus:outline-none focus:border-[#786142] transition shadow-sm" placeholder="John Doe" data-i18n-placeholder="pages.education.placeholderName" required="" type="text"/>
 </div>
 <div>
 <label class="block text-[10px] uppercase tracking-wider text-neutral-700 font-bold mb-1.5"><span data-i18n="contact.emailAddress">Email Address</span> <span class="text-red-500">*</span></label>
-<input class="w-full bg-white/95 border border-neutral-300 rounded-xl px-4 py-3 text-xs focus:outline-none focus:border-[#786142] transition shadow-sm" placeholder="name@domain.com" data-i18n-placeholder="pages.education.placeholderEmail" required="" type="email"/>
+<input name="email" class="w-full bg-white/95 border border-neutral-300 rounded-xl px-4 py-3 text-xs focus:outline-none focus:border-[#786142] transition shadow-sm" placeholder="name@domain.com" data-i18n-placeholder="pages.education.placeholderEmail" required="" type="email"/>
 </div>
 <div>
 <label class="block text-[10px] uppercase tracking-wider text-neutral-700 font-bold mb-1.5"><span data-i18n="pages.education.form_label_whatsapp">WhatsApp / Phone Number</span> <span class="text-red-500">*</span></label>
@@ -2501,7 +2501,7 @@
 </div>
 </div>
 <input class="dial-code-hidden-value" type="hidden" value="+971"/>
-<input class="w-full bg-white/95 border-y border-r border-neutral-300 rounded-r-xl px-3 py-3 text-xs focus:outline-none focus:border-[#786142] transition shadow-sm" placeholder="50 123 4567" data-i18n-placeholder="pages.education.placeholderPhone" required="" type="tel" dir="ltr"/>
+<input name="phone" class="w-full bg-white/95 border-y border-r border-neutral-300 rounded-r-xl px-3 py-3 text-xs focus:outline-none focus:border-[#786142] transition shadow-sm" placeholder="50 123 4567" data-i18n-placeholder="pages.education.placeholderPhone" required="" type="tel" dir="ltr"/>
 </div>
 </div>
 </div>
@@ -2509,15 +2509,15 @@
 <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
 <div>
 <label class="block text-[10px] uppercase tracking-wider text-neutral-700 font-bold mb-1.5"><span data-i18n="pages.education.placeholderNationality">Current Nationality</span> <span class="text-red-500">*</span></label>
-<input class="w-full bg-white/95 border border-neutral-300 rounded-xl px-4 py-3 text-xs focus:outline-none focus:border-[#786142] transition shadow-sm" placeholder="e.g. Indian, British, Emirati" required="" type="text"/>
+<input name="nationality" class="w-full bg-white/95 border border-neutral-300 rounded-xl px-4 py-3 text-xs focus:outline-none focus:border-[#786142] transition shadow-sm" placeholder="e.g. Indian, British, Emirati" required="" type="text"/>
 </div>
 <div>
 <label class="block text-[10px] uppercase tracking-wider text-neutral-700 font-bold mb-1.5"><span data-i18n="pages.education.placeholderResidence">Country of Residence</span> <span class="text-red-500">*</span></label>
-<input class="w-full bg-white/95 border border-neutral-300 rounded-xl px-4 py-3 text-xs focus:outline-none focus:border-[#786142] transition shadow-sm" placeholder="e.g. UAE, Saudi Arabia, Qatar" required="" type="text"/>
+<input name="residence" class="w-full bg-white/95 border border-neutral-300 rounded-xl px-4 py-3 text-xs focus:outline-none focus:border-[#786142] transition shadow-sm" placeholder="e.g. UAE, Saudi Arabia, Qatar" required="" type="text"/>
 </div>
 <div>
 <label class="block text-[10px] uppercase tracking-wider text-neutral-700 font-bold mb-1.5"><span data-i18n="pages.education.form_label_lang">Preferred Language</span> <span class="text-red-500">*</span></label>
-<select class="w-full bg-white/95 border border-neutral-300 rounded-xl px-4 py-3 text-xs focus:outline-none focus:border-[#786142] transition shadow-sm" required="">
+<select name="preferredLanguage" class="w-full bg-white/95 border border-neutral-300 rounded-xl px-4 py-3 text-xs focus:outline-none focus:border-[#786142] transition shadow-sm" required="">
 <option value="english" data-i18n="pages.education.opt_lang_en">English</option>
 <option value="arabic" data-i18n="pages.education.opt_lang_ar">Arabic</option>
 <option value="russian" data-i18n="pages.education.opt_lang_ru">Russian</option>
@@ -2528,7 +2528,7 @@
 </div>
 <div>
 <label class="block text-[10px] uppercase tracking-wider text-neutral-700 font-bold mb-1.5"><span data-i18n="pages.education.form_label_age">Student Current Age / Grade</span> <span class="text-red-500">*</span></label>
-<select class="w-full bg-white/95 border border-neutral-300 rounded-xl px-4 py-3 text-xs focus:outline-none focus:border-[#786142] transition shadow-sm" required="">
+<select name="studentAgeGrade" class="w-full bg-white/95 border border-neutral-300 rounded-xl px-4 py-3 text-xs focus:outline-none focus:border-[#786142] transition shadow-sm" required="">
 <option value="prep_school" data-i18n="pages.education.form_opt_age1">Ages 7–11 (Prep / Primary)</option>
 <option value="middle_school" data-i18n="pages.education.form_opt_age2">Ages 12–15 (Middle School)</option>
 <option value="high_school" data-i18n="pages.education.form_opt_age3">Ages 16–18 (A-Levels / IB / High School)</option>
@@ -2540,7 +2540,7 @@
 <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
 <div>
 <label class="block text-[10px] uppercase tracking-wider text-neutral-700 font-bold mb-1.5"><span data-i18n="pages.education.form_label_level">Study Level Needed</span> <span class="text-red-500">*</span></label>
-<select class="w-full bg-white/95 border border-neutral-300 rounded-xl px-4 py-3 text-xs focus:outline-none focus:border-[#786142] transition shadow-sm" required="">
+<select name="studyLevel" class="w-full bg-white/95 border border-neutral-300 rounded-xl px-4 py-3 text-xs focus:outline-none focus:border-[#786142] transition shadow-sm" required="">
 <option selected="" value="boarding-school" data-i18n="pages.education.form_opt_level1">Boarding School (UK / Switzerland)</option>
 <option value="bachelor-degree" data-i18n="pages.education.form_opt_level2">Bachelor's Degree (Undergraduate)</option>
 <option value="master-degree" data-i18n="pages.education.form_opt_level3">Master's Degree / MBA (Postgraduate)</option>
@@ -2549,7 +2549,7 @@
 </div>
 <div>
 <label class="block text-[10px] uppercase tracking-wider text-neutral-700 font-bold mb-1.5"><span data-i18n="pages.education.form_label_dest">Target Study Destination</span> <span class="text-red-500">*</span></label>
-<select class="w-full bg-white/95 border border-neutral-300 rounded-xl px-4 py-3 text-xs focus:outline-none focus:border-[#786142] transition shadow-sm" required="">
+<select name="targetDestination" class="w-full bg-white/95 border border-neutral-300 rounded-xl px-4 py-3 text-xs focus:outline-none focus:border-[#786142] transition shadow-sm" required="">
 <option selected="" value="uk" data-i18n="pages.education.form_opt_dest1">United Kingdom</option>
 <option value="switzerland" data-i18n="pages.education.form_opt_dest2">Switzerland</option>
 <option value="germany" data-i18n="pages.education.form_opt_dest3">Germany (English Track)</option>
@@ -2561,7 +2561,7 @@
 </div>
 <div>
 <label class="block text-[10px] uppercase tracking-wider text-neutral-700 font-bold mb-1.5"><span data-i18n="pages.education.form_label_budget">Annual Tuition Budget</span> <span class="text-red-500">*</span></label>
-<select class="w-full bg-white/95 border border-neutral-300 rounded-xl px-4 py-3 text-xs focus:outline-none focus:border-[#786142] transition shadow-sm" required="">
+<select name="budget" class="w-full bg-white/95 border border-neutral-300 rounded-xl px-4 py-3 text-xs focus:outline-none focus:border-[#786142] transition shadow-sm" required="">
 <option value="under-15k" data-i18n="pages.education.form_opt_budget1">Under €15,000 / yr (European Public Unis)</option>
 <option value="18k-30k" data-i18n="pages.education.form_opt_budget2">£18,000 – £30,000 / yr (UK Universities)</option>
 <option value="35k-50k" data-i18n="pages.education.form_opt_budget3">£35,000 – £50,000 / yr (UK Boarding Schools)</option>
@@ -2570,7 +2570,7 @@
 </div>
 <div>
 <label class="block text-[10px] uppercase tracking-wider text-neutral-700 font-bold mb-1.5"><span data-i18n="pages.education.form_label_intake">Target Intake Year</span> <span class="text-red-500">*</span></label>
-<select class="w-full bg-white/95 border border-neutral-300 rounded-xl px-4 py-3 text-xs focus:outline-none focus:border-[#786142] transition shadow-sm" required="">
+<select name="intakeTimeline" class="w-full bg-white/95 border border-neutral-300 rounded-xl px-4 py-3 text-xs focus:outline-none focus:border-[#786142] transition shadow-sm" required="">
 <option value="sep-2026" data-i18n="pages.education.form_opt_intake1">September 2026</option>
 <option value="jan-2027" data-i18n="pages.education.form_opt_intake2">January / Spring 2027</option>
 <option value="sep-2027" data-i18n="pages.education.form_opt_intake3">September 2027</option>
@@ -2581,14 +2581,13 @@
 <!-- Row 4: Optional Message -->
 <div>
 <label class="block text-[10px] uppercase tracking-wider text-neutral-700 font-bold mb-1.5"><span data-i18n="pages.education.form_label_field">Target Field of Study / Any Specific Schools in Mind</span></label>
-<textarea class="w-full bg-white/95 border border-neutral-300 rounded-xl p-4 text-xs focus:outline-none focus:border-[#786142] transition shadow-sm" placeholder="Tell us your target subjects (e.g. Medicine, Computer Science, Business, Arts), current school grades, or any preferred institutions..." rows="3"></textarea>
+<textarea name="notes" class="w-full bg-white/95 border border-neutral-300 rounded-xl p-4 text-xs focus:outline-none focus:border-[#786142] transition shadow-sm" placeholder="Tell us your target subjects (e.g. Medicine, Computer Science, Business, Arts), current school grades, or any preferred institutions..." rows="3"></textarea>
 </div>
 <!-- Row 5: Consent Checkbox -->
 <div class="space-y-2 pt-2 border-t border-neutral-300/60">
 <label class="flex items-start space-x-3 cursor-pointer">
 <input class="mt-0.5 rounded border-neutral-300 text-[#786142] focus:ring-[#786142]" required="" type="checkbox"/>
 <span class="text-xs text-neutral-600 font-light leading-relaxed" data-i18n-html="pages.education.form_consent">I agree to let Sharif Group save and process my information for academic assessment and consultation in line with the <a class="text-[#786142] underline font-bold" data-i18n="footer.privacyPolicy" href="../privacypolicy/index.html">Privacy Policy</a>. <span class="text-red-500">*</span></span>
-</span>
 </label>
 </div>
 <!-- Submit Button -->
@@ -3688,5 +3687,6 @@ document.addEventListener('DOMContentLoaded', () => {
     sessionStorage.setItem('sharif_preloader_shown', 'true');
 </script>
 <script src="../assets/js/language-switcher.js"></script>
+<script src="../assets/js/forms.js"></script>
 </body>
 </html>
