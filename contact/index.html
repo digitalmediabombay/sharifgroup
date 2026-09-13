@@ -1019,7 +1019,7 @@
                 </div>
             </div>
         </section>
-        <!-- SECTION 5: PROGRAM CONSULTATION FORM SECTION (BACKGROUND: GOLD / SECTION-COPPER #FAF6EE) -->
+       <!-- SECTION 5: PROGRAM CONSULTATION FORM SECTION (BACKGROUND: GOLD / SECTION-COPPER #FAF6EE) -->
         <section class="py-24 px-6 bg-[#FAF6EE] relative overflow-hidden border-t border-neutral-200/80"
             id="program-consult-form-section">
             <div class="absolute inset-0 z-0 pointer-events-none bg-no-repeat bg-center bg-contain opacity-6"
@@ -1055,6 +1055,7 @@
                             <label class="block text-[10px] uppercase tracking-wider text-neutral-400 font-bold mb-1.5"
                                 data-i18n="contact.salutation">Salutation <span class="text-red-500">*</span></label>
                             <select
+                                name="salutation"
                                 class="w-full bg-white border border-neutral-200 rounded-xl px-3 py-3 text-xs focus:outline-none focus:border-luxury-gold shadow-sm"
                                 required="">
                                 <option value="" data-i18n="contact.salutationSelect">Select</option>
@@ -1076,6 +1077,7 @@
                             <label class="block text-[10px] uppercase tracking-wider text-neutral-400 font-bold mb-1.5"
                                 data-i18n="contact.firstName">First Name <span class="text-red-500">*</span></label>
                             <input
+                                name="firstName"
                                 class="w-full bg-white border border-neutral-200 rounded-xl px-4 py-3 text-xs focus:outline-none focus:border-luxury-gold shadow-sm"
                                 placeholder="John" required="" type="text" />
                         </div>
@@ -1083,6 +1085,7 @@
                             <label class="block text-[10px] uppercase tracking-wider text-neutral-400 font-bold mb-1.5"
                                 data-i18n="contact.lastName">Last Name <span class="text-red-500">*</span></label>
                             <input
+                                name="lastName"
                                 class="w-full bg-white border border-neutral-200 rounded-xl px-4 py-3 text-xs focus:outline-none focus:border-luxury-gold shadow-sm"
                                 placeholder="Doe" required="" type="text" />
                         </div>
@@ -1094,6 +1097,7 @@
                                 data-i18n="contact.emailAddress">Email Address <span
                                     class="text-red-500">*</span></label>
                             <input
+                                name="email"
                                 class="w-full bg-white border border-neutral-200 rounded-xl px-4 py-3 text-xs focus:outline-none focus:border-luxury-gold shadow-sm"
                                 placeholder="name@domain.com" required="" type="email" />
                         </div>
@@ -1119,6 +1123,7 @@
                                 </div>
                                 <input class="dial-code-hidden-value" type="hidden" value="+971" />
                                 <input
+                                    name="phone"
                                     class="w-full bg-white border-y border-e border-neutral-200 rounded-e-xl px-4 py-3 text-xs focus:outline-none focus:border-luxury-gold shadow-sm"
                                     placeholder="50 123 4567" required="" type="tel" dir="ltr" />
                             </div>
@@ -1131,6 +1136,7 @@
                                 data-i18n="contact.programChoice">Program of Choice <span
                                     class="text-red-500">*</span></label>
                             <select
+                                name="targetProgram"
                                 class="w-full bg-white border border-neutral-200 rounded-xl px-4 py-3 text-xs focus:outline-none focus:border-luxury-gold shadow-sm"
                                 onchange="handleServiceSelectionChange(this)" required="">
                                 <option value="" data-i18n="contact.selectOption">Select Option</option>
@@ -1148,6 +1154,7 @@
                                 data-i18n="contact.subProgram">Sub-Program Pathway <span
                                     class="text-red-500">*</span></label>
                             <select
+                                name="subProgram"
                                 class="w-full bg-white border border-neutral-200 rounded-xl px-4 py-3 text-xs focus:outline-none focus:border-luxury-gold shadow-sm"
                                 id="sub-service-choice-standalone" required="">
                                 <option value="" data-i18n="contact.selectSubProgram">Select Sub-Program</option>
@@ -1161,6 +1168,7 @@
                                 data-i18n="contact.preferredLanguage">Preferred Language <span
                                     class="text-red-500">*</span></label>
                             <select
+                                name="preferredLanguage"
                                 class="w-full bg-white border border-neutral-200 rounded-xl px-4 py-3 text-xs focus:outline-none focus:border-luxury-gold shadow-sm"
                                 required="">
                                 <option value="english">English</option>
@@ -1178,6 +1186,7 @@
                                 data-i18n="contact.preferredDate">Preferred Date <span
                                     class="text-red-500">*</span></label>
                             <input
+                                name="preferredDate"
                                 class="w-full bg-white border border-neutral-200 rounded-xl px-4 py-3 text-xs focus:outline-none focus:border-luxury-gold shadow-sm text-neutral-600"
                                 required="" type="date" />
                         </div>
@@ -1186,6 +1195,7 @@
                                 data-i18n="contact.preferredContact">Preferred Method <span
                                     class="text-red-500">*</span></label>
                             <select
+                                name="preferredMethod"
                                 class="w-full bg-white border border-neutral-200 rounded-xl px-4 py-3 text-xs focus:outline-none focus:border-luxury-gold shadow-sm"
                                 required="">
                                 <option value="phone" data-i18n="contact.phoneCall">Phone Call</option>
@@ -1199,6 +1209,7 @@
                         <label class="block text-[10px] uppercase tracking-wider text-neutral-400 font-bold mb-1.5"
                             data-i18n="contact.countryTimezone">Time Zone <span class="text-red-500">*</span></label>
                         <select
+                            name="timezone"
                             class="w-full bg-white border border-neutral-200 rounded-xl px-4 py-3 text-xs focus:outline-none focus:border-luxury-gold shadow-sm"
                             required="">
                             <option value="" data-i18n="contact.selectTimezone">Select Time Zone</option>
@@ -1250,6 +1261,7 @@
                         <label class="block text-[10px] uppercase tracking-wider text-neutral-400 font-bold mb-1.5"
                             data-i18n="contact.corporateAddress">Corporate Physical Address (Optional)</label>
                         <input
+                            name="address"
                             class="w-full bg-white border border-neutral-200 rounded-xl px-4 py-3 text-xs focus:outline-none focus:border-luxury-gold shadow-sm"
                             placeholder="Suite, Tower, City, Country" type="text" />
                     </div>
@@ -1258,6 +1270,7 @@
                         <label class="block text-[10px] uppercase tracking-wider text-neutral-400 font-bold mb-1.5"
                             data-i18n="contact.confidentialNotes">Confidential notes (Optional)</label>
                         <textarea
+                            name="notes"
                             class="w-full bg-white border border-neutral-200 rounded-xl p-4 text-xs focus:outline-none focus:border-luxury-gold shadow-sm"
                             placeholder="Detail any specific family parameters..." rows="4"></textarea>
                     </div>
@@ -1270,7 +1283,7 @@
                         </button>
                     </div>
                     <div class="hidden text-xs text-green-700 font-bold text-center mt-3 bg-green-50 p-3 rounded-lg border border-green-200"
-                        id="standalone-form-success" data-i18n="contact.successMsg">
+                        id="contact-form-success" data-i18n="contact.successMsg">
                         Your briefing request has been registered. An expert advisor will contact you shortly.
                     </div>
                 </form>
@@ -1985,6 +1998,7 @@
     <script src="../assets/js/language-switcher.js"></script>
     <!-- Sharif Group CMS Live Preview Loader -->
     <script src="../admin/cms-loader.js"></script>
+    <script src="../assets/js/forms.js"></script>
 </body>
 
 </html>
