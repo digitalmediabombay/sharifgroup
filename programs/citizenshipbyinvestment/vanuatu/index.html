@@ -2405,11 +2405,11 @@
                     <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
                         <div>
                             <label class="block text-[10px] uppercase tracking-wider text-neutral-700 font-bold mb-1.5" data-i18n-html="programs.vanuatu.form_label1">Full Name <span class="text-red-500">*</span></label>
-                            <input type="text" required placeholder="John Doe" data-i18n-placeholder="programs.vanuatu.placeholderName" class="w-full bg-white/95 border border-neutral-300 rounded-xl px-4 py-3 text-xs focus:outline-none focus:border-[#786142] transition shadow-sm">
+                            <input name="fullName" type="text" required placeholder="John Doe" data-i18n-placeholder="programs.vanuatu.placeholderName" class="w-full bg-white/95 border border-neutral-300 rounded-xl px-4 py-3 text-xs focus:outline-none focus:border-[#786142] transition shadow-sm">
                         </div>
                         <div>
                             <label class="block text-[10px] uppercase tracking-wider text-neutral-700 font-bold mb-1.5" data-i18n-html="programs.vanuatu.form_label2">Email Address <span class="text-red-500">*</span></label>
-                            <input type="email" required placeholder="name@domain.com" data-i18n-placeholder="programs.vanuatu.placeholderEmail" class="w-full bg-white/95 border border-neutral-300 rounded-xl px-4 py-3 text-xs focus:outline-none focus:border-[#786142] transition shadow-sm">
+                            <input name="email" type="email" required placeholder="name@domain.com" data-i18n-placeholder="programs.vanuatu.placeholderEmail" class="w-full bg-white/95 border border-neutral-300 rounded-xl px-4 py-3 text-xs focus:outline-none focus:border-[#786142] transition shadow-sm">
                         </div>
                         <div>
                             <label class="block text-[10px] uppercase tracking-wider text-neutral-700 font-bold mb-1.5" data-i18n-html="programs.vanuatu.form_label3">Mobile / WhatsApp Number <span class="text-red-500">*</span></label>
@@ -2425,7 +2425,7 @@
                                     </div>
                                 </div>
                                 <input type="hidden" class="dial-code-hidden-value" value="+971">
-                                <input type="tel" required placeholder="50 123 4567" class="w-full bg-white/95 border-y border-r border-neutral-300 rounded-r-xl px-3 py-3 text-xs focus:outline-none focus:border-[#786142] transition shadow-sm" dir="ltr">
+                                <input name="phone" type="tel" required placeholder="50 123 4567" class="w-full bg-white/95 border-y border-r border-neutral-300 rounded-r-xl px-3 py-3 text-xs focus:outline-none focus:border-[#786142] transition shadow-sm" dir="ltr">
                             </div>
                         </div>
                     </div>
@@ -2434,15 +2434,15 @@
                     <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
                         <div>
                             <label class="block text-[10px] uppercase tracking-wider text-neutral-700 font-bold mb-1.5" data-i18n-html="programs.vanuatu.form_label4">Current Nationality <span class="text-red-500">*</span></label>
-                            <input type="text" required placeholder="e.g. Indian, British, Egyptian" class="w-full bg-white/95 border border-neutral-300 rounded-xl px-4 py-3 text-xs focus:outline-none focus:border-[#786142] transition shadow-sm">
+                            <input name="nationality" type="text" required placeholder="e.g. Indian, British, Egyptian" class="w-full bg-white/95 border border-neutral-300 rounded-xl px-4 py-3 text-xs focus:outline-none focus:border-[#786142] transition shadow-sm">
                         </div>
                         <div>
                             <label class="block text-[10px] uppercase tracking-wider text-neutral-700 font-bold mb-1.5" data-i18n-html="programs.vanuatu.form_label5">Country of Residence <span class="text-red-500">*</span></label>
-                            <input type="text" required placeholder="e.g. UAE, Saudi Arabia, UK" class="w-full bg-white/95 border border-neutral-300 rounded-xl px-4 py-3 text-xs focus:outline-none focus:border-[#786142] transition shadow-sm">
+                            <input name="residence" type="text" required placeholder="e.g. UAE, Saudi Arabia, UK" class="w-full bg-white/95 border border-neutral-300 rounded-xl px-4 py-3 text-xs focus:outline-none focus:border-[#786142] transition shadow-sm">
                         </div>
                         <div>
                             <label class="block text-[10px] uppercase tracking-wider text-neutral-700 font-bold mb-1.5" data-i18n-html="programs.vanuatu.form_label6">Preferred Language <span class="text-red-500">*</span></label>
-                            <select required class="w-full bg-white/95 border border-neutral-300 rounded-xl px-4 py-3 text-xs focus:outline-none focus:border-[#786142] transition shadow-sm">
+                            <select name="preferredLanguage" required class="w-full bg-white/95 border border-neutral-300 rounded-xl px-4 py-3 text-xs focus:outline-none focus:border-[#786142] transition shadow-sm">
                                 <option value="english" data-i18n="programs.vanuatu.form_option1">English</option>
                                 <option value="arabic" data-i18n="programs.vanuatu.form_option2">Arabic</option>
                                 <option value="russian" data-i18n="programs.vanuatu.form_option3">Russian</option>
@@ -2453,7 +2453,7 @@
                         </div>
                         <div>
                             <label class="block text-[10px] uppercase tracking-wider text-neutral-700 font-bold mb-1.5" data-i18n-html="programs.vanuatu.form_label7">Family Members / Dependants <span class="text-red-500">*</span></label>
-                            <select required class="w-full bg-white/95 border border-neutral-300 rounded-xl px-4 py-3 text-xs focus:outline-none focus:border-[#786142] transition shadow-sm">
+                            <select name="familyMembers" required class="w-full bg-white/95 border border-neutral-300 rounded-xl px-4 py-3 text-xs focus:outline-none focus:border-[#786142] transition shadow-sm">
                                 <option value="single" data-i18n="programs.vanuatu.form_option7">Single Applicant</option>
                                 <option value="couple" data-i18n="programs.vanuatu.form_option8">Applicant + Spouse</option>
                                 <option value="family_small" data-i18n="programs.vanuatu.form_option9">Family up to 4</option>
@@ -2466,7 +2466,7 @@
                     <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
                         <div>
                             <label class="block text-[10px] uppercase tracking-wider text-neutral-700 font-bold mb-1.5" data-i18n-html="programs.vanuatu.form_label8">Investment Route <span class="text-red-500">*</span></label>
-                            <select required class="w-full bg-white/95 border border-neutral-300 rounded-xl px-4 py-3 text-xs focus:outline-none focus:border-[#786142] transition shadow-sm">
+                            <select name="investmentRoute" required class="w-full bg-white/95 border border-neutral-300 rounded-xl px-4 py-3 text-xs focus:outline-none focus:border-[#786142] transition shadow-sm">
                                 <option value="dsp" selected data-i18n="programs.vanuatu.form_option11">Development Support Program (DSP) ($130k+)</option>
                                 <option value="ciip" data-i18n="programs.vanuatu.form_option12">Capital Investment Immigration Plan (CIIP) ($260k+)</option>
                                 <option value="real-estate" data-i18n="programs.vanuatu.form_option13">Real Estate Option Program</option>
@@ -2474,7 +2474,7 @@
                         </div>
                         <div>
                             <label class="block text-[10px] uppercase tracking-wider text-neutral-700 font-bold mb-1.5" data-i18n-html="programs.vanuatu.form_label9">Approx. Investment Budget <span class="text-red-500">*</span></label>
-                            <select required class="w-full bg-white/95 border border-neutral-300 rounded-xl px-4 py-3 text-xs focus:outline-none focus:border-[#786142] transition shadow-sm">
+                            <select name="budget" required class="w-full bg-white/95 border border-neutral-300 rounded-xl px-4 py-3 text-xs focus:outline-none focus:border-[#786142] transition shadow-sm">
                                 <option value="130k-180k" data-i18n="programs.vanuatu.form_option14">$130,000 – $180,000</option>
                                 <option value="180k-260k" data-i18n="programs.vanuatu.form_option15">$180,000 – $260,000</option>
                                 <option value="260k-400k" data-i18n="programs.vanuatu.form_option16">$260,000 – $400,000</option>
@@ -2483,7 +2483,7 @@
                         </div>
                         <div>
                             <label class="block text-[10px] uppercase tracking-wider text-neutral-700 font-bold mb-1.5" data-i18n-html="programs.vanuatu.form_label10">Primary Objective <span class="text-red-500">*</span></label>
-                            <select required class="w-full bg-white/95 border border-neutral-300 rounded-xl px-4 py-3 text-xs focus:outline-none focus:border-[#786142] transition shadow-sm">
+                            <select name="objective" required class="w-full bg-white/95 border border-neutral-300 rounded-xl px-4 py-3 text-xs focus:outline-none focus:border-[#786142] transition shadow-sm">
                                 <option value="fast-track" data-i18n="programs.vanuatu.form_option18">Fastest Passport Processing (2–3 Months)</option>
                                 <option value="mobility" data-i18n="programs.vanuatu.form_option19">Global Access (96+ Destinations)</option>
                                 <option value="tax" data-i18n="programs.vanuatu.form_option20">0% Income & Global Tax Optimization</option>
@@ -2492,7 +2492,7 @@
                         </div>
                         <div>
                             <label class="block text-[10px] uppercase tracking-wider text-neutral-700 font-bold mb-1.5" data-i18n-html="programs.vanuatu.form_label11">Planning Timeline <span class="text-red-500">*</span></label>
-                            <select required class="w-full bg-white/95 border border-neutral-300 rounded-xl px-4 py-3 text-xs focus:outline-none focus:border-[#786142] transition shadow-sm">
+                            <select name="timeline" required class="w-full bg-white/95 border border-neutral-300 rounded-xl px-4 py-3 text-xs focus:outline-none focus:border-[#786142] transition shadow-sm">
                                 <option value="immediate" data-i18n="programs.vanuatu.form_option22">Immediately (0–3 months)</option>
                                 <option value="short_term" data-i18n="programs.vanuatu.form_option23">3–6 months</option>
                                 <option value="planning" data-i18n="programs.vanuatu.form_option24">6–12 months</option>
@@ -2503,7 +2503,7 @@
                     <!-- Row 4 -->
                     <div>
                         <label class="block text-[10px] uppercase tracking-wider text-neutral-700 font-bold mb-1.5" data-i18n="programs.vanuatu.form_label12">Optional Message / Special Considerations</label>
-                        <textarea rows="3" placeholder="Specify any family parameters, target timelines, or specific questions..." class="w-full bg-white/95 border border-neutral-300 rounded-xl p-4 text-xs focus:outline-none focus:border-[#786142] transition shadow-sm"></textarea>
+                        <textarea name="notes" rows="3" placeholder="Specify any family parameters, target timelines, or specific questions..." class="w-full bg-white/95 border border-neutral-300 rounded-xl p-4 text-xs focus:outline-none focus:border-[#786142] transition shadow-sm"></textarea>
                     </div>
 
                     <!-- Row 5 -->
@@ -3479,5 +3479,6 @@
 
 <script src="../../../assets/js/language-switcher.js"></script>
 <script src="../../../admin/cms-loader.js"></script>
+<script src="../../../assets/js/forms.js"></script>
 </body>
 </html>
