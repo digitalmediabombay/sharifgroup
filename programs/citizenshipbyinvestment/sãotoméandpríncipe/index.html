@@ -3726,8 +3726,26 @@
         }
 
         // Close dropdown smoothly when mouse leaves header zone
-        document.getElementById('main-header').addEventListener('mouseleave', scheduleMenuClose);
-        document.getElementById('main-header').addEventListener('mouseenter', clearMenuCloseTimer);
+        const mainHeader = document.getElementById('main-header');
+        if (mainHeader) {
+            mainHeader.addEventListener('mouseleave', scheduleMenuClose);
+            mainHeader.addEventListener('mouseenter', clearMenuCloseTimer);
+        }
+
+        document.addEventListener('DOMContentLoaded', () => {
+            document.querySelectorAll('.mega-dropdown').forEach(dropdown => {
+                dropdown.addEventListener('mouseenter', clearMenuCloseTimer);
+                dropdown.addEventListener('mouseleave', scheduleMenuClose);
+            });
+
+            document.querySelectorAll('[data-menu]').forEach(trigger => {
+                const menuId = trigger.getAttribute('data-menu');
+                if (menuId) {
+                    trigger.addEventListener('mouseenter', () => openMegaMenu(menuId));
+                    trigger.addEventListener('mouseleave', scheduleMenuClose);
+                }
+            });
+        });
     </script>
     <!-- FOOTER CANVAS SEAMLESS CROSSFADE SCRIPT -->
     <script>

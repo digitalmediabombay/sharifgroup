@@ -1545,11 +1545,19 @@
             });
         }
 
-        // Attach mouseenter listeners to dropdowns so they stay open when hovered directly
+        // Attach mouseenter listeners to dropdowns and triggers so they work reliably on hover
         document.addEventListener('DOMContentLoaded', () => {
             document.querySelectorAll('.mega-dropdown').forEach(dropdown => {
                 dropdown.addEventListener('mouseenter', () => clearTimeout(megaMenuTimer));
                 dropdown.addEventListener('mouseleave', scheduleCloseMegaMenus);
+            });
+
+            document.querySelectorAll('[data-menu]').forEach(trigger => {
+                const menuId = trigger.getAttribute('data-menu');
+                if (menuId) {
+                    trigger.addEventListener('mouseenter', () => openMegaMenu(menuId));
+                    trigger.addEventListener('mouseleave', scheduleCloseMegaMenus);
+                }
             });
         });
     </script>
