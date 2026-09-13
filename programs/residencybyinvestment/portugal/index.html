@@ -2018,11 +2018,11 @@
 <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
 <div>
 <label class="block text-[10px] uppercase tracking-wider text-neutral-700 font-bold mb-1.5" data-i18n-html="programs.portugal.form_label1">Full Name <span class="text-red-500">*</span></label>
-<input class="w-full bg-white/95 border border-neutral-300 rounded-xl px-4 py-3 text-xs focus:outline-none focus:border-[#786142] transition shadow-sm" placeholder="John Doe" data-i18n-placeholder="programs.portugal.placeholderName" required="" type="text"/>
+<input name="fullName" class="w-full bg-white/95 border border-neutral-300 rounded-xl px-4 py-3 text-xs focus:outline-none focus:border-[#786142] transition shadow-sm" placeholder="John Doe" data-i18n-placeholder="programs.portugal.placeholderName" required="" type="text"/>
 </div>
 <div>
 <label class="block text-[10px] uppercase tracking-wider text-neutral-700 font-bold mb-1.5" data-i18n-html="programs.portugal.form_label2">Email Address <span class="text-red-500">*</span></label>
-<input class="w-full bg-white/95 border border-neutral-300 rounded-xl px-4 py-3 text-xs focus:outline-none focus:border-[#786142] transition shadow-sm" placeholder="name@domain.com" data-i18n-placeholder="programs.portugal.placeholderEmail" required="" type="email"/>
+<input name="email" class="w-full bg-white/95 border border-neutral-300 rounded-xl px-4 py-3 text-xs focus:outline-none focus:border-[#786142] transition shadow-sm" placeholder="name@domain.com" data-i18n-placeholder="programs.portugal.placeholderEmail" required="" type="email"/>
 </div>
 <div>
 <label class="block text-[10px] uppercase tracking-wider text-neutral-700 font-bold mb-1.5" data-i18n-html="programs.portugal.form_label3">Mobile / WhatsApp Number <span class="text-red-500">*</span></label>
@@ -2038,7 +2038,7 @@
 </div>
 </div>
 <input class="dial-code-hidden-value" type="hidden" value="+971"/>
-<input class="w-full bg-white/95 border-y border-r border-neutral-300 rounded-r-xl px-3 py-3 text-xs focus:outline-none focus:border-[#786142] transition shadow-sm" placeholder="50 123 4567" data-i18n-placeholder="programs.portugal.placeholderPhone" required="" type="tel" dir="ltr"/>
+<input name="phone" class="w-full bg-white/95 border-y border-r border-neutral-300 rounded-r-xl px-3 py-3 text-xs focus:outline-none focus:border-[#786142] transition shadow-sm" placeholder="50 123 4567" data-i18n-placeholder="programs.portugal.placeholderPhone" required="" type="tel" dir="ltr"/>
 </div>
 </div>
 </div>
@@ -2046,15 +2046,15 @@
 <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
 <div>
 <label class="block text-[10px] uppercase tracking-wider text-neutral-700 font-bold mb-1.5" data-i18n-html="programs.portugal.form_label4">Current Nationality <span class="text-red-500">*</span></label>
-<input class="w-full bg-white/95 border border-neutral-300 rounded-xl px-4 py-3 text-xs focus:outline-none focus:border-[#786142] transition shadow-sm" placeholder="e.g. Indian, British, Egyptian" data-i18n-placeholder="programs.portugal.placeholderNationality" required="" type="text"/>
+<input name="nationality" class="w-full bg-white/95 border border-neutral-300 rounded-xl px-4 py-3 text-xs focus:outline-none focus:border-[#786142] transition shadow-sm" placeholder="e.g. Indian, British, American" data-i18n-placeholder="programs.portugal.placeholderNationality" required="" type="text"/>
 </div>
 <div>
 <label class="block text-[10px] uppercase tracking-wider text-neutral-700 font-bold mb-1.5" data-i18n-html="programs.portugal.form_label5">Country of Residence <span class="text-red-500">*</span></label>
-<input class="w-full bg-white/95 border border-neutral-300 rounded-xl px-4 py-3 text-xs focus:outline-none focus:border-[#786142] transition shadow-sm" placeholder="e.g. UAE, Saudi Arabia, UK" data-i18n-placeholder="programs.portugal.placeholderResidence" required="" type="text"/>
+<input name="residence" class="w-full bg-white/95 border border-neutral-300 rounded-xl px-4 py-3 text-xs focus:outline-none focus:border-[#786142] transition shadow-sm" placeholder="e.g. UAE, Saudi Arabia, USA" data-i18n-placeholder="programs.portugal.placeholderResidence" required="" type="text"/>
 </div>
 <div>
 <label class="block text-[10px] uppercase tracking-wider text-neutral-700 font-bold mb-1.5" data-i18n-html="programs.portugal.form_label6">Preferred Language <span class="text-red-500">*</span></label>
-<select class="w-full bg-white/95 border border-neutral-300 rounded-xl px-4 py-3 text-xs focus:outline-none focus:border-[#786142] transition shadow-sm" required="">
+<select name="preferredLanguage" class="w-full bg-white/95 border border-neutral-300 rounded-xl px-4 py-3 text-xs focus:outline-none focus:border-[#786142] transition shadow-sm" required="">
 <option value="english" data-i18n="programs.portugal.form_option1">English</option>
 <option value="arabic" data-i18n="programs.portugal.form_option2">Arabic</option>
 <option value="russian" data-i18n="programs.portugal.form_option3">Russian</option>
@@ -2065,9 +2065,9 @@
 </div>
 <div>
 <label class="block text-[10px] uppercase tracking-wider text-neutral-700 font-bold mb-1.5" data-i18n-html="programs.portugal.form_label7">Family Members / Dependants <span class="text-red-500">*</span></label>
-<select class="w-full bg-white/95 border border-neutral-300 rounded-xl px-4 py-3 text-xs focus:outline-none focus:border-[#786142] transition shadow-sm" required="">
-<option value="single" data-i18n="programs.portugal.formFamilySingle">Single Applicant</option>
-<option value="couple" data-i18n="programs.portugal.formFamilySpouse">Applicant + Spouse</option>
+<select name="familyMembers" class="w-full bg-white/95 border border-neutral-300 rounded-xl px-4 py-3 text-xs focus:outline-none focus:border-[#786142] transition shadow-sm" required="">
+<option value="single" data-i18n="programs.portugal.form_option7">Single Applicant</option>
+<option value="couple" data-i18n="programs.portugal.form_option8">Applicant + Spouse</option>
 <option value="family_small" data-i18n="programs.portugal.form_option9">Family up to 4</option>
 <option value="family_large" data-i18n="programs.portugal.form_option10">Family of 5+</option>
 </select>
@@ -2077,36 +2077,36 @@
 <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
 <div>
 <label class="block text-[10px] uppercase tracking-wider text-neutral-700 font-bold mb-1.5" data-i18n-html="programs.portugal.form_label8">Investment Route <span class="text-red-500">*</span></label>
-<select class="w-full bg-white/95 border border-neutral-300 rounded-xl px-4 py-3 text-xs focus:outline-none focus:border-[#786142] transition shadow-sm" required="">
-<option selected="" value="fund" data-i18n="programs.portugal.form_option11">CMVM-Regulated Investment Fund (€500k+)</option>
-<option value="cultural" data-i18n="programs.portugal.formRouteHeritage">Cultural Heritage Support (€250k+)</option>
-<option value="scientific" data-i18n="programs.portugal.formRouteScience">Scientific Research Activity (€500k+)</option>
-<option value="job_creation" data-i18n="programs.portugal.form_option14">Job Creation (10 Jobs)</option>
-<option value="business_capital" data-i18n="programs.portugal.form_option15">Business Capital &amp; Jobs (€500k+)</option>
+<select name="investmentRoute" class="w-full bg-white/95 border border-neutral-300 rounded-xl px-4 py-3 text-xs focus:outline-none focus:border-[#786142] transition shadow-sm" required="">
+<option selected="" value="regulated-fund" data-i18n="programs.portugal.form_option11">Investment Fund (€500k)</option>
+<option value="cultural-heritage" data-i18n="programs.portugal.form_option12">Cultural Heritage / Arts (€250k)</option>
+<option value="scientific-research" data-i18n="programs.portugal.form_option13">Scientific Research (€500k)</option>
+<option value="business-job-creation" data-i18n="programs.portugal.form_option14">Business & Job Creation (€500k)</option>
 </select>
 </div>
 <div>
 <label class="block text-[10px] uppercase tracking-wider text-neutral-700 font-bold mb-1.5" data-i18n-html="programs.portugal.form_label9">Approx. Investment Budget <span class="text-red-500">*</span></label>
-<select class="w-full bg-white/95 border border-neutral-300 rounded-xl px-4 py-3 text-xs focus:outline-none focus:border-[#786142] transition shadow-sm" required="">
-<option value="250k-500k" data-i18n="programs.portugal.form_option16">€250,000 – €500,000</option>
-<option value="500k-750k" data-i18n="programs.portugal.form_option17">€500,000 – €750,000</option>
-<option value="750k+" data-i18n="programs.portugal.form_option18">€750,000 or more</option>
+<select name="budget" class="w-full bg-white/95 border border-neutral-300 rounded-xl px-4 py-3 text-xs focus:outline-none focus:border-[#786142] transition shadow-sm" required="">
+<option value="250k-500k" data-i18n="programs.portugal.form_option15">€250,000 – €500,000</option>
+<option value="500k-750k" data-i18n="programs.portugal.form_option16">€500,000 – €750,000</option>
+<option value="750k-1m" data-i18n="programs.portugal.form_option17">€750,000 – €1,000,000</option>
+<option value="1m+" data-i18n="programs.portugal.form_option18">€1,000,000+</option>
 </select>
 </div>
 <div>
 <label class="block text-[10px] uppercase tracking-wider text-neutral-700 font-bold mb-1.5" data-i18n-html="programs.portugal.form_label10">Primary Objective <span class="text-red-500">*</span></label>
-<select class="w-full bg-white/95 border border-neutral-300 rounded-xl px-4 py-3 text-xs focus:outline-none focus:border-[#786142] transition shadow-sm" required="">
-<option value="eu-citizenship" data-i18n="programs.portugal.form_option19">EU Passport Track in 5 Years</option>
-<option value="schengen" data-i18n="programs.portugal.form_option20">Schengen Visa-Free Mobility (29 Nations)</option>
-<option value="security" data-i18n="programs.portugal.form_option21">Premier European Residency &amp; Plan B</option>
-<option value="tax" data-i18n="programs.portugal.formGoalTax">Tax Optimization &amp; Wealth Protection</option>
-<option value="lifestyle" data-i18n="programs.portugal.formGoalLifestyle">Quality European Lifestyle &amp; Low Stay Requirement</option>
+<select name="objective" class="w-full bg-white/95 border border-neutral-300 rounded-xl px-4 py-3 text-xs focus:outline-none focus:border-[#786142] transition shadow-sm" required="">
+<option value="eu-citizenship" data-i18n="programs.portugal.form_option19">Pathway to EU Citizenship (5 Years)</option>
+<option value="schengen-mobility" data-i18n="programs.portugal.form_option20">Visa-Free Schengen Mobility</option>
+<option value="minimal-stay" data-i18n="programs.portugal.form_option21">Minimal Physical Presence (7 days/yr)</option>
+<option value="family-inclusion" data-i18n="programs.portugal.form_option22">Include Dependent Children & Parents</option>
+<option value="tax-planning" data-i18n="programs.portugal.form_option23">International Tax & Wealth Planning</option>
 </select>
 </div>
 <div>
 <label class="block text-[10px] uppercase tracking-wider text-neutral-700 font-bold mb-1.5" data-i18n-html="programs.portugal.form_label11">Planning Timeline <span class="text-red-500">*</span></label>
-<select class="w-full bg-white/95 border border-neutral-300 rounded-xl px-4 py-3 text-xs focus:outline-none focus:border-[#786142] transition shadow-sm" required="">
-<option value="immediate" data-i18n="programs.portugal.formTime03">Immediately (0–3 months)</option>
+<select name="timeline" class="w-full bg-white/95 border border-neutral-300 rounded-xl px-4 py-3 text-xs focus:outline-none focus:border-[#786142] transition shadow-sm" required="">
+<option value="immediate" data-i18n="programs.portugal.form_option24">Immediately (0–3 months)</option>
 <option value="short_term" data-i18n="programs.portugal.form_option25">3–6 months</option>
 <option value="planning" data-i18n="programs.portugal.form_option26">6–12 months</option>
 </select>
@@ -2115,22 +2115,19 @@
 <!-- Row 4 -->
 <div>
 <label class="block text-[10px] uppercase tracking-wider text-neutral-700 font-bold mb-1.5" data-i18n="programs.portugal.form_label12">Optional Message / Special Considerations</label>
-<textarea class="w-full bg-white/95 border border-neutral-300 rounded-xl p-4 text-xs focus:outline-none focus:border-[#786142] transition shadow-sm" placeholder="Specify any family parameters, target timelines, or specific questions..." data-i18n-placeholder="programs.portugal.placeholderMessage" rows="3"></textarea>
+<textarea name="notes" class="w-full bg-white/95 border border-neutral-300 rounded-xl p-4 text-xs focus:outline-none focus:border-[#786142] transition shadow-sm" placeholder="Specify any family parameters, target timelines, or specific questions..." data-i18n-placeholder="programs.portugal.placeholderMessage" rows="3"></textarea>
 </div>
 <!-- Row 5 -->
 <div class="space-y-2 pt-2 border-t border-neutral-300/60">
 <label class="flex items-start space-x-3 cursor-pointer">
 <input class="mt-0.5 rounded border-neutral-300 text-[#786142] focus:ring-[#786142]" required="" type="checkbox"/>
-<span class="text-xs text-neutral-600 font-light leading-relaxed" data-i18n-html="programs.portugal.formConsent">I consent to Sharif Group storing and processing my personal details for consultation and pre-screening purposes in accordance with the <a class="text-[#786142] underline font-bold" data-i18n="footer.privacyPolicy" href="../../../privacypolicy/index.html">Privacy Policy</a>. <span class="text-red-500">*</span></span>
-</span>
+<span class="text-xs text-neutral-600 font-light leading-relaxed" data-i18n-html="programs.portugal.formConsent">I consent to Sharif Group storing and processing my personal details for consultation and pre-screening purposes in accordance with the <a class="text-[#786142] underline font-bold" href="../../../privacypolicy/index.html">Privacy Policy</a>. <span class="text-red-500">*</span></span>
 </label>
 </div>
 <div class="pt-2 text-center">
 <button class="px-12 py-4 bg-[#786142] text-white text-xs uppercase tracking-widest font-bold hover:bg-neutral-900 transition duration-300 rounded-xl shadow-lg" type="submit" data-i18n="programs.portugal.formSubmit">Submit Confidential Request →</button>
 </div>
-<div class="hidden text-xs text-green-700 font-bold text-center mt-3 bg-green-50 p-3 rounded-lg border border-green-200" id="contact-form-success">
-                        Thank you. Your inquiry has been sent successfully. An advisory partner will reach out within 2 hours.
-                    </div>
+<div class="hidden text-xs text-green-700 font-bold text-center mt-3 bg-green-50 p-3 rounded-lg border border-green-200" id="contact-form-success" data-i18n="programs.portugal.formSuccess">Thank you. Your inquiry has been sent successfully. An advisory partner will reach out within 2 hours.</div>
 </form>
 </div>
 </section>
@@ -3051,5 +3048,6 @@ document.addEventListener('DOMContentLoaded', () => {
 </script>
 <script src="../../../assets/js/language-switcher.js"></script>
 <script src="../../../admin/cms-loader.js"></script>
+<script src="../../../assets/js/forms.js"></script>
 </body>
 </html>
