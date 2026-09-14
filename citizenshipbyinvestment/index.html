@@ -1206,6 +1206,7 @@
                                 class="block text-[10px] uppercase tracking-wider text-neutral-400 font-bold mb-1.5">Email
                                 Address <span class="text-red-500">*</span></label>
                             <input
+                                name="email"
                                 class="w-full bg-white border border-neutral-200 rounded-xl px-4 py-3 text-xs focus:outline-none focus:border-luxury-gold shadow-sm"
                                 placeholder="name@domain.com" required="" type="email" />
                         </div>
@@ -1232,6 +1233,7 @@
                                 </div>
                                 <input class="dial-code-hidden-value" type="hidden" value="+971" />
                                 <input
+                                    name="phone"
                                     class="w-full bg-white border-y border-r border-neutral-200 rounded-r-xl px-4 py-3 text-xs focus:outline-none focus:border-luxury-gold shadow-sm"
                                     placeholder="50 123 4567" required="" type="tel" dir="ltr" />
                             </div>
@@ -1244,6 +1246,7 @@
                                 class="block text-[10px] uppercase tracking-wider text-neutral-400 font-bold mb-1.5">Program
                                 of Choice <span class="text-red-500">*</span></label>
                             <select
+                                name="targetProgram"
                                 class="w-full bg-white border border-neutral-200 rounded-xl px-4 py-3 text-xs focus:outline-none focus:border-luxury-gold shadow-sm"
                                 onchange="handleServiceSelectionChange(this)" required="">
                                 <option value="">Select Option</option>
@@ -1259,6 +1262,7 @@
                                 class="block text-[10px] uppercase tracking-wider text-neutral-400 font-bold mb-1.5">Sub-Program
                                 Pathway <span class="text-red-500">*</span></label>
                             <select
+                                name="subProgram"
                                 class="w-full bg-white border border-neutral-200 rounded-xl px-4 py-3 text-xs focus:outline-none focus:border-luxury-gold shadow-sm"
                                 id="sub-service-choice-standalone" required="">
                                 <option value="">Select Sub-Program</option>
@@ -1272,6 +1276,7 @@
                                 class="block text-[10px] uppercase tracking-wider text-neutral-400 font-bold mb-1.5">Preferred
                                 Language <span class="text-red-500">*</span></label>
                             <select
+                                name="preferredLanguage"
                                 class="w-full bg-white border border-neutral-200 rounded-xl px-4 py-3 text-xs focus:outline-none focus:border-luxury-gold shadow-sm"
                                 required="">
                                 <option value="english">English</option>
@@ -1289,6 +1294,7 @@
                                 class="block text-[10px] uppercase tracking-wider text-neutral-400 font-bold mb-1.5">Preferred
                                 Date <span class="text-red-500">*</span></label>
                             <input
+                                name="preferredDate"
                                 class="w-full bg-white border border-neutral-200 rounded-xl px-4 py-3 text-xs focus:outline-none focus:border-luxury-gold shadow-sm text-neutral-600"
                                 required="" type="date" />
                         </div>
@@ -1297,6 +1303,7 @@
                                 class="block text-[10px] uppercase tracking-wider text-neutral-400 font-bold mb-1.5">Preferred
                                 Method <span class="text-red-500">*</span></label>
                             <select
+                                name="preferredMethod"
                                 class="w-full bg-white border border-neutral-200 rounded-xl px-4 py-3 text-xs focus:outline-none focus:border-luxury-gold shadow-sm"
                                 required="">
                                 <option value="phone">Phone Call</option>
@@ -1310,6 +1317,7 @@
                         <label class="block text-[10px] uppercase tracking-wider text-neutral-400 font-bold mb-1.5">Time
                             Zone <span class="text-red-500">*</span></label>
                         <select
+                            name="timezone"
                             class="w-full bg-white border border-neutral-200 rounded-xl px-4 py-3 text-xs focus:outline-none focus:border-luxury-gold shadow-sm"
                             required="">
                             <option value="">Select Time Zone</option>
@@ -1362,6 +1370,7 @@
                             class="block text-[10px] uppercase tracking-wider text-neutral-400 font-bold mb-1.5">Corporate
                             Physical Address (Optional)</label>
                         <input
+                            name="address"
                             class="w-full bg-white border border-neutral-200 rounded-xl px-4 py-3 text-xs focus:outline-none focus:border-luxury-gold shadow-sm"
                             placeholder="Suite, Tower, City, Country" type="text" />
                     </div>
@@ -1371,6 +1380,7 @@
                             class="block text-[10px] uppercase tracking-wider text-neutral-400 font-bold mb-1.5">Confidential
                             notes (Optional)</label>
                         <textarea
+                            name="notes"
                             class="w-full bg-white border border-neutral-200 rounded-xl p-4 text-xs focus:outline-none focus:border-luxury-gold shadow-sm"
                             placeholder="Detail any specific family parameters..." rows="4"></textarea>
                     </div>
