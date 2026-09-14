@@ -1564,25 +1564,9 @@
                     class="space-y-6 max-w-5xl mx-auto text-left">
                     <input type="hidden" name="serviceInterest" value="Social Responsibility">
 
-                    <!-- Row 1: Salutation, First Name & Last Name -->
-                    <div class="grid grid-cols-1 sm:grid-cols-12 gap-6">
-                        <div class="sm:col-span-2">
-                            <label
-                                class="block text-[10px] uppercase tracking-wider text-neutral-400 font-bold mb-1.5"><span
-                                    data-i18n="pages.socialResp.formLabel1">Salutation</span> <span
-                                    class="text-red-500">*</span></label>
-                            <select name="salutation" required
-                                class="w-full bg-white border border-neutral-200 rounded-xl px-3 py-3 text-xs focus:outline-none focus:border-luxury-gold shadow-sm">
-                                <option value="">Select</option>
-                                <option value="Mr." data-i18n="pages.socialResp.formOption_Mr">Mr.</option>
-                                <option value="Mrs." data-i18n="pages.socialResp.formOption_Mrs">Mrs.</option>
-                                <option value="Ms." data-i18n="pages.socialResp.formOption_Ms">Ms.</option>
-                                <option value="Dr." data-i18n="pages.socialResp.formOption_Dr">Dr.</option>
-                                <option value="Prof." data-i18n="pages.socialResp.formOption_Prof">Prof.</option>
-                                <option value="HE" data-i18n="pages.socialResp.formOption_HE">H.E.</option>
-                            </select>
-                        </div>
-                        <div class="sm:col-span-5">
+                    <!-- Row 1: First Name & Last Name (Salutation Removed) -->
+                    <div class="grid grid-cols-1 sm:grid-cols-2 gap-6">
+                        <div>
                             <label
                                 class="block text-[10px] uppercase tracking-wider text-neutral-400 font-bold mb-1.5"><span
                                     data-i18n="pages.socialResp.formLabel2">First Name</span> <span
@@ -1590,7 +1574,7 @@
                             <input type="text" name="firstName" required placeholder="Sarah"
                                 class="w-full bg-white border border-neutral-200 rounded-xl px-4 py-3 text-xs focus:outline-none focus:border-luxury-gold shadow-sm">
                         </div>
-                        <div class="sm:col-span-5">
+                        <div>
                             <label
                                 class="block text-[10px] uppercase tracking-wider text-neutral-400 font-bold mb-1.5"><span
                                     data-i18n="pages.socialResp.formLabel3">Last Name</span> <span
