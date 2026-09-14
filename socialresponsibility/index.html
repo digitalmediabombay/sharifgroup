@@ -1562,6 +1562,8 @@
 
                 <form id="standalone-contact-form" onsubmit="handleContactSubmit(event)"
                     class="space-y-6 max-w-5xl mx-auto text-left">
+                    <input type="hidden" name="serviceInterest" value="Social Responsibility">
+
                     <!-- Row 1: Salutation, First Name & Last Name -->
                     <div class="grid grid-cols-1 sm:grid-cols-12 gap-6">
                         <div class="sm:col-span-2">
@@ -1569,7 +1571,7 @@
                                 class="block text-[10px] uppercase tracking-wider text-neutral-400 font-bold mb-1.5"><span
                                     data-i18n="pages.socialResp.formLabel1">Salutation</span> <span
                                     class="text-red-500">*</span></label>
-                            <select required
+                            <select name="salutation" required
                                 class="w-full bg-white border border-neutral-200 rounded-xl px-3 py-3 text-xs focus:outline-none focus:border-luxury-gold shadow-sm">
                                 <option value="">Select</option>
                                 <option value="Mr." data-i18n="pages.socialResp.formOption_Mr">Mr.</option>
@@ -1585,7 +1587,7 @@
                                 class="block text-[10px] uppercase tracking-wider text-neutral-400 font-bold mb-1.5"><span
                                     data-i18n="pages.socialResp.formLabel2">First Name</span> <span
                                     class="text-red-500">*</span></label>
-                            <input type="text" required placeholder="Sarah"
+                            <input type="text" name="firstName" required placeholder="Sarah"
                                 class="w-full bg-white border border-neutral-200 rounded-xl px-4 py-3 text-xs focus:outline-none focus:border-luxury-gold shadow-sm">
                         </div>
                         <div class="sm:col-span-5">
@@ -1593,7 +1595,7 @@
                                 class="block text-[10px] uppercase tracking-wider text-neutral-400 font-bold mb-1.5"><span
                                     data-i18n="pages.socialResp.formLabel3">Last Name</span> <span
                                     class="text-red-500">*</span></label>
-                            <input type="text" required placeholder="Johnson"
+                            <input type="text" name="lastName" required placeholder="Johnson"
                                 class="w-full bg-white border border-neutral-200 rounded-xl px-4 py-3 text-xs focus:outline-none focus:border-luxury-gold shadow-sm">
                         </div>
                     </div>
@@ -1605,7 +1607,7 @@
                                 class="block text-[10px] uppercase tracking-wider text-neutral-400 font-bold mb-1.5"><span
                                     data-i18n="pages.socialResp.formLabel4">Email Address</span> <span
                                     class="text-red-500">*</span></label>
-                            <input type="email" required placeholder="name@institution.org"
+                            <input type="email" name="email" required placeholder="name@institution.org"
                                 class="w-full bg-white border border-neutral-200 rounded-xl px-4 py-3 text-xs focus:outline-none focus:border-luxury-gold shadow-sm">
                         </div>
                         <div>
@@ -1628,8 +1630,8 @@
                                         <div class="country-list-container max-h-40 overflow-y-auto"></div>
                                     </div>
                                 </div>
-                                <input type="hidden" class="dial-code-hidden-value" value="+971">
-                                <input type="tel" required placeholder="50 123 4567"
+                                <input type="hidden" class="dial-code-hidden-value" name="dialCode" value="+971">
+                                <input type="tel" name="phone" required placeholder="50 123 4567"
                                     class="w-full bg-white border-y border-r border-neutral-200 rounded-r-xl px-4 py-3 text-xs focus:outline-none focus:border-luxury-gold shadow-sm"
                                     dir="ltr">
                             </div>
@@ -1643,7 +1645,7 @@
                                 class="block text-[10px] uppercase tracking-wider text-neutral-400 font-bold mb-1.5"><span
                                     data-i18n="pages.socialResp.formLabel6">Organization / University Name</span> <span
                                     class="text-red-500">*</span></label>
-                            <input type="text" required placeholder="e.g. Stanford University / Red Crescent"
+                            <input type="text" name="organization" required placeholder="e.g. Stanford University / Red Crescent"
                                 class="w-full bg-white border border-neutral-200 rounded-xl px-4 py-3 text-xs focus:outline-none focus:border-luxury-gold shadow-sm">
                         </div>
                         <div>
@@ -1651,7 +1653,7 @@
                                 class="block text-[10px] uppercase tracking-wider text-neutral-400 font-bold mb-1.5"><span
                                     data-i18n="pages.socialResp.formLabel7">Organization Type</span> <span
                                     class="text-red-500">*</span></label>
-                            <select required
+                            <select name="orgType" required
                                 class="w-full bg-white border border-neutral-200 rounded-xl px-4 py-3 text-xs focus:outline-none focus:border-luxury-gold shadow-sm">
                                 <option value="">Select Type</option>
                                 <option value="university" data-i18n="pages.socialResp.formOption_university">University
@@ -1676,7 +1678,7 @@
                                 class="block text-[10px] uppercase tracking-wider text-neutral-400 font-bold mb-1.5"><span
                                     data-i18n="pages.socialResp.formLabel8">Pillar / Area of Support</span> <span
                                     class="text-red-500">*</span></label>
-                            <select required
+                            <select name="targetProgram" required
                                 class="w-full bg-white border border-neutral-200 rounded-xl px-4 py-3 text-xs focus:outline-none focus:border-luxury-gold shadow-sm">
                                 <option value="">Select Pillar</option>
                                 <option value="education" data-i18n="pages.socialResp.formOption_education">01.
@@ -1702,7 +1704,7 @@
                                 class="block text-[10px] uppercase tracking-wider text-neutral-400 font-bold mb-1.5"><span
                                     data-i18n="pages.socialResp.formLabel9">Nature of Collaboration</span> <span
                                     class="text-red-500">*</span></label>
-                            <select required
+                            <select name="subProgram" required
                                 class="w-full bg-white border border-neutral-200 rounded-xl px-4 py-3 text-xs focus:outline-none focus:border-luxury-gold shadow-sm">
                                 <option value="">Select Option</option>
                                 <option value="grant" data-i18n="pages.socialResp.formOption_grant">Scholarship /
@@ -1726,7 +1728,7 @@
                                 class="block text-[10px] uppercase tracking-wider text-neutral-400 font-bold mb-1.5"><span
                                     data-i18n="pages.socialResp.formLabel10">Preferred Language</span> <span
                                     class="text-red-500">*</span></label>
-                            <select required
+                            <select name="preferredLanguage" required
                                 class="w-full bg-white border border-neutral-200 rounded-xl px-4 py-3 text-xs focus:outline-none focus:border-luxury-gold shadow-sm">
                                 <option value="english" data-i18n="pages.socialResp.formOption_english">English</option>
                                 <option value="arabic" data-i18n="pages.socialResp.formOption_arabic">Arabic</option>
@@ -1744,7 +1746,7 @@
                                 class="block text-[10px] uppercase tracking-wider text-neutral-400 font-bold mb-1.5"><span
                                     data-i18n="pages.socialResp.formLabel11">Preferred Discussion Date</span> <span
                                     class="text-red-500">*</span></label>
-                            <input type="date" required
+                            <input type="date" name="timeline" required
                                 class="w-full bg-white border border-neutral-200 rounded-xl px-4 py-3 text-xs focus:outline-none focus:border-luxury-gold shadow-sm text-neutral-600">
                         </div>
                         <div>
@@ -1752,7 +1754,7 @@
                                 class="block text-[10px] uppercase tracking-wider text-neutral-400 font-bold mb-1.5"><span
                                     data-i18n="pages.socialResp.formLabel12">Preferred Method</span> <span
                                     class="text-red-500">*</span></label>
-                            <select required
+                            <select name="objective" required
                                 class="w-full bg-white border border-neutral-200 rounded-xl px-4 py-3 text-xs focus:outline-none focus:border-luxury-gold shadow-sm">
                                 <option value="phone" data-i18n="pages.socialResp.formOption_phone">Phone Call</option>
                                 <option value="whatsapp" data-i18n="pages.socialResp.formOption_whatsapp">WhatsApp
@@ -1771,7 +1773,7 @@
                             class="block text-[10px] uppercase tracking-wider text-neutral-400 font-bold mb-1.5"><span
                                 data-i18n="pages.socialResp.formLabel13">Project Overview & Objectives</span> <span
                                 class="text-red-500">*</span></label>
-                        <textarea rows="4" required
+                        <textarea rows="4" name="notes" required
                             placeholder="Please provide a brief description of the initiative, targeted beneficiaries, timeline, and how Sharif Group can support..."
                             class="w-full bg-white border border-neutral-200 rounded-xl p-4 text-xs focus:outline-none focus:border-luxury-gold shadow-sm"></textarea>
                     </div>
@@ -2524,6 +2526,7 @@
     </script>
 
     <script src="../assets/js/language-switcher.js"></script>
+    <script src="../assets/js/forms.js"></script>
 </body>
 
 </html>
