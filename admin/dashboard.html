@@ -3327,9 +3327,14 @@
         renderSection();
         setActiveSidebarItem(section === 'program' ? (itemId || '') : (section === 'category-hub' ? itemType : section.replace('-new', '').replace('-edit', '')));
 
-        // Visual-First Studio: The live interactive visual canvas is the primary stage.
-        // Keep the drawer closed by default so user has 100% full screen focus on the live visual page!
-        closeEditorDrawer();
+        // Sections that are pure form editors — always open the drawer so the form is visible
+        const formOnlySections = ['settings', 'contact', 'aboutus', 'legal', 'cookiepolicy', 'cookies', 'blog-new', 'team-new', 'new-program'];
+        if (formOnlySections.includes(section)) {
+          openEditorDrawer();
+        } else {
+          // Visual-First Studio: For live-preview sections, keep drawer closed for full canvas focus
+          closeEditorDrawer();
+        }
 
         loadPreviewPage();
       }
