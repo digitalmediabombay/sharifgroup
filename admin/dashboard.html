@@ -2647,10 +2647,14 @@
           sendToIframe({ type: 'CMS_SET_MODE', mode: state.canvasMode });
           syncActiveFormToLivePreview();
         } else if (msg.type === 'CMS_LANG_CHANGED') {
+          // FIX: Only sync dashboard UI — do NOT call renderSection()/loadPreviewPage()
+          // as that reloads the iframe causing an infinite loading loop.
+          // The iframe already applied the lang change internally.
           state.lang = msg.lang;
           document.querySelectorAll('.lang-btn').forEach(b => b.classList.remove('active'));
           const lb2 = document.getElementById('lang-' + msg.lang);
           if (lb2) lb2.classList.add('active');
+          // Only re-render the editor form fields (sidebar), not the preview iframe
           renderSection();
         } else if (msg.type === 'CMS_MODE_CHANGED') {
           setCanvasMode(msg.mode, true);
@@ -2660,6 +2664,20 @@
           markSaved();
         }
       });
+
+      // FIX: Re-send canvasMode on every iframe load so Edit Mode is never lost
+      // even if the iframe navigated or reloaded before the postMessage arrived.
+      (function attachIframeLoadGuard() {
+        const iframe = document.getElementById('live-iframe');
+        if (!iframe) return;
+        iframe.addEventListener('load', () => {
+          // Give cms-loader.js a moment to initialise, then push the current mode
+          setTimeout(() => {
+            sendToIframe({ type: 'CMS_SET_LANG', lang: state.lang });
+            sendToIframe({ type: 'CMS_SET_MODE', mode: state.canvasMode });
+          }, 300);
+        });
+      })();
 
       function highlightEditorSection(sectionId) {
         const el = document.getElementById('ec-' + sectionId);

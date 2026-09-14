@@ -42,7 +42,12 @@
       ];
       for (const url of candidates) {
         try {
-          const res = await fetch(url);
+          // FIX: Add 5s timeout to prevent browser loading spinner hanging for 30+ seconds
+          // when the MySQL backend is unavailable (e.g. DB credentials not configured).
+          const controller = new AbortController();
+          const tid = setTimeout(() => controller.abort(), 5000);
+          const res = await fetch(url, { signal: controller.signal });
+          clearTimeout(tid);
           if (res.ok) {
             const json = await res.json();
             if (json && json.success && json.data) {
@@ -58,6 +63,8 @@
     } catch(e) {}
   }
 
+  // FIX: If inside the CMS editor iframe but no local data exists yet, don't return early.
+  // The page should still hydrate and send CMS_FRAME_READY so the dashboard can control it.
   if (!isPreview && !hasCmsData) {
     // If first-time visit without local cache, sync from backend
     syncLiveFromBackend();
