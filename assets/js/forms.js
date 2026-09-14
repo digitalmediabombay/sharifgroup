@@ -1,6 +1,5 @@
 // --- CENTRAL FORM & CRM DISPATCH CONTROLLER ---
 
-// Webhook URL connected to Website_Leads Google Sheet
 const CRM_WEBHOOK_URL = "https://script.google.com/macros/s/AKfycbx1htojc2xrudJ3i9eRepORLmAXqh6vk2IoBy6bUrtPqlcpODqI5XVdgUpXWYbgpCXOvg/exec"; 
 
 // 1. Country Dial Code Dropdown Toggle & Filter
@@ -48,7 +47,7 @@ document.addEventListener('click', (e) => {
   }
 });
 
-// 2. Dynamic Service & Sub-Program Mapping (Homepage & Contact Us)
+// 2. Dynamic Service & Sub-Program Mapping
 const SUB_PROGRAM_MAP = {
   citizenship: [
     { value: 'dominica', label: 'Dominica' },
@@ -96,7 +95,7 @@ function handleServiceSelectionChange(selectEl) {
   }
 }
 
-// 3. Central Submission Handler (Sabhi forms ke liye)
+// 3. Central Submission Handler
 async function handleContactSubmit(event) {
   event.preventDefault();
   const form = event.target;
@@ -109,16 +108,20 @@ async function handleContactSubmit(event) {
     submitBtn.textContent = 'Transmitting...';
   }
 
-  // FormData se sabhi input/select values auto collect hongi
   const formData = new FormData(form);
   const payload = Object.fromEntries(formData.entries());
 
-  // Phone number ko dial code ke sath jodna
-  const dialCode = form.querySelector('.dial-code-hidden-value')?.value || '';
+  // Phone number & Dial Code handling
+  const dialCode = form.querySelector('.dial-code-hidden-value')?.value || '+971';
   const rawPhone = form.querySelector('input[type="tel"]')?.value || '';
+  payload.dialCode = dialCode;
   payload.phone = `${dialCode} ${rawPhone}`.trim();
-  
-  // Page source and identification mapping
+
+  // Full name handling (Salutation removed)
+  if (!payload.fullName && (payload.firstName || payload.lastName)) {
+    payload.fullName = `${payload.firstName || ''} ${payload.lastName || ''}`.trim();
+  }
+
   payload.source = window.location.href;
   payload.page = window.location.pathname;
   payload.form_id = form.id || 'program-consult-form';
@@ -131,8 +134,6 @@ async function handleContactSubmit(event) {
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(payload)
       });
-    } else {
-      console.log("Form submitted locally:", payload);
     }
 
     form.reset();
