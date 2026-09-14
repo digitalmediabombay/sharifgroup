@@ -7,7 +7,16 @@ require_once __DIR__ . '/config.php';
 
 // Set Standard JSON & CORS Headers
 header('Content-Type: application/json; charset=utf-8');
-header('Access-Control-Allow-Origin: https://sharifgroup.ae');
+// Use the request's own origin (same-origin only) — works on any domain/IP/cPanel temp URL
+$allowedOrigin = isset($_SERVER['HTTP_ORIGIN']) ? $_SERVER['HTTP_ORIGIN'] : '';
+// Only allow if the origin matches our own host
+$requestHost = isset($_SERVER['HTTP_HOST']) ? $_SERVER['HTTP_HOST'] : '';
+if (!empty($allowedOrigin) && parse_url($allowedOrigin, PHP_URL_HOST) === $requestHost) {
+    header('Access-Control-Allow-Origin: ' . $allowedOrigin);
+    header('Access-Control-Allow-Credentials: true');
+} else {
+    // Same-origin requests (no Origin header) are always fine — just don't set ACAO header
+}
 header('Access-Control-Allow-Methods: GET, POST, PUT, DELETE, OPTIONS');
 header('Access-Control-Allow-Headers: Content-Type, Authorization, X-Requested-With');
 

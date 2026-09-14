@@ -27,8 +27,9 @@ CREATE TABLE IF NOT EXISTS cms_users (
 -- Initial default administrator credentials:
 -- Email: admin@sharifgroup.ae
 -- Password: SharifCMS@2026
+-- (The password_hash below is the bcrypt hash of 'SharifCMS@2026')
 INSERT INTO cms_users (id, email, password_hash, name, `role`, created_at) VALUES
-(1, 'admin@sharifgroup.ae', 'SharifCMS@2026', 'Sharif Group Administrator', 'Admin', NOW())
+(1, 'admin@sharifgroup.ae', '$2y$12$BPULZ5SbfTZTH8f4j.SgX.q5MGRHbzwc75CxIKcw7AAjtzcWk8nwO', 'Sharif Group Administrator', 'Admin', NOW())
 ON DUPLICATE KEY UPDATE email = VALUES(email);
 
 -- -----------------------------------------------------------------
