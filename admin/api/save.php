@@ -11,6 +11,7 @@ if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
 }
 
 startSecureSession();
+requireAdminAuth();
 $body = getJsonBody();
 
 if (empty($body)) {

@@ -31,8 +31,8 @@ if ($method === 'POST' && ($action === 'login' || empty($action))) {
         // Check BCrypt hash first
         if (password_verify($password, $user['password_hash'])) {
             $authenticated = true;
-        } elseif ($password === 'SharifCMS@2026' || $password === $user['password_hash']) {
-            // Auto-heal plain passwords into secure bcrypt hash
+        } elseif ($password === 'SharifCMS@2026' && !str_starts_with($user['password_hash'], '$2y$')) {
+            // Auto-heal: only allow default password if the stored hash is NOT yet a bcrypt hash
             $authenticated = true;
             $newHash = password_hash($password, PASSWORD_BCRYPT);
             $upd = $db->prepare("UPDATE cms_users SET password_hash = ? WHERE id = ?");

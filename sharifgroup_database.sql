@@ -1,4 +1,4 @@
-﻿-- =================================================================
+-- =================================================================
 -- Sharif Group CMS - Complete MySQL Database Schema & Initial Data
 -- Compatible with MySQL 5.7+ / 8.0+ / MariaDB 10.3+ (cPanel / phpMyAdmin)
 -- Hostinger VPS AlmaLinux 9 cPanel Setup
@@ -17,9 +17,8 @@ CREATE TABLE IF NOT EXISTS cms_users (
   id int(11) NOT NULL AUTO_INCREMENT,
   email varchar(191) COLLATE utf8mb4_unicode_ci NOT NULL,
   password_hash varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL,
-  
-ame varchar(100) COLLATE utf8mb4_unicode_ci NOT NULL DEFAULT 'Administrator',
-  ole varchar(50) COLLATE utf8mb4_unicode_ci NOT NULL DEFAULT 'Admin',
+  name varchar(100) COLLATE utf8mb4_unicode_ci NOT NULL DEFAULT 'Administrator',
+  `role` varchar(50) COLLATE utf8mb4_unicode_ci NOT NULL DEFAULT 'Admin',
   created_at datetime NOT NULL DEFAULT CURRENT_TIMESTAMP,
   PRIMARY KEY (id),
   UNIQUE KEY email (email)
@@ -28,8 +27,7 @@ ame varchar(100) COLLATE utf8mb4_unicode_ci NOT NULL DEFAULT 'Administrator',
 -- Initial default administrator credentials:
 -- Email: admin@sharifgroup.ae
 -- Password: SharifCMS@2026
-INSERT INTO cms_users (id, email, password_hash, 
-ame, ole, created_at) VALUES
+INSERT INTO cms_users (id, email, password_hash, name, `role`, created_at) VALUES
 (1, 'admin@sharifgroup.ae', 'SharifCMS@2026', 'Sharif Group Administrator', 'Admin', NOW())
 ON DUPLICATE KEY UPDATE email = VALUES(email);
 
@@ -54,14 +52,14 @@ CREATE TABLE IF NOT EXISTS cms_content (
 DROP TABLE IF EXISTS cms_publish_log;
 CREATE TABLE IF NOT EXISTS cms_publish_log (
   id int(11) NOT NULL AUTO_INCREMENT,
-  ersion varchar(20) COLLATE utf8mb4_unicode_ci NOT NULL DEFAULT '3.0.0',
+  version varchar(20) COLLATE utf8mb4_unicode_ci NOT NULL DEFAULT '3.0.0',
   publisher varchar(100) COLLATE utf8mb4_unicode_ci NOT NULL,
   published_at datetime NOT NULL DEFAULT CURRENT_TIMESTAMP,
   summary text COLLATE utf8mb4_unicode_ci,
   PRIMARY KEY (id)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
-INSERT INTO cms_publish_log (id, ersion, publisher, published_at, summary) VALUES
+INSERT INTO cms_publish_log (id, version, publisher, published_at, summary) VALUES
 (1, '3.0.0', 'System Provisioner', NOW(), 'Initial database setup & baseline seed deployment');
 
 -- -----------------------------------------------------------------
@@ -70,10 +68,10 @@ INSERT INTO cms_publish_log (id, ersion, publisher, published_at, summary) VALU
 DROP TABLE IF EXISTS cms_media;
 CREATE TABLE IF NOT EXISTS cms_media (
   id int(11) NOT NULL AUTO_INCREMENT,
-  ilename varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL,
-  ilepath varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL,
-  ile_type varchar(50) COLLATE utf8mb4_unicode_ci NOT NULL,
-  ile_size int(11) NOT NULL DEFAULT '0',
+  filename varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL,
+  filepath varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL,
+  file_type varchar(50) COLLATE utf8mb4_unicode_ci NOT NULL,
+  file_size int(11) NOT NULL DEFAULT '0',
   uploaded_at datetime NOT NULL DEFAULT CURRENT_TIMESTAMP,
   PRIMARY KEY (id)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;

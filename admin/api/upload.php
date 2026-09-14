@@ -11,6 +11,7 @@ if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
 }
 
 startSecureSession();
+requireAdminAuth();
 
 if (empty($_FILES['file'])) {
     jsonResponse(['success' => false, 'error' => 'No file uploaded.'], 400);
@@ -33,6 +34,15 @@ $ext = strtolower(pathinfo($origName, PATHINFO_EXTENSION));
 
 if (!in_array($ext, $allowedExtensions, true)) {
     jsonResponse(['success' => false, 'error' => 'Invalid file extension. Allowed: jpg, png, webp, svg, pdf.'], 400);
+}
+
+// Verify actual MIME type (not just extension) to prevent disguised uploads
+$allowedMimes = ['image/jpeg', 'image/png', 'image/webp', 'image/svg+xml', 'image/gif', 'application/pdf'];
+$finfo = finfo_open(FILEINFO_MIME_TYPE);
+$mimeType = finfo_file($finfo, $file['tmp_name']);
+finfo_close($finfo);
+if (!in_array($mimeType, $allowedMimes, true)) {
+    jsonResponse(['success' => false, 'error' => 'Invalid file content detected. File type does not match extension.'], 400);
 }
 
 // Target folder

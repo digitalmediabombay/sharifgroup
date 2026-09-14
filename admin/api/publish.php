@@ -10,8 +10,9 @@ if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
     jsonResponse(['error' => 'Method not allowed. Only POST is accepted.'], 405);
 }
 
-// Ensure session exists
+// Ensure session exists and user is authenticated
 startSecureSession();
+requireAdminAuth();
 
 $payload = getJsonBody();
 
