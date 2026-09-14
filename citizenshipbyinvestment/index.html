@@ -1178,43 +1178,23 @@
                 </div>
                 <form class="space-y-6 max-w-5xl mx-auto text-left" id="standalone-contact-form"
                     onsubmit="handleContactSubmit(event)">
-                    <!-- Row 1: Salutation, First Name & Last Name -->
-                    <div class="grid grid-cols-1 sm:grid-cols-12 gap-6">
-                        <div class="sm:col-span-2">
-                            <label
-                                class="block text-[10px] uppercase tracking-wider text-neutral-400 font-bold mb-1.5">Salutation
-                                <span class="text-red-500">*</span></label>
-                            <select
-                                class="w-full bg-white border border-neutral-200 rounded-xl px-3 py-3 text-xs focus:outline-none focus:border-luxury-gold shadow-sm"
-                                required="">
-                                <option value="">Select</option>
-                                <option value="Mr.">Mr.</option>
-                                <option value="Mrs.">Mrs.</option>
-                                <option value="Ms.">Ms.</option>
-                                <option value="Miss">Miss</option>
-                                <option value="Dr.">Dr.</option>
-                                <option value="Prof.">Prof.</option>
-                                <option value="Sir">Sir</option>
-                                <option value="Sheikh">Sheikh</option>
-                                <option value="Sheikha">Sheikha</option>
-                                <option value="HE">H.E. (His/Her Excellency)</option>
-                                <option value="Lord">Lord</option>
-                                <option value="Lady">Lady</option>
-                            </select>
-                        </div>
-                        <div class="sm:col-span-5">
+                    <!-- Row 1: First Name & Last Name (Salutation Removed) -->
+                    <div class="grid grid-cols-1 sm:grid-cols-2 gap-6">
+                        <div>
                             <label
                                 class="block text-[10px] uppercase tracking-wider text-neutral-400 font-bold mb-1.5">First
                                 Name <span class="text-red-500">*</span></label>
                             <input
+                                name="firstName"
                                 class="w-full bg-white border border-neutral-200 rounded-xl px-4 py-3 text-xs focus:outline-none focus:border-luxury-gold shadow-sm"
                                 placeholder="John" required="" type="text" />
                         </div>
-                        <div class="sm:col-span-5">
+                        <div>
                             <label
                                 class="block text-[10px] uppercase tracking-wider text-neutral-400 font-bold mb-1.5">Last
                                 Name <span class="text-red-500">*</span></label>
                             <input
+                                name="lastName"
                                 class="w-full bg-white border border-neutral-200 rounded-xl px-4 py-3 text-xs focus:outline-none focus:border-luxury-gold shadow-sm"
                                 placeholder="Doe" required="" type="text" />
                         </div>
