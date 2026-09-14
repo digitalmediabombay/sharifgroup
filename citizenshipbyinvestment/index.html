@@ -1178,43 +1178,23 @@
                 </div>
                 <form class="space-y-6 max-w-5xl mx-auto text-left" id="standalone-contact-form"
                     onsubmit="handleContactSubmit(event)">
-                    <!-- Row 1: Salutation, First Name & Last Name -->
-                    <div class="grid grid-cols-1 sm:grid-cols-12 gap-6">
-                        <div class="sm:col-span-2">
-                            <label
-                                class="block text-[10px] uppercase tracking-wider text-neutral-400 font-bold mb-1.5">Salutation
-                                <span class="text-red-500">*</span></label>
-                            <select
-                                class="w-full bg-white border border-neutral-200 rounded-xl px-3 py-3 text-xs focus:outline-none focus:border-luxury-gold shadow-sm"
-                                required="">
-                                <option value="">Select</option>
-                                <option value="Mr.">Mr.</option>
-                                <option value="Mrs.">Mrs.</option>
-                                <option value="Ms.">Ms.</option>
-                                <option value="Miss">Miss</option>
-                                <option value="Dr.">Dr.</option>
-                                <option value="Prof.">Prof.</option>
-                                <option value="Sir">Sir</option>
-                                <option value="Sheikh">Sheikh</option>
-                                <option value="Sheikha">Sheikha</option>
-                                <option value="HE">H.E. (His/Her Excellency)</option>
-                                <option value="Lord">Lord</option>
-                                <option value="Lady">Lady</option>
-                            </select>
-                        </div>
-                        <div class="sm:col-span-5">
+                    <!-- Row 1: First Name & Last Name (Salutation Removed) -->
+                    <div class="grid grid-cols-1 sm:grid-cols-2 gap-6">
+                        <div>
                             <label
                                 class="block text-[10px] uppercase tracking-wider text-neutral-400 font-bold mb-1.5">First
                                 Name <span class="text-red-500">*</span></label>
                             <input
+                                name="firstName"
                                 class="w-full bg-white border border-neutral-200 rounded-xl px-4 py-3 text-xs focus:outline-none focus:border-luxury-gold shadow-sm"
                                 placeholder="John" required="" type="text" />
                         </div>
-                        <div class="sm:col-span-5">
+                        <div>
                             <label
                                 class="block text-[10px] uppercase tracking-wider text-neutral-400 font-bold mb-1.5">Last
                                 Name <span class="text-red-500">*</span></label>
                             <input
+                                name="lastName"
                                 class="w-full bg-white border border-neutral-200 rounded-xl px-4 py-3 text-xs focus:outline-none focus:border-luxury-gold shadow-sm"
                                 placeholder="Doe" required="" type="text" />
                         </div>
@@ -1226,6 +1206,7 @@
                                 class="block text-[10px] uppercase tracking-wider text-neutral-400 font-bold mb-1.5">Email
                                 Address <span class="text-red-500">*</span></label>
                             <input
+                                name="email"
                                 class="w-full bg-white border border-neutral-200 rounded-xl px-4 py-3 text-xs focus:outline-none focus:border-luxury-gold shadow-sm"
                                 placeholder="name@domain.com" required="" type="email" />
                         </div>
@@ -1252,6 +1233,7 @@
                                 </div>
                                 <input class="dial-code-hidden-value" type="hidden" value="+971" />
                                 <input
+                                    name="phone"
                                     class="w-full bg-white border-y border-r border-neutral-200 rounded-r-xl px-4 py-3 text-xs focus:outline-none focus:border-luxury-gold shadow-sm"
                                     placeholder="50 123 4567" required="" type="tel" dir="ltr" />
                             </div>
@@ -1264,6 +1246,7 @@
                                 class="block text-[10px] uppercase tracking-wider text-neutral-400 font-bold mb-1.5">Program
                                 of Choice <span class="text-red-500">*</span></label>
                             <select
+                                name="targetProgram"
                                 class="w-full bg-white border border-neutral-200 rounded-xl px-4 py-3 text-xs focus:outline-none focus:border-luxury-gold shadow-sm"
                                 onchange="handleServiceSelectionChange(this)" required="">
                                 <option value="">Select Option</option>
@@ -1279,6 +1262,7 @@
                                 class="block text-[10px] uppercase tracking-wider text-neutral-400 font-bold mb-1.5">Sub-Program
                                 Pathway <span class="text-red-500">*</span></label>
                             <select
+                                name="subProgram"
                                 class="w-full bg-white border border-neutral-200 rounded-xl px-4 py-3 text-xs focus:outline-none focus:border-luxury-gold shadow-sm"
                                 id="sub-service-choice-standalone" required="">
                                 <option value="">Select Sub-Program</option>
@@ -1292,6 +1276,7 @@
                                 class="block text-[10px] uppercase tracking-wider text-neutral-400 font-bold mb-1.5">Preferred
                                 Language <span class="text-red-500">*</span></label>
                             <select
+                                name="preferredLanguage"
                                 class="w-full bg-white border border-neutral-200 rounded-xl px-4 py-3 text-xs focus:outline-none focus:border-luxury-gold shadow-sm"
                                 required="">
                                 <option value="english">English</option>
@@ -1309,6 +1294,7 @@
                                 class="block text-[10px] uppercase tracking-wider text-neutral-400 font-bold mb-1.5">Preferred
                                 Date <span class="text-red-500">*</span></label>
                             <input
+                                name="preferredDate"
                                 class="w-full bg-white border border-neutral-200 rounded-xl px-4 py-3 text-xs focus:outline-none focus:border-luxury-gold shadow-sm text-neutral-600"
                                 required="" type="date" />
                         </div>
@@ -1317,6 +1303,7 @@
                                 class="block text-[10px] uppercase tracking-wider text-neutral-400 font-bold mb-1.5">Preferred
                                 Method <span class="text-red-500">*</span></label>
                             <select
+                                name="preferredMethod"
                                 class="w-full bg-white border border-neutral-200 rounded-xl px-4 py-3 text-xs focus:outline-none focus:border-luxury-gold shadow-sm"
                                 required="">
                                 <option value="phone">Phone Call</option>
@@ -1330,6 +1317,7 @@
                         <label class="block text-[10px] uppercase tracking-wider text-neutral-400 font-bold mb-1.5">Time
                             Zone <span class="text-red-500">*</span></label>
                         <select
+                            name="timezone"
                             class="w-full bg-white border border-neutral-200 rounded-xl px-4 py-3 text-xs focus:outline-none focus:border-luxury-gold shadow-sm"
                             required="">
                             <option value="">Select Time Zone</option>
@@ -1382,6 +1370,7 @@
                             class="block text-[10px] uppercase tracking-wider text-neutral-400 font-bold mb-1.5">Corporate
                             Physical Address (Optional)</label>
                         <input
+                            name="address"
                             class="w-full bg-white border border-neutral-200 rounded-xl px-4 py-3 text-xs focus:outline-none focus:border-luxury-gold shadow-sm"
                             placeholder="Suite, Tower, City, Country" type="text" />
                     </div>
@@ -1391,6 +1380,7 @@
                             class="block text-[10px] uppercase tracking-wider text-neutral-400 font-bold mb-1.5">Confidential
                             notes (Optional)</label>
                         <textarea
+                            name="notes"
                             class="w-full bg-white border border-neutral-200 rounded-xl p-4 text-xs focus:outline-none focus:border-luxury-gold shadow-sm"
                             placeholder="Detail any specific family parameters..." rows="4"></textarea>
                     </div>
@@ -2121,6 +2111,7 @@
     <script src="../assets/js/language-switcher.js"></script>
     <!-- Sharif Group CMS Live Preview Loader -->
     <script src="../admin/cms-loader.js"></script>
+    <script src="../assets/js/forms.js"></script>
 </body>
 
 </html>
