@@ -6206,11 +6206,42 @@
         <p style="color:var(--muted2);font-size:11px;margin-top:6px">Get your key at <a href="https://aistudio.google.com/apikey" target="_blank" style="color:var(--gold);text-decoration:underline">aistudio.google.com</a></p>
       </div>
       <div id="settings-status" style="margin-top:10px;font-size:12px;color:var(--muted)"></div>`) +
-          block('settings-admin', 'rgba(197,168,128,.15)', 'var(--gold)', '<i class="fa-solid fa-user-shield"></i>', 'Database & Admin Credentials', null, `
-      <p style="color:var(--muted);font-size:12px;margin-bottom:10px">Default administrator account connected to cPanel MySQL database:</p>
-      <div style="background:rgba(255,255,255,.03);border:1px solid var(--border2);border-radius:8px;padding:12px;font-size:12px">
-        <div style="margin-bottom:6px">Email: <span style="color:var(--gold);font-family:monospace">admin@sharifgroup.ae</span></div>
-        <div>Password: <span style="color:var(--gold);font-family:monospace">SharifCMS@2026</span></div>
+          block('settings-admin', 'rgba(197,168,128,.15)', 'var(--gold)', '<i class="fa-solid fa-user-shield"></i>', 'Admin Account & Security Credentials', null, `
+      <div style="margin-bottom:16px;background:rgba(255,255,255,.03);border:1px solid var(--border2);border-radius:8px;padding:12px;font-size:12px">
+        <div style="color:var(--muted);margin-bottom:6px"><i class="fa-solid fa-circle-info" style="color:var(--gold);margin-right:6px"></i>Default login credentials:</div>
+        <div style="margin-bottom:4px">Default Email: <span style="color:var(--gold);font-family:monospace">admin@sharifgroup.ae</span></div>
+        <div>Default Password: <span style="color:var(--gold);font-family:monospace">SharifCMS@2026</span></div>
+      </div>
+
+      <div style="border-top:1px solid var(--border);padding-top:14px">
+        <h4 style="font-size:13px;font-weight:600;margin-bottom:6px;color:var(--text)"><i class="fa-solid fa-key" style="margin-right:6px;color:var(--gold)"></i>Change Admin ID & Password</h4>
+        <p style="color:var(--muted2);font-size:11px;margin-bottom:14px">Update your admin login email (ID) and/or password. Your changes are verified and updated securely in the database.</p>
+
+        <div class="form-group" style="margin-bottom:12px">
+          <label class="form-label">Current Password <span style="color:#f87171">*</span></label>
+          <input class="form-input" type="password" id="admin-current-pass" placeholder="Enter current password to verify identity" autocomplete="current-password">
+        </div>
+
+        <div class="form-group" style="margin-bottom:12px">
+          <label class="form-label">New Admin Email / ID (Optional)</label>
+          <input class="form-input" type="email" id="admin-new-email" placeholder="e.g. admin@yourdomain.com" autocomplete="email">
+        </div>
+
+        <div class="form-group" style="margin-bottom:12px">
+          <label class="form-label">New Password</label>
+          <input class="form-input" type="password" id="admin-new-pass" placeholder="Min. 8 characters (leave blank to keep current)" autocomplete="new-password">
+        </div>
+
+        <div class="form-group" style="margin-bottom:14px">
+          <label class="form-label">Confirm New Password</label>
+          <input class="form-input" type="password" id="admin-confirm-pass" placeholder="Repeat new password" autocomplete="new-password">
+        </div>
+
+        <div id="admin-cred-status" style="margin-bottom:14px;font-size:12px"></div>
+
+        <button class="btn btn-primary" id="btn-update-creds" onclick="updateAdminCredentials()" style="background:var(--gold);color:#0a0a0f;font-weight:600">
+          <i class="fa-solid fa-shield-halved"></i> Update Admin Credentials
+        </button>
       </div>`, true);
       }
 
@@ -6250,6 +6281,74 @@
           statusEl.innerHTML = ok ? `<span style="color:#4ade80;display:inline-flex;align-items:center">${okSvg} Gemini API key is valid and working!</span>` : `<span style="color:#f87171;display:inline-flex;align-items:center">${errSvg} Gemini API key test failed. Check the key.</span>`;
         } catch (e) {
           statusEl.innerHTML = `<span style="color:#f87171">Error: ${e.message}</span>`;
+        }
+      }
+
+      async function updateAdminCredentials() {
+        const currentPass = document.getElementById('admin-current-pass')?.value || '';
+        const newEmail = document.getElementById('admin-new-email')?.value.trim() || '';
+        const newPass = document.getElementById('admin-new-pass')?.value || '';
+        const confirmPass = document.getElementById('admin-confirm-pass')?.value || '';
+        const statusEl = document.getElementById('admin-cred-status');
+        const btn = document.getElementById('btn-update-creds');
+
+        if (!statusEl) return;
+
+        if (!currentPass) {
+          statusEl.innerHTML = '<span style="color:#f87171"><i class="fa-solid fa-circle-exclamation"></i> Please enter your current password.</span>';
+          return;
+        }
+
+        if (!newEmail && !newPass) {
+          statusEl.innerHTML = '<span style="color:#f87171"><i class="fa-solid fa-circle-exclamation"></i> Please enter a new email or a new password to update.</span>';
+          return;
+        }
+
+        if (newPass) {
+          if (newPass.length < 8) {
+            statusEl.innerHTML = '<span style="color:#f87171"><i class="fa-solid fa-circle-exclamation"></i> New password must be at least 8 characters long.</span>';
+            return;
+          }
+          if (newPass !== confirmPass) {
+            statusEl.innerHTML = '<span style="color:#f87171"><i class="fa-solid fa-circle-exclamation"></i> Passwords do not match. Please re-enter confirm password.</span>';
+            return;
+          }
+        }
+
+        if (newEmail && !/\S+@\S+\.\S+/.test(newEmail)) {
+          statusEl.innerHTML = '<span style="color:#f87171"><i class="fa-solid fa-circle-exclamation"></i> Please enter a valid email address.</span>';
+          return;
+        }
+
+        statusEl.innerHTML = '<span style="color:var(--muted)"><i class="fa-solid fa-spinner fa-spin"></i> Updating credentials...</span>';
+        if (btn) btn.disabled = true;
+
+        try {
+          const res = await fetch('api/auth.php?action=change_password', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({
+              current_password: currentPass,
+              new_email: newEmail || undefined,
+              new_password: newPass || undefined
+            })
+          });
+
+          const data = await res.json();
+          if (res.ok && data.success) {
+            statusEl.innerHTML = '<span style="color:#4ade80"><i class="fa-solid fa-circle-check"></i> ' + (data.message || 'Credentials updated successfully!') + '</span>';
+            showToast('Admin credentials updated successfully!');
+            document.getElementById('admin-current-pass').value = '';
+            document.getElementById('admin-new-email').value = '';
+            document.getElementById('admin-new-pass').value = '';
+            document.getElementById('admin-confirm-pass').value = '';
+          } else {
+            statusEl.innerHTML = '<span style="color:#f87171"><i class="fa-solid fa-triangle-exclamation"></i> ' + (data.error || 'Failed to update credentials.') + '</span>';
+          }
+        } catch (err) {
+          statusEl.innerHTML = '<span style="color:#f87171"><i class="fa-solid fa-triangle-exclamation"></i> Network error: ' + err.message + '</span>';
+        } finally {
+          if (btn) btn.disabled = false;
         }
       }
 

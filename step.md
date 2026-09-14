@@ -49,9 +49,21 @@ define('DB_PASS', 'YourStrongPasswordHere');    // Password created in Step 1
 Click "Save Changes" in the top-right corner and close the editor.
 STEP 5: Log In and Test the Live Dashboard
 Your database and CMS dashboard should now be successfully connected!
-Admin Login URL: https://yourdomain.com/admin/
-CMS Visual Studio: https://yourdomain.com/admin/dashboard.html
+- Admin Login URL: https://yourdomain.com/admin/
+- Initial Default Email: admin@sharifgroup.ae
+- Initial Default Password: SharifCMS@2026
+
+STEP 6: Change Your Admin ID (Email) & Password
+For security, please change your default password immediately after first login:
+1. After logging in, click "Settings" in the left sidebar menu.
+2. Scroll to the "Admin Account & Security Credentials" section.
+3. Enter your Current Password: SharifCMS@2026
+4. (Optional) Enter your New Admin Email / ID if you wish to change it.
+5. Enter your New Password (minimum 8 characters) and confirm it.
+6. Click "Update Admin Credentials". Your new credentials are now securely updated in the MySQL database.
+
 From here, whenever you add a new Blog, create a new Program, or change Pricing, the data will be saved directly to your cPanel MySQL Database and displayed on the live website.
+
 Ready-to-Send Checklist for Client
 [x] MySQL Database & User created in cPanel.
 [x] User assigned to Database with All Privileges.
@@ -59,3 +71,4 @@ Ready-to-Send Checklist for Client
 [x] admin_dashboard.zip extracted to public_html/admin/.
 [x] admin/api/config.php updated with DB name, user & password.
 [x] Login tested at https://yourdomain.com/admin/.
+[x] Admin ID & password updated in Settings.

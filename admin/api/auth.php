@@ -112,4 +112,71 @@ if ($method === 'POST' && $action === 'logout') {
     ]);
 }
 
+// ── CHANGE PASSWORD / EMAIL ───────────────────────────────────────
+if ($method === 'POST' && $action === 'change_password') {
+    // Must be logged in
+    if (empty($_SESSION['sgcms_user'])) {
+        jsonResponse(['success' => false, 'error' => 'Not authenticated.'], 401);
+    }
+
+    $body        = getJsonBody();
+    $currentPass = isset($body['current_password']) ? trim($body['current_password']) : '';
+    $newEmail    = isset($body['new_email'])    ? trim(strtolower($body['new_email'])) : '';
+    $newPass     = isset($body['new_password']) ? trim($body['new_password']) : '';
+
+    if (empty($currentPass)) {
+        jsonResponse(['success' => false, 'error' => 'Current password is required.'], 400);
+    }
+
+    $userId = $_SESSION['sgcms_user']['id'];
+    $db     = getDb();
+
+    // Fetch current stored hash
+    $stmt = $db->prepare("SELECT password_hash, email FROM cms_users WHERE id = ? LIMIT 1");
+    $stmt->execute([$userId]);
+    $user = $stmt->fetch();
+
+    if (!$user || !password_verify($currentPass, $user['password_hash'])) {
+        jsonResponse(['success' => false, 'error' => 'Current password is incorrect.'], 403);
+    }
+
+    // Build update fields
+    $fields = [];
+    $params = [];
+
+    if (!empty($newEmail)) {
+        // Check email not taken by another user
+        $chk = $db->prepare("SELECT id FROM cms_users WHERE LOWER(email) = ? AND id != ? LIMIT 1");
+        $chk->execute([$newEmail, $userId]);
+        if ($chk->fetch()) {
+            jsonResponse(['success' => false, 'error' => 'That email is already in use.'], 409);
+        }
+        $fields[] = 'email = ?';
+        $params[] = $newEmail;
+    }
+
+    if (!empty($newPass)) {
+        if (strlen($newPass) < 8) {
+            jsonResponse(['success' => false, 'error' => 'New password must be at least 8 characters.'], 400);
+        }
+        $fields[] = 'password_hash = ?';
+        $params[] = password_hash($newPass, PASSWORD_BCRYPT);
+    }
+
+    if (empty($fields)) {
+        jsonResponse(['success' => false, 'error' => 'No changes provided.'], 400);
+    }
+
+    $params[] = $userId;
+    $upd = $db->prepare("UPDATE cms_users SET " . implode(', ', $fields) . " WHERE id = ?");
+    $upd->execute($params);
+
+    // Update session so new email is reflected immediately
+    if (!empty($newEmail)) {
+        $_SESSION['sgcms_user']['email'] = $newEmail;
+    }
+
+    jsonResponse(['success' => true, 'message' => 'Credentials updated successfully.']);
+}
+
 jsonResponse(['error' => 'Endpoint action not supported.'], 404);
