@@ -1,7 +1,7 @@
 // --- CENTRAL FORM & CRM DISPATCH CONTROLLER ---
 
-// Agar aapke paas Webhook URL hai (Zapier / Make / CRM), yahan paste karein:
-const CRM_WEBHOOK_URL = ""; 
+// Webhook URL connected to Website_Leads Google Sheet
+const CRM_WEBHOOK_URL = "https://script.google.com/macros/s/AKfycbx1htojc2xrudJ3i9eRepORLmAXqh6vk2IoBy6bUrtPqlcpODqI5XVdgUpXWYbgpCXOvg/exec"; 
 
 // 1. Country Dial Code Dropdown Toggle & Filter
 function toggleCountryDropdown(button) {
@@ -116,22 +116,23 @@ async function handleContactSubmit(event) {
   // Phone number ko dial code ke sath jodna
   const dialCode = form.querySelector('.dial-code-hidden-value')?.value || '';
   const rawPhone = form.querySelector('input[type="tel"]')?.value || '';
-  payload.full_phone = `${dialCode} ${rawPhone}`.trim();
+  payload.phone = `${dialCode} ${rawPhone}`.trim();
   
-  // Page tracking info
+  // Page source and identification mapping
+  payload.source = window.location.href;
+  payload.page = window.location.pathname;
   payload.form_id = form.id || 'program-consult-form';
-  payload.page_url = window.location.href;
-  payload.submitted_at = new Date().toISOString();
 
   try {
     if (CRM_WEBHOOK_URL) {
       await fetch(CRM_WEBHOOK_URL, {
         method: 'POST',
+        mode: 'no-cors',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(payload)
       });
     } else {
-      console.log("Form submitted locally (Add CRM_WEBHOOK_URL to send data):", payload);
+      console.log("Form submitted locally:", payload);
     }
 
     form.reset();
