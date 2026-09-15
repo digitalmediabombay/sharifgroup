@@ -155,7 +155,7 @@
         }
     }
 
-    var I18N_VERSION = '20260915_v22';
+    var I18N_VERSION = '20260915_v23';
 
     function loadTranslation(lang, callback) {
         var pathname = (window.location && window.location.pathname) ? window.location.pathname.toLowerCase() : '';
@@ -545,6 +545,9 @@
                 }));
             } catch (e) {}
         }
+        if (typeof window.updateWhatsAppWidget === 'function') {
+            try { window.updateWhatsAppWidget(); } catch (e) {}
+        }
     }
 
     // Intercept counter animation updates to format in Arabic / Persian digits
@@ -839,6 +842,29 @@
         }
     }, true);
 
+    function loadWhatsAppWidget() {
+        if (window.updateWhatsAppWidget) {
+            window.updateWhatsAppWidget();
+            return;
+        }
+        if (document.getElementById('sg-whatsapp-script')) return;
+
+        var langScript = document.querySelector('script[src*="language-switcher.js"]');
+        var basePath = '';
+        if (langScript) {
+            var src = langScript.getAttribute('src');
+            basePath = src.substring(0, src.indexOf('language-switcher.js'));
+        } else {
+            basePath = '/assets/js/';
+        }
+
+        var widgetScript = document.createElement('script');
+        widgetScript.id = 'sg-whatsapp-script';
+        widgetScript.src = basePath + 'whatsapp-widget.js';
+        widgetScript.async = true;
+        (document.body || document.head).appendChild(widgetScript);
+    }
+
     function init() {
         currentLang = getInitialLang();
         if (currentLang === 'en') {
@@ -848,6 +874,9 @@
         loadTranslation(currentLang, function (data) {
             applyTranslations(data, currentLang);
         });
+
+        // Initialize floating WhatsApp advisor widget site-wide
+        loadWhatsAppWidget();
 
         // Safety fallback: if anything stalls, unmask the UI so user is never blocked
         setTimeout(function () {
