@@ -4,9 +4,15 @@
     Deny from all
 </Files>
 
-# Ensure PHP errors are logged, not leaked
-php_flag display_errors off
-php_flag log_errors on
+# Ensure PHP errors are logged, not leaked (wrapped for PHP-FPM / fcgid / cPanel compatibility)
+<IfModule mod_php.c>
+    php_flag display_errors off
+    php_flag log_errors on
+</IfModule>
+<IfModule mod_php7.c>
+    php_flag display_errors off
+    php_flag log_errors on
+</IfModule>
 
 # Optional Pretty URL rewrites
 <IfModule mod_rewrite.c>

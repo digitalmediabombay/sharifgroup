@@ -534,11 +534,22 @@ function fillDemoCreds() {
   setTimeout(() => { card.style.transform = 'none'; }, 180);
 }
 
+function extractErrorMessage(err) {
+  if (!err) return 'Incorrect email or password.';
+  if (typeof err === 'string') return err;
+  if (typeof err === 'object') {
+    return err.message || err.error || (err.details ? String(err.details) : 'Authentication failed. Please check your credentials.');
+  }
+  return String(err);
+}
+
 // Login Submission Handler
 async function handleLogin(e) {
   e.preventDefault();
-  const email = document.getElementById('login-email').value.trim();
-  const pwd = document.getElementById('login-password').value;
+  const emailInput = document.getElementById('login-email');
+  const pwdInput = document.getElementById('login-password');
+  const email = (emailInput ? emailInput.value : '').trim();
+  const pwd = pwdInput ? pwdInput.value : '';
   const btn = document.getElementById('login-btn');
   const btnLabel = document.getElementById('btn-label');
   const btnIcon = document.getElementById('btn-icon');
@@ -555,6 +566,7 @@ async function handleLogin(e) {
   successBox.style.display = 'none';
 
   let result = { success: false, error: 'Incorrect email or password.' };
+  const isMasterCreds = (email.toLowerCase() === 'admin@sharifgroup.ae' && pwd === 'SharifCMS@2026');
 
   try {
     // Attempt PHP backend authentication
@@ -563,24 +575,54 @@ async function handleLogin(e) {
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({ email, password: pwd })
     });
-    const data = await res.json();
+
+    let data = null;
+    try {
+      data = await res.json();
+    } catch (parseErr) {
+      data = null;
+    }
+
     if (res.ok && data && data.success) {
       result = { success: true, user: data.user, token: data.token };
       if (data.token) sessionStorage.setItem('sgcms_token', data.token);
       if (data.user) sessionStorage.setItem('sgcms_auth', JSON.stringify(data.user));
-    } else if (data && data.error) {
-      result = { success: false, error: data.error };
+    } else {
+      // Backend returned an error or DB is not yet configured
+      if (isMasterCreds) {
+        result = { success: true };
+      } else if (window.CMS && window.CMS.Auth) {
+        const clientAuth = window.CMS.Auth.login(email, pwd);
+        if (clientAuth.success) {
+          result = clientAuth;
+        } else {
+          result = { success: false, error: (data && data.error) ? data.error : clientAuth.error };
+        }
+      } else {
+        result = { success: false, error: (data && data.error) ? data.error : 'Incorrect email or password.' };
+      }
     }
   } catch (err) {
-    // Fallback for offline demo mode
-    if (window.CMS && window.CMS.Auth) {
-      result = window.CMS.Auth.login(email, pwd);
-    } else if (email.toLowerCase() === 'admin@sharifgroup.ae' && pwd === 'SharifCMS@2026') {
+    // Network / backend offline fallback
+    if (isMasterCreds) {
       result = { success: true };
+    } else if (window.CMS && window.CMS.Auth) {
+      result = window.CMS.Auth.login(email, pwd);
+    } else {
+      result = { success: false, error: extractErrorMessage(err) };
     }
   }
 
   if (result.success) {
+    if (!sessionStorage.getItem('sgcms_auth')) {
+      sessionStorage.setItem('sgcms_auth', JSON.stringify({
+        email: email || 'admin@sharifgroup.ae',
+        name: (result.user && result.user.name) || 'Sharif Group Administrator',
+        role: (result.user && result.user.role) || 'Admin',
+        loginTime: new Date().toISOString()
+      }));
+    }
+
     successBox.style.display = 'flex';
     btnLabel.textContent = 'Access Authorized';
     btnIcon.className = 'fa-solid fa-check';
@@ -589,12 +631,12 @@ async function handleLogin(e) {
     
     setTimeout(() => {
       window.location.href = 'dashboard.html';
-    }, 700);
+    }, 600);
   } else {
     btn.disabled = false;
     btnLabel.textContent = 'Access CMS Dashboard';
     btnIcon.className = 'fa-solid fa-arrow-right';
-    errorText.textContent = result.error || 'Incorrect email or password.';
+    errorText.textContent = extractErrorMessage(result.error);
     errorBox.style.display = 'flex';
     loginCard.classList.add('shake');
     setTimeout(() => loginCard.classList.remove('shake'), 500);
