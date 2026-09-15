@@ -27,38 +27,39 @@
     try { localStorage.setItem(key, JSON.stringify(data)); } catch(e) {}
   }
 
+  function normalizeImageUrl(url) {
+    if (!url || typeof url !== 'string') return '/assets/images/dubai-office-2.webp';
+    url = url.trim();
+    if (!url) return '/assets/images/dubai-office-2.webp';
+    if (url.startsWith('http://') || url.startsWith('https://') || url.startsWith('data:') || url.startsWith('blob:')) return url;
+    if (url.startsWith('/')) return url;
+    if (url.startsWith('../')) return url.replace(/^(\.\.\/)+/, '/');
+    return '/' + url;
+  }
+
   const params = new URLSearchParams(window.location.search);
   const isEditor = params.get('cms_editor') === '1';
   const isPreview = params.get('cms_preview') === '1' || isEditor;
   const hasCmsData = Boolean(store('sgcms_citizenship') || store('sgcms_residency') || store('sgcms_homepage') || store('sgcms_blog'));
 
   async function syncLiveFromBackend() {
+    // Vercel is a static host that does not run PHP - skip immediately to avoid network hanging
+    if (window.location.hostname.includes('vercel.app') || window.location.protocol === 'file:') {
+      return;
+    }
     try {
-      const candidates = [
-        '/admin/api/content.php?mode=live',
-        '../admin/api/content.php?mode=live',
-        'admin/api/content.php?mode=live',
-        'api/content.php?mode=live'
-      ];
-      for (const url of candidates) {
-        try {
-          // FIX: Add 5s timeout to prevent browser loading spinner hanging for 30+ seconds
-          // when the MySQL backend is unavailable (e.g. DB credentials not configured).
-          const controller = new AbortController();
-          const tid = setTimeout(() => controller.abort(), 5000);
-          const res = await fetch(url, { signal: controller.signal });
-          clearTimeout(tid);
-          if (res.ok) {
-            const json = await res.json();
-            if (json && json.success && json.data) {
-              for (const k in json.data) {
-                localStorage.setItem(k + '_live', JSON.stringify(json.data[k]));
-              }
-              runHydration();
-              break;
-            }
+      const controller = new AbortController();
+      const tid = setTimeout(() => controller.abort(), 1200);
+      const res = await fetch('/admin/api/content.php?mode=live', { signal: controller.signal });
+      clearTimeout(tid);
+      if (res.ok) {
+        const json = await res.json();
+        if (json && json.success && json.data) {
+          for (const k in json.data) {
+            localStorage.setItem(k + '_live', JSON.stringify(json.data[k]));
           }
-        } catch(e) {}
+          runHydration();
+        }
       }
     } catch(e) {}
   }
@@ -535,21 +536,16 @@
     card.style.display = 'flex';
     card.setAttribute('data-paginated', 'true');
 
+    const cleanImg = normalizeImageUrl(img);
+
     card.innerHTML = `
       <div class="space-y-3">
         <div class="aspect-[4/3] rounded-2xl overflow-hidden bg-neutral-100 shadow-xl border-2 border-[#C5A880] relative group">
-          <img alt="${escH(title)}" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" src="${img}" onerror="this.src='https://sharifgroup.ae/wp-content/uploads/2026/05/dubai-office-2.jpg.webp'">
+          <img alt="${escH(title)}" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" src="${cleanImg}" onerror="this.onerror=null;this.src='/assets/images/dubai-office-2.webp'">
           <div style="position:absolute;top:10px;left:10px;background:linear-gradient(135deg,#B38E5D,#8a6839);color:#fff;font-size:10px;font-weight:700;padding:3px 10px;border-radius:999px;display:flex;align-items:center;gap:6px;box-shadow:0 3px 10px rgba(0,0,0,.35);letter-spacing:.05em">
             <span style="width:7px;height:7px;border-radius:50%;background:#4ade80;box-shadow:0 0 8px #4ade80;display:inline-block"></span>
             LIVE ARTICLE PREVIEW
           </div>
-        </div>
-        <div class="flex items-center gap-2 text-[10px] text-[#786142] font-semibold uppercase tracking-wider">
-          <span class="blog-card-cat font-bold text-[#9C7744]">${escH(category + subcat)}</span>
-          <span>•</span>
-          <span class="blog-card-date">${escH(date)}</span>
-          <span>•</span>
-          <span class="blog-card-author text-neutral-400 font-normal">${escH(author)}</span>
         </div>
         <h4 class="font-serif font-bold text-base text-neutral-900 leading-snug">
           ${escH(title)}
@@ -620,17 +616,12 @@
         articleEl.style.display = 'flex';
         articleEl.setAttribute('data-paginated', 'true');
 
+        const cleanImg = normalizeImageUrl(b.featured_img);
+
         articleEl.innerHTML = `
           <div class="space-y-3">
             <div class="aspect-[4/3] rounded-2xl overflow-hidden bg-neutral-100 shadow-md neon-card-hover border border-neutral-200/70">
-              <img alt="${escH(ld.title || 'Article')}" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" src="${b.featured_img || 'https://sharifgroup.ae/wp-content/uploads/2026/05/dubai-office-2.jpg.webp'}" onerror="this.src='https://sharifgroup.ae/wp-content/uploads/2026/05/dubai-office-2.jpg.webp'">
-            </div>
-            <div class="flex items-center gap-2 text-[10px] text-[#786142] font-semibold uppercase tracking-wider">
-              <span>${escH(catDisplay)}</span>
-              <span>•</span>
-              <span>${escH(b.publish_date || 'Recent')}</span>
-              <span>•</span>
-              <span class="text-neutral-400 font-normal">${escH(b.author || 'Sharif Group')}</span>
+              <img alt="${escH(ld.title || 'Article')}" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" src="${cleanImg}" onerror="this.onerror=null;this.src='/assets/images/dubai-office-2.webp'">
             </div>
             <h4 class="font-serif font-bold text-base text-neutral-900 leading-snug">
               ${escH(ld.title || 'Untitled Article')}
@@ -653,7 +644,7 @@
         existingCard.style.display = 'flex';
         existingCard.setAttribute('data-paginated', 'true');
         const img = existingCard.querySelector('img');
-        if (img && b.featured_img) img.src = b.featured_img;
+        if (img && b.featured_img) img.src = normalizeImageUrl(b.featured_img);
         const h4 = existingCard.querySelector('h4');
         if (h4 && ld.title) h4.textContent = ld.title;
         const p = existingCard.querySelector('p');

@@ -783,7 +783,7 @@ const DEFAULTS = {
       author: 'Sharif Group Editorial',
       category: 'Citizenship',
       tags: ['Dominica', 'Caribbean', '2026'],
-      featured_img: 'https://sharifgroup.ae/wp-content/uploads/2026/05/dubai-office-2.jpg.webp',
+      featured_img: '/assets/images/dubai-office-2.webp',
       publish_date: '2026-09-01',
       status_en: 'published',
       status_ar: 'published',

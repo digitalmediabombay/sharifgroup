@@ -2705,8 +2705,7 @@
           return type === 'citizenship'
             ? [
               { key: 'caribbean', label: 'Caribbean' },
-              { key: 'global', label: 'Global' },
-              { key: 'european', label: 'European' }
+              { key: 'global', label: 'Global' }
             ]
             : [
               { key: 'european', label: 'European' },
@@ -2715,22 +2714,26 @@
             ];
         },
         getSections(type) {
-          const defaults = this.getDefaults(type);
+          const defaults = this.getDefaults(type).map(d => ({ ...d, isDefault: true }));
           let custom = [];
           try {
             custom = JSON.parse(localStorage.getItem('sgcms_sections_' + type)) || [];
           } catch (e) { }
 
           const list = window.CMS.getData(window.CMS.KEYS[type.toUpperCase()]) || window.CMS.DEFAULTS[type] || [];
+          // Auto-prune custom sections that have 0 programs
+          custom = custom.filter(c => list.some(p => (p.portfolio || '').toLowerCase() === c.key.toLowerCase()));
+          localStorage.setItem('sgcms_sections_' + type, JSON.stringify(custom));
+
           const fromProgs = [];
           list.forEach(p => {
-            if (p.portfolio && !defaults.some(d => d.key === p.portfolio) && !custom.some(c => c.key === p.portfolio)) {
+            if (p.portfolio && !defaults.some(d => d.key === p.portfolio) && !custom.some(c => c.key === p.portfolio) && !fromProgs.some(f => f.key === p.portfolio)) {
               const label = p.portfolio_label || (p.portfolio.charAt(0).toUpperCase() + p.portfolio.slice(1));
-              fromProgs.push({ key: p.portfolio, label });
+              fromProgs.push({ key: p.portfolio, label, isCustom: true });
             }
           });
 
-          return [...defaults, ...custom, ...fromProgs];
+          return [...defaults, ...custom.map(c => ({ ...c, isCustom: true })), ...fromProgs];
         },
         addSection(type, label) {
           if (!label || !label.trim()) return null;
@@ -2744,11 +2747,26 @@
           try {
             custom = JSON.parse(localStorage.getItem('sgcms_sections_' + type)) || [];
           } catch (e) { }
-          custom.push({ key, label: cleanLabel });
+          custom.push({ key, label: cleanLabel, isCustom: true });
           localStorage.setItem('sgcms_sections_' + type, JSON.stringify(custom));
           return key;
+        },
+        removeSection(type, key) {
+          let custom = [];
+          try {
+            custom = JSON.parse(localStorage.getItem('sgcms_sections_' + type)) || [];
+          } catch (e) { }
+          custom = custom.filter(s => s.key !== key);
+          localStorage.setItem('sgcms_sections_' + type, JSON.stringify(custom));
         }
       };
+
+      function deleteSection(type, key) {
+        if (!confirm('Are you sure you want to remove this section?')) return;
+        PortfolioManager.removeSection(type, key);
+        populateSidebar();
+        showToast('Section removed');
+      }
 
       function promptAddSection(type) {
         const typeName = type === 'citizenship' ? 'Citizenship' : 'Residency';
@@ -3264,15 +3282,19 @@
           const ciSections = PortfolioManager.getSections('citizenship');
           ciContainer.innerHTML = ciSections.map(sec => {
             const progs = ci.filter(p => (p.portfolio || 'global') === sec.key).sort((a, b) => (a.nav_sort || 0) - (b.nav_sort || 0));
+            if (progs.length === 0 && (sec.isCustom || sec.key === 'european')) return '';
             return `
         <div class="sb-sub-group" id="sb-group-ci-${sec.key}">
           <div class="sb-sub-lbl">
             <span>${escH(sec.label)}</span>
-            <button class="sb-add-btn" style="width:16px;height:16px;font-size:8px" title="Add program to ${escH(sec.label)}" onclick="addProgram('citizenship','${sec.key}')">
-              <i class="fa-solid fa-plus"></i>
-            </button>
+            <div style="display:flex;align-items:center;gap:4px">
+              <button class="sb-add-btn" style="width:16px;height:16px;font-size:8px" title="Add program to ${escH(sec.label)}" onclick="addProgram('citizenship','${sec.key}')">
+                <i class="fa-solid fa-plus"></i>
+              </button>
+              ${sec.isCustom ? `<button class="sb-del-btn" style="width:16px;height:16px;font-size:9px;background:none;border:none;color:var(--muted);cursor:pointer;padding:0" title="Delete section" onclick="event.stopPropagation();deleteSection('citizenship','${sec.key}')"><i class="fa-solid fa-trash-can"></i></button>` : ''}
+            </div>
           </div>
-          <div id="sb-ci-${sec.key}">${progs.map(p => makeProgItem(p, 'citizenship')).join('') || '<div style="padding:4px 10px;color:var(--muted2);font-size:11px">No programs yet</div>'}</div>
+          <div id="sb-ci-${sec.key}">${progs.map(p => makeProgItem(p, 'citizenship')).join('')}</div>
         </div>
       `;
           }).join('') + `
@@ -3290,15 +3312,19 @@
           const riSections = PortfolioManager.getSections('residency');
           riContainer.innerHTML = riSections.map(sec => {
             const progs = ri.filter(p => (p.portfolio || 'european') === sec.key).sort((a, b) => (a.nav_sort || 0) - (b.nav_sort || 0));
+            if (progs.length === 0 && sec.isCustom) return '';
             return `
         <div class="sb-sub-group" id="sb-group-ri-${sec.key}">
           <div class="sb-sub-lbl">
             <span>${escH(sec.label)}</span>
-            <button class="sb-add-btn" style="width:16px;height:16px;font-size:8px" title="Add program to ${escH(sec.label)}" onclick="addProgram('residency','${sec.key}')">
-              <i class="fa-solid fa-plus"></i>
-            </button>
+            <div style="display:flex;align-items:center;gap:4px">
+              <button class="sb-add-btn" style="width:16px;height:16px;font-size:8px" title="Add program to ${escH(sec.label)}" onclick="addProgram('residency','${sec.key}')">
+                <i class="fa-solid fa-plus"></i>
+              </button>
+              ${sec.isCustom ? `<button class="sb-del-btn" style="width:16px;height:16px;font-size:9px;background:none;border:none;color:var(--muted);cursor:pointer;padding:0" title="Delete section" onclick="event.stopPropagation();deleteSection('residency','${sec.key}')"><i class="fa-solid fa-trash-can"></i></button>` : ''}
+            </div>
           </div>
-          <div id="sb-ri-${sec.key}">${progs.map(p => makeProgItem(p, 'residency')).join('') || '<div style="padding:4px 10px;color:var(--muted2);font-size:11px">No programs yet</div>'}</div>
+          <div id="sb-ri-${sec.key}">${progs.map(p => makeProgItem(p, 'residency')).join('')}</div>
         </div>
       `;
           }).join('') + `
