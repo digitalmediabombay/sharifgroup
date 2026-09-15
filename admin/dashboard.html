@@ -2337,6 +2337,21 @@
       const escH = s => String(s || '').replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;');
       const uid = () => 'id-' + Math.random().toString(36).slice(2, 8);
       const FLAG_CODES = { dominica: 'dm', stkitts: 'kn', antigua: 'ag', stlucia: 'lc', grenada: 'gd', vanuatu: 'vu', saotome: 'st', nauru: 'nr', portugal: 'pt', greece: 'gr', panama: 'pa', uae: 'ae' };
+      const BUILTIN_PASSPORT_IMAGES = {
+        dominica: '/assets/images/Dominica-Americas-Hu_10e82c.webp',
+        stkitts: '/assets/images/st-kitts-passport.webp',
+        antigua: '/assets/images/passport-investment-_6f41c1.webp',
+        stlucia: '/assets/images/610fd15b02a12_38ea93.webp',
+        lucia: '/assets/images/610fd15b02a12_38ea93.webp',
+        grenada: '/assets/images/citizenship-passport_35b3b6.webp',
+        vanuatu: '/assets/images/how-to-get-vanuatu-c_adddfe.webp',
+        saotome: '/assets/images/Sao_Tome_passport_7c536c.webp',
+        nauru: '/assets/images/reloc8-online-nauru-_16c98e.webp',
+        portugal: '/assets/images/portugal-golden-vsa_47319a.webp',
+        greece: '/assets/images/golden-visa-greece-t_12b60b.webp',
+        panama: '/assets/images/images_5d28a7.webp',
+        uae: '/assets/images/uae-residence-visa_df80b3.webp'
+      };
 
       // Page URL map for preview
       const PAGE_URLS = {
@@ -3244,11 +3259,25 @@
         // Prune any completely empty ghost test items with no content
         const origCiLen = ci.length;
         ci = ci.filter(p => !(p.id && p.id.startsWith('id-') && !p.en?.title && !p.en?.nav_label && !p.hero_title && !p.name));
-        if (ci.length !== origCiLen) window.CMS.saveData(window.CMS.KEYS.CITIZENSHIP, ci);
+        let ciFlagsUpdated = false;
+        ci.forEach(p => {
+          if (p && BUILTIN_PASSPORT_IMAGES[p.id] && (!p.flag || p.flag.includes('flagcdn.com') || p.flag.includes('Flag_of_') || p.flag.endsWith('.svg'))) {
+            p.flag = BUILTIN_PASSPORT_IMAGES[p.id];
+            ciFlagsUpdated = true;
+          }
+        });
+        if (ci.length !== origCiLen || ciFlagsUpdated) window.CMS.saveData(window.CMS.KEYS.CITIZENSHIP, ci);
 
         const origRiLen = ri.length;
         ri = ri.filter(p => !(p.id && p.id.startsWith('id-') && !p.en?.title && !p.en?.nav_label && !p.hero_title && !p.name));
-        if (ri.length !== origRiLen) window.CMS.saveData(window.CMS.KEYS.RESIDENCY, ri);
+        let riFlagsUpdated = false;
+        ri.forEach(p => {
+          if (p && BUILTIN_PASSPORT_IMAGES[p.id] && (!p.flag || p.flag.includes('flagcdn.com') || p.flag.includes('Flag_of_') || p.flag.endsWith('.svg'))) {
+            p.flag = BUILTIN_PASSPORT_IMAGES[p.id];
+            riFlagsUpdated = true;
+          }
+        });
+        if (ri.length !== origRiLen || riFlagsUpdated) window.CMS.saveData(window.CMS.KEYS.RESIDENCY, ri);
 
         function makeProgItem(p, type) {
           const ld = p[state.lang] || p.en || {};
@@ -3263,9 +3292,9 @@
             }
           }
           const dot = `<span class="sb-item-dot ${p.status === 'published' ? 'published' : 'draft'}"></span>`;
-          const fallback = FLAG_CODES[p.id] ? `https://flagcdn.com/${FLAG_CODES[p.id]}.svg` : '';
-          const flagSrc = (p.flag && !p.flag.includes('Flag_of_Sao_Tome_and_Principe.svg')) ? p.flag : fallback;
-          const flag = flagSrc ? `<img class="sb-item-flag" src="${flagSrc}" onerror="if(this.src!=='${fallback}'){this.src='${fallback}'}else{this.style.display='none'}">` : `<span class="sb-item-flag-icon"><i class="fa-solid fa-passport"></i></span>`;
+          const fallback = BUILTIN_PASSPORT_IMAGES[p.id] || (FLAG_CODES[p.id] ? `https://flagcdn.com/${FLAG_CODES[p.id]}.svg` : '');
+          const flagSrc = (p.flag && !p.flag.includes('flagcdn.com') && !p.flag.includes('Flag_of_') && !p.flag.endsWith('.svg')) ? p.flag : (BUILTIN_PASSPORT_IMAGES[p.id] || fallback);
+          const flag = flagSrc ? `<img class="sb-item-flag" src="${flagSrc}" onerror="this.style.display='none'">` : `<span class="sb-item-flag-icon"><i class="fa-solid fa-passport"></i></span>`;
 
           // Allow deleting any custom-created programs easily
           const isBuiltin = ['dominica', 'stkitts', 'antigua', 'grenada', 'stlucia', 'vanuatu', 'saotome', 'nauru', 'portugal', 'greece', 'panama', 'uae'].includes(p.id);
