@@ -507,9 +507,21 @@
 
 <script src="cms.js"></script>
 <script>
+function getDashboardUrl() {
+  const path = window.location.pathname || '';
+  if (path.includes('/admin/')) {
+    const base = path.substring(0, path.indexOf('/admin/') + 7);
+    return base + 'dashboard.html';
+  }
+  if (path.endsWith('/admin')) {
+    return path + '/dashboard.html';
+  }
+  return '/admin/dashboard.html';
+}
+
 // Redirect if already authed
 if (window.CMS && window.CMS.Auth && window.CMS.Auth.isAuthenticated()) {
-  window.location.href = 'dashboard.html';
+  window.location.href = getDashboardUrl();
 }
 
 // Password Reveal Toggle
@@ -630,7 +642,7 @@ async function handleLogin(e) {
     btn.style.boxShadow = '0 10px 24px rgba(22, 163, 74, 0.4)';
     
     setTimeout(() => {
-      window.location.href = 'dashboard.html';
+      window.location.href = getDashboardUrl();
     }, 600);
   } else {
     btn.disabled = false;
