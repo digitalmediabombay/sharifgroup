@@ -135,26 +135,11 @@
     });
   }
 
-  // ── Standalone Preview Badge ────────────────────────────
+  // ── Standalone Preview Badge (Permanently Disabled) ────
   function showPreviewBadge() {
-    if (isEditor || document.getElementById('cms-preview-badge')) return;
-    const badge = document.createElement('div');
-    badge.id = 'cms-preview-badge';
-    badge.innerHTML = `
-      <div style="display:flex;align-items:center;gap:10px">
-        <span style="display:inline-block;width:8px;height:8px;border-radius:50%;background:#22c55e"></span>
-        <span>Sharif CMS Preview Active</span>
-        <button onclick="window.close()" style="background:rgba(0,0,0,0.28);border:none;padding:4px 10px;border-radius:999px;color:#fff;font-size:11px;font-weight:600;cursor:pointer;margin-left:4px">Close</button>
-      </div>
-    `;
-    Object.assign(badge.style, {
-      position: 'fixed', bottom: '24px', left: '50%', transform: 'translateX(-50%)',
-      background: 'linear-gradient(135deg,#C5A880,#9A7B54)', color: '#fff',
-      padding: '8px 18px', borderRadius: '999px', fontFamily: 'Inter,sans-serif',
-      fontSize: '12px', fontWeight: '600', zIndex: '999999', boxShadow: '0 8px 32px rgba(0,0,0,.45)',
-      whiteSpace: 'nowrap', display: 'flex', alignItems: 'center'
-    });
-    document.body.appendChild(badge);
+    const existing = document.getElementById('cms-preview-badge');
+    if (existing) existing.remove();
+    return;
   }
 
   // ── Universal DOM Overrides ─────────────────────────────
@@ -2092,7 +2077,6 @@
 
   // ── Execution Entrypoint ────────────────────────────────
   function init() {
-    showPreviewBadge();
     runHydration();
     setupVisualEditor();
     if (!isEditor) {
