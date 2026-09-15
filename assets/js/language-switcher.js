@@ -155,7 +155,7 @@
         }
     }
 
-    var I18N_VERSION = '20260915_v23';
+    var I18N_VERSION = '20260915_v24';
 
     function loadTranslation(lang, callback) {
         var pathname = (window.location && window.location.pathname) ? window.location.pathname.toLowerCase() : '';
@@ -843,6 +843,16 @@
     }, true);
 
     function loadWhatsAppWidget() {
+        // Do not load on admin panel or editor iframes
+        try {
+            var path = (window.location && window.location.pathname) ? window.location.pathname.toLowerCase() : '';
+            var href = (window.location && window.location.href) ? window.location.href.toLowerCase() : '';
+            var search = (window.location && window.location.search) ? window.location.search.toLowerCase() : '';
+            if (path.includes('/admin/') || path.endsWith('/admin') || href.includes('dashboard.html') || href.includes('admin/index.html') || href.includes('/admin')) return;
+            if (window.self !== window.top) return;
+            if (search.includes('cms_editor') || search.includes('cms_preview')) return;
+        } catch (e) {}
+
         if (window.updateWhatsAppWidget) {
             window.updateWhatsAppWidget();
             return;
