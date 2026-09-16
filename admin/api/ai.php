@@ -16,7 +16,7 @@ $body = getJsonBody();
 
 $provider = isset($body['provider']) ? trim(strtolower($body['provider'])) : 'openrouter'; // 'openrouter' or 'gemini'
 $apiKey = isset($body['api_key']) ? trim($body['api_key']) : '';
-$model = isset($body['model']) ? trim($body['model']) : 'google/gemini-flash-1.5';
+$model = isset($body['model']) ? trim($body['model']) : 'google/gemini-2.0-flash-001';
 
 // If API key not passed in request body, attempt to read from database settings
 if (empty($apiKey)) {
@@ -123,49 +123,64 @@ if ($action === 'translate') {
 }
 
 // ── CURL HELPER FOR OPENROUTER ────────────────────────────────────
-function callOpenRouter($apiKey, $prompt, $model = 'google/gemini-flash-1.5') {
+function callOpenRouter($apiKey, $prompt, $model = 'google/gemini-2.0-flash-001') {
     $url = 'https://openrouter.ai/api/v1/chat/completions';
 
-    $payload = [
-        'model' => $model,
-        'messages' => [
-            ['role' => 'user', 'content' => $prompt]
-        ],
-        'temperature' => 0.3
-    ];
-
-    $ch = curl_init($url);
-    curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
-    curl_setopt($ch, CURLOPT_POST, true);
-    curl_setopt($ch, CURLOPT_HTTPHEADER, [
-        'Content-Type: application/json',
-        'Authorization: Bearer ' . $apiKey,
-        'HTTP-Referer: https://sharifgroup.ae',
-        'X-Title: Sharif Group CMS Studio'
+    $modelsToTry = array_unique([
+        $model,
+        'google/gemini-2.0-flash-001',
+        'google/gemini-2.0-flash-exp:free',
+        'meta-llama/llama-3.3-70b-instruct:free',
+        'qwen/qwen-2.5-72b-instruct:free'
     ]);
-    curl_setopt($ch, CURLOPT_POSTFIELDS, json_encode($payload));
-    curl_setopt($ch, CURLOPT_TIMEOUT, 30);
-    curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, true);
 
-    $response = curl_exec($ch);
-    $httpCode = curl_getinfo($ch, CURLINFO_HTTP_CODE);
-    $err = curl_error($ch);
-    curl_close($ch);
+    $lastError = 'OpenRouter request failed';
 
-    if ($err) {
-        return ['success' => false, 'error' => 'cURL Error: ' . $err];
-    }
-
-    $data = json_decode($response, true);
-    if ($httpCode >= 200 && $httpCode < 300 && !empty($data['choices'][0]['message']['content'])) {
-        return [
-            'success' => true,
-            'content' => trim($data['choices'][0]['message']['content'])
+    foreach ($modelsToTry as $currentModel) {
+        $payload = [
+            'model' => $currentModel,
+            'messages' => [
+                ['role' => 'user', 'content' => $prompt]
+            ],
+            'temperature' => 0.3
         ];
+
+        $ch = curl_init($url);
+        curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+        curl_setopt($ch, CURLOPT_POST, true);
+        curl_setopt($ch, CURLOPT_HTTPHEADER, [
+            'Content-Type: application/json',
+            'Authorization: Bearer ' . $apiKey,
+            'HTTP-Referer: https://sharifgroup.ae',
+            'X-Title: Sharif Group CMS Studio'
+        ]);
+        curl_setopt($ch, CURLOPT_POSTFIELDS, json_encode($payload));
+        curl_setopt($ch, CURLOPT_TIMEOUT, 30);
+        curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, true);
+
+        $response = curl_exec($ch);
+        $httpCode = curl_getinfo($ch, CURLINFO_HTTP_CODE);
+        $err = curl_error($ch);
+        curl_close($ch);
+
+        if ($err) {
+            $lastError = 'cURL Error: ' . $err;
+            continue;
+        }
+
+        $data = json_decode($response, true);
+        if ($httpCode >= 200 && $httpCode < 300 && !empty($data['choices'][0]['message']['content'])) {
+            return [
+                'success' => true,
+                'content' => trim($data['choices'][0]['message']['content']),
+                'model'   => $currentModel
+            ];
+        }
+
+        $lastError = isset($data['error']['message']) ? $data['error']['message'] : ('HTTP ' . $httpCode . ': ' . $response);
     }
 
-    $errMsg = isset($data['error']['message']) ? $data['error']['message'] : ('HTTP ' . $httpCode . ': ' . $response);
-    return ['success' => false, 'error' => $errMsg];
+    return ['success' => false, 'error' => $lastError];
 }
 
 // ── CURL HELPER FOR GEMINI ────────────────────────────────────────

@@ -6999,7 +6999,7 @@
         markDraft();
         markSaved();
         showToast('Draft changes saved successfully!');
-        if (window.CMS.Settings.getGeminiKey()) {
+        if (window.CMS.Settings.getAiKey()) {
           autoTranslateOnSave(section, itemId);
         }
       }
@@ -7014,7 +7014,7 @@
 
       async function triggerAI(targetLang) {
         document.getElementById('ai-menu').classList.remove('open');
-        const key = window.CMS.Settings.getGeminiKey();
+        const key = window.CMS.Settings.getAiKey();
         if (!key) { showToast('Add your OpenRouter or Gemini API key in Settings first!', 'error'); navigate('settings'); return; }
 
         const langs = targetLang === 'all' ? ['ar', 'fa', 'zh'] : [targetLang];
@@ -7181,7 +7181,7 @@
       // ══════════════════════════════════════════════════════════
       let isAutoTranslating = false;
       async function autoTranslateOnSave(section, itemId) {
-        const key = window.CMS.Settings.getGeminiKey();
+        const key = window.CMS.Settings.getAiKey();
         if (!key || isAutoTranslating) return;
 
         const statusEl = document.getElementById('ai-auto-status');
