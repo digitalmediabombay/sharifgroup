@@ -150,13 +150,16 @@ const AI = {
 
       throw new Error(lastError || 'OpenRouter translation failed across available models.');
     } else {
-      const geminiModels = ['gemini-2.0-flash', 'gemini-1.5-flash', 'gemini-2.5-flash', 'gemini-1.5-flash-latest'];
+      const geminiModels = ['gemini-2.0-flash', 'gemini-2.0-flash-lite', 'gemini-1.5-flash', 'gemini-1.5-flash-latest', 'gemini-1.5-pro'];
       let lastErr = null;
       for (const m of geminiModels) {
         try {
           const res = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/${m}:generateContent?key=${encodeURIComponent(apiKey)}`, {
             method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
+            headers: {
+              'Content-Type': 'application/json',
+              'x-goog-api-key': apiKey
+            },
             body: JSON.stringify({ contents: [{ parts: [{ text: prompt }] }] })
           });
           if (res.ok) {
@@ -199,12 +202,20 @@ const AI = {
       .trim();
   },
 
+  formatGeminiError(errMsg) {
+    if (!errMsg) return 'Gemini API test failed. Check the key.';
+    if (errMsg.includes('OAuth') || errMsg.includes('devconsole-project') || errMsg.includes('invalid authentication credentials') || errMsg.includes('ACCESS_TOKEN_TYPE_UNSUPPORTED')) {
+      return 'You provided an OAuth Client ID or OAuth credential from Google Cloud Console instead of an API Key. Google Gemini requires an API key from Google AI Studio. Please generate a free key at aistudio.google.com/apikey (takes 10 seconds).';
+    }
+    return errMsg;
+  },
+
   async testOpenRouterKey(apiKey) {
     if (!apiKey) return { success: false, error: 'No API key provided' };
     const cleanKey = this.sanitizeKey(apiKey);
 
     // Auto-detect Google Gemini key pasted into OpenRouter box
-    if (cleanKey.startsWith('AIza')) {
+    if (cleanKey.startsWith('AIza') || cleanKey.startsWith('AQ.')) {
       const geminiTest = await this.testKey(cleanKey);
       if (geminiTest.success) {
         return {
@@ -219,7 +230,6 @@ const AI = {
     // 1. Direct check to OpenRouter official auth/key endpoint (Zero-credit, instant, CORS-enabled)
     try {
       const res = await fetch('https://openrouter.ai/api/v1/auth/key', {
-        method: 'GET',
         headers: {
           'Authorization': 'Bearer ' + cleanKey
         }
@@ -229,22 +239,12 @@ const AI = {
         return { success: true, data: json?.data };
       }
       if (res.status === 401 || res.status === 403) {
-        const err = await res.json().catch(() => null);
-        return { success: false, error: err?.error?.message || 'Invalid API key. Please check your OpenRouter key.' };
+        const errJson = await res.json().catch(() => null);
+        return { success: false, error: errJson?.error?.message || 'Invalid OpenRouter API Key' };
       }
     } catch(e) {}
 
-    // 2. Secondary check via models list
-    try {
-      const res = await fetch('https://openrouter.ai/api/v1/models', {
-        headers: {
-          'Authorization': 'Bearer ' + cleanKey
-        }
-      });
-      if (res.ok) return { success: true };
-    } catch(e) {}
-
-    // 3. Fallback via backend proxy if running with PHP
+    // 2. Try server-side PHP test (if running with Apache/cPanel)
     try {
       const res = await fetch('api/ai.php?action=test', {
         method: 'POST',
@@ -257,6 +257,27 @@ const AI = {
         if (json && json.error) return { success: false, error: json.error };
       }
     } catch(e) {}
+
+    // 3. Fallback check with chat completions
+    const freeModels = ['meta-llama/llama-3.3-70b-instruct:free', 'google/gemini-2.0-flash-001', 'qwen/qwen-2.5-72b-instruct:free'];
+    for (const model of freeModels) {
+      try {
+        const res = await fetch('https://openrouter.ai/api/v1/chat/completions', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+            'Authorization': 'Bearer ' + cleanKey,
+            'HTTP-Referer': 'https://sharifgroup.ae',
+            'X-Title': 'Sharif Group CMS'
+          },
+          body: JSON.stringify({
+            model,
+            messages: [{ role: 'user', content: 'Say "OK" in one word.' }]
+          })
+        });
+        if (res.ok) return { success: true };
+      } catch (err) {}
+    }
 
     return { success: false, error: 'Unable to connect to OpenRouter. Please check your network or key.' };
   },
@@ -281,9 +302,22 @@ const AI = {
       };
     }
 
+    // Auto-detect Google Cloud OAuth Client IDs or secrets
+    if (cleanKey.includes('.apps.googleusercontent.com') || cleanKey.startsWith('GOCSPX-') || cleanKey.startsWith('ya29.')) {
+      return {
+        success: false,
+        isOAuthCredential: true,
+        error: 'You pasted a Google Cloud OAuth Client ID / Secret instead of an API Key. Google Gemini requires an API Key from Google AI Studio. Please generate your free API key at aistudio.google.com/apikey.'
+      };
+    }
+
     // 1. Direct validation via official Google models endpoint (zero-credit, authoritative key check)
     try {
-      const res = await fetch(`https://generativelanguage.googleapis.com/v1beta/models?key=${encodeURIComponent(cleanKey)}`);
+      const res = await fetch(`https://generativelanguage.googleapis.com/v1beta/models?key=${encodeURIComponent(cleanKey)}`, {
+        headers: {
+          'x-goog-api-key': cleanKey
+        }
+      });
       if (res.ok) {
         const data = await res.json().catch(() => null);
         let foundModel = 'gemini-2.0-flash';
@@ -298,7 +332,7 @@ const AI = {
       if (res.status === 400 || res.status === 401 || res.status === 403) {
         const errJson = await res.json().catch(() => null);
         if (errJson && errJson.error && errJson.error.message) {
-          return { success: false, error: errJson.error.message };
+          return { success: false, error: this.formatGeminiError(errJson.error.message) };
         }
       }
     } catch (e) {}
@@ -313,19 +347,22 @@ const AI = {
       if (res.ok) {
         const json = await res.json().catch(() => null);
         if (json && json.success) return { success: true, model: json.model };
-        if (json && json.error) return { success: false, error: json.error };
+        if (json && json.error) return { success: false, error: this.formatGeminiError(json.error) };
       }
     } catch(e) {}
 
     // 3. Fallback check using established Gemini models
-    const geminiModels = ['gemini-2.0-flash', 'gemini-1.5-flash', 'gemini-2.5-flash', 'gemini-1.5-flash-latest'];
+    const geminiModels = ['gemini-2.0-flash', 'gemini-2.0-flash-lite', 'gemini-1.5-flash', 'gemini-1.5-flash-latest', 'gemini-1.5-pro'];
     let lastErr = 'Gemini API test failed';
 
     for (const m of geminiModels) {
       try {
         const res = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/${m}:generateContent?key=${encodeURIComponent(cleanKey)}`, {
           method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
+          headers: {
+            'Content-Type': 'application/json',
+            'x-goog-api-key': cleanKey
+          },
           body: JSON.stringify({ contents: [{ parts: [{ text: 'Say "OK" in one word.' }] }] })
         });
         if (res.ok) {
@@ -339,7 +376,7 @@ const AI = {
       }
     }
 
-    return { success: false, error: lastErr };
+    return { success: false, error: this.formatGeminiError(lastErr) };
   }
 };
 

@@ -76,11 +76,22 @@ if ($action === 'test') {
         }
         jsonResponse($testResult);
     } else {
+        // Auto-detect Google Cloud OAuth Client IDs or secrets
+        if (strpos($apiKey, '.apps.googleusercontent.com') !== false || strpos($apiKey, 'GOCSPX-') === 0 || strpos($apiKey, 'ya29.') === 0) {
+            jsonResponse([
+                'success' => false,
+                'error'   => 'You provided an OAuth Client ID or OAuth credential from Google Cloud Console instead of an API Key. Google Gemini requires an API key from Google AI Studio. Please generate a free key at aistudio.google.com/apikey (takes 10 seconds).'
+            ], 400);
+        }
+
         // Direct key validation via Google's official models list endpoint
         $ch = curl_init('https://generativelanguage.googleapis.com/v1beta/models?key=' . urlencode($apiKey));
         curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
         curl_setopt($ch, CURLOPT_TIMEOUT, 15);
         curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, true);
+        curl_setopt($ch, CURLOPT_HTTPHEADER, [
+            'x-goog-api-key: ' . $apiKey
+        ]);
         $res = curl_exec($ch);
         $code = curl_getinfo($ch, CURLINFO_HTTP_CODE);
         curl_close($ch);
@@ -109,6 +120,9 @@ if ($action === 'test') {
         if ($code === 400 || $code === 401 || $code === 403) {
             $data = json_decode($res, true);
             $err = $data['error']['message'] ?? 'Invalid Gemini API key';
+            if (stripos($err, 'OAuth') !== false || stripos($err, 'devconsole-project') !== false || stripos($err, 'invalid authentication credentials') !== false) {
+                $err = 'You provided an OAuth Client ID or OAuth credential from Google Cloud Console instead of an API Key. Google Gemini requires an API key from Google AI Studio. Please generate a free key at aistudio.google.com/apikey (takes 10 seconds).';
+            }
             jsonResponse(['success' => false, 'error' => $err], 401);
         }
 
@@ -232,9 +246,10 @@ function callGemini($apiKey, $prompt, $requestedModel = 'gemini-2.0-flash') {
     $modelsToTry = array_unique([
         $requestedModel,
         'gemini-2.0-flash',
+        'gemini-2.0-flash-lite',
         'gemini-1.5-flash',
-        'gemini-2.5-flash',
-        'gemini-1.5-flash-latest'
+        'gemini-1.5-flash-latest',
+        'gemini-1.5-pro'
     ]);
 
     $lastError = 'Google Gemini request failed';
@@ -253,7 +268,8 @@ function callGemini($apiKey, $prompt, $requestedModel = 'gemini-2.0-flash') {
             curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
             curl_setopt($ch, CURLOPT_POST, true);
             curl_setopt($ch, CURLOPT_HTTPHEADER, [
-                'Content-Type: application/json'
+                'Content-Type: application/json',
+                'x-goog-api-key: ' . $apiKey
             ]);
             curl_setopt($ch, CURLOPT_POSTFIELDS, json_encode($payload));
             curl_setopt($ch, CURLOPT_TIMEOUT, 30);
@@ -281,6 +297,10 @@ function callGemini($apiKey, $prompt, $requestedModel = 'gemini-2.0-flash') {
 
             if (isset($data['error']['message'])) {
                 $lastError = $data['error']['message'];
+                if (stripos($lastError, 'OAuth') !== false || stripos($lastError, 'devconsole-project') !== false || stripos($lastError, 'invalid authentication credentials') !== false) {
+                    $lastError = 'You provided an OAuth Client ID from Google Cloud Console instead of an API Key. Please generate a free Gemini API key at aistudio.google.com/apikey.';
+                    return ['success' => false, 'error' => $lastError];
+                }
                 // If API key is fundamentally invalid, stop trying other versions
                 if (stripos($lastError, 'API key not valid') !== false || stripos($lastError, 'API_KEY_INVALID') !== false) {
                     return ['success' => false, 'error' => $lastError];

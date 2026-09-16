@@ -6533,10 +6533,10 @@
       <div class="form-group" style="margin-bottom:14px">
         <label class="form-label">Google Gemini API Key</label>
         <div style="display:flex;gap:8px">
-          <input class="form-input" type="password" id="gemini-key" value="${escH(s.gemini_api_key || '')}" placeholder="AIza..." oninput="markUnsaved()">
+          <input class="form-input" type="password" id="gemini-key" value="${escH(s.gemini_api_key || '')}" placeholder="AIzaSy..." oninput="markUnsaved()">
           <button class="btn btn-ghost" onclick="testGeminiKey()" style="white-space:nowrap"><i class="fa-solid fa-vial"></i> Test Gemini</button>
         </div>
-        <p style="color:var(--muted2);font-size:11px;margin-top:6px">Get your key at <a href="https://aistudio.google.com/apikey" target="_blank" style="color:var(--gold);text-decoration:underline">aistudio.google.com</a></p>
+        <p style="color:var(--muted2);font-size:11px;margin-top:6px">Get your free API key at <a href="https://aistudio.google.com/apikey" target="_blank" style="color:var(--gold);text-decoration:underline">aistudio.google.com/apikey</a> (Click "Create API key" &mdash; key starts with <code>AIzaSy...</code>)</p>
       </div>
       <div id="settings-status" style="margin-top:10px;margin-bottom:14px;font-size:12px;color:var(--muted)"></div>
       <button class="btn btn-primary" onclick="saveSettings()"><i class="fa-solid fa-floppy-disk"></i> Save Settings</button>`) +
@@ -6640,6 +6640,23 @@
             }
           } else {
             let msg = res?.error ? `: ${res.error}` : '. Check the key.';
+            if (msg.includes('OAuth') || msg.includes('devconsole-project') || msg.includes('authentication credentials') || res?.isOAuthCredential) {
+              statusEl.innerHTML = `
+                <div style="margin-top:8px;padding:12px;background:rgba(239,68,68,0.1);border:1px solid rgba(239,68,68,0.3);border-radius:8px;color:#fecaca;line-height:1.5;font-size:12px">
+                  <div style="font-weight:600;color:#f87171;margin-bottom:6px;display:flex;align-items:center;gap:6px">
+                    ${errSvg} <span>Wrong Credential Type: Google Cloud OAuth Client ID</span>
+                  </div>
+                  <div>You pasted a <strong>Google Cloud OAuth Client ID/Secret</strong> instead of a <strong>Gemini API Key</strong>. Gemini API strictly requires an API key starting with <code>AIzaSy...</code>.</div>
+                  <div style="margin-top:8px;font-weight:600;color:var(--gold)">How to get your free key in 15 seconds:</div>
+                  <ol style="margin:4px 0 0 18px;padding:0">
+                    <li>Open <a href="https://aistudio.google.com/apikey" target="_blank" style="color:var(--gold);text-decoration:underline;font-weight:600">aistudio.google.com/apikey</a> (free, no credit card)</li>
+                    <li>Click the blue <strong>"Create API key"</strong> button</li>
+                    <li>Copy and paste that key here (starts with <code>AIzaSy...</code>)</li>
+                  </ol>
+                  <div style="margin-top:8px;font-size:11px;color:var(--muted2)">Tip: Alternatively, you can use your OpenRouter key in the box above!</div>
+                </div>`;
+              return;
+            }
             if (msg.includes('API key not valid')) {
               msg += '<br><small style="opacity:0.85">Tip: Gemini keys start with "AIzaSy...". Ensure you generated it at <a href="https://aistudio.google.com/apikey" target="_blank" style="color:#fca5a5;text-decoration:underline">aistudio.google.com/apikey</a> (free, instant). If created in Google Cloud Console, you must enable "Generative Language API".</small>';
             }
