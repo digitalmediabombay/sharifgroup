@@ -534,6 +534,15 @@
         // 8. Update UI switcher states
         updateLanguageUI(lang);
 
+        // 8b. Re-apply live published CMS hydration so custom CMS edits are NEVER wiped out by static i18n JSON
+        if (typeof window.reapplyCmsHydration === 'function') {
+            try {
+                window.reapplyCmsHydration(lang);
+            } catch (err) {
+                console.warn('[i18n] Reapplying CMS hydration error:', err);
+            }
+        }
+
         // 9. Reveal translated content instantly without any English flicker
         document.documentElement.classList.remove('i18n-pending');
 

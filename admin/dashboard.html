@@ -7141,8 +7141,8 @@
           btn.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i> Publishing...';
         }
 
-        // 1. Gather all current draft CMS keys
-        const keys = [
+        // 1. Gather all current draft CMS keys comprehensively
+        const baseKeys = [
           window.CMS.KEYS.HOMEPAGE,
           window.CMS.KEYS.CITIZENSHIP,
           window.CMS.KEYS.RESIDENCY,
@@ -7151,11 +7151,21 @@
           window.CMS.KEYS.ABOUTUS,
           window.CMS.KEYS.CONTACT,
           window.CMS.KEYS.LEGAL,
+          window.CMS.KEYS.NAV || 'sgcms_navigation',
+          'sgcms_navigation',
           'sgcms_custom_sections',
           'sgcms_flag_codes',
           'sgcms_cookiepolicy',
           'sgcms_dom_overrides'
         ];
+
+        const keys = [...baseKeys];
+        for (let i = 0; i < localStorage.length; i++) {
+          const k = localStorage.key(i);
+          if (k && k.startsWith('sgcms_') && !k.endsWith('_live') && k !== 'sgcms_auth' && k !== 'sgcms_token' && k !== 'sgcms_sb_collapsed' && k !== 'sgcms_publish_status' && k !== 'sgcms_published_manifest') {
+            if (!keys.includes(k)) keys.push(k);
+          }
+        }
 
         const payload = {
           version: '3.0.0',
@@ -7178,6 +7188,14 @@
         // Store live manifest
         localStorage.setItem('sgcms_published_manifest', JSON.stringify(payload));
         localStorage.setItem('sgcms_published_timestamp', payload.publishedAt);
+
+        // Notify open live canvas iframe immediately
+        try {
+          const iframe = document.getElementById('live-iframe');
+          if (iframe && iframe.contentWindow) {
+            iframe.contentWindow.postMessage({ type: 'CMS_REHYDRATE', publishedAt: payload.publishedAt }, '*');
+          }
+        } catch(e) {}
 
         // 2. Future Backend API server hook
         try {

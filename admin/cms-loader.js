@@ -18,6 +18,13 @@
       if (!isEditor) {
         const live = localStorage.getItem(key + '_live');
         if (live !== null) return JSON.parse(live);
+        const manifestStr = localStorage.getItem('sgcms_published_manifest');
+        if (manifestStr) {
+          const manifest = JSON.parse(manifestStr);
+          if (manifest && manifest.data && manifest.data[key] !== undefined) {
+            return manifest.data[key];
+          }
+        }
       }
       return JSON.parse(localStorage.getItem(key));
     } catch { return null; }
@@ -47,7 +54,6 @@
   })();
   const isEditor = params.get('cms_editor') === '1' || isInsideIframe;
   const isPreview = params.get('cms_preview') === '1' || isEditor;
-  const hasCmsData = Boolean(store('sgcms_citizenship') || store('sgcms_residency') || store('sgcms_homepage') || store('sgcms_blog'));
 
   async function syncLiveFromBackend() {
     // Vercel is a static host that does not run PHP - skip immediately to avoid network hanging
@@ -71,18 +77,12 @@
     } catch(e) {}
   }
 
-  // FIX: If inside the CMS editor iframe but no local data exists yet, don't return early.
-  // The page should still hydrate and send CMS_FRAME_READY so the dashboard can control it.
-  if (!isPreview && !hasCmsData) {
-    // If first-time visit without local cache, sync from backend
-    syncLiveFromBackend();
-    return;
-  }
-
   let _isSyncingLang = false;
 
   function getLang() {
-    return document.documentElement.lang?.split('-')[0] || localStorage.getItem('sharif_lang') || 'en';
+    const raw = (document.documentElement.lang || localStorage.getItem('sharif_lang') || localStorage.getItem('sharif_preferred_lang') || 'en').split('-')[0].toLowerCase().trim();
+    if (['en', 'ar', 'fa', 'zh'].includes(raw)) return raw;
+    return 'en';
   }
 
   function setText(selector, text, opts = {}) {
@@ -101,9 +101,12 @@
   function extractSlug() {
     const urlParams = new URLSearchParams(window.location.search);
     const progParam = urlParams.get('program_id') || urlParams.get('id') || urlParams.get('program');
-    if (progParam) return progParam.toLowerCase();
+    if (progParam) {
+      try { return decodeURIComponent(progParam).toLowerCase(); } catch(e) { return progParam.toLowerCase(); }
+    }
 
-    const clean = window.location.pathname.replace(/\/index\.html?$/i, '').replace(/\/$/, '');
+    let clean = window.location.pathname.replace(/\/index\.html?$/i, '').replace(/\/$/, '');
+    try { clean = decodeURIComponent(clean); } catch(e) {}
     const segments = clean.split('/').filter(Boolean);
     const last = (segments[segments.length - 1] || '').toLowerCase();
     return last || 'homepage';
@@ -188,7 +191,7 @@
     const l = lang || getLang();
     const pageKey = extractSlug();
     const allOverrides = store('sgcms_dom_overrides') || {};
-    const pageOverrides = allOverrides[pageKey]?.[l] || {};
+    const pageOverrides = allOverrides[pageKey]?.[l] || allOverrides[pageKey]?.['en'] || {};
     for (const selector in pageOverrides) {
       try {
         const item = pageOverrides[selector];
@@ -1245,6 +1248,24 @@
     applyDomOverrides(l);
   }
 
+  // Expose global rehydration function for language-switcher.js and custom components
+  window.reapplyCmsHydration = function(lang) {
+    runHydration(lang || getLang());
+  };
+
+  // Listen to language switch events globally on live website and editor
+  window.addEventListener('languageChanged', function(e) {
+    const l = e.detail?.lang || getLang();
+    runHydration(l);
+  });
+
+  // Listen to multi-tab storage publish updates
+  window.addEventListener('storage', function(e) {
+    if (e.key && (e.key.startsWith('sgcms_') || e.key === 'sharif_lang')) {
+      runHydration();
+    }
+  });
+
   // ── True WordPress/Wix Style Universal Click-to-Edit ───
   function setupVisualEditor() {
     if (!isEditor) return;
@@ -2075,6 +2096,8 @@
         flashToast('Section added to canvas! Click text to edit.');
       } else if (msg.type === 'CMS_SET_LANG') {
         applyLanguage(msg.lang, 'parent');
+      } else if (msg.type === 'CMS_REHYDRATE') {
+        runHydration();
       } else if (msg.type === 'CMS_OPEN_ARTICLE') {
         if (typeof window.openBlogDetailBySlug === 'function') {
           window.openBlogDetailBySlug(msg.slug);
