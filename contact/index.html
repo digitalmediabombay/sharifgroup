@@ -258,6 +258,24 @@
                     0 0 45px rgba(197, 168, 128, 0.6);
             }
         }
+        .custom-select-dropdown {
+            display: none;
+            position: absolute;
+            top: 100%;
+            left: 0;
+            z-index: 50;
+            width: min(320px, 85vw);
+            max-height: 250px;
+            overflow-y: auto;
+            background: white;
+            border: 1px solid #E5E5EA;
+            border-radius: 12px;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+        }
+
+        .custom-select-dropdown.active {
+            display: block !important;
+        }
     </style>
     <link href="../assets/css/multilingual.css?v=5" rel="stylesheet" />
 </head>
@@ -1091,10 +1109,10 @@
                         <div>
                             <label class="block text-[10px] uppercase tracking-wider text-neutral-400 font-bold mb-1.5"
                                 data-i18n="contact.phoneNumber">Phone Number <span class="text-red-500">*</span></label>
-                            <div class="flex" dir="ltr">
-                                <div class="custom-select-wrapper relative z-20 w-36 overflow-visible">
+                            <div class="relative flex items-center" dir="ltr">
+                                <div class="custom-select-wrapper relative z-20 w-32 shrink-0">
                                     <button
-                                        class="w-full bg-white border border-neutral-200 rounded-s-xl px-3 py-3 text-start text-xs focus:outline-none flex justify-between items-center whitespace-nowrap overflow-hidden shadow-sm"
+                                        class="w-full h-[42px] bg-white border border-neutral-200 rounded-s-xl px-3 text-start text-xs focus:outline-none flex justify-between items-center whitespace-nowrap shadow-sm"
                                         onclick="toggleCountryDropdown(this)" type="button">
                                         <span class="selected-country-span">🇦🇪 +971</span>
                                         <i class="fa-solid fa-chevron-down text-[8px] text-neutral-400 ms-1"></i>
@@ -1111,7 +1129,7 @@
                                 <input class="dial-code-hidden-value" type="hidden" value="+971" />
                                 <input
                                     name="phone"
-                                    class="w-full bg-white border-y border-e border-neutral-200 rounded-e-xl px-4 py-3 text-xs focus:outline-none focus:border-luxury-gold shadow-sm"
+                                    class="w-full h-[42px] bg-white border-y border-e border-neutral-200 rounded-e-xl px-4 text-xs focus:outline-none focus:border-luxury-gold shadow-sm"
                                     placeholder="50 123 4567" required="" type="tel" dir="ltr" />
                             </div>
                         </div>
