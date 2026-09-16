@@ -1842,7 +1842,7 @@
         <!-- Citizenship -->
         <div class="sb-group" id="sbg-citizenship">
           <div class="sb-group-header">
-            <button class="sb-group-btn" id="sb-citizenship" onclick="toggleGroup('citizenship', true);navigate('category-hub','citizenship')">
+            <button class="sb-group-btn" id="sb-citizenship" onclick="handleGroupHeaderToggle('citizenship', event)">
               <i class="fa-solid fa-passport sb-ico"></i>
               <span class="sb-lbl">Citizenship by Investment</span>
               <i class="fa-solid fa-chevron-right sb-chev"></i>
@@ -1870,7 +1870,7 @@
         <!-- Residency -->
         <div class="sb-group" id="sbg-residency">
           <div class="sb-group-header">
-            <button class="sb-group-btn" id="sb-residency" onclick="toggleGroup('residency', true);navigate('category-hub','residency')">
+            <button class="sb-group-btn" id="sb-residency" onclick="handleGroupHeaderToggle('residency', event)">
               <i class="fa-solid fa-earth-americas sb-ico"></i>
               <span class="sb-lbl">Residency Programs</span>
               <i class="fa-solid fa-chevron-right sb-chev"></i>
@@ -3563,9 +3563,22 @@
         const btn = document.getElementById('sb-' + group);
         const children = document.getElementById('sbc-' + group);
         if (!children) return;
-        const nextState = (forceOpen === true) ? true : !children.classList.contains('open');
+        const nextState = (forceOpen !== undefined && forceOpen !== null) ? Boolean(forceOpen) : !children.classList.contains('open');
         children.classList.toggle('open', nextState);
         if (btn) btn.classList.toggle('open', nextState);
+        return nextState;
+      }
+
+      function handleGroupHeaderToggle(group, e) {
+        if (e && e.stopPropagation) e.stopPropagation();
+        const children = document.getElementById('sbc-' + group);
+        const isCurrentlyOpen = children && children.classList.contains('open');
+        if (isCurrentlyOpen) {
+          toggleGroup(group, false);
+        } else {
+          toggleGroup(group, true);
+          navigate('category-hub', group);
+        }
       }
 
       function setActiveSidebarItem(id) {
@@ -3582,8 +3595,8 @@
         state.itemType = itemType || null;
         state.itemId = itemId || null;
 
-        // Auto-expand groups
-        if (section === 'program' || section === 'new-program' || section === 'category-hub') {
+        // Auto-expand groups when accessing an individual program or creating a new one
+        if (section === 'program' || section === 'new-program') {
           const groupId = itemType;
           if (groupId) {
             const children = document.getElementById('sbc-' + groupId);
