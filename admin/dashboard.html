@@ -2524,7 +2524,9 @@
         const sep = url.includes('?') ? '&' : '?';
         const currentSrc = url + sep + 'cms_editor=1';
         const cleanUrl = url.split('?')[0].replace(/^\.\.\//, '');
-        if (!iframe.src || iframe.src.indexOf(cleanUrl) === -1 || iframe.src === 'about:blank') {
+        const needsSlugReload = (state.section === 'blog-edit' && iframe.src.indexOf('article_slug=' + encodeURIComponent(state.activeBlogSlug || '')) === -1)
+          || (state.section === 'blog' && iframe.src.indexOf('article_slug=') !== -1);
+        if (!iframe.src || iframe.src.indexOf(cleanUrl) === -1 || iframe.src === 'about:blank' || needsSlugReload) {
           iframe.src = currentSrc;
         } else {
           syncActiveFormToLivePreview();
@@ -3585,12 +3587,32 @@
               const safeId = escH(b.id).replace(/'/g, "\\'");
               const delBtn = `<button type="button" class="sb-item-del" data-type="blog" data-id="${escH(b.id)}" title="Delete article" onclick="event.stopPropagation();deleteBlogItem('${safeId}')"><i class="fa-solid fa-trash-can"></i></button>`;
 
-              return `<div class="sb-item" id="sb-blog-item-${b.id}" onclick="editBlogItem('${safeId}')" title="${escH(title)}">
+              return `<div class="sb-item" id="sb-blog-item-${b.id}" onclick="openBlogArticle('${safeId}')" title="${escH(title)}">
                 <span class="sb-item-flag-icon"><i class="fa-solid fa-newspaper" style="font-size:10px"></i></span>${dot}<span class="sb-item-title">${escH(title)}</span>${delBtn}
               </div>`;
             }).join('');
           }
         }
+      }
+
+      function openBlogArticle(id) {
+        const blogs = window.CMS.getData(window.CMS.KEYS.BLOG) || window.CMS.DEFAULTS.blog || [];
+        const b = blogs.find(x => x.id === id);
+        if (!b) return;
+        const slug = b.slug || b.en?.slug || b.id;
+        state.activeBlogSlug = slug;
+        navigate('blog-edit', null, id);
+
+        const iframe = document.getElementById('live-iframe');
+        const targetUrl = '../blog/index.html?cms_editor=1&article_slug=' + encodeURIComponent(slug);
+        if (iframe && iframe.src.indexOf(encodeURIComponent(slug)) === -1) {
+          iframe.src = targetUrl;
+        }
+
+        setTimeout(() => {
+          sendToIframe({ type: 'CMS_OPEN_ARTICLE', slug });
+          showToast('Live Visual Editor Ready: Click any text on canvas to edit!', 'info');
+        }, 500);
       }
 
       function toggleGroup(group, forceOpen) {
@@ -3649,7 +3671,7 @@
 
         // Form-only drawer sections vs. Visual Live Canvas sections
         const formOnlySections = ['settings', 'blog-new', 'team-new', 'new-program'];
-        const isVisualPreviewSection = ['aboutus', 'team', 'contact', 'legal', 'cookiepolicy', 'cookies', 'homepage', 'category-hub', 'program', 'blog'].includes(section);
+        const isVisualPreviewSection = ['aboutus', 'team', 'contact', 'legal', 'cookiepolicy', 'cookies', 'homepage', 'category-hub', 'program', 'blog', 'blog-edit'].includes(section);
         if (formOnlySections.includes(section)) {
           openEditorDrawer();
         } else if (isVisualPreviewSection) {
@@ -4116,7 +4138,7 @@
           case 'new-program': renderNewProgramView(itemType || 'citizenship', itemId); break;
           case 'blog': renderBlogEditor(l, rtl); break;
           case 'blog-new': renderNewBlogView(); break;
-          case 'blog-edit': editBlogItem(itemId); break;
+          case 'blog-edit': renderVisualBlogGuide(itemId); break;
           case 'team': renderVisualLiveStudioGuide('Team & Leadership', 'Live visual editor for Team & Leadership', PAGE_URLS.aboutus); break;
           case 'team-new': createTeamMember(); break;
           case 'aboutus': renderVisualLiveStudioGuide('About Us Page', 'Live visual editor for About Us page', PAGE_URLS.aboutus); break;
@@ -4127,6 +4149,59 @@
           case 'settings': renderSettingsEditor(); break;
           default: renderOverview();
         }
+      }
+
+      function renderVisualBlogGuide(id) {
+        const blogs = window.CMS.getData(window.CMS.KEYS.BLOG) || window.CMS.DEFAULTS.blog || [];
+        const b = blogs.find(x => x.id === id);
+        if (!b) { renderBlogEditor(state.lang, isRtl(state.lang)); return; }
+        const l = state.lang;
+        const ld = b[l] || b.en || {};
+        const title = ld.title || b.title || 'Article';
+        const status = b['status_' + l] || b.status_en || 'draft';
+        const isPub = status === 'published';
+        setPageTitle(title, 'Live Visual Editor Active');
+
+        const ed = document.getElementById('editor');
+        if (!ed) return;
+        ed.innerHTML = `
+          <div style="padding:16px 20px">
+            <div style="display:flex;align-items:center;justify-content:space-between;gap:12px;margin-bottom:16px">
+              <button type="button" class="btn btn-ghost" onclick="navigate('blog')">
+                <i class="fa-solid fa-arrow-left"></i> All Articles
+              </button>
+              <button type="button" class="btn btn-ghost" style="color:#f87171;border-color:rgba(239,68,68,0.3)" onclick="deleteBlogItem('${b.id}')">
+                <i class="fa-solid fa-trash-can"></i> Delete Article
+              </button>
+            </div>
+
+            <div style="background:rgba(197,168,128,0.08);border:1px solid rgba(197,168,128,0.25);border-radius:12px;padding:18px;margin-bottom:16px">
+              <div style="display:flex;align-items:center;gap:10px;margin-bottom:8px">
+                <i class="fa-solid fa-wand-magic-sparkles" style="color:var(--gold);font-size:18px"></i>
+                <h3 style="font-size:14px;font-weight:700;color:var(--text);margin:0">Visual Live Editor Active</h3>
+              </div>
+              <p style="font-size:12px;color:var(--muted);line-height:1.6;margin:0 0 12px 0">
+                You are editing <strong>"${escH(title)}"</strong> directly on the visual live preview. Click any headline, paragraph, card, or element on the canvas to edit in real time.
+              </p>
+              <div style="display:flex;flex-wrap:wrap;gap:8px;align-items:center">
+                <span class="ec-block-badge" style="background:${isPub ? 'rgba(34,197,94,.15)' : 'rgba(245,158,11,.15)'};color:${isPub ? 'var(--green)' : 'var(--yellow)'}">
+                  <i class="fa-solid fa-circle" style="font-size:7px;margin-right:4px"></i> ${status.toUpperCase()}
+                </span>
+                <span style="font-size:11px;color:var(--muted2)"><i class="fa-solid fa-folder-open" style="margin-right:4px"></i> ${escH(b.category || 'Insights')}</span>
+                <span style="font-size:11px;color:var(--muted2)"><i class="fa-regular fa-calendar" style="margin-right:4px"></i> ${b.publish_date || 'Recent'}</span>
+              </div>
+            </div>
+
+            <div style="display:flex;gap:8px;flex-direction:column">
+              <button type="button" class="btn btn-primary" style="width:100%;justify-content:center;font-size:12px" onclick="closeEditorDrawer()">
+                <i class="fa-solid fa-expand"></i> Fullscreen Visual Canvas
+              </button>
+              <button type="button" class="btn btn-secondary" style="width:100%;justify-content:center;font-size:12px" onclick="refreshPreview()">
+                <i class="fa-solid fa-rotate"></i> Refresh Preview
+              </button>
+            </div>
+          </div>
+        `;
       }
 
       function renderCategoryHubView(type) {
@@ -5645,7 +5720,7 @@
           const safeId = escH(b.id).replace(/'/g, "\\'");
           html += `
       <div class="ec-block" style="margin-bottom:10px;display:flex;align-items:center;justify-content:space-between;padding:10px 14px;background:var(--surface);border:1px solid var(--border);border-radius:8px">
-        <div style="display:flex;align-items:center;gap:12px;flex:1;min-width:0;cursor:pointer" onclick="editBlogItem('${safeId}')">
+        <div style="display:flex;align-items:center;gap:12px;flex:1;min-width:0;cursor:pointer" onclick="openBlogArticle('${safeId}')">
           ${b.featured_img ? `<img src="${b.featured_img}" style="width:48px;height:36px;object-fit:cover;border-radius:6px;flex-shrink:0" onerror="this.style.display='none'">` : '<div style="width:48px;height:36px;border-radius:6px;background:rgba(255,255,255,.05);display:flex;align-items:center;justify-content:center;color:var(--muted);font-size:12px"><i class="fa-solid fa-newspaper"></i></div>'}
           <div style="flex:1;min-width:0">
             <div style="font-weight:600;font-size:12px;color:var(--text);white-space:nowrap;overflow:hidden;text-overflow:ellipsis">${escH(ld.title || 'Untitled Article')}</div>
@@ -5654,7 +5729,7 @@
           <span class="ec-block-badge" style="background:${isPub ? 'rgba(34,197,94,.15)' : 'rgba(245,158,11,.15)'};color:${isPub ? 'var(--green)' : 'var(--yellow)'}">${status}</span>
         </div>
         <div style="display:flex;align-items:center;gap:6px;margin-left:12px;flex-shrink:0">
-          <button type="button" class="btn btn-ghost" style="padding:5px 8px;font-size:11px" onclick="editBlogItem('${safeId}')" title="Edit Article"><i class="fa-solid fa-pen"></i></button>
+          <button type="button" class="btn btn-ghost" style="padding:5px 8px;font-size:11px" onclick="openBlogArticle('${safeId}')" title="Edit on Visual Canvas"><i class="fa-solid fa-wand-magic-sparkles"></i></button>
           <button type="button" class="btn btn-ghost" style="padding:5px 8px;font-size:11px;color:#f87171;border-color:rgba(239,68,68,.3)" onclick="event.stopPropagation();deleteBlogItem('${safeId}')" title="Delete Article"><i class="fa-solid fa-trash-can"></i></button>
         </div>
       </div>
@@ -5711,16 +5786,7 @@
       }
 
       function editBlogItem(id) {
-        openEditorDrawer();
-        const blogs = window.CMS.getData(window.CMS.KEYS.BLOG) || window.CMS.DEFAULTS.blog || [];
-        const b = blogs.find(x => x.id === id);
-        if (!b) return;
-        state.section = 'blog-edit';
-        state.itemId = id;
-        state.activeBlogSlug = b.slug || b.en?.slug || b.id;
-        toggleGroup('blog', true);
-        setActiveSidebarItem(id);
-        renderBlogArticleForm(b, false);
+        openBlogArticle(id);
       }
 
       function renderBlogArticleForm(b, isNew) {
