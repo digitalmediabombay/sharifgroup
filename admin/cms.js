@@ -108,7 +108,7 @@ const AI = {
     const prompt = `You are a professional luxury translator for a premier investment migration, second citizenship, and residency advisory firm (Sharif Group, Dubai). Translate the following text from ${this.LANG_NAMES[sourceLang]} to ${this.LANG_NAMES[targetLang]}. Maintain a formal, premium, high-end advisory tone appropriate for ultra-high-net-worth clients. Return ONLY the translated text, nothing else.\n\nText:\n${text}`;
 
     if (provider === 'openrouter') {
-      const res = await fetch('https://openrouter.ai/api/v1/chat/completions', {
+      let res = await fetch('https://openrouter.ai/api/v1/chat/completions', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -117,11 +117,27 @@ const AI = {
           'X-Title': 'Sharif Group CMS'
         },
         body: JSON.stringify({
-          model: 'google/gemini-flash-1.5',
+          model: 'google/gemini-2.0-flash-001',
           messages: [{ role: 'user', content: prompt }]
         })
       });
-      if (!res.ok) { const err = await res.json(); throw new Error(err?.error?.message || 'OpenRouter translation failed'); }
+      // If primary model failed, fallback to free llama model
+      if (!res.ok) {
+        res = await fetch('https://openrouter.ai/api/v1/chat/completions', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+            'Authorization': 'Bearer ' + apiKey,
+            'HTTP-Referer': 'https://sharifgroup.ae',
+            'X-Title': 'Sharif Group CMS'
+          },
+          body: JSON.stringify({
+            model: 'meta-llama/llama-3.3-70b-instruct:free',
+            messages: [{ role: 'user', content: prompt }]
+          })
+        });
+      }
+      if (!res.ok) { const err = await res.json().catch(() => null); throw new Error(err?.error?.message || 'OpenRouter translation failed'); }
       const data = await res.json();
       return data?.choices?.[0]?.message?.content?.trim() || '';
     } else {
@@ -130,7 +146,7 @@ const AI = {
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ contents: [{ parts: [{ text: prompt }] }] })
       });
-      if (!res.ok) { const err = await res.json(); throw new Error(err?.error?.message || 'Gemini translation failed'); }
+      if (!res.ok) { const err = await res.json().catch(() => null); throw new Error(err?.error?.message || 'Gemini translation failed'); }
       const data = await res.json();
       return data?.candidates?.[0]?.content?.parts?.[0]?.text?.trim() || '';
     }
@@ -151,32 +167,52 @@ const AI = {
   },
 
   async testOpenRouterKey(apiKey) {
+    if (!apiKey) return { success: false, error: 'No API key provided' };
+    const cleanKey = String(apiKey).trim();
+
+    // 1. Direct check to OpenRouter official auth/key endpoint (Zero-credit, instant, CORS-enabled)
+    try {
+      const res = await fetch('https://openrouter.ai/api/v1/auth/key', {
+        method: 'GET',
+        headers: {
+          'Authorization': 'Bearer ' + cleanKey
+        }
+      });
+      if (res.ok) {
+        const json = await res.json().catch(() => null);
+        return { success: true, data: json?.data };
+      }
+      if (res.status === 401 || res.status === 403) {
+        const err = await res.json().catch(() => null);
+        return { success: false, error: err?.error?.message || 'Invalid API key. Please check your OpenRouter key.' };
+      }
+    } catch(e) {}
+
+    // 2. Secondary check via models list
+    try {
+      const res = await fetch('https://openrouter.ai/api/v1/models', {
+        headers: {
+          'Authorization': 'Bearer ' + cleanKey
+        }
+      });
+      if (res.ok) return { success: true };
+    } catch(e) {}
+
+    // 3. Fallback via backend proxy if running with PHP
     try {
       const res = await fetch('api/ai.php?action=test', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ provider: 'openrouter', api_key: apiKey })
+        body: JSON.stringify({ provider: 'openrouter', api_key: cleanKey })
       });
       if (res.ok) {
-        const json = await res.json();
-        return json.success === true;
+        const json = await res.json().catch(() => null);
+        if (json && json.success) return { success: true, data: json.data };
+        if (json && json.error) return { success: false, error: json.error };
       }
     } catch(e) {}
 
-    // Direct fallback
-    const res = await fetch('https://openrouter.ai/api/v1/chat/completions', {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-        'Authorization': 'Bearer ' + apiKey,
-        'HTTP-Referer': 'https://sharifgroup.ae'
-      },
-      body: JSON.stringify({
-        model: 'google/gemini-flash-1.5',
-        messages: [{ role: 'user', content: 'Say "OK"' }]
-      })
-    });
-    return res.ok;
+    return { success: false, error: 'Unable to connect to OpenRouter. Please check your network or key.' };
   },
 
   async testKey(apiKey) {

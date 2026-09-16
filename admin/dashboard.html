@@ -6591,12 +6591,19 @@
         const key = document.getElementById('openrouter-key')?.value.trim();
         const statusEl = document.getElementById('openrouter-status');
         if (!key) { statusEl.innerHTML = '<span style="color:#f87171">Please enter an OpenRouter API key first.</span>'; return; }
-        statusEl.innerHTML = '<span style="color:var(--muted)"><i class="fa-solid fa-spinner fa-spin"></i> Verifying OpenRouter key via backend…</span>';
+        statusEl.innerHTML = '<span style="color:var(--muted)"><i class="fa-solid fa-spinner fa-spin"></i> Verifying OpenRouter key…</span>';
         try {
-          const ok = await window.CMS.AI.testOpenRouterKey(key);
+          const res = await window.CMS.AI.testOpenRouterKey(key);
+          const ok = (typeof res === 'object' && res !== null) ? res.success : Boolean(res);
           const okSvg = '<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#4ade80" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" style="display:inline-block;vertical-align:middle;margin-right:5px"><circle cx="12" cy="12" r="10"/><path d="m9 12 2 2 4-4"/></svg>';
           const errSvg = '<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#f87171" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" style="display:inline-block;vertical-align:middle;margin-right:5px"><circle cx="12" cy="12" r="10"/><path d="m15 9-6 6"/><path d="m9 9 6 6"/></svg>';
-          statusEl.innerHTML = ok ? `<span style="color:#4ade80;display:inline-flex;align-items:center">${okSvg} OpenRouter API key is valid and connected!</span>` : `<span style="color:#f87171;display:inline-flex;align-items:center">${errSvg} OpenRouter test failed. Please verify your key.</span>`;
+          if (ok) {
+            const label = res?.data?.label ? ` (${res.data.label})` : '';
+            statusEl.innerHTML = `<span style="color:#4ade80;display:inline-flex;align-items:center">${okSvg} OpenRouter API key is valid and connected!${label}</span>`;
+          } else {
+            const msg = res?.error ? `: ${res.error}` : '. Please verify your key.';
+            statusEl.innerHTML = `<span style="color:#f87171;display:inline-flex;align-items:center">${errSvg} OpenRouter test failed${msg}</span>`;
+          }
         } catch (e) {
           statusEl.innerHTML = `<span style="color:#f87171">Error: ${e.message}</span>`;
         }

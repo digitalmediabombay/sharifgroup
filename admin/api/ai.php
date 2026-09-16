@@ -48,10 +48,28 @@ if (empty($apiKey)) {
 // ── TEST KEY ACTION ───────────────────────────────────────────────
 if ($action === 'test') {
     if ($provider === 'openrouter') {
-        $testResult = callOpenRouter($apiKey, 'Say "OK" in one word.', 'meta-llama/llama-3.2-3b-instruct:free');
+        // Direct key authentication check (zero credits required)
+        $ch = curl_init('https://openrouter.ai/api/v1/auth/key');
+        curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+        curl_setopt($ch, CURLOPT_HTTPHEADER, [
+            'Authorization: Bearer ' . $apiKey
+        ]);
+        curl_setopt($ch, CURLOPT_TIMEOUT, 15);
+        $res = curl_exec($ch);
+        $code = curl_getinfo($ch, CURLINFO_HTTP_CODE);
+        curl_close($ch);
+        if ($code === 200) {
+            $data = json_decode($res, true);
+            jsonResponse(['success' => true, 'data' => $data['data'] ?? null]);
+        }
+        if ($code === 401 || $code === 403) {
+            $data = json_decode($res, true);
+            jsonResponse(['success' => false, 'error' => $data['error']['message'] ?? 'Invalid OpenRouter API Key'], 401);
+        }
+
+        $testResult = callOpenRouter($apiKey, 'Say "OK" in one word.', 'meta-llama/llama-3.3-70b-instruct:free');
         if (!$testResult['success']) {
-            // Fallback to standard model
-            $testResult = callOpenRouter($apiKey, 'Say "OK" in one word.', 'google/gemini-flash-1.5');
+            $testResult = callOpenRouter($apiKey, 'Say "OK" in one word.', 'google/gemini-2.0-flash-001');
         }
         jsonResponse($testResult);
     } else {
