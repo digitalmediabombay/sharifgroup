@@ -7622,7 +7622,7 @@
                   })));
                 }
                 window.CMS.saveData(window.CMS.KEYS.BLOG, blogs);
-                sendToIframe({ type: 'CMS_REHYDRATE' });
+                // Background translations updated safely without re-rendering active visual canvas
               }
             } else if (section === 'aboutus') {
               const about = window.CMS.getData(window.CMS.KEYS.ABOUTUS) || window.CMS.DEFAULTS.aboutus;
@@ -7836,12 +7836,16 @@
         }
       }
 
-      // Listen for iframe content edits
+      // Listen for iframe content edits with safe debounce
+      let _autoTranslateDebounceTimer = null;
       window.addEventListener('message', e => {
         if (e.data && e.data.type === 'CMS_CONTENT_CHANGED') {
           markDraft();
-          if (window.CMS.Settings.getGeminiKey()) {
-            autoTranslateOnSave(e.data.section || state.section, state.itemId);
+          if (window.CMS.Settings.getAiKey && window.CMS.Settings.getAiKey()) {
+            clearTimeout(_autoTranslateDebounceTimer);
+            _autoTranslateDebounceTimer = setTimeout(() => {
+              autoTranslateOnSave(e.data.section || state.section, state.itemId);
+            }, 4000);
           }
         }
       });

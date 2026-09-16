@@ -342,6 +342,10 @@
                 sel.includes('nav') ||
                 sel.includes('logo') ||
                 sel.includes('text-neutral-300') ||
+                sel.includes('detail-') ||
+                sel.includes('blog-detail') ||
+                sel.includes('content-body') ||
+                sel.includes('faq-dyn') ||
                 sel === 'span' ||
                 sel.startsWith('div.flex') ||
                 sel.startsWith('header')
@@ -390,6 +394,10 @@
                   sel.includes('nav') ||
                   sel.includes('logo') ||
                   sel.includes('text-neutral-300') ||
+                  sel.includes('detail-') ||
+                  sel.includes('blog-detail') ||
+                  sel.includes('content-body') ||
+                  sel.includes('faq-dyn') ||
                   sel === 'span' ||
                   sel.startsWith('div.flex') ||
                   sel.startsWith('header')
@@ -518,7 +526,7 @@
 
         const el = document.querySelector(selector);
         if (el) {
-          if (el.closest('header, nav, #main-header, #nav-logo, .mega-dropdown, #mobile-menu')) {
+          if (el.closest('header, nav, #main-header, #nav-logo, .mega-dropdown, #mobile-menu, #blog-detail-view-container')) {
             continue;
           }
           const isOverviewHeading = selector.includes('overviewTitle') || (selector.includes('sec-overview') && selector.includes('h3'));
@@ -560,10 +568,14 @@
       selector.includes('nav') ||
       selector.includes('logo') ||
       selector.includes('text-neutral-300') ||
+      selector.includes('detail-') ||
+      selector.includes('blog-detail') ||
+      selector.includes('content-body') ||
+      selector.includes('faq-dyn') ||
       selector === 'span' ||
       selector.startsWith('div.flex')
     ) {
-      return; // Never store DOM overrides targeting header or generic navigation elements
+      return; // Never store DOM overrides targeting header or generic navigation elements or dynamic blog articles
     }
     const l = getLang();
     const pageKey = extractSlug();
@@ -1078,14 +1090,6 @@
       };
       window.articlesDatabase[slug] = articleData;
       window.articlesDatabase[b.id] = articleData;
-
-      // If this article is currently displayed on canvas in detail reader, re-render it in the new language!
-      const detailView = document.getElementById('blog-detail-view-container');
-      if (detailView && !detailView.classList.contains('hidden') && (window.currentActiveArticleSlug === slug || window.currentActiveArticleSlug === b.id)) {
-        if (typeof window.openBlogDetailBySlug === 'function') {
-          setTimeout(() => { window.openBlogDetailBySlug(slug, true); }, 20);
-        }
-      }
 
       let existingCard = document.querySelector(`[data-cms-blog-id="${b.id}"]`);
       if (!existingCard) {
@@ -2050,6 +2054,7 @@
     // Save active element content
     function saveCurrentActive() {
       if (!activeEl) return;
+      const path = window.location.pathname.toLowerCase();
       const newText = activeEl.innerText.trim();
       const l = getLang();
       const selector = getStableSelector(activeEl);
@@ -2058,14 +2063,16 @@
       const anchor = activeEl.tagName === 'A' ? activeEl : activeEl.closest('a');
       if (anchor) hrefVal = anchor.getAttribute('href');
 
-      // 1. Save DOM Override
-      saveDomOverride(selector, newText, hrefVal);
+      // 1. Save DOM Override (only for non-blog or static elements, NEVER dynamic blog articles)
+      const isBlogDetailEl = path.includes('blog') && Boolean(activeEl.closest('#blog-detail-view-container, #detail-content-body, #detail-faq-wrapper, #detail-title, #detail-breadcrumb-title, #detail-category-badge, #detail-author, #detail-date'));
+      if (!isBlogDetailEl) {
+        saveDomOverride(selector, newText, hrefVal);
+      }
 
       // 2. Map to structured CMS keys if recognized
       const cmsField = activeEl.getAttribute('data-cms');
       const i18nKey = activeEl.getAttribute('data-i18n');
-      const path = window.location.pathname.toLowerCase();
-      const isHomepage = !path.includes('/programs') && !path.includes('/citizenship') && !path.includes('/residency') && !path.includes('/about') && !path.includes('/contact');
+      const isHomepage = !path.includes('/programs') && !path.includes('/citizenship') && !path.includes('/residency') && !path.includes('/about') && !path.includes('/contact') && !path.includes('/blog');
 
       if (isHomepage) {
         const d = store('sgcms_homepage') || {};
@@ -2096,12 +2103,23 @@
         const blogs = store('sgcms_blog') || [];
         const urlParams = new URLSearchParams(window.location.search);
         const currentSlug = window.currentActiveArticleSlug || urlParams.get('article_slug') || urlParams.get('slug') || extractSlug() || 'about-sharif-group';
-        const bIdx = blogs.findIndex(b => b.slug === currentSlug || b.id === currentSlug || (b.en && b.en.slug === currentSlug));
+        let bIdx = blogs.findIndex(b => b.slug === currentSlug || b.id === currentSlug || (b.en && (b.en.slug === currentSlug || b.en.id === currentSlug)));
+        if (bIdx === -1 && blogs.length) {
+          bIdx = 0;
+        }
         if (bIdx >= 0) {
           if (!blogs[bIdx][l]) blogs[bIdx][l] = {};
-          if (activeEl.id === 'detail-title' || activeEl.closest('#detail-title')) {
+          if (activeEl.id === 'detail-title' || activeEl.closest('#detail-title, #detail-breadcrumb-title')) {
             blogs[bIdx][l].title = newText;
+            if (l === 'en') {
+              blogs[bIdx].title = newText;
+              if (blogs[bIdx].en) blogs[bIdx].en.title = newText;
+            }
             if (window.articlesDatabase && window.articlesDatabase[currentSlug]) window.articlesDatabase[currentSlug].title = newText;
+            const tEl = document.getElementById('detail-title');
+            if (tEl) tEl.innerText = newText;
+            const bEl = document.getElementById('detail-breadcrumb-title');
+            if (bEl) bEl.innerText = newText;
           } else if (activeEl.id === 'detail-category-badge') {
             blogs[bIdx].category = newText;
             if (window.articlesDatabase && window.articlesDatabase[currentSlug]) window.articlesDatabase[currentSlug].category = newText;
@@ -2115,9 +2133,10 @@
             const bodyEl = document.getElementById('detail-content-body');
             if (bodyEl) {
               blogs[bIdx][l].body = bodyEl.innerHTML;
+              if (l === 'en' && blogs[bIdx].en) blogs[bIdx].en.body = bodyEl.innerHTML;
               if (window.articlesDatabase && window.articlesDatabase[currentSlug]) window.articlesDatabase[currentSlug].content = bodyEl.innerHTML;
             }
-          } else if (activeEl.closest('#detail-faq-wrapper')) {
+          } else if (activeEl.closest('#detail-faq-wrapper, [id^="faq-dyn-"], [id^="content-faq-dyn-"]')) {
             const allFaqItems = document.querySelectorAll('#detail-faq-col-1 .border-b, #detail-faq-col-2 .border-b');
             const updatedFaqs = [];
             allFaqItems.forEach(item => {
@@ -2128,6 +2147,7 @@
             if (updatedFaqs.length) {
               blogs[bIdx].faqs = updatedFaqs;
               blogs[bIdx][l].faqs = updatedFaqs;
+              if (l === 'en' && blogs[bIdx].en) blogs[bIdx].en.faqs = updatedFaqs;
               if (window.articlesDatabase && window.articlesDatabase[currentSlug]) {
                 window.articlesDatabase[currentSlug].faqs = updatedFaqs;
               }
@@ -2353,6 +2373,12 @@
       const target = e.target.closest('h1, h2, h3, h4, h5, h6, p, a, button, span, label, strong, em, b, i, li, [data-i18n], [data-cms], .counter-value');
 
       if (target && isEditableTarget(target)) {
+        // If clicking within the element already being edited, do NOT re-initialize or call preventDefault!
+        // Allow natural caret positioning, double-click word selection, and typing!
+        if (activeEl === target) {
+          return;
+        }
+
         e.preventDefault();
         e.stopPropagation();
 
@@ -2374,6 +2400,43 @@
         // Clicked outside any editable element while editing -> auto-save
         if (activeEl) {
           saveCurrentActive();
+        }
+      }
+    }, true);
+
+    // Real-time input listener: continuously sync blog text as user types so changes are never lost
+    document.addEventListener('input', (e) => {
+      if (!editMode || !activeEl) return;
+      const path = window.location.pathname.toLowerCase();
+      if (path.includes('blog')) {
+        const urlParams = new URLSearchParams(window.location.search);
+        const currentSlug = window.currentActiveArticleSlug || urlParams.get('article_slug') || urlParams.get('slug') || extractSlug();
+        if (currentSlug) {
+          try {
+            const blogs = store('sgcms_blog') || [];
+            const bIdx = blogs.findIndex(b => b.slug === currentSlug || b.id === currentSlug || (b.en && (b.en.slug === currentSlug || b.en.id === currentSlug)));
+            if (bIdx >= 0) {
+              const l = getLang();
+              if (!blogs[bIdx][l]) blogs[bIdx][l] = {};
+              if (activeEl.id === 'detail-title' || activeEl.closest('#detail-title, #detail-breadcrumb-title')) {
+                const val = activeEl.innerText.trim();
+                blogs[bIdx][l].title = val;
+                if (l === 'en') {
+                  blogs[bIdx].title = val;
+                  if (blogs[bIdx].en) blogs[bIdx].en.title = val;
+                }
+                if (window.articlesDatabase && window.articlesDatabase[currentSlug]) window.articlesDatabase[currentSlug].title = val;
+              } else if (activeEl.closest('#detail-content-body')) {
+                const bodyEl = document.getElementById('detail-content-body');
+                if (bodyEl) {
+                  blogs[bIdx][l].body = bodyEl.innerHTML;
+                  if (l === 'en' && blogs[bIdx].en) blogs[bIdx].en.body = bodyEl.innerHTML;
+                  if (window.articlesDatabase && window.articlesDatabase[currentSlug]) window.articlesDatabase[currentSlug].content = bodyEl.innerHTML;
+                }
+              }
+              saveStore('sgcms_blog', blogs);
+            }
+          } catch(err) {}
         }
       }
     }, true);
