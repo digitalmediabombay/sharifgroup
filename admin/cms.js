@@ -150,14 +150,29 @@ const AI = {
 
       throw new Error(lastError || 'OpenRouter translation failed across available models.');
     } else {
-      const res = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key=${apiKey}`, {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ contents: [{ parts: [{ text: prompt }] }] })
-      });
-      if (!res.ok) { const err = await res.json().catch(() => null); throw new Error(err?.error?.message || 'Gemini translation failed'); }
-      const data = await res.json();
-      return data?.candidates?.[0]?.content?.parts?.[0]?.text?.trim() || '';
+      const geminiModels = ['gemini-2.0-flash', 'gemini-1.5-flash', 'gemini-1.5-flash-latest', 'gemini-2.5-flash'];
+      let lastErr = null;
+      for (const m of geminiModels) {
+        try {
+          const res = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/${m}:generateContent?key=${encodeURIComponent(apiKey)}`, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ contents: [{ parts: [{ text: prompt }] }] })
+          });
+          if (res.ok) {
+            const data = await res.json();
+            const text = data?.candidates?.[0]?.content?.parts?.[0]?.text?.trim();
+            if (text) return text;
+          } else {
+            const err = await res.json().catch(() => null);
+            lastErr = err?.error?.message || `HTTP ${res.status}`;
+            if (lastErr.includes('API key not valid') || lastErr.includes('API_KEY_INVALID')) break;
+          }
+        } catch (fetchErr) {
+          lastErr = fetchErr.message;
+        }
+      }
+      throw new Error(lastErr || 'Gemini translation failed across available models.');
     }
   },
 
@@ -178,6 +193,19 @@ const AI = {
   async testOpenRouterKey(apiKey) {
     if (!apiKey) return { success: false, error: 'No API key provided' };
     const cleanKey = String(apiKey).trim();
+
+    // Auto-detect Google Gemini key pasted into OpenRouter box
+    if (cleanKey.startsWith('AIza')) {
+      const geminiTest = await this.testKey(cleanKey);
+      if (geminiTest.success) {
+        return {
+          success: true,
+          isGeminiKey: true,
+          message: 'Detected Google Gemini API key. Valid and connected!'
+        };
+      }
+      return geminiTest;
+    }
 
     // 1. Direct check to OpenRouter official auth/key endpoint (Zero-credit, instant, CORS-enabled)
     try {
@@ -225,24 +253,59 @@ const AI = {
   },
 
   async testKey(apiKey) {
+    if (!apiKey) return { success: false, error: 'No API key provided' };
+    const cleanKey = String(apiKey).trim();
+
+    // Auto-detect OpenRouter key pasted into Gemini box
+    if (cleanKey.startsWith('sk-or-')) {
+      const openRouterTest = await this.testOpenRouterKey(cleanKey);
+      if (openRouterTest.success) {
+        return {
+          success: true,
+          isOpenRouterKey: true,
+          message: 'Detected OpenRouter API key. Valid and connected!'
+        };
+      }
+      return openRouterTest;
+    }
+
+    // 1. Try server-side PHP test first (avoids browser CORS & supports proxy)
     try {
       const res = await fetch('api/ai.php?action=test', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ provider: 'gemini', api_key: apiKey })
+        body: JSON.stringify({ provider: 'gemini', api_key: cleanKey })
       });
       if (res.ok) {
-        const json = await res.json();
-        return json.success === true;
+        const json = await res.json().catch(() => null);
+        if (json && json.success) return { success: true, model: json.model };
+        if (json && json.error) return { success: false, error: json.error };
       }
     } catch(e) {}
 
-    const res = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key=${apiKey}`, {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ contents: [{ parts: [{ text: 'Say "OK" in one word.' }] }] })
-    });
-    return res.ok;
+    // 2. Direct browser fallback check across multiple Gemini models
+    const geminiModels = ['gemini-2.0-flash', 'gemini-1.5-flash', 'gemini-1.5-flash-latest', 'gemini-2.5-flash'];
+    let lastErr = 'Gemini API test failed';
+
+    for (const m of geminiModels) {
+      try {
+        const res = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/${m}:generateContent?key=${encodeURIComponent(cleanKey)}`, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ contents: [{ parts: [{ text: 'Say "OK" in one word.' }] }] })
+        });
+        if (res.ok) {
+          return { success: true, model: m };
+        }
+        const errJson = await res.json().catch(() => null);
+        lastErr = errJson?.error?.message || `HTTP ${res.status}`;
+        if (lastErr.includes('API key not valid') || lastErr.includes('API_KEY_INVALID')) break;
+      } catch (err) {
+        lastErr = err.message;
+      }
+    }
+
+    return { success: false, error: lastErr };
   }
 };
 

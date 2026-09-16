@@ -6538,7 +6538,8 @@
         </div>
         <p style="color:var(--muted2);font-size:11px;margin-top:6px">Get your key at <a href="https://aistudio.google.com/apikey" target="_blank" style="color:var(--gold);text-decoration:underline">aistudio.google.com</a></p>
       </div>
-      <div id="settings-status" style="margin-top:10px;font-size:12px;color:var(--muted)"></div>`) +
+      <div id="settings-status" style="margin-top:10px;margin-bottom:14px;font-size:12px;color:var(--muted)"></div>
+      <button class="btn btn-primary" onclick="saveSettings()"><i class="fa-solid fa-floppy-disk"></i> Save Settings</button>`) +
           block('settings-admin', 'rgba(197,168,128,.15)', 'var(--gold)', '<i class="fa-solid fa-user-shield"></i>', 'Admin Account & Security Credentials', null, `
       <div style="margin-bottom:16px;background:rgba(255,255,255,.03);border:1px solid var(--border2);border-radius:8px;padding:12px;font-size:12px">
         <div style="color:var(--muted);margin-bottom:6px"><i class="fa-solid fa-circle-info" style="color:var(--gold);margin-right:6px"></i>Default login credentials:</div>
@@ -6598,8 +6599,16 @@
           const okSvg = '<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#4ade80" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" style="display:inline-block;vertical-align:middle;margin-right:5px"><circle cx="12" cy="12" r="10"/><path d="m9 12 2 2 4-4"/></svg>';
           const errSvg = '<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#f87171" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" style="display:inline-block;vertical-align:middle;margin-right:5px"><circle cx="12" cy="12" r="10"/><path d="m15 9-6 6"/><path d="m9 9 6 6"/></svg>';
           if (ok) {
-            const label = res?.data?.label ? ` (${res.data.label})` : '';
-            statusEl.innerHTML = `<span style="color:#4ade80;display:inline-flex;align-items:center">${okSvg} OpenRouter API key is valid and connected!${label}</span>`;
+            if (res.isGeminiKey) {
+              const geminiInput = document.getElementById('gemini-key');
+              if (geminiInput) geminiInput.value = key;
+              saveSettings();
+              statusEl.innerHTML = `<span style="color:#4ade80;display:inline-flex;align-items:center">${okSvg} Detected Google Gemini key! Automatically configured & saved as Gemini AI key.</span>`;
+            } else {
+              saveSettings();
+              const label = res?.data?.label ? ` (${res.data.label})` : '';
+              statusEl.innerHTML = `<span style="color:#4ade80;display:inline-flex;align-items:center">${okSvg} OpenRouter API key is valid and connected!${label}</span>`;
+            }
           } else {
             const msg = res?.error ? `: ${res.error}` : '. Please verify your key.';
             statusEl.innerHTML = `<span style="color:#f87171;display:inline-flex;align-items:center">${errSvg} OpenRouter test failed${msg}</span>`;
@@ -6615,10 +6624,24 @@
         if (!key) { statusEl.innerHTML = '<span style="color:#f87171">Please enter an API key first.</span>'; return; }
         statusEl.innerHTML = '<span style="color:var(--muted)"><i class="fa-solid fa-spinner fa-spin"></i> Testing key…</span>';
         try {
-          const ok = await window.CMS.AI.testKey(key);
+          const res = await window.CMS.AI.testKey(key);
+          const ok = (typeof res === 'object' && res !== null) ? res.success : Boolean(res);
           const okSvg = '<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#4ade80" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" style="display:inline-block;vertical-align:middle;margin-right:5px"><circle cx="12" cy="12" r="10"/><path d="m9 12 2 2 4-4"/></svg>';
           const errSvg = '<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#f87171" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" style="display:inline-block;vertical-align:middle;margin-right:5px"><circle cx="12" cy="12" r="10"/><path d="m15 9-6 6"/><path d="m9 9 6 6"/></svg>';
-          statusEl.innerHTML = ok ? `<span style="color:#4ade80;display:inline-flex;align-items:center">${okSvg} Gemini API key is valid and working!</span>` : `<span style="color:#f87171;display:inline-flex;align-items:center">${errSvg} Gemini API key test failed. Check the key.</span>`;
+          if (ok) {
+            if (res.isOpenRouterKey) {
+              const orInput = document.getElementById('openrouter-key');
+              if (orInput) orInput.value = key;
+              saveSettings();
+              statusEl.innerHTML = `<span style="color:#4ade80;display:inline-flex;align-items:center">${okSvg} Detected OpenRouter key! Automatically configured & saved as OpenRouter AI key.</span>`;
+            } else {
+              saveSettings();
+              statusEl.innerHTML = `<span style="color:#4ade80;display:inline-flex;align-items:center">${okSvg} Gemini API key is valid, working, and saved!</span>`;
+            }
+          } else {
+            const msg = res?.error ? `: ${res.error}` : '. Check the key.';
+            statusEl.innerHTML = `<span style="color:#f87171;display:inline-flex;align-items:center">${errSvg} Gemini key test failed${msg}</span>`;
+          }
         } catch (e) {
           statusEl.innerHTML = `<span style="color:#f87171">Error: ${e.message}</span>`;
         }

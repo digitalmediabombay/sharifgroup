@@ -184,42 +184,76 @@ function callOpenRouter($apiKey, $prompt, $model = 'google/gemini-2.0-flash-001'
 }
 
 // ── CURL HELPER FOR GEMINI ────────────────────────────────────────
-function callGemini($apiKey, $prompt) {
-    $url = "https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key=" . urlencode($apiKey);
-
-    $payload = [
-        'contents' => [
-            ['parts' => [['text' => $prompt]]]
-        ]
-    ];
-
-    $ch = curl_init($url);
-    curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
-    curl_setopt($ch, CURLOPT_POST, true);
-    curl_setopt($ch, CURLOPT_HTTPHEADER, ['Content-Type: application/json']);
-    curl_setopt($ch, CURLOPT_POSTFIELDS, json_encode($payload));
-    curl_setopt($ch, CURLOPT_TIMEOUT, 30);
-    curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, true);
-
-    $response = curl_exec($ch);
-    $httpCode = curl_getinfo($ch, CURLINFO_HTTP_CODE);
-    $err = curl_error($ch);
-    curl_close($ch);
-
-    if ($err) {
-        return ['success' => false, 'error' => 'cURL Error: ' . $err];
+function callGemini($apiKey, $prompt, $requestedModel = 'gemini-2.0-flash') {
+    // If the key starts with sk-or-, it's an OpenRouter key! Automatically route to OpenRouter
+    if (strpos($apiKey, 'sk-or-') === 0) {
+        return callOpenRouter($apiKey, $prompt);
     }
 
-    $data = json_decode($response, true);
-    if ($httpCode >= 200 && $httpCode < 300 && !empty($data['candidates'][0]['content']['parts'][0]['text'])) {
-        return [
-            'success' => true,
-            'content' => trim($data['candidates'][0]['content']['parts'][0]['text'])
-        ];
+    $modelsToTry = array_unique([
+        $requestedModel,
+        'gemini-2.0-flash',
+        'gemini-1.5-flash',
+        'gemini-1.5-flash-latest',
+        'gemini-2.5-flash',
+        'gemini-1.5-pro'
+    ]);
+
+    $lastError = 'Google Gemini request failed';
+
+    foreach ($modelsToTry as $model) {
+        foreach (['v1beta', 'v1'] as $apiVersion) {
+            $url = "https://generativelanguage.googleapis.com/{$apiVersion}/models/{$model}:generateContent?key=" . urlencode($apiKey);
+
+            $payload = [
+                'contents' => [
+                    ['parts' => [['text' => $prompt]]]
+                ]
+            ];
+
+            $ch = curl_init($url);
+            curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+            curl_setopt($ch, CURLOPT_POST, true);
+            curl_setopt($ch, CURLOPT_HTTPHEADER, [
+                'Content-Type: application/json'
+            ]);
+            curl_setopt($ch, CURLOPT_POSTFIELDS, json_encode($payload));
+            curl_setopt($ch, CURLOPT_TIMEOUT, 30);
+            curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, true);
+
+            $response = curl_exec($ch);
+            $httpCode = curl_getinfo($ch, CURLINFO_HTTP_CODE);
+            $err = curl_error($ch);
+            curl_close($ch);
+
+            if ($err) {
+                $lastError = 'cURL Error: ' . $err;
+                continue;
+            }
+
+            $data = json_decode($response, true);
+            if ($httpCode >= 200 && $httpCode < 300 && !empty($data['candidates'][0]['content']['parts'][0]['text'])) {
+                return [
+                    'success' => true,
+                    'content' => trim($data['candidates'][0]['content']['parts'][0]['text']),
+                    'model'   => $model,
+                    'version' => $apiVersion
+                ];
+            }
+
+            if (isset($data['error']['message'])) {
+                $lastError = $data['error']['message'];
+                // If API key is fundamentally invalid, stop trying other versions
+                if (stripos($lastError, 'API key not valid') !== false || stripos($lastError, 'API_KEY_INVALID') !== false) {
+                    return ['success' => false, 'error' => $lastError];
+                }
+            } else {
+                $lastError = 'HTTP ' . $httpCode . ': ' . $response;
+            }
+        }
     }
 
-    $errMsg = isset($data['error']['message']) ? $data['error']['message'] : ('HTTP ' . $httpCode . ': ' . $response);
-    return ['success' => false, 'error' => $errMsg];
+    return ['success' => false, 'error' => $lastError];
 }
 
 jsonResponse(['error' => 'Invalid action.'], 404);
