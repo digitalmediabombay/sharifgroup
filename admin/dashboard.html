@@ -7249,6 +7249,50 @@
           'sgcms_dom_overrides'
         ];
 
+        // Sanitize any corrupted DOM overrides before packaging live manifest
+        try {
+          ['sgcms_dom_overrides', 'sgcms_dom_overrides_live'].forEach(k => {
+            const raw = localStorage.getItem(k);
+            if (!raw) return;
+            let obj = JSON.parse(raw);
+            let mod = false;
+            for (const pKey in obj) {
+              for (const lKey in obj[pKey]) {
+                for (const sel in obj[pKey][lKey]) {
+                  const val = obj[pKey][lKey][sel];
+                  const str = typeof val === 'string' ? val : (val?.text || '');
+                  if (
+                    str.includes('naikhsn') ||
+                    str.includes('Costs\nfor') ||
+                    sel.includes('header') ||
+                    sel.includes('nav') ||
+                    sel.includes('logo') ||
+                    sel.includes('text-neutral-300') ||
+                    sel === 'span' ||
+                    sel.startsWith('div.flex')
+                  ) {
+                    delete obj[pKey][lKey][sel];
+                    mod = true;
+                  } else if (
+                    (
+                      sel.includes('overviewTitle') || (sel.includes('sec-overview') && sel.includes('h3')) ||
+                      sel.includes('investmentTitle') || (sel.includes('sec-investment') && sel.includes('h2')) ||
+                      sel.includes('whoCanApplyTitle') || (sel.includes('sec-who-can-apply') && sel.includes('h3')) ||
+                      sel.includes('benefitsTitle') || (sel.includes('sec-benefits') && sel.includes('h2')) ||
+                      sel.includes('formTitle') || (sel.includes('program-consult-form-section') && sel.includes('h3'))
+                    ) &&
+                    !str.includes('<span')
+                  ) {
+                    delete obj[pKey][lKey][sel];
+                    mod = true;
+                  }
+                }
+              }
+            }
+            if (mod) localStorage.setItem(k, JSON.stringify(obj));
+          });
+        } catch(e) {}
+
         const keys = [...baseKeys];
         for (let i = 0; i < localStorage.length; i++) {
           const k = localStorage.key(i);
@@ -7373,6 +7417,49 @@
       // ══════════════════════════════════════════════════════════
       // STARTUP
       // ══════════════════════════════════════════════════════════
+      try {
+        ['sgcms_dom_overrides', 'sgcms_dom_overrides_live'].forEach(k => {
+          const raw = localStorage.getItem(k);
+          if (!raw) return;
+          let obj = JSON.parse(raw);
+          let mod = false;
+          for (const pKey in obj) {
+            for (const lKey in obj[pKey]) {
+              for (const sel in obj[pKey][lKey]) {
+                const val = obj[pKey][lKey][sel];
+                const str = typeof val === 'string' ? val : (val?.text || '');
+                if (
+                  str.includes('naikhsn') ||
+                  str.includes('Costs\nfor') ||
+                  sel.includes('header') ||
+                  sel.includes('nav') ||
+                  sel.includes('logo') ||
+                  sel.includes('text-neutral-300') ||
+                  sel === 'span' ||
+                  sel.startsWith('div.flex')
+                ) {
+                  delete obj[pKey][lKey][sel];
+                  mod = true;
+                } else if (
+                  (
+                    sel.includes('overviewTitle') || (sel.includes('sec-overview') && sel.includes('h3')) ||
+                    sel.includes('investmentTitle') || (sel.includes('sec-investment') && sel.includes('h2')) ||
+                    sel.includes('whoCanApplyTitle') || (sel.includes('sec-who-can-apply') && sel.includes('h3')) ||
+                    sel.includes('benefitsTitle') || (sel.includes('sec-benefits') && sel.includes('h2')) ||
+                    sel.includes('formTitle') || (sel.includes('program-consult-form-section') && sel.includes('h3'))
+                  ) &&
+                  !str.includes('<span')
+                ) {
+                  delete obj[pKey][lKey][sel];
+                  mod = true;
+                }
+              }
+            }
+          }
+          if (mod) localStorage.setItem(k, JSON.stringify(obj));
+        });
+      } catch(e) {}
+
       updatePublishStatusUI();
       populateSidebar();
       navigate('homepage');

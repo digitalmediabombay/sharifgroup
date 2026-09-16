@@ -141,6 +141,138 @@
     return `${cleanPage} ${tab}`;
   }
 
+  function formatOverviewTitleHtml(raw) {
+    if (!raw) return '';
+    let str = String(raw).trim();
+    if (!str) return '';
+
+    // If it already contains formatted luxury gold or italic markup, keep it
+    if (str.includes('<span') && (str.includes('text-luxury-gold') || str.includes('italic') || str.includes('text-[#C5A880]'))) {
+      return str;
+    }
+
+    // Strip raw HTML tags to parse text cleanly
+    const clean = str.replace(/<[^>]*>/g, ' ').replace(/\s+/g, ' ').trim();
+
+    // Chinese fullwidth colon
+    if (clean.includes('：')) {
+      const idx = clean.indexOf('：');
+      const prefix = clean.slice(0, idx + 1);
+      const suffix = clean.slice(idx + 1).trim();
+      return `${prefix} <br/><span class="italic font-normal text-luxury-gold">${suffix || "谢里夫集团专业指南"}</span>`;
+    }
+
+    // Standard colon (English, Arabic, Persian)
+    if (clean.includes(':')) {
+      const idx = clean.indexOf(':');
+      const prefix = clean.slice(0, idx + 1);
+      const suffix = clean.slice(idx + 1).trim();
+      return `${prefix} <br/><span class="italic font-normal text-luxury-gold">${suffix || "Sharif Group's Guide"}</span>`;
+    }
+
+    // Common overview heading prefixes without colon
+    const match = clean.match(/^(program\s+overview|golden\s+visa\s*&\s*residency|residency\s+overview|executive\s+briefing)\s*(.*)$/i);
+    if (match) {
+      const prefix = match[1].trim() + ':';
+      const suffix = match[2].trim();
+      return `${prefix} <br/><span class="italic font-normal text-luxury-gold">${suffix || "Sharif Group's Guide"}</span>`;
+    }
+
+    return `<span class="italic font-normal text-luxury-gold">${clean}</span>`;
+  }
+
+  function extractCountryName() {
+    const slug = extractSlug();
+    const clean = slug.replace(/[^a-zA-Z]/g, ' ').trim();
+    if (clean) return clean.charAt(0).toUpperCase() + clean.slice(1);
+    return 'Dominica';
+  }
+
+  function formatInvestmentTitleHtml(raw, fallbackCountry) {
+    if (!raw) return '';
+    let str = String(raw).trim();
+    if (!str) return '';
+    if (str.includes('<span') && (str.includes('text-[#786142]') || str.includes('text-luxury-gold') || str.includes('italic'))) {
+      if (!str.includes('font-normal')) {
+        str = str.replace(/class="([^"]*)"/, 'class="$1 font-normal"');
+      }
+      return str;
+    }
+    const clean = str.replace(/<[^>]*>/g, ' ').replace(/\s+/g, ' ').trim();
+    const cName = fallbackCountry || extractCountryName();
+    if (/costs\s+for/i.test(clean)) {
+      const idx = clean.search(/costs\s+for/i);
+      const prefix = clean.slice(0, idx).trim();
+      const suffix = clean.slice(idx).trim();
+      return `${prefix} <span class="italic text-[#786142] font-serif font-normal">${suffix}</span>`;
+    }
+    if (clean.includes('&')) {
+      const idx = clean.indexOf('&');
+      const prefix = clean.slice(0, idx + 1);
+      const suffix = clean.slice(idx + 1).trim();
+      return `${prefix} <span class="italic text-[#786142] font-serif font-normal">${suffix}</span>`;
+    }
+    return `Explore Investment Options & <span class="italic text-[#786142] font-serif font-normal">Costs for ${cName}</span>`;
+  }
+
+  function formatWhoCanApplyTitleHtml(raw) {
+    if (!raw) return '';
+    let str = String(raw).trim();
+    if (!str) return '';
+    if (str.includes('<span') && (str.includes('text-[#786142]') || str.includes('italic'))) {
+      if (!str.includes('font-normal')) {
+        str = str.replace(/class="([^"]*)"/, 'class="$1 font-normal"');
+      }
+      return str;
+    }
+    const clean = str.replace(/<[^>]*>/g, ' ').replace(/\s+/g, ' ').trim();
+    if (/who\s+can\s+apply/i.test(clean)) {
+      const hasQ = clean.includes('?');
+      return `Who Can <span class="italic text-[#786142] font-serif font-normal">Apply${hasQ ? '?' : ''}</span>`;
+    }
+    return clean;
+  }
+
+  function formatBenefitsTitleHtml(raw, fallbackCountry) {
+    if (!raw) return '';
+    let str = String(raw).trim();
+    if (!str) return '';
+    if (str.includes('<span') && str.includes('italic')) {
+      if (!str.includes('font-normal')) {
+        str = str.replace(/class="([^"]*)"/, 'class="$1 font-normal"');
+      }
+      return str;
+    }
+    const clean = str.replace(/<[^>]*>/g, ' ').replace(/\s+/g, ' ').trim();
+    const cName = fallbackCountry || extractCountryName();
+    if (/benefits\s+of/i.test(clean)) {
+      const idx = clean.search(/benefits\s+of/i);
+      const prefix = clean.slice(0, idx + 11).trim();
+      const suffix = clean.slice(idx + 11).trim();
+      return `${prefix} <span class="italic text-[#786142] font-serif font-normal">${suffix || (cName + ' Citizenship')}</span>`;
+    }
+    return clean;
+  }
+
+  function formatFormTitleHtml(raw) {
+    if (!raw) return '';
+    let str = String(raw).trim();
+    if (!str) return '';
+    if (str.includes('<span') && (str.includes('italic') || str.includes('text-[#786142]') || str.includes('text-luxury-gold'))) {
+      if (!str.includes('font-normal')) {
+        str = str.replace(/class="([^"]*)"/, 'class="$1 font-normal"');
+      }
+      return str;
+    }
+    const clean = str.replace(/<[^>]*>/g, ' ').replace(/\s+/g, ' ').trim();
+    if (/consultation/i.test(clean)) {
+      const parts = clean.split(/consultation/i);
+      const prefix = parts[0].trim() || 'Apply for a Personalized';
+      return `${prefix} <span class="italic text-[#786142] font-serif font-normal">Consultation — It's Free!</span>`;
+    }
+    return clean;
+  }
+
   // ── Language Sync ───────────────────────────────────────
   function applyLanguage(lang, source) {
     if (!['en', 'ar', 'fa', 'zh'].includes(lang)) return;
@@ -186,18 +318,231 @@
     return;
   }
 
-  // ── Universal DOM Overrides ─────────────────────────────
+  // ── Universal DOM Overrides & Header Sanitization ───────
+  function purgeCorruptedOverridesAndSanitizeHeader() {
+    try {
+      // 1. Clean localStorage sgcms_dom_overrides and sgcms_dom_overrides_live
+      ['sgcms_dom_overrides', 'sgcms_dom_overrides_live'].forEach(key => {
+        const raw = localStorage.getItem(key);
+        if (!raw) return;
+        let obj = JSON.parse(raw);
+        let modified = false;
+        for (const pKey in obj) {
+          if (!obj[pKey] || typeof obj[pKey] !== 'object') continue;
+          for (const langKey in obj[pKey]) {
+            const group = obj[pKey][langKey];
+            if (!group || typeof group !== 'object') continue;
+            for (const sel in group) {
+              const val = group[sel];
+              const strVal = typeof val === 'string' ? val : (val?.text || '');
+              if (
+                strVal.includes('naikhsn') ||
+                strVal.includes('Costs\nfor') ||
+                sel.includes('header') ||
+                sel.includes('nav') ||
+                sel.includes('logo') ||
+                sel.includes('text-neutral-300') ||
+                sel === 'span' ||
+                sel.startsWith('div.flex') ||
+                sel.startsWith('header')
+              ) {
+                delete group[sel];
+                modified = true;
+              } else if (
+                (
+                  sel.includes('overviewTitle') || (sel.includes('sec-overview') && sel.includes('h3')) ||
+                  sel.includes('investmentTitle') || (sel.includes('sec-investment') && sel.includes('h2')) ||
+                  sel.includes('whoCanApplyTitle') || (sel.includes('sec-who-can-apply') && sel.includes('h3')) ||
+                  sel.includes('benefitsTitle') || (sel.includes('sec-benefits') && sel.includes('h2')) ||
+                  sel.includes('formTitle') || (sel.includes('program-consult-form-section') && sel.includes('h3'))
+                ) &&
+                !strVal.includes('<span')
+              ) {
+                delete group[sel];
+                modified = true;
+              }
+            }
+          }
+        }
+        if (modified) {
+          localStorage.setItem(key, JSON.stringify(obj));
+        }
+      });
+
+      // 2. Clean sgcms_published_manifest if it contains corrupted DOM overrides
+      const manifestStr = localStorage.getItem('sgcms_published_manifest');
+      if (manifestStr) {
+        let manifest = JSON.parse(manifestStr);
+        if (manifest && manifest.data && manifest.data.sgcms_dom_overrides) {
+          let ov = manifest.data.sgcms_dom_overrides;
+          let modified = false;
+          for (const pKey in ov) {
+            if (!ov[pKey] || typeof ov[pKey] !== 'object') continue;
+            for (const langKey in ov[pKey]) {
+              const group = ov[pKey][langKey];
+              if (!group || typeof group !== 'object') continue;
+              for (const sel in group) {
+                const strVal = typeof group[sel] === 'string' ? group[sel] : (group[sel]?.text || '');
+                if (
+                  strVal.includes('naikhsn') ||
+                  strVal.includes('Costs\nfor') ||
+                  sel.includes('header') ||
+                  sel.includes('nav') ||
+                  sel.includes('logo') ||
+                  sel.includes('text-neutral-300') ||
+                  sel === 'span' ||
+                  sel.startsWith('div.flex') ||
+                  sel.startsWith('header')
+                ) {
+                  delete group[sel];
+                  modified = true;
+                } else if (
+                  (
+                    sel.includes('overviewTitle') || (sel.includes('sec-overview') && sel.includes('h3')) ||
+                    sel.includes('investmentTitle') || (sel.includes('sec-investment') && sel.includes('h2')) ||
+                    sel.includes('whoCanApplyTitle') || (sel.includes('sec-who-can-apply') && sel.includes('h3')) ||
+                    sel.includes('benefitsTitle') || (sel.includes('sec-benefits') && sel.includes('h2')) ||
+                    sel.includes('formTitle') || (sel.includes('program-consult-form-section') && sel.includes('h3'))
+                  ) &&
+                  !strVal.includes('<span')
+                ) {
+                  delete group[sel];
+                  modified = true;
+                }
+              }
+            }
+          }
+          if (modified) {
+            localStorage.setItem('sgcms_published_manifest', JSON.stringify(manifest));
+          }
+        }
+      }
+    } catch(e) {}
+
+    // 3. Immediately restore DOM header divider pipes and purge rogue text
+    try {
+      document.querySelectorAll('#main-header .text-neutral-300, header .text-neutral-300').forEach(span => {
+        if (span.textContent !== '|') span.textContent = '|';
+      });
+
+      // Search for any element currently containing 'naikhsn' and purge/clean it
+      document.querySelectorAll('*').forEach(el => {
+        if (el.children.length === 0 && (el.textContent || '').includes('naikhsn')) {
+          if (el.closest('header, nav, #main-header, #nav-logo')) {
+            el.textContent = '|';
+          } else {
+            el.textContent = el.textContent.replace(/naikhsn/gi, 'Dominica');
+          }
+        }
+      });
+
+      // 4. Automatically restore overview heading luxury gold/italic styling if it was flattened
+      const ovHeading = document.querySelector('[data-i18n-html*="overviewTitle"], [data-i18n*="overviewTitle"], #sec-overview h3');
+      if (ovHeading && (!ovHeading.querySelector('.text-luxury-gold') || !ovHeading.querySelector('.italic'))) {
+        ovHeading.innerHTML = formatOverviewTitleHtml(ovHeading.textContent);
+      }
+
+      // 5. Automatically restore investment title styling (Costs for Dominica) and ensure font-normal
+      const invHeading = document.querySelector('[data-i18n-html*="investmentTitle"], #sec-investment h2');
+      if (invHeading) {
+        if (!invHeading.querySelector('.italic') || !invHeading.querySelector('span')) {
+          invHeading.innerHTML = formatInvestmentTitleHtml(invHeading.textContent);
+        } else {
+          const sp = invHeading.querySelector('span');
+          if (sp && !sp.classList.contains('font-normal')) sp.classList.add('font-normal');
+        }
+      }
+
+      // 6. Automatically restore who can apply title (Who Can Apply?) and ensure "Apply" is thin (font-normal)
+      const whoHeading = document.querySelector('[data-i18n-html*="whoCanApplyTitle"], #sec-who-can-apply h3');
+      if (whoHeading) {
+        if (!whoHeading.querySelector('.italic') || !whoHeading.querySelector('span')) {
+          whoHeading.innerHTML = formatWhoCanApplyTitleHtml(whoHeading.textContent);
+        } else {
+          const sp = whoHeading.querySelector('span');
+          if (sp && !sp.classList.contains('font-normal')) sp.classList.add('font-normal');
+        }
+      }
+
+      // 7. Automatically restore benefits title styling
+      const benHeading = document.querySelector('[data-i18n-html*="benefitsTitle"], #sec-benefits h2');
+      if (benHeading) {
+        if (!benHeading.querySelector('.italic') || !benHeading.querySelector('span')) {
+          benHeading.innerHTML = formatBenefitsTitleHtml(benHeading.textContent);
+        } else {
+          const sp = benHeading.querySelector('span');
+          if (sp && !sp.classList.contains('font-normal')) sp.classList.add('font-normal');
+        }
+      }
+
+      // 8. Automatically restore consultation form title styling
+      const formHeading = document.querySelector('[data-i18n-html*="formTitle"], #program-consult-form-section h3');
+      if (formHeading) {
+        if (!formHeading.querySelector('.italic') || !formHeading.querySelector('span')) {
+          formHeading.innerHTML = formatFormTitleHtml(formHeading.textContent);
+        } else {
+          const sp = formHeading.querySelector('span');
+          if (sp && !sp.classList.contains('font-normal')) sp.classList.add('font-normal');
+        }
+      }
+    } catch(e) {}
+  }
+
+  // Run header sanitization immediately on script execution
+  purgeCorruptedOverridesAndSanitizeHeader();
+
   function applyDomOverrides(lang) {
+    purgeCorruptedOverridesAndSanitizeHeader();
     const l = lang || getLang();
     const pageKey = extractSlug();
+
     const allOverrides = store('sgcms_dom_overrides') || {};
-    const pageOverrides = allOverrides[pageKey]?.[l] || allOverrides[pageKey]?.['en'] || {};
+    const pageOverrides = (allOverrides[pageKey] && allOverrides[pageKey][l]) || {};
+
     for (const selector in pageOverrides) {
       try {
+        if (
+          selector.includes('header') ||
+          selector.includes('nav') ||
+          selector.includes('logo') ||
+          selector.includes('text-neutral-300') ||
+          selector === 'span' ||
+          selector.startsWith('div.flex')
+        ) {
+          continue;
+        }
+
         const item = pageOverrides[selector];
+        const strVal = typeof item === 'string' ? item : (item?.text || '');
+        if (strVal.includes('naikhsn') || strVal.includes('Costs\nfor')) continue;
+
         const el = document.querySelector(selector);
         if (el) {
-          if (typeof item === 'string') {
+          if (el.closest('header, nav, #main-header, #nav-logo, .mega-dropdown, #mobile-menu')) {
+            continue;
+          }
+          const isOverviewHeading = selector.includes('overviewTitle') || (selector.includes('sec-overview') && selector.includes('h3'));
+          const isInvestmentHeading = selector.includes('investmentTitle') || (selector.includes('sec-investment') && selector.includes('h2'));
+          const isWhoCanApplyHeading = selector.includes('whoCanApplyTitle') || (selector.includes('sec-who-can-apply') && selector.includes('h3'));
+          const isBenefitsHeading = selector.includes('benefitsTitle') || (selector.includes('sec-benefits') && selector.includes('h2'));
+          const isFormHeading = selector.includes('formTitle') || (selector.includes('program-consult-form-section') && selector.includes('h3'));
+
+          if (isOverviewHeading) {
+            const rawVal = typeof item === 'string' ? item : (item?.text || '');
+            el.innerHTML = formatOverviewTitleHtml(rawVal);
+          } else if (isInvestmentHeading) {
+            const rawVal = typeof item === 'string' ? item : (item?.text || '');
+            el.innerHTML = formatInvestmentTitleHtml(rawVal);
+          } else if (isWhoCanApplyHeading) {
+            const rawVal = typeof item === 'string' ? item : (item?.text || '');
+            el.innerHTML = formatWhoCanApplyTitleHtml(rawVal);
+          } else if (isBenefitsHeading) {
+            const rawVal = typeof item === 'string' ? item : (item?.text || '');
+            el.innerHTML = formatBenefitsTitleHtml(rawVal);
+          } else if (isFormHeading) {
+            const rawVal = typeof item === 'string' ? item : (item?.text || '');
+            el.innerHTML = formatFormTitleHtml(rawVal);
+          } else if (typeof item === 'string') {
             el.textContent = item;
           } else if (typeof item === 'object' && item !== null) {
             if (item.text !== undefined) el.textContent = item.text;
@@ -209,6 +554,17 @@
   }
 
   function saveDomOverride(selector, text, href) {
+    if (!selector || typeof selector !== 'string') return;
+    if (
+      selector.includes('header') ||
+      selector.includes('nav') ||
+      selector.includes('logo') ||
+      selector.includes('text-neutral-300') ||
+      selector === 'span' ||
+      selector.startsWith('div.flex')
+    ) {
+      return; // Never store DOM overrides targeting header or generic navigation elements
+    }
     const l = getLang();
     const pageKey = extractSlug();
     const allOverrides = store('sgcms_dom_overrides') || {};
@@ -501,7 +857,12 @@
     }
 
     // 4. Executive Overview
-    if (ld.overview_title) setText('[data-i18n*="overviewTitle"]', ld.overview_title);
+    if (ld.overview_title) {
+      const ovHeading = document.querySelector('[data-i18n-html*="overviewTitle"], [data-i18n*="overviewTitle"], #sec-overview h3');
+      if (ovHeading) {
+        ovHeading.innerHTML = formatOverviewTitleHtml(ld.overview_title);
+      }
+    }
     if (ld.overview || ld.overview_p1) setText('[data-i18n*="overviewDesc"]', ld.overview_p1 || ld.overview);
 
     // 5. Benefits Cards
@@ -2158,19 +2519,28 @@
         } else if (field === 'overview_badge') {
           setText('#sec-overview span.uppercase, [data-i18n*="overviewBadge"]', value);
         } else if (field === 'overview_title') {
-          setText('#sec-overview h3, [data-i18n*="overviewTitle"]', value);
+          const ovHeading = document.querySelector('[data-i18n-html*="overviewTitle"], [data-i18n*="overviewTitle"], #sec-overview h3');
+          if (ovHeading) {
+            ovHeading.innerHTML = formatOverviewTitleHtml(value);
+          }
         } else if (field === 'overview' || field === 'overview_p1') {
           setText('#sec-overview p, [data-i18n*="overviewDesc"]', value);
         } else if (field === 'benefits_badge') {
           setText('#sec-benefits span.uppercase, [data-i18n*="benefitsBadge"]', value);
         } else if (field === 'benefits_title') {
-          setText('#sec-benefits h2, [data-i18n*="benefitsTitle"]', value);
+          const benHeading = document.querySelector('[data-i18n-html*="benefitsTitle"], [data-i18n*="benefitsTitle"], #sec-benefits h2');
+          if (benHeading) {
+            benHeading.innerHTML = formatBenefitsTitleHtml(value);
+          }
         } else if (field === 'benefits_desc') {
           setText('#sec-benefits p.max-w-2xl, [data-i18n*="benefitsDesc"]', value);
         } else if (field === 'investment_badge') {
           setText('#sec-investment span.uppercase, [data-i18n*="investmentBadge"], #sec-pricing-grid span.uppercase, [data-i18n*="pricingBadge"]', value);
         } else if (field === 'investment_title') {
-          setText('#sec-investment h2, [data-i18n*="investmentTitle"], #sec-pricing-grid h3, [data-i18n*="pricingTitle"]', value);
+          const invHeading = document.querySelector('[data-i18n-html*="investmentTitle"], [data-i18n*="investmentTitle"], #sec-investment h2');
+          if (invHeading) {
+            invHeading.innerHTML = formatInvestmentTitleHtml(value);
+          }
         } else if (field === 'investment_desc') {
           setText('#sec-investment p.max-w-2xl, [data-i18n*="investmentDesc"], #sec-pricing-grid p.max-w-2xl, [data-i18n*="pricingDesc"]', value);
         } else if (field === 'r1_title') {
@@ -2223,8 +2593,11 @@
           setText('#program-faq-section h3, [data-i18n*="faqTitle"]', value);
         } else if (field === 'faq_desc') {
           setText('#program-faq-section p, [data-i18n*="faqDesc"]', value);
-        } else if (field === 'consult_heading') {
-          setText('#program-consult-form-section h3, [data-i18n*="formTitle"]', value);
+        } else if (field === 'consult_heading' || field === 'form_title') {
+          const formHeading = document.querySelector('#program-consult-form-section h3, [data-i18n*="formTitle"]');
+          if (formHeading) {
+            formHeading.innerHTML = formatFormTitleHtml(value);
+          }
         } else if (field === 'consult_subheading') {
           setText('#program-consult-form-section p, [data-i18n*="formDesc"]', value);
         }
