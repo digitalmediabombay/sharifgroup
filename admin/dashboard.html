@@ -1894,14 +1894,23 @@
         <div class="sb-section-lbl">Content</div>
 
         <!-- Blog -->
-        <div class="sb-group">
+        <div class="sb-group" id="sbg-blog">
           <div class="sb-group-header">
-            <button class="sb-group-btn" id="sb-blog" onclick="navigate('blog')">
+            <button class="sb-group-btn" id="sb-blog" onclick="handleGroupHeaderToggle('blog', event)">
               <i class="fa-solid fa-pen-nib sb-ico"></i>
               <span class="sb-lbl">Blog & Articles</span>
+              <i class="fa-solid fa-chevron-right sb-chev"></i>
             </button>
-            <button class="sb-add-btn" title="New Article" onclick="openQuickBlogModal()"><i
+            <button class="sb-add-btn" title="New Article" onclick="event.stopPropagation();openQuickBlogModal()"><i
                 class="fa-solid fa-plus"></i></button>
+          </div>
+          <div class="sb-children" id="sbc-blog">
+            <div id="sb-blog-items"></div>
+            <div style="padding:4px 4px 6px">
+              <button type="button" class="btn-add-section-sb" onclick="openQuickBlogModal()">
+                <i class="fa-solid fa-plus"></i> Add New Article
+              </button>
+            </div>
           </div>
         </div>
 
@@ -3008,6 +3017,7 @@
         const existingBlogs = window.CMS.getData(window.CMS.KEYS.BLOG) || window.CMS.DEFAULTS.blog || [];
         existingBlogs.unshift(newArticle);
         window.CMS.saveData(window.CMS.KEYS.BLOG, existingBlogs);
+        populateSidebar();
 
         closeQuickBlogModal();
         showToast('Article created! Loading visual template on canvas...', 'success');
@@ -3016,7 +3026,8 @@
         state.itemId = id;
         state.activeBlogSlug = slug;
         closeEditorDrawer();
-        setActiveSidebarItem('blog');
+        toggleGroup('blog', true);
+        setActiveSidebarItem(id);
 
         const iframe = document.getElementById('live-iframe');
         const targetUrl = '../blog/index.html?cms_editor=1&article_slug=' + encodeURIComponent(slug);
@@ -3557,6 +3568,29 @@
       </div>
     `;
         }
+
+        // Render Dynamic Articles for Blog in Sidebar
+        const blogContainer = document.getElementById('sb-blog-items');
+        if (blogContainer) {
+          const blogs = window.CMS.getData(window.CMS.KEYS.BLOG) || window.CMS.DEFAULTS.blog || [];
+          if (!blogs.length) {
+            blogContainer.innerHTML = '<div style="padding:6px 14px;font-size:11px;color:var(--muted)">No articles yet.</div>';
+          } else {
+            blogContainer.innerHTML = blogs.map(b => {
+              const ld = b[state.lang] || b.en || {};
+              let title = ld.title || b.title || (b.en && b.en.title) || 'Untitled Article';
+              const status = (b['status_' + state.lang] || b.status_en || 'draft').toLowerCase();
+              const isPub = status === 'published';
+              const dot = `<span class="sb-item-dot ${isPub ? 'published' : 'draft'}"></span>`;
+              const safeId = escH(b.id).replace(/'/g, "\\'");
+              const delBtn = `<button type="button" class="sb-item-del" data-type="blog" data-id="${escH(b.id)}" title="Delete article" onclick="event.stopPropagation();deleteBlogItem('${safeId}')"><i class="fa-solid fa-trash-can"></i></button>`;
+
+              return `<div class="sb-item" id="sb-blog-item-${b.id}" onclick="editBlogItem('${safeId}')" title="${escH(title)}">
+                <span class="sb-item-flag-icon"><i class="fa-solid fa-newspaper" style="font-size:10px"></i></span>${dot}<span class="sb-item-title">${escH(title)}</span>${delBtn}
+              </div>`;
+            }).join('');
+          }
+        }
       }
 
       function toggleGroup(group, forceOpen) {
@@ -3577,13 +3611,17 @@
           toggleGroup(group, false);
         } else {
           toggleGroup(group, true);
-          navigate('category-hub', group);
+          if (group === 'blog') {
+            navigate('blog');
+          } else {
+            navigate('category-hub', group);
+          }
         }
       }
 
       function setActiveSidebarItem(id) {
         document.querySelectorAll('.sb-group-btn.active, .sb-item.active').forEach(el => el.classList.remove('active'));
-        const el = document.getElementById('sb-' + id) || document.getElementById('sb-prog-' + id);
+        const el = document.getElementById('sb-' + id) || document.getElementById('sb-prog-' + id) || document.getElementById('sb-blog-item-' + id);
         if (el) el.classList.add('active');
       }
 
@@ -3595,16 +3633,19 @@
         state.itemType = itemType || null;
         state.itemId = itemId || null;
 
-        // Auto-expand groups when accessing an individual program or creating a new one
+        // Auto-expand groups when accessing an individual program, blog, or creating a new one
         if (section === 'program' || section === 'new-program') {
           const groupId = itemType;
           if (groupId) {
             const children = document.getElementById('sbc-' + groupId);
             if (children && !children.classList.contains('open')) toggleGroup(groupId, true);
           }
+        } else if (section === 'blog' || section === 'blog-edit' || section === 'blog-new') {
+          const children = document.getElementById('sbc-blog');
+          if (children && !children.classList.contains('open')) toggleGroup('blog', true);
         }
         renderSection();
-        setActiveSidebarItem(section === 'program' ? (itemId || '') : (section === 'category-hub' ? itemType : section.replace('-new', '').replace('-edit', '')));
+        setActiveSidebarItem(section === 'program' ? (itemId || '') : (section === 'blog-edit' ? (itemId || 'blog') : (section === 'category-hub' ? itemType : section.replace('-new', '').replace('-edit', ''))));
 
         // Form-only drawer sections vs. Visual Live Canvas sections
         const formOnlySections = ['settings', 'blog-new', 'team-new', 'new-program'];
@@ -5601,16 +5642,20 @@
           const ld = b[l] || b.en || {};
           const status = b['status_' + l] || b.status_en || 'draft';
           const isPub = status === 'published';
+          const safeId = escH(b.id).replace(/'/g, "\\'");
           html += `
-      <div class="ec-block" style="cursor:pointer;margin-bottom:10px" onclick="editBlogItem('${b.id}')">
-        <div class="ec-block-hd" style="display:flex;align-items:center;gap:12px;padding:12px 16px">
+      <div class="ec-block" style="margin-bottom:10px;display:flex;align-items:center;justify-content:space-between;padding:10px 14px;background:var(--surface);border:1px solid var(--border);border-radius:8px">
+        <div style="display:flex;align-items:center;gap:12px;flex:1;min-width:0;cursor:pointer" onclick="editBlogItem('${safeId}')">
           ${b.featured_img ? `<img src="${b.featured_img}" style="width:48px;height:36px;object-fit:cover;border-radius:6px;flex-shrink:0" onerror="this.style.display='none'">` : '<div style="width:48px;height:36px;border-radius:6px;background:rgba(255,255,255,.05);display:flex;align-items:center;justify-content:center;color:var(--muted);font-size:12px"><i class="fa-solid fa-newspaper"></i></div>'}
           <div style="flex:1;min-width:0">
             <div style="font-weight:600;font-size:12px;color:var(--text);white-space:nowrap;overflow:hidden;text-overflow:ellipsis">${escH(ld.title || 'Untitled Article')}</div>
             <div style="font-size:10px;color:var(--muted);margin-top:2px">${escH(b.category || 'Citizenship')}${b.subcategory ? ' · ' + escH(b.subcategory) : ''} · ${b.publish_date || 'Recent'}</div>
           </div>
           <span class="ec-block-badge" style="background:${isPub ? 'rgba(34,197,94,.15)' : 'rgba(245,158,11,.15)'};color:${isPub ? 'var(--green)' : 'var(--yellow)'}">${status}</span>
-          <i class="fa-solid fa-chevron-right" style="font-size:10px;color:var(--muted)"></i>
+        </div>
+        <div style="display:flex;align-items:center;gap:6px;margin-left:12px;flex-shrink:0">
+          <button type="button" class="btn btn-ghost" style="padding:5px 8px;font-size:11px" onclick="editBlogItem('${safeId}')" title="Edit Article"><i class="fa-solid fa-pen"></i></button>
+          <button type="button" class="btn btn-ghost" style="padding:5px 8px;font-size:11px;color:#f87171;border-color:rgba(239,68,68,.3)" onclick="event.stopPropagation();deleteBlogItem('${safeId}')" title="Delete Article"><i class="fa-solid fa-trash-can"></i></button>
         </div>
       </div>
     `;
@@ -5653,9 +5698,13 @@
         const existingBlogs = window.CMS.getData(window.CMS.KEYS.BLOG) || window.CMS.DEFAULTS.blog || [];
         existingBlogs.unshift(newArticle);
         window.CMS.saveData(window.CMS.KEYS.BLOG, existingBlogs);
+        populateSidebar();
 
         state.section = 'blog-new';
         state.itemId = id;
+        state.activeBlogSlug = newArticle.slug;
+        toggleGroup('blog', true);
+        setActiveSidebarItem(id);
         renderBlogArticleForm(newArticle, true);
         // Broadcast draft after a delay to allow iframe to load first
         setTimeout(() => { broadcastBlogDraft(); }, 800);
@@ -5668,6 +5717,9 @@
         if (!b) return;
         state.section = 'blog-edit';
         state.itemId = id;
+        state.activeBlogSlug = b.slug || b.en?.slug || b.id;
+        toggleGroup('blog', true);
+        setActiveSidebarItem(id);
         renderBlogArticleForm(b, false);
       }
 
@@ -5890,6 +5942,9 @@
         markSaved();
         showToast(isNew ? 'Article published successfully!' : 'Article saved successfully!');
 
+        // Update sidebar list immediately
+        populateSidebar();
+
         // Notify preview iframe: remove draft card and inject the saved article
         sendToIframe({ type: 'CMS_BLOG_SAVED', id, blog: item });
 
@@ -5901,13 +5956,53 @@
       }
 
       function deleteBlogItem(id) {
-        if (!confirm('Delete this article?')) return;
-        let blogs = window.CMS.getData(window.CMS.KEYS.BLOG) || [];
+        if (!id) return;
+        let blogs = window.CMS.getData(window.CMS.KEYS.BLOG) || window.CMS.DEFAULTS.blog || [];
+        const target = blogs.find(b => b.id === id);
+        const title = target?.en?.title || target?.title || id;
+        if (!confirm(`Are you sure you want to permanently delete "${title}"?`)) return;
+
         blogs = blogs.filter(b => b.id !== id);
         window.CMS.saveData(window.CMS.KEYS.BLOG, blogs);
-        navigate('blog');
+
+        // Clean up corresponding _live key if present
+        try {
+          const liveKey = (window.CMS.KEYS.BLOG || 'sgcms_blog') + '_live';
+          const liveVal = localStorage.getItem(liveKey);
+          if (liveVal) {
+            let liveList = JSON.parse(liveVal);
+            if (Array.isArray(liveList)) {
+              liveList = liveList.filter(b => b && b.id !== id);
+              localStorage.setItem(liveKey, JSON.stringify(liveList));
+            }
+          }
+        } catch(e) {}
+
+        // Clean up manifest entry
+        try {
+          const manifestVal = localStorage.getItem('sgcms_published_manifest');
+          if (manifestVal) {
+            const manifest = JSON.parse(manifestVal);
+            const blogKey = window.CMS.KEYS.BLOG || 'sgcms_blog';
+            if (manifest && manifest.data && Array.isArray(manifest.data[blogKey])) {
+              manifest.data[blogKey] = manifest.data[blogKey].filter(b => b && b.id !== id);
+              localStorage.setItem('sgcms_published_manifest', JSON.stringify(manifest));
+            }
+          }
+        } catch(e) {}
+
+        // Refresh sidebar
+        populateSidebar();
+
+        if (state.section === 'blog-edit' && state.itemId === id) {
+          navigate('blog');
+        } else if (state.section === 'blog') {
+          renderBlogEditor(state.lang, isRtl(state.lang));
+        } else {
+          navigate('blog');
+        }
         refreshPreview();
-        showToast('Article deleted', 'info');
+        showToast('Article deleted successfully', 'info');
       }
 
       // ──────────────────────────────────────────────────────────
@@ -7502,7 +7597,11 @@
           e.stopPropagation();
           const t = btn.getAttribute('data-type');
           const id = btn.getAttribute('data-id');
-          if (id) deleteProgram(t, id);
+          if (t === 'blog') {
+            if (id) deleteBlogItem(id);
+          } else {
+            if (id) deleteProgram(t, id);
+          }
         }
       }, true);
 
