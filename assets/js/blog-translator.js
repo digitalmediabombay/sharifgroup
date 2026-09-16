@@ -399,6 +399,32 @@
         var curLang = lang || (window.getCurrentLanguage ? window.getCurrentLanguage() : getStoredOrInitialLang());
         if (curLang === 'en') return base;
 
+        // 0. Check dynamic CMS blog storage first
+        try {
+            var localBlogs = JSON.parse(localStorage.getItem('sgcms_blog') || '[]');
+            var foundCms = localBlogs.find(function(b) {
+                return b.slug === slug || b.id === slug || (b.en && b.en.slug === slug);
+            });
+            if (foundCms) {
+                var ldCms = (foundCms[curLang] && (foundCms[curLang].title || foundCms[curLang].body)) ? foundCms[curLang] : (foundCms.en || foundCms);
+                var curFaqs = (ldCms.faqs && Array.isArray(ldCms.faqs) && ldCms.faqs.length)
+                    ? ldCms.faqs
+                    : ((foundCms[curLang] && Array.isArray(foundCms[curLang].faqs) && foundCms[curLang].faqs.length) ? foundCms[curLang].faqs
+                    : ((foundCms.en && Array.isArray(foundCms.en.faqs) && foundCms.en.faqs.length) ? foundCms.en.faqs
+                    : (foundCms.faqs || base.faqs || [])));
+                return {
+                    title: ldCms.title || (foundCms.en && foundCms.en.title) || base.title,
+                    category: translateCategory(foundCms.category || base.category, curLang),
+                    author: translateAuthor(foundCms.author || base.author, curLang),
+                    date: translateDate(foundCms.publish_date || base.date, curLang),
+                    updated: translateDate(foundCms.publish_date || base.updated, curLang),
+                    image: resolveArticleImage(foundCms.featured_img, base.image),
+                    content: ldCms.body || (foundCms.en && foundCms.en.body) || base.content,
+                    faqs: curFaqs
+                };
+            }
+        } catch(e) {}
+
         // 1. Check loaded articles dataset
         var store = window.articlesTranslations && window.articlesTranslations[curLang];
         if (store && store[slug]) {

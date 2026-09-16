@@ -7656,28 +7656,35 @@
                 const listingSection = document.getElementById('blog-listing-main');
                 const detailSection = document.getElementById('blog-detail-view-container');
 
-                if (!baseArticle) {
-                    try {
-                        const localBlogs = JSON.parse(localStorage.getItem('sgcms_blog') || '[]');
-                        const found = localBlogs.find(b => b.slug === slug || b.id === slug || (b.en && b.en.slug === slug));
-                        if (found) {
-                            const curLang = (window.getCurrentLanguage && window.getCurrentLanguage()) || 'en';
-                            const ld = found[curLang] || found.en || {};
-                            if (!window.articlesDatabase) window.articlesDatabase = {};
-                            window.articlesDatabase[slug] = {
-                                title: ld.title || found.hero_title || 'Article',
-                                category: found.category || 'Citizenship',
-                                author: found.author || 'Sharif Group Advisory',
-                                date: found.publish_date || '2026-09-01',
-                                updated: found.publish_date || '2026-09-01',
-                                image: found.featured_img || '/assets/images/dubai-office-2.webp',
-                                content: ld.body || '<p>' + (ld.excerpt || 'Article content...') + '</p>',
-                                faqs: []
-                            };
-                            baseArticle = window.articlesDatabase[slug];
+                // Dynamically resolve CMS blogs fresh for the current language
+                try {
+                    const localBlogs = JSON.parse(localStorage.getItem('sgcms_blog') || '[]');
+                    const found = localBlogs.find(b => b.slug === slug || b.id === slug || (b.en && b.en.slug === slug));
+                    if (found) {
+                        const curLang = (window.getCurrentLanguage && window.getCurrentLanguage()) || 'en';
+                        let ld = found[curLang];
+                        if (!ld || (!ld.title && !ld.body)) {
+                            ld = found.en || found;
                         }
-                    } catch(e) {}
-                }
+                        const curFaqs = (ld.faqs && Array.isArray(ld.faqs) && ld.faqs.length) ? ld.faqs
+                            : ((found[curLang]?.faqs && Array.isArray(found[curLang].faqs) && found[curLang].faqs.length) ? found[curLang].faqs
+                            : ((found.en && Array.isArray(found.en.faqs) && found.en.faqs.length) ? found.en.faqs
+                            : (found.faqs || [])));
+
+                        baseArticle = {
+                            title: ld.title || (found.en && found.en.title) || found.title || found.hero_title || 'Article',
+                            category: found.category || 'Citizenship',
+                            author: found.author || 'Sharif Group Advisory',
+                            date: found.publish_date || '2026-09-01',
+                            updated: found.publish_date || '2026-09-01',
+                            image: found.featured_img || '/assets/images/dubai-office-2.webp',
+                            content: ld.body || (found.en && found.en.body) || ('<p>' + (ld.excerpt || 'Article content...') + '</p>'),
+                            faqs: curFaqs
+                        };
+                        if (!window.articlesDatabase) window.articlesDatabase = {};
+                        window.articlesDatabase[slug] = baseArticle;
+                    }
+                } catch(e) {}
 
                 if (!baseArticle) {
                     alert("Article content is being updated. Please check back shortly.");

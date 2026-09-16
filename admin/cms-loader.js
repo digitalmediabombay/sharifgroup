@@ -1046,9 +1046,12 @@
 
     // Process every blog created or edited in CMS
     blogs.forEach((b) => {
-      const ld = b[l] || b.en || {};
-      if (!ld || !ld.title) return;
-      const slug = ld.slug || b.id;
+      let ld = b[l];
+      if (!ld || (!ld.title && !ld.body)) {
+        ld = b.en || b;
+      }
+      if (!ld || (!ld.title && !b.title && (!b.en || !b.en.title))) return;
+      const slug = b.slug || (b.en && b.en.slug) || ld.slug || b.id;
       const status = b['status_' + l] || b.status_en || 'published';
       if (status !== 'published') return;
 
@@ -1056,19 +1059,33 @@
       const catDisplay = (b.category || 'Sharif Group Insights') + subcat;
       const dataCat = mapCategoryToDataCat(b.category, b.subcategory);
 
+      // Prioritize localized FAQs for current language:
+      const localizedFaqs = (ld.faqs && Array.isArray(ld.faqs) && ld.faqs.length) ? ld.faqs
+        : ((b[l]?.faqs && Array.isArray(b[l].faqs) && b[l].faqs.length) ? b[l].faqs
+        : ((b.en && Array.isArray(b.en.faqs) && b.en.faqs.length) ? b.en.faqs
+        : (b.faqs || [])));
+
       // Register article data in the client-side database
       const articleData = {
-        title: ld.title || 'Untitled Article',
+        title: ld.title || (b.en && b.en.title) || b.title || 'Untitled Article',
         category: catDisplay,
         author: b.author || 'Sharif Group Advisory',
         date: b.publish_date || new Date().toLocaleDateString('en-US', { month: 'long', day: 'numeric', year: 'numeric' }),
         updated: b.publish_date || '',
         image: b.featured_img || 'https://sharifgroup.ae/wp-content/uploads/2026/05/dubai-office-2.jpg.webp',
-        content: ld.body || `<p>${ld.excerpt || ''}</p>`,
-        faqs: b.faqs || ld.faqs || (b.en && b.en.faqs) || []
+        content: ld.body || (b.en && b.en.body) || `<p>${ld.excerpt || ''}</p>`,
+        faqs: localizedFaqs
       };
       window.articlesDatabase[slug] = articleData;
       window.articlesDatabase[b.id] = articleData;
+
+      // If this article is currently displayed on canvas in detail reader, re-render it in the new language!
+      const detailView = document.getElementById('blog-detail-view-container');
+      if (detailView && !detailView.classList.contains('hidden') && (window.currentActiveArticleSlug === slug || window.currentActiveArticleSlug === b.id)) {
+        if (typeof window.openBlogDetailBySlug === 'function') {
+          setTimeout(() => { window.openBlogDetailBySlug(slug, true); }, 20);
+        }
+      }
 
       let existingCard = document.querySelector(`[data-cms-blog-id="${b.id}"]`);
       if (!existingCard) {

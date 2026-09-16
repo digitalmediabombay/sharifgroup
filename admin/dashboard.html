@@ -2946,6 +2946,85 @@
         if (custom) custom.value = '';
       }
 
+      function repairBlogFaqsAndTranslations(blogs) {
+        if (!Array.isArray(blogs)) return blogs;
+        const sampleFaqsEn = [
+          { q: 'What are the sovereign eligibility criteria for this pathway?', a: 'Applicants must possess a pristine background, pass strict multi-tier AML compliance, and fulfill the designated capital allocation.' },
+          { q: 'Can immediate family and senior dependents be included?', a: 'Yes. The principal investor may include their spouse, dependent children under 30, and dependent parents or grandparents above 55.' },
+          { q: 'Is physical presence or relocation required in Dubai or the host state?', a: 'No mandatory residency requirements apply during processing. All government vetting and apostilles are finalized remotely through our Dubai headquarters.' },
+          { q: 'What are the processing timelines from submission to approval?', a: 'Official government clearance is expedited under our legal protocol, typically taking between 60 to 90 business days.' },
+          { q: 'How is confidential wealth and asset protection guaranteed?', a: 'Sharif Group operates under strict non-disclosure legal mandates and international private client confidentiality standards.' },
+          { q: 'What are the visa-free mobility advantages granted?', a: 'Successful holders gain visa-free or visa-on-arrival access across key international business hubs, Schengen states, and Commonwealth jurisdictions.' }
+        ];
+
+        const sampleFaqsAr = [
+          { q: 'ما هي معايير الأهلية السيادية لهذا المسار؟', a: 'يجب أن يتمتع المتقدمون بسجل أمني وقانوني نظيف، واجتياز تدقيق مكافحة غسل الأموال، واستيفاء متطلبات التخصيص المالي المحددة.' },
+          { q: 'هل يمكن تضمين أفراد الأسرة المباشرين والمعالين الأكبر سناً؟', a: 'نعم، يمكن للمستثمر الرئيسي تضمين الزوج/الزوجة، والأبناء المعالين حتى سن 30 عاماً، والوالدين أو الأجداد المعالين فوق سن 55 عاماً.' },
+          { q: 'هل يلزم التواجد الفعلي أو الانتقال للإقامة في دبي أو الدولة المضيفة؟', a: 'لا توجد متطلبات إقامة إلزامية أثناء الإجراءات. يتم استكمال كافة الموافقات والتوثيقات الحكومية عن بُعد عبر مقرنا الرئيسي في دبي.' },
+          { q: 'ما هي الجداول الزمنية المتوقعة من تقديم الطلب حتى الموافقة النهائية؟', a: 'يتم تسريع استخراج الموافقات الرسمية بموجب بروتوكولنا القانوني المعتمد، وعادةً ما يستغرق ذلك ما بين 60 إلى 90 يوم عمل.' },
+          { q: 'كيف يتم ضمان سرية وحماية الأصول والثروات العائلية؟', a: 'تعمل مجموعة الشريف بموجب تفويضات قانونية صارمة لعدم الإفصاح ومعايير السرية الدولية المعتمدة لعملاء إدارة الثروات الخاصة.' },
+          { q: 'ما هي مزايا حرية التنقل والسفر بدون تأشيرة الممنوحة؟', a: 'يحصل حاملو الوثائق المعتمدة على إمكانية السفر بدون تأشيرة أو بتأشيرة عند الوصول إلى أبرز مراكز الأعمال الدولية، ودول الشنغن، ودول الكومنولث.' }
+        ];
+
+        const sampleFaqsFa = [
+          { q: 'معیارهای صلاحیت قانونی و حاکمیتی برای این مسیر چیست؟', a: 'متقاضیان باید دارای پیشینه کاملاً پاک، موفقیت در بررسی‌های چندمرحله‌ای ضدپولشویی و تأمین سرمایه‌گذاری مصوب باشند.' },
+          { q: 'آیا امکان اضافه کردن اعضای درجه یک خانواده و وابستگان وجود دارد؟', a: 'بله. سرمایه‌گذار اصلی می‌تواند همسر، فرزندان وابسته تا ۳۰ سال و والدین یا پدربزرگ و مادربزرگ وابسته بالای ۵۵ سال را اضافه نماید.' },
+          { q: 'آیا حضور فیزیکی یا تغییر محل سکونت در دبی یا کشور مقصد الزامی است؟', a: 'خیر، هیچ شرط اقامت اجباری در طول مراحل پرونده وجود ندارد. تمامی تأییدیه‌ها و آپوستیل‌ها به صورت غیرحضوری از طریق دفتر مرکزی ما در دبی انجام می‌شود.' },
+          { q: 'جدول زمانی پردازش پرونده از ثبت تا تأیید نهایی چقدر است؟', a: 'مراحل تأییدیه رسمی دولتی بر اساس پروتکل حقوقی ما تسریع شده و معمولاً بین ۶۰ تا ۹۰ روز کاری به طول می‌انجامد.' },
+          { q: 'محرمانگی اطلاعات و حفاظت از ثروت و دارایی‌ها چگونه تضمین می‌شود؟', a: 'گروه شریف تحت تعهدنامه‌های حقوقی عدم افشای اطلاعات و استانداردهای بین‌المللی حفظ حریم خصوصی مشتریان ویژه فعالیت می‌کند.' },
+          { q: 'مزایای تحرک جهانی و سفر بدون ویزا چیست؟', a: 'دارندگان این وضعیت به سفر بدون ویزا یا با ویزای فرودگاهی به مراکز تجاری بین‌المللی، کشورهای حوزه شنگن و اتحادیه کشورهای مشترک‌المنافع دسترسی خواهند داشت.' }
+        ];
+
+        const sampleFaqsZh = [
+          { q: '申请该项目的核心资格条件是什么？', a: '申请人须具备良好的无犯罪背景记录，通过严格的多层级反洗钱合规审查，并完成指定的官方投资额度。' },
+          { q: '直系亲属及年长受抚养人可以一并随行申请吗？', a: '可以。主申请人可随同申请配偶、30周岁以下的经济依附子女，以及55周岁以上的受抚养父母或祖父母。' },
+          { q: '申请期间是否要求在迪拜或目标国实际居住或登陆？', a: '办理过程中无强制居住要求。所有政府背景背调及公证海牙认证均由我们迪拜总部合规团队远程协助办理完毕。' },
+          { q: '从正式递交到获得政府批准通常需要多长时间？', a: '在我们的优先法律通道协助下，官方审批流程高效推进，通常仅需60至90个工作日。' },
+          { q: '如何确保家族财富及隐私信息的绝对保密安全？', a: '谢里夫集团严格恪守国际顶级保密协议与全球私人客户专属合规标准，确保客户资产与身份信息滴水不漏。' },
+          { q: '获得身份后享有哪些免签及全球通行便利？', a: '成功持有者可享有免签或落地签前往全球重要金融中心、欧洲申根区以及英联邦等多个国家和地区的通行便利。' }
+        ];
+
+        const sampleBodyZh = `<p class="text-base text-neutral-800 leading-relaxed font-light mb-6">在这份战略执行顾问简报中，谢里夫集团专业法律顾问团队全面梳理了全球投资者与家族财富持有者在为家庭规划未来时所需关注的关键指标、法定办理周期以及合规要求。</p>
+<h3 class="font-serif text-2xl text-neutral-900 font-bold mt-8 mb-4">1. 执行概览与核心关键指标</h3>
+<p class="text-base text-neutral-700 leading-relaxed font-light mb-6">获取合规主权身份离不开精准的文件认证与无懈可击的背景合规审核。我们位于迪拜的法律咨询中心直接对接官方审批机构，确保各环节高效合规获批。</p>
+<blockquote class="my-8 p-6 bg-[#FAF6EE] border-s-4 border-[#C5A880] rounded-r-xl italic font-serif text-lg text-neutral-900 leading-relaxed">
+  “全球出行自由与多司法管辖区居留权不再是奢侈品——它们已成为2026年守护家族财富传承与主权自由的必备护城河。”
+</blockquote>
+<h3 class="font-serif text-2xl text-neutral-900 font-bold mt-8 mb-4">2. 零摩擦办理路径</h3>
+<p class="text-base text-neutral-700 leading-relaxed font-light mb-4">完整的申请流程遵循三个结构化阶段，旨在实现全程零实体摩擦：</p>
+<ul class="list-disc ps-6 space-y-3 text-neutral-700 font-light mb-8">
+  <li><strong>专属合规预审评估：</strong> 通过迪拜审核中心进行第一阶段政府官方合规筛查。</li>
+  <li><strong>法律文件公证与海牙认证：</strong> 由我们全权法务团队负责完成全套国际公证及递交。</li>
+  <li><strong>签发正式批复与身份凭证：</strong> 最终正式批复原件与身份文件直接配送至您指定的迪拜居所。</li>
+</ul>`;
+
+        let modified = false;
+        blogs.forEach(b => {
+          if (!b.faqs || !b.faqs.length) { b.faqs = sampleFaqsEn; modified = true; }
+          ['ar', 'fa', 'zh'].forEach(lang => {
+            b[lang] = b[lang] || {};
+            const langFaqs = lang === 'ar' ? sampleFaqsAr : (lang === 'fa' ? sampleFaqsFa : sampleFaqsZh);
+            if (!Array.isArray(b[lang].faqs) || !b[lang].faqs.length) {
+              b[lang].faqs = langFaqs;
+              modified = true;
+            }
+            if (lang === 'zh') {
+              const bodyZh = b.zh.body || '';
+              if (!bodyZh || bodyZh.includes('في هذه الاستشارة') || bodyZh.includes('در این گزارش') || bodyZh.includes('مجموعة الشريف') || bodyZh.includes('گروه شریف')) {
+                b.zh.title = (b.zh.title && !/[\u0600-\u06FF]/.test(b.zh.title)) ? b.zh.title : '战略执行顾问洞察';
+                b.zh.excerpt = (b.zh.excerpt && !/[\u0600-\u06FF]/.test(b.zh.excerpt)) ? b.zh.excerpt : '谢里夫集团迪拜商业湾咨询中心撰写的全球高净值投资与法律身份规划报告。';
+                b.zh.body = sampleBodyZh;
+                modified = true;
+              }
+            }
+          });
+        });
+        if (modified) {
+          window.CMS.saveData(window.CMS.KEYS.BLOG, blogs);
+        }
+        return blogs;
+      }
+
       function submitQuickBlog() {
         const titleInput = document.getElementById('qb-title');
         const title = (titleInput?.value || '').trim();
@@ -2969,7 +3048,7 @@
         const id = 'b' + uid();
         const dateStr = new Date().toISOString().split('T')[0];
 
-        const sampleFaqs = [
+        const sampleFaqsEn = [
           { q: 'What are the sovereign eligibility criteria for this pathway?', a: 'Applicants must possess a pristine background, pass strict multi-tier AML compliance, and fulfill the designated capital allocation.' },
           { q: 'Can immediate family and senior dependents be included?', a: 'Yes. The principal investor may include their spouse, dependent children under 30, and dependent parents or grandparents above 55.' },
           { q: 'Is physical presence or relocation required in Dubai or the host state?', a: 'No mandatory residency requirements apply during processing. All government vetting and apostilles are finalized remotely through our Dubai headquarters.' },
@@ -2977,6 +3056,75 @@
           { q: 'How is confidential wealth and asset protection guaranteed?', a: 'Sharif Group operates under strict non-disclosure legal mandates and international private client confidentiality standards.' },
           { q: 'What are the visa-free mobility advantages granted?', a: 'Successful holders gain visa-free or visa-on-arrival access across key international business hubs, Schengen states, and Commonwealth jurisdictions.' }
         ];
+
+        const sampleFaqsAr = [
+          { q: 'ما هي معايير الأهلية السيادية لهذا المسار؟', a: 'يجب أن يتمتع المتقدمون بسجل أمني وقانوني نظيف، واجتياز تدقيق مكافحة غسل الأموال، واستيفاء متطلبات التخصيص المالي المحددة.' },
+          { q: 'هل يمكن تضمين أفراد الأسرة المباشرين والمعالين الأكبر سناً؟', a: 'نعم، يمكن للمستثمر الرئيسي تضمين الزوج/الزوجة، والأبناء المعالين حتى سن 30 عاماً، والوالدين أو الأجداد المعالين فوق سن 55 عاماً.' },
+          { q: 'هل يلزم التواجد الفعلي أو الانتقال للإقامة في دبي أو الدولة المضيفة؟', a: 'لا توجد متطلبات إقامة إلزامية أثناء الإجراءات. يتم استكمال كافة الموافقات والتوثيقات الحكومية عن بُعد عبر مقرنا الرئيسي في دبي.' },
+          { q: 'ما هي الجداول الزمنية المتوقعة من تقديم الطلب حتى الموافقة النهائية؟', a: 'يتم تسريع استخراج الموافقات الرسمية بموجب بروتوكولنا القانوني المعتمد، وعادةً ما يستغرق ذلك ما بين 60 إلى 90 يوم عمل.' },
+          { q: 'كيف يتم ضمان سرية وحماية الأصول والثروات العائلية؟', a: 'تعمل مجموعة الشريف بموجب تفويضات قانونية صارمة لعدم الإفصاح ومعايير السرية الدولية المعتمدة لعملاء إدارة الثروات الخاصة.' },
+          { q: 'ما هي مزايا حرية التنقل والسفر بدون تأشيرة الممنوحة؟', a: 'يحصل حاملو الوثائق المعتمدة على إمكانية السفر بدون تأشيرة أو بتأشيرة عند الوصول إلى أبرز مراكز الأعمال الدولية، ودول الشنغن، ودول الكومنولث.' }
+        ];
+
+        const sampleFaqsFa = [
+          { q: 'معیارهای صلاحیت قانونی و حاکمیتی برای این مسیر چیست؟', a: 'متقاضیان باید دارای پیشینه کاملاً پاک، موفقیت در بررسی‌های چندمرحله‌ای ضدپولشویی و تأمین سرمایه‌گذاری مصوب باشند.' },
+          { q: 'آیا امکان اضافه کردن اعضای درجه یک خانواده و وابستگان وجود دارد؟', a: 'بله. سرمایه‌گذار اصلی می‌تواند همسر، فرزندان وابسته تا ۳۰ سال و والدین یا پدربزرگ و مادربزرگ وابسته بالای ۵۵ سال را اضافه نماید.' },
+          { q: 'آیا حضور فیزیکی یا تغییر محل سکونت در دبی یا کشور مقصد الزامی است؟', a: 'خیر، هیچ شرط اقامت اجباری در طول مراحل پرونده وجود ندارد. تمامی تأییدیه‌ها و آپوستیل‌ها به صورت غیرحضوری از طریق دفتر مرکزی ما در دبی انجام می‌شود.' },
+          { q: 'جدول زمانی پردازش پرونده از ثبت تا تأیید نهایی چقدر است؟', a: 'مراحل تأییدیه رسمی دولتی بر اساس پروتکل حقوقی ما تسریع شده و معمولاً بین ۶۰ تا ۹۰ روز کاری به طول می‌انجامد.' },
+          { q: 'محرمانگی اطلاعات و حفاظت از ثروت و دارایی‌ها چگونه تضمین می‌شود؟', a: 'گروه شریف تحت تعهدنامه‌های حقوقی عدم افشای اطلاعات و استانداردهای بین‌المللی حفظ حریم خصوصی مشتریان ویژه فعالیت می‌کند.' },
+          { q: 'مزایای تحرک جهانی و سفر بدون ویزا چیست؟', a: 'دارندگان این وضعیت به سفر بدون ویزا یا با ویزای فرودگاهی به مراکز تجاری بین‌المللی، کشورهای حوزه شنگن و اتحادیه کشورهای مشترک‌المنافع دسترسی خواهند داشت.' }
+        ];
+
+        const sampleFaqsZh = [
+          { q: '申请该项目的核心资格条件是什么？', a: '申请人须具备良好的无犯罪背景记录，通过严格的多层级反洗钱合规审查，并完成指定的官方投资额度。' },
+          { q: '直系亲属及年长受抚养人可以一并随行申请吗？', a: '可以。主申请人可随同申请配偶、30周岁以下的经济依附子女，以及55周岁以上的受抚养父母或祖父母。' },
+          { q: '申请期间是否要求在迪拜或目标国实际居住或登陆？', a: '办理过程中无强制居住要求。所有政府背景背调及公证海牙认证均由我们迪拜总部合规团队远程协助办理完毕。' },
+          { q: '从正式递交到获得政府批准通常需要多长时间？', a: '在我们的优先法律通道协助下，官方审批流程高效推进，通常仅需60至90个工作日。' },
+          { q: '如何确保家族财富及隐私信息的绝对保密安全？', a: '谢里夫集团严格恪守国际顶级保密协议与全球私人客户专属合规标准，确保客户资产与身份信息滴水不漏。' },
+          { q: '获得身份后享有哪些免签及全球通行便利？', a: '成功持有者可享有免签或落地签前往全球重要金融中心、欧洲申根区以及英联邦等多个国家和地区的通行便利。' }
+        ];
+
+        const sampleBodyZh = `<p class="text-base text-neutral-800 leading-relaxed font-light mb-6">在这份战略执行顾问简报中，谢里夫集团专业法律顾问团队全面梳理了全球投资者与家族财富持有者在为家庭规划未来时所需关注的关键指标、法定办理周期以及合规要求。</p>
+<h3 class="font-serif text-2xl text-neutral-900 font-bold mt-8 mb-4">1. 执行概览与核心关键指标</h3>
+<p class="text-base text-neutral-700 leading-relaxed font-light mb-6">获取合规主权身份离不开精准的文件认证与无懈可击的背景合规审核。我们位于迪拜的法律咨询中心直接对接官方审批机构，确保各环节高效合规获批。</p>
+<blockquote class="my-8 p-6 bg-[#FAF6EE] border-s-4 border-[#C5A880] rounded-r-xl italic font-serif text-lg text-neutral-900 leading-relaxed">
+  “全球出行自由与多司法管辖区居留权不再是奢侈品——它们已成为2026年守护家族财富传承与主权自由的必备护城河。”
+</blockquote>
+<h3 class="font-serif text-2xl text-neutral-900 font-bold mt-8 mb-4">2. 零摩擦办理路径</h3>
+<p class="text-base text-neutral-700 leading-relaxed font-light mb-4">完整的申请流程遵循三个结构化阶段，旨在实现全程零实体摩擦：</p>
+<ul class="list-disc ps-6 space-y-3 text-neutral-700 font-light mb-8">
+  <li><strong>专属合规预审评估：</strong> 通过迪拜审核中心进行第一阶段政府官方合规筛查。</li>
+  <li><strong>法律文件公证与海牙认证：</strong> 由我们全权法务团队负责完成全套国际公证及递交。</li>
+  <li><strong>签发正式批复与身份凭证：</strong> 最终正式批复原件与身份文件直接配送至您指定的迪拜居所。</li>
+</ul>`;
+
+        const sampleBodyAr = `<p class="text-base text-neutral-800 leading-relaxed font-light mb-6">في هذه الاستشارة الاستراتيجية التنفيذية، يقوم فريق مجموعة الشريف بتفصيل المعايير الحرجة، والجداول الزمنية الرسمية، والمتطلبات القانونية للمستثمرين العالميين وأصحاب الثروات السيادية الراغبين في تأمين مستقبل عائلاتهم.</p>
+<h3 class="font-serif text-2xl text-neutral-900 font-bold mt-8 mb-4">1. نظرة عامة تنفيذية ومعايير أساسية</h3>
+<p class="text-base text-neutral-700 leading-relaxed font-light mb-6">يتطلب تأمين الوضع السيادي دقة متناهية في إعداد الوثائق وفحصاً أمنياً شاملاً. ينسق مكتبنا الاستشاري في دبي مباشرة مع الوحدات الحكومية المعتمدة لضمان الحصول على الموافقات بأسرع وقت ممكن.</p>
+<blockquote class="my-8 p-6 bg-[#FAF6EE] border-s-4 border-[#C5A880] rounded-r-xl italic font-serif text-lg text-neutral-900 leading-relaxed">
+  "لم تعد حرية الحركة العالمية والإقامة متعددة الاختصاصات مجرد رفاهية — بل هي تحوط أساسي لحماية ثروة العائلة والحرية السيادية في عام 2026."
+</blockquote>
+<h3 class="font-serif text-2xl text-neutral-900 font-bold mt-8 mb-4">2. مسار المعاملة خطوة بخطوة</h3>
+<p class="text-base text-neutral-700 leading-relaxed font-light mb-4">تتبع إجراءات التقديم ثلاث مراحل واضحة المعالم لضمان إنجازها بسلاسة تامة دون أي احتكاك فيزيائي:</p>
+<ul class="list-disc ps-6 space-y-3 text-neutral-700 font-light mb-8">
+  <li><strong>تقييم الأهلية السري:</strong> الفحص الأمني الحكومي المبدئي عبر مركز دبي.</li>
+  <li><strong>توثيق المستندات والتقديم:</strong> تجهيز كامل للأبوستيل والترجمات القانونية بمعرفة فريقنا.</li>
+  <li><strong>صدور الموافقة وتسليم الشهادة:</strong> تسليم الشهادة الرسمية الأصلية مباشرة إلى مقركم في دبي.</li>
+</ul>`;
+
+        const sampleBodyFa = `<p class="text-base text-neutral-800 leading-relaxed font-light mb-6">در این گزارش راهبردی و اجرایی، تیم حقوقی گروه شریف پارامترهای حیاتی، زمان‌بندی رسمی و الزامات قانونی را برای سرمایه‌گذاران بین‌المللی متقاضی تضمین آینده خانواده تشریح می‌کند.</p>
+<h3 class="font-serif text-2xl text-neutral-900 font-bold mt-8 mb-4">۱. نمای کلی اجرایی و الزامات کلیدی</h3>
+<p class="text-base text-neutral-700 leading-relaxed font-light mb-6">کسب وضعیت حاکمیتی نیازمند مدارک دقیق و راستی‌آزمایی کامل امنیتی است. دفتر مشاوره ما در دبی مستقیماً با مراجع رسمی دولتی برای تسریع پرونده هماهنگی می‌کند.</p>
+<blockquote class="my-8 p-6 bg-[#FAF6EE] border-s-4 border-[#C5A880] rounded-r-xl italic font-serif text-lg text-neutral-900 leading-relaxed">
+  «تحرک بین‌المللی و اقامت در حوزه‌های قضایی متعدد دیگر یک کالای لوکس نیست — بلکه سپری حیاتی برای حفظ ثروت خانواده در سال ۲۰۲۶ است.»
+</blockquote>
+<h3 class="font-serif text-2xl text-neutral-900 font-bold mt-8 mb-4">۲. مراحل گام‌به‌گام پرونده</h3>
+<p class="text-base text-neutral-700 leading-relaxed font-light mb-4">فرآیند درخواست در سه مرحله مشخص و بدون نیاز به حضور فیزیکی انجام می‌پذیرد:</p>
+<ul class="list-disc ps-6 space-y-3 text-neutral-700 font-light mb-8">
+  <li><strong>ارزیابی صلاحیت محرمانه:</strong> غربالگری اولیه دولتی از طریق واحد دبی.</li>
+  <li><strong>آپوستیل و ثبت مدارک:</strong> آماده‌سازی کامل قانونی توسط وکلای رسمی ما.</li>
+  <li><strong>صدور گواهی و تأییدیه نهایی:</strong> تحویل مستقیم مدارک اصلی در اقامتگاه شما در دبی.</li>
+</ul>`;
 
         const newArticle = {
           id,
@@ -2987,9 +3135,9 @@
           publish_date: dateStr,
           status_en: 'published',
           status_ar: 'published',
-          status_fa: 'draft',
-          status_zh: 'draft',
-          faqs: sampleFaqs,
+          status_fa: 'published',
+          status_zh: 'published',
+          faqs: sampleFaqsEn,
           en: {
             title,
             slug,
@@ -3009,20 +3157,39 @@
 </ul>`,
             meta_title: title + ' | Sharif Group Dubai',
             meta_desc: 'Strategic legal insights and investment parameters prepared by Sharif Group advisory desk.',
-            faqs: sampleFaqs
+            faqs: sampleFaqsEn
           },
-          ar: { title: '', slug: slug, excerpt: '', body: '', faqs: [] },
-          fa: { title: '', slug: slug, excerpt: '', body: '', faqs: [] },
-          zh: { title: '', slug: slug, excerpt: '', body: '', faqs: [] }
+          ar: {
+            title: title || 'استشارة استراتيجية تنفيذية',
+            slug: slug,
+            excerpt: 'رؤى قانونية ومعايير استثمارية أعدها مكتب استشارات مجموعة الشريف في الخليج التجاري، دبي.',
+            body: sampleBodyAr,
+            faqs: sampleFaqsAr
+          },
+          fa: {
+            title: title || 'مشاوره راهبردی و اجرایی',
+            slug: slug,
+            excerpt: 'دیدگاه‌های حقوقی و استانداردهای سرمایه‌گذاری تهیه‌شده توسط گروه شریف در دبی.',
+            body: sampleBodyFa,
+            faqs: sampleFaqsFa
+          },
+          zh: {
+            title: title || '战略执行顾问洞察',
+            slug: slug,
+            excerpt: '谢里夫集团迪拜商业湾咨询中心撰写的全球高净值投资与法律身份规划报告。',
+            body: sampleBodyZh,
+            faqs: sampleFaqsZh
+          }
         };
 
-        const existingBlogs = window.CMS.getData(window.CMS.KEYS.BLOG) || window.CMS.DEFAULTS.blog || [];
+        let existingBlogs = window.CMS.getData(window.CMS.KEYS.BLOG) || window.CMS.DEFAULTS.blog || [];
         existingBlogs.unshift(newArticle);
+        existingBlogs = repairBlogFaqsAndTranslations(existingBlogs);
         window.CMS.saveData(window.CMS.KEYS.BLOG, existingBlogs);
         populateSidebar();
 
         closeQuickBlogModal();
-        showToast('Article created! Loading visual template on canvas...', 'success');
+        showToast('Article created with full 4-language support!', 'success');
 
         state.section = 'blog-edit';
         state.itemId = id;
@@ -3574,7 +3741,7 @@
         // Render Dynamic Articles for Blog in Sidebar
         const blogContainer = document.getElementById('sb-blog-items');
         if (blogContainer) {
-          const blogs = window.CMS.getData(window.CMS.KEYS.BLOG) || window.CMS.DEFAULTS.blog || [];
+          const blogs = repairBlogFaqsAndTranslations(window.CMS.getData(window.CMS.KEYS.BLOG) || window.CMS.DEFAULTS.blog || []);
           if (!blogs.length) {
             blogContainer.innerHTML = '<div style="padding:6px 14px;font-size:11px;color:var(--muted)">No articles yet.</div>';
           } else {
@@ -7296,20 +7463,33 @@
               }
 
             // 3. BLOG ARTICLE TRANSLATION
-            } else if (section === 'blog') {
+            } else if (section === 'blog' || section === 'blog-edit') {
               const bSlug = state.activeBlogSlug || itemId;
               const blogs = window.CMS.getData(window.CMS.KEYS.BLOG) || window.CMS.DEFAULTS.blog;
-              const b = blogs.find(x => x.slug === bSlug || x.id === bSlug);
+              const b = blogs.find(x => x.slug === bSlug || x.id === bSlug || (x.en && x.en.slug === bSlug));
               if (b) {
-                const en = b.en || b;
+                const srcLang = (state.lang && b[state.lang] && (b[state.lang].body || b[state.lang].title)) ? state.lang : 'en';
+                const srcData = (b[srcLang] && (b[srcLang].body || b[srcLang].title)) ? b[srcLang] : (b.en || b);
                 b[lang] = b[lang] || {};
-                fill.style.width = '40%'; msg.textContent = `[${langNames[lang]}] Translating blog title…`;
-                if (en.title) b[lang].title = await window.CMS.AI.translate(en.title, lang);
-                fill.style.width = '65%'; msg.textContent = `[${langNames[lang]}] Translating blog summary…`;
-                if (en.excerpt) b[lang].excerpt = await window.CMS.AI.translate(en.excerpt, lang);
-                fill.style.width = '85%'; msg.textContent = `[${langNames[lang]}] Translating article body…`;
-                if (en.body) b[lang].body = await window.CMS.AI.translate(en.body, lang);
+                fill.style.width = '35%'; msg.textContent = `[${langNames[lang]}] Translating blog title…`;
+                if (srcData.title) b[lang].title = await window.CMS.AI.translate(srcData.title, lang, srcLang);
+                fill.style.width = '55%'; msg.textContent = `[${langNames[lang]}] Translating blog summary…`;
+                if (srcData.excerpt) b[lang].excerpt = await window.CMS.AI.translate(srcData.excerpt, lang, srcLang);
+                fill.style.width = '75%'; msg.textContent = `[${langNames[lang]}] Translating article body…`;
+                if (srcData.body) b[lang].body = await window.CMS.AI.translate(srcData.body, lang, srcLang);
+
+                fill.style.width = '90%'; msg.textContent = `[${langNames[lang]}] Translating FAQs…`;
+                const srcFaqs = (Array.isArray(srcData.faqs) && srcData.faqs.length) ? srcData.faqs
+                  : ((b.en && Array.isArray(b.en.faqs) && b.en.faqs.length) ? b.en.faqs : (b.faqs || []));
+                if (Array.isArray(srcFaqs) && srcFaqs.length) {
+                  b[lang].faqs = await Promise.all(srcFaqs.map(async f => ({
+                    q: await window.CMS.AI.translate(f.q, lang, srcLang),
+                    a: await window.CMS.AI.translate(f.a, lang, srcLang)
+                  })));
+                }
+
                 window.CMS.saveData(window.CMS.KEYS.BLOG, blogs);
+                sendToIframe({ type: 'CMS_REHYDRATE' });
               }
 
             // 4. ABOUT US PAGE TRANSLATION
@@ -7421,17 +7601,28 @@
                 if (en.overview) list[idx][lang].overview = await window.CMS.AI.translate(en.overview, lang);
                 window.CMS.saveData(window.CMS.KEYS[itemType.toUpperCase()], list);
               }
-            } else if (section === 'blog') {
+            } else if (section === 'blog' || section === 'blog-edit') {
               const bSlug = state.activeBlogSlug || itemId;
               const blogs = window.CMS.getData(window.CMS.KEYS.BLOG) || window.CMS.DEFAULTS.blog;
-              const b = blogs.find(x => x.slug === bSlug || x.id === bSlug);
+              const b = blogs.find(x => x.slug === bSlug || x.id === bSlug || (x.en && x.en.slug === bSlug));
               if (b) {
-                const en = b.en || b;
+                const srcLang = (state.lang && b[state.lang] && (b[state.lang].body || b[state.lang].title)) ? state.lang : 'en';
+                const srcData = (b[srcLang] && (b[srcLang].body || b[srcLang].title)) ? b[srcLang] : (b.en || b);
                 b[lang] = b[lang] || {};
-                if (en.title) b[lang].title = await window.CMS.AI.translate(en.title, lang);
-                if (en.excerpt) b[lang].excerpt = await window.CMS.AI.translate(en.excerpt, lang);
-                if (en.body) b[lang].body = await window.CMS.AI.translate(en.body, lang);
+                if (srcData.title) b[lang].title = await window.CMS.AI.translate(srcData.title, lang, srcLang);
+                if (srcData.excerpt) b[lang].excerpt = await window.CMS.AI.translate(srcData.excerpt, lang, srcLang);
+                if (srcData.body) b[lang].body = await window.CMS.AI.translate(srcData.body, lang, srcLang);
+
+                const srcFaqs = (Array.isArray(srcData.faqs) && srcData.faqs.length) ? srcData.faqs
+                  : ((b.en && Array.isArray(b.en.faqs) && b.en.faqs.length) ? b.en.faqs : (b.faqs || []));
+                if (Array.isArray(srcFaqs) && srcFaqs.length) {
+                  b[lang].faqs = await Promise.all(srcFaqs.map(async f => ({
+                    q: await window.CMS.AI.translate(f.q, lang, srcLang),
+                    a: await window.CMS.AI.translate(f.a, lang, srcLang)
+                  })));
+                }
                 window.CMS.saveData(window.CMS.KEYS.BLOG, blogs);
+                sendToIframe({ type: 'CMS_REHYDRATE' });
               }
             } else if (section === 'aboutus') {
               const about = window.CMS.getData(window.CMS.KEYS.ABOUTUS) || window.CMS.DEFAULTS.aboutus;
