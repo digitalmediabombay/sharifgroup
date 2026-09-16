@@ -731,7 +731,7 @@ const DEFAULTS = {
       id: 'panama',
       slug: 'panama',
       flag: 'https://flagcdn.com/pa.svg',
-      portfolio: 'americas',
+      portfolio: 'uae',
       nav_visible: true,
       nav_sort: 3,
       status: 'published',

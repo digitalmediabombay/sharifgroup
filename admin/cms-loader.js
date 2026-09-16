@@ -782,14 +782,12 @@
   function getCategorySections(type, programs) {
     const defaults = type === 'citizenship'
       ? [
-        { key: 'caribbean', label: 'Caribbean' },
-        { key: 'global', label: 'Global' },
-        { key: 'european', label: 'European' }
+        { key: 'caribbean', label: 'Caribbean Portfolios', i18nKey: 'megaMenu.caribbeanPortfolios', colorClass: 'text-luxury-gold' },
+        { key: 'global', label: 'Global Portfolios', i18nKey: 'megaMenu.globalPortfolios', colorClass: 'text-neutral-400' }
       ]
       : [
-        { key: 'european', label: 'European' },
-        { key: 'uae', label: 'UAE & Americas' },
-        { key: 'global', label: 'Global' }
+        { key: 'european', label: 'European Portfolios', i18nKey: 'megaMenu.europeanPortfolios', colorClass: 'text-luxury-gold' },
+        { key: 'uae', label: 'Americas & UAE', i18nKey: 'megaMenu.americasUAE', colorClass: 'text-neutral-400' }
       ];
     let custom = [];
     try {
@@ -799,9 +797,12 @@
     const fromProgs = [];
     (programs || []).forEach(p => {
       const port = (p.portfolio || '').toLowerCase();
-      if (port && !defaults.some(d => d.key === port) && !custom.some(c => c.key === port) && !fromProgs.some(f => f.key === port)) {
+      if (!port) return;
+      if (type === 'residency' && (port === 'americas' || port === 'uae' || port === 'americas_uae')) return;
+      if (type === 'citizenship' && (port === 'caribbean' || port === 'global')) return;
+      if (!defaults.some(d => d.key === port) && !custom.some(c => c.key === port) && !fromProgs.some(f => f.key === port)) {
         const label = p.portfolio_label || (port.charAt(0).toUpperCase() + port.slice(1));
-        fromProgs.push({ key: port, label });
+        fromProgs.push({ key: port, label, colorClass: 'text-neutral-400' });
       }
     });
 
@@ -886,18 +887,40 @@
     const allLabel = isCitizenship ? 'All Citizenship Programs' : 'All Residency Programs';
     const titleLabel = isCitizenship ? 'Citizenship By Investment' : 'Residency By Investment';
 
+    function programMatchesSection(p, secKey) {
+      const port = (p.portfolio || '').toLowerCase();
+      const skey = (secKey || '').toLowerCase();
+      if (port === skey) return true;
+      if (type === 'residency' && (skey === 'uae' || skey === 'americas') && (port === 'uae' || port === 'americas' || port === 'americas_uae')) {
+        return true;
+      }
+      return false;
+    }
+
     // Filter sections that have active published programs or are custom-added
     const activeSections = sections.filter(sec => {
-      return programs.some(p => (p.portfolio || '').toLowerCase() === sec.key.toLowerCase());
+      return programs.some(p => programMatchesSection(p, sec.key) && p.nav_visible !== false);
     });
     const secsToRender = activeSections.length ? activeSections : sections;
     const numCols = Math.max(1, Math.min(4, secsToRender.length));
 
-    let columnsHtml = secsToRender.map(sec => {
-      const secProgs = programs.filter(p => (p.portfolio || '').toLowerCase() === sec.key.toLowerCase() && p.nav_visible !== false)
+    let columnsHtml = secsToRender.map((sec, idx) => {
+      const secProgs = programs.filter(p => programMatchesSection(p, sec.key) && p.nav_visible !== false)
         .sort((a, b) => (a.nav_sort || 0) - (b.nav_sort || 0));
 
-      const secLabel = escH(sec.label || sec.key.charAt(0).toUpperCase() + sec.key.slice(1));
+      let secLabel = sec.label;
+      if (!secLabel) {
+        secLabel = sec.key.charAt(0).toUpperCase() + sec.key.slice(1);
+      }
+      let headingText = secLabel;
+      if (sec.key === 'uae' || /americas/i.test(headingText)) {
+        headingText = 'Americas & UAE';
+      } else if (!/portfolios$/i.test(headingText)) {
+        headingText += ' Portfolios';
+      }
+
+      const colorClass = sec.colorClass || (idx === 0 ? 'text-luxury-gold' : 'text-neutral-400');
+      const i18nAttr = sec.i18nKey ? ` data-i18n="${sec.i18nKey}"` : '';
 
       const itemsHtml = secProgs.map(p => {
         const pLabel = escH((p[l]?.nav_label || p.en?.nav_label || p.en?.title || p.name || p.id).trim());
@@ -916,7 +939,7 @@
 
       return `
         <div class="px-4">
-          <h4 class="text-[11px] font-bold tracking-[0.18em] uppercase text-luxury-gold mb-6 text-center lg:text-left">${secLabel} Portfolios</h4>
+          <h4 class="text-[11px] font-bold tracking-[0.18em] uppercase ${colorClass} mb-6 text-center lg:text-left"${i18nAttr}>${headingText}</h4>
           <ul class="space-y-4">
             ${itemsHtml || '<li class="text-xs text-neutral-400">No programs yet</li>'}
           </ul>
@@ -924,12 +947,14 @@
       `;
     }).join('');
 
+    const gridColsStyle = numCols === 2 ? 'grid-template-columns: 5fr 4fr;' : `grid-template-columns: repeat(${numCols}, minmax(0, 1fr));`;
+
     gridWrap.innerHTML = `
       <div class="col-span-3 flex flex-col items-center justify-center text-center pr-4 border-r border-neutral-200">
-        <h3 class="font-serif text-3xl text-neutral-900 font-bold leading-tight mb-4">${titleLabel}</h3>
-        <a class="px-4 py-1.5 border border-neutral-400 text-[11px] font-bold tracking-[0.18em] uppercase rounded-full hover:bg-luxury-dark hover:text-white transition whitespace-nowrap" href="${allUrl}" onclick="if(typeof closeAllMegaMenus==='function')closeAllMegaMenus()">${allLabel}</a>
+        <h3 class="font-serif text-3xl text-neutral-900 font-bold leading-tight mb-4" data-i18n="${isCitizenship ? 'megaMenu.citizenshipTitle' : 'megaMenu.residencyTitle'}">${titleLabel}</h3>
+        <a class="px-4 py-1.5 border border-neutral-400 text-[11px] font-bold tracking-[0.18em] uppercase rounded-full hover:bg-luxury-dark hover:text-white transition whitespace-nowrap" data-i18n="${isCitizenship ? 'megaMenu.allCitizenshipPrograms' : 'megaMenu.allResidencyPrograms'}" href="${allUrl}" onclick="if(typeof closeAllMegaMenus==='function')closeAllMegaMenus()">${allLabel}</a>
       </div>
-      <div class="col-span-9 grid gap-6" style="grid-template-columns: repeat(${numCols}, minmax(0, 1fr));">
+      <div class="col-span-9 grid gap-6" style="${gridColsStyle}">
         ${columnsHtml}
       </div>
     `;
@@ -991,6 +1016,9 @@
 
     if (Array.isArray(ri)) {
       ri.forEach(p => {
+        if (p && (p.id === 'panama' || p.slug === 'panama') && (!p.portfolio || p.portfolio === 'americas')) {
+          p.portfolio = 'uae'; // Canonicalize Panama to Americas & UAE
+        }
         if (p && BUILTIN_PASSPORT_IMAGES[p.id] && (!p.flag || p.flag.includes('flagcdn.com') || p.flag.includes('Flag_of_') || p.flag.endsWith('.svg'))) {
           p.flag = prefix + BUILTIN_PASSPORT_IMAGES[p.id];
         }

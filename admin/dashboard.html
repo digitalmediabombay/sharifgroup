@@ -1876,7 +1876,7 @@
               <div id="sb-ri-european"></div>
             </div>
             <div class="sb-sub-group">
-              <div class="sb-sub-lbl">UAE & Americas <button class="sb-add-btn"
+              <div class="sb-sub-lbl">Americas & UAE <button class="sb-add-btn"
                   style="width:16px;height:16px;font-size:8px" onclick="addProgram('residency','uae')"><i
                     class="fa-solid fa-plus"></i></button></div>
               <div id="sb-ri-uae"></div>
@@ -2773,7 +2773,7 @@
             ]
             : [
               { key: 'european', label: 'European' },
-              { key: 'uae', label: 'UAE & Americas' },
+              { key: 'uae', label: 'Americas & UAE' },
               { key: 'global', label: 'Global' }
             ];
         },
@@ -2791,6 +2791,7 @@
 
           const fromProgs = [];
           list.forEach(p => {
+            if (type === 'residency' && (p.portfolio === 'americas' || p.portfolio === 'uae' || p.portfolio === 'americas_uae')) return;
             if (p.portfolio && !defaults.some(d => d.key === p.portfolio) && !custom.some(c => c.key === p.portfolio) && !fromProgs.some(f => f.key === p.portfolio)) {
               const label = p.portfolio_label || (p.portfolio.charAt(0).toUpperCase() + p.portfolio.slice(1));
               fromProgs.push({ key: p.portfolio, label, isCustom: true });
@@ -3392,7 +3393,11 @@
         if (riContainer) {
           const riSections = PortfolioManager.getSections('residency');
           riContainer.innerHTML = riSections.map(sec => {
-            const progs = ri.filter(p => (p.portfolio || 'european') === sec.key).sort((a, b) => (a.nav_sort || 0) - (b.nav_sort || 0));
+            const progs = ri.filter(p => {
+              const port = (p.portfolio || 'european').toLowerCase();
+              if (sec.key === 'uae') return (port === 'uae' || port === 'americas' || port === 'americas_uae');
+              return port === sec.key.toLowerCase();
+            }).sort((a, b) => (a.nav_sort || 0) - (b.nav_sort || 0));
             if (progs.length === 0 && sec.isCustom) return '';
             return `
         <div class="sb-sub-group" id="sb-group-ri-${sec.key}">
