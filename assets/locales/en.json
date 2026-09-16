@@ -10,7 +10,7 @@
     "residency": "Residency",
     "moreServices": "MORE SERVICES",
     "aboutUs": "About Us",
-    "contact": "Contact",
+    "contact": "Contact Us",
     "bookConsultation": "Book Consultation",
     "eligibilityChecker": "Eligibility Checker",
     "blog": "Blog",
@@ -5944,7 +5944,7 @@
     },
     "uae": {
       "heroTitle": "United Arab Emirates",
-      "heroSubtitle": "Golden Visa & Residency",
+      "heroSubtitle": "Golden Visa",
       "heroBadge1": "10-Year Renewable Residency",
       "heroBadge2": "2 to 3 Months Processing Time",
       "heroBadge3": "Investment from $545,000 (AED 2,000,000)",

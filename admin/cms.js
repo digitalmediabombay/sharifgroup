@@ -761,9 +761,10 @@ const DEFAULTS = {
       nav_sort: 4,
       status: 'published',
       en: {
-        title: 'UAE 10-Year Golden Visa',
-        nav_label: 'UAE | 10-Year Golden Visa',
-        hero_subtitle: 'Residency By Investment',
+        title: 'United Arab Emirates Golden Visa',
+        nav_label: 'United Arab Emirates | Golden Visa',
+        hero_title: 'United Arab Emirates',
+        hero_subtitle: 'Golden Visa',
         investment_from: 'AED 2,000,000',
         processing_time: '2–4 Weeks',
         overview: 'The UAE Golden Visa grants 10-year renewable residency to investors, property owners, and entrepreneurs with zero personal income tax.',

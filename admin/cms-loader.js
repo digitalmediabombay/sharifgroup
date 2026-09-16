@@ -393,13 +393,26 @@
 
     // 1. Resolve canonical Country Name & Section Tab Name
     let rawCountry = (ld.hero_title || (ld.title ? ld.title.replace(/\s+(citizenship|residency).*$/i, '').trim() : '') || prog.name || prog.id || slug || '').trim();
+    if (slug === 'uae' || prog.id === 'uae') {
+      if (!ld.hero_title || ld.hero_title === 'UAE' || /10-year/i.test(ld.title || '')) {
+        rawCountry = 'United Arab Emirates';
+      }
+    }
     if (/^(citizenship(\s+by\s+investment)?|residency(\s+by\s+investment)?)$/i.test(rawCountry)) {
       rawCountry = (prog.name || prog.id || slug || '').replace(/[^a-zA-Z\s]/g, ' ').trim();
     }
     const displayCountry = rawCountry ? (rawCountry.charAt(0).toUpperCase() + rawCountry.slice(1)) : 'Dominica';
     const isResidency = type === 'residency' || (typeof type === 'string' && type.includes('residency'));
-    const defaultTab = isResidency ? 'Residency by investment' : 'Citizenship by investment';
-    const sectionTab = (ld.hero_subtitle || defaultTab).trim();
+    let defaultTab = isResidency ? 'Residency by investment' : 'Citizenship by investment';
+    if (slug === 'uae' || prog.id === 'uae') {
+      defaultTab = 'Golden Visa';
+    }
+    let sectionTab = (ld.hero_subtitle || defaultTab).trim();
+    if (slug === 'uae' || prog.id === 'uae') {
+      if (/^(residency(\s+by\s+investment)?|10-year.*)$/i.test(sectionTab) || sectionTab.toLowerCase().includes('residency')) {
+        sectionTab = 'Golden Visa';
+      }
+    }
 
     // Canonical program title: {page name } {section tab name }
     const canonicalTitle = formatProgramPageTitle(displayCountry, type, sectionTab);
@@ -1018,6 +1031,15 @@
       ri.forEach(p => {
         if (p && (p.id === 'panama' || p.slug === 'panama') && (!p.portfolio || p.portfolio === 'americas')) {
           p.portfolio = 'uae'; // Canonicalize Panama to Americas & UAE
+        }
+        if (p && (p.id === 'uae' || p.slug === 'uae')) {
+          p.name = 'United Arab Emirates';
+          if (p.en) {
+            p.en.nav_label = 'United Arab Emirates | Golden Visa';
+            p.en.hero_title = 'United Arab Emirates';
+            p.en.hero_subtitle = 'Golden Visa';
+            p.en.title = 'United Arab Emirates Golden Visa';
+          }
         }
         if (p && BUILTIN_PASSPORT_IMAGES[p.id] && (!p.flag || p.flag.includes('flagcdn.com') || p.flag.includes('Flag_of_') || p.flag.endsWith('.svg'))) {
           p.flag = prefix + BUILTIN_PASSPORT_IMAGES[p.id];
