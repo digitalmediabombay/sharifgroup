@@ -187,7 +187,7 @@ function callOpenRouter($apiKey, $prompt, $model = 'google/gemini-2.0-flash-001'
 }
 
 // ── CURL HELPER FOR GEMINI ────────────────────────────────────────
-function callGemini($apiKey, $prompt, $requestedModel = 'gemini-2.0-flash') {
+function callGemini($apiKey, $prompt, $requestedModel = 'gemini-3.6-flash') {
     // If the key starts with sk- (sk-or- or OpenAI sk-), automatically route to OpenRouter
     if (strpos($apiKey, 'sk-') === 0) {
         return callOpenRouter($apiKey, $prompt);
@@ -195,11 +195,12 @@ function callGemini($apiKey, $prompt, $requestedModel = 'gemini-2.0-flash') {
 
     $modelsToTry = array_unique([
         $requestedModel,
+        'gemini-3.6-flash',
+        'gemini-3-flash',
+        'gemini-2.5-flash',
         'gemini-2.0-flash',
         'gemini-1.5-flash',
-        'gemini-1.5-flash-latest',
-        'gemini-2.5-flash',
-        'gemini-1.5-pro'
+        'gemini-1.5-flash-latest'
     ]);
 
     $lastError = 'Google Gemini request failed';

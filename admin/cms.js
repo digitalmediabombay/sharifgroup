@@ -150,7 +150,7 @@ const AI = {
 
       throw new Error(lastError || 'OpenRouter translation failed across available models.');
     } else {
-      const geminiModels = ['gemini-2.0-flash', 'gemini-1.5-flash', 'gemini-1.5-flash-latest', 'gemini-2.5-flash'];
+      const geminiModels = ['gemini-3.6-flash', 'gemini-3-flash', 'gemini-2.5-flash', 'gemini-2.0-flash', 'gemini-1.5-flash', 'gemini-1.5-flash-latest'];
       let lastErr = null;
       for (const m of geminiModels) {
         try {
@@ -299,7 +299,7 @@ const AI = {
     } catch(e) {}
 
     // 2. Direct browser fallback check across multiple Gemini models
-    const geminiModels = ['gemini-2.0-flash', 'gemini-1.5-flash', 'gemini-1.5-flash-latest', 'gemini-2.5-flash'];
+    const geminiModels = ['gemini-3.6-flash', 'gemini-3-flash', 'gemini-2.5-flash', 'gemini-2.0-flash', 'gemini-1.5-flash', 'gemini-1.5-flash-latest'];
     let lastErr = 'Gemini API test failed';
 
     for (const m of geminiModels) {
