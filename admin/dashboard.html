@@ -2713,6 +2713,55 @@
       }
 
       // ══════════════════════════════════════════════════════════
+      // TITLE FORMATTER HELPER
+      // ══════════════════════════════════════════════════════════
+      function formatProgramPageTitle(pageName, type, sectionTabName, fallbackCountry) {
+        if (window.CMS && typeof window.CMS.formatProgramPageTitle === 'function') {
+          return window.CMS.formatProgramPageTitle(pageName, type, sectionTabName, fallbackCountry);
+        }
+        let cleanPage = String(pageName || '').trim();
+        cleanPage = cleanPage.replace(/\s*\|\s*.*$/i, '').trim();
+        cleanPage = cleanPage
+          .replace(/^(citizenship(\s+by\s+investment)?|residency(\s+by\s+investment)?|golden\s+visa(\s*&\s*residency)?)\s*/i, '')
+          .replace(/\s+(citizenship(\s+by\s+investment)?|residency(\s+by\s+investment)?|golden\s+visa(\s*&\s*residency)?).*$/i, '')
+          .trim();
+
+        if (!cleanPage && fallbackCountry) {
+          cleanPage = String(fallbackCountry).trim().replace(/\s*\|\s*.*$/i, '').replace(/^(citizenship|residency).*/i, '').trim();
+        }
+
+        const isResidency = type === 'residency' || (typeof type === 'string' && type.includes('residency'));
+        let tab = String(sectionTabName || '').trim();
+        if (!tab || /^(citizenship|residency)$/i.test(tab)) {
+          tab = isResidency ? 'Residency by investment' : 'Citizenship by investment';
+        } else {
+          if (/^citizenship\s+by\s+investment$/i.test(tab)) {
+            tab = 'Citizenship by investment';
+          } else if (/^residency\s+by\s+investment$/i.test(tab)) {
+            tab = 'Residency by investment';
+          }
+        }
+
+        if (!cleanPage) return tab;
+        cleanPage = cleanPage.charAt(0).toUpperCase() + cleanPage.slice(1);
+        return `${cleanPage} ${tab}`;
+      }
+
+      function syncProgTitleFromHero() {
+        const heroTitleInp = document.getElementById('prog-hero-title');
+        const heroSubInp = document.getElementById('prog-hero-sub');
+        const progTitleInp = document.getElementById('prog-title');
+        if (heroTitleInp && progTitleInp) {
+          const cleanC = (heroTitleInp.value || '').replace(/\s+(citizenship|residency).*$/i, '').trim();
+          const sub = (heroSubInp?.value || (state.itemType === 'citizenship' ? 'Citizenship by investment' : 'Residency by investment')).trim();
+          if (cleanC) {
+            progTitleInp.value = formatProgramPageTitle(cleanC, state.itemType, sub);
+            liveUpdateField('title', progTitleInp.value);
+          }
+        }
+      }
+
+      // ══════════════════════════════════════════════════════════
       // PORTFOLIO & CUSTOM SECTION MANAGER
       // ══════════════════════════════════════════════════════════
       const PortfolioManager = {
@@ -3034,9 +3083,12 @@
         const id = slug;
 
         const isCitizenship = (type === 'citizenship');
-        const title = name + (isCitizenship ? ' Citizenship by Investment' : ' Golden Visa & Residency');
-        const navLabel = name + (isCitizenship ? ' | Passport' : ' | Golden Visa');
-        const subtitle = isCitizenship ? 'Citizenship by Investment' : 'Residency by Investment';
+        const cleanName = name.replace(/\s+(citizenship|residency).*$/i, '').trim();
+        const displayCountry = cleanName ? (cleanName.charAt(0).toUpperCase() + cleanName.slice(1)) : 'Dominica';
+        const sectionTab = isCitizenship ? 'Citizenship by investment' : 'Residency by investment';
+        const title = formatProgramPageTitle(displayCountry, type, sectionTab);
+        const navLabel = displayCountry + (isCitizenship ? ' | Passport' : ' | Golden Visa');
+        const subtitle = sectionTab;
         const metaTitle = title + ' | Sharif Group Dubai';
         const metaDesc = 'Official sovereign investment parameters, processing timelines, and legal advisory for ' + name + ' residency & citizenship.';
 
@@ -4266,8 +4318,15 @@
 
         const dir = rtl ? 'dir="rtl"' : '';
         const ld = prog[l] || prog.en || {};
-        const title = ld.title || prog.en?.title || prog.id;
-        setPageTitle(title, itemType === 'citizenship' ? 'Citizenship by Investment Program' : 'Residency Program');
+        const cleanCountry = (ld.hero_title || (ld.title ? ld.title.replace(/\s+(citizenship|residency).*$/i, '').trim() : '') || prog.name || prog.id || '').trim();
+        const displayCountry = cleanCountry ? (cleanCountry.charAt(0).toUpperCase() + cleanCountry.slice(1)) : 'Dominica';
+        const defaultSecTab = itemType === 'citizenship' ? 'Citizenship by investment' : 'Residency by investment';
+        const secSubtitle = ld.hero_subtitle || defaultSecTab;
+        let canonicalProgTitle = ld.title || '';
+        if (l === 'en' || !canonicalProgTitle || /^(citizenship(\s+by\s+investment)?|residency(\s+by\s+investment)?)$/i.test(canonicalProgTitle.trim()) || canonicalProgTitle.trim().toLowerCase() === displayCountry.toLowerCase()) {
+          canonicalProgTitle = formatProgramPageTitle(displayCountry, itemType, secSubtitle);
+        }
+        setPageTitle(canonicalProgTitle, itemType === 'citizenship' ? 'Citizenship by Investment Program' : 'Residency Program');
 
         // Fallbacks for complete section coverage
         const defaultBadges = ld.badges && ld.badges.length ? ld.badges : [
@@ -4376,16 +4435,16 @@
         const heroBody = `
     <div class="form-group" style="margin-bottom:12px">
       <label class="form-label">Program Page Title <span class="form-lang-tag">${l.toUpperCase()}</span></label>
-      <input class="form-input form-input-headline" ${dir} id="prog-title" value="${escH(ld.title)}" placeholder="Program Name..." oninput="markUnsaved();liveUpdateField('title',this.value)">
+      <input class="form-input form-input-headline" ${dir} id="prog-title" value="${escH(canonicalProgTitle)}" placeholder="Program Name..." oninput="markUnsaved();liveUpdateField('title',this.value)">
     </div>
     <div class="form-row form-row-2">
       <div class="form-group">
         <label class="form-label">Hero Country Glow Title</label>
-        <input class="form-input" ${dir} id="prog-hero-title" value="${escH(ld.hero_title || ld.title.replace(/\s+(citizenship|residency).*$/i, '').trim())}" placeholder="Dominica" oninput="markUnsaved();liveUpdateField('hero_title',this.value)">
+        <input class="form-input" ${dir} id="prog-hero-title" value="${escH(ld.hero_title || displayCountry)}" placeholder="Dominica" oninput="markUnsaved();syncProgTitleFromHero();liveUpdateField('hero_title',this.value)">
       </div>
       <div class="form-group">
         <label class="form-label">Hero Category Subtitle</label>
-        <input class="form-input" ${dir} id="prog-hero-sub" value="${escH(ld.hero_subtitle || (itemType === 'citizenship' ? 'Citizenship By Investment' : 'Residency By Investment'))}" oninput="markUnsaved();liveUpdateField('hero_subtitle',this.value)">
+        <input class="form-input" ${dir} id="prog-hero-sub" value="${escH(secSubtitle)}" oninput="markUnsaved();syncProgTitleFromHero();liveUpdateField('hero_subtitle',this.value)">
       </div>
     </div>
     <div style="margin-bottom:12px">
@@ -5004,8 +5063,12 @@
         const status = document.getElementById('np-status')?.value || 'published';
         const navVis = document.getElementById('np-nav-vis')?.value !== 'false';
 
-        const heroTitle = document.getElementById('np-hero-title')?.value.trim() || name.replace(/\s+(citizenship|residency).*$/i, '').trim();
-        const heroSub = document.getElementById('np-hero-sub')?.value.trim() || (type === 'citizenship' ? 'Citizenship By Investment' : 'Residency By Investment');
+        const cleanName = name.replace(/\s+(citizenship|residency).*$/i, '').trim();
+        const displayCountry = cleanName ? (cleanName.charAt(0).toUpperCase() + cleanName.slice(1)) : 'Dominica';
+        const defaultTab = type === 'citizenship' ? 'Citizenship by investment' : 'Residency by investment';
+        const heroTitle = (document.getElementById('np-hero-title')?.value.trim() || displayCountry).replace(/\s+(citizenship|residency).*$/i, '').trim();
+        const heroSub = document.getElementById('np-hero-sub')?.value.trim() || defaultTab;
+        const fullProgTitle = formatProgramPageTitle(heroTitle || displayCountry, type, heroSub);
         const heroTagline = document.getElementById('np-hero-tagline')?.value.trim() || '';
 
         const badges = [
@@ -5105,9 +5168,9 @@
         const list = window.CMS.getData(window.CMS.KEYS[type.toUpperCase()]) || window.CMS.DEFAULTS[type] || [];
 
         const enData = {
-          title: name,
+          title: fullProgTitle,
           nav_label: navLabel,
-          hero_title: heroTitle,
+          hero_title: heroTitle || displayCountry,
           hero_subtitle: heroSub,
           hero_tagline: heroTagline,
           hero_img1: heroImg1,
@@ -6560,10 +6623,33 @@
             list[idx].nav_sort = parseInt(document.getElementById('prog-nav-sort')?.value) || list[idx].nav_sort;
             list[idx].nav_visible = document.getElementById('prog-nav-vis')?.value === 'true';
 
+            const rawTitle = (document.getElementById('prog-title')?.value || '').trim();
+            const heroT = (document.getElementById('prog-hero-title')?.value || '').trim();
+            const heroS = (document.getElementById('prog-hero-sub')?.value || '').trim();
+            const countryCandidate = (heroT || list[idx].name || itemId || '').replace(/\s+(citizenship|residency).*$/i, '').trim();
+            const cleanC = countryCandidate ? (countryCandidate.charAt(0).toUpperCase() + countryCandidate.slice(1)) : 'Dominica';
+            const defaultTab = itemType === 'citizenship' ? 'Citizenship by investment' : 'Residency by investment';
+            const finalSub = heroS || defaultTab;
+
+            let finalTitle = rawTitle;
+            if (l === 'en') {
+              if (!finalTitle || /^(citizenship(\s+by\s+investment)?|residency(\s+by\s+investment)?)$/i.test(finalTitle) || finalTitle.toLowerCase() === cleanC.toLowerCase()) {
+                finalTitle = formatProgramPageTitle(cleanC, itemType, finalSub);
+              } else if (!finalTitle.toLowerCase().includes('citizenship') && !finalTitle.toLowerCase().includes('residency') && !finalTitle.toLowerCase().includes('visa')) {
+                finalTitle = formatProgramPageTitle(cleanC, itemType, finalSub);
+              }
+            }
             list[idx][l] = list[idx][l] || {};
-            list[idx][l].title = document.getElementById('prog-title')?.value || '';
+            list[idx][l].title = finalTitle;
+            list[idx][l].hero_title = heroT || cleanC;
+            list[idx][l].hero_subtitle = finalSub;
+            if (list[idx].en) {
+              list[idx].en.title = finalTitle;
+              list[idx].en.hero_title = heroT || cleanC;
+              list[idx].en.hero_subtitle = finalSub;
+            }
             list[idx][l].nav_label = document.getElementById('prog-nav-label')?.value || '';
-            list[idx][l].hero_subtitle = document.getElementById('prog-hero-sub')?.value || '';
+            list[idx][l].hero_subtitle = finalSub;
             list[idx][l].investment_from = document.getElementById('prog-investment')?.value || '';
             list[idx][l].processing_time = document.getElementById('prog-time')?.value || '';
             list[idx][l].visa_free = document.getElementById('prog-visa')?.value || '';

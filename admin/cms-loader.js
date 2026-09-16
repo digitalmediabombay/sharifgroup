@@ -92,10 +92,43 @@
   }
 
   function extractSlug() {
+    const urlParams = new URLSearchParams(window.location.search);
+    const progParam = urlParams.get('program_id') || urlParams.get('id') || urlParams.get('program');
+    if (progParam) return progParam.toLowerCase();
+
     const clean = window.location.pathname.replace(/\/index\.html?$/i, '').replace(/\/$/, '');
     const segments = clean.split('/').filter(Boolean);
     const last = (segments[segments.length - 1] || '').toLowerCase();
     return last || 'homepage';
+  }
+
+  function formatProgramPageTitle(pageName, type, sectionTabName, fallbackCountry) {
+    let cleanPage = String(pageName || '').trim();
+    cleanPage = cleanPage.replace(/\s*\|\s*.*$/i, '').trim();
+    cleanPage = cleanPage
+      .replace(/^(citizenship(\s+by\s+investment)?|residency(\s+by\s+investment)?|golden\s+visa(\s*&\s*residency)?)\s*/i, '')
+      .replace(/\s+(citizenship(\s+by\s+investment)?|residency(\s+by\s+investment)?|golden\s+visa(\s*&\s*residency)?).*$/i, '')
+      .trim();
+
+    if (!cleanPage && fallbackCountry) {
+      cleanPage = String(fallbackCountry).trim().replace(/\s*\|\s*.*$/i, '').replace(/^(citizenship|residency).*/i, '').trim();
+    }
+
+    const isResidency = type === 'residency' || (typeof type === 'string' && type.includes('residency'));
+    let tab = String(sectionTabName || '').trim();
+    if (!tab || /^(citizenship|residency)$/i.test(tab)) {
+      tab = isResidency ? 'Residency by investment' : 'Citizenship by investment';
+    } else {
+      if (/^citizenship\s+by\s+investment$/i.test(tab)) {
+        tab = 'Citizenship by investment';
+      } else if (/^residency\s+by\s+investment$/i.test(tab)) {
+        tab = 'Residency by investment';
+      }
+    }
+
+    if (!cleanPage) return tab;
+    cleanPage = cleanPage.charAt(0).toUpperCase() + cleanPage.slice(1);
+    return `${cleanPage} ${tab}`;
   }
 
   // ── Language Sync ───────────────────────────────────────
@@ -189,7 +222,7 @@
     // 1. Hero
     const hero = data.hero?.[l] || data.hero?.en || {};
     if (hero.headline) {
-      const h = document.querySelectorAll('[data-cms="hero-headline"], [data-i18n="hero.title"], #hero-section h1 .dominica-hero-glow');
+      const h = document.querySelectorAll('[data-cms="hero-headline"], [data-i18n="hero.title"]');
       h.forEach(el => { el.textContent = hero.headline; });
     }
     if (hero.tagline) {
@@ -349,28 +382,74 @@
 
   function hydrateProgramPage(type, lang) {
     const list = store(type === 'citizenship' ? 'sgcms_citizenship' : 'sgcms_residency');
-    if (!list) return;
+    if (!list || !list.length) return;
 
     const slug = extractSlug();
     const l = lang || getLang();
-    const prog = list.find(p => p.slug === slug || p.id === slug || slug.includes(p.slug || p.id)) || list[0];
+    const prog = list.find(p => p.slug === slug || p.id === slug || (p.slug && slug.includes(p.slug)) || (p.id && slug.includes(p.id)));
     if (!prog) return;
 
     const ld = prog[l] || prog.en || {};
 
-    // 1. Hero Title & Glow
-    const displayTitle = ld.hero_title || (ld.title ? ld.title.replace(/\s+(citizenship|residency).*$/i, '').trim() : '');
-    if (displayTitle) {
-      const h1 = document.querySelector('h1 .dominica-hero-glow') || document.querySelector('h1');
-      if (h1) h1.textContent = displayTitle;
-      document.title = (ld.title || prog.en?.title || displayTitle) + ' | Sharif Group';
+    // 1. Resolve canonical Country Name & Section Tab Name
+    let rawCountry = (ld.hero_title || (ld.title ? ld.title.replace(/\s+(citizenship|residency).*$/i, '').trim() : '') || prog.name || prog.id || slug || '').trim();
+    if (/^(citizenship(\s+by\s+investment)?|residency(\s+by\s+investment)?)$/i.test(rawCountry)) {
+      rawCountry = (prog.name || prog.id || slug || '').replace(/[^a-zA-Z\s]/g, ' ').trim();
+    }
+    const displayCountry = rawCountry ? (rawCountry.charAt(0).toUpperCase() + rawCountry.slice(1)) : 'Dominica';
+    const isResidency = type === 'residency' || (typeof type === 'string' && type.includes('residency'));
+    const defaultTab = isResidency ? 'Residency by investment' : 'Citizenship by investment';
+    const sectionTab = (ld.hero_subtitle || defaultTab).trim();
+
+    // Canonical program title: {page name } {section tab name }
+    const canonicalTitle = formatProgramPageTitle(displayCountry, type, sectionTab);
+
+    // Self-heal corrupted or incomplete stored titles in localStorage
+    if (l === 'en' || !ld.title || /^(citizenship(\s+by\s+investment)?|residency(\s+by\s+investment)?)$/i.test((ld.title || '').trim()) || (ld.title || '').trim().toLowerCase() === displayCountry.toLowerCase()) {
+      ld.title = canonicalTitle;
+      ld.hero_title = displayCountry;
+      ld.hero_subtitle = sectionTab;
+      if (prog.en) {
+        prog.en.title = canonicalTitle;
+        prog.en.hero_title = displayCountry;
+        prog.en.hero_subtitle = sectionTab;
+      }
+      try {
+        saveStore(type === 'citizenship' ? 'sgcms_citizenship' : 'sgcms_residency', list);
+      } catch (e) {}
     }
 
-    // Hero Subtitle & Tagline
-    if (ld.hero_subtitle) {
-      const sub = document.querySelector('h1 span.uppercase, [data-i18n*="heroSubtitle"]');
-      if (sub) sub.textContent = ld.hero_subtitle;
+    // Set Hero Country Glow Title & Subtitle in DOM with automatic self-healing
+    const h1 = document.querySelector('h1');
+    const h1Glow = document.querySelector('h1 [class*="-hero-glow"]') || 
+                   document.querySelector('h1 .dominica-hero-glow') || 
+                   document.querySelector('h1 .stlucia-hero-glow') || 
+                   document.querySelector('h1 span:first-child');
+    const sub = document.querySelector('h1 span.uppercase, [data-i18n*="heroSubtitle"], [data-cms="hero-subtitle"]');
+
+    if (!h1Glow && h1) {
+      // Self-heal: h1 was flattened to plain text or lacks glow span! Rebuild full structured hero
+      h1.className = 'font-serif text-white font-normal tracking-tight drop-shadow-xl flex flex-col items-center gap-3';
+      const glowClass = (slug === 'stlucia' || slug.includes('lucia')) ? 'stlucia-hero-glow dominica-hero-glow' : 'dominica-hero-glow';
+      h1.innerHTML = `<span class="${glowClass} font-serif text-5xl sm:text-7xl md:text-8xl cursor-pointer" data-i18n="programs.${slug}.heroTitle">${displayCountry}</span><span class="text-xl sm:text-3xl md:text-4xl text-white font-serif tracking-widest uppercase font-semibold" data-i18n="programs.${slug}.heroSubtitle">${sectionTab}</span>`;
+    } else {
+      if (h1Glow && displayCountry) h1Glow.textContent = displayCountry;
+      if (!sub && h1) {
+        // Subtitle span was lost: append it back
+        const newSub = document.createElement('span');
+        newSub.className = 'text-xl sm:text-3xl md:text-4xl text-white font-serif tracking-widest uppercase font-semibold';
+        newSub.setAttribute('data-i18n', `programs.${slug}.heroSubtitle`);
+        newSub.textContent = sectionTab;
+        h1.appendChild(newSub);
+      } else if (sub && sectionTab) {
+        sub.textContent = sectionTab;
+      }
     }
+
+    // Set document.title: {page name } {section tab name } | Sharif Group Dubai
+    const finalTitle = (l === 'en' || !ld.title) ? canonicalTitle : ld.title;
+    document.title = finalTitle + ' | Sharif Group Dubai';
+
     if (ld.hero_tagline) {
       const tag = document.querySelector('h1 + p, [data-i18n*="heroTagline"], [data-i18n*="heroDesc"]');
       if (tag) tag.textContent = ld.hero_tagline;
@@ -1089,10 +1168,12 @@
 
     if (!isNonHome) {
       hydrateHomepage(l);
-    } else if (path.includes('citizenship')) {
-      hydrateProgramPage('citizenship', l);
-    } else if (path.includes('residency')) {
-      hydrateProgramPage('residency', l);
+    } else if (path.includes('/programs/') || new URLSearchParams(window.location.search).has('program_id')) {
+      if (path.includes('residency')) {
+        hydrateProgramPage('residency', l);
+      } else {
+        hydrateProgramPage('citizenship', l);
+      }
     } else if (path.includes('about')) {
       hydrateAboutUs(l);
     } else if (path.includes('blog')) {
@@ -1469,7 +1550,7 @@
 
       const tag = el.tagName;
       const textTags = ['H1', 'H2', 'H3', 'H4', 'H5', 'H6', 'P', 'A', 'BUTTON', 'SPAN', 'LABEL', 'STRONG', 'EM', 'B', 'I', 'LI', 'BLOCKQUOTE'];
-      if (textTags.includes(tag) || el.classList.contains('dominica-hero-glow') || el.classList.contains('counter-value')) {
+      if (textTags.includes(tag) || el.className.includes('-hero-glow') || el.classList.contains('dominica-hero-glow') || el.classList.contains('stlucia-hero-glow') || el.classList.contains('counter-value')) {
         // Return true if it has text
         return Boolean(el.innerText && el.innerText.trim().length > 0);
       }
@@ -1601,8 +1682,34 @@
           const idx = list.findIndex(p => (progId && (p.id === progId || p.slug === progId)) || p.slug === slug || p.id === slug || slug.includes(p.slug || p.id));
           if (idx >= 0) {
             if (!list[idx][l]) list[idx][l] = {};
+            const progType = type.includes('residency') ? 'residency' : 'citizenship';
+            const defaultTab = progType === 'residency' ? 'Residency by investment' : 'Citizenship by investment';
+
             if (activeEl.closest('h1')) {
-              list[idx][l].title = newText;
+              const isSubtitle = activeEl.classList.contains('uppercase') || 
+                                 (activeEl.getAttribute('data-i18n') && activeEl.getAttribute('data-i18n').includes('heroSubtitle')) ||
+                                 activeEl !== activeEl.closest('h1').firstElementChild;
+
+              let currentCountry = (list[idx][l].hero_title || (list[idx][l].title ? list[idx][l].title.replace(/\s+(citizenship|residency).*$/i, '').trim() : '') || list[idx].name || list[idx].id || 'Dominica').trim();
+              if (/^(citizenship|residency)/i.test(currentCountry)) {
+                currentCountry = (list[idx].name || list[idx].id || 'Dominica').trim();
+              }
+              currentCountry = currentCountry.charAt(0).toUpperCase() + currentCountry.slice(1);
+
+              let currentTab = (list[idx][l].hero_subtitle || defaultTab).trim();
+
+              if (isSubtitle) {
+                currentTab = newText.trim();
+                list[idx][l].hero_subtitle = currentTab;
+              } else {
+                currentCountry = newText.replace(/\s+(citizenship|residency).*$/i, '').trim();
+                currentCountry = currentCountry.charAt(0).toUpperCase() + currentCountry.slice(1);
+                list[idx][l].hero_title = currentCountry;
+              }
+
+              const fullTitle = formatProgramPageTitle(currentCountry, progType, currentTab);
+              list[idx][l].title = fullTitle;
+              document.title = `${fullTitle} | Sharif Group Dubai`;
             } else if (i18nKey && i18nKey.includes('overviewDesc')) {
               list[idx][l].overview = newText;
             } else if (i18nKey && i18nKey.includes('specInvestmentCostDesc')) {
@@ -1866,12 +1973,27 @@
 
         // ── Comprehensive Real-time Program Fields ───────────
         if (field === 'title' || field === 'hero_title') {
-          const els = document.querySelectorAll('h1 .dominica-hero-glow, h1 span:first-child, [data-i18n*="heroTitle"], [data-cms="hero-title"]');
-          els.forEach(el => { el.textContent = String(value).replace(/\s+(citizenship|residency).*$/i, '').trim(); });
-          document.title = value + ' | Sharif Group';
+          const path = window.location.pathname.toLowerCase();
+          const progType = path.includes('residency') ? 'residency' : 'citizenship';
+          const defaultTab = progType === 'residency' ? 'Residency by investment' : 'Citizenship by investment';
+          const subEl = document.querySelector('h1 span.uppercase, [data-i18n*="heroSubtitle"], [data-cms="hero-subtitle"]');
+          const currentSub = (subEl?.textContent?.trim() || defaultTab);
+          const cleanCountry = String(value).replace(/\s+(citizenship|residency).*$/i, '').trim();
+          const els = document.querySelectorAll('h1 [class*="-hero-glow"], h1 .dominica-hero-glow, h1 .stlucia-hero-glow, h1 span:first-child, [data-i18n*="heroTitle"], [data-cms="hero-title"]');
+          els.forEach(el => { el.textContent = cleanCountry; });
+          const fullTitle = formatProgramPageTitle(cleanCountry || value, progType, currentSub);
+          document.title = `${fullTitle} | Sharif Group Dubai`;
         } else if (field === 'hero_subtitle') {
+          const path = window.location.pathname.toLowerCase();
+          const progType = path.includes('residency') ? 'residency' : 'citizenship';
           const els = document.querySelectorAll('h1 span.uppercase, [data-i18n*="heroSubtitle"], [data-cms="hero-subtitle"]');
           els.forEach(el => { el.textContent = value; });
+          const countryEl = document.querySelector('h1 [class*="-hero-glow"], h1 .dominica-hero-glow, h1 .stlucia-hero-glow, h1 span:first-child, [data-i18n*="heroTitle"]');
+          const countryName = countryEl?.textContent?.trim() || '';
+          if (countryName) {
+            const fullTitle = formatProgramPageTitle(countryName, progType, value);
+            document.title = `${fullTitle} | Sharif Group Dubai`;
+          }
         } else if (field === 'hero_tagline') {
           const els = document.querySelectorAll('h1 + p, [data-i18n*="heroTagline"], [data-i18n*="heroDesc"], [data-cms="hero-tagline"]');
           els.forEach(el => { el.textContent = value; });
@@ -2006,7 +2128,7 @@
         }
         // ── Homepage fields ─────────────────────────────────
         if (field === 'headline') {
-          const els = document.querySelectorAll('[data-cms="hero-headline"], [data-i18n="hero.title"], .dominica-hero-glow');
+          const els = document.querySelectorAll('[data-cms="hero-headline"], [data-i18n="hero.title"]');
           els.forEach(el => { el.textContent = value; });
         } else if (field === 'tagline') {
           const els = document.querySelectorAll('[data-cms="hero-tagline"], [data-i18n="hero.tagline"]');
@@ -2046,9 +2168,23 @@
         }
         // Program fields
         else if (field === 'title') {
-          const h1 = document.querySelector('h1 .dominica-hero-glow') || document.querySelector('h1');
-          if (h1) h1.textContent = value.replace(/\s+citizenship.*$/i, '').trim();
-          document.title = value + ' | Sharif Group';
+          const path = window.location.pathname.toLowerCase();
+          const progType = path.includes('residency') ? 'residency' : 'citizenship';
+          const defaultTab = progType === 'residency' ? 'Residency by investment' : 'Citizenship by investment';
+          const subEl = document.querySelector('h1 span.uppercase, [data-i18n*="heroSubtitle"], [data-cms="hero-subtitle"]');
+          const currentSub = (subEl?.textContent?.trim() || defaultTab);
+          const cleanCountry = String(value).replace(/\s+(citizenship|residency).*$/i, '').trim();
+          const glowEl = document.querySelector('h1 [class*="-hero-glow"]') || document.querySelector('h1 .dominica-hero-glow') || document.querySelector('h1 .stlucia-hero-glow') || document.querySelector('h1 span:first-child');
+          if (glowEl) {
+            glowEl.textContent = cleanCountry;
+          } else {
+            const h1 = document.querySelector('h1');
+            if (h1) {
+              h1.innerHTML = `<span class="dominica-hero-glow stlucia-hero-glow font-serif text-5xl sm:text-7xl md:text-8xl cursor-pointer">${cleanCountry}</span><span class="text-xl sm:text-3xl md:text-4xl text-white font-serif tracking-widest uppercase font-semibold">${currentSub}</span>`;
+            }
+          }
+          const fullTitle = formatProgramPageTitle(cleanCountry || value, progType, currentSub);
+          document.title = `${fullTitle} | Sharif Group Dubai`;
         } else if (field === 'overview') {
           setText('[data-i18n*="overviewDesc"]', value);
         } else if (field === 'investment_from') {

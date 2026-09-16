@@ -962,4 +962,33 @@ const Backend = {
   }
 };
 
-window.CMS = { Auth, Store, KEYS, DEFAULTS, getData, saveData, AI, Settings, Backend };
+function formatProgramPageTitle(pageName, type, sectionTabName, fallbackCountry) {
+  let cleanPage = String(pageName || '').trim();
+  cleanPage = cleanPage.replace(/\s*\|\s*.*$/i, '').trim();
+  cleanPage = cleanPage
+    .replace(/^(citizenship(\s+by\s+investment)?|residency(\s+by\s+investment)?|golden\s+visa(\s*&\s*residency)?)\s*/i, '')
+    .replace(/\s+(citizenship(\s+by\s+investment)?|residency(\s+by\s+investment)?|golden\s+visa(\s*&\s*residency)?).*$/i, '')
+    .trim();
+
+  if (!cleanPage && fallbackCountry) {
+    cleanPage = String(fallbackCountry).trim().replace(/\s*\|\s*.*$/i, '').replace(/^(citizenship|residency).*/i, '').trim();
+  }
+
+  const isResidency = type === 'residency' || (typeof type === 'string' && type.includes('residency'));
+  let tab = String(sectionTabName || '').trim();
+  if (!tab || /^(citizenship|residency)$/i.test(tab)) {
+    tab = isResidency ? 'Residency by investment' : 'Citizenship by investment';
+  } else {
+    if (/^citizenship\s+by\s+investment$/i.test(tab)) {
+      tab = 'Citizenship by investment';
+    } else if (/^residency\s+by\s+investment$/i.test(tab)) {
+      tab = 'Residency by investment';
+    }
+  }
+
+  if (!cleanPage) return tab;
+  cleanPage = cleanPage.charAt(0).toUpperCase() + cleanPage.slice(1);
+  return `${cleanPage} ${tab}`;
+}
+
+window.CMS = { Auth, Store, KEYS, DEFAULTS, getData, saveData, AI, Settings, Backend, formatProgramPageTitle };
