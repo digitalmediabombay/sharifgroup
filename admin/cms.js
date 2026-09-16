@@ -150,16 +150,13 @@ const AI = {
 
       throw new Error(lastError || 'OpenRouter translation failed across available models.');
     } else {
-      const geminiModels = ['gemini-3.6-flash', 'gemini-3-flash', 'gemini-2.5-flash', 'gemini-2.0-flash', 'gemini-1.5-flash', 'gemini-1.5-flash-latest'];
+      const geminiModels = ['gemini-2.0-flash', 'gemini-1.5-flash', 'gemini-2.5-flash', 'gemini-1.5-flash-latest'];
       let lastErr = null;
       for (const m of geminiModels) {
         try {
           const res = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/${m}:generateContent?key=${encodeURIComponent(apiKey)}`, {
             method: 'POST',
-            headers: {
-              'Content-Type': 'application/json',
-              'x-goog-api-key': apiKey
-            },
+            headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify({ contents: [{ parts: [{ text: prompt }] }] })
           });
           if (res.ok) {
@@ -284,7 +281,29 @@ const AI = {
       };
     }
 
-    // 1. Try server-side PHP test first (avoids browser CORS & supports proxy)
+    // 1. Direct validation via official Google models endpoint (zero-credit, authoritative key check)
+    try {
+      const res = await fetch(`https://generativelanguage.googleapis.com/v1beta/models?key=${encodeURIComponent(cleanKey)}`);
+      if (res.ok) {
+        const data = await res.json().catch(() => null);
+        let foundModel = 'gemini-2.0-flash';
+        if (data && data.models && Array.isArray(data.models)) {
+          const flashModel = data.models.find(m => m.name && m.name.includes('flash') && m.supportedGenerationMethods && m.supportedGenerationMethods.includes('generateContent'));
+          if (flashModel) {
+            foundModel = flashModel.name.replace('models/', '');
+          }
+        }
+        return { success: true, model: foundModel };
+      }
+      if (res.status === 400 || res.status === 401 || res.status === 403) {
+        const errJson = await res.json().catch(() => null);
+        if (errJson && errJson.error && errJson.error.message) {
+          return { success: false, error: errJson.error.message };
+        }
+      }
+    } catch (e) {}
+
+    // 2. Try server-side PHP test (if running with Apache/cPanel)
     try {
       const res = await fetch('api/ai.php?action=test', {
         method: 'POST',
@@ -298,18 +317,15 @@ const AI = {
       }
     } catch(e) {}
 
-    // 2. Direct browser fallback check across multiple Gemini models
-    const geminiModels = ['gemini-3.6-flash', 'gemini-3-flash', 'gemini-2.5-flash', 'gemini-2.0-flash', 'gemini-1.5-flash', 'gemini-1.5-flash-latest'];
+    // 3. Fallback check using established Gemini models
+    const geminiModels = ['gemini-2.0-flash', 'gemini-1.5-flash', 'gemini-2.5-flash', 'gemini-1.5-flash-latest'];
     let lastErr = 'Gemini API test failed';
 
     for (const m of geminiModels) {
       try {
         const res = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/${m}:generateContent?key=${encodeURIComponent(cleanKey)}`, {
           method: 'POST',
-          headers: {
-            'Content-Type': 'application/json',
-            'x-goog-api-key': cleanKey
-          },
+          headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify({ contents: [{ parts: [{ text: 'Say "OK" in one word.' }] }] })
         });
         if (res.ok) {

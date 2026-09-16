@@ -76,6 +76,42 @@ if ($action === 'test') {
         }
         jsonResponse($testResult);
     } else {
+        // Direct key validation via Google's official models list endpoint
+        $ch = curl_init('https://generativelanguage.googleapis.com/v1beta/models?key=' . urlencode($apiKey));
+        curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+        curl_setopt($ch, CURLOPT_TIMEOUT, 15);
+        curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, true);
+        $res = curl_exec($ch);
+        $code = curl_getinfo($ch, CURLINFO_HTTP_CODE);
+        curl_close($ch);
+
+        if ($code === 200) {
+            $data = json_decode($res, true);
+            $availableModel = 'gemini-2.0-flash';
+            if (!empty($data['models'])) {
+                foreach ($data['models'] as $m) {
+                    $mName = str_replace('models/', '', $m['name']);
+                    if (isset($m['supportedGenerationMethods']) && in_array('generateContent', $m['supportedGenerationMethods'])) {
+                        if (stripos($mName, 'flash') !== false) {
+                            $availableModel = $mName;
+                            break;
+                        }
+                    }
+                }
+            }
+            jsonResponse([
+                'success' => true,
+                'model'   => $availableModel,
+                'message' => 'Gemini API key is valid and working!'
+            ]);
+        }
+
+        if ($code === 400 || $code === 401 || $code === 403) {
+            $data = json_decode($res, true);
+            $err = $data['error']['message'] ?? 'Invalid Gemini API key';
+            jsonResponse(['success' => false, 'error' => $err], 401);
+        }
+
         $testResult = callGemini($apiKey, 'Say "OK" in one word.');
         jsonResponse($testResult);
     }
@@ -187,7 +223,7 @@ function callOpenRouter($apiKey, $prompt, $model = 'google/gemini-2.0-flash-001'
 }
 
 // ── CURL HELPER FOR GEMINI ────────────────────────────────────────
-function callGemini($apiKey, $prompt, $requestedModel = 'gemini-3.6-flash') {
+function callGemini($apiKey, $prompt, $requestedModel = 'gemini-2.0-flash') {
     // If the key starts with sk- (sk-or- or OpenAI sk-), automatically route to OpenRouter
     if (strpos($apiKey, 'sk-') === 0) {
         return callOpenRouter($apiKey, $prompt);
@@ -195,11 +231,9 @@ function callGemini($apiKey, $prompt, $requestedModel = 'gemini-3.6-flash') {
 
     $modelsToTry = array_unique([
         $requestedModel,
-        'gemini-3.6-flash',
-        'gemini-3-flash',
-        'gemini-2.5-flash',
         'gemini-2.0-flash',
         'gemini-1.5-flash',
+        'gemini-2.5-flash',
         'gemini-1.5-flash-latest'
     ]);
 
@@ -219,8 +253,7 @@ function callGemini($apiKey, $prompt, $requestedModel = 'gemini-3.6-flash') {
             curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
             curl_setopt($ch, CURLOPT_POST, true);
             curl_setopt($ch, CURLOPT_HTTPHEADER, [
-                'Content-Type: application/json',
-                'x-goog-api-key: ' . $apiKey
+                'Content-Type: application/json'
             ]);
             curl_setopt($ch, CURLOPT_POSTFIELDS, json_encode($payload));
             curl_setopt($ch, CURLOPT_TIMEOUT, 30);
