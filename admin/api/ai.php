@@ -70,9 +70,9 @@ if ($action === 'test') {
             jsonResponse(['success' => false, 'error' => $data['error']['message'] ?? 'Invalid OpenRouter API Key'], 401);
         }
 
-        $testResult = callOpenRouter($apiKey, 'Say "OK" in one word.', 'meta-llama/llama-3.3-70b-instruct:free');
+        $testResult = callOpenRouter($apiKey, 'Say "OK" in one word.', 'openrouter/free');
         if (!$testResult['success']) {
-            $testResult = callOpenRouter($apiKey, 'Say "OK" in one word.', 'google/gemini-2.0-flash-001');
+            $testResult = callOpenRouter($apiKey, 'Say "OK" in one word.', 'meta-llama/llama-3.3-70b-instruct:free');
         }
         jsonResponse($testResult);
     } else {
@@ -176,15 +176,18 @@ if ($action === 'translate') {
 }
 
 // ── CURL HELPER FOR OPENROUTER ────────────────────────────────────
-function callOpenRouter($apiKey, $prompt, $model = 'google/gemini-2.0-flash-001') {
+function callOpenRouter($apiKey, $prompt, $model = 'openrouter/free') {
     $url = 'https://openrouter.ai/api/v1/chat/completions';
 
     $modelsToTry = array_unique([
         $model,
-        'google/gemini-2.0-flash-001',
+        'openrouter/free',
         'google/gemini-2.0-flash-exp:free',
         'meta-llama/llama-3.3-70b-instruct:free',
-        'qwen/qwen-2.5-72b-instruct:free'
+        'meta-llama/llama-3.1-8b-instruct:free',
+        'mistralai/mistral-small-24b-instruct-2501:free',
+        'google/gemini-2.0-flash-001',
+        'openrouter/auto'
     ]);
 
     $lastError = 'OpenRouter request failed';

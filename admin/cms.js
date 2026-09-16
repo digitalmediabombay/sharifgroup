@@ -112,10 +112,13 @@ const AI = {
 
     if (provider === 'openrouter') {
       const openRouterModels = [
-        'google/gemini-2.0-flash-001',
+        'openrouter/free',
         'google/gemini-2.0-flash-exp:free',
         'meta-llama/llama-3.3-70b-instruct:free',
-        'qwen/qwen-2.5-72b-instruct:free'
+        'meta-llama/llama-3.1-8b-instruct:free',
+        'mistralai/mistral-small-24b-instruct-2501:free',
+        'google/gemini-2.0-flash-001',
+        'openrouter/auto'
       ];
 
       let lastError = null;
@@ -259,7 +262,7 @@ const AI = {
     } catch(e) {}
 
     // 3. Fallback check with chat completions
-    const freeModels = ['meta-llama/llama-3.3-70b-instruct:free', 'google/gemini-2.0-flash-001', 'qwen/qwen-2.5-72b-instruct:free'];
+    const freeModels = ['openrouter/free', 'meta-llama/llama-3.3-70b-instruct:free', 'google/gemini-2.0-flash-exp:free', 'google/gemini-2.0-flash-001'];
     for (const model of freeModels) {
       try {
         const res = await fetch('https://openrouter.ai/api/v1/chat/completions', {
