@@ -3606,13 +3606,12 @@
         renderSection();
         setActiveSidebarItem(section === 'program' ? (itemId || '') : (section === 'category-hub' ? itemType : section.replace('-new', '').replace('-edit', '')));
 
-        // Sections that are pure form editors — always open the drawer so the form is visible
-        const formOnlySections = ['settings', 'contact', 'aboutus', 'legal', 'cookiepolicy', 'cookies', 'blog-new', 'team-new', 'new-program'];
-        const isDrawerOpen = document.getElementById('ed')?.classList.contains('open');
-        if (formOnlySections.includes(section) || isDrawerOpen) {
+        // Form-only drawer sections vs. Visual Live Canvas sections
+        const formOnlySections = ['settings', 'blog-new', 'team-new', 'new-program'];
+        const isVisualPreviewSection = ['aboutus', 'team', 'contact', 'legal', 'cookiepolicy', 'cookies', 'homepage', 'category-hub', 'program', 'blog'].includes(section);
+        if (formOnlySections.includes(section)) {
           openEditorDrawer();
-        } else {
-          // Visual-First Studio: For live-preview sections, keep drawer closed unless already opened
+        } else if (isVisualPreviewSection) {
           closeEditorDrawer();
         }
 
@@ -4077,13 +4076,13 @@
           case 'blog': renderBlogEditor(l, rtl); break;
           case 'blog-new': renderNewBlogView(); break;
           case 'blog-edit': editBlogItem(itemId); break;
-          case 'team': renderTeamEditor(l, rtl); break;
+          case 'team': renderVisualLiveStudioGuide('Team & Leadership', 'Live visual editor for Team & Leadership', PAGE_URLS.aboutus); break;
           case 'team-new': createTeamMember(); break;
-          case 'aboutus': renderAboutUsEditor(l, rtl); break;
-          case 'contact': renderContactSalesEditor(l, rtl); break;
+          case 'aboutus': renderVisualLiveStudioGuide('About Us Page', 'Live visual editor for About Us page', PAGE_URLS.aboutus); break;
+          case 'contact': renderVisualLiveStudioGuide('Contact & Sales', 'Live visual editor for Contact Us page', PAGE_URLS.contact); break;
           case 'cookiepolicy':
-          case 'cookies': renderCookiePolicyEditor(l, rtl); break;
-          case 'legal': renderLegalEditor(l, rtl); break;
+          case 'cookies': renderVisualLiveStudioGuide('Cookie Policy', 'Live visual editor for Cookie Policy page', PAGE_URLS.cookiepolicy); break;
+          case 'legal': renderVisualLiveStudioGuide('Privacy & Legal', 'Live visual editor for Privacy Policy page', PAGE_URLS.legal); break;
           case 'settings': renderSettingsEditor(); break;
           default: renderOverview();
         }
@@ -4111,6 +4110,36 @@
               <button type="button" class="btn btn-primary" style="width:100%;justify-content:center" onclick="promptAddSection('${type}')">
                 <i class="fa-solid fa-folder-plus"></i> Add New Section under ${isRes ? 'Residency' : 'Citizenship'}
               </button>
+            </div>
+          </div>
+        `;
+      }
+
+      function renderVisualLiveStudioGuide(title, desc, pageUrl) {
+        setPageTitle(title, desc);
+        const ed = document.getElementById('editor');
+        if (!ed) return;
+        ed.innerHTML = `
+          <div style="padding:16px 20px">
+            <div style="background:rgba(197,168,128,0.08);border:1px solid rgba(197,168,128,0.25);border-radius:12px;padding:18px;margin-bottom:16px">
+              <div style="display:flex;align-items:center;gap:10px;margin-bottom:8px">
+                <i class="fa-solid fa-wand-magic-sparkles" style="color:var(--gold);font-size:18px"></i>
+                <h3 style="font-size:14px;font-weight:700;color:#fff;margin:0">Live Visual Editor Active</h3>
+              </div>
+              <p style="font-size:12px;color:var(--muted);line-height:1.6;margin:0 0 14px">
+                <strong>${escH(title)}</strong> is loaded in the live preview canvas. You can click directly on any heading, paragraph, card, or element on the page to edit it in real-time.
+              </p>
+              <div style="display:flex;flex-direction:column;gap:8px">
+                <button type="button" class="btn btn-primary" style="width:100%;justify-content:center;font-size:12px" onclick="closeEditorDrawer()">
+                  <i class="fa-solid fa-expand"></i> Fullscreen Preview Mode
+                </button>
+                <button type="button" class="btn btn-secondary" style="width:100%;justify-content:center;font-size:12px" onclick="refreshPreview()">
+                  <i class="fa-solid fa-rotate"></i> Refresh Preview
+                </button>
+                <button type="button" class="btn btn-secondary" style="width:100%;justify-content:center;font-size:12px" onclick="openInNewTab()">
+                  <i class="fa-solid fa-arrow-up-right-from-square"></i> Open in New Tab
+                </button>
+              </div>
             </div>
           </div>
         `;
