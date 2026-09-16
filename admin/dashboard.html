@@ -2066,6 +2066,10 @@
             class="fa-solid fa-arrow-up-right-from-square"></i></button>
         <button class="pv-btn" onclick="refreshPreview()" title="Refresh preview"><i
             class="fa-solid fa-rotate-right"></i></button>
+        <button type="button" class="btn btn-ghost" id="btn-toggle-builder" onclick="toggleEditorDrawer()"
+          title="Toggle Section Builder & Form Editor" style="margin-left:6px;padding:4px 11px;font-size:11px;font-weight:600;display:inline-flex;align-items:center;gap:6px">
+          <i class="fa-solid fa-sliders"></i> <span id="btn-toggle-builder-lbl">Section Builder</span>
+        </button>
       </div>
       <div class="pv-canvas">
         <div class="pv-frame-wrap device-desktop" id="pv-frame-wrap">
@@ -2405,7 +2409,11 @@
         const ed = document.getElementById('ed');
         if (ed) ed.classList.add('open');
         const btn = document.getElementById('btn-toggle-builder');
-        if (btn) btn.classList.add('active-preview');
+        if (btn) {
+          btn.classList.add('active-preview');
+          const lbl = document.getElementById('btn-toggle-builder-lbl');
+          if (lbl) lbl.textContent = 'Hide Builder';
+        }
         setTimeout(updatePreviewScale, 60);
         setTimeout(updatePreviewScale, 320);
         if (sectionId) {
@@ -2425,7 +2433,11 @@
         const ed = document.getElementById('ed');
         if (ed) ed.classList.remove('open');
         const btn = document.getElementById('btn-toggle-builder');
-        if (btn) btn.classList.remove('active-preview');
+        if (btn) {
+          btn.classList.remove('active-preview');
+          const lbl = document.getElementById('btn-toggle-builder-lbl');
+          if (lbl) lbl.textContent = 'Section Builder';
+        }
         setTimeout(updatePreviewScale, 60);
         setTimeout(updatePreviewScale, 320);
       }
@@ -2653,6 +2665,37 @@
         }
       }
 
+      function resolveRouteFromUrl(urlOrPath) {
+        if (!urlOrPath) return null;
+        let p = String(urlOrPath).toLowerCase();
+        try {
+          if (p.startsWith('http://') || p.startsWith('https://')) {
+            const parsed = new URL(p);
+            p = parsed.pathname;
+          }
+        } catch(e) {}
+        p = p.replace(/\\/g, '/');
+
+        // Check programs
+        for (const progId in PROGRAM_URLS) {
+          const progPath = PROGRAM_URLS[progId].toLowerCase().replace(/^\.\.\//, '').replace(/\/index\.html?$/, '');
+          if (p.includes(progPath) || p.includes('/' + progId + '/') || p.endsWith('/' + progId) || p.endsWith('/' + progId + '.html') || p.includes('program_id=' + progId)) {
+            const isRes = ['portugal', 'greece', 'panama', 'uae'].includes(progId);
+            return { section: 'program', itemType: isRes ? 'residency' : 'citizenship', itemId: progId };
+          }
+        }
+
+        if (p.includes('citizenshipbyinvestment')) return { section: 'category-hub', itemType: 'citizenship' };
+        if (p.includes('residencybyinvestment')) return { section: 'category-hub', itemType: 'residency' };
+        if (p.includes('/contact')) return { section: 'contact' };
+        if (p.includes('/aboutus') || p.includes('/aboutfounder') || p.includes('/about')) return { section: 'aboutus' };
+        if (p.includes('/blog')) return { section: 'blog' };
+        if (p.includes('/cookie')) return { section: 'cookiepolicy' };
+        if (p.includes('/privacy') || p.includes('/termsofuse') || p.includes('/legal')) return { section: 'legal' };
+        if (p.endsWith('/index.html') || p.endsWith('/') || p === '' || p === '/') return { section: 'homepage' };
+        return null;
+      }
+
       // Listen for messages from live iframe
       window.addEventListener('message', e => {
         const msg = e.data;
@@ -2661,6 +2704,22 @@
           sendToIframe({ type: 'CMS_SET_LANG', lang: state.lang });
           sendToIframe({ type: 'CMS_SET_MODE', mode: state.canvasMode });
           syncActiveFormToLivePreview();
+
+          if (msg.path || msg.href) {
+            const route = resolveRouteFromUrl(msg.path || msg.href);
+            if (route && (route.section !== state.section || route.itemId !== state.itemId)) {
+              state.section = route.section;
+              state.itemType = route.itemType || null;
+              state.itemId = route.itemId || null;
+              setActiveSidebarItem(route.section === 'program' ? route.itemId : (route.section === 'category-hub' ? route.itemType : route.section));
+              renderSection();
+            }
+          }
+        } else if (msg.type === 'CMS_NAVIGATE_PAGE') {
+          const route = resolveRouteFromUrl(msg.url || msg.path);
+          if (route) {
+            navigate(route.section, route.itemType, route.itemId);
+          }
         } else if (msg.type === 'CMS_LANG_CHANGED') {
           // FIX: Only sync dashboard UI — do NOT call renderSection()/loadPreviewPage()
           // as that reloads the iframe causing an infinite loading loop.
@@ -3459,10 +3518,11 @@
 
         // Sections that are pure form editors — always open the drawer so the form is visible
         const formOnlySections = ['settings', 'contact', 'aboutus', 'legal', 'cookiepolicy', 'cookies', 'blog-new', 'team-new', 'new-program'];
-        if (formOnlySections.includes(section)) {
+        const isDrawerOpen = document.getElementById('ed')?.classList.contains('open');
+        if (formOnlySections.includes(section) || isDrawerOpen) {
           openEditorDrawer();
         } else {
-          // Visual-First Studio: For live-preview sections, keep drawer closed for full canvas focus
+          // Visual-First Studio: For live-preview sections, keep drawer closed unless already opened
           closeEditorDrawer();
         }
 
@@ -7093,7 +7153,8 @@
           window.CMS.KEYS.LEGAL,
           'sgcms_custom_sections',
           'sgcms_flag_codes',
-          'sgcms_cookiepolicy'
+          'sgcms_cookiepolicy',
+          'sgcms_dom_overrides'
         ];
 
         const payload = {

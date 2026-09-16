@@ -38,7 +38,14 @@
   }
 
   const params = new URLSearchParams(window.location.search);
-  const isEditor = params.get('cms_editor') === '1';
+  const isInsideIframe = (function () {
+    try {
+      return window.self !== window.top && (window.location.pathname.indexOf('/admin/') === -1);
+    } catch (e) {
+      return true;
+    }
+  })();
+  const isEditor = params.get('cms_editor') === '1' || isInsideIframe;
   const isPreview = params.get('cms_preview') === '1' || isEditor;
   const hasCmsData = Boolean(store('sgcms_citizenship') || store('sgcms_residency') || store('sgcms_homepage') || store('sgcms_blog'));
 
@@ -1437,6 +1444,7 @@
       <button type="button" class="cft-btn cft-btn-save" id="cft-btn-save"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" style="display:inline-block;vertical-align:middle;margin-right:4px"><polyline points="20 6 9 17 4 12"/></svg>Save</button>
       <button type="button" class="cft-btn cft-btn-cancel" id="cft-btn-cancel" title="Cancel edit"><svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg></button>
       <button type="button" class="cft-btn" id="cft-btn-link" style="display:none" title="Edit link URL"><svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="display:inline-block;vertical-align:middle;margin-right:4px"><path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"/><path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"/></svg>Link</button>
+      <button type="button" class="cft-btn" id="cft-btn-open-link" style="display:none" title="Open this page"><svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="display:inline-block;vertical-align:middle;margin-right:4px"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"/><polyline points="15 3 21 3 21 9"/><line x1="10" y1="14" x2="21" y2="3"/></svg>Open</button>
       <input type="text" id="cft-link-input" placeholder="https:// or page.html" style="display:none;background:#262626;border:1px solid #C5A880;color:#fff;font-size:11px;padding:3px 6px;border-radius:4px;width:140px;outline:none">
     `;
     document.body.appendChild(toolbar);
@@ -1594,11 +1602,16 @@
     // Determine if element is an editable text target
     function isEditableTarget(el) {
       if (!el || el === document.body || el === document.documentElement) return false;
+      const tag = el.tagName;
       const ignoreTags = ['SCRIPT', 'STYLE', 'SVG', 'PATH', 'IFRAME', 'INPUT', 'TEXTAREA', 'SELECT', 'VIDEO', 'CANVAS'];
-      if (ignoreTags.includes(el.tagName)) return false;
+      if (ignoreTags.includes(tag)) return false;
       if (el.closest('#cms-inline-toolbar') || el.closest('#cms-hover-tooltip') || el.closest('#cms-save-toast') || el.closest('#cms-preview-badge') || el.closest('.cms-section-tool')) return false;
 
-      const tag = el.tagName;
+      // Navigation header, navbar, mobile menu and mega-menus are site navigation, NOT editable body text
+      if (el.closest('header, nav, #main-header, #mobile-menu, .mega-menu, [id*="mega"], [class*="navbar"]')) {
+        return false;
+      }
+
       const textTags = ['H1', 'H2', 'H3', 'H4', 'H5', 'H6', 'P', 'A', 'BUTTON', 'SPAN', 'LABEL', 'STRONG', 'EM', 'B', 'I', 'LI', 'BLOCKQUOTE'];
       if (textTags.includes(tag) || el.className.includes('-hero-glow') || el.classList.contains('dominica-hero-glow') || el.classList.contains('stlucia-hero-glow') || el.classList.contains('counter-value')) {
         // Return true if it has text
@@ -1615,9 +1628,11 @@
       toolbar.querySelector('.cft-lang').textContent = getLang().toUpperCase();
 
       const linkBtn = toolbar.querySelector('#cft-btn-link');
+      const openBtn = toolbar.querySelector('#cft-btn-open-link');
       const linkInput = toolbar.querySelector('#cft-link-input');
       const isAnchor = el.tagName === 'A' || Boolean(el.closest('a'));
       linkBtn.style.display = isAnchor ? 'inline-flex' : 'none';
+      if (openBtn) openBtn.style.display = isAnchor ? 'inline-flex' : 'none';
       linkInput.style.display = 'none';
 
       toolbar.style.display = 'flex';
@@ -1842,6 +1857,25 @@
       }
     });
 
+    const openBtn = toolbar.querySelector('#cft-btn-open-link');
+    if (openBtn) {
+      openBtn.addEventListener('click', (e) => {
+        e.stopPropagation();
+        if (!activeEl) return;
+        const anchor = activeEl.tagName === 'A' ? activeEl : activeEl.closest('a');
+        if (!anchor) return;
+        const href = anchor.getAttribute('href');
+        if (href && !href.startsWith('#') && !href.startsWith('javascript:')) {
+          if (isInsideIframe) {
+            try {
+              window.parent.postMessage({ type: 'CMS_NAVIGATE_PAGE', url: anchor.href, path: anchor.pathname }, '*');
+            } catch(err) {}
+          }
+          window.location.href = anchor.href;
+        }
+      });
+    }
+
     // Delegated Hover
     document.addEventListener('mouseover', (e) => {
       if (!editMode || activeEl) return;
@@ -1874,8 +1908,36 @@
       }
     }, true);
 
-    // Delegated Click to Edit
+    // Delegated Click to Edit & Navbar Navigation
     document.addEventListener('click', (e) => {
+      // 1. Allow Ctrl+Click or Cmd+Click on ANY link to follow it directly
+      if (e.ctrlKey || e.metaKey) return;
+
+      // 2. Check if clicked inside header/navbar
+      const navArea = e.target.closest('header, nav, #main-header, #mobile-menu, .mega-menu, [id*="mega"], [class*="navbar"]');
+      if (navArea) {
+        const anchor = e.target.closest('a');
+        if (anchor && anchor.getAttribute('href')) {
+          const href = anchor.getAttribute('href').trim();
+          if (href && !href.startsWith('#') && !href.startsWith('javascript:')) {
+            if (isInsideIframe) {
+              e.preventDefault();
+              try {
+                window.parent.postMessage({
+                  type: 'CMS_NAVIGATE_PAGE',
+                  url: anchor.href,
+                  path: anchor.pathname
+                }, '*');
+              } catch(err) {}
+              window.location.href = anchor.href;
+              return;
+            }
+          }
+        }
+        // Allow menu toggles, dropdown buttons, etc. to run naturally without interruption
+        return;
+      }
+
       if (!editMode) return; // Allow natural browsing, link clicking, and button interaction!
 
       // If clicking inside toolbar, allow toolbar interaction
@@ -1968,8 +2030,16 @@
       }
     });
 
-    if (window.parent && window.parent !== window) {
-      window.parent.postMessage({ type: 'CMS_FRAME_READY', path: window.location.pathname }, '*');
+    if (isInsideIframe) {
+      try {
+        window.parent.postMessage({
+          type: 'CMS_FRAME_READY',
+          path: window.location.pathname,
+          search: window.location.search,
+          href: window.location.href,
+          slug: extractSlug()
+        }, '*');
+      } catch(e) {}
     }
 
     // Intercept website's own language switcher events
