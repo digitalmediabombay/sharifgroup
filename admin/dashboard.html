@@ -609,29 +609,36 @@
     }
 
     .sb-item-del {
-      opacity: 0;
-      background: none;
-      border: none;
+      opacity: 0.55;
+      background: rgba(255, 255, 255, 0.06);
+      border: 1px solid rgba(255, 255, 255, 0.1);
       color: #94A3B8;
       font-size: 11px;
       cursor: pointer;
-      padding: 3px 5px;
+      padding: 3px 6px;
       border-radius: 5px;
       transition: all .2s;
       margin-left: auto;
-      display: flex;
+      display: inline-flex;
       align-items: center;
-      justify-content: center
+      justify-content: center;
+      z-index: 2;
     }
 
     .sb-item:hover .sb-item-del {
-      opacity: 0.75
+      opacity: 0.9;
+      color: #f87171;
     }
 
     .sb-item-del:hover {
       opacity: 1 !important;
-      color: #ef4444;
-      background: rgba(239, 68, 68, 0.12)
+      color: #ef4444 !important;
+      background: rgba(239, 68, 68, 0.2) !important;
+      border-color: rgba(239, 68, 68, 0.4) !important;
+    }
+
+    .sb-item-del * {
+      pointer-events: none;
     }
 
     /* ═══ MAIN EDITOR (Slide-in Drawer) ════════════════ */
@@ -3163,6 +3170,7 @@
           slug,
           name,
           portfolio,
+          isCustom: true,
           flag: resolvedFlag,
           flag_code: flagCode,
           nav_visible: true,
@@ -3352,16 +3360,83 @@
       // SIDEBAR POPULATION
       // ══════════════════════════════════════════════════════════
       function deleteProgram(type, id) {
-        if (!confirm('Are you sure you want to permanently delete this program?')) return;
-        const key = window.CMS.KEYS[type.toUpperCase()];
-        let list = window.CMS.getData(key) || window.CMS.DEFAULTS[type] || [];
-        list = list.filter(p => p.id !== id);
-        window.CMS.saveData(key, list);
+        const actualType = type || state.itemType || 'residency';
+        const targetId = id || state.itemId;
+        if (!targetId) return;
+
+        if (!confirm(`Are you sure you want to permanently delete this ${actualType === 'citizenship' ? 'citizenship' : 'residency'} program?`)) return;
+
+        const keysToCheck = [
+          window.CMS.KEYS.RESIDENCY || 'sgcms_residency',
+          window.CMS.KEYS.CITIZENSHIP || 'sgcms_citizenship'
+        ];
+
+        keysToCheck.forEach(k => {
+          let list = window.CMS.getData(k);
+          if (Array.isArray(list)) {
+            const beforeLen = list.length;
+            list = list.filter(p => p && p.id !== targetId && p.slug !== targetId && String(p.id || '').toLowerCase() !== String(targetId).toLowerCase());
+            if (list.length !== beforeLen) {
+              window.CMS.saveData(k, list);
+            }
+          }
+
+          // Clean up corresponding _live key
+          try {
+            const liveKey = k + '_live';
+            const liveVal = localStorage.getItem(liveKey);
+            if (liveVal) {
+              let liveList = JSON.parse(liveVal);
+              if (Array.isArray(liveList)) {
+                liveList = liveList.filter(p => p && p.id !== targetId && p.slug !== targetId && String(p.id || '').toLowerCase() !== String(targetId).toLowerCase());
+                localStorage.setItem(liveKey, JSON.stringify(liveList));
+              }
+            }
+          } catch(e) {}
+        });
+
+        // Also clean up published manifest immediately
+        try {
+          const manifestVal = localStorage.getItem('sgcms_published_manifest');
+          if (manifestVal) {
+            const manifest = JSON.parse(manifestVal);
+            if (manifest && manifest.data) {
+              keysToCheck.forEach(k => {
+                if (Array.isArray(manifest.data[k])) {
+                  manifest.data[k] = manifest.data[k].filter(p => p && p.id !== targetId && p.slug !== targetId && String(p.id || '').toLowerCase() !== String(targetId).toLowerCase());
+                }
+              });
+              localStorage.setItem('sgcms_published_manifest', JSON.stringify(manifest));
+            }
+          }
+
+          // Clean up DOM overrides for this deleted program
+          const allOverrides = JSON.parse(localStorage.getItem('sgcms_dom_overrides') || '{}');
+          if (allOverrides[targetId]) {
+            delete allOverrides[targetId];
+            localStorage.setItem('sgcms_dom_overrides', JSON.stringify(allOverrides));
+            localStorage.setItem('sgcms_dom_overrides_live', JSON.stringify(allOverrides));
+          }
+        } catch (e) {
+          console.warn('[CMS Delete] Error cleaning live store:', e);
+        }
+
+        markDraft();
         populateSidebar();
-        if (state.itemId === id) {
+
+        // Notify open canvas iframe
+        try {
+          const iframe = document.getElementById('live-iframe');
+          if (iframe && iframe.contentWindow) {
+            iframe.contentWindow.postMessage({ type: 'CMS_REHYDRATE' }, '*');
+          }
+        } catch(e) {}
+
+        if (state.itemId === targetId) {
+          closeEditorDrawer();
           navigate('homepage');
         }
-        showToast('Program deleted successfully');
+        showToast('Program deleted successfully', 'success');
       }
 
       function populateSidebar() {
@@ -3410,9 +3485,11 @@
 
           // Allow deleting any custom-created programs easily
           const isBuiltin = ['dominica', 'stkitts', 'antigua', 'grenada', 'stlucia', 'vanuatu', 'saotome', 'nauru', 'portugal', 'greece', 'panama', 'uae'].includes(p.id);
-          const delBtn = !isBuiltin ? `<button type="button" class="sb-item-del" title="Delete program" onclick="event.stopPropagation();deleteProgram('${type}','${p.id}')"><i class="fa-solid fa-trash-can"></i></button>` : '';
+          const isCustomProg = p.isCustom || !isBuiltin;
+          const safeId = escH(p.id).replace(/'/g, "\\'");
+          const delBtn = isCustomProg ? `<button type="button" class="sb-item-del" data-type="${type}" data-id="${escH(p.id)}" title="Delete program" onclick="event.stopPropagation();deleteProgram('${type}','${safeId}')"><i class="fa-solid fa-trash-can"></i></button>` : '';
 
-          return `<div class="sb-item" id="sb-prog-${p.id}" onclick="navigate('program','${type}','${p.id}')">
+          return `<div class="sb-item" id="sb-prog-${p.id}" onclick="navigate('program','${type}','${safeId}')">
       ${flag}${dot}<span class="sb-item-title">${escH(title)}</span>${delBtn}
     </div>`;
         }
@@ -4391,6 +4468,7 @@
         if (l === 'en' || !canonicalProgTitle || /^(citizenship(\s+by\s+investment)?|residency(\s+by\s+investment)?)$/i.test(canonicalProgTitle.trim()) || canonicalProgTitle.trim().toLowerCase() === displayCountry.toLowerCase()) {
           canonicalProgTitle = formatProgramPageTitle(displayCountry, itemType, secSubtitle);
         }
+        const title = canonicalProgTitle;
         setPageTitle(canonicalProgTitle, itemType === 'citizenship' ? 'Citizenship by Investment Program' : 'Residency Program');
 
         // Fallbacks for complete section coverage
@@ -4658,8 +4736,12 @@
       <div class="form-group"><label class="form-label">Direct Phone / WhatsApp Contact</label><input class="form-input" id="prog-cta-phone" value="${escH(ld.consult_phone || '+971 4 357 8737')}" oninput="markUnsaved()"></div>
     </div>`;
 
+        const isBuiltin = ['dominica', 'stkitts', 'antigua', 'grenada', 'stlucia', 'vanuatu', 'saotome', 'nauru', 'portugal', 'greece', 'panama', 'uae'].includes(prog.id);
+        const isCustomProg = prog.isCustom || !isBuiltin;
+        const safeProgId = escH(prog.id).replace(/'/g, "\\'");
+
         document.getElementById('editor').innerHTML =
-          `<div style="display:flex;align-items:center;justify-content:space-between;gap:10px;margin-bottom:20px">
+          `<div style="display:flex;align-items:center;justify-content:space-between;gap:10px;margin-bottom:20px;flex-wrap:wrap">
       <div style="display:flex;align-items:center;gap:12px">
         ${prog.flag ? `<img src="${prog.flag}" style="width:36px;height:24px;object-fit:cover;border-radius:4px;border:1px solid rgba(255,255,255,.2)" onerror="this.style.display='none'">` : ''}
         <div>
@@ -4667,7 +4749,10 @@
           <p class="ed-page-desc" style="margin-bottom:0">${itemType === 'citizenship' ? 'Citizenship by Investment' : 'Residency'} Program · <span style="color:${prog.status === 'published' ? 'var(--green)' : 'var(--yellow)'}">${prog.status}</span></p>
         </div>
       </div>
-      <button class="btn btn-primary" onclick="saveCurrentPage()"><i class="fa-solid fa-floppy-disk"></i> Save Program</button>
+      <div style="display:flex;align-items:center;gap:8px">
+        ${isCustomProg ? `<button type="button" class="btn btn-ghost" onclick="deleteProgram('${itemType}','${safeProgId}')" style="color:#f87171;border-color:rgba(239,68,68,.3)"><i class="fa-solid fa-trash-can"></i> Delete Program</button>` : ''}
+        <button class="btn btn-primary" onclick="saveCurrentPage()"><i class="fa-solid fa-floppy-disk"></i> Save Program</button>
+      </div>
     </div>` +
           block('identity', 'rgba(245,158,11,.15)', 'var(--yellow)', '<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="16" rx="3"/><circle cx="9" cy="10" r="2"/><path d="m21 15-3.086-3.086a2 2 0 0 0-2.828 0L6 21"/></svg>', '1. Identity & Navigation Settings', 'Core Setup', identityBody) +
           block('hero', 'rgba(197,168,128,.15)', 'var(--gold)', '<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>', '2. Hero Header Section & Badges', l.toUpperCase(), heroBody) +
@@ -4679,7 +4764,11 @@
           block('documents', 'rgba(245,158,11,.15)', 'var(--yellow)', '<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 19a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h5l2 3h9a2 2 0 0 1 2 2z"/></svg>', '8. Required Documents Dossier', 'Checklist', documentsBody, true) +
           block('timeline', 'rgba(197,168,128,.15)', 'var(--gold)', '<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>', '9. Step-by-Step Application Timeline', 'Process Steps', timelineBody, true) +
           block('faqs', 'rgba(96,165,250,.15)', '#60a5fa', '<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><path d="9.09 9a3 3 0 0 1 5.83 1c0 2-3 3-3 3"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg>', '10. Frequently Asked Questions (FAQs)', `${defaultFaqs.length} FAQs`, faqBody, true) +
-          block('consultation', 'rgba(34,197,94,.15)', 'var(--green)', '<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 16.92z"/></svg>', '11. Free Consultation & Booking Banner', 'CTA Banner', consultBody, true);
+          block('consultation', 'rgba(34,197,94,.15)', 'var(--green)', '<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 16.92z"/></svg>', '11. Free Consultation & Booking Banner', 'CTA Banner', consultBody, true) +
+          `<div style="display:flex;align-items:center;justify-content:space-between;gap:12px;padding:24px 0 16px;border-top:1px solid var(--border);margin-top:24px">
+            ${isCustomProg ? `<button type="button" class="btn btn-ghost" onclick="deleteProgram('${itemType}','${safeProgId}')" style="color:#f87171;border-color:rgba(239,68,68,.3)"><i class="fa-solid fa-trash-can"></i> Permanently Delete Program</button>` : '<div></div>'}
+            <button type="button" class="btn btn-primary" style="padding:10px 24px" onclick="saveCurrentPage()"><i class="fa-solid fa-floppy-disk"></i> Save Program</button>
+          </div>`;
       }
 
       // ──────────────────────────────────────────────────────────
@@ -5295,6 +5384,7 @@
 
         const newProg = {
           id, slug: id, flag, portfolio,
+          isCustom: true,
           nav_visible: navVis,
           nav_sort: list.length + 1,
           status,
@@ -7267,6 +7357,18 @@
           }
         }
       });
+
+      // Global delegated click listener for sidebar delete buttons
+      document.addEventListener('click', function(e) {
+        const btn = e.target && e.target.closest ? e.target.closest('.sb-item-del') : null;
+        if (btn) {
+          e.preventDefault();
+          e.stopPropagation();
+          const t = btn.getAttribute('data-type');
+          const id = btn.getAttribute('data-id');
+          if (id) deleteProgram(t, id);
+        }
+      }, true);
 
       // ══════════════════════════════════════════════════════════
       // STARTUP
