@@ -190,9 +190,18 @@ const AI = {
     return results;
   },
 
+  sanitizeKey(key) {
+    if (!key) return '';
+    return String(key)
+      .replace(/[\u200B-\u200D\uFEFF]/g, '')
+      .replace(/^Bearer\s+/i, '')
+      .replace(/^["'`]|["'`]$/g, '')
+      .trim();
+  },
+
   async testOpenRouterKey(apiKey) {
     if (!apiKey) return { success: false, error: 'No API key provided' };
-    const cleanKey = String(apiKey).trim();
+    const cleanKey = this.sanitizeKey(apiKey);
 
     // Auto-detect Google Gemini key pasted into OpenRouter box
     if (cleanKey.startsWith('AIza')) {
@@ -254,10 +263,10 @@ const AI = {
 
   async testKey(apiKey) {
     if (!apiKey) return { success: false, error: 'No API key provided' };
-    const cleanKey = String(apiKey).trim();
+    const cleanKey = this.sanitizeKey(apiKey);
 
-    // Auto-detect OpenRouter key pasted into Gemini box
-    if (cleanKey.startsWith('sk-or-')) {
+    // Auto-detect OpenRouter or OpenAI keys pasted into Gemini box
+    if (cleanKey.startsWith('sk-')) {
       const openRouterTest = await this.testOpenRouterKey(cleanKey);
       if (openRouterTest.success) {
         return {
@@ -266,7 +275,10 @@ const AI = {
           message: 'Detected OpenRouter API key. Valid and connected!'
         };
       }
-      return openRouterTest;
+      return {
+        success: false,
+        error: 'This key starts with "sk-", which is an OpenRouter or OpenAI key. Google Gemini keys start with "AIza...". Please paste this key in the OpenRouter box above, or get a Gemini key from aistudio.google.com.'
+      };
     }
 
     // 1. Try server-side PHP test first (avoids browser CORS & supports proxy)

@@ -6639,8 +6639,11 @@
               statusEl.innerHTML = `<span style="color:#4ade80;display:inline-flex;align-items:center">${okSvg} Gemini API key is valid, working, and saved!</span>`;
             }
           } else {
-            const msg = res?.error ? `: ${res.error}` : '. Check the key.';
-            statusEl.innerHTML = `<span style="color:#f87171;display:inline-flex;align-items:center">${errSvg} Gemini key test failed${msg}</span>`;
+            let msg = res?.error ? `: ${res.error}` : '. Check the key.';
+            if (msg.includes('API key not valid')) {
+              msg += '<br><small style="opacity:0.85">Tip: Gemini keys start with "AIzaSy...". Ensure you generated it at <a href="https://aistudio.google.com/apikey" target="_blank" style="color:#fca5a5;text-decoration:underline">aistudio.google.com/apikey</a> (free, instant). If created in Google Cloud Console, you must enable "Generative Language API".</small>';
+            }
+            statusEl.innerHTML = `<span style="color:#f87171;display:inline-block">${errSvg} Gemini key test failed${msg}</span>`;
           }
         } catch (e) {
           statusEl.innerHTML = `<span style="color:#f87171">Error: ${e.message}</span>`;

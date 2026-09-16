@@ -15,7 +15,10 @@ $action = isset($_GET['action']) ? trim($_GET['action']) : 'translate';
 $body = getJsonBody();
 
 $provider = isset($body['provider']) ? trim(strtolower($body['provider'])) : 'openrouter'; // 'openrouter' or 'gemini'
-$apiKey = isset($body['api_key']) ? trim($body['api_key']) : '';
+$apiKey = isset($body['api_key']) ? $body['api_key'] : '';
+$apiKey = preg_replace('/[\x{200B}-\x{200D}\x{FEFF}]/u', '', $apiKey);
+$apiKey = preg_replace('/^Bearer\s+/i', '', $apiKey);
+$apiKey = trim($apiKey, " \t\n\r\0\x0B\"'`");
 $model = isset($body['model']) ? trim($body['model']) : 'google/gemini-2.0-flash-001';
 
 // If API key not passed in request body, attempt to read from database settings
@@ -185,8 +188,8 @@ function callOpenRouter($apiKey, $prompt, $model = 'google/gemini-2.0-flash-001'
 
 // ── CURL HELPER FOR GEMINI ────────────────────────────────────────
 function callGemini($apiKey, $prompt, $requestedModel = 'gemini-2.0-flash') {
-    // If the key starts with sk-or-, it's an OpenRouter key! Automatically route to OpenRouter
-    if (strpos($apiKey, 'sk-or-') === 0) {
+    // If the key starts with sk- (sk-or- or OpenAI sk-), automatically route to OpenRouter
+    if (strpos($apiKey, 'sk-') === 0) {
         return callOpenRouter($apiKey, $prompt);
     }
 
