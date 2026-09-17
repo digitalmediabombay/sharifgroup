@@ -5,7 +5,7 @@
  * - Floating circular trigger with gold rim, centered WhatsApp green logo, and active green status badge.
  * - Elegant luxury dark modal popup with gold border, Playfair Display serif typography, and dual advisory team cards:
  *   1. International Advisory Team (+971 4 357 8737) [Primary]
- *   2. Dubai Advisory Team (+971 4 357 3007)
+ *   2. Dubai Advisory Team (+971 54 124 3007)
  * - Multilingual support (en, ar, fa, zh) with proper RTL layout support.
  * - Responsive design for desktop, tablet, and mobile.
  */
@@ -63,7 +63,7 @@
             title: {
                 'en': 'Dubai Advisory Team',
                 'ar': 'فريق استشارات دبي',
-                'fa': 'تیم مشاوره دبي',
+                'fa': 'تیم مشاوره دبی',
                 'zh': '迪拜顾问团队'
             },
             desc: {
@@ -72,8 +72,8 @@
                 'fa': 'دفتر و پیگیری‌های دبی',
                 'zh': '迪拜办事处与业务咨询'
             },
-            phoneDisplay: '+971 4 357 3007',
-            phoneRaw: '97143573007',
+            phoneDisplay: '+971 54 124 3007',
+            phoneRaw: '971541243007',
             msg: {
                 'en': 'Hello Sharif Group, I would like to contact the Dubai Advisory Team.',
                 'ar': 'مرحباً مجموعة شريف، أود التواصل مع فريق استشارات دبي.',
@@ -103,14 +103,14 @@
 
     function getCurrentLang() {
         if (window.getCurrentLanguage) {
-            try { return window.getCurrentLanguage() || 'en'; } catch (e) {}
+            try { return window.getCurrentLanguage() || 'en'; } catch (e) { }
         }
         var docLang = (document.documentElement.lang || '').toLowerCase().trim();
         if (docLang === 'fa' || docLang === 'ar' || docLang === 'zh') return docLang;
         try {
             var stored = localStorage.getItem('sharif_lang') || localStorage.getItem('sharif_preferred_lang');
             if (stored === 'fa' || stored === 'ar' || stored === 'zh') return stored;
-        } catch (e) {}
+        } catch (e) { }
         return 'en';
     }
 
@@ -132,7 +132,7 @@
             if (document.body && (document.body.classList.contains('in-admin-studio') || document.body.hasAttribute('data-cms-editor'))) {
                 return true;
             }
-        } catch (e) {}
+        } catch (e) { }
         return false;
     }
 
@@ -667,7 +667,7 @@
 
             <div class="sg-wa-cards-list">
                 ${lang === 'fa' ? `
-                <!-- Dubai Advisory Team (+971 4 357 3007) -->
+                <!-- Dubai Advisory Team (+971 54 124 3007) -->
                 <a class="sg-wa-card" href="${dubaiUrl}" target="_blank" rel="noopener noreferrer" data-team="dubai">
                     <div class="sg-wa-card-icon-wrap">
                         ${GLOBE_ICON_SVG}
@@ -875,7 +875,7 @@
                             language: getCurrentLang()
                         });
                     }
-                } catch (err) {}
+                } catch (err) { }
                 // Allow link navigation to process cleanly before closing
                 setTimeout(function () {
                     closeModal(container, button);
@@ -901,18 +901,18 @@
     function updateExistingWhatsAppLinks() {
         try {
             var lang = getCurrentLang();
-            var defaultPhone = (lang === 'fa') ? '97143573007' : '97143578737';
+            var defaultPhone = (lang === 'fa') ? '971541243007' : '97143578737';
             var existingLinks = document.querySelectorAll('a[href*="whatsapp.com"], a[href*="wa.me"]');
             existingLinks.forEach(function (a) {
                 if (a.closest('#sg-whatsapp-widget')) return;
                 var href = a.getAttribute('href') || '';
-                if (!href.includes('97143578737') && !href.includes('97143573007') && !href.includes('971541243007')) {
+                if (!href.includes('97143578737') && !href.includes('971541243007')) {
                     a.setAttribute('href', 'https://wa.me/' + defaultPhone);
                     a.setAttribute('target', '_blank');
                     a.setAttribute('rel', 'noopener noreferrer');
                 }
             });
-        } catch (e) {}
+        } catch (e) { }
     }
 
     window.updateWhatsAppWidget = createOrUpdateWidget;
