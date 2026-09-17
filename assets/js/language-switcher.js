@@ -928,7 +928,7 @@
 
         var widgetScript = document.createElement('script');
         widgetScript.id = 'sg-whatsapp-script';
-        widgetScript.src = basePath + 'whatsapp-widget.js';
+        widgetScript.src = basePath + 'whatsapp-widget.js?v=' + Date.now();
         widgetScript.async = true;
         (document.body || document.head).appendChild(widgetScript);
     }

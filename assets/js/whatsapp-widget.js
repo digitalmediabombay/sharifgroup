@@ -63,7 +63,7 @@
             title: {
                 'en': 'Dubai Advisory Team',
                 'ar': 'فريق استشارات دبي',
-                'fa': 'تیم مشاوره دبی',
+                'fa': 'تیم مشاوره دبي',
                 'zh': '迪拜顾问团队'
             },
             desc: {
@@ -154,7 +154,7 @@
                 right: 24px;
                 bottom: max(24px, env(safe-area-inset-bottom, 24px));
                 right: max(24px, env(safe-area-inset-right, 24px));
-                z-index: 9999;
+                z-index: 99999;
                 display: flex;
                 flex-direction: column;
                 align-items: flex-end;
@@ -177,7 +177,7 @@
                 border-radius: 50%;
                 background: #07131F;
                 border: 1.5px solid #C5A880;
-                box-shadow: 0 10px 30px rgba(0, 0, 0, 0.65), 0 0 20px rgba(197, 168, 128, 0.25);
+                box-shadow: 0 10px 30px rgba(0, 0, 0, 0.65), 0 0 20px rgba(197, 168, 128, 0.22);
                 display: flex;
                 align-items: center;
                 justify-content: center;
@@ -225,8 +225,8 @@
                 position: absolute;
                 top: 2px;
                 right: 2px;
-                width: 13px;
-                height: 13px;
+                width: 14px;
+                height: 14px;
                 border-radius: 50%;
                 background: #00E676;
                 border: 2.5px solid #07131F;
@@ -264,7 +264,7 @@
                 border-radius: 26px;
                 padding: 24px 22px 20px 22px;
                 box-sizing: border-box;
-                box-shadow: 0 25px 65px rgba(0, 0, 0, 0.8), 0 0 35px rgba(197, 168, 128, 0.15);
+                box-shadow: 0 25px 65px rgba(0, 0, 0, 0.85), 0 0 35px rgba(197, 168, 128, 0.15);
                 color: #FFFFFF;
                 display: flex;
                 flex-direction: column;
@@ -313,7 +313,7 @@
 
             .sg-wa-brand-line {
                 display: inline-block;
-                width: 36px;
+                width: 38px;
                 height: 1px;
                 background: #C5A880;
                 opacity: 0.85;
@@ -411,7 +411,6 @@
             .sg-wa-card-icon-wrap svg {
                 width: 22px;
                 height: 22px;
-                stroke: #C5A880;
             }
 
             /* Card Content Details */
@@ -445,7 +444,7 @@
                 display: inline-flex;
                 align-items: center;
                 justify-content: center;
-                border: 1px solid rgba(197, 168, 128, 0.8);
+                border: 1px solid rgba(197, 168, 128, 0.85);
                 border-radius: 9999px;
                 padding: 1.5px 10px;
                 font-size: 10.5px;
@@ -519,14 +518,20 @@
                 filter: drop-shadow(0 0 6px rgba(37, 211, 102, 0.5));
             }
 
+            /* Horizontal Line above Footer */
+            .sg-wa-footer-line {
+                width: 100%;
+                height: 1px;
+                background: rgba(197, 168, 128, 0.32);
+                margin: 18px 0 14px 0;
+            }
+
             /* Footer Confidentiality Notice */
             .sg-wa-modal-footer {
                 display: flex;
                 align-items: center;
                 justify-content: center;
                 gap: 6px;
-                margin-top: 18px;
-                padding-top: 8px;
                 font-size: 12px;
                 color: #8E9DAE;
                 letter-spacing: 0.01em;
@@ -591,9 +596,11 @@
 
     var WA_SVG = '<svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M.057 24l1.687-6.163c-1.041-1.804-1.588-3.849-1.587-5.946.003-6.556 5.338-11.891 11.893-11.891 3.181.001 6.167 1.24 8.413 3.488 2.245 2.248 3.481 5.236 3.48 8.414-.003 6.557-5.338 11.892-11.893 11.892-1.99-.001-3.951-.5-5.688-1.448l-5.805 1.654zm6.597-3.807c1.676.995 3.276 1.591 5.392 1.592 5.448 0 9.886-4.434 9.889-9.885.002-5.462-4.415-9.89-9.881-9.892-5.452 0-9.887 4.434-9.889 9.884-.001 2.225.651 3.891 1.746 5.634l-.999 3.648 3.742-.981zm11.387-5.464c-.074-.124-.272-.198-.57-.347-.297-.149-1.758-.868-2.031-.967-.272-.099-.47-.149-.669.149-.198.297-.768.967-.941 1.165-.173.198-.347.223-.644.074-.297-.149-1.255-.462-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.297-.347.446-.521.151-.172.2-.296.3-.495.099-.198.05-.372-.025-.521-.075-.148-.669-1.611-.916-2.206-.242-.579-.487-.501-.669-.51l-.57-.01c-.198 0-.52.074-.792.372s-1.04 1.016-1.04 2.479 1.065 2.876 1.213 3.074c.149.198 2.095 3.2 5.076 4.487.709.306 1.263.489 1.694.626.712.226 1.36.194 1.872.118.571-.085 1.758-.719 2.006-1.413.248-.695.248-1.29.173-1.414z"/></svg>';
 
-    var USERS_ICON_SVG = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"></path><circle cx="9" cy="7" r="4"></circle><path d="M22 21v-2a4 4 0 0 0-3-3.87"></path><path d="M16 3.13a4 4 0 0 1 0 7.75"></path></svg>';
+    /* 3-people group icon outline matching Image 1 */
+    var USERS_ICON_SVG = '<svg viewBox="0 0 24 24" fill="none" stroke="#C5A880" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="7" r="3.2"/><path d="M6 19a6 6 0 0 1 12 0"/><circle cx="4.8" cy="9.5" r="2.2"/><path d="M2.5 19a4 4 0 0 1 4.5-3.5"/><circle cx="19.2" cy="9.5" r="2.2"/><path d="M17 15.5a4 4 0 0 1 4.5 3.5"/></svg>';
 
-    var GLOBE_ICON_SVG = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="10"></circle><line x1="2" y1="12" x2="22" y2="12"></line><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"></path></svg>';
+    /* Globe with meridians and equator matching Image 1 */
+    var GLOBE_ICON_SVG = '<svg viewBox="0 0 24 24" fill="none" stroke="#C5A880" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="9.2"/><line x1="2.8" y1="12" x2="21.2" y2="12"/><path d="M12 2.8a13.5 13.5 0 0 1 4 9.2 13.5 13.5 0 0 1-4 9.2 13.5 13.5 0 0 1-4-9.2 13.5 13.5 0 0 1 4-9.2z"/></svg>';
 
     var PHONE_ICON_SVG = '<svg class="sg-wa-phone-icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M6.62 10.79a15.053 15.053 0 006.59 6.59l2.2-2.2c.27-.27.67-.36 1.02-.24 1.12.37 2.33.57 3.57.57.55 0 1 .45 1 1V20c0 .55-.45 1-1 1-9.39 0-17-7.61-17-17 0-.55.45-1 1-1h3.5c.55 0 1 .45 1 1 0 1.25.2 2.45.57 3.57.11.35.03.74-.25 1.02l-2.2 2.2z"/></svg>';
 
@@ -687,6 +694,8 @@
                     </div>
                 </a>
             </div>
+
+            <div class="sg-wa-footer-line"></div>
 
             <div class="sg-wa-modal-footer">
                 ${LOCK_ICON_SVG}
