@@ -295,6 +295,32 @@
                     0 0 45px rgba(197, 168, 128, 0.6);
             }
         }
+        .about-feature-box {
+            position: relative;
+            background: rgba(255, 255, 255, 0.04);
+            border: 1px solid rgba(255, 255, 255, 0.12);
+            transition: all 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+        }
+
+        .about-feature-box .feature-icon-pill {
+            transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+        }
+
+        /* Container par hover karte hi saare boxes aur icons ek sath neon glow aur rotate honge */
+        .neon-card-hover:hover .about-feature-box {
+            background: rgba(255, 255, 255, 0.08) !important;
+            border-color: #C5A880 !important;
+            box-shadow: 0 0 20px rgba(197, 168, 128, 0.4), inset 0 0 10px rgba(197, 168, 128, 0.15) !important;
+            transform: translateY(-3px);
+        }
+
+        .neon-card-hover:hover .about-feature-box .feature-icon-pill {
+            background-color: #C5A880 !important;
+            color: #ffffff !important;
+            border-color: #C5A880 !important;
+            box-shadow: 0 0 20px rgba(197, 168, 128, 0.85);
+            transform: scale(1.15) rotate(10deg);
+        }
     </style>
     <link href="../assets/css/multilingual.css?v=5" rel="stylesheet" />
 </head>
@@ -830,7 +856,7 @@
                             <div class="w-full rounded-2xl overflow-hidden relative bg-neutral-950 aspect-[4/5]">
                                 <img alt="Ali Sharif - Founder &amp; CEO"
                                 class="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105"
-                                src="/assets/images/founder-ali-sharif.webp" />
+                                src="alisharif.webp" />
                                 <div
                                     class="absolute inset-0 bg-gradient-to-t from-neutral-950 via-neutral-950/20 to-transparent">
                                 </div>
