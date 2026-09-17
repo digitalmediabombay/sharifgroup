@@ -104,9 +104,93 @@
   let _isSyncingLang = false;
 
   function getLang() {
+    if (typeof window.getCurrentLanguage === 'function') {
+      const g = window.getCurrentLanguage();
+      if (['en', 'ar', 'fa', 'zh'].includes(g)) return g;
+    }
+    const path = (window.location && window.location.pathname) ? window.location.pathname : '';
+    const segments = path.split('/').filter(Boolean);
+    if (segments.length > 0) {
+      const first = segments[0].toLowerCase();
+      if (['en', 'ar', 'fa', 'zh'].includes(first)) return first;
+    }
+    const urlParams = new URLSearchParams(window.location.search);
+    const urlLang = urlParams.get('lang');
+    if (urlLang && ['en', 'ar', 'fa', 'zh'].includes(urlLang.toLowerCase())) {
+      return urlLang.toLowerCase();
+    }
     const raw = (document.documentElement.lang || localStorage.getItem('sharif_lang') || localStorage.getItem('sharif_preferred_lang') || 'en').split('-')[0].toLowerCase().trim();
     if (['en', 'ar', 'fa', 'zh'].includes(raw)) return raw;
     return 'en';
+  }
+
+  const NAV_I18N = {
+    citizenshipTitle: {
+      en: 'Citizenship By Investment',
+      ar: 'الجنسية عن طريق الاستثمار',
+      fa: 'شهروندی از طریق سرمایه‌گذاری',
+      zh: '投资入籍'
+    },
+    allCitizenshipPrograms: {
+      en: 'All Citizenship Programs',
+      ar: 'جميع برامج الجنسية',
+      fa: 'همه برنامه‌های شهروندی',
+      zh: '所有入籍项目'
+    },
+    residencyTitle: {
+      en: 'Residency By Investment',
+      ar: 'الإقامة عن طريق الاستثمار',
+      fa: 'اقامت از طریق سرمایه‌گذاری',
+      zh: '投资居留'
+    },
+    allResidencyPrograms: {
+      en: 'All Residency Programs',
+      ar: 'جميع برامج الإقامة',
+      fa: 'همه برنامه‌های اقامت',
+      zh: '所有居留项目'
+    },
+    caribbeanPortfolios: {
+      en: 'Caribbean Portfolios',
+      ar: 'برامج الكاريبي',
+      fa: 'برنامه‌های حوزه کارائیب',
+      zh: '加勒比项目组合'
+    },
+    globalPortfolios: {
+      en: 'Global Portfolios',
+      ar: 'البرامج العالمية',
+      fa: 'برنامه‌های جهانی',
+      zh: '全球项目组合'
+    },
+    europeanPortfolios: {
+      en: 'European Portfolios',
+      ar: 'البرامج الأوروبية',
+      fa: 'برنامه‌های اروپایی',
+      zh: '欧洲项目组合'
+    },
+    americasUAE: {
+      en: 'Americas & UAE',
+      ar: 'الأمريكتان والإمارات',
+      fa: 'قاره آمریکا و امارات',
+      zh: '美洲及阿联酋'
+    },
+    noProgramsYet: {
+      en: 'No programs yet',
+      ar: 'لا توجد برامج حتى الآن',
+      fa: 'هنوز برنامه‌ای وجود ندارد',
+      zh: '暂无项目'
+    }
+  };
+
+  function tNav(key, lang) {
+    const l = lang || getLang();
+    if (typeof window.getTranslation === 'function') {
+      const globalVal = window.getTranslation('megaMenu.' + key, l);
+      if (globalVal) return globalVal;
+    }
+    if (NAV_I18N[key] && NAV_I18N[key][l]) {
+      return NAV_I18N[key][l];
+    }
+    return NAV_I18N[key]?.en || key;
   }
 
   function setText(selector, text, opts = {}) {
@@ -1343,8 +1427,10 @@
 
     const isCitizenship = (type === 'citizenship');
     const allUrl = prefix + (isCitizenship ? 'citizenshipbyinvestment/index.html' : 'residencybyinvestment/index.html');
-    const allLabel = isCitizenship ? 'All Citizenship Programs' : 'All Residency Programs';
-    const titleLabel = isCitizenship ? 'Citizenship By Investment' : 'Residency By Investment';
+    const allKey = isCitizenship ? 'allCitizenshipPrograms' : 'allResidencyPrograms';
+    const allLabel = tNav(allKey, l);
+    const titleKey = isCitizenship ? 'citizenshipTitle' : 'residencyTitle';
+    const titleLabel = tNav(titleKey, l);
 
     function programMatchesSection(p, secKey) {
       const port = (p.portfolio || '').toLowerCase();
@@ -1372,17 +1458,44 @@
         secLabel = sec.key.charAt(0).toUpperCase() + sec.key.slice(1);
       }
       let headingText = secLabel;
-      if (sec.key === 'uae' || /americas/i.test(headingText)) {
-        headingText = 'Americas & UAE';
+      let secI18nKey = sec.i18nKey;
+
+      if (sec.key === 'caribbean') {
+        secI18nKey = 'megaMenu.caribbeanPortfolios';
+        headingText = tNav('caribbeanPortfolios', l);
+      } else if (sec.key === 'global') {
+        secI18nKey = 'megaMenu.globalPortfolios';
+        headingText = tNav('globalPortfolios', l);
+      } else if (sec.key === 'european') {
+        secI18nKey = 'megaMenu.europeanPortfolios';
+        headingText = tNav('europeanPortfolios', l);
+      } else if (sec.key === 'uae' || /americas/i.test(headingText)) {
+        secI18nKey = 'megaMenu.americasUAE';
+        headingText = tNav('americasUAE', l);
+      } else if (sec.i18nKey) {
+        const shortKey = sec.i18nKey.replace(/^megaMenu\./, '');
+        headingText = tNav(shortKey, l);
+      } else if (sec['label_' + l]) {
+        headingText = sec['label_' + l];
       } else if (!/portfolios$/i.test(headingText)) {
         headingText += ' Portfolios';
       }
 
       const colorClass = sec.colorClass || (idx === 0 ? 'text-luxury-gold' : 'text-neutral-400');
-      const i18nAttr = sec.i18nKey ? ` data-i18n="${sec.i18nKey}"` : '';
+      const i18nAttr = secI18nKey ? ` data-i18n="${secI18nKey}"` : '';
 
       const itemsHtml = secProgs.map(p => {
-        const pLabel = escH((p[l]?.nav_label || p.en?.nav_label || p.en?.title || p.name || p.id).trim());
+        let pLabel = p[l]?.nav_label;
+        if (!pLabel) {
+          const defP = (type === 'citizenship' ? DEFAULT_CITIZENSHIP : DEFAULT_RESIDENCY).find(d => d.id === p.id || d.slug === p.slug);
+          if (defP && defP[l]?.nav_label) {
+            pLabel = defP[l].nav_label;
+          }
+        }
+        if (!pLabel) {
+          pLabel = p.en?.nav_label || p.en?.title || p.name || p.id;
+        }
+        pLabel = escH(String(pLabel || '').trim());
         const pUrl = getProgramUrl(p, type, prefix);
         const flagImg = getProgramFlag(p, prefix);
 
@@ -1400,7 +1513,7 @@
         <div class="px-4">
           <h4 class="text-[11px] font-bold tracking-[0.18em] uppercase ${colorClass} mb-6 text-center lg:text-left"${i18nAttr}>${headingText}</h4>
           <ul class="space-y-4">
-            ${itemsHtml || '<li class="text-xs text-neutral-400">No programs yet</li>'}
+            ${itemsHtml || `<li class="text-xs text-neutral-400" data-i18n="megaMenu.noProgramsYet">${tNav('noProgramsYet', l)}</li>`}
           </ul>
         </div>
       `;
@@ -1410,34 +1523,53 @@
 
     gridWrap.innerHTML = `
       <div class="col-span-3 flex flex-col items-center justify-center text-center pr-4 border-r border-neutral-200">
-        <h3 class="font-serif text-3xl text-neutral-900 font-bold leading-tight mb-4" data-i18n="${isCitizenship ? 'megaMenu.citizenshipTitle' : 'megaMenu.residencyTitle'}">${titleLabel}</h3>
-        <a class="px-4 py-1.5 border border-neutral-400 text-[11px] font-bold tracking-[0.18em] uppercase rounded-full hover:bg-luxury-dark hover:text-white transition whitespace-nowrap" data-i18n="${isCitizenship ? 'megaMenu.allCitizenshipPrograms' : 'megaMenu.allResidencyPrograms'}" href="${allUrl}" onclick="if(typeof closeAllMegaMenus==='function')closeAllMegaMenus()">${allLabel}</a>
+        <h3 class="font-serif text-3xl text-neutral-900 font-bold leading-tight mb-4" data-i18n="megaMenu.${titleKey}">${titleLabel}</h3>
+        <a class="px-4 py-1.5 border border-neutral-400 text-[11px] font-bold tracking-[0.18em] uppercase rounded-full hover:bg-luxury-dark hover:text-white transition whitespace-nowrap" data-i18n="megaMenu.${allKey}" href="${allUrl}" onclick="if(typeof closeAllMegaMenus==='function')closeAllMegaMenus()">${allLabel}</a>
       </div>
       <div class="col-span-9 grid gap-6" style="${gridColsStyle}">
         ${columnsHtml}
       </div>
     `;
+
+    if (typeof window.applyTranslationsToElement === 'function') {
+      window.applyTranslationsToElement(gridWrap, l);
+    }
   }
 
   function renderMobileSubmenu(mobUl, type, programs, prefix, l) {
     if (!mobUl) return;
     const isCitizenship = (type === 'citizenship');
     const allUrl = prefix + (isCitizenship ? 'citizenshipbyinvestment/index.html' : 'residencybyinvestment/index.html');
-    const allLabel = isCitizenship ? 'All Citizenship Programs' : 'All Residency Programs';
+    const allKey = isCitizenship ? 'allCitizenshipPrograms' : 'allResidencyPrograms';
+    const allLabel = tNav(allKey, l);
 
     const visibleProgs = programs.filter(p => p.nav_visible !== false)
       .sort((a, b) => (a.nav_sort || 0) - (b.nav_sort || 0));
 
     const itemsHtml = visibleProgs.map(p => {
-      const pLabel = escH((p[l]?.nav_label || p.en?.nav_label || p.en?.title || p.name || p.id).trim());
+      let pLabel = p[l]?.nav_label;
+      if (!pLabel) {
+        const defP = (type === 'citizenship' ? DEFAULT_CITIZENSHIP : DEFAULT_RESIDENCY).find(d => d.id === p.id || d.slug === p.slug);
+        if (defP && defP[l]?.nav_label) {
+          pLabel = defP[l].nav_label;
+        }
+      }
+      if (!pLabel) {
+        pLabel = p.en?.nav_label || p.en?.title || p.name || p.id;
+      }
+      pLabel = escH(String(pLabel || '').trim());
       const pUrl = getProgramUrl(p, type, prefix);
       return `<li><a class="block hover:text-luxury-gold" href="${pUrl}" onclick="if(typeof toggleMobileMenu==='function')toggleMobileMenu()">${pLabel}</a></li>`;
     }).join('');
 
     mobUl.innerHTML = `
-      <li><a class="block font-bold hover:text-luxury-gold" href="${allUrl}" onclick="if(typeof toggleMobileMenu==='function')toggleMobileMenu()">${allLabel}</a></li>
+      <li><a class="block font-bold hover:text-luxury-gold" data-i18n="megaMenu.${allKey}" href="${allUrl}" onclick="if(typeof toggleMobileMenu==='function')toggleMobileMenu()">${allLabel}</a></li>
       ${itemsHtml}
     `;
+
+    if (typeof window.applyTranslationsToElement === 'function') {
+      window.applyTranslationsToElement(mobUl, l);
+    }
   }
 
   function hydrateNavigation(lang) {
@@ -1448,21 +1580,93 @@
     let ri = store('sgcms_residency');
 
     const DEFAULT_CITIZENSHIP = [
-      { id: 'dominica', slug: 'dominica', name: 'Dominica', portfolio: 'caribbean', flag: 'https://flagcdn.com/dm.svg', en: { nav_label: 'Dominica | Passport' } },
-      { id: 'stkitts', slug: 'stkittis', name: 'St. Kitts & Nevis', portfolio: 'caribbean', flag: 'https://flagcdn.com/kn.svg', en: { nav_label: 'St. Kitts & Nevis | Passport' } },
-      { id: 'antigua', slug: 'antiguaandbarbuda', name: 'Antigua & Barbuda', portfolio: 'caribbean', flag: 'https://flagcdn.com/ag.svg', en: { nav_label: 'Antigua & Barbuda | Passport' } },
-      { id: 'stlucia', slug: 'stlucia', name: 'Saint Lucia', portfolio: 'caribbean', flag: 'https://flagcdn.com/lc.svg', en: { nav_label: 'Saint Lucia | Passport' } },
-      { id: 'grenada', slug: 'greneda', name: 'Grenada', portfolio: 'caribbean', flag: 'https://flagcdn.com/gd.svg', en: { nav_label: 'Grenada | Passport' } },
-      { id: 'vanuatu', slug: 'vanuatu', name: 'Vanuatu', portfolio: 'global', flag: 'https://flagcdn.com/vu.svg', en: { nav_label: 'Vanuatu | Passport' } },
-      { id: 'saotome', slug: 'sãotoméandpríncipe', name: 'São Tomé and Príncipe', portfolio: 'global', flag: 'https://flagcdn.com/st.svg', en: { nav_label: 'São Tomé and Príncipe | Passport' } },
-      { id: 'nauru', slug: 'nauru', name: 'Republic of Nauru', portfolio: 'global', flag: 'https://flagcdn.com/nr.svg', en: { nav_label: 'Republic of Nauru | Passport' } }
+      {
+        id: 'dominica', slug: 'dominica', name: 'Dominica', portfolio: 'caribbean', flag: 'https://flagcdn.com/dm.svg',
+        en: { nav_label: 'Dominica | Passport' },
+        ar: { nav_label: 'دومينيكا | جواز سفر' },
+        fa: { nav_label: 'دومینیکا | پاسپورت' },
+        zh: { nav_label: '多米尼克 | 护照' }
+      },
+      {
+        id: 'stkitts', slug: 'stkittis', name: 'St. Kitts & Nevis', portfolio: 'caribbean', flag: 'https://flagcdn.com/kn.svg',
+        en: { nav_label: 'St. Kitts & Nevis | Passport' },
+        ar: { nav_label: 'سانت كيتس ونيفيس | جواز سفر' },
+        fa: { nav_label: 'سنت کیتس و نویس | پاسپورت' },
+        zh: { nav_label: '圣基茨 | 护照' }
+      },
+      {
+        id: 'antigua', slug: 'antiguaandbarbuda', name: 'Antigua & Barbuda', portfolio: 'caribbean', flag: 'https://flagcdn.com/ag.svg',
+        en: { nav_label: 'Antigua & Barbuda | Passport' },
+        ar: { nav_label: 'أنتيغوا وباربودا | جواز سفر' },
+        fa: { nav_label: 'آنتیگوا و باربودا | پاسپورت' },
+        zh: { nav_label: '安提瓜 | 护照' }
+      },
+      {
+        id: 'stlucia', slug: 'stlucia', name: 'Saint Lucia', portfolio: 'caribbean', flag: 'https://flagcdn.com/lc.svg',
+        en: { nav_label: 'Saint Lucia | Passport' },
+        ar: { nav_label: 'سانت لوسيا | جواز سفر' },
+        fa: { nav_label: 'سنت لوسیا | پاسپورت' },
+        zh: { nav_label: '圣卢西亚 | 护照' }
+      },
+      {
+        id: 'grenada', slug: 'greneda', name: 'Grenada', portfolio: 'caribbean', flag: 'https://flagcdn.com/gd.svg',
+        en: { nav_label: 'Grenada | Passport' },
+        ar: { nav_label: 'غرينادا | جواز سفر' },
+        fa: { nav_label: 'گرنادا | پاسپورت' },
+        zh: { nav_label: '格林纳达 | 护照' }
+      },
+      {
+        id: 'vanuatu', slug: 'vanuatu', name: 'Vanuatu', portfolio: 'global', flag: 'https://flagcdn.com/vu.svg',
+        en: { nav_label: 'Vanuatu | Passport' },
+        ar: { nav_label: 'فانواتو | جواز سفر' },
+        fa: { nav_label: 'وانواتو | پاسپورت' },
+        zh: { nav_label: '瓦努阿图 | 护照' }
+      },
+      {
+        id: 'saotome', slug: 'sãotoméandpríncipe', name: 'São Tomé and Príncipe', portfolio: 'global', flag: 'https://flagcdn.com/st.svg',
+        en: { nav_label: 'São Tomé and Príncipe | Passport' },
+        ar: { nav_label: 'ساو تومي وبرينسيبي | جواز سفر' },
+        fa: { nav_label: 'سائوتومه و پرنسیپ | پاسپورت' },
+        zh: { nav_label: '圣多美 | 护照' }
+      },
+      {
+        id: 'nauru', slug: 'nauru', name: 'Republic of Nauru', portfolio: 'global', flag: 'https://flagcdn.com/nr.svg',
+        en: { nav_label: 'Republic of Nauru | Passport' },
+        ar: { nav_label: 'جمهورية ناورو | جواز سفر' },
+        fa: { nav_label: 'جمهوری نائورو | پاسپورت' },
+        zh: { nav_label: '瑙鲁共和国 | 护照' }
+      }
     ];
 
     const DEFAULT_RESIDENCY = [
-      { id: 'portugal', slug: 'portugal', name: 'Portugal', portfolio: 'european', flag: 'https://flagcdn.com/pt.svg', en: { nav_label: 'Portugal | Golden Visa' } },
-      { id: 'greece', slug: 'greece', name: 'Greece', portfolio: 'european', flag: 'https://flagcdn.com/gr.svg', en: { nav_label: 'Greece | Golden Visa' } },
-      { id: 'panama', slug: 'panama', name: 'Panama', portfolio: 'uae', flag: 'https://flagcdn.com/pa.svg', en: { nav_label: 'Panama | Golden Visa' } },
-      { id: 'uae', slug: 'uae', name: 'United Arab Emirates', portfolio: 'uae', flag: 'https://flagcdn.com/ae.svg', en: { nav_label: 'United Arab Emirates | Golden Visa' } }
+      {
+        id: 'portugal', slug: 'portugal', name: 'Portugal', portfolio: 'european', flag: 'https://flagcdn.com/pt.svg',
+        en: { nav_label: 'Portugal | Golden Visa' },
+        ar: { nav_label: 'البرتغال | التأشيرة الذهبية' },
+        fa: { nav_label: 'پرتغال | ویزای طلایی' },
+        zh: { nav_label: '葡萄牙 | 黄金签证' }
+      },
+      {
+        id: 'greece', slug: 'greece', name: 'Greece', portfolio: 'european', flag: 'https://flagcdn.com/gr.svg',
+        en: { nav_label: 'Greece | Golden Visa' },
+        ar: { nav_label: 'اليونان | التأشيرة الذهبية' },
+        fa: { nav_label: 'یونان | ویزای طلایی' },
+        zh: { nav_label: '希腊 | 黄金签证' }
+      },
+      {
+        id: 'panama', slug: 'panama', name: 'Panama', portfolio: 'uae', flag: 'https://flagcdn.com/pa.svg',
+        en: { nav_label: 'Panama | Golden Visa' },
+        ar: { nav_label: 'بنما | التأشيرة الذهبية' },
+        fa: { nav_label: 'پاناما | ویزای طلایی' },
+        zh: { nav_label: '巴拿马 | 黄金签证' }
+      },
+      {
+        id: 'uae', slug: 'uae', name: 'United Arab Emirates', portfolio: 'uae', flag: 'https://flagcdn.com/ae.svg',
+        en: { nav_label: 'United Arab Emirates | Golden Visa' },
+        ar: { nav_label: 'الإمارات العربية المتحدة | التأشيرة الذهبية' },
+        fa: { nav_label: 'امارات متحده عربی | ویزای طلایی' },
+        zh: { nav_label: '阿联酋 | 黄金签证' }
+      }
     ];
 
     if (Array.isArray(ci)) {

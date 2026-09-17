@@ -44,6 +44,36 @@
         return currentLang;
     };
 
+    window.getTranslation = function (keyPath, lang) {
+        var l = normalizeLang(lang || currentLang);
+        var data = translationsCache[l];
+        if (!data) return null;
+        return getNestedValue(data, keyPath);
+    };
+
+    window.applyTranslationsToElement = function (container, lang) {
+        if (!container) return;
+        var l = normalizeLang(lang || currentLang);
+        var data = translationsCache[l];
+        if (!data) return;
+
+        container.querySelectorAll('[data-i18n]').forEach(function (el) {
+            var key = el.getAttribute('data-i18n');
+            var val = getNestedValue(data, key);
+            if (val !== null && val !== undefined) {
+                el.textContent = (l === 'ar' || l === 'fa') ? localizeNumbers(val, l) : val;
+            }
+        });
+
+        container.querySelectorAll('[data-i18n-html]').forEach(function (el) {
+            var key = el.getAttribute('data-i18n-html');
+            var val = getNestedValue(data, key);
+            if (val !== null && val !== undefined) {
+                el.innerHTML = val;
+            }
+        });
+    };
+
     function normalizeLang(lang) {
         if (!lang) return 'en';
         var l = String(lang).toLowerCase().trim();
@@ -542,6 +572,25 @@
                 console.warn('[i18n] Reapplying CMS hydration error:', err);
             }
         }
+
+        // Re-apply translations specifically to the dynamic mega-menus and mobile menus
+        var navMenus = document.querySelectorAll('#citizenship-menu, #residency-menu, #mob-cbi, #mob-rbi');
+        navMenus.forEach(function (container) {
+            container.querySelectorAll('[data-i18n]').forEach(function (el) {
+                var key = el.getAttribute('data-i18n');
+                var val = getNestedValue(data, key);
+                if (val !== null && val !== undefined) {
+                    el.textContent = (lang === 'ar' || lang === 'fa') ? localizeNumbers(val, lang) : val;
+                }
+            });
+            container.querySelectorAll('[data-i18n-html]').forEach(function (el) {
+                var key = el.getAttribute('data-i18n-html');
+                var val = getNestedValue(data, key);
+                if (val !== null && val !== undefined) {
+                    el.innerHTML = val;
+                }
+            });
+        });
 
         // 9. Reveal translated content instantly without any English flicker
         document.documentElement.classList.remove('i18n-pending');

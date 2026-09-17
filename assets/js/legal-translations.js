@@ -32,7 +32,7 @@ window.LEGAL_TRANSLATIONS = {
       "citizenshipTitle": "Citizenship By Investment",
       "caribbeanPortfolios": "Caribbean Portfolios",
       "globalPortfolios": "Global Portfolios",
-      "allCitizenshipPrograms": "VIEW ALL PROGRAMS",
+      "allCitizenshipPrograms": "All Citizenship Programs",
       "residencyTitle": "Residency By Investment",
       "europeanPortfolios": "European Portfolios",
       "americasUAE": "Americas & UAE",
@@ -51,7 +51,7 @@ window.LEGAL_TRANSLATIONS = {
     },
     "mobileMenu": {
       "citizenshipByInvestment": "Citizenship By Investment",
-      "allCitizenshipPrograms": "VIEW ALL PROGRAMS",
+      "allCitizenshipPrograms": "All Citizenship Programs",
       "globalResidency": "Global Residency",
       "allResidencyPrograms": "All Residency Programs",
       "otherServices": "Other Services",
