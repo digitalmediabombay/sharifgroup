@@ -101,9 +101,6 @@
         }
     };
 
-    var isClickLockedOpen = false;
-    var hoverTimeout = null;
-
     function getCurrentLang() {
         if (window.getCurrentLanguage) {
             try { return window.getCurrentLanguage() || 'en'; } catch (e) {}
@@ -809,7 +806,7 @@
                 if (closeBtn && triggerBtn) {
                     closeBtn.addEventListener('click', function (e) {
                         e.stopPropagation();
-                        closeModal(container, triggerBtn, true);
+                        closeModal(container, triggerBtn);
                     });
                 }
             }
@@ -818,93 +815,54 @@
         updateExistingWhatsAppLinks();
     }
 
-    var isDismissed = false;
-
-    function clearHoverTimer() {
-        if (hoverTimeout) {
-            clearTimeout(hoverTimeout);
-            hoverTimeout = null;
-        }
-    }
-
     function openModal(container, button) {
-        clearHoverTimer();
-        if (isDismissed) return;
         container.classList.add('sg-wa-open');
         button.setAttribute('aria-expanded', 'true');
     }
 
-    function closeModal(container, button, manualDismiss) {
-        clearHoverTimer();
+    function closeModal(container, button) {
         container.classList.remove('sg-wa-open');
         button.setAttribute('aria-expanded', 'false');
-        isClickLockedOpen = false;
-        if (manualDismiss) {
-            isDismissed = true;
-        }
     }
 
     function toggleModal(container, button) {
-        clearHoverTimer();
         if (container.classList.contains('sg-wa-open')) {
-            closeModal(container, button, false);
+            closeModal(container, button);
         } else {
-            isDismissed = false;
-            isClickLockedOpen = true;
             openModal(container, button);
         }
     }
 
     function bindWidgetEvents(container, button, modal) {
-        // Clear timer and open modal on hover of container, button, or modal
-        function handleHoverEnter() {
-            clearHoverTimer();
-            if (!isDismissed) {
-                openModal(container, button);
-            }
-        }
-
-        container.addEventListener('mouseenter', handleHoverEnter);
-        button.addEventListener('mouseenter', handleHoverEnter);
-        modal.addEventListener('mouseenter', handleHoverEnter);
-
-        // Leaving the container starts a 450ms grace period before closing
-        container.addEventListener('mouseleave', function () {
-            clearHoverTimer();
-            if (isClickLockedOpen) return;
-            hoverTimeout = setTimeout(function () {
-                closeModal(container, button, false);
-                isDismissed = false;
-            }, 450);
-        });
-
-        // Click on circular button toggles modal
+        // Click on circular WhatsApp button toggles modal open/close
         button.addEventListener('click', function (e) {
             e.preventDefault();
             e.stopPropagation();
             toggleModal(container, button);
         });
 
-        // Direct close button binding
+        // Direct close button binding (clicking on X)
         var closeBtn = modal.querySelector('#sg-wa-close-btn');
         if (closeBtn) {
             closeBtn.addEventListener('click', function (e) {
                 e.preventDefault();
                 e.stopPropagation();
-                closeModal(container, button, true);
+                closeModal(container, button);
             });
         }
 
-        // Delegated modal clicks
+        // Delegated clicks inside modal
         modal.addEventListener('click', function (e) {
+            // Clicking on X close button
             var btn = e.target.closest('#sg-wa-close-btn');
             if (btn) {
                 e.preventDefault();
                 e.stopPropagation();
-                closeModal(container, button, true);
+                closeModal(container, button);
                 return;
             }
 
+            // Clicking on team card / phone number
             var card = e.target.closest('.sg-wa-card');
             if (card) {
                 try {
@@ -918,26 +876,24 @@
                         });
                     }
                 } catch (err) {}
-                // Allow link click navigation to process smoothly before closing
+                // Allow link navigation to process cleanly before closing
                 setTimeout(function () {
-                    closeModal(container, button, false);
+                    closeModal(container, button);
                 }, 300);
             }
         });
 
-        // Click outside closes modal
+        // Clicking anywhere outside the container closes modal
         document.addEventListener('click', function (e) {
             if (!container.contains(e.target)) {
-                closeModal(container, button, false);
-                isDismissed = false;
+                closeModal(container, button);
             }
         });
 
         // Escape key closes modal
         document.addEventListener('keydown', function (e) {
             if (e.key === 'Escape' || e.keyCode === 27) {
-                closeModal(container, button, false);
-                isDismissed = false;
+                closeModal(container, button);
             }
         });
     }
