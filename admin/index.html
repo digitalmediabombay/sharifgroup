@@ -489,17 +489,6 @@
         </button>
       </form>
 
-      <!-- Quick Demo Credentials Box -->
-      <div class="demo-box">
-        <div>
-          <div class="demo-info-title"><i class="fa-solid fa-key" style="margin-right:4px"></i> Demo Credentials</div>
-          <div class="demo-info-details">admin@sharifgroup.ae &bull; SharifCMS@2026</div>
-        </div>
-        <button type="button" class="btn-autofill" onclick="fillDemoCreds()">
-          <i class="fa-solid fa-bolt" style="margin-right:3px"></i> Autofill
-        </button>
-      </div>
-
     </div>
   </main>
 
@@ -537,15 +526,6 @@ function togglePassword() {
   }
 }
 
-// 1-Click Autofill for Testing & Demo
-function fillDemoCreds() {
-  document.getElementById('login-email').value = 'admin@sharifgroup.ae';
-  document.getElementById('login-password').value = 'SharifCMS@2026';
-  const card = document.getElementById('login-card');
-  card.style.transform = 'scale(1.01)';
-  setTimeout(() => { card.style.transform = 'none'; }, 180);
-}
-
 function extractErrorMessage(err) {
   if (!err) return 'Incorrect email or password.';
   if (typeof err === 'string') return err;
@@ -578,7 +558,6 @@ async function handleLogin(e) {
   successBox.style.display = 'none';
 
   let result = { success: false, error: 'Incorrect email or password.' };
-  const isMasterCreds = (email.toLowerCase() === 'admin@sharifgroup.ae' && pwd === 'SharifCMS@2026');
 
   try {
     // Attempt PHP backend authentication
@@ -600,25 +579,11 @@ async function handleLogin(e) {
       if (data.token) sessionStorage.setItem('sgcms_token', data.token);
       if (data.user) sessionStorage.setItem('sgcms_auth', JSON.stringify(data.user));
     } else {
-      // Backend returned an error or DB is not yet configured
-      if (isMasterCreds) {
-        result = { success: true };
-      } else if (window.CMS && window.CMS.Auth) {
-        const clientAuth = window.CMS.Auth.login(email, pwd);
-        if (clientAuth.success) {
-          result = clientAuth;
-        } else {
-          result = { success: false, error: (data && data.error) ? data.error : clientAuth.error };
-        }
-      } else {
-        result = { success: false, error: (data && data.error) ? data.error : 'Incorrect email or password.' };
-      }
+      result = { success: false, error: (data && data.error) ? data.error : 'Incorrect email or password.' };
     }
   } catch (err) {
-    // Network / backend offline fallback
-    if (isMasterCreds) {
-      result = { success: true };
-    } else if (window.CMS && window.CMS.Auth) {
+    // Network / backend offline fallback (e.g. local preview without PHP server)
+    if (window.CMS && window.CMS.Auth) {
       result = window.CMS.Auth.login(email, pwd);
     } else {
       result = { success: false, error: extractErrorMessage(err) };
