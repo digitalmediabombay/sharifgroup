@@ -312,6 +312,23 @@
 
   function extractCountryName() {
     const slug = extractSlug();
+    const map = {
+      'dominica': 'Dominica',
+      'stkittis': 'St. Kitts & Nevis',
+      'stkitts': 'St. Kitts & Nevis',
+      'antiguaandbarbuda': 'Antigua & Barbuda',
+      'stlucia': 'Saint Lucia',
+      'greneda': 'Grenada',
+      'vanuatu': 'Vanuatu',
+      'nauru': 'Republic of Nauru',
+      'saotomeandprincipe': 'São Tomé & Príncipe',
+      'sãotoméandpríncipe': 'São Tomé & Príncipe',
+      'greece': 'Greece',
+      'panama': 'Panama',
+      'portugal': 'Portugal',
+      'uae': 'UAE'
+    };
+    if (map[slug]) return map[slug];
     const clean = slug.replace(/[^a-zA-Z]/g, ' ').trim();
     if (clean) return clean.charAt(0).toUpperCase() + clean.slice(1);
     return 'Dominica';
@@ -326,6 +343,10 @@
         str = str.replace(/class="([^"]*)"/, 'class="$1 font-normal"');
       }
       return str;
+    }
+    const l = (typeof getLang === 'function') ? getLang() : 'en';
+    if (l !== 'en') {
+      return raw;
     }
     const clean = str.replace(/<[^>]*>/g, ' ').replace(/\s+/g, ' ').trim();
     const cName = fallbackCountry || extractCountryName();
@@ -573,53 +594,57 @@
         }
       });
 
-      // 4. Automatically restore overview heading luxury gold/italic styling if it was flattened
-      const ovHeading = document.querySelector('[data-i18n-html*="overviewTitle"], [data-i18n*="overviewTitle"], #sec-overview h3');
-      if (ovHeading && (!ovHeading.querySelector('.text-luxury-gold') || !ovHeading.querySelector('.italic'))) {
-        ovHeading.innerHTML = formatOverviewTitleHtml(ovHeading.textContent);
-      }
-
-      // 5. Automatically restore investment title styling (Costs for Dominica) and ensure font-normal
-      const invHeading = document.querySelector('[data-i18n-html*="investmentTitle"], #sec-investment h2');
-      if (invHeading) {
-        if (!invHeading.querySelector('.italic') || !invHeading.querySelector('span')) {
-          invHeading.innerHTML = formatInvestmentTitleHtml(invHeading.textContent);
-        } else {
-          const sp = invHeading.querySelector('span');
-          if (sp && !sp.classList.contains('font-normal')) sp.classList.add('font-normal');
+      // 4-8. Automatically restore English heading stylings ONLY when English is active
+      const currentLang = (typeof getLang === 'function') ? getLang() : 'en';
+      if (currentLang === 'en') {
+        // 4. Automatically restore overview heading luxury gold/italic styling if it was flattened
+        const ovHeading = document.querySelector('[data-i18n-html*="overviewTitle"], [data-i18n*="overviewTitle"], #sec-overview h3');
+        if (ovHeading && (!ovHeading.querySelector('.text-luxury-gold') || !ovHeading.querySelector('.italic'))) {
+          ovHeading.innerHTML = formatOverviewTitleHtml(ovHeading.textContent);
         }
-      }
 
-      // 6. Automatically restore who can apply title (Who Can Apply?) and ensure "Apply" is thin (font-normal)
-      const whoHeading = document.querySelector('[data-i18n-html*="whoCanApplyTitle"], #sec-who-can-apply h3');
-      if (whoHeading) {
-        if (!whoHeading.querySelector('.italic') || !whoHeading.querySelector('span')) {
-          whoHeading.innerHTML = formatWhoCanApplyTitleHtml(whoHeading.textContent);
-        } else {
-          const sp = whoHeading.querySelector('span');
-          if (sp && !sp.classList.contains('font-normal')) sp.classList.add('font-normal');
+        // 5. Automatically restore investment title styling (Costs for Dominica) and ensure font-normal
+        const invHeading = document.querySelector('[data-i18n-html*="investmentTitle"], #sec-investment h2');
+        if (invHeading) {
+          if (!invHeading.querySelector('.italic') || !invHeading.querySelector('span')) {
+            invHeading.innerHTML = formatInvestmentTitleHtml(invHeading.textContent);
+          } else {
+            const sp = invHeading.querySelector('span');
+            if (sp && !sp.classList.contains('font-normal')) sp.classList.add('font-normal');
+          }
         }
-      }
 
-      // 7. Automatically restore benefits title styling
-      const benHeading = document.querySelector('[data-i18n-html*="benefitsTitle"], #sec-benefits h2');
-      if (benHeading) {
-        if (!benHeading.querySelector('.italic') || !benHeading.querySelector('span')) {
-          benHeading.innerHTML = formatBenefitsTitleHtml(benHeading.textContent);
-        } else {
-          const sp = benHeading.querySelector('span');
-          if (sp && !sp.classList.contains('font-normal')) sp.classList.add('font-normal');
+        // 6. Automatically restore who can apply title (Who Can Apply?) and ensure "Apply" is thin (font-normal)
+        const whoHeading = document.querySelector('[data-i18n-html*="whoCanApplyTitle"], #sec-who-can-apply h3');
+        if (whoHeading) {
+          if (!whoHeading.querySelector('.italic') || !whoHeading.querySelector('span')) {
+            whoHeading.innerHTML = formatWhoCanApplyTitleHtml(whoHeading.textContent);
+          } else {
+            const sp = whoHeading.querySelector('span');
+            if (sp && !sp.classList.contains('font-normal')) sp.classList.add('font-normal');
+          }
         }
-      }
 
-      // 8. Automatically restore consultation form title styling
-      const formHeading = document.querySelector('[data-i18n-html*="formTitle"], #program-consult-form-section h3');
-      if (formHeading) {
-        if (!formHeading.querySelector('.italic') || !formHeading.querySelector('span')) {
-          formHeading.innerHTML = formatFormTitleHtml(formHeading.textContent);
-        } else {
-          const sp = formHeading.querySelector('span');
-          if (sp && !sp.classList.contains('font-normal')) sp.classList.add('font-normal');
+        // 7. Automatically restore benefits title styling
+        const benHeading = document.querySelector('[data-i18n-html*="benefitsTitle"], #sec-benefits h2');
+        if (benHeading) {
+          if (!benHeading.querySelector('.italic') || !benHeading.querySelector('span')) {
+            benHeading.innerHTML = formatBenefitsTitleHtml(benHeading.textContent);
+          } else {
+            const sp = benHeading.querySelector('span');
+            if (sp && !sp.classList.contains('font-normal')) sp.classList.add('font-normal');
+          }
+        }
+
+        // 8. Automatically restore consultation form title styling
+        const formHeading = document.querySelector('[data-i18n-html*="formTitle"], #program-consult-form-section h3');
+        if (formHeading) {
+          if (!formHeading.querySelector('.italic') || !formHeading.querySelector('span')) {
+            formHeading.innerHTML = formatFormTitleHtml(formHeading.textContent);
+          } else {
+            const sp = formHeading.querySelector('span');
+            if (sp && !sp.classList.contains('font-normal')) sp.classList.add('font-normal');
+          }
         }
       }
     } catch(e) {}
