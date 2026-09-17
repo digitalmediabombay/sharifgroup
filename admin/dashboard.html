@@ -385,19 +385,55 @@
       grid-area: sb;
       background: var(--surface);
       border-right: 1px solid var(--border);
-      overflow-y: auto;
+      overflow-y: hidden;
       overflow-x: hidden;
       display: flex;
-      flex-direction: column
+      flex-direction: column;
+      height: calc(100vh - var(--header-h));
     }
 
+    .sb-nav-scroll {
+      flex: 1;
+      overflow-y: auto;
+      overflow-x: hidden;
+      padding: 8px 5px 4px;
+    }
+
+    .sb-nav-scroll::-webkit-scrollbar,
     #sb::-webkit-scrollbar {
       width: 3px
     }
 
+    .sb-nav-scroll::-webkit-scrollbar-thumb,
     #sb::-webkit-scrollbar-thumb {
       background: var(--gold-dim);
       border-radius: 2px
+    }
+
+    .sb-bottom-footer {
+      flex-shrink: 0;
+      padding: 11px 14px;
+      border-top: 1px solid var(--border);
+      background: var(--surface);
+    }
+
+    .sb-copyright {
+      font-size: 11px;
+      color: var(--muted);
+      line-height: 1.4;
+      display: block;
+    }
+
+    .sb-copyright a {
+      color: var(--gold);
+      text-decoration: none;
+      font-weight: 600;
+      transition: all .2s ease;
+    }
+
+    .sb-copyright a:hover {
+      color: var(--gold-h);
+      text-decoration: underline;
     }
 
     .sb-section-lbl {
@@ -1825,7 +1861,7 @@
 
     <!-- â•â•â• SIDEBAR â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â• -->
     <aside id="sb">
-      <div style="padding:8px 5px 4px">
+      <div class="sb-nav-scroll">
 
         <!-- Homepage -->
         <div class="sb-group">
@@ -1979,6 +2015,13 @@
             </button>
           </div>
         </div>
+      </div>
+
+      <!-- Bottom Left Copyright -->
+      <div class="sb-bottom-footer">
+        <span class="sb-copyright">
+          Designed and Developed by <a href="https://www.digitalmediabombay.com/" target="_blank" rel="noopener noreferrer">Digital Media Bombay</a>
+        </span>
       </div>
     </aside>
 
