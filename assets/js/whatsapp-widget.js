@@ -56,6 +56,7 @@
             displayPhone: '+971 54 124 3007',
             url: 'https://wa.me/971541243007',
             avatarText: 'AS',
+            avatarImg: '/assets/images/founder-ali-sharif.webp',
             names: {
                 'en': 'Mr. Ali Sharif',
                 'fa': 'جناب آقای علی شریف',
@@ -80,6 +81,7 @@
             displayPhone: '+971 4 357 8737',
             url: 'https://wa.me/97143578737',
             avatarText: 'SE',
+            avatarImg: '/assets/images/vector_2d09c4bb.svg',
             names: {
                 'en': 'Sales Expert',
                 'fa': 'کارشناس فروش',
@@ -367,8 +369,8 @@
 
             /* Avatar */
             .sg-wa-avatar {
-                width: 40px;
-                height: 40px;
+                width: 42px;
+                height: 42px;
                 border-radius: 50%;
                 display: flex;
                 align-items: center;
@@ -377,18 +379,59 @@
                 font-size: 13px;
                 flex-shrink: 0;
                 position: relative;
+                overflow: hidden;
             }
 
             .sg-wa-card-vip .sg-wa-avatar {
-                background: linear-gradient(135deg, #786142 0%, #C5A880 100%);
-                color: #11161F;
-                box-shadow: 0 0 10px rgba(197, 168, 128, 0.4);
+                background: linear-gradient(135deg, #2A2016 0%, #4D3C28 100%);
+                color: #FFFFFF;
+                border: 1.5px solid #C5A880;
+                box-shadow: 0 0 12px rgba(197, 168, 128, 0.4);
+            }
+
+            .sg-wa-card-vip:hover .sg-wa-avatar {
+                border-color: #E2C07C;
+                box-shadow: 0 0 16px rgba(226, 192, 124, 0.6);
             }
 
             .sg-wa-card-sales .sg-wa-avatar {
-                background: linear-gradient(135deg, #128C7E 0%, #25D366 100%);
+                background: linear-gradient(135deg, #0B121C 0%, #15202E 100%);
                 color: #FFFFFF;
-                box-shadow: 0 0 10px rgba(37, 211, 102, 0.3);
+                border: 1.5px solid rgba(197, 168, 128, 0.35);
+                box-shadow: 0 0 10px rgba(0, 0, 0, 0.4);
+            }
+
+            .sg-wa-card-sales:hover .sg-wa-avatar {
+                border-color: #25D366;
+                box-shadow: 0 0 14px rgba(37, 211, 102, 0.4);
+            }
+
+            .sg-wa-avatar-img {
+                width: 100%;
+                height: 100%;
+                object-fit: cover;
+                object-position: center 15%;
+                border-radius: 50%;
+                display: block;
+            }
+
+            .sg-wa-avatar-logo {
+                width: 25px;
+                height: 25px;
+                object-fit: contain;
+                display: block;
+                filter: drop-shadow(0 1px 3px rgba(0, 0, 0, 0.5));
+            }
+
+            .sg-wa-avatar-fallback {
+                width: 100%;
+                height: 100%;
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                font-weight: 700;
+                font-size: 13px;
+                color: #FFFFFF;
             }
 
             .sg-wa-advisor-info {
@@ -565,6 +608,22 @@
         return false;
     }
 
+    function resolveAssetUrl(url) {
+        if (!url) return '';
+        try {
+            var widgetScript = document.getElementById('sg-whatsapp-script') || document.querySelector('script[src*="whatsapp-widget.js"]');
+            if (widgetScript) {
+                var src = widgetScript.getAttribute('src') || '';
+                var idx = src.indexOf('assets/js/whatsapp-widget.js');
+                if (idx !== -1) {
+                    var base = src.substring(0, idx);
+                    return base + (url.startsWith('/') ? url.slice(1) : url);
+                }
+            }
+        } catch (e) {}
+        return url;
+    }
+
     function buildAdvisorCardHtml(key, lang) {
         var advisor = ADVISORS[key];
         if (!advisor) return '';
@@ -573,11 +632,23 @@
         var name = advisor.names[lang] || advisor.names['en'];
         var role = advisor.roles[lang] || advisor.roles['en'];
         var badge = advisor.badge[lang] || advisor.badge['en'];
+        var imgUrl = resolveAssetUrl(advisor.avatarImg);
+        var imgClass = isVip ? 'sg-wa-avatar-img' : 'sg-wa-avatar-logo';
+
+        var avatarHtml = '';
+        if (advisor.avatarImg) {
+            avatarHtml = `
+                <img src="${imgUrl}" alt="${name}" class="${imgClass}" loading="lazy" decoding="async" onerror="if(!this.dataset.retried){this.dataset.retried='1';var s=this.getAttribute('src')||'';if(s.startsWith('/')){this.src='.'+s;return;}else if(s.startsWith('./')){this.src='.'+s;return;}}this.style.display='none';var fb=this.nextElementSibling;if(fb)fb.style.display='flex';" />
+                <span class="sg-wa-avatar-fallback" style="display:none;">${advisor.avatarText}</span>
+            `;
+        } else {
+            avatarHtml = `<span class="sg-wa-avatar-fallback">${advisor.avatarText}</span>`;
+        }
 
         return `
             <a class="sg-wa-advisor-card ${cardClass}" href="${advisor.url}" target="_blank" rel="noopener noreferrer" data-advisor="${key}">
                 <div class="sg-wa-avatar">
-                    ${advisor.avatarText}
+                    ${avatarHtml}
                 </div>
                 <div class="sg-wa-advisor-info">
                     <div class="sg-wa-advisor-name-row">

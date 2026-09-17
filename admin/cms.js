@@ -960,31 +960,7 @@ const DEFAULTS = {
       zh: { title: '阿联酋10年黄金签证', nav_label: '阿联酋 | 黄金签证', investment_from: 'AED 200万', processing_time: '2-4周', overview: '', benefits: [], faqs: [] }
     }
   ],
-  blog: [
-    {
-      id: 'b001',
-      author: 'Sharif Group Editorial',
-      category: 'Citizenship',
-      tags: ['Dominica', 'Caribbean', '2026'],
-      featured_img: '/assets/images/dubai-office-2.webp',
-      publish_date: '2026-09-01',
-      status_en: 'published',
-      status_ar: 'published',
-      status_fa: 'draft',
-      status_zh: 'draft',
-      en: {
-        title: 'About Sharif Group: Who We Are and How We Help',
-        slug: 'about-sharif-group',
-        excerpt: 'Discover how our expert team in Business Bay, Dubai guides international families through secure legal second passport and residency pathways.',
-        body: '<p>Discover how our expert team in Business Bay, Dubai guides international families through secure legal second passport and residency pathways...</p>',
-        meta_title: 'CORPORATE IDENTITY| Dubai Advisory',
-        meta_desc: 'Who we are and how we help.'
-      },
-      ar: { title: 'عن مجموعة شريف: من نحن وكيف نساعدك', slug: 'about-sharif-group', excerpt: '', body: '', meta_title: '', meta_desc: '' },
-      fa: { title: 'درباره گروه شریف: ما کیستیم و چگونه کمک می‌کنیم', slug: 'about-sharif-group', excerpt: '', body: '', meta_title: '', meta_desc: '' },
-      zh: { title: '关于谢里夫集团：我们是谁以及如何提供帮助', slug: 'about-sharif-group', excerpt: '', body: '', meta_title: '', meta_desc: '' }
-    }
-  ],
+  blog: [],
   team: [
     { id: 't001', name: 'Alireza Sharif', title: 'Founder & Chairman', dept: 'Executive Leadership', bio: 'Founder of Sharif Group with over 15 years in global mobility and investment migration advisory.', photo: 'alirezasharif.svg', linkedin: '', sort: 1, visible: true },
     { id: 't002', name: 'Sarah Al-Hassan', title: 'Head of Client Relations', dept: 'Client Services', bio: 'Leading client relations with expertise in UAE Golden Visa and European residency programs.', photo: '', linkedin: '', sort: 2, visible: true }
@@ -1074,9 +1050,19 @@ const DEFAULTS = {
 function getData(key) {
   const storeKey = key.startsWith('sgcms_') ? key : 'sgcms_' + key;
   const defKey = storeKey.replace('sgcms_', '');
-  const stored = Store.getOrDefault(storeKey, DEFAULTS[defKey] || null);
+  let stored = Store.getOrDefault(storeKey, DEFAULTS[defKey] || null);
 
-  if (Array.isArray(stored) && Array.isArray(DEFAULTS[defKey])) {
+  // Auto-prune legacy duplicate b001 from stored blog data if present
+  if (defKey === 'blog' && Array.isArray(stored)) {
+    const cleaned = stored.filter(b => b && b.id !== 'b001' && b.slug !== 'about-sharif-group');
+    if (cleaned.length !== stored.length) {
+      stored = cleaned;
+      Store.set(storeKey, stored);
+    }
+    return stored;
+  }
+
+  if (Array.isArray(stored) && Array.isArray(DEFAULTS[defKey]) && defKey !== 'blog') {
     let updated = false;
     DEFAULTS[defKey].forEach(defItem => {
       if (defItem && defItem.id && !stored.some(s => s && s.id === defItem.id)) {

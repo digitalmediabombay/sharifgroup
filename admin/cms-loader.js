@@ -55,6 +55,30 @@
   const isEditor = params.get('cms_editor') === '1' || isInsideIframe;
   const isPreview = params.get('cms_preview') === '1' || isEditor;
 
+  // Auto-prune legacy duplicate dummy article b001 from localStorage
+  try {
+    ['sgcms_blog', 'sgcms_blog_live'].forEach(key => {
+      const raw = localStorage.getItem(key);
+      if (raw) {
+        let list = JSON.parse(raw);
+        if (Array.isArray(list)) {
+          const filtered = list.filter(b => b && b.id !== 'b001' && b.slug !== 'about-sharif-group');
+          if (filtered.length !== list.length) {
+            localStorage.setItem(key, JSON.stringify(filtered));
+          }
+        }
+      }
+    });
+    const manifestStr = localStorage.getItem('sgcms_published_manifest');
+    if (manifestStr) {
+      const manifest = JSON.parse(manifestStr);
+      if (manifest && manifest.data && Array.isArray(manifest.data.sgcms_blog)) {
+        manifest.data.sgcms_blog = manifest.data.sgcms_blog.filter(b => b && b.id !== 'b001' && b.slug !== 'about-sharif-group');
+        localStorage.setItem('sgcms_published_manifest', JSON.stringify(manifest));
+      }
+    }
+  } catch(e) {}
+
   async function syncLiveFromBackend() {
     // Vercel is a static host that does not run PHP - skip immediately to avoid network hanging
     if (window.location.hostname.includes('vercel.app') || window.location.protocol === 'file:') {
@@ -1045,8 +1069,13 @@
   }
 
   function hydrateBlog(lang) {
-    const blogs = store('sgcms_blog') || [];
+    let blogs = store('sgcms_blog') || [];
     const l = lang || getLang();
+
+    // Auto-prune legacy dummy b001 if present in blogs
+    if (Array.isArray(blogs)) {
+      blogs = blogs.filter(b => b && b.id !== 'b001' && b.slug !== 'about-sharif-group');
+    }
 
     // Ensure articlesDatabase exists so dynamically added articles can open in detail reader
     window.articlesDatabase = window.articlesDatabase || {};
@@ -1054,7 +1083,23 @@
     const grid = document.getElementById('all-blogs-grid');
     if (!grid) return;
 
-    if (!Array.isArray(blogs) || !blogs.length) return;
+    // Prune any dynamic cards whose blog ID is no longer present in blogs
+    const validBlogIds = new Set((Array.isArray(blogs) ? blogs : []).map(b => b && b.id).filter(Boolean));
+    grid.querySelectorAll('.dynamic-cms-blog').forEach(el => {
+      const cardId = el.getAttribute('data-cms-blog-id');
+      if (!cardId || !validBlogIds.has(cardId)) {
+        el.remove();
+      }
+    });
+
+    if (!Array.isArray(blogs) || !blogs.length) {
+      if (typeof window.paginateBlogs === 'function') {
+        window.paginateBlogs();
+      } else if (typeof window.initPagination === 'function') {
+        window.initPagination();
+      }
+      return;
+    }
 
     // Process every blog created or edited in CMS
     blogs.forEach((b) => {
@@ -1092,6 +1137,23 @@
       window.articlesDatabase[b.id] = articleData;
 
       let existingCard = document.querySelector(`[data-cms-blog-id="${b.id}"]`);
+      if (!existingCard) {
+        // Prevent duplication if this matches an existing static article in the grid
+        const staticCards = grid.querySelectorAll('article.blog-item:not(.dynamic-cms-blog)');
+        for (const sc of staticCards) {
+          const onclickAttr = sc.querySelector('a[onclick*="openBlogDetailBySlug"]')?.getAttribute('onclick') || '';
+          const cardTitle = sc.querySelector('h4')?.textContent?.trim().toLowerCase();
+          const blogTitle = (ld.title || b.title || (b.en && b.en.title) || '').trim().toLowerCase();
+          const matchSlug = onclickAttr.includes(slug) || (b.slug && onclickAttr.includes(b.slug));
+          const matchTitle = cardTitle && blogTitle && (cardTitle === blogTitle || (cardTitle.includes('about sharif group') && blogTitle.includes('about sharif group')));
+          if (matchSlug || matchTitle) {
+            existingCard = sc;
+            existingCard.setAttribute('data-cms-blog-id', b.id);
+            break;
+          }
+        }
+      }
+
       if (!existingCard) {
         const articleEl = document.createElement('article');
         articleEl.className = 'space-y-4 text-left flex flex-col justify-between blog-item dynamic-cms-blog';
@@ -2002,6 +2064,17 @@
       return path.join(' > ');
     }
 
+    const EDITABLE_SELECTOR = 'h1, h2, h3, h4, h5, h6, p, a, button, span, label, strong, em, b, i, u, s, li, blockquote, q, cite, figcaption, small, [data-i18n], [data-cms], .counter-value';
+
+    function getCleanBodyHtml(bodyEl) {
+      if (!bodyEl) return '';
+      const clone = bodyEl.cloneNode(true);
+      clone.querySelectorAll('[contenteditable]').forEach(el => el.removeAttribute('contenteditable'));
+      clone.querySelectorAll('.cms-inline-active').forEach(el => el.classList.remove('cms-inline-active'));
+      clone.querySelectorAll('.cms-target-hover').forEach(el => el.classList.remove('cms-target-hover'));
+      return clone.innerHTML;
+    }
+
     // Determine if element is an editable text target
     function isEditableTarget(el) {
       if (!el || el === document.body || el === document.documentElement) return false;
@@ -2015,7 +2088,7 @@
         return false;
       }
 
-      const textTags = ['H1', 'H2', 'H3', 'H4', 'H5', 'H6', 'P', 'A', 'BUTTON', 'SPAN', 'LABEL', 'STRONG', 'EM', 'B', 'I', 'LI', 'BLOCKQUOTE'];
+      const textTags = ['H1', 'H2', 'H3', 'H4', 'H5', 'H6', 'P', 'A', 'BUTTON', 'SPAN', 'LABEL', 'STRONG', 'EM', 'B', 'I', 'U', 'S', 'LI', 'BLOCKQUOTE', 'Q', 'CITE', 'FIGCAPTION', 'SMALL'];
       if (textTags.includes(tag) || el.className.includes('-hero-glow') || el.classList.contains('dominica-hero-glow') || el.classList.contains('stlucia-hero-glow') || el.classList.contains('counter-value')) {
         // Return true if it has text
         return Boolean(el.innerText && el.innerText.trim().length > 0);
@@ -2103,8 +2176,23 @@
         const blogs = store('sgcms_blog') || [];
         const urlParams = new URLSearchParams(window.location.search);
         const currentSlug = window.currentActiveArticleSlug || urlParams.get('article_slug') || urlParams.get('slug') || extractSlug() || 'about-sharif-group';
-        let bIdx = blogs.findIndex(b => b.slug === currentSlug || b.id === currentSlug || (b.en && (b.en.slug === currentSlug || b.en.id === currentSlug)));
+        const s = String(currentSlug || '').toLowerCase().trim();
+        let bIdx = blogs.findIndex(b => {
+          if (!b) return false;
+          const bId = String(b.id || '').toLowerCase().trim();
+          const bSlug = String(b.slug || b.en?.slug || '').toLowerCase().trim();
+          return (bId && (bId === s || s.includes(bId))) || (bSlug && (bSlug === s || s.includes(bSlug) || bSlug.includes(s)));
+        });
         if (bIdx === -1 && blogs.length) {
+          const detailTitle = document.getElementById('detail-title')?.innerText?.trim().toLowerCase();
+          if (detailTitle) {
+            bIdx = blogs.findIndex(b => {
+              const bTitle = (b.en?.title || b.title || '').trim().toLowerCase();
+              return bTitle && (bTitle === detailTitle || bTitle.includes(detailTitle) || detailTitle.includes(bTitle));
+            });
+          }
+        }
+        if (bIdx === -1 && blogs.length === 1) {
           bIdx = 0;
         }
         if (bIdx >= 0) {
@@ -2132,9 +2220,10 @@
           } else if (activeEl.closest('#detail-content-body')) {
             const bodyEl = document.getElementById('detail-content-body');
             if (bodyEl) {
-              blogs[bIdx][l].body = bodyEl.innerHTML;
-              if (l === 'en' && blogs[bIdx].en) blogs[bIdx].en.body = bodyEl.innerHTML;
-              if (window.articlesDatabase && window.articlesDatabase[currentSlug]) window.articlesDatabase[currentSlug].content = bodyEl.innerHTML;
+              const cleanHtml = getCleanBodyHtml(bodyEl);
+              blogs[bIdx][l].body = cleanHtml;
+              if (l === 'en' && blogs[bIdx].en) blogs[bIdx].en.body = cleanHtml;
+              if (window.articlesDatabase && window.articlesDatabase[currentSlug]) window.articlesDatabase[currentSlug].content = cleanHtml;
             }
           } else if (activeEl.closest('#detail-faq-wrapper, [id^="faq-dyn-"], [id^="content-faq-dyn-"]')) {
             const allFaqItems = document.querySelectorAll('#detail-faq-col-1 .border-b, #detail-faq-col-2 .border-b');
@@ -2298,7 +2387,7 @@
     // Delegated Hover
     document.addEventListener('mouseover', (e) => {
       if (!editMode || activeEl) return;
-      const target = e.target.closest('h1, h2, h3, h4, h5, h6, p, a, button, span, label, strong, em, b, i, li, [data-i18n], [data-cms], .counter-value');
+      const target = e.target.closest(EDITABLE_SELECTOR);
       if (target && isEditableTarget(target)) {
         if (hoveredEl && hoveredEl !== target) hoveredEl.classList.remove('cms-target-hover');
         hoveredEl = target;
@@ -2370,7 +2459,7 @@
         return;
       }
 
-      const target = e.target.closest('h1, h2, h3, h4, h5, h6, p, a, button, span, label, strong, em, b, i, li, [data-i18n], [data-cms], .counter-value');
+      const target = e.target.closest(EDITABLE_SELECTOR);
 
       if (target && isEditableTarget(target)) {
         // If clicking within the element already being edited, do NOT re-initialize or call preventDefault!
@@ -2414,7 +2503,25 @@
         if (currentSlug) {
           try {
             const blogs = store('sgcms_blog') || [];
-            const bIdx = blogs.findIndex(b => b.slug === currentSlug || b.id === currentSlug || (b.en && (b.en.slug === currentSlug || b.en.id === currentSlug)));
+            const s = String(currentSlug || '').toLowerCase().trim();
+            let bIdx = blogs.findIndex(b => {
+              if (!b) return false;
+              const bId = String(b.id || '').toLowerCase().trim();
+              const bSlug = String(b.slug || b.en?.slug || '').toLowerCase().trim();
+              return (bId && (bId === s || s.includes(bId))) || (bSlug && (bSlug === s || s.includes(bSlug) || bSlug.includes(s)));
+            });
+            if (bIdx === -1 && blogs.length) {
+              const detailTitle = document.getElementById('detail-title')?.innerText?.trim().toLowerCase();
+              if (detailTitle) {
+                bIdx = blogs.findIndex(b => {
+                  const bTitle = (b.en?.title || b.title || '').trim().toLowerCase();
+                  return bTitle && (bTitle === detailTitle || bTitle.includes(detailTitle) || detailTitle.includes(bTitle));
+                });
+              }
+            }
+            if (bIdx === -1 && blogs.length === 1) {
+              bIdx = 0;
+            }
             if (bIdx >= 0) {
               const l = getLang();
               if (!blogs[bIdx][l]) blogs[bIdx][l] = {};
@@ -2429,9 +2536,10 @@
               } else if (activeEl.closest('#detail-content-body')) {
                 const bodyEl = document.getElementById('detail-content-body');
                 if (bodyEl) {
-                  blogs[bIdx][l].body = bodyEl.innerHTML;
-                  if (l === 'en' && blogs[bIdx].en) blogs[bIdx].en.body = bodyEl.innerHTML;
-                  if (window.articlesDatabase && window.articlesDatabase[currentSlug]) window.articlesDatabase[currentSlug].content = bodyEl.innerHTML;
+                  const cleanHtml = getCleanBodyHtml(bodyEl);
+                  blogs[bIdx][l].body = cleanHtml;
+                  if (l === 'en' && blogs[bIdx].en) blogs[bIdx].en.body = cleanHtml;
+                  if (window.articlesDatabase && window.articlesDatabase[currentSlug]) window.articlesDatabase[currentSlug].content = cleanHtml;
                 }
               }
               saveStore('sgcms_blog', blogs);

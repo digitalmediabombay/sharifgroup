@@ -3182,7 +3182,7 @@
           }
         };
 
-        let existingBlogs = window.CMS.getData(window.CMS.KEYS.BLOG) || window.CMS.DEFAULTS.blog || [];
+        let existingBlogs = window.CMS.getData(window.CMS.KEYS.BLOG) || [];
         existingBlogs.unshift(newArticle);
         existingBlogs = repairBlogFaqsAndTranslations(existingBlogs);
         window.CMS.saveData(window.CMS.KEYS.BLOG, existingBlogs);
@@ -3741,7 +3741,7 @@
         // Render Dynamic Articles for Blog in Sidebar
         const blogContainer = document.getElementById('sb-blog-items');
         if (blogContainer) {
-          const blogs = repairBlogFaqsAndTranslations(window.CMS.getData(window.CMS.KEYS.BLOG) || window.CMS.DEFAULTS.blog || []);
+          const blogs = repairBlogFaqsAndTranslations(window.CMS.getData(window.CMS.KEYS.BLOG) || []);
           if (!blogs.length) {
             blogContainer.innerHTML = '<div style="padding:6px 14px;font-size:11px;color:var(--muted)">No articles yet.</div>';
           } else {
@@ -3763,7 +3763,7 @@
       }
 
       function openBlogArticle(id) {
-        const blogs = window.CMS.getData(window.CMS.KEYS.BLOG) || window.CMS.DEFAULTS.blog || [];
+        const blogs = window.CMS.getData(window.CMS.KEYS.BLOG) || [];
         const b = blogs.find(x => x.id === id);
         if (!b) return;
         const slug = b.slug || b.en?.slug || b.id;
@@ -4319,7 +4319,7 @@
       }
 
       function renderVisualBlogGuide(id) {
-        const blogs = window.CMS.getData(window.CMS.KEYS.BLOG) || window.CMS.DEFAULTS.blog || [];
+        const blogs = window.CMS.getData(window.CMS.KEYS.BLOG) || [];
         const b = blogs.find(x => x.id === id);
         if (!b) { renderBlogEditor(state.lang, isRtl(state.lang)); return; }
         const l = state.lang;
@@ -4444,7 +4444,7 @@
         setPageTitle('Dashboard Overview', 'Select a page from the sidebar to start editing');
         const ci = (window.CMS.getData(window.CMS.KEYS.CITIZENSHIP) || window.CMS.DEFAULTS.citizenship).length;
         const ri = (window.CMS.getData(window.CMS.KEYS.RESIDENCY) || window.CMS.DEFAULTS.residency).length;
-        const bl = (window.CMS.getData(window.CMS.KEYS.BLOG) || window.CMS.DEFAULTS.blog).length;
+        const bl = (window.CMS.getData(window.CMS.KEYS.BLOG) || []).length;
         const tm = (window.CMS.getData(window.CMS.KEYS.TEAM) || window.CMS.DEFAULTS.team).length;
         document.getElementById('editor').innerHTML = `
     <h1 class="ed-page-title">Welcome to Sharif Group CMS</h1>
@@ -5867,7 +5867,7 @@
 
       function renderBlogEditor(l, rtl) {
         setPageTitle('Blog & Articles', 'Manage published and draft blog articles');
-        const blogs = window.CMS.getData(window.CMS.KEYS.BLOG) || window.CMS.DEFAULTS.blog || [];
+        const blogs = window.CMS.getData(window.CMS.KEYS.BLOG) || [];
         const dir = rtl ? 'dir="rtl"' : '';
 
         let html = `
@@ -5937,7 +5937,7 @@
           zh: { title: '', slug: '', excerpt: '', body: '' }
         };
         // Pre-save the draft immediately so it shows in the blog list
-        const existingBlogs = window.CMS.getData(window.CMS.KEYS.BLOG) || window.CMS.DEFAULTS.blog || [];
+        const existingBlogs = window.CMS.getData(window.CMS.KEYS.BLOG) || [];
         existingBlogs.unshift(newArticle);
         window.CMS.saveData(window.CMS.KEYS.BLOG, existingBlogs);
         populateSidebar();
@@ -6118,7 +6118,7 @@
       }
 
       function saveBlogItem(id) {
-        const blogs = window.CMS.getData(window.CMS.KEYS.BLOG) || window.CMS.DEFAULTS.blog || [];
+        const blogs = window.CMS.getData(window.CMS.KEYS.BLOG) || [];
         let idx = blogs.findIndex(b => b.id === id);
         const isNew = idx < 0;
         const l = state.lang;
@@ -6190,12 +6190,12 @@
 
       function deleteBlogItem(id) {
         if (!id) return;
-        let blogs = window.CMS.getData(window.CMS.KEYS.BLOG) || window.CMS.DEFAULTS.blog || [];
-        const target = blogs.find(b => b.id === id);
+        let blogs = window.CMS.getData(window.CMS.KEYS.BLOG) || [];
+        const target = blogs.find(b => b && (b.id === id || b.slug === id || b.en?.slug === id));
         const title = target?.en?.title || target?.title || id;
         if (!confirm(`Are you sure you want to permanently delete "${title}"?`)) return;
 
-        blogs = blogs.filter(b => b.id !== id);
+        blogs = blogs.filter(b => b && b.id !== id && b.slug !== id && b.en?.slug !== id && (target ? b.id !== target.id : true));
         window.CMS.saveData(window.CMS.KEYS.BLOG, blogs);
 
         // Clean up corresponding _live key if present
@@ -6205,7 +6205,7 @@
           if (liveVal) {
             let liveList = JSON.parse(liveVal);
             if (Array.isArray(liveList)) {
-              liveList = liveList.filter(b => b && b.id !== id);
+              liveList = liveList.filter(b => b && b.id !== id && b.slug !== id && b.en?.slug !== id && (target ? b.id !== target.id : true));
               localStorage.setItem(liveKey, JSON.stringify(liveList));
             }
           }
@@ -6218,16 +6218,25 @@
             const manifest = JSON.parse(manifestVal);
             const blogKey = window.CMS.KEYS.BLOG || 'sgcms_blog';
             if (manifest && manifest.data && Array.isArray(manifest.data[blogKey])) {
-              manifest.data[blogKey] = manifest.data[blogKey].filter(b => b && b.id !== id);
+              manifest.data[blogKey] = manifest.data[blogKey].filter(b => b && b.id !== id && b.slug !== id && b.en?.slug !== id && (target ? b.id !== target.id : true));
               localStorage.setItem('sgcms_published_manifest', JSON.stringify(manifest));
             }
+          }
+        } catch(e) {}
+
+        // Clean from client articlesDatabase
+        try {
+          if (window.articlesDatabase) {
+            delete window.articlesDatabase[id];
+            if (target?.slug) delete window.articlesDatabase[target.slug];
+            if (target?.en?.slug) delete window.articlesDatabase[target.en.slug];
           }
         } catch(e) {}
 
         // Refresh sidebar
         populateSidebar();
 
-        if (state.section === 'blog-edit' && state.itemId === id) {
+        if (state.section === 'blog-edit' && (state.itemId === id || (target && state.itemId === target.id))) {
           navigate('blog');
         } else if (state.section === 'blog') {
           renderBlogEditor(state.lang, isRtl(state.lang));
@@ -7465,7 +7474,7 @@
             // 3. BLOG ARTICLE TRANSLATION
             } else if (section === 'blog' || section === 'blog-edit') {
               const bSlug = state.activeBlogSlug || itemId;
-              const blogs = window.CMS.getData(window.CMS.KEYS.BLOG) || window.CMS.DEFAULTS.blog;
+              const blogs = window.CMS.getData(window.CMS.KEYS.BLOG) || [];
               const b = blogs.find(x => x.slug === bSlug || x.id === bSlug || (x.en && x.en.slug === bSlug));
               if (b) {
                 const srcLang = (state.lang && b[state.lang] && (b[state.lang].body || b[state.lang].title)) ? state.lang : 'en';
@@ -7603,7 +7612,7 @@
               }
             } else if (section === 'blog' || section === 'blog-edit') {
               const bSlug = state.activeBlogSlug || itemId;
-              const blogs = window.CMS.getData(window.CMS.KEYS.BLOG) || window.CMS.DEFAULTS.blog;
+              const blogs = window.CMS.getData(window.CMS.KEYS.BLOG) || [];
               const b = blogs.find(x => x.slug === bSlug || x.id === bSlug || (x.en && x.en.slug === bSlug));
               if (b) {
                 const srcLang = (state.lang && b[state.lang] && (b[state.lang].body || b[state.lang].title)) ? state.lang : 'en';
@@ -7870,6 +7879,33 @@
       // STARTUP
       // ══════════════════════════════════════════════════════════
       try {
+        // Auto-prune legacy duplicate dummy article b001 from localStorage
+        ['sgcms_blog', 'sgcms_blog_live'].forEach(k => {
+          const raw = localStorage.getItem(k);
+          if (!raw) return;
+          try {
+            let list = JSON.parse(raw);
+            if (Array.isArray(list)) {
+              const filtered = list.filter(b => b && b.id !== 'b001' && b.slug !== 'about-sharif-group');
+              if (filtered.length !== list.length) {
+                localStorage.setItem(k, JSON.stringify(filtered));
+              }
+            }
+          } catch(e) {}
+        });
+
+        // Auto-prune b001 from published manifest
+        const mRaw = localStorage.getItem('sgcms_published_manifest');
+        if (mRaw) {
+          try {
+            const manifest = JSON.parse(mRaw);
+            if (manifest && manifest.data && Array.isArray(manifest.data.sgcms_blog)) {
+              manifest.data.sgcms_blog = manifest.data.sgcms_blog.filter(b => b && b.id !== 'b001' && b.slug !== 'about-sharif-group');
+              localStorage.setItem('sgcms_published_manifest', JSON.stringify(manifest));
+            }
+          } catch(e) {}
+        }
+
         ['sgcms_dom_overrides', 'sgcms_dom_overrides_live'].forEach(k => {
           const raw = localStorage.getItem(k);
           if (!raw) return;
