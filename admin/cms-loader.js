@@ -181,6 +181,27 @@
     }
   };
 
+  const PROGRAM_TAB_I18N = {
+    citizenship: {
+      en: 'Citizenship By Investment',
+      ar: 'الجنسية عن طريق الاستثمار',
+      fa: 'شهروندی از طریق سرمایه‌گذاری',
+      zh: '投资入籍'
+    },
+    residency: {
+      en: 'Residency By Investment',
+      ar: 'الإقامة عن طريق الاستثمار',
+      fa: 'اقامت از طریق سرمایه‌گذاری',
+      zh: '投资居留'
+    },
+    goldenVisa: {
+      en: 'Golden Visa',
+      ar: 'التأشيرة الذهبية',
+      fa: 'ویزای طلایی',
+      zh: '黄金签证'
+    }
+  };
+
   function tNav(key, lang) {
     const l = lang || getLang();
     if (typeof window.getTranslation === 'function') {
@@ -878,25 +899,55 @@
     const ld = prog[l] || prog.en || {};
 
     // 1. Resolve canonical Country Name & Section Tab Name
-    let rawCountry = (ld.hero_title || (ld.title ? ld.title.replace(/\s+(citizenship|residency).*$/i, '').trim() : '') || prog.name || prog.id || slug || '').trim();
-    if (slug === 'uae' || prog.id === 'uae') {
-      if (!ld.hero_title || ld.hero_title === 'UAE' || /10-year/i.test(ld.title || '')) {
-        rawCountry = 'United Arab Emirates';
+    const isResidency = type === 'residency' || (typeof type === 'string' && type.includes('residency'));
+    const isUae = slug === 'uae' || prog.id === 'uae';
+
+    const TAB_I18N = PROGRAM_TAB_I18N;
+
+    let defaultTab = isUae ? (TAB_I18N.goldenVisa[l] || 'Golden Visa')
+                   : isResidency ? (TAB_I18N.residency[l] || 'Residency By Investment')
+                   : (TAB_I18N.citizenship[l] || 'Citizenship By Investment');
+
+    const i18nSlug = (prog.id && prog.id !== 'sãotoméandpríncipe') ? prog.id : (slug === 'sãotoméandpríncipe' ? 'saotome' : slug);
+
+    let i18nSub = null;
+    let i18nCountry = null;
+    if (typeof window.getTranslation === 'function') {
+      i18nSub = window.getTranslation(`programs.${i18nSlug}.heroSubtitle`, l);
+      i18nCountry = window.getTranslation(`programs.${i18nSlug}.heroTitle`, l);
+      if (!i18nSub && (i18nSlug.includes('sao') || i18nSlug.includes('tome'))) {
+        i18nSub = window.getTranslation('programs.saotome.heroSubtitle', l);
+      }
+      if (!i18nCountry && (i18nSlug.includes('sao') || i18nSlug.includes('tome'))) {
+        i18nCountry = window.getTranslation('programs.saotome.heroTitle', l);
+      }
+    }
+
+    let rawCountry = (ld.hero_title || i18nCountry || (ld.title ? ld.title.replace(/\s+(citizenship|residency).*$/i, '').trim() : '') || prog.name || prog.id || slug || '').trim();
+    if (isUae) {
+      if (!ld.hero_title && (!i18nCountry || i18nCountry === 'UAE')) {
+        rawCountry = (l === 'ar' ? 'الإمارات العربية المتحدة' : l === 'fa' ? 'امارات متحده عربی' : l === 'zh' ? '阿拉伯联合酋长国' : 'United Arab Emirates');
       }
     }
     if (/^(citizenship(\s+by\s+investment)?|residency(\s+by\s+investment)?)$/i.test(rawCountry)) {
       rawCountry = (prog.name || prog.id || slug || '').replace(/[^a-zA-Z\s]/g, ' ').trim();
     }
     const displayCountry = rawCountry ? (rawCountry.charAt(0).toUpperCase() + rawCountry.slice(1)) : 'Dominica';
-    const isResidency = type === 'residency' || (typeof type === 'string' && type.includes('residency'));
-    let defaultTab = isResidency ? 'Residency by investment' : 'Citizenship by investment';
-    if (slug === 'uae' || prog.id === 'uae') {
-      defaultTab = 'Golden Visa';
+
+    let sectionTab = '';
+    const rawSub = (ld.hero_subtitle || '').trim();
+    const isEnglishGeneric = /^(citizenship(\s+by\s+investment)?|residency(\s+by\s+investment)?|golden\s*visa(\s*&\s*residency)?)$/i.test(rawSub);
+    if (rawSub && (l === 'en' || !isEnglishGeneric)) {
+      sectionTab = rawSub;
+    } else if (i18nSub) {
+      sectionTab = i18nSub.trim();
+    } else {
+      sectionTab = defaultTab;
     }
-    let sectionTab = (ld.hero_subtitle || defaultTab).trim();
-    if (slug === 'uae' || prog.id === 'uae') {
+
+    if (isUae) {
       if (/^(residency(\s+by\s+investment)?|10-year.*)$/i.test(sectionTab) || sectionTab.toLowerCase().includes('residency')) {
-        sectionTab = 'Golden Visa';
+        sectionTab = TAB_I18N.goldenVisa[l] || 'Golden Visa';
       }
     }
 
@@ -908,7 +959,7 @@
       ld.title = canonicalTitle;
       ld.hero_title = displayCountry;
       ld.hero_subtitle = sectionTab;
-      if (prog.en) {
+      if (l === 'en' && prog.en) {
         prog.en.title = canonicalTitle;
         prog.en.hero_title = displayCountry;
         prog.en.hero_subtitle = sectionTab;
@@ -930,14 +981,14 @@
       // Self-heal: h1 was flattened to plain text or lacks glow span! Rebuild full structured hero
       h1.className = 'font-serif text-white font-normal tracking-tight drop-shadow-xl flex flex-col items-center gap-3';
       const glowClass = (slug === 'stlucia' || slug.includes('lucia')) ? 'stlucia-hero-glow dominica-hero-glow' : 'dominica-hero-glow';
-      h1.innerHTML = `<span class="${glowClass} font-serif text-5xl sm:text-7xl md:text-8xl cursor-pointer" data-i18n="programs.${slug}.heroTitle">${displayCountry}</span><span class="text-xl sm:text-3xl md:text-4xl text-white font-serif tracking-widest uppercase font-semibold" data-i18n="programs.${slug}.heroSubtitle">${sectionTab}</span>`;
+      h1.innerHTML = `<span class="${glowClass} font-serif text-5xl sm:text-7xl md:text-8xl cursor-pointer" data-i18n="programs.${i18nSlug}.heroTitle">${displayCountry}</span><span class="text-xl sm:text-3xl md:text-4xl text-white font-serif tracking-widest uppercase font-semibold" data-i18n="programs.${i18nSlug}.heroSubtitle">${sectionTab}</span>`;
     } else {
       if (h1Glow && displayCountry) h1Glow.textContent = displayCountry;
       if (!sub && h1) {
         // Subtitle span was lost: append it back
         const newSub = document.createElement('span');
         newSub.className = 'text-xl sm:text-3xl md:text-4xl text-white font-serif tracking-widest uppercase font-semibold';
-        newSub.setAttribute('data-i18n', `programs.${slug}.heroSubtitle`);
+        newSub.setAttribute('data-i18n', `programs.${i18nSlug}.heroSubtitle`);
         newSub.textContent = sectionTab;
         h1.appendChild(newSub);
       } else if (sub && sectionTab) {
@@ -1582,90 +1633,90 @@
     const DEFAULT_CITIZENSHIP = [
       {
         id: 'dominica', slug: 'dominica', name: 'Dominica', portfolio: 'caribbean', flag: 'https://flagcdn.com/dm.svg',
-        en: { nav_label: 'Dominica | Passport' },
-        ar: { nav_label: 'دومينيكا | جواز سفر' },
-        fa: { nav_label: 'دومینیکا | پاسپورت' },
-        zh: { nav_label: '多米尼克 | 护照' }
+        en: { nav_label: 'Dominica | Passport', hero_subtitle: 'Citizenship By Investment' },
+        ar: { nav_label: 'دومينيكا | جواز سفر', hero_subtitle: 'الجنسية عن طريق الاستثمار' },
+        fa: { nav_label: 'دومینیکا | پاسپورت', hero_subtitle: 'شهروندی از طریق سرمایه‌گذاری' },
+        zh: { nav_label: '多米尼克 | 护照', hero_subtitle: '投资入籍' }
       },
       {
         id: 'stkitts', slug: 'stkittis', name: 'St. Kitts & Nevis', portfolio: 'caribbean', flag: 'https://flagcdn.com/kn.svg',
-        en: { nav_label: 'St. Kitts & Nevis | Passport' },
-        ar: { nav_label: 'سانت كيتس ونيفيس | جواز سفر' },
-        fa: { nav_label: 'سنت کیتس و نویس | پاسپورت' },
-        zh: { nav_label: '圣基茨 | 护照' }
+        en: { nav_label: 'St. Kitts & Nevis | Passport', hero_subtitle: 'Citizenship By Investment' },
+        ar: { nav_label: 'سانت كيتس ونيفيس | جواز سفر', hero_subtitle: 'الجنسية عن طريق الاستثمار' },
+        fa: { nav_label: 'سنت کیتس و نویس | پاسپورت', hero_subtitle: 'شهروندی از طریق سرمایه‌گذاری' },
+        zh: { nav_label: '圣基茨 | 护照', hero_subtitle: '投资入籍' }
       },
       {
         id: 'antigua', slug: 'antiguaandbarbuda', name: 'Antigua & Barbuda', portfolio: 'caribbean', flag: 'https://flagcdn.com/ag.svg',
-        en: { nav_label: 'Antigua & Barbuda | Passport' },
-        ar: { nav_label: 'أنتيغوا وباربودا | جواز سفر' },
-        fa: { nav_label: 'آنتیگوا و باربودا | پاسپورت' },
-        zh: { nav_label: '安提瓜 | 护照' }
+        en: { nav_label: 'Antigua & Barbuda | Passport', hero_subtitle: 'Citizenship By Investment' },
+        ar: { nav_label: 'أنتيغوا وباربودا | جواز سفر', hero_subtitle: 'الجنسية عن طريق الاستثمار' },
+        fa: { nav_label: 'آنتیگوا و باربودا | پاسپورت', hero_subtitle: 'شهروندی از طریق سرمایه‌گذاری' },
+        zh: { nav_label: '安提瓜 | 护照', hero_subtitle: '投资入籍' }
       },
       {
         id: 'stlucia', slug: 'stlucia', name: 'Saint Lucia', portfolio: 'caribbean', flag: 'https://flagcdn.com/lc.svg',
-        en: { nav_label: 'Saint Lucia | Passport' },
-        ar: { nav_label: 'سانت لوسيا | جواز سفر' },
-        fa: { nav_label: 'سنت لوسیا | پاسپورت' },
-        zh: { nav_label: '圣卢西亚 | 护照' }
+        en: { nav_label: 'Saint Lucia | Passport', hero_subtitle: 'Citizenship By Investment' },
+        ar: { nav_label: 'سانت لوسيا | جواز سفر', hero_subtitle: 'الجنسية عن طريق الاستثمار' },
+        fa: { nav_label: 'سنت لوسیا | پاسپورت', hero_subtitle: 'شهروندی از طریق سرمایه‌گذاری' },
+        zh: { nav_label: '圣卢西亚 | 护照', hero_subtitle: '投资入籍' }
       },
       {
         id: 'grenada', slug: 'greneda', name: 'Grenada', portfolio: 'caribbean', flag: 'https://flagcdn.com/gd.svg',
-        en: { nav_label: 'Grenada | Passport' },
-        ar: { nav_label: 'غرينادا | جواز سفر' },
-        fa: { nav_label: 'گرنادا | پاسپورت' },
-        zh: { nav_label: '格林纳达 | 护照' }
+        en: { nav_label: 'Grenada | Passport', hero_subtitle: 'Citizenship By Investment' },
+        ar: { nav_label: 'غرينادا | جواز سفر', hero_subtitle: 'الجنسية عن طريق الاستثمار' },
+        fa: { nav_label: 'گرنادا | پاسپورت', hero_subtitle: 'شهروندی از طریق سرمایه‌گذاری' },
+        zh: { nav_label: '格林纳达 | 护照', hero_subtitle: '投资入籍' }
       },
       {
         id: 'vanuatu', slug: 'vanuatu', name: 'Vanuatu', portfolio: 'global', flag: 'https://flagcdn.com/vu.svg',
-        en: { nav_label: 'Vanuatu | Passport' },
-        ar: { nav_label: 'فانواتو | جواز سفر' },
-        fa: { nav_label: 'وانواتو | پاسپورت' },
-        zh: { nav_label: '瓦努阿图 | 护照' }
+        en: { nav_label: 'Vanuatu | Passport', hero_subtitle: 'Citizenship By Investment' },
+        ar: { nav_label: 'فانواتو | جواز سفر', hero_subtitle: 'الجنسية عن طريق الاستثمار' },
+        fa: { nav_label: 'وانواتو | پاسپورت', hero_subtitle: 'شهروندی از طریق سرمایه‌گذاری' },
+        zh: { nav_label: '瓦努阿图 | 护照', hero_subtitle: '投资入籍' }
       },
       {
         id: 'saotome', slug: 'sãotoméandpríncipe', name: 'São Tomé and Príncipe', portfolio: 'global', flag: 'https://flagcdn.com/st.svg',
-        en: { nav_label: 'São Tomé and Príncipe | Passport' },
-        ar: { nav_label: 'ساو تومي وبرينسيبي | جواز سفر' },
-        fa: { nav_label: 'سائوتومه و پرنسیپ | پاسپورت' },
-        zh: { nav_label: '圣多美 | 护照' }
+        en: { nav_label: 'São Tomé and Príncipe | Passport', hero_subtitle: 'Citizenship By Investment' },
+        ar: { nav_label: 'ساو تومي وبرينسيبي | جواز سفر', hero_subtitle: 'الجنسية عن طريق الاستثمار' },
+        fa: { nav_label: 'سائوتومه و پرنسیپ | پاسپورت', hero_subtitle: 'شهروندی از طریق سرمایه‌گذاری' },
+        zh: { nav_label: '圣多美 | 护照', hero_subtitle: '投资入籍' }
       },
       {
         id: 'nauru', slug: 'nauru', name: 'Republic of Nauru', portfolio: 'global', flag: 'https://flagcdn.com/nr.svg',
-        en: { nav_label: 'Republic of Nauru | Passport' },
-        ar: { nav_label: 'جمهورية ناورو | جواز سفر' },
-        fa: { nav_label: 'جمهوری نائورو | پاسپورت' },
-        zh: { nav_label: '瑙鲁共和国 | 护照' }
+        en: { nav_label: 'Republic of Nauru | Passport', hero_subtitle: 'Citizenship By Investment' },
+        ar: { nav_label: 'جمهورية ناورو | جواز سفر', hero_subtitle: 'الجنسية عن طريق الاستثمار' },
+        fa: { nav_label: 'جمهوری نائورو | پاسپورت', hero_subtitle: 'شهروندی از طریق سرمایه‌گذاری' },
+        zh: { nav_label: '瑙鲁共和国 | 护照', hero_subtitle: '投资入籍' }
       }
     ];
 
     const DEFAULT_RESIDENCY = [
       {
         id: 'portugal', slug: 'portugal', name: 'Portugal', portfolio: 'european', flag: 'https://flagcdn.com/pt.svg',
-        en: { nav_label: 'Portugal | Golden Visa' },
-        ar: { nav_label: 'البرتغال | التأشيرة الذهبية' },
-        fa: { nav_label: 'پرتغال | ویزای طلایی' },
-        zh: { nav_label: '葡萄牙 | 黄金签证' }
+        en: { nav_label: 'Portugal | Golden Visa', hero_subtitle: 'Residency By Investment' },
+        ar: { nav_label: 'البرتغال | التأشيرة الذهبية', hero_subtitle: 'الإقامة عن طريق الاستثمار' },
+        fa: { nav_label: 'پرتغال | ویزای طلایی', hero_subtitle: 'اقامت از طریق سرمایه‌گذاری' },
+        zh: { nav_label: '葡萄牙 | 黄金签证', hero_subtitle: '投资居留' }
       },
       {
         id: 'greece', slug: 'greece', name: 'Greece', portfolio: 'european', flag: 'https://flagcdn.com/gr.svg',
-        en: { nav_label: 'Greece | Golden Visa' },
-        ar: { nav_label: 'اليونان | التأشيرة الذهبية' },
-        fa: { nav_label: 'یونان | ویزای طلایی' },
-        zh: { nav_label: '希腊 | 黄金签证' }
+        en: { nav_label: 'Greece | Golden Visa', hero_subtitle: 'Residency By Investment' },
+        ar: { nav_label: 'اليونان | التأشيرة الذهبية', hero_subtitle: 'الإقامة عن طريق الاستثمار' },
+        fa: { nav_label: 'یونان | ویزای طلایی', hero_subtitle: 'اقامت از طریق سرمایه‌گذاری' },
+        zh: { nav_label: '希腊 | 黄金签证', hero_subtitle: '投资居留' }
       },
       {
         id: 'panama', slug: 'panama', name: 'Panama', portfolio: 'uae', flag: 'https://flagcdn.com/pa.svg',
-        en: { nav_label: 'Panama | Golden Visa' },
-        ar: { nav_label: 'بنما | التأشيرة الذهبية' },
-        fa: { nav_label: 'پاناما | ویزای طلایی' },
-        zh: { nav_label: '巴拿马 | 黄金签证' }
+        en: { nav_label: 'Panama | Golden Visa', hero_subtitle: 'Residency By Investment' },
+        ar: { nav_label: 'بنما | التأشيرة الذهبية', hero_subtitle: 'الإقامة عن طريق الاستثمار' },
+        fa: { nav_label: 'پاناما | ویزای طلایی', hero_subtitle: 'اقامت از طریق سرمایه‌گذاری' },
+        zh: { nav_label: '巴拿马 | 黄金签证', hero_subtitle: '投资居留' }
       },
       {
         id: 'uae', slug: 'uae', name: 'United Arab Emirates', portfolio: 'uae', flag: 'https://flagcdn.com/ae.svg',
-        en: { nav_label: 'United Arab Emirates | Golden Visa' },
-        ar: { nav_label: 'الإمارات العربية المتحدة | التأشيرة الذهبية' },
-        fa: { nav_label: 'امارات متحده عربی | ویزای طلایی' },
-        zh: { nav_label: '阿联酋 | 黄金签证' }
+        en: { nav_label: 'United Arab Emirates | Golden Visa', hero_subtitle: 'Golden Visa' },
+        ar: { nav_label: 'الإمارات العربية المتحدة | التأشيرة الذهبية', hero_subtitle: 'التأشيرة الذهبية' },
+        fa: { nav_label: 'امارات متحده عربی | ویزای طلایی', hero_subtitle: 'ویزای طلایی' },
+        zh: { nav_label: '阿联酋 | 黄金签证', hero_subtitle: '黄金签证' }
       }
     ];
 
@@ -2454,7 +2505,9 @@
           if (idx >= 0) {
             if (!list[idx][l]) list[idx][l] = {};
             const progType = type.includes('residency') ? 'residency' : 'citizenship';
-            const defaultTab = progType === 'residency' ? 'Residency by investment' : 'Citizenship by investment';
+            const defaultTab = isUae ? (PROGRAM_TAB_I18N.goldenVisa[l] || 'Golden Visa')
+                             : progType === 'residency' ? (PROGRAM_TAB_I18N.residency[l] || 'Residency By Investment')
+                             : (PROGRAM_TAB_I18N.citizenship[l] || 'Citizenship By Investment');
 
             if (activeEl.closest('h1')) {
               const isSubtitle = activeEl.classList.contains('uppercase') || 
@@ -2863,9 +2916,10 @@
 
         // ── Comprehensive Real-time Program Fields ───────────
         if (field === 'title' || field === 'hero_title') {
+          const l = getLang();
           const path = window.location.pathname.toLowerCase();
           const progType = path.includes('residency') ? 'residency' : 'citizenship';
-          const defaultTab = progType === 'residency' ? 'Residency by investment' : 'Citizenship by investment';
+          const defaultTab = progType === 'residency' ? (PROGRAM_TAB_I18N.residency[l] || 'Residency By Investment') : (PROGRAM_TAB_I18N.citizenship[l] || 'Citizenship By Investment');
           const subEl = document.querySelector('h1 span.uppercase, [data-i18n*="heroSubtitle"], [data-cms="hero-subtitle"]');
           const currentSub = (subEl?.textContent?.trim() || defaultTab);
           const cleanCountry = String(value).replace(/\s+(citizenship|residency).*$/i, '').trim();
@@ -3070,9 +3124,10 @@
         }
         // Program fields
         else if (field === 'title') {
+          const l = getLang();
           const path = window.location.pathname.toLowerCase();
           const progType = path.includes('residency') ? 'residency' : 'citizenship';
-          const defaultTab = progType === 'residency' ? 'Residency by investment' : 'Citizenship by investment';
+          const defaultTab = progType === 'residency' ? (PROGRAM_TAB_I18N.residency[l] || 'Residency By Investment') : (PROGRAM_TAB_I18N.citizenship[l] || 'Citizenship By Investment');
           const subEl = document.querySelector('h1 span.uppercase, [data-i18n*="heroSubtitle"], [data-cms="hero-subtitle"]');
           const currentSub = (subEl?.textContent?.trim() || defaultTab);
           const cleanCountry = String(value).replace(/\s+(citizenship|residency).*$/i, '').trim();
