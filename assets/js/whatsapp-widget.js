@@ -28,7 +28,7 @@
         subtitle: {
             'en': 'Choose the team you would like to contact.',
             'ar': 'اختر الفريق الذي ترغب في التواصل معه.',
-            'fa': 'تیمی را که مایل به تماس با آن هستید انتخاب کنید.',
+            'fa': 'جهت ارتباط مستقیم با دفتر دبی پیام ارسال نمایید.',
             'zh': '请选择您希望联系的咨询团队。'
         },
         primaryBadge: {
@@ -654,6 +654,30 @@
             <p class="sg-wa-modal-subtitle">${subtitle}</p>
 
             <div class="sg-wa-cards-list">
+                ${lang === 'fa' ? `
+                <!-- Dubai Advisory Team (+971 4 357 3007) -->
+                <a class="sg-wa-card" href="${dubaiUrl}" target="_blank" rel="noopener noreferrer" data-team="dubai">
+                    <div class="sg-wa-card-icon-wrap">
+                        ${GLOBE_ICON_SVG}
+                    </div>
+                    <div class="sg-wa-card-details">
+                        <div class="sg-wa-card-title-row">
+                            <span class="sg-wa-card-title">${dubaiTitle}</span>
+                        </div>
+                        <span class="sg-wa-card-desc">${dubaiDesc}</span>
+                        <div class="sg-wa-card-phone">
+                            ${PHONE_ICON_SVG}
+                            <span>${dubai.phoneDisplay}</span>
+                        </div>
+                    </div>
+                    <div class="sg-wa-card-action">
+                        <span class="sg-wa-v-divider"></span>
+                        <span class="sg-wa-chat-icon" aria-label="WhatsApp">
+                            ${WA_SVG}
+                        </span>
+                    </div>
+                </a>
+                ` : `
                 <!-- 1. International Advisory Team (Primary) -->
                 <a class="sg-wa-card" href="${intlUrl}" target="_blank" rel="noopener noreferrer" data-team="international">
                     <div class="sg-wa-card-icon-wrap">
@@ -700,6 +724,7 @@
                         </span>
                     </div>
                 </a>
+                `}
             </div>
 
             <div class="sg-wa-footer-line"></div>
@@ -888,12 +913,14 @@
 
     function updateExistingWhatsAppLinks() {
         try {
+            var lang = getCurrentLang();
+            var defaultPhone = (lang === 'fa') ? '97143573007' : '97143578737';
             var existingLinks = document.querySelectorAll('a[href*="whatsapp.com"], a[href*="wa.me"]');
             existingLinks.forEach(function (a) {
                 if (a.closest('#sg-whatsapp-widget')) return;
                 var href = a.getAttribute('href') || '';
                 if (!href.includes('97143578737') && !href.includes('97143573007') && !href.includes('971541243007')) {
-                    a.setAttribute('href', 'https://wa.me/97143578737');
+                    a.setAttribute('href', 'https://wa.me/' + defaultPhone);
                     a.setAttribute('target', '_blank');
                     a.setAttribute('rel', 'noopener noreferrer');
                 }
