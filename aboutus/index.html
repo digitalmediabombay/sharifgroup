@@ -2174,7 +2174,14 @@
                     }
                     // Update Badge
                     if (badge) {
-                        badge.innerText = 'Active Unit';
+                        var curL = (window.getCurrentLanguage ? window.getCurrentLanguage() : 'en');
+                        var activeMap = {
+                            'zh': '已展开',
+                            'ar': 'الوحدة النشطة',
+                            'fa': 'بخش فعال',
+                            'en': 'Active Unit'
+                        };
+                        badge.innerText = activeMap[curL] || 'Active Unit';
                         badge.classList.remove('border-white/15', 'text-neutral-400');
                         badge.classList.add('border-luxury-gold', 'text-luxury-gold', 'bg-luxury-gold/15');
                     }
@@ -2204,7 +2211,8 @@
                         icon.style.transform = 'none';
                     }
                     if (badge) {
-                        badge.innerText = 'Hover to Expand';
+                        var expandText = window.getTranslation ? (window.getTranslation('pages.aboutUs.corporate_architecture_item6') || 'Hover to Expand') : 'Hover to Expand';
+                        badge.innerText = expandText;
                         badge.classList.remove('border-luxury-gold', 'text-luxury-gold', 'bg-luxury-gold/15');
                         badge.classList.add('border-white/15', 'text-neutral-400');
                     }
@@ -2248,7 +2256,8 @@
                     icon.style.transform = 'none';
                 }
                 if (badge) {
-                    badge.innerText = 'Hover to Expand';
+                    var defaultExpandText = window.getTranslation ? (window.getTranslation('pages.aboutUs.corporate_architecture_item6') || 'Hover to Expand') : 'Hover to Expand';
+                    badge.innerText = defaultExpandText;
                     badge.classList.remove('border-luxury-gold', 'text-luxury-gold', 'bg-luxury-gold/15');
                     badge.classList.add('border-white/15', 'text-neutral-400');
                 }
