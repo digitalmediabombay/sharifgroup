@@ -185,7 +185,7 @@
         }
     }
 
-    var I18N_VERSION = '20260917_v3';
+    var I18N_VERSION = '20260917_v6';
 
     function loadTranslation(lang, callback) {
         var pathname = (window.location && window.location.pathname) ? window.location.pathname.toLowerCase() : '';

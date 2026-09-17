@@ -16,7 +16,7 @@
         brand: {
             'en': 'SHARIF GROUP',
             'ar': 'مجموعة شريف',
-            'fa': 'گروپ شریف',
+            'fa': 'شریف گروپ',
             'zh': 'SHARIF GROUP'
         },
         title: {
@@ -55,7 +55,7 @@
             msg: {
                 'en': 'Hello Sharif Group, I would like to inquire with the International Advisory Team.',
                 'ar': 'مرحباً مجموعة شريف، أود الاستفسار مع فريق الاستشارات الدولي.',
-                'fa': 'سلام گروپ شریف، مایل به مشاوره با تیم بین‌المللی هستم.',
+                'fa': 'سلام شریف گروپ، مایل به مشاوره با تیم بین‌المللی هستم.',
                 'zh': '您好谢里夫集团，我想咨询国际顾问团队。'
             }
         },
@@ -77,7 +77,7 @@
             msg: {
                 'en': 'Hello Sharif Group, I would like to contact the Dubai Advisory Team.',
                 'ar': 'مرحباً مجموعة شريف، أود التواصل مع فريق استشارات دبي.',
-                'fa': 'سلام گروپ شریف، مایل به تماس با تیم دبی هستم.',
+                'fa': 'سلام شریف گروپ، مایل به تماس با تیم دبی هستم.',
                 'zh': '您好谢里夫集团，我想联系迪拜顾问团队。'
             }
         },
@@ -257,8 +257,8 @@
                 position: absolute;
                 bottom: calc(100% + 18px);
                 right: 0;
-                width: 380px;
-                max-width: calc(100vw - 36px);
+                width: 395px;
+                max-width: calc(100vw - 32px);
                 background: #07131F;
                 border: 1.5px solid #C5A880;
                 border-radius: 26px;
@@ -275,6 +275,18 @@
                 pointer-events: none;
                 backdrop-filter: blur(16px);
                 -webkit-backdrop-filter: blur(16px);
+            }
+
+            /* Invisible bridge to prevent mouseleave when moving between button and modal */
+            .sg-wa-modal::after {
+                content: '';
+                position: absolute;
+                bottom: -24px;
+                left: 0;
+                right: 0;
+                height: 24px;
+                background: transparent;
+                pointer-events: auto;
             }
 
             html[dir="rtl"] .sg-wa-modal {
@@ -431,20 +443,21 @@
 
             .sg-wa-card-title-row {
                 display: flex;
-                align-items: center;
+                align-items: flex-start;
                 justify-content: space-between;
                 gap: 8px;
             }
 
             .sg-wa-card-title {
                 font-family: 'Playfair Display', Georgia, "Times New Roman", serif;
-                font-size: 15.5px;
+                font-size: 15px;
                 font-weight: 600;
                 color: #FFFFFF;
-                line-height: 1.25;
-                white-space: nowrap;
-                overflow: hidden;
-                text-overflow: ellipsis;
+                line-height: 1.3;
+                white-space: normal;
+                word-break: normal;
+                flex: 1;
+                min-width: 0;
             }
 
             .sg-wa-primary-pill {
@@ -453,7 +466,7 @@
                 justify-content: center;
                 border: 1px solid rgba(197, 168, 128, 0.85);
                 border-radius: 9999px;
-                padding: 1.5px 10px;
+                padding: 1.5px 9px;
                 font-size: 10.5px;
                 color: #C5A880;
                 font-family: 'Playfair Display', Georgia, serif;
@@ -461,6 +474,8 @@
                 letter-spacing: 0.02em;
                 flex-shrink: 0;
                 background: rgba(197, 168, 128, 0.06);
+                white-space: nowrap;
+                margin-top: 1px;
             }
 
             .sg-wa-card-desc {
@@ -794,7 +809,7 @@
                 if (closeBtn && triggerBtn) {
                     closeBtn.addEventListener('click', function (e) {
                         e.stopPropagation();
-                        closeModal(container, triggerBtn);
+                        closeModal(container, triggerBtn, true);
                     });
                 }
             }
@@ -805,49 +820,62 @@
 
     var isDismissed = false;
 
+    function clearHoverTimer() {
+        if (hoverTimeout) {
+            clearTimeout(hoverTimeout);
+            hoverTimeout = null;
+        }
+    }
+
     function openModal(container, button) {
+        clearHoverTimer();
         if (isDismissed) return;
         container.classList.add('sg-wa-open');
         button.setAttribute('aria-expanded', 'true');
     }
 
-    function closeModal(container, button) {
+    function closeModal(container, button, manualDismiss) {
+        clearHoverTimer();
         container.classList.remove('sg-wa-open');
         button.setAttribute('aria-expanded', 'false');
         isClickLockedOpen = false;
-        isDismissed = true;
+        if (manualDismiss) {
+            isDismissed = true;
+        }
     }
 
     function toggleModal(container, button) {
+        clearHoverTimer();
         if (container.classList.contains('sg-wa-open')) {
-            closeModal(container, button);
+            closeModal(container, button, false);
         } else {
             isDismissed = false;
-            openModal(container, button);
             isClickLockedOpen = true;
+            openModal(container, button);
         }
     }
 
     function bindWidgetEvents(container, button, modal) {
-        // Trigger hover on the button only
-        button.addEventListener('mouseenter', function () {
-            if (hoverTimeout) {
-                clearTimeout(hoverTimeout);
-                hoverTimeout = null;
-            }
+        // Clear timer and open modal on hover of container, button, or modal
+        function handleHoverEnter() {
+            clearHoverTimer();
             if (!isDismissed) {
                 openModal(container, button);
             }
-        });
+        }
 
-        // Leaving the entire container resets dismiss and allows clean closing
+        container.addEventListener('mouseenter', handleHoverEnter);
+        button.addEventListener('mouseenter', handleHoverEnter);
+        modal.addEventListener('mouseenter', handleHoverEnter);
+
+        // Leaving the container starts a 450ms grace period before closing
         container.addEventListener('mouseleave', function () {
-            isDismissed = false;
+            clearHoverTimer();
             if (isClickLockedOpen) return;
             hoverTimeout = setTimeout(function () {
-                closeModal(container, button);
+                closeModal(container, button, false);
                 isDismissed = false;
-            }, 250);
+            }, 450);
         });
 
         // Click on circular button toggles modal
@@ -863,7 +891,7 @@
             closeBtn.addEventListener('click', function (e) {
                 e.preventDefault();
                 e.stopPropagation();
-                closeModal(container, button);
+                closeModal(container, button, true);
             });
         }
 
@@ -873,7 +901,7 @@
             if (btn) {
                 e.preventDefault();
                 e.stopPropagation();
-                closeModal(container, button);
+                closeModal(container, button, true);
                 return;
             }
 
@@ -890,14 +918,17 @@
                         });
                     }
                 } catch (err) {}
-                closeModal(container, button);
+                // Allow link click navigation to process smoothly before closing
+                setTimeout(function () {
+                    closeModal(container, button, false);
+                }, 300);
             }
         });
 
         // Click outside closes modal
         document.addEventListener('click', function (e) {
             if (!container.contains(e.target)) {
-                closeModal(container, button);
+                closeModal(container, button, false);
                 isDismissed = false;
             }
         });
@@ -905,7 +936,7 @@
         // Escape key closes modal
         document.addEventListener('keydown', function (e) {
             if (e.key === 'Escape' || e.keyCode === 27) {
-                closeModal(container, button);
+                closeModal(container, button, false);
                 isDismissed = false;
             }
         });
