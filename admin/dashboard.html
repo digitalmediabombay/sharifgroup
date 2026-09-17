@@ -3671,8 +3671,9 @@
         ci = ci.filter(p => !(p.id && p.id.startsWith('id-') && !p.en?.title && !p.en?.nav_label && !p.hero_title && !p.name));
         let ciFlagsUpdated = false;
         ci.forEach(p => {
-          if (p && BUILTIN_PASSPORT_IMAGES[p.id] && (!p.flag || p.flag.includes('flagcdn.com') || p.flag.includes('Flag_of_') || p.flag.endsWith('.svg'))) {
-            p.flag = BUILTIN_PASSPORT_IMAGES[p.id];
+          if (p && (!p.flag || p.flag.includes('/assets/images/')) && FLAG_CODES[p.id]) {
+            p.flag = `https://flagcdn.com/${FLAG_CODES[p.id]}.svg`;
+            p.flag_code = FLAG_CODES[p.id];
             ciFlagsUpdated = true;
           }
         });
@@ -3682,8 +3683,9 @@
         ri = ri.filter(p => !(p.id && p.id.startsWith('id-') && !p.en?.title && !p.en?.nav_label && !p.hero_title && !p.name));
         let riFlagsUpdated = false;
         ri.forEach(p => {
-          if (p && BUILTIN_PASSPORT_IMAGES[p.id] && (!p.flag || p.flag.includes('flagcdn.com') || p.flag.includes('Flag_of_') || p.flag.endsWith('.svg'))) {
-            p.flag = BUILTIN_PASSPORT_IMAGES[p.id];
+          if (p && (!p.flag || p.flag.includes('/assets/images/')) && FLAG_CODES[p.id]) {
+            p.flag = `https://flagcdn.com/${FLAG_CODES[p.id]}.svg`;
+            p.flag_code = FLAG_CODES[p.id];
             riFlagsUpdated = true;
           }
         });
@@ -3702,8 +3704,8 @@
             }
           }
           const dot = `<span class="sb-item-dot ${p.status === 'published' ? 'published' : 'draft'}"></span>`;
-          const fallback = BUILTIN_PASSPORT_IMAGES[p.id] || (FLAG_CODES[p.id] ? `https://flagcdn.com/${FLAG_CODES[p.id]}.svg` : '');
-          const flagSrc = (p.flag && !p.flag.includes('flagcdn.com') && !p.flag.includes('Flag_of_') && !p.flag.endsWith('.svg')) ? p.flag : (BUILTIN_PASSPORT_IMAGES[p.id] || fallback);
+          const fallback = FLAG_CODES[p.id] ? `https://flagcdn.com/${FLAG_CODES[p.id]}.svg` : '';
+          const flagSrc = (p.flag && !p.flag.includes('/assets/images/')) ? p.flag : (fallback || p.flag);
           const flag = flagSrc ? `<img class="sb-item-flag" src="${flagSrc}" onerror="this.style.display='none'">` : `<span class="sb-item-flag-icon"><i class="fa-solid fa-passport"></i></span>`;
 
           // Allow deleting any custom-created programs easily

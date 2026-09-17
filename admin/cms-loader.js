@@ -1324,22 +1324,14 @@
   }
 
   function getProgramFlag(prog, prefix) {
-    const builtinImg = BUILTIN_PASSPORT_IMAGES[prog.id];
-    // If it's a builtin program and the flag is empty, a flat flagcdn svg, or Flag_of svg, always use authentic passport cover image
-    if (builtinImg && (!prog.flag || prog.flag.includes('flagcdn.com') || prog.flag.includes('Flag_of_') || prog.flag.endsWith('.svg'))) {
-      return prefix + builtinImg;
+    const code = prog.flag_code || BUILTIN_FLAG_CODES[prog.id];
+    if (code) {
+      return `https://flagcdn.com/${code}.svg`;
     }
     if (prog.flag && prog.flag.trim()) {
       if (prog.flag.startsWith('/assets/')) return prefix + prog.flag.slice(1);
       if (prog.flag.startsWith('assets/')) return prefix + prog.flag;
       return prog.flag;
-    }
-    if (builtinImg) {
-      return prefix + builtinImg;
-    }
-    const code = prog.flag_code || BUILTIN_FLAG_CODES[prog.id];
-    if (code) {
-      return `https://flagcdn.com/${code}.svg`;
     }
     return prefix + 'assets/images/citizenship-passport_35b3b6.webp';
   }
@@ -1456,27 +1448,28 @@
     let ri = store('sgcms_residency');
 
     const DEFAULT_CITIZENSHIP = [
-      { id: 'dominica', slug: 'dominica', name: 'Dominica', portfolio: 'caribbean', flag: prefix + BUILTIN_PASSPORT_IMAGES.dominica, en: { nav_label: 'Dominica | Passport' } },
-      { id: 'stkitts', slug: 'stkittis', name: 'St. Kitts & Nevis', portfolio: 'caribbean', flag: prefix + BUILTIN_PASSPORT_IMAGES.stkitts, en: { nav_label: 'St. Kitts & Nevis | Passport' } },
-      { id: 'antigua', slug: 'antiguaandbarbuda', name: 'Antigua & Barbuda', portfolio: 'caribbean', flag: prefix + BUILTIN_PASSPORT_IMAGES.antigua, en: { nav_label: 'Antigua & Barbuda | Passport' } },
-      { id: 'stlucia', slug: 'stlucia', name: 'Saint Lucia', portfolio: 'caribbean', flag: prefix + BUILTIN_PASSPORT_IMAGES.stlucia, en: { nav_label: 'Saint Lucia | Passport' } },
-      { id: 'grenada', slug: 'greneda', name: 'Grenada', portfolio: 'caribbean', flag: prefix + BUILTIN_PASSPORT_IMAGES.grenada, en: { nav_label: 'Grenada | Passport' } },
-      { id: 'vanuatu', slug: 'vanuatu', name: 'Vanuatu', portfolio: 'global', flag: prefix + BUILTIN_PASSPORT_IMAGES.vanuatu, en: { nav_label: 'Vanuatu | Passport' } },
-      { id: 'saotome', slug: 'sãotoméandpríncipe', name: 'São Tomé and Príncipe', portfolio: 'global', flag: prefix + BUILTIN_PASSPORT_IMAGES.saotome, en: { nav_label: 'São Tomé and Príncipe | Passport' } },
-      { id: 'nauru', slug: 'nauru', name: 'Republic of Nauru', portfolio: 'global', flag: prefix + BUILTIN_PASSPORT_IMAGES.nauru, en: { nav_label: 'Republic of Nauru | Passport' } }
+      { id: 'dominica', slug: 'dominica', name: 'Dominica', portfolio: 'caribbean', flag: 'https://flagcdn.com/dm.svg', en: { nav_label: 'Dominica | Passport' } },
+      { id: 'stkitts', slug: 'stkittis', name: 'St. Kitts & Nevis', portfolio: 'caribbean', flag: 'https://flagcdn.com/kn.svg', en: { nav_label: 'St. Kitts & Nevis | Passport' } },
+      { id: 'antigua', slug: 'antiguaandbarbuda', name: 'Antigua & Barbuda', portfolio: 'caribbean', flag: 'https://flagcdn.com/ag.svg', en: { nav_label: 'Antigua & Barbuda | Passport' } },
+      { id: 'stlucia', slug: 'stlucia', name: 'Saint Lucia', portfolio: 'caribbean', flag: 'https://flagcdn.com/lc.svg', en: { nav_label: 'Saint Lucia | Passport' } },
+      { id: 'grenada', slug: 'greneda', name: 'Grenada', portfolio: 'caribbean', flag: 'https://flagcdn.com/gd.svg', en: { nav_label: 'Grenada | Passport' } },
+      { id: 'vanuatu', slug: 'vanuatu', name: 'Vanuatu', portfolio: 'global', flag: 'https://flagcdn.com/vu.svg', en: { nav_label: 'Vanuatu | Passport' } },
+      { id: 'saotome', slug: 'sãotoméandpríncipe', name: 'São Tomé and Príncipe', portfolio: 'global', flag: 'https://flagcdn.com/st.svg', en: { nav_label: 'São Tomé and Príncipe | Passport' } },
+      { id: 'nauru', slug: 'nauru', name: 'Republic of Nauru', portfolio: 'global', flag: 'https://flagcdn.com/nr.svg', en: { nav_label: 'Republic of Nauru | Passport' } }
     ];
 
     const DEFAULT_RESIDENCY = [
-      { id: 'portugal', slug: 'portugal', name: 'Portugal', portfolio: 'european', flag: prefix + BUILTIN_PASSPORT_IMAGES.portugal, en: { nav_label: 'Portugal | Golden Visa' } },
-      { id: 'greece', slug: 'greece', name: 'Greece', portfolio: 'european', flag: prefix + BUILTIN_PASSPORT_IMAGES.greece, en: { nav_label: 'Greece | Golden Visa' } },
-      { id: 'panama', slug: 'panama', name: 'Panama', portfolio: 'uae', flag: prefix + BUILTIN_PASSPORT_IMAGES.panama, en: { nav_label: 'Panama | Golden Visa' } },
-      { id: 'uae', slug: 'uae', name: 'United Arab Emirates', portfolio: 'uae', flag: prefix + BUILTIN_PASSPORT_IMAGES.uae, en: { nav_label: 'United Arab Emirates | Golden Visa' } }
+      { id: 'portugal', slug: 'portugal', name: 'Portugal', portfolio: 'european', flag: 'https://flagcdn.com/pt.svg', en: { nav_label: 'Portugal | Golden Visa' } },
+      { id: 'greece', slug: 'greece', name: 'Greece', portfolio: 'european', flag: 'https://flagcdn.com/gr.svg', en: { nav_label: 'Greece | Golden Visa' } },
+      { id: 'panama', slug: 'panama', name: 'Panama', portfolio: 'uae', flag: 'https://flagcdn.com/pa.svg', en: { nav_label: 'Panama | Golden Visa' } },
+      { id: 'uae', slug: 'uae', name: 'United Arab Emirates', portfolio: 'uae', flag: 'https://flagcdn.com/ae.svg', en: { nav_label: 'United Arab Emirates | Golden Visa' } }
     ];
 
     if (Array.isArray(ci)) {
       ci.forEach(p => {
-        if (p && BUILTIN_PASSPORT_IMAGES[p.id] && (!p.flag || p.flag.includes('flagcdn.com') || p.flag.includes('Flag_of_') || p.flag.endsWith('.svg'))) {
-          p.flag = prefix + BUILTIN_PASSPORT_IMAGES[p.id];
+        if (p && BUILTIN_FLAG_CODES[p.id] && (!p.flag || p.flag.includes('/assets/images/'))) {
+          p.flag = `https://flagcdn.com/${BUILTIN_FLAG_CODES[p.id]}.svg`;
+          p.flag_code = BUILTIN_FLAG_CODES[p.id];
         }
       });
     }
@@ -1495,8 +1488,9 @@
             p.en.title = 'United Arab Emirates Golden Visa';
           }
         }
-        if (p && BUILTIN_PASSPORT_IMAGES[p.id] && (!p.flag || p.flag.includes('flagcdn.com') || p.flag.includes('Flag_of_') || p.flag.endsWith('.svg'))) {
-          p.flag = prefix + BUILTIN_PASSPORT_IMAGES[p.id];
+        if (p && BUILTIN_FLAG_CODES[p.id] && (!p.flag || p.flag.includes('/assets/images/'))) {
+          p.flag = `https://flagcdn.com/${BUILTIN_FLAG_CODES[p.id]}.svg`;
+          p.flag_code = BUILTIN_FLAG_CODES[p.id];
         }
       });
     }
