@@ -16,7 +16,7 @@
         brand: {
             'en': 'SHARIF GROUP',
             'ar': 'مجموعة شريف',
-            'fa': 'گروه شریف',
+            'fa': 'گروپ شریف',
             'zh': 'SHARIF GROUP'
         },
         title: {
@@ -55,7 +55,7 @@
             msg: {
                 'en': 'Hello Sharif Group, I would like to inquire with the International Advisory Team.',
                 'ar': 'مرحباً مجموعة شريف، أود الاستفسار مع فريق الاستشارات الدولي.',
-                'fa': 'سلام گروه شریف، مایل به مشاوره با تیم بین‌المللی هستم.',
+                'fa': 'سلام گروپ شریف، مایل به مشاوره با تیم بین‌المللی هستم.',
                 'zh': '您好谢里夫集团，我想咨询国际顾问团队。'
             }
         },
@@ -77,7 +77,7 @@
             msg: {
                 'en': 'Hello Sharif Group, I would like to contact the Dubai Advisory Team.',
                 'ar': 'مرحباً مجموعة شريف، أود التواصل مع فريق استشارات دبي.',
-                'fa': 'سلام گروه شریف، مایل به تماس با تیم دبی هستم.',
+                'fa': 'سلام گروپ شریف، مایل به تماس با تیم دبی هستم.',
                 'zh': '您好谢里夫集团，我想联系迪拜顾问团队。'
             }
         },
@@ -283,8 +283,7 @@
                 text-align: right;
             }
 
-            .sg-wa-widget-container.sg-wa-open .sg-wa-modal,
-            .sg-wa-widget-container:hover .sg-wa-modal {
+            .sg-wa-widget-container.sg-wa-open .sg-wa-modal {
                 opacity: 1;
                 visibility: visible;
                 transform: translateY(0) scale(1);
@@ -297,6 +296,8 @@
                 align-items: center;
                 justify-content: space-between;
                 margin-bottom: 12px;
+                position: relative;
+                z-index: 2;
             }
 
             .sg-wa-brand-tag {
@@ -322,19 +323,25 @@
             .sg-wa-close-btn {
                 background: transparent;
                 border: none;
-                color: rgba(255, 255, 255, 0.65);
+                color: rgba(255, 255, 255, 0.7);
                 cursor: pointer;
-                padding: 4px;
+                width: 32px;
+                height: 32px;
                 display: flex;
                 align-items: center;
                 justify-content: center;
-                border-radius: 6px;
-                transition: color 0.2s ease, transform 0.2s ease;
+                border-radius: 8px;
+                transition: color 0.2s ease, background 0.2s ease, transform 0.2s ease;
                 outline: none;
+                padding: 0;
+                position: relative;
+                z-index: 10;
+                -webkit-tap-highlight-color: transparent;
             }
 
             .sg-wa-close-btn:hover {
                 color: #C5A880;
+                background: rgba(197, 168, 128, 0.16);
                 transform: scale(1.1);
             }
 
@@ -606,7 +613,7 @@
 
     var LOCK_ICON_SVG = '<svg class="sg-wa-lock-icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M18 8h-1V6c0-2.76-2.24-5-5-5S7 3.24 7 6v2H6c-1.1 0-2 .9-2 2v10c0 1.1.9 2 2 2h12c1.1 0 2-.9 2-2V10c0-1.1-.9-2-2-2zm-6 9c-1.1 0-2-.9-2-2s.9-2 2-2 2 .9 2 2-.9 2-2 2zm3.1-9H8.9V6c0-1.71 1.39-3.1 3.1-3.1 1.71 0 3.1 1.39 3.1 3.1v2z"/></svg>';
 
-    var CLOSE_ICON_SVG = '<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg>';
+    var CLOSE_ICON_SVG = '<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" style="pointer-events: none;"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg>';
 
     function buildWhatsAppUrl(phoneRaw, msgText) {
         return 'https://wa.me/' + phoneRaw + (msgText ? '?text=' + encodeURIComponent(msgText) : '');
@@ -771,7 +778,10 @@
         updateExistingWhatsAppLinks();
     }
 
+    var isDismissed = false;
+
     function openModal(container, button) {
+        if (isDismissed) return;
         container.classList.add('sg-wa-open');
         button.setAttribute('aria-expanded', 'true');
     }
@@ -780,31 +790,38 @@
         container.classList.remove('sg-wa-open');
         button.setAttribute('aria-expanded', 'false');
         isClickLockedOpen = false;
+        isDismissed = true;
     }
 
     function toggleModal(container, button) {
         if (container.classList.contains('sg-wa-open')) {
             closeModal(container, button);
         } else {
+            isDismissed = false;
             openModal(container, button);
             isClickLockedOpen = true;
         }
     }
 
     function bindWidgetEvents(container, button, modal) {
-        // Hover interactions with debounce
-        container.addEventListener('mouseenter', function () {
+        // Trigger hover on the button only
+        button.addEventListener('mouseenter', function () {
             if (hoverTimeout) {
                 clearTimeout(hoverTimeout);
                 hoverTimeout = null;
             }
-            openModal(container, button);
+            if (!isDismissed) {
+                openModal(container, button);
+            }
         });
 
+        // Leaving the entire container resets dismiss and allows clean closing
         container.addEventListener('mouseleave', function () {
+            isDismissed = false;
             if (isClickLockedOpen) return;
             hoverTimeout = setTimeout(function () {
                 closeModal(container, button);
+                isDismissed = false;
             }, 250);
         });
 
@@ -815,10 +832,20 @@
             toggleModal(container, button);
         });
 
-        // Modal clicks (close button or card click tracking)
+        // Direct close button binding
+        var closeBtn = modal.querySelector('#sg-wa-close-btn');
+        if (closeBtn) {
+            closeBtn.addEventListener('click', function (e) {
+                e.preventDefault();
+                e.stopPropagation();
+                closeModal(container, button);
+            });
+        }
+
+        // Delegated modal clicks
         modal.addEventListener('click', function (e) {
-            var closeBtn = e.target.closest('#sg-wa-close-btn');
-            if (closeBtn) {
+            var btn = e.target.closest('#sg-wa-close-btn');
+            if (btn) {
                 e.preventDefault();
                 e.stopPropagation();
                 closeModal(container, button);
@@ -846,6 +873,7 @@
         document.addEventListener('click', function (e) {
             if (!container.contains(e.target)) {
                 closeModal(container, button);
+                isDismissed = false;
             }
         });
 
@@ -853,6 +881,7 @@
         document.addEventListener('keydown', function (e) {
             if (e.key === 'Escape' || e.keyCode === 27) {
                 closeModal(container, button);
+                isDismissed = false;
             }
         });
     }
