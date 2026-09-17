@@ -1432,7 +1432,7 @@
 <!-- Final Step (Tick Mark) -->
 <div class="timeline-step grid grid-cols-12 gap-8 items-center relative" data-step="4">
 <div class="col-span-12 flex flex-col items-center justify-center text-center pt-4 sm:pt-6">
-<div class="step-badge w-12 h-12 sm:w-16 sm:h-16 rounded-full bg-neutral-200 text-neutral-600 font-serif font-bold text-lg sm:text-2xl flex items-center justify-center shadow-2xl z-20 border-2 sm:border-4 border-[#FAF6EE] transition-all duration-500">?</div>
+<div class="step-badge w-12 h-12 sm:w-16 sm:h-16 rounded-full bg-neutral-200 text-neutral-600 font-serif font-bold text-lg sm:text-2xl flex items-center justify-center shadow-2xl z-20 border-2 sm:border-4 border-[#FAF6EE] transition-all duration-500"><i class="fa-solid fa-check"></i></div>
 <div class="mt-4 sm:mt-6 space-y-1 sm:space-y-2">
 <span class="text-[10px] sm:text-xs font-bold uppercase tracking-[0.3em] text-neutral-500 block" id="congrats-label" data-i18n="programs.greece.timeline_item16">CONGRATULATIONS</span>
 <h4 class="font-serif text-lg sm:text-3xl font-bold text-neutral-900" data-i18n="programs.greece.timeline_item17">You Are a European Resident!</h4>
@@ -2938,7 +2938,7 @@ function renderDominicaMobilityList() {
                     badge.classList.remove("bg-neutral-200", "text-neutral-600", "badge-passed-green");
                     badge.classList.add("bg-amber-500", "text-neutral-950", "ring-4", "ring-amber-300/60", "scale-110", "shadow-xl");
                     
-                    if(stepNum === "5") {
+                    if(step === finalStep) {
                         const label = document.getElementById("congrats-label");
                         if(label) {
                             label.classList.remove("text-neutral-500");
@@ -2949,11 +2949,11 @@ function renderDominicaMobilityList() {
                     // Passed State
                     badge.classList.remove("bg-neutral-200", "text-neutral-600", "bg-amber-500", "ring-4", "ring-amber-300/60", "scale-110", "shadow-xl");
                     
-                    if (stepNum === "5") {
-                        // Keep step 5 tick mark in original golden/amber style
+                    if (step === finalStep) {
+                        // Keep final step tick mark in original golden/amber style
                         badge.classList.add("bg-amber-500", "text-neutral-950");
                     } else {
-                        // Steps 1 to 4 turn green and blink
+                        // Steps 1 to 3 turn green and blink
                         badge.classList.add("badge-passed-green");
                     }
                 } else {
