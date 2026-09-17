@@ -578,8 +578,16 @@ async function handleLogin(e) {
       result = { success: true, user: data.user, token: data.token };
       if (data.token) sessionStorage.setItem('sgcms_token', data.token);
       if (data.user) sessionStorage.setItem('sgcms_auth', JSON.stringify(data.user));
+    } else if (res.status === 401 && data && data.error) {
+      // Backend database verified credentials and explicitly rejected them
+      result = { success: false, error: data.error };
     } else {
-      result = { success: false, error: (data && data.error) ? data.error : 'Incorrect email or password.' };
+      // Backend database is offline, local dev environment, or static server
+      if (window.CMS && window.CMS.Auth) {
+        result = window.CMS.Auth.login(email, pwd);
+      } else {
+        result = { success: false, error: (data && data.error) ? data.error : 'Incorrect email or password.' };
+      }
     }
   } catch (err) {
     // Network / backend offline fallback (e.g. local preview without PHP server)
