@@ -213,21 +213,21 @@
             }
         }
 
-        /* Fix: Hide country list by default and show only on click */
+        /* Force dropdown hidden by default with high specificity */
         .custom-select-wrapper {
-            position: relative;
+            position: relative !important;
         }
         .custom-select-dropdown {
-            display: none;
-            position: absolute;
-            top: 100%;
-            left: 0;
-            width: 260px;
-            max-height: 220px;
-            overflow-y: auto;
-            z-index: 50;
-            margin-top: 4px;
-            border-radius: 0.75rem;
+            display: none !important;
+            position: absolute !important;
+            top: 100% !important;
+            left: 0 !important;
+            width: 260px !important;
+            max-height: 220px !important;
+            overflow-y: auto !important;
+            z-index: 9999 !important;
+            margin-top: 4px !important;
+            border-radius: 0.75rem !important;
         }
         .custom-select-dropdown.active {
             display: block !important;
@@ -2206,7 +2206,7 @@
 <span class="selected-country-span">🇦🇪 +971</span>
 <i class="fa-solid fa-chevron-down text-[8px] text-neutral-400 ms-1"></i>
 </button>
-<div class="custom-select-dropdown p-2 bg-white border border-neutral-200 shadow-xl">
+<div class="custom-select-dropdown hidden p-2 bg-white border border-neutral-200 shadow-xl">
 <input class="w-full p-2 mb-2 border border-neutral-200 rounded-lg text-xs focus:outline-none" oninput="filterCountryCode(this)" placeholder="Search code/country..." type="text"/>
 <div class="country-list-container max-h-40 overflow-y-auto"></div>
 </div>
@@ -7930,7 +7930,9 @@
 
             // Country Picker initialization & event listeners
             function toggleCountryDropdown(btn) {
-                btn.nextElementSibling.classList.toggle('active');
+                const dropdown = btn.nextElementSibling;
+                dropdown.classList.toggle('hidden');
+                dropdown.classList.toggle('active');
             }
 
             function selectCountryCode(item, code, flag) {
@@ -7938,6 +7940,7 @@
                 const btn = dropdown.previousElementSibling;
                 btn.querySelector('.selected-country-span').innerText = `${flag} ${code}`;
                 item.closest('.custom-select-wrapper').nextElementSibling.value = code;
+                dropdown.classList.add('hidden');
                 dropdown.classList.remove('active');
             }
 
