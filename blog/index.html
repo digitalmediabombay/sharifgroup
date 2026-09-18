@@ -218,7 +218,7 @@
             position: relative !important;
         }
         .custom-select-dropdown {
-            display: none !important;
+            display: none;
             position: absolute !important;
             top: 100% !important;
             left: 0 !important;
@@ -2206,7 +2206,7 @@
 <span class="selected-country-span">🇦🇪 +971</span>
 <i class="fa-solid fa-chevron-down text-[8px] text-neutral-400 ms-1"></i>
 </button>
-<div class="custom-select-dropdown hidden p-2 bg-white border border-neutral-200 shadow-xl">
+<div class="custom-select-dropdown p-2 bg-white border border-neutral-200 shadow-xl" style="display: none !important;">
 <input class="w-full p-2 mb-2 border border-neutral-200 rounded-lg text-xs focus:outline-none" oninput="filterCountryCode(this)" placeholder="Search code/country..." type="text"/>
 <div class="country-list-container max-h-40 overflow-y-auto"></div>
 </div>
@@ -7929,20 +7929,42 @@
             }
 
             // Country Picker initialization & event listeners
-            function toggleCountryDropdown(btn) {
-                const dropdown = btn.nextElementSibling;
-                dropdown.classList.toggle('hidden');
-                dropdown.classList.toggle('active');
-            }
+           function toggleCountryDropdown(btn) {
+    const dropdown = btn.parentElement.querySelector('.custom-select-dropdown');
+    if (!dropdown) return;
+    
+    const isCurrentlyVisible = dropdown.style.display === 'block';
+
+    // 1. Close all dropdowns
+    document.querySelectorAll('.custom-select-dropdown').forEach(d => {
+        d.classList.remove('active');
+        d.style.setProperty('display', 'none', 'important');
+    });
+
+    // 2. Toggle current
+    if (!isCurrentlyVisible) {
+        dropdown.classList.add('active');
+        dropdown.style.setProperty('display', 'block', 'important');
+    }
+}
 
             function selectCountryCode(item, code, flag) {
-                const dropdown = item.closest('.custom-select-dropdown');
-                const btn = dropdown.previousElementSibling;
-                btn.querySelector('.selected-country-span').innerText = `${flag} ${code}`;
-                item.closest('.custom-select-wrapper').nextElementSibling.value = code;
-                dropdown.classList.add('hidden');
-                dropdown.classList.remove('active');
-            }
+    const dropdown = item.closest('.custom-select-dropdown');
+    const wrapper = item.closest('.custom-select-wrapper');
+    const btn = wrapper.querySelector('button');
+    
+    // Update button display text
+    const span = btn.querySelector('.selected-country-span');
+    if (span) span.innerText = `${flag} ${code}`;
+    
+    // Safely update hidden input value
+    const hiddenInput = wrapper.parentElement.querySelector('.dial-code-hidden-value');
+    if (hiddenInput) hiddenInput.value = code;
+    
+    // Close dropdown
+    dropdown.classList.remove('active');
+    dropdown.style.setProperty('display', 'none', 'important');
+}
 
             function filterCountryCode(input) {
                 const filter = input.value.toLowerCase();
@@ -8170,7 +8192,10 @@
 
             document.addEventListener('click', (e) => {
                 if (!e.target.closest('.custom-select-wrapper')) {
-                    document.querySelectorAll('.custom-select-dropdown').forEach(d => d.classList.remove('active'));
+                    document.querySelectorAll('.custom-select-dropdown').forEach(d => {
+                        d.classList.remove('active');
+                        d.style.setProperty('display', 'none', 'important');
+                    });
                 }
             });
 
