@@ -212,6 +212,26 @@
                     0 0 45px rgba(197, 168, 128, 0.6);
             }
         }
+
+        /* Fix: Hide country list by default and show only on click */
+        .custom-select-wrapper {
+            position: relative;
+        }
+        .custom-select-dropdown {
+            display: none;
+            position: absolute;
+            top: 100%;
+            left: 0;
+            width: 260px;
+            max-height: 220px;
+            overflow-y: auto;
+            z-index: 50;
+            margin-top: 4px;
+            border-radius: 0.75rem;
+        }
+        .custom-select-dropdown.active {
+            display: block !important;
+        }
     </style>
 <link href="../assets/css/multilingual.css?v=5" rel="stylesheet"/>
 </head>
