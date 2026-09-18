@@ -674,34 +674,44 @@
 </div>
 </header>
 <!-- MAIN VIEWPORT CONTAINER -->
-<main class="pt-20 min-h-[70vh]" id="app-view">
+<main class="min-h-[70vh]" id="app-view">
 <!-- HERO SECTION WITH DYNAMIC AUTOPLAY SLIDESHOW -->
-<section class="relative min-h-[50vh] flex flex-col justify-center items-center text-center px-4 sm:px-6 bg-neutral-950 border-b border-neutral-200 overflow-hidden pt-32 pb-24">
-<div class="absolute inset-0 z-0">
-                <div class="contact-hero-slide absolute inset-0 bg-cover bg-center transition-opacity duration-1000"
-                    style="opacity: 1; background-image: linear-gradient(rgba(11,15,20,0.7), rgba(11,15,20,0.8)), url('/assets/images/dubai-office.webp');">
-                </div>
-                <div class="contact-hero-slide absolute inset-0 bg-cover bg-center transition-opacity duration-1000"
-                    style="opacity: 0; background-image: linear-gradient(rgba(11,15,20,0.7), rgba(11,15,20,0.8)), url('/assets/images/dubai-office-1.webp');">
-                </div>
-                <div class="contact-hero-slide absolute inset-0 bg-cover bg-center transition-opacity duration-1000"
-                    style="opacity: 0; background-image: linear-gradient(rgba(11,15,20,0.7), rgba(11,15,20,0.8)), url('/assets/images/dubai-office-2.webp');">
-                </div>
-                <div class="contact-hero-slide absolute inset-0 bg-cover bg-center transition-opacity duration-1000"
-                    style="opacity: 0; background-image: linear-gradient(rgba(11,15,20,0.7), rgba(11,15,20,0.8)), url('/assets/images/dubai-office-3.webp');">
-                </div>
-                <div class="contact-hero-slide absolute inset-0 bg-cover bg-center transition-opacity duration-1000"
-                    style="opacity: 0; background-image: linear-gradient(rgba(11,15,20,0.7), rgba(11,15,20,0.8)), url('/assets/images/dubai-office-4.webp');">
-                </div>
-<div class="absolute inset-0 bg-gradient-to-t from-neutral-950/90 via-transparent to-neutral-950/50 z-0"></div>
-<div class="relative z-10 max-w-5xl mx-auto space-y-4">
-<span class="text-xs font-bold uppercase tracking-[0.3em] text-luxury-gold flex items-center justify-center gap-2">
-<i class="fa-solid fa-gem text-xs"></i><span data-i18n="pages.aboutUs.heroBadge">EXECUTIVE BRIEFING</span></span>
-<h1 class="font-serif text-white font-normal tracking-tight drop-shadow-xl flex flex-col items-center gap-2 text-5xl sm:text-7xl md:text-8xl py-1 sm:py-2">
-<span class="contact-hero-glow font-serif text-5xl sm:text-7xl md:text-8xl cursor-pointer" data-i18n="pages.aboutUs.heroTitle">About Sharif Group</span>
-</h1>
-<p class="text-xs sm:text-sm text-neutral-300 font-light max-w-xl mx-auto leading-relaxed pt-2 about-hero-subtitle" data-i18n="pages.aboutUs.heroSubtitle">A premier migration, citizenship, and luxury investment advisory platform rooted in Business Bay, Dubai.</p>
-</div>
+<section class="relative min-h-[60vh] lg:min-h-[65vh] flex flex-col justify-center items-center text-center px-4 sm:px-6 bg-neutral-950 border-b border-neutral-800 overflow-hidden pt-40 pb-28">
+    
+    <!-- Background Slideshow Container -->
+    <div class="absolute inset-0 z-0 pointer-events-none">
+        <div class="contact-hero-slide absolute inset-0 bg-cover bg-center transition-opacity duration-1000"
+            style="opacity: 1; background-image: linear-gradient(rgba(11,15,20,0.45), rgba(11,15,20,0.65)), url('/assets/images/dubai-office.webp');">
+        </div>
+        <div class="contact-hero-slide absolute inset-0 bg-cover bg-center transition-opacity duration-1000"
+            style="opacity: 0; background-image: linear-gradient(rgba(11,15,20,0.45), rgba(11,15,20,0.65)), url('/assets/images/dubai-office-1.webp');">
+        </div>
+        <div class="contact-hero-slide absolute inset-0 bg-cover bg-center transition-opacity duration-1000"
+            style="opacity: 0; background-image: linear-gradient(rgba(11,15,20,0.45), rgba(11,15,20,0.65)), url('/assets/images/dubai-office-2.webp');">
+        </div>
+        <div class="contact-hero-slide absolute inset-0 bg-cover bg-center transition-opacity duration-1000"
+            style="opacity: 0; background-image: linear-gradient(rgba(11,15,20,0.45), rgba(11,15,20,0.65)), url('/assets/images/dubai-office-3.webp');">
+        </div>
+        <div class="contact-hero-slide absolute inset-0 bg-cover bg-center transition-opacity duration-1000"
+            style="opacity: 0; background-image: linear-gradient(rgba(11,15,20,0.45), rgba(11,15,20,0.65)), url('/assets/images/dubai-office-4.webp');">
+        </div>
+        <!-- Soft Contrast Bottom Fade -->
+        <div class="absolute inset-0 bg-gradient-to-t from-neutral-950 via-transparent to-neutral-950/40"></div>
+    </div>
+
+    <!-- Foreground Content -->
+    <div class="relative z-10 max-w-4xl mx-auto space-y-4">
+        <span class="text-xs font-bold uppercase tracking-[0.3em] text-luxury-gold flex items-center justify-center gap-2">
+            <i class="fa-solid fa-gem text-xs"></i>
+            <span data-i18n="pages.aboutUs.heroBadge">EXECUTIVE BRIEFING</span>
+        </span>
+        <h1 class="font-serif text-white font-normal tracking-tight drop-shadow-xl text-4xl sm:text-6xl md:text-7xl lg:text-8xl leading-tight">
+            <span class="contact-hero-glow font-serif cursor-pointer" data-i18n="pages.aboutUs.heroTitle">About Sharif Group</span>
+        </h1>
+        <p class="text-xs sm:text-sm md:text-base text-neutral-300 font-light max-w-xl mx-auto leading-relaxed pt-1 about-hero-subtitle" data-i18n="pages.aboutUs.heroSubtitle">
+            A premier migration, citizenship, and luxury investment advisory platform rooted in Business Bay, Dubai.
+        </p>
+    </div>
 </section>
 <!-- SECTION 1: GLOBAL MOBILITY & STATS (REDESIGNED LUXURY BANNER) -->
 <section class="py-20 px-4 sm:px-6 bg-white border-b border-neutral-200/60" id="sec-about-overview">
