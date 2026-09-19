@@ -263,7 +263,7 @@
     };
 
     // Global Cache of Localized Articles
-    window.articlesTranslations = {
+    window.articlesTranslations = window.articlesTranslations || {
         'ar': null,
         'fa': null,
         'zh': null
@@ -272,11 +272,20 @@
     var pendingFetches = {};
 
     function getArticleCandidateUrls(lang) {
+        var isFile = typeof window !== 'undefined' && window.location && window.location.protocol === 'file:';
+        if (isFile) {
+            return [
+                '../assets/locales/articles_' + lang + '.json',
+                '../../assets/locales/articles_' + lang + '.json',
+                'assets/locales/articles_' + lang + '.json',
+                '/assets/locales/articles_' + lang + '.json'
+            ];
+        }
         return [
-            'assets/locales/articles_' + lang + '.json',
+            '/assets/locales/articles_' + lang + '.json',
             '../assets/locales/articles_' + lang + '.json',
             '../../assets/locales/articles_' + lang + '.json',
-            '/assets/locales/articles_' + lang + '.json'
+            'assets/locales/articles_' + lang + '.json'
         ];
     }
 
@@ -320,9 +329,9 @@
 
                     // If user is currently looking at an article, refresh it!
                     if (window.currentActiveArticleSlug && typeof window.openBlogDetailBySlug === 'function') {
-                        var cur = (window.getCurrentLanguage && window.getCurrentLanguage()) || 'en';
+                        var cur = (window.getCurrentLanguage && window.getCurrentLanguage()) || getStoredOrInitialLang();
                         if (cur === lang) {
-                            window.openBlogDetailBySlug(window.currentActiveArticleSlug);
+                            window.openBlogDetailBySlug(window.currentActiveArticleSlug, true);
                         }
                     }
                 })
@@ -361,14 +370,18 @@
             ['ar', 'zh', 'fa'].forEach(function(l) {
                 if (l !== initialLang) loadArticlesDataset(l);
             });
-        }, 200);
+        }, 150);
     } catch(e) {}
 
     // Listen to language changes
     window.addEventListener('languageChanged', function(e) {
-        var newLang = e.detail && e.detail.lang;
+        var newLang = (e.detail && e.detail.lang) || (window.getCurrentLanguage && window.getCurrentLanguage()) || 'en';
         if (newLang && newLang !== 'en') {
-            loadArticlesDataset(newLang);
+            loadArticlesDataset(newLang, function() {
+                if (window.currentActiveArticleSlug && typeof window.openBlogDetailBySlug === 'function') {
+                    window.openBlogDetailBySlug(window.currentActiveArticleSlug, true);
+                }
+            });
         }
     });
 
@@ -393,8 +406,9 @@
 
     // Expose Global Resolver
     window.getLocalizedArticleData = function(slug, lang) {
-        var base = (window.articlesDatabase && window.articlesDatabase[slug]) || null;
-        if (!base) return null;
+        var base = (window.articlesDatabase && window.articlesDatabase[slug]) 
+                || (typeof articlesDatabase !== 'undefined' && articlesDatabase[slug]) 
+                || null;
 
         var curLang = lang || (window.getCurrentLanguage ? window.getCurrentLanguage() : getStoredOrInitialLang());
         if (curLang === 'en') return base;
@@ -411,15 +425,15 @@
                     ? ldCms.faqs
                     : ((foundCms[curLang] && Array.isArray(foundCms[curLang].faqs) && foundCms[curLang].faqs.length) ? foundCms[curLang].faqs
                     : ((foundCms.en && Array.isArray(foundCms.en.faqs) && foundCms.en.faqs.length) ? foundCms.en.faqs
-                    : (foundCms.faqs || base.faqs || [])));
+                    : (foundCms.faqs || (base && base.faqs) || [])));
                 return {
-                    title: ldCms.title || (foundCms.en && foundCms.en.title) || base.title,
-                    category: translateCategory(foundCms.category || base.category, curLang),
-                    author: translateAuthor(foundCms.author || base.author, curLang),
-                    date: translateDate(foundCms.publish_date || base.date, curLang),
-                    updated: translateDate(foundCms.publish_date || base.updated, curLang),
-                    image: resolveArticleImage(foundCms.featured_img, base.image),
-                    content: ldCms.body || (foundCms.en && foundCms.en.body) || base.content,
+                    title: ldCms.title || (foundCms.en && foundCms.en.title) || (base && base.title) || 'Article',
+                    category: translateCategory(foundCms.category || (base && base.category) || 'Citizenship', curLang),
+                    author: translateAuthor(foundCms.author || (base && base.author) || 'Sharif Group Advisory Desk', curLang),
+                    date: translateDate(foundCms.publish_date || (base && base.date) || '', curLang),
+                    updated: translateDate(foundCms.publish_date || (base && base.updated) || '', curLang),
+                    image: resolveArticleImage(foundCms.featured_img, (base && base.image) || ''),
+                    content: ldCms.body || (foundCms.en && foundCms.en.body) || (base && base.content) || '',
                     faqs: curFaqs
                 };
             }
@@ -430,14 +444,14 @@
         if (store && store[slug]) {
             var art = store[slug];
             return {
-                title: art.title || base.title,
-                category: art.category || translateCategory(base.category, curLang),
-                author: art.author || translateAuthor(base.author, curLang),
-                date: art.date || translateDate(base.date, curLang),
-                updated: art.updated || translateDate(base.updated, curLang),
-                image: resolveArticleImage(art.image, base.image),
-                content: art.content || base.content,
-                faqs: art.faqs || base.faqs
+                title: art.title || (base && base.title) || '',
+                category: art.category || translateCategory(base && base.category, curLang),
+                author: art.author || translateAuthor(base && base.author, curLang),
+                date: art.date || translateDate(base && base.date, curLang),
+                updated: art.updated || translateDate(base && base.updated, curLang),
+                image: resolveArticleImage(art.image, base && base.image),
+                content: art.content || (base && base.content) || '',
+                faqs: art.faqs || (base && base.faqs) || []
             };
         }
 
@@ -445,19 +459,21 @@
         if (FULL_ARTICLES[slug] && FULL_ARTICLES[slug][curLang]) {
             var cur = FULL_ARTICLES[slug][curLang];
             return {
-                title: cur.title || base.title,
-                category: translateCategory(base.category, curLang),
-                author: translateAuthor(base.author, curLang),
-                date: translateDate(base.date, curLang),
-                updated: translateDate(base.updated, curLang),
-                image: resolveArticleImage(cur.image, base.image),
-                content: cur.content || base.content,
-                faqs: cur.faqs || base.faqs
+                title: cur.title || (base && base.title) || '',
+                category: translateCategory(base && base.category, curLang),
+                author: translateAuthor(base && base.author, curLang),
+                date: translateDate(base && base.date, curLang),
+                updated: translateDate(base && base.updated, curLang),
+                image: resolveArticleImage(cur.image, base && base.image),
+                content: cur.content || (base && base.content) || '',
+                faqs: cur.faqs || (base && base.faqs) || []
             };
         }
 
-        // 3. Trigger asynchronous load so it re-renders immediately
+        // 3. Trigger asynchronous load so it re-renders immediately upon arrival
         loadArticlesDataset(curLang);
+
+        if (!base) return null;
 
         // Fallback: title, author, category, dates translated; content returned clean
         var locTitle = base.title;
