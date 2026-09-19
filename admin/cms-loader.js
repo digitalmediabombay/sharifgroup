@@ -638,7 +638,7 @@
         }
 
         // 8. Automatically restore consultation form title styling
-        const formHeading = document.querySelector('[data-i18n-html*="formTitle"], #program-consult-form-section h3');
+        const formHeading = document.querySelector('[data-i18n-html*="formTitle"], [data-i18n-html*="consultationHeading"], [data-i18n*="consultationHeading"], #program-consult-form-section h3, #sec-partnership-enquiry h3');
         if (formHeading) {
           if (!formHeading.querySelector('.italic') || !formHeading.querySelector('span')) {
             formHeading.innerHTML = formatFormTitleHtml(formHeading.textContent);
@@ -688,7 +688,7 @@
           const isInvestmentHeading = selector.includes('investmentTitle') || (selector.includes('sec-investment') && selector.includes('h2'));
           const isWhoCanApplyHeading = selector.includes('whoCanApplyTitle') || (selector.includes('sec-who-can-apply') && selector.includes('h3'));
           const isBenefitsHeading = selector.includes('benefitsTitle') || (selector.includes('sec-benefits') && selector.includes('h2'));
-          const isFormHeading = selector.includes('formTitle') || (selector.includes('program-consult-form-section') && selector.includes('h3'));
+          const isFormHeading = selector.includes('formTitle') || selector.includes('consultationHeading') || ((selector.includes('program-consult-form-section') || selector.includes('sec-partnership-enquiry')) && selector.includes('h3'));
 
           if (isOverviewHeading) {
             const rawVal = typeof item === 'string' ? item : (item?.text || '');
@@ -3060,7 +3060,7 @@
         } else if (field === 'faq_desc') {
           setText('#program-faq-section p, [data-i18n*="faqDesc"]', value);
         } else if (field === 'consult_heading' || field === 'form_title') {
-          const formHeading = document.querySelector('#program-consult-form-section h3, [data-i18n*="formTitle"]');
+          const formHeading = document.querySelector('#program-consult-form-section h3, #sec-partnership-enquiry h3, [data-i18n*="formTitle"], [data-i18n*="consultationHeading"]');
           if (formHeading) {
             formHeading.innerHTML = formatFormTitleHtml(value);
           }
