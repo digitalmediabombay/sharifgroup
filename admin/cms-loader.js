@@ -216,12 +216,13 @@
 
   function setText(selector, text, opts = {}) {
     if (text === undefined || text === null) return;
+    const cleanText = (typeof text === 'string') ? text.replace(/&amp;/g, '&') : text;
     const elements = opts.all
       ? document.querySelectorAll(selector)
       : [document.querySelector(selector)];
     elements.forEach(e => {
       if (e) {
-        e.textContent = text;
+        e.textContent = cleanText;
         if (opts.dir) e.dir = opts.dir;
       }
     });

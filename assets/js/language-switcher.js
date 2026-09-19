@@ -36,6 +36,23 @@
             .replace(/[۰-۹]/g, function (d) { return PERSIAN_DIGITS.indexOf(d); });
     }
 
+    function decodeHtmlEntities(str) {
+        if (!str || typeof str !== 'string') return str;
+        if (str.indexOf('&') === -1) return str;
+        var decoded = str;
+        while (decoded.indexOf('&amp;') !== -1) {
+            decoded = decoded.replace(/&amp;/g, '&');
+        }
+        return decoded
+            .replace(/&quot;/g, '"')
+            .replace(/&#39;/g, "'")
+            .replace(/&apos;/g, "'")
+            .replace(/&#38;/g, '&')
+            .replace(/&lt;/g, '<')
+            .replace(/&gt;/g, '>');
+    }
+    window.decodeHtmlEntities = decodeHtmlEntities;
+
     window.localizeNumbers = function (str, lang) {
         return localizeNumbers(str, lang || currentLang);
     };
@@ -61,7 +78,8 @@
             var key = el.getAttribute('data-i18n');
             var val = getNestedValue(data, key);
             if (val !== null && val !== undefined) {
-                el.textContent = (l === 'ar' || l === 'fa') ? localizeNumbers(val, l) : val;
+                var localized = (l === 'ar' || l === 'fa') ? localizeNumbers(val, l) : val;
+                el.textContent = decodeHtmlEntities(localized);
             }
         });
 
@@ -185,7 +203,7 @@
         }
     }
 
-    var I18N_VERSION = '20260917_v6';
+    var I18N_VERSION = '20260920_v8';
 
     function loadTranslation(lang, callback) {
         var pathname = (window.location && window.location.pathname) ? window.location.pathname.toLowerCase() : '';
@@ -445,7 +463,7 @@
         }
 
         if (pageTitle) {
-            document.title = pageTitle;
+            document.title = decodeHtmlEntities(pageTitle);
         }
 
         if (pathname.includes('/eligibilitychecker') || href.includes('/eligibilitychecker')) {
@@ -489,6 +507,7 @@
             var val = getNestedValue(data, key);
             if (val !== null && val !== undefined) {
                 var localized = (lang === 'ar' || lang === 'fa') ? localizeNumbers(val, lang) : val;
+                localized = decodeHtmlEntities(localized);
                 var heroGlowChild = el.querySelector('.contact-hero-glow, .dominica-hero-glow, .stlucia-hero-glow');
                 if (heroGlowChild && el !== heroGlowChild) {
                     heroGlowChild.textContent = localized;
@@ -523,7 +542,8 @@
             var val = getNestedValue(data, key);
             if (val !== null && val !== undefined) {
                 var isTel = el.type === 'tel' || el.getAttribute('type') === 'tel';
-                el.setAttribute('placeholder', (!isTel && (lang === 'ar' || lang === 'fa')) ? localizeNumbers(val, lang) : val);
+                var text = (!isTel && (lang === 'ar' || lang === 'fa')) ? localizeNumbers(val, lang) : val;
+                el.setAttribute('placeholder', decodeHtmlEntities(text));
             }
         });
 
@@ -535,7 +555,7 @@
                 if (p.querySelector('.fa-location-dot')) {
                     var span = p.querySelector('span');
                     if (span) {
-                        span.textContent = localizedFooterAddr;
+                        span.textContent = decodeHtmlEntities(localizedFooterAddr);
                     }
                 }
             });
@@ -580,7 +600,8 @@
                 var key = el.getAttribute('data-i18n');
                 var val = getNestedValue(data, key);
                 if (val !== null && val !== undefined) {
-                    el.textContent = (lang === 'ar' || lang === 'fa') ? localizeNumbers(val, lang) : val;
+                    var localized = (lang === 'ar' || lang === 'fa') ? localizeNumbers(val, lang) : val;
+                    el.textContent = decodeHtmlEntities(localized);
                 }
             });
             container.querySelectorAll('[data-i18n-html]').forEach(function (el) {
