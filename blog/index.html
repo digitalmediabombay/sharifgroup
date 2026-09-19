@@ -2381,14 +2381,14 @@
 </div>
 </div>
 <!-- FULL CONSULTATION FORM SECTION (PERFECTLY CENTERED & RESPONSIVE IN LTR & RTL) -->
-<div class="py-20 px-4 sm:px-8 bg-[#FAF6EE] relative overflow-hidden border-t border-neutral-200/80 mt-16 w-full" id="detail-consultation-section">
-<div class="absolute inset-0 z-0 pointer-events-none bg-no-repeat bg-center bg-contain opacity-5" style="background-image: url('https://upload.wikimedia.org/wikipedia/commons/8/80/World_map_-_low_resolution.svg'); filter: sepia(0.1) saturate(0.8) brightness(1.5) contrast(0.5);"></div>
-<div class="absolute inset-0 z-0 pointer-events-none bg-gradient-to-b from-[#FAF6EE] via-[#FAF6EE]/90 to-[#FAF6EE]"></div>
-<div class="max-w-4xl mx-auto relative z-10 space-y-10">
+<div class="py-24 px-6 bg-[#FAF6EE] relative overflow-hidden border-t border-neutral-200/80 -mx-4 sm:-mx-8 mt-16 w-[calc(100%+2rem)] sm:w-[calc(100%+4rem)]" id="detail-consultation-section">
+<div class="absolute inset-0 z-0 pointer-events-none bg-no-repeat bg-center bg-contain" style="background-image: url('https://upload.wikimedia.org/wikipedia/commons/8/80/World_map_-_low_resolution.svg'); filter: sepia(0.25) saturate(1.2) brightness(1.05) contrast(0.75); opacity: 0.22;"></div>
+<div class="absolute inset-0 z-0 pointer-events-none bg-gradient-to-b from-[#FAF6EE]/50 via-transparent to-[#FAF6EE]/60"></div>
+<div class="max-w-6xl mx-auto relative z-10 space-y-10">
 <div class="text-center space-y-3 max-w-3xl mx-auto">
-<span class="text-xs font-bold uppercase tracking-[0.3em] text-[#786142] flex items-center justify-center gap-2" data-i18n="contact.deskTitle">
-<i class="fa-solid fa-headset text-[10px]"></i> EXECUTIVE ADVISORY DESK
-							</span>
+<span class="text-xs font-bold uppercase tracking-[0.3em] text-[#786142] flex items-center justify-center gap-2">
+<i class="fa-solid fa-headset text-[10px]"></i> <span data-i18n="contact.deskTitle">EXECUTIVE ADVISORY DESK</span>
+</span>
 <h3 class="font-serif text-3xl md:text-5xl font-bold text-neutral-900 leading-tight" data-i18n-html="contact.consultationHeading">
 								Apply for a Personalized <span class="italic text-[#786142] font-serif font-normal">Consultation — It's Free!</span>
 </h3>
@@ -2397,44 +2397,26 @@
 								Complete our quick inquiry form below. Our Dubai advisory team will evaluate your profile and prepare a confidential proposal.
 							</p>
 </div>
-<form class="space-y-6 max-w-4xl mx-auto text-start" id="standalone-contact-form" onsubmit="handleContactSubmit(event)">
-<!-- Row 1: Salutation, First Name & Last Name -->
-<div class="grid grid-cols-1 sm:grid-cols-3 gap-6">
+<form class="space-y-6 max-w-5xl mx-auto text-start" id="standalone-contact-form" onsubmit="handleContactSubmit(event)">
+<!-- Row 1: First Name & Last Name (Salutation Removed) -->
+<div class="grid grid-cols-1 sm:grid-cols-2 gap-6">
 <div>
-<label class="block text-[10px] uppercase tracking-wider text-neutral-400 font-bold mb-1.5" data-i18n="contact.salutation">Salutation <span class="text-red-500">*</span></label>
-<select class="w-full bg-white border border-neutral-200 rounded-xl px-3 py-3 text-xs focus:outline-none focus:border-luxury-gold shadow-sm" required="">
-<option value="">Select</option>
-<option value="Mr.">Mr.</option>
-<option value="Mrs.">Mrs.</option>
-<option value="Ms.">Ms.</option>
-<option value="Miss">Miss</option>
-<option value="Dr.">Dr.</option>
-<option value="Prof.">Prof.</option>
-<option value="Sir">Sir</option>
-<option value="Sheikh">Sheikh</option>
-<option value="Sheikha">Sheikha</option>
-<option value="HE">H.E. (His/Her Excellency)</option>
-<option value="Lord">Lord</option>
-<option value="Lady">Lady</option>
-</select>
+<label class="block text-[10px] uppercase tracking-wider text-neutral-400 font-bold mb-1.5" data-i18n-html="contact.firstName">First Name <span class="text-red-500">*</span></label>
+<input name="firstName" class="w-full bg-white border border-neutral-200 rounded-xl px-4 py-3 text-xs focus:outline-none focus:border-luxury-gold shadow-sm" placeholder="John" required="" type="text"/>
 </div>
 <div>
-<label class="block text-[10px] uppercase tracking-wider text-neutral-400 font-bold mb-1.5" data-i18n="contact.firstName">First Name <span class="text-red-500">*</span></label>
-<input class="w-full bg-white border border-neutral-200 rounded-xl px-4 py-3 text-xs focus:outline-none focus:border-luxury-gold shadow-sm" placeholder="John" required="" type="text"/>
-</div>
-<div>
-<label class="block text-[10px] uppercase tracking-wider text-neutral-400 font-bold mb-1.5" data-i18n="contact.lastName">Last Name <span class="text-red-500">*</span></label>
-<input class="w-full bg-white border border-neutral-200 rounded-xl px-4 py-3 text-xs focus:outline-none focus:border-luxury-gold shadow-sm" placeholder="Doe" required="" type="text"/>
+<label class="block text-[10px] uppercase tracking-wider text-neutral-400 font-bold mb-1.5" data-i18n-html="contact.lastName">Last Name <span class="text-red-500">*</span></label>
+<input name="lastName" class="w-full bg-white border border-neutral-200 rounded-xl px-4 py-3 text-xs focus:outline-none focus:border-luxury-gold shadow-sm" placeholder="Doe" required="" type="text"/>
 </div>
 </div>
 <!-- Row 2: Email Address & Phone Number -->
 <div class="grid grid-cols-1 sm:grid-cols-2 gap-6">
 <div>
-<label class="block text-[10px] uppercase tracking-wider text-neutral-400 font-bold mb-1.5" data-i18n="contact.emailAddress">Email Address <span class="text-red-500">*</span></label>
-<input class="w-full bg-white border border-neutral-200 rounded-xl px-4 py-3 text-xs focus:outline-none focus:border-luxury-gold shadow-sm" placeholder="name@domain.com" required="" type="email"/>
+<label class="block text-[10px] uppercase tracking-wider text-neutral-400 font-bold mb-1.5" data-i18n-html="contact.emailAddress">Email Address <span class="text-red-500">*</span></label>
+<input name="email" class="w-full bg-white border border-neutral-200 rounded-xl px-4 py-3 text-xs focus:outline-none focus:border-luxury-gold shadow-sm" placeholder="name@domain.com" required="" type="email"/>
 </div>
 <div>
-<label class="block text-[10px] uppercase tracking-wider text-neutral-400 font-bold mb-1.5" data-i18n="contact.phoneNumber">Phone Number <span class="text-red-500">*</span></label>
+<label class="block text-[10px] uppercase tracking-wider text-neutral-400 font-bold mb-1.5" data-i18n-html="contact.phoneNumber">Phone Number <span class="text-red-500">*</span></label>
 <div class="flex" dir="ltr">
 <div class="custom-select-wrapper relative z-20 w-36 overflow-visible">
 <button class="w-full bg-white border border-neutral-200 rounded-s-xl px-3 py-3 text-start text-xs focus:outline-none flex justify-between items-center whitespace-nowrap overflow-hidden shadow-sm" onclick="toggleCountryDropdown(this)" type="button">
@@ -2447,25 +2429,25 @@
 </div>
 </div>
 <input class="dial-code-hidden-value" type="hidden" value="+971"/>
-<input class="w-full bg-white border-y border-e border-neutral-200 rounded-e-xl px-4 py-3 text-xs focus:outline-none focus:border-luxury-gold shadow-sm" placeholder="50 123 4567" required="" type="tel" dir="ltr"/>
+<input name="phone" class="w-full bg-white border-y border-e border-neutral-200 rounded-e-xl px-4 py-3 text-xs focus:outline-none focus:border-luxury-gold shadow-sm" placeholder="50 123 4567" required="" type="tel" dir="ltr"/>
 </div>
 </div>
 </div>
 <!-- Row 3: Program of Choice & Sub-Program Pathway -->
 <div class="grid grid-cols-1 sm:grid-cols-2 gap-6">
 <div>
-<label class="block text-[10px] uppercase tracking-wider text-neutral-400 font-bold mb-1.5" data-i18n="contact.programChoice">Program of Choice <span class="text-red-500">*</span></label>
-<select class="w-full bg-white border border-neutral-200 rounded-xl px-4 py-3 text-xs focus:outline-none focus:border-luxury-gold shadow-sm" onchange="handleServiceSelectionChange(this)" required="">
+<label class="block text-[10px] uppercase tracking-wider text-neutral-400 font-bold mb-1.5" data-i18n-html="contact.programChoice">Program of Choice <span class="text-red-500">*</span></label>
+<select name="targetProgram" class="w-full bg-white border border-neutral-200 rounded-xl px-4 py-3 text-xs focus:outline-none focus:border-luxury-gold shadow-sm" onchange="handleServiceSelectionChange(this)" required="">
 <option value="" data-i18n="contact.selectOption">Select Option</option>
 <option value="citizenship" data-i18n="contact.citizenshipCBI">Citizenship By Investment</option>
 <option value="residency" data-i18n="contact.residencyRBI">Residency By Investment</option>
 <option value="real-estate" data-i18n="contact.realEstate">Real Estate</option>
-<option value="education" data-i18n="contact.educationalAdvisory">Educational Advisory</option>
+<option data-i18n="megaMenu.educationalAdvisory" value="education">Educational Advisory</option>
 </select>
 </div>
 <div>
-<label class="block text-[10px] uppercase tracking-wider text-neutral-400 font-bold mb-1.5" data-i18n="contact.subProgram">Sub-Program Pathway <span class="text-red-500">*</span></label>
-<select class="w-full bg-white border border-neutral-200 rounded-xl px-4 py-3 text-xs focus:outline-none focus:border-luxury-gold shadow-sm" id="sub-service-choice-standalone" required="">
+<label class="block text-[10px] uppercase tracking-wider text-neutral-400 font-bold mb-1.5" data-i18n-html="contact.subProgram">Sub-Program Pathway <span class="text-red-500">*</span></label>
+<select name="subProgram" class="w-full bg-white border border-neutral-200 rounded-xl px-4 py-3 text-xs focus:outline-none focus:border-luxury-gold shadow-sm" id="sub-service-choice-standalone" required="">
 <option value="" data-i18n="contact.selectSubProgram">Select Sub-Program</option>
 </select>
 </div>
@@ -2473,35 +2455,35 @@
 <!-- Row 4: Preferred Language, Preferred Date & Preferred Method -->
 <div class="grid grid-cols-1 sm:grid-cols-3 gap-6">
 <div>
-<label class="block text-[10px] uppercase tracking-wider text-neutral-400 font-bold mb-1.5" data-i18n="contact.preferredLanguage">Preferred Language <span class="text-red-500">*</span></label>
-<select class="w-full bg-white border border-neutral-200 rounded-xl px-4 py-3 text-xs focus:outline-none focus:border-luxury-gold shadow-sm" required="">
+<label class="block text-[10px] uppercase tracking-wider text-neutral-400 font-bold mb-1.5" data-i18n-html="contact.preferredLanguage">Preferred Language <span class="text-red-500">*</span></label>
+<select name="preferredLanguage" class="w-full bg-white border border-neutral-200 rounded-xl px-4 py-3 text-xs focus:outline-none focus:border-luxury-gold shadow-sm" required="">
 <option value="english">English</option>
-<option value="arabic">العربية (Arabic)</option>
-<option value="farsi">فارسی (Persian)</option>
-<option value="russian">Русский (Russian)</option>
-<option value="french">Français (French)</option>
-<option value="hindi">हिन्दी (Hindi)</option>
-<option value="urdu">اردو (Urdu)</option>
-<option value="spanish">Español (Spanish)</option>
+<option value="arabic">Arabic</option>
+<option value="russian">Russian</option>
+<option value="french">French</option>
+<option value="hindi">Hindi</option>
+<option value="urdu">Urdu</option>
+<option value="farsi">Persian (Farsi)</option>
+<option value="spanish">Spanish</option>
 </select>
 </div>
 <div>
 <label class="block text-[10px] uppercase tracking-wider text-neutral-400 font-bold mb-1.5" data-i18n="contact.preferredDate">Preferred Date <span class="text-red-500">*</span></label>
-<input class="w-full bg-white border border-neutral-200 rounded-xl px-4 py-3 text-xs focus:outline-none focus:border-luxury-gold shadow-sm text-neutral-600" required="" type="date"/>
+<input name="preferredDate" class="w-full bg-white border border-neutral-200 rounded-xl px-4 py-3 text-xs focus:outline-none focus:border-luxury-gold shadow-sm text-neutral-600" required="" type="date"/>
 </div>
 <div>
-<label class="block text-[10px] uppercase tracking-wider text-neutral-400 font-bold mb-1.5" data-i18n="contact.preferredContact">Preferred Method <span class="text-red-500">*</span></label>
-<select class="w-full bg-white border border-neutral-200 rounded-xl px-4 py-3 text-xs focus:outline-none focus:border-luxury-gold shadow-sm" required="">
-<option value="phone" data-i18n="contact.phoneCall">Phone Call</option>
-<option value="whatsapp" data-i18n="contact.whatsApp">WhatsApp</option>
-<option value="zoom" data-i18n="contact.videoMeeting">Video Meeting</option>
+<label class="block text-[10px] uppercase tracking-wider text-neutral-400 font-bold mb-1.5" data-i18n="contact.preferredMethod">Preferred Method <span class="text-red-500">*</span></label>
+<select name="preferredMethod" class="w-full bg-white border border-neutral-200 rounded-xl px-4 py-3 text-xs focus:outline-none focus:border-luxury-gold shadow-sm" required="">
+<option value="phone" data-i18n="contact.methodPhone">Phone Call</option>
+<option value="whatsapp" data-i18n="contact.methodWhatsApp">WhatsApp</option>
+<option value="zoom" data-i18n="contact.methodZoom">Video Call</option>
 </select>
 </div>
 </div>
-<!-- Row 5: Full Comprehensive Time Zone Selection -->
+<!-- Row 5: Country / Time Zone Selection -->
 <div>
-<label class="block text-[10px] uppercase tracking-wider text-neutral-400 font-bold mb-1.5" data-i18n="contact.countryTimezone">Time Zone <span class="text-red-500">*</span></label>
-<select class="w-full bg-white border border-neutral-200 rounded-xl px-4 py-3 text-xs focus:outline-none focus:border-luxury-gold shadow-sm" required="">
+<label class="block text-[10px] uppercase tracking-wider text-neutral-400 font-bold mb-1.5" data-i18n="contact.timeZone">Country / Time Zone <span class="text-red-500">*</span></label>
+<select name="timezone" class="w-full bg-white border border-neutral-200 rounded-xl px-4 py-3 text-xs focus:outline-none focus:border-luxury-gold shadow-sm" required="">
 <option value="" data-i18n="contact.selectTimezone">Select Time Zone</option>
 <option value="UTC-12:00">UTC-12:00 (Baker Island)</option>
 <option value="UTC-11:00">UTC-11:00 (American Samoa, Niue)</option>
@@ -2546,16 +2528,16 @@
 <!-- Row 6: Corporate Physical Address -->
 <div>
 <label class="block text-[10px] uppercase tracking-wider text-neutral-400 font-bold mb-1.5" data-i18n="contact.corporateAddress">Corporate Physical Address (Optional)</label>
-<input class="w-full bg-white border border-neutral-200 rounded-xl px-4 py-3 text-xs focus:outline-none focus:border-luxury-gold shadow-sm" placeholder="Suite, Tower, City, Country" type="text"/>
+<input name="address" class="w-full bg-white border border-neutral-200 rounded-xl px-4 py-3 text-xs focus:outline-none focus:border-luxury-gold shadow-sm" placeholder="Suite, Tower, City, Country" type="text"/>
 </div>
 <!-- Row 7: Confidential Notes -->
 <div>
 <label class="block text-[10px] uppercase tracking-wider text-neutral-400 font-bold mb-1.5" data-i18n="contact.confidentialNotes">Confidential Notes (Optional)</label>
-<textarea class="w-full bg-white border border-neutral-200 rounded-xl p-4 text-xs focus:outline-none focus:border-luxury-gold shadow-sm" placeholder="Detail any specific family parameters..." rows="4"></textarea>
+<textarea name="notes" class="w-full bg-white border border-neutral-200 rounded-xl p-4 text-xs focus:outline-none focus:border-luxury-gold shadow-sm" placeholder="Detail any specific family parameters..." rows="4"></textarea>
 </div>
 <!-- Row 8: Submit Button -->
 <div class="pt-2">
-<button class="w-full py-4 bg-luxury-dark text-white text-xs uppercase tracking-widest font-bold hover:bg-luxury-gold transition duration-300 rounded-xl shadow-lg" type="submit" data-i18n="contact.submitBtn">
+<button class="w-full py-4 bg-luxury-dark text-white text-xs uppercase tracking-widest font-bold hover:bg-luxury-gold transition duration-300 rounded-xl shadow-lg" data-i18n="contact.registerInquiry" type="submit">
 									Register Inquiry
 								</button>
 </div>
@@ -2564,12 +2546,12 @@
 							</div>
 </form>
 </div>
-</div>
 <!-- Compliance Disclaimer Notice -->
-<div class="max-w-4xl mx-auto px-4 sm:px-8 py-10">
+<div class="max-w-5xl mx-auto px-4 sm:px-8 pt-10">
 <div class="p-6 rounded-2xl bg-neutral-200/50 border border-neutral-300/80 text-[11px] text-neutral-600 space-y-1.5 font-light leading-relaxed">
 <p class="font-bold uppercase tracking-wider text-neutral-800" data-i18n="contact.disclaimerTitle">Legal Notice &amp; Compliance Disclaimer</p>
 <p data-i18n="contact.disclaimerText">The information provided in this guide is for informational and educational purposes only and does not constitute legal, tax, or investment advice. Government regulations, qualifying investment amounts, due diligence fees, and visa-free travel lists are subject to change by sovereign authorities. Please consult an authorized Sharif Group advisor for current requirements tailored to your profile.</p>
+</div>
 </div>
 </div>
 </section>
