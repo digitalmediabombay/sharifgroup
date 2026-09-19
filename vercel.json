@@ -107,6 +107,10 @@
     {
       "source": "/fa/:path*",
       "destination": "/:path*"
+    },
+    {
+      "source": "/blog/:slug*",
+      "destination": "/blog/index.html"
     }
   ]
 }
