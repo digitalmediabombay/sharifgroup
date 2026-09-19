@@ -388,7 +388,10 @@
 </div>
 </div>
 <!-- MEGA MENU CITIZENSHIP -->
-<div class="mega-dropdown absolute left-0 w-full bg-white border-b border-neutral-200 shadow-2xl opacity-0 translate-y-[-10px] pointer-events-none transition-all duration-300 z-40" id="citizenship-menu">
+<div class="mega-dropdown absolute top-20 left-0 w-full bg-white border-b border-neutral-200 shadow-2xl opacity-0 translate-y-[-10px] pointer-events-none transition-all duration-300 z-40" 
+     id="citizenship-menu" 
+     onmouseenter="keepMegaMenuOpen()" 
+     onmouseleave="scheduleCloseMegaMenus()">
 <div class="max-w-7xl mx-auto px-8 py-10 grid grid-cols-12 gap-4">
 <div class="col-span-3 flex flex-col items-center justify-center text-center pr-4 border-r border-neutral-200">
 <h3 class="font-serif text-3xl text-neutral-900 font-bold leading-tight mb-4" data-i18n="nav.citizenship">Citizenship<br/>By<br/>Investment</h3>
@@ -455,7 +458,10 @@
 </div>
 </div>
 <!-- MEGA MENU RESIDENCY -->
-<div class="mega-dropdown absolute left-0 w-full bg-white border-b border-neutral-200 shadow-2xl opacity-0 translate-y-[-10px] pointer-events-none transition-all duration-300 z-40" id="residency-menu">
+<div class="mega-dropdown absolute top-20 left-0 w-full bg-white border-b border-neutral-200 shadow-2xl opacity-0 translate-y-[-10px] pointer-events-none transition-all duration-300 z-40" 
+     id="residency-menu" 
+     onmouseenter="keepMegaMenuOpen()" 
+     onmouseleave="scheduleCloseMegaMenus()">
 <div class="max-w-7xl mx-auto px-8 py-10 grid grid-cols-12 gap-4">
 <div class="col-span-3 flex flex-col items-center justify-center text-center pr-4 border-r border-neutral-200">
 <h3 class="font-serif text-3xl text-neutral-900 font-bold leading-tight mb-4" data-i18n="nav.residency">Residency<br/>By<br/>Investment</h3>
@@ -498,7 +504,10 @@
 </div>
 </div>
 <!-- MEGA MENU MORE SERVICES -->
-<div class="mega-dropdown absolute left-0 w-full bg-white border-b border-neutral-200 shadow-2xl opacity-0 translate-y-[-10px] pointer-events-none transition-all duration-300 z-40" id="services-menu">
+<div class="mega-dropdown absolute top-20 left-0 w-full bg-white border-b border-neutral-200 shadow-2xl opacity-0 translate-y-[-10px] pointer-events-none transition-all duration-300 z-40" 
+     id="services-menu" 
+     onmouseenter="keepMegaMenuOpen()" 
+     onmouseleave="scheduleCloseMegaMenus()">
 <div class="max-w-7xl mx-auto px-8 py-10 grid grid-cols-12 gap-4">
 <div class="col-span-3 flex flex-col items-center justify-center text-center pr-4 border-r border-neutral-200">
 <h3 class="font-serif text-3xl text-neutral-900 font-bold leading-tight mb-4" data-i18n="megaMenu.otherServices">Other<br/>Services</h3>
@@ -519,7 +528,10 @@
 </div>
 </div>
 <!-- MEGA MENU ABOUT (WITH SOCIAL RESPONSIBILITY CONTAINER INCLUDED) -->
-<div class="mega-dropdown absolute left-0 w-full bg-white border-b border-neutral-200 shadow-2xl opacity-0 translate-y-[-10px] pointer-events-none transition-all duration-300 z-40" id="about-menu">
+<div class="mega-dropdown absolute top-20 left-0 w-full bg-white border-b border-neutral-200 shadow-2xl opacity-0 translate-y-[-10px] pointer-events-none transition-all duration-300 z-40" 
+     id="about-menu" 
+     onmouseenter="keepMegaMenuOpen()" 
+     onmouseleave="scheduleCloseMegaMenus()">
 <div class="max-w-7xl mx-auto px-8 py-10 grid grid-cols-12 gap-4">
 <div class="col-span-3 flex flex-col items-center justify-center text-center pr-4 border-r border-neutral-200">
 <h3 data-i18n="megaMenu.corporateIdentity" class="font-serif text-3xl text-neutral-900 font-bold leading-tight mb-4" data-i18n="megaMenu.corporateIdentity">Corporate<br/>Identity</h3>
@@ -2448,55 +2460,58 @@
 </footer>
 <!-- MEGA MENU LOGIC SCRIPT -->
 <script>
-        let megaMenuTimer = null;
+    let megaMenuTimer = null;
 
-        function openMegaMenu(menuId) {
-            clearTimeout(megaMenuTimer);
-            
-            // Hide all other menus first
-            document.querySelectorAll('.mega-dropdown').forEach(menu => {
-                if (menu.id !== menuId) {
-                    menu.classList.remove('opacity-100', 'translate-y-0', 'pointer-events-auto');
-                    menu.classList.add('opacity-0', 'translate-y-[-10px]', 'pointer-events-none');
-                }
-            });
-            document.querySelectorAll('nav i.fa-chevron-down').forEach(arrow => {
-                if (arrow.id !== `arrow-${menuId}`) {
-                    arrow.style.transform = "rotate(0deg)";
-                }
-            });
-
-            // Show active menu
-            const menu = document.getElementById(menuId);
-            if(menu) {
-                menu.classList.remove('opacity-0', 'translate-y-[-10px]', 'pointer-events-none');
-                menu.classList.add('opacity-100', 'translate-y-0', 'pointer-events-auto');
-            }
-            const activeArrow = document.getElementById(`arrow-${menuId}`);
-            if(activeArrow) {
-                activeArrow.style.transform = "rotate(180deg)";
-            }
-        }
-
-        function scheduleCloseMegaMenus() {
-            clearTimeout(megaMenuTimer);
-            megaMenuTimer = setTimeout(() => {
-                closeAllMegaMenus();
-            }, 200); // Smooth 200ms grace period to allow cursor to travel into menu
-        }
-
-        function closeAllMegaMenus() {
-            clearTimeout(megaMenuTimer);
-            document.querySelectorAll('.mega-dropdown').forEach(menu => {
+    function openMegaMenu(menuId) {
+        clearTimeout(megaMenuTimer);
+        
+        // Hide all other menus first
+        document.querySelectorAll('.mega-dropdown').forEach(menu => {
+            if (menu.id !== menuId) {
                 menu.classList.remove('opacity-100', 'translate-y-0', 'pointer-events-auto');
                 menu.classList.add('opacity-0', 'translate-y-[-10px]', 'pointer-events-none');
-            });
-            document.querySelectorAll('nav i.fa-chevron-down').forEach(arrow => {
+            }
+        });
+        document.querySelectorAll('nav i.fa-chevron-down').forEach(arrow => {
+            if (arrow.id !== `arrow-${menuId}`) {
                 arrow.style.transform = "rotate(0deg)";
-            });
-        }
+            }
+        });
 
-    </script>
+        // Show active menu
+        const menu = document.getElementById(menuId);
+        if (menu) {
+            menu.classList.remove('opacity-0', 'translate-y-[-10px]', 'pointer-events-none');
+            menu.classList.add('opacity-100', 'translate-y-0', 'pointer-events-auto');
+        }
+        const activeArrow = document.getElementById(`arrow-${menuId}`);
+        if (activeArrow) {
+            activeArrow.style.transform = "rotate(180deg)";
+        }
+    }
+
+    function keepMegaMenuOpen() {
+        clearTimeout(megaMenuTimer);
+    }
+
+    function scheduleCloseMegaMenus() {
+        clearTimeout(megaMenuTimer);
+        megaMenuTimer = setTimeout(() => {
+            closeAllMegaMenus();
+        }, 300); // 300ms grace period to smoothly glide into the menu
+    }
+
+    function closeAllMegaMenus() {
+        clearTimeout(megaMenuTimer);
+        document.querySelectorAll('.mega-dropdown').forEach(menu => {
+            menu.classList.remove('opacity-100', 'translate-y-0', 'pointer-events-auto');
+            menu.classList.add('opacity-0', 'translate-y-[-10px]', 'pointer-events-none');
+        });
+        document.querySelectorAll('nav i.fa-chevron-down').forEach(arrow => {
+            arrow.style.transform = "rotate(0deg)";
+        });
+    }
+</script>
 <!-- FOOTER CANVAS SEAMLESS CROSSFADE SCRIPT (HIGH PERFORMANCE & ALL-DEVICE OPTIMIZED) -->
 <script>
         document.addEventListener("DOMContentLoaded", () => {
