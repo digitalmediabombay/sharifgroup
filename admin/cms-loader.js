@@ -322,7 +322,7 @@
       'vanuatu': 'Vanuatu',
       'nauru': 'Republic of Nauru',
       'saotomeandprincipe': 'São Tomé & Príncipe',
-      'sãotoméandpríncipe': 'São Tomé & Príncipe',
+      'sao-tome-principe': 'São Tomé & Príncipe',
       'greece': 'Greece',
       'panama': 'Panama',
       'portugal': 'Portugal',
@@ -933,7 +933,7 @@
                    : isResidency ? (TAB_I18N.residency[l] || 'Residency By Investment')
                    : (TAB_I18N.citizenship[l] || 'Citizenship By Investment');
 
-    const i18nSlug = (prog.id && prog.id !== 'sãotoméandpríncipe') ? prog.id : (slug === 'sãotoméandpríncipe' ? 'saotome' : slug);
+    const i18nSlug = (prog.id && prog.id !== 'sao-tome-principe') ? prog.id : (slug === 'sao-tome-principe' ? 'saotome' : slug);
 
     let i18nSub = null;
     let i18nCountry = null;
@@ -1443,7 +1443,7 @@
     stlucia: 'programs/citizenshipbyinvestment/stlucia/index.html',
     grenada: 'programs/citizenshipbyinvestment/greneda/index.html',
     vanuatu: 'programs/citizenshipbyinvestment/vanuatu/index.html',
-    saotome: 'programs/citizenshipbyinvestment/sãotoméandpríncipe/index.html',
+    saotome: 'programs/citizenshipbyinvestment/sao-tome-principe/index.html',
     nauru: 'programs/citizenshipbyinvestment/nauru/index.html',
     portugal: 'programs/residencybyinvestment/portugal/index.html',
     greece: 'programs/residencybyinvestment/greece/index.html',
@@ -1699,7 +1699,7 @@
         zh: { nav_label: '瓦努阿图 | 护照', hero_subtitle: '投资入籍' }
       },
       {
-        id: 'saotome', slug: 'sãotoméandpríncipe', name: 'São Tomé and Príncipe', portfolio: 'global', flag: 'https://flagcdn.com/st.svg',
+        id: 'saotome', slug: 'sao-tome-principe', name: 'São Tomé and Príncipe', portfolio: 'global', flag: 'https://flagcdn.com/st.svg',
         en: { nav_label: 'São Tomé and Príncipe | Passport', hero_subtitle: 'Citizenship By Investment' },
         ar: { nav_label: 'ساو تومي وبرينسيبي | جواز سفر', hero_subtitle: 'الجنسية عن طريق الاستثمار' },
         fa: { nav_label: 'سائوتومه و پرنسیپ | پاسپورت', hero_subtitle: 'شهروندی از طریق سرمایه‌گذاری' },
