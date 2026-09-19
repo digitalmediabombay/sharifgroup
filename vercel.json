@@ -72,42 +72,32 @@
     },
     {
       "source": "/programs/citizenshipbyinvestment/saotomeprinciple",
-      "destination": "/programs/citizenshipbyinvestment/sao-tome-principe/",
+      "destination": "/programs/citizenshipbyinvestment/sao-tome-and-principe/",
       "permanent": true
     },
     {
       "source": "/programs/citizenshipbyinvestment/saotomeprinciple/(.*)",
-      "destination": "/programs/citizenshipbyinvestment/sao-tome-principe/$1",
+      "destination": "/programs/citizenshipbyinvestment/sao-tome-and-principe/$1",
       "permanent": true
     },
     {
       "source": "/programs/citizenshipbyinvestment/saotomeprincipe",
-      "destination": "/programs/citizenshipbyinvestment/sao-tome-principe/",
+      "destination": "/programs/citizenshipbyinvestment/sao-tome-and-principe/",
       "permanent": true
     },
     {
       "source": "/programs/citizenshipbyinvestment/saotomeprincipe/(.*)",
-      "destination": "/programs/citizenshipbyinvestment/sao-tome-principe/$1",
+      "destination": "/programs/citizenshipbyinvestment/sao-tome-and-principe/$1",
       "permanent": true
     },
     {
       "source": "/programs/citizenshipbyinvestment/sao-tome-principle",
-      "destination": "/programs/citizenshipbyinvestment/sao-tome-principe/",
+      "destination": "/programs/citizenshipbyinvestment/sao-tome-and-principe/",
       "permanent": true
     },
     {
       "source": "/programs/citizenshipbyinvestment/sao-tome-principle/(.*)",
-      "destination": "/programs/citizenshipbyinvestment/sao-tome-principe/$1",
-      "permanent": true
-    },
-    {
-      "source": "/programs/citizenshipbyinvestment/sao-tome-and-principe",
-      "destination": "/programs/citizenshipbyinvestment/sao-tome-principe/",
-      "permanent": true
-    },
-    {
-      "source": "/programs/citizenshipbyinvestment/sao-tome-and-principe/(.*)",
-      "destination": "/programs/citizenshipbyinvestment/sao-tome-principe/$1",
+      "destination": "/programs/citizenshipbyinvestment/sao-tome-and-principe/$1",
       "permanent": true
     }
   ],

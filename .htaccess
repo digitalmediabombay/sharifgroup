@@ -17,15 +17,15 @@
     RewriteRule ^aboutfounder/index\.html$ /ali-sharif/ [R=301,L]
     RewriteRule ^aboutfounder/(.*)$ /ali-sharif/$1 [R=301,L]
 
-    # Redirect São Tomé variations to clean hyphenated URL /programs/citizenshipbyinvestment/sao-tome-principe/
-    RewriteRule ^programs/citizenshipbyinvestment/saotomeprinciple/?$ /programs/citizenshipbyinvestment/sao-tome-principe/ [R=301,L]
-    RewriteRule ^programs/citizenshipbyinvestment/saotomeprinciple/(.*)$ /programs/citizenshipbyinvestment/sao-tome-principe/$1 [R=301,L]
-    RewriteRule ^programs/citizenshipbyinvestment/saotomeprinciple/?$ /programs/citizenshipbyinvestment/sao-tome-principe/ [R=301,L]
-    RewriteRule ^programs/citizenshipbyinvestment/saotomeprinciple/(.*)$ /programs/citizenshipbyinvestment/sao-tome-principe/$1 [R=301,L]
-    RewriteRule ^programs/citizenshipbyinvestment/sao-tome-principle/?$ /programs/citizenshipbyinvestment/sao-tome-principe/ [R=301,L]
-    RewriteRule ^programs/citizenshipbyinvestment/sao-tome-principle/(.*)$ /programs/citizenshipbyinvestment/sao-tome-principe/$1 [R=301,L]
-    RewriteRule ^programs/citizenshipbyinvestment/sao-tome-and-principe/?$ /programs/citizenshipbyinvestment/sao-tome-principe/ [R=301,L]
-    RewriteRule ^programs/citizenshipbyinvestment/sao-tome-and-principe/(.*)$ /programs/citizenshipbyinvestment/sao-tome-principe/$1 [R=301,L]
+    # Redirect São Tomé variations to clean hyphenated URL /programs/citizenshipbyinvestment/sao-tome-and-principe/
+    RewriteRule ^programs/citizenshipbyinvestment/saotomeprinciple/?$ /programs/citizenshipbyinvestment/sao-tome-and-principe/ [R=301,L]
+    RewriteRule ^programs/citizenshipbyinvestment/saotomeprinciple/(.*)$ /programs/citizenshipbyinvestment/sao-tome-and-principe/$1 [R=301,L]
+    RewriteRule ^programs/citizenshipbyinvestment/saotomeprinciple/?$ /programs/citizenshipbyinvestment/sao-tome-and-principe/ [R=301,L]
+    RewriteRule ^programs/citizenshipbyinvestment/saotomeprinciple/(.*)$ /programs/citizenshipbyinvestment/sao-tome-and-principe/$1 [R=301,L]
+    RewriteRule ^programs/citizenshipbyinvestment/sao-tome-principle/?$ /programs/citizenshipbyinvestment/sao-tome-and-principe/ [R=301,L]
+    RewriteRule ^programs/citizenshipbyinvestment/sao-tome-principle/(.*)$ /programs/citizenshipbyinvestment/sao-tome-and-principe/$1 [R=301,L]
+    RewriteRule ^programs/citizenshipbyinvestment/sao-tome-principe/?$ /programs/citizenshipbyinvestment/sao-tome-and-principe/ [R=301,L]
+    RewriteRule ^programs/citizenshipbyinvestment/sao-tome-principe/(.*)$ /programs/citizenshipbyinvestment/sao-tome-and-principe/$1 [R=301,L]
 
     # Clean Language Path Rewrites (/ar/, /fa/, /zh/)
     RewriteRule ^(ar|fa|zh)/?$ /index.html [L,QSA]

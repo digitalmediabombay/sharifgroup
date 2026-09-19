@@ -509,7 +509,7 @@ const DEFAULTS = {
           { id: 'lucia', title: 'Saint Lucia | Passport', desc: 'Flexible financial options with government-guaranteed bond investments that are 100% refundable after 5 years.', link: 'programs/citizenshipbyinvestment/stlucia/index.html' },
           { id: 'grenada', title: 'Grenada | Passport', desc: 'Powerful second passport providing direct qualification to apply for the USA E-2 Investor Visa to live and conduct business in America.', link: 'programs/citizenshipbyinvestment/greneda/index.html' },
           { id: 'vanuatu', title: 'Vanuatu | Passport', desc: 'The fastest legal citizenship pathway worldwide, delivered in 45 days with 100% remote processing.', link: 'programs/citizenshipbyinvestment/vanuatu/index.html' },
-          { id: 'saotome', title: 'São Tomé and Príncipe | Passport', desc: 'Exclusive African island destination offering complete privacy, tax efficiency, and quiet citizenship by investment routes.', link: 'programs/citizenshipbyinvestment/sao-tome-principe/index.html' },
+          { id: 'saotome', title: 'São Tomé and Príncipe | Passport', desc: 'Exclusive African island destination offering complete privacy, tax efficiency, and quiet citizenship by investment routes.', link: 'programs/citizenshipbyinvestment/sao-tome-and-principe/index.html' },
           { id: 'nauru', title: 'Republic of Nauru | Passport', desc: 'Peaceful Pacific island citizenship offering zero residency requirements and straightforward remote management from Dubai.', link: 'programs/citizenshipbyinvestment/nauru/index.html' }
         ]
       },
@@ -809,7 +809,7 @@ const DEFAULTS = {
     },
     {
       id: 'saotome',
-      slug: 'sao-tome-principe',
+      slug: 'sao-tome-and-principe',
       flag: 'https://flagcdn.com/st.svg',
       portfolio: 'global',
       nav_visible: true,
