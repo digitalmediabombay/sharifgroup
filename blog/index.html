@@ -404,8 +404,59 @@
             direction: rtl !important;
             text-align: right !important;
         }
+
+        /* WhatsApp Widget - Fixed on right side regardless of active language or RTL direction */
+        .sg-wa-widget-container,
+        html[dir="rtl"] .sg-wa-widget-container,
+        html[lang="fa"] .sg-wa-widget-container,
+        html[lang="ar"] .sg-wa-widget-container,
+        body.lang-fa .sg-wa-widget-container,
+        body.lang-ar .sg-wa-widget-container,
+        [dir="rtl"] .sg-wa-widget-container {
+            right: 24px !important;
+            left: auto !important;
+            right: max(24px, env(safe-area-inset-right, 24px)) !important;
+            align-items: flex-end !important;
+        }
+
+        @media (max-width: 480px) {
+            .sg-wa-widget-container,
+            html[dir="rtl"] .sg-wa-widget-container,
+            html[lang="fa"] .sg-wa-widget-container,
+            html[lang="ar"] .sg-wa-widget-container,
+            body.lang-fa .sg-wa-widget-container,
+            body.lang-ar .sg-wa-widget-container,
+            [dir="rtl"] .sg-wa-widget-container {
+                right: 16px !important;
+                left: auto !important;
+                right: max(16px, env(safe-area-inset-right, 16px)) !important;
+                align-items: flex-end !important;
+            }
+        }
+
+        .sg-wa-modal,
+        html[dir="rtl"] .sg-wa-modal,
+        html[lang="fa"] .sg-wa-modal,
+        html[lang="ar"] .sg-wa-modal,
+        body.lang-fa .sg-wa-modal,
+        body.lang-ar .sg-wa-modal,
+        [dir="rtl"] .sg-wa-modal {
+            right: 0 !important;
+            left: auto !important;
+        }
+
+        .sg-wa-status-dot,
+        html[dir="rtl"] .sg-wa-status-dot,
+        html[lang="fa"] .sg-wa-status-dot,
+        html[lang="ar"] .sg-wa-status-dot,
+        body.lang-fa .sg-wa-status-dot,
+        body.lang-ar .sg-wa-status-dot,
+        [dir="rtl"] .sg-wa-status-dot {
+            right: 2px !important;
+            left: auto !important;
+        }
     </style>
-<link href="/assets/css/multilingual.css?v=6" rel="stylesheet"/>
+<link href="/assets/css/multilingual.css?v=7" rel="stylesheet"/>
 </head>
 <body class="bg-luxury-light text-luxury-dark font-sans overflow-x-hidden">
     <!-- Google Tag Manager (noscript) -->

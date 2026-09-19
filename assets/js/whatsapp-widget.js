@@ -144,26 +144,22 @@
         var style = document.createElement('style');
         style.id = 'sg-whatsapp-styles';
         style.textContent = `
-            /* Container fixed in bottom-right */
-            .sg-wa-widget-container {
+            /* Container fixed in bottom-right regardless of language */
+            .sg-wa-widget-container,
+            html[dir="rtl"] .sg-wa-widget-container,
+            [dir="rtl"] .sg-wa-widget-container {
                 position: fixed;
                 bottom: 24px;
-                right: 24px;
+                right: 24px !important;
+                left: auto !important;
                 bottom: max(24px, env(safe-area-inset-bottom, 24px));
-                right: max(24px, env(safe-area-inset-right, 24px));
+                right: max(24px, env(safe-area-inset-right, 24px)) !important;
                 z-index: 99999;
                 display: flex;
                 flex-direction: column;
-                align-items: flex-end;
+                align-items: flex-end !important;
                 font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
                 pointer-events: auto;
-            }
-
-            html[dir="rtl"] .sg-wa-widget-container {
-                right: auto;
-                left: 24px;
-                left: max(24px, env(safe-area-inset-left, 24px));
-                align-items: flex-start;
             }
 
             /* Circular Trigger Button */
@@ -218,10 +214,13 @@
             }
 
             /* Online Status Dot (Clipped at top-right) */
-            .sg-wa-status-dot {
+            .sg-wa-status-dot,
+            html[dir="rtl"] .sg-wa-status-dot,
+            [dir="rtl"] .sg-wa-status-dot {
                 position: absolute;
                 top: 2px;
-                right: 2px;
+                right: 2px !important;
+                left: auto !important;
                 width: 14px;
                 height: 14px;
                 border-radius: 50%;
@@ -229,11 +228,6 @@
                 border: 2.5px solid #07131F;
                 box-shadow: 0 0 10px rgba(0, 230, 118, 0.7);
                 animation: sg-wa-status-pulse 2.2s infinite ease-in-out;
-            }
-
-            html[dir="rtl"] .sg-wa-status-dot {
-                right: auto;
-                left: 2px;
             }
 
             @keyframes sg-wa-status-pulse {
@@ -286,10 +280,17 @@
                 pointer-events: auto;
             }
 
-            html[dir="rtl"] .sg-wa-modal {
-                right: auto;
-                left: 0;
+            .sg-wa-modal,
+            html[dir="rtl"] .sg-wa-modal,
+            [dir="rtl"] .sg-wa-modal {
+                right: 0 !important;
+                left: auto !important;
+            }
+
+            html[dir="rtl"] .sg-wa-modal,
+            [dir="rtl"] .sg-wa-modal {
                 text-align: right;
+                direction: rtl;
             }
 
             .sg-wa-widget-container.sg-wa-open .sg-wa-modal {
@@ -565,16 +566,15 @@
 
             /* Responsive tweaks */
             @media (max-width: 480px) {
-                .sg-wa-widget-container {
+                .sg-wa-widget-container,
+                html[dir="rtl"] .sg-wa-widget-container,
+                [dir="rtl"] .sg-wa-widget-container {
                     bottom: 18px;
-                    right: 16px;
+                    right: 16px !important;
+                    left: auto !important;
                     bottom: max(18px, env(safe-area-inset-bottom, 18px));
-                    right: max(16px, env(safe-area-inset-right, 16px));
-                }
-                html[dir="rtl"] .sg-wa-widget-container {
-                    right: auto;
-                    left: 16px;
-                    left: max(16px, env(safe-area-inset-left, 16px));
+                    right: max(16px, env(safe-area-inset-right, 16px)) !important;
+                    align-items: flex-end !important;
                 }
                 .sg-wa-trigger-btn {
                     width: 58px;
