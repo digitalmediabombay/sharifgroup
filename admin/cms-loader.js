@@ -1399,11 +1399,36 @@
   const escH = s => String(s || '').replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;');
 
   function getPathPrefix() {
-    const path = window.location.pathname.replace(/\\/g, '/');
+    const path = window.location.pathname.replace(/\\/g, '/').toLowerCase();
     if (path.includes('/programs/')) return '../../../';
-    if (path.includes('/citizenshipbyinvestment/') || path.includes('/residencybyinvestment/') || path.includes('/blog/') || path.includes('/aboutus/') || path.includes('/contact/') || path.includes('/realestate/') || path.includes('/educationaladvisory/') || path.includes('/privacypolicy/') || path.includes('/socialresponsibility/') || path.includes('/ali-sharif/')) {
+    if (
+      path.includes('/citizenshipbyinvestment') ||
+      path.includes('/residencybyinvestment') ||
+      path.includes('/blog') ||
+      path.includes('/aboutus') ||
+      path.includes('/contact') ||
+      path.includes('/realestate') ||
+      path.includes('/educationaladvisory') ||
+      path.includes('/eligibilitychecker') ||
+      path.includes('/privacypolicy') ||
+      path.includes('/cookiepolicy') ||
+      path.includes('/termsofuse') ||
+      path.includes('/termsofservice') ||
+      path.includes('/socialresponsibility') ||
+      path.includes('/ali-sharif')
+    ) {
       return '../';
     }
+    // Dynamic fallback: count directory depth
+    const segments = path.split('/').filter(Boolean);
+    if (segments.length > 0 && ['ar', 'fa', 'zh', 'en'].includes(segments[0])) {
+      segments.shift();
+    }
+    const hasFile = segments.length > 0 && segments[segments.length - 1].includes('.');
+    const depth = hasFile ? segments.length - 1 : segments.length;
+    if (depth === 1) return '../';
+    if (depth === 2) return '../../';
+    if (depth >= 3) return '../../../';
     return '';
   }
 
@@ -1943,7 +1968,7 @@
     const path = window.location.pathname.toLowerCase();
     hydrateNavigation(l);
 
-    const isNonHome = path.includes('/citizenship') || path.includes('/residency') || path.includes('/programs') || path.includes('/about') || path.includes('/contact') || path.includes('/blog') || path.includes('/admin') || path.includes('/cookie');
+    const isNonHome = path.includes('/citizenship') || path.includes('/residency') || path.includes('/programs') || path.includes('/about') || path.includes('/contact') || path.includes('/blog') || path.includes('/admin') || path.includes('/cookie') || path.includes('/eligibility') || path.includes('/realestate') || path.includes('/educational') || path.includes('/privacy') || path.includes('/term') || path.includes('/social') || path.includes('/ali-sharif');
 
     if (!isNonHome) {
       hydrateHomepage(l);
