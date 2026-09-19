@@ -1302,10 +1302,10 @@
         </div>
         <div class="absolute inset-0 z-0 overflow-hidden pointer-events-none">
             <canvas class="absolute inset-0 w-full h-full object-cover" id="footer-seamless-canvas"></canvas>
-            <video autoplay="" class="hidden" id="footer-hidden-video" muted="" playsinline="" preload="auto">
+            <video class="hidden" id="footer-hidden-video" muted="" playsinline="" preload="none">
                 <source src="/assets/videos/footer_bg_e58bba71.mp4" type="video/mp4" />
             </video>
-            <video autoplay="" class="hidden" id="footer-hidden-video-2" muted="" playsinline="" preload="auto">
+            <video class="hidden" id="footer-hidden-video-2" muted="" playsinline="" preload="none">
                 <source src="/assets/videos/footer_bg_e58bba71.mp4" type="video/mp4" />
             </video>
             <div class="absolute inset-0 bg-gradient-to-b from-black/30 via-black/45 to-black/75"></div>
@@ -1530,13 +1530,13 @@
         });
     </script>
     <!-- FOOTER CANVAS SEAMLESS CROSSFADE SCRIPT (HIGH PERFORMANCE & ALL-DEVICE OPTIMIZED) -->
-    <script>
+<script>
         document.addEventListener("DOMContentLoaded", () => {
             const v1 = document.getElementById("footer-hidden-video");
             const v2 = document.getElementById("footer-hidden-video-2");
             const canvas = document.getElementById("footer-seamless-canvas");
             if (!v1 || !v2 || !canvas) return;
-            const ctx = canvas.getContext("2d", { alpha: false }); // Disable alpha channel for faster performance
+            const ctx = canvas.getContext("2d", { alpha: false });
 
             let activeVideo = v1;
             let standbyVideo = v2;
@@ -1545,35 +1545,21 @@
             let animationFrameId = null;
             let isFooterVisible = false;
 
-            // Unlock autoplay on mobile touch/scroll
-            const unlockMobileVideo = () => {
-                v1.play().catch(() => { });
-                document.removeEventListener("touchstart", unlockMobileVideo);
-                document.removeEventListener("scroll", unlockMobileVideo);
-            };
-            document.addEventListener("touchstart", unlockMobileVideo, { passive: true });
-            document.addEventListener("scroll", unlockMobileVideo, { passive: true });
-
             function resizeCanvas() {
-                // Limit pixel ratio to 1.5x on high-DPI mobile screens to save battery and GPU memory
                 const dpr = Math.min(window.devicePixelRatio || 1, 1.5);
                 canvas.width = Math.floor(canvas.offsetWidth * dpr);
                 canvas.height = Math.floor(canvas.offsetHeight * dpr);
             }
-
             window.addEventListener("resize", resizeCanvas, { passive: true });
             resizeCanvas();
 
             function renderFrame() {
                 if (!isFooterVisible) return;
-
-                // Trigger crossfade 1.2 seconds before video ends
                 if (activeVideo.duration && activeVideo.currentTime >= activeVideo.duration - 1.2 && !isFading) {
                     isFading = true;
                     standbyVideo.currentTime = 0;
-                    standbyVideo.play().catch(() => { });
+                    standbyVideo.play().catch(() => {});
                 }
-
                 if (isFading) {
                     crossfadeAlpha += 0.04;
                     if (crossfadeAlpha >= 1) {
@@ -1586,39 +1572,40 @@
                         crossfadeAlpha = 0;
                     }
                 }
-
                 ctx.globalAlpha = 1;
                 if (activeVideo.readyState >= 2) {
                     ctx.drawImage(activeVideo, 0, 0, canvas.width, canvas.height);
                 }
-
                 if (isFading && standbyVideo.readyState >= 2) {
                     ctx.globalAlpha = crossfadeAlpha;
                     ctx.drawImage(standbyVideo, 0, 0, canvas.width, canvas.height);
                 }
-
                 animationFrameId = requestAnimationFrame(renderFrame);
             }
 
-            // IntersectionObserver: Only render video loop when user scrolls down to footer
-            const observer = new IntersectionObserver((entries) => {
-                entries.forEach((entry) => {
-                    isFooterVisible = entry.isIntersecting;
-                    if (isFooterVisible) {
-                        activeVideo.play().catch(() => { });
-                        if (!animationFrameId) renderFrame();
-                    } else {
-                        activeVideo.pause();
-                        standbyVideo.pause();
-                        if (animationFrameId) {
-                            cancelAnimationFrame(animationFrameId);
-                            animationFrameId = null;
+            if ('IntersectionObserver' in window) {
+                const observer = new IntersectionObserver((entries) => {
+                    entries.forEach((entry) => {
+                        isFooterVisible = entry.isIntersecting;
+                        if (isFooterVisible) {
+                            activeVideo.play().catch(() => {});
+                            if (!animationFrameId) renderFrame();
+                        } else {
+                            activeVideo.pause();
+                            standbyVideo.pause();
+                            if (animationFrameId) {
+                                cancelAnimationFrame(animationFrameId);
+                                animationFrameId = null;
+                            }
                         }
-                    }
-                });
-            }, { threshold: 0.01 });
-
-            observer.observe(canvas.parentElement || canvas);
+                    });
+                }, { rootMargin: '250px' });
+                observer.observe(canvas.parentElement || canvas);
+            } else {
+                isFooterVisible = true;
+                activeVideo.play().catch(() => {});
+                renderFrame();
+            }
         });
     </script>
     <!-- INTERACTION & FORM LOGIC SCRIPTS -->

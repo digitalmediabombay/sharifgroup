@@ -20,6 +20,11 @@
     # Clean Language Path Rewrites (/ar/, /fa/, /zh/)
     RewriteRule ^(ar|fa|zh)/?$ /index.html [L,QSA]
     RewriteRule ^(ar|fa|zh)/(.*)$ /$2 [L,QSA]
+
+    # Blog slug direct routing to blog/index.html
+    RewriteCond %{REQUEST_FILENAME} !-f
+    RewriteCond %{REQUEST_FILENAME} !-d
+    RewriteRule ^blog/([^/]+)/?$ /blog/index.html [L,QSA]
 </IfModule>
 
 # ------------------------------------------------------------------------------
