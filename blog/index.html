@@ -8072,10 +8072,16 @@
                 }
             });
 
-            // Route to specific article if URL contains /blog/<slug> or ?article_slug=<slug>
+            // Route to specific article if URL contains /blog/<slug>, ?article_slug=<slug>, ?slug=<slug>, or #<slug>
             function handleDirectArticleRoute() {
                 var urlParams = new URLSearchParams(window.location.search);
                 var querySlug = urlParams.get('article_slug') || urlParams.get('slug');
+                if (!querySlug && window.location.hash) {
+                    var rawHash = window.location.hash.replace(/^#/, '');
+                    if (rawHash && ((window.articlesDatabase && window.articlesDatabase[rawHash]) || (typeof articlesDatabase !== 'undefined' && articlesDatabase[rawHash]))) {
+                        querySlug = rawHash;
+                    }
+                }
                 if (querySlug) {
                     setTimeout(function() {
                         openBlogDetailBySlug(querySlug);
@@ -8094,7 +8100,12 @@
                 }
             }
 
-            window.addEventListener('DOMContentLoaded', handleDirectArticleRoute);
+            if (document.readyState === 'loading') {
+                window.addEventListener('DOMContentLoaded', handleDirectArticleRoute);
+            } else {
+                handleDirectArticleRoute();
+            }
+            window.addEventListener('hashchange', handleDirectArticleRoute);
             window.addEventListener('popstate', function(e) {
                 if (e.state && e.state.articleSlug) {
                     openBlogDetailBySlug(e.state.articleSlug);
