@@ -41,7 +41,7 @@
     "educationalAdvisory": "Educational Advisory",
     "socialResponsibility": "Social Responsibility",
     "aboutTitle": "About Sharif Group",
-    "ourStory": "OVERVIEW",
+    "ourStory": "Our Story",
     "aboutFounder": "About Founder | Ali Sharif",
     "insights": "Insights & Blog",
     "contactUs": "Contact Us",
@@ -80,11 +80,11 @@
   },
   "about": {
     "badge": "INTRODUCTION",
-    "heading": "OVERVIEW & Background:",
+    "heading": "Our Story & Background:",
     "subheading": "Sharif Group",
     "p1": "Sharif Group is a trusted private consulting company based in Business Bay, Dubai. We help international clients and families secure legal second passports, residency visas, premium property investments, and student placements in top international universities.",
     "p2": "Our experienced team takes care of document preparation, background legal checks, and government clearance from start to finish, ensuring a straightforward, secure, and completely stress-free experience.",
-    "readStory": "Read OVERVIEW",
+    "readStory": "Read Our Story",
     "bookConsultation": "Book Consultation"
   },
   "services": {
