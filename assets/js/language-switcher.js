@@ -203,7 +203,7 @@
         }
     }
 
-    var I18N_VERSION = '20260920_v10';
+    var I18N_VERSION = '20260920_v11';
 
     function loadTranslation(lang, callback) {
         var pathname = (window.location && window.location.pathname) ? window.location.pathname.toLowerCase() : '';
@@ -519,6 +519,9 @@
                     // Parent has icon and inner span: update the span only
                     var targetSpan = el.querySelector('span');
                     if (targetSpan) targetSpan.textContent = localized;
+                } else if (typeof localized === 'string' && localized.indexOf('<') !== -1 && localized.indexOf('>') !== -1) {
+                    // If the translation contains HTML formatting (e.g. italic spans, line breaks), preserve it
+                    el.innerHTML = localized;
                 } else {
                     el.textContent = localized;
                 }
@@ -531,7 +534,7 @@
             var key = el.getAttribute('data-i18n-html');
             var val = getNestedValue(data, key);
             if (val !== null && val !== undefined) {
-                el.innerHTML = val;
+                el.innerHTML = decodeHtmlEntities(val);
             }
         });
 
