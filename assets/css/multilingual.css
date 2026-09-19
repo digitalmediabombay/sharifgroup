@@ -43,7 +43,10 @@ body.lang-zh *:not(i):not([class*="fa-"]):not([class*="fa"]) {
     text-align: right !important;
 }
 
-[dir="rtl"] .text-right {
+/* Swap timeline and process steps alignment in RTL without breaking explicit text-right */
+[dir="rtl"] .timeline-step .text-right,
+[dir="rtl"] .process-step .text-right,
+[dir="rtl"] div[class*="timeline"] .text-right {
     text-align: left !important;
 }
 
@@ -856,11 +859,233 @@ html[dir="rtl"] .lg\:text-left,
 html[dir="rtl"] .md\:text-left,
 html[dir="rtl"] .sm\:text-left,
 html[dir="rtl"] .xl\:text-left,
-html[dir="rtl"] .xl\:text-left,
 [dir="rtl"] .lg\:text-left,
 [dir="rtl"] .md\:text-left,
 [dir="rtl"] .sm\:text-left,
-[dir="rtl"] .xl\:text-left,
 [dir="rtl"] .xl\:text-left {
+    text-align: right !important;
+}
+
+/* ==========================================================================
+   BLOG RTL STYLES (Persian & Arabic)
+   ========================================================================== */
+html[dir="rtl"] #blog-detail-view-container,
+html[lang="fa"] #blog-detail-view-container,
+html[lang="ar"] #blog-detail-view-container,
+body.lang-fa #blog-detail-view-container,
+body.lang-ar #blog-detail-view-container,
+[dir="rtl"] #blog-detail-view-container {
+    direction: rtl !important;
+    text-align: right !important;
+}
+
+html[dir="rtl"] #detail-title,
+html[lang="fa"] #detail-title,
+html[lang="ar"] #detail-title,
+body.lang-fa #detail-title,
+body.lang-ar #detail-title,
+[dir="rtl"] #detail-title {
+    direction: rtl !important;
+    text-align: right !important;
+}
+
+html[dir="rtl"] #blog-detail-view-container .space-y-4,
+body.lang-fa #blog-detail-view-container .space-y-4,
+body.lang-ar #blog-detail-view-container .space-y-4 {
+    text-align: right !important;
+}
+
+html[dir="rtl"] #detail-category-badge,
+body.lang-fa #detail-category-badge,
+body.lang-ar #detail-category-badge {
+    text-align: right !important;
+}
+
+html[dir="rtl"] #detail-breadcrumb-title,
+body.lang-fa #detail-breadcrumb-title,
+body.lang-ar #detail-breadcrumb-title {
+    direction: rtl !important;
+    text-align: right !important;
+}
+
+html[dir="rtl"] [data-i18n="blog.backToArticles"] i,
+body.lang-fa [data-i18n="blog.backToArticles"] i,
+body.lang-ar [data-i18n="blog.backToArticles"] i,
+[dir="rtl"] [data-i18n="blog.backToArticles"] i {
+    transform: scaleX(-1) !important;
+}
+
+/* Article Body Content & all inner elements in RTL */
+html[dir="rtl"] #detail-content-body,
+html[lang="fa"] #detail-content-body,
+html[lang="ar"] #detail-content-body,
+body.lang-fa #detail-content-body,
+body.lang-ar #detail-content-body,
+[dir="rtl"] #detail-content-body {
+    direction: rtl !important;
+    text-align: right !important;
+}
+
+html[dir="rtl"] #detail-content-body *,
+html[lang="fa"] #detail-content-body *,
+html[lang="ar"] #detail-content-body *,
+body.lang-fa #detail-content-body *,
+body.lang-ar #detail-content-body *,
+[dir="rtl"] #detail-content-body * {
+    direction: rtl !important;
+    text-align: right !important;
+}
+
+html[dir="rtl"] #detail-content-body p,
+body.lang-fa #detail-content-body p,
+body.lang-ar #detail-content-body p,
+[dir="rtl"] #detail-content-body p {
+    direction: rtl !important;
+    text-align: right !important;
+    line-height: 1.9 !important;
+}
+
+html[dir="rtl"] #detail-content-body h1,
+html[dir="rtl"] #detail-content-body h2,
+html[dir="rtl"] #detail-content-body h3,
+html[dir="rtl"] #detail-content-body h4,
+body.lang-fa #detail-content-body h1,
+body.lang-fa #detail-content-body h2,
+body.lang-fa #detail-content-body h3,
+body.lang-fa #detail-content-body h4,
+body.lang-ar #detail-content-body h1,
+body.lang-ar #detail-content-body h2,
+body.lang-ar #detail-content-body h3,
+body.lang-ar #detail-content-body h4,
+[dir="rtl"] #detail-content-body h1,
+[dir="rtl"] #detail-content-body h2,
+[dir="rtl"] #detail-content-body h3,
+[dir="rtl"] #detail-content-body h4 {
+    direction: rtl !important;
+    text-align: right !important;
+    font-weight: 700 !important;
+}
+
+html[dir="rtl"] #detail-content-body ul,
+html[dir="rtl"] #detail-content-body ol,
+body.lang-fa #detail-content-body ul,
+body.lang-fa #detail-content-body ol,
+body.lang-ar #detail-content-body ul,
+body.lang-ar #detail-content-body ol,
+[dir="rtl"] #detail-content-body ul,
+[dir="rtl"] #detail-content-body ol {
+    direction: rtl !important;
+    text-align: right !important;
+    padding-right: 1.5rem !important;
+    padding-left: 0 !important;
+}
+
+/* Detail FAQs Accordion */
+html[dir="rtl"] #detail-faq-wrapper,
+body.lang-fa #detail-faq-wrapper,
+body.lang-ar #detail-faq-wrapper,
+[dir="rtl"] #detail-faq-wrapper {
+    direction: rtl !important;
+    text-align: right !important;
+}
+
+html[dir="rtl"] #detail-faq-wrapper .grid,
+body.lang-fa #detail-faq-wrapper .grid,
+body.lang-ar #detail-faq-wrapper .grid,
+[dir="rtl"] #detail-faq-wrapper .grid {
+    direction: rtl !important;
+    text-align: right !important;
+}
+
+html[dir="rtl"] #detail-faq-wrapper button,
+body.lang-fa #detail-faq-wrapper button,
+body.lang-ar #detail-faq-wrapper button,
+[dir="rtl"] #detail-faq-wrapper button {
+    direction: rtl !important;
+    text-align: right !important;
+}
+
+html[dir="rtl"] #detail-faq-wrapper p,
+body.lang-fa #detail-faq-wrapper p,
+body.lang-ar #detail-faq-wrapper p,
+[dir="rtl"] #detail-faq-wrapper p {
+    direction: rtl !important;
+    text-align: right !important;
+}
+
+/* Blog Listing Page */
+html[dir="rtl"] #blog-listing-main,
+body.lang-fa #blog-listing-main,
+body.lang-ar #blog-listing-main,
+[dir="rtl"] #blog-listing-main {
+    direction: rtl !important;
+}
+
+html[dir="rtl"] .blog-item,
+body.lang-fa .blog-item,
+body.lang-ar .blog-item,
+[dir="rtl"] .blog-item {
+    direction: rtl !important;
+    text-align: right !important;
+}
+
+html[dir="rtl"] .blog-item h4,
+html[dir="rtl"] .blog-item p,
+body.lang-fa .blog-item h4,
+body.lang-fa .blog-item p,
+body.lang-ar .blog-item h4,
+body.lang-ar .blog-item p,
+[dir="rtl"] .blog-item h4,
+[dir="rtl"] .blog-item p {
+    text-align: right !important;
+    direction: rtl !important;
+}
+
+html[dir="rtl"] .blog-item a[data-i18n="blog.readMore"],
+body.lang-fa .blog-item a[data-i18n="blog.readMore"],
+body.lang-ar .blog-item a[data-i18n="blog.readMore"],
+[dir="rtl"] .blog-item a[data-i18n="blog.readMore"] {
+    align-self: flex-start !important;
+    text-align: right !important;
+    direction: rtl !important;
+}
+
+/* Detail Consultation Form in RTL */
+html[dir="rtl"] #detail-consultation-section,
+body.lang-fa #detail-consultation-section,
+body.lang-ar #detail-consultation-section,
+[dir="rtl"] #detail-consultation-section {
+    direction: rtl !important;
+}
+
+html[dir="rtl"] #standalone-contact-form,
+body.lang-fa #standalone-contact-form,
+body.lang-ar #standalone-contact-form,
+[dir="rtl"] #standalone-contact-form {
+    direction: rtl !important;
+    text-align: right !important;
+}
+
+html[dir="rtl"] #standalone-contact-form label,
+body.lang-fa #standalone-contact-form label,
+body.lang-ar #standalone-contact-form label,
+[dir="rtl"] #standalone-contact-form label {
+    text-align: right !important;
+    direction: rtl !important;
+}
+
+html[dir="rtl"] #standalone-contact-form input:not([type="tel"]),
+html[dir="rtl"] #standalone-contact-form select,
+html[dir="rtl"] #standalone-contact-form textarea,
+body.lang-fa #standalone-contact-form input:not([type="tel"]),
+body.lang-fa #standalone-contact-form select,
+body.lang-fa #standalone-contact-form textarea,
+body.lang-ar #standalone-contact-form input:not([type="tel"]),
+body.lang-ar #standalone-contact-form select,
+body.lang-ar #standalone-contact-form textarea,
+[dir="rtl"] #standalone-contact-form input:not([type="tel"]),
+[dir="rtl"] #standalone-contact-form select,
+[dir="rtl"] #standalone-contact-form textarea {
+    direction: rtl !important;
     text-align: right !important;
 }

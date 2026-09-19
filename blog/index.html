@@ -232,8 +232,180 @@
         .custom-select-dropdown.active {
             display: block !important;
         }
+
+        /* ==========================================================================
+           BLOG PERSIA & ARABIC RTL STYLES
+           ========================================================================== */
+        html[dir="rtl"] #blog-detail-view-container,
+        html[lang="fa"] #blog-detail-view-container,
+        html[lang="ar"] #blog-detail-view-container,
+        body.lang-fa #blog-detail-view-container,
+        body.lang-ar #blog-detail-view-container,
+        [dir="rtl"] #blog-detail-view-container {
+            direction: rtl !important;
+            text-align: right !important;
+        }
+
+        html[dir="rtl"] #detail-title,
+        html[lang="fa"] #detail-title,
+        html[lang="ar"] #detail-title,
+        body.lang-fa #detail-title,
+        body.lang-ar #detail-title,
+        [dir="rtl"] #detail-title {
+            direction: rtl !important;
+            text-align: right !important;
+        }
+
+        html[dir="rtl"] #detail-content-body,
+        html[lang="fa"] #detail-content-body,
+        html[lang="ar"] #detail-content-body,
+        body.lang-fa #detail-content-body,
+        body.lang-ar #detail-content-body,
+        [dir="rtl"] #detail-content-body,
+        .rtl-content {
+            direction: rtl !important;
+            text-align: right !important;
+        }
+
+        html[dir="rtl"] #detail-content-body *,
+        html[lang="fa"] #detail-content-body *,
+        html[lang="ar"] #detail-content-body *,
+        body.lang-fa #detail-content-body *,
+        body.lang-ar #detail-content-body *,
+        [dir="rtl"] #detail-content-body *,
+        .rtl-content * {
+            direction: rtl !important;
+            text-align: right !important;
+        }
+
+        html[dir="rtl"] #detail-content-body p,
+        body.lang-fa #detail-content-body p,
+        body.lang-ar #detail-content-body p,
+        [dir="rtl"] #detail-content-body p {
+            direction: rtl !important;
+            text-align: right !important;
+            line-height: 1.9 !important;
+        }
+
+        html[dir="rtl"] #detail-content-body h1,
+        html[dir="rtl"] #detail-content-body h2,
+        html[dir="rtl"] #detail-content-body h3,
+        html[dir="rtl"] #detail-content-body h4,
+        body.lang-fa #detail-content-body h1,
+        body.lang-fa #detail-content-body h2,
+        body.lang-fa #detail-content-body h3,
+        body.lang-fa #detail-content-body h4,
+        body.lang-ar #detail-content-body h1,
+        body.lang-ar #detail-content-body h2,
+        body.lang-ar #detail-content-body h3,
+        body.lang-ar #detail-content-body h4,
+        [dir="rtl"] #detail-content-body h1,
+        [dir="rtl"] #detail-content-body h2,
+        [dir="rtl"] #detail-content-body h3,
+        [dir="rtl"] #detail-content-body h4 {
+            direction: rtl !important;
+            text-align: right !important;
+            font-weight: 700 !important;
+        }
+
+        html[dir="rtl"] #detail-faq-wrapper,
+        body.lang-fa #detail-faq-wrapper,
+        body.lang-ar #detail-faq-wrapper,
+        [dir="rtl"] #detail-faq-wrapper {
+            direction: rtl !important;
+            text-align: right !important;
+        }
+
+        html[dir="rtl"] #detail-faq-wrapper button,
+        body.lang-fa #detail-faq-wrapper button,
+        body.lang-ar #detail-faq-wrapper button,
+        [dir="rtl"] #detail-faq-wrapper button,
+        html[dir="rtl"] #detail-faq-wrapper p,
+        body.lang-fa #detail-faq-wrapper p,
+        body.lang-ar #detail-faq-wrapper p,
+        [dir="rtl"] #detail-faq-wrapper p {
+            direction: rtl !important;
+            text-align: right !important;
+        }
+
+        html[dir="rtl"] [data-i18n="blog.backToArticles"] i,
+        body.lang-fa [data-i18n="blog.backToArticles"] i,
+        body.lang-ar [data-i18n="blog.backToArticles"] i,
+        [dir="rtl"] [data-i18n="blog.backToArticles"] i {
+            transform: scaleX(-1) !important;
+        }
+
+        /* Blog Listing Cards */
+        html[dir="rtl"] #blog-listing-main,
+        body.lang-fa #blog-listing-main,
+        body.lang-ar #blog-listing-main,
+        [dir="rtl"] #blog-listing-main {
+            direction: rtl !important;
+        }
+
+        html[dir="rtl"] .blog-item,
+        body.lang-fa .blog-item,
+        body.lang-ar .blog-item,
+        [dir="rtl"] .blog-item {
+            direction: rtl !important;
+            text-align: right !important;
+        }
+
+        html[dir="rtl"] .blog-item h4,
+        html[dir="rtl"] .blog-item p,
+        body.lang-fa .blog-item h4,
+        body.lang-fa .blog-item p,
+        body.lang-ar .blog-item h4,
+        body.lang-ar .blog-item p,
+        [dir="rtl"] .blog-item h4,
+        [dir="rtl"] .blog-item p {
+            text-align: right !important;
+            direction: rtl !important;
+        }
+
+        html[dir="rtl"] .blog-item a[data-i18n="blog.readMore"],
+        body.lang-fa .blog-item a[data-i18n="blog.readMore"],
+        body.lang-ar .blog-item a[data-i18n="blog.readMore"],
+        [dir="rtl"] .blog-item a[data-i18n="blog.readMore"] {
+            align-self: flex-start !important;
+            text-align: right !important;
+            direction: rtl !important;
+        }
+
+        /* Consultation Form in Detail View */
+        html[dir="rtl"] #standalone-contact-form,
+        body.lang-fa #standalone-contact-form,
+        body.lang-ar #standalone-contact-form,
+        [dir="rtl"] #standalone-contact-form {
+            direction: rtl !important;
+            text-align: right !important;
+        }
+
+        html[dir="rtl"] #standalone-contact-form label,
+        body.lang-fa #standalone-contact-form label,
+        body.lang-ar #standalone-contact-form label,
+        [dir="rtl"] #standalone-contact-form label {
+            text-align: right !important;
+            direction: rtl !important;
+        }
+
+        html[dir="rtl"] #standalone-contact-form input:not([type="tel"]),
+        html[dir="rtl"] #standalone-contact-form select,
+        html[dir="rtl"] #standalone-contact-form textarea,
+        body.lang-fa #standalone-contact-form input:not([type="tel"]),
+        body.lang-fa #standalone-contact-form select,
+        body.lang-fa #standalone-contact-form textarea,
+        body.lang-ar #standalone-contact-form input:not([type="tel"]),
+        body.lang-ar #standalone-contact-form select,
+        body.lang-ar #standalone-contact-form textarea,
+        [dir="rtl"] #standalone-contact-form input:not([type="tel"]),
+        [dir="rtl"] #standalone-contact-form select,
+        [dir="rtl"] #standalone-contact-form textarea {
+            direction: rtl !important;
+            text-align: right !important;
+        }
     </style>
-<link href="/assets/css/multilingual.css?v=5" rel="stylesheet"/>
+<link href="/assets/css/multilingual.css?v=6" rel="stylesheet"/>
 </head>
 <body class="bg-luxury-light text-luxury-dark font-sans overflow-x-hidden">
     <!-- Google Tag Manager (noscript) -->
@@ -2147,7 +2319,7 @@
 <h3 class="font-serif text-3xl sm:text-4xl font-bold text-neutral-900" data-i18n="blog.faqHeading">Program Integrity &amp; FAQs</h3>
 <p class="text-xs text-neutral-500" data-i18n="blog.faqDesc">Clear and comprehensive answers regarding legal and residency parameters</p>
 </div>
-<div class="grid grid-cols-1 lg:grid-cols-2 gap-x-12 gap-y-0 text-left items-start">
+<div class="grid grid-cols-1 lg:grid-cols-2 gap-x-12 gap-y-0 text-start items-start">
 <div class="flex flex-col" id="detail-faq-col-1">
 <!-- Left Column: 6 FAQs -->
 </div>
@@ -7697,6 +7869,13 @@
                 window.currentActiveArticleSlug = slug;
                 const currentLang = (window.getCurrentLanguage && window.getCurrentLanguage()) || 'en';
                 const article = (window.getLocalizedArticleData ? window.getLocalizedArticleData(slug, currentLang) : null) || baseArticle;
+                const isRtl = (currentLang === 'ar' || currentLang === 'fa');
+
+                if (detailSection) {
+                    detailSection.setAttribute('dir', isRtl ? 'rtl' : 'ltr');
+                    detailSection.style.direction = isRtl ? 'rtl' : 'ltr';
+                    detailSection.style.textAlign = isRtl ? 'right' : 'left';
+                }
 
                 // Populate Content
                 const titleEl = document.getElementById('detail-title');
@@ -7704,13 +7883,20 @@
                 if (titleEl) {
                     titleEl.setAttribute('data-i18n', `blog.articles.${slug}.title`);
                     titleEl.innerText = article.title;
+                    titleEl.setAttribute('dir', isRtl ? 'rtl' : 'ltr');
+                    titleEl.style.direction = isRtl ? 'rtl' : 'ltr';
+                    titleEl.style.textAlign = isRtl ? 'right' : 'left';
                 }
                 if (breadcrumbTitleEl) {
                     breadcrumbTitleEl.setAttribute('data-i18n', `blog.articles.${slug}.title`);
                     breadcrumbTitleEl.innerText = article.title;
+                    breadcrumbTitleEl.setAttribute('dir', isRtl ? 'rtl' : 'ltr');
                 }
                 const catBadge = document.getElementById('detail-category-badge');
-                if (catBadge) catBadge.innerText = article.category;
+                if (catBadge) {
+                    catBadge.innerText = article.category;
+                    catBadge.setAttribute('dir', isRtl ? 'rtl' : 'ltr');
+                }
                 const authorEl = document.getElementById('detail-author');
                 if (authorEl) authorEl.innerText = article.author;
                 const dateEl = document.getElementById('detail-date');
@@ -7734,14 +7920,23 @@
                 const bodyEl = document.getElementById('detail-content-body');
                 if (bodyEl) {
                     bodyEl.innerHTML = article.content;
-                    if (currentLang === 'ar' || currentLang === 'fa') {
-                        bodyEl.setAttribute('dir', 'rtl');
-                        bodyEl.classList.add('text-right');
-                        bodyEl.classList.remove('text-left');
+                    bodyEl.setAttribute('dir', isRtl ? 'rtl' : 'ltr');
+                    bodyEl.style.direction = isRtl ? 'rtl' : 'ltr';
+                    bodyEl.style.textAlign = isRtl ? 'right' : 'left';
+                    if (isRtl) {
+                        bodyEl.classList.add('rtl-content');
+                        bodyEl.querySelectorAll('p, h1, h2, h3, h4, h5, h6, ul, ol, li, blockquote').forEach(el => {
+                            el.setAttribute('dir', 'rtl');
+                            el.style.direction = 'rtl';
+                            el.style.textAlign = 'right';
+                        });
                     } else {
-                        bodyEl.setAttribute('dir', 'ltr');
-                        bodyEl.classList.add('text-left');
-                        bodyEl.classList.remove('text-right');
+                        bodyEl.classList.remove('rtl-content');
+                        bodyEl.querySelectorAll('p, h1, h2, h3, h4, h5, h6, ul, ol, li, blockquote').forEach(el => {
+                            el.setAttribute('dir', 'ltr');
+                            el.style.direction = 'ltr';
+                            el.style.textAlign = 'left';
+                        });
                     }
                 }
 
@@ -7751,22 +7946,21 @@
                 if (col1) col1.innerHTML = '';
                 if (col2) col2.innerHTML = '';
 
-                const isRtl = (currentLang === 'ar' || currentLang === 'fa');
                 const faqsList = article.faqs || [];
                 faqsList.forEach((faq, index) => {
                     const faqItem = document.createElement('div');
                     faqItem.className = 'border-b border-neutral-200 py-3.5';
                     faqItem.innerHTML = `
-                        <button onclick="toggleBlogFAQ('faq-dyn-${index}')" class="w-full flex justify-between items-center ${isRtl ? 'text-right' : 'text-left'} focus:outline-none group" dir="${isRtl ? 'rtl' : 'ltr'}">
-                            <span class="text-xs uppercase tracking-wider font-bold text-neutral-800 group-hover:text-luxury-gold transition ${isRtl ? 'pl-3' : 'pr-3'}">
+                        <button onclick="toggleBlogFAQ('faq-dyn-${index}')" class="w-full flex justify-between items-center focus:outline-none group" dir="${isRtl ? 'rtl' : 'ltr'}" style="text-align: ${isRtl ? 'right' : 'left'}; direction: ${isRtl ? 'rtl' : 'ltr'};">
+                            <span class="text-xs uppercase tracking-wider font-bold text-neutral-800 group-hover:text-luxury-gold transition ${isRtl ? 'pl-3 text-right' : 'pr-3 text-left'}">
                                 ${faq.q}
                             </span>
                             <span class="text-neutral-400 transition-transform duration-300 shrink-0" id="icon-faq-dyn-${index}">
                                 <i class="fa-solid fa-chevron-down text-[10px]"></i>
                             </span>
                         </button>
-                        <div id="content-faq-dyn-${index}" class="max-h-0 overflow-hidden transition-all duration-500 ease-in-out" dir="${isRtl ? 'rtl' : 'ltr'}">
-                            <p class="text-xs text-neutral-600 leading-relaxed mt-2.5 font-light ${isRtl ? 'text-right' : 'text-left'}">
+                        <div id="content-faq-dyn-${index}" class="max-h-0 overflow-hidden transition-all duration-500 ease-in-out" dir="${isRtl ? 'rtl' : 'ltr'}" style="text-align: ${isRtl ? 'right' : 'left'}; direction: ${isRtl ? 'rtl' : 'ltr'};">
+                            <p class="text-xs text-neutral-600 leading-relaxed mt-2.5 font-light" style="text-align: ${isRtl ? 'right' : 'left'}; direction: ${isRtl ? 'rtl' : 'ltr'};">
                                 ${faq.a}
                             </p>
                         </div>
