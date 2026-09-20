@@ -272,21 +272,24 @@
     var pendingFetches = {};
 
     function getArticleCandidateUrls(lang) {
-        var isFile = typeof window !== 'undefined' && window.location && window.location.protocol === 'file:';
-        if (isFile) {
-            return [
-                '../assets/locales/articles_' + lang + '.json',
-                '../../assets/locales/articles_' + lang + '.json',
-                'assets/locales/articles_' + lang + '.json',
-                '/assets/locales/articles_' + lang + '.json'
-            ];
+        var prefix = '';
+        var langScript = document.querySelector('script[src*="language-switcher.js"]') || document.querySelector('script[src*="blog-translator.js"]');
+        if (langScript) {
+            var src = langScript.getAttribute('src');
+            var idx = src.indexOf('assets/');
+            if (idx !== -1) {
+                prefix = src.substring(0, idx);
+            }
         }
-        return [
-            '/assets/locales/articles_' + lang + '.json',
-            '../assets/locales/articles_' + lang + '.json',
-            '../../assets/locales/articles_' + lang + '.json',
-            'assets/locales/articles_' + lang + '.json'
-        ];
+        var list = [];
+        if (prefix) {
+            list.push(prefix + 'assets/locales/articles_' + lang + '.json');
+        }
+        list.push('/assets/locales/articles_' + lang + '.json');
+        list.push('../../assets/locales/articles_' + lang + '.json');
+        list.push('../assets/locales/articles_' + lang + '.json');
+        list.push('assets/locales/articles_' + lang + '.json');
+        return list;
     }
 
     function loadArticlesDataset(lang, callback) {
@@ -344,7 +347,19 @@
     }
 
     function getStoredOrInitialLang() {
+        if (typeof window.getCurrentLanguage === 'function') {
+            var cl = window.getCurrentLanguage();
+            if (cl && cl !== 'en') return cl;
+        }
         try {
+            var pathname = (window.location && window.location.pathname) ? window.location.pathname : '';
+            var segments = pathname.split('/').filter(Boolean);
+            if (segments.length > 0) {
+                var first = segments[0].toLowerCase();
+                if (first === 'ar' || first === 'fa' || first === 'zh' || first === 'en') {
+                    return first;
+                }
+            }
             var stored = localStorage.getItem('sharif_lang') || localStorage.getItem('sharif_preferred_lang');
             if (stored) {
                 var l = String(stored).toLowerCase().trim();
@@ -353,8 +368,9 @@
                 if (l === 'zh' || l === 'chinese' || l === 'zh-hans' || l === 'zh-cn') return 'zh';
             }
         } catch (e) {}
-        if (typeof window.getCurrentLanguage === 'function') {
-            return window.getCurrentLanguage();
+        if (document.documentElement.lang && document.documentElement.lang !== 'en') {
+            var dl = document.documentElement.lang.toLowerCase().trim();
+            if (dl === 'ar' || dl === 'fa' || dl === 'zh') return dl;
         }
         return 'en';
     }
@@ -493,6 +509,263 @@
             faqs: base.faqs
         };
     };
+
+    // =========================================================================
+    // STANDALONE / STATIC BLOG ARTICLE PAGE TRANSLATOR
+    // Automatically translates blog/<slug>/index.html pages into AR / FA / ZH
+    // =========================================================================
+    var originalStaticData = null;
+
+    function getArticleSlugFromPath() {
+        var path = (window.location && window.location.pathname) ? window.location.pathname : '';
+        path = path.replace(/index\.html$/i, '').replace(/\/+$/, '');
+        var parts = path.split('/').filter(Boolean);
+        var blogIdx = parts.indexOf('blog');
+        if (blogIdx !== -1 && parts.length > blogIdx + 1) {
+            var slug = parts[blogIdx + 1].toLowerCase().trim();
+            if (slug && slug !== 'index' && slug !== 'index.html') {
+                return slug;
+            }
+        }
+        var canonical = document.querySelector('link[rel="canonical"]');
+        if (canonical && canonical.href) {
+            var m = canonical.href.match(/\/blog\/([a-z0-9-]+)/i);
+            if (m && m[1] && m[1] !== 'blog') {
+                return m[1].toLowerCase().trim();
+            }
+        }
+        return null;
+    }
+
+    function captureOriginalStaticContent() {
+        if (originalStaticData) return;
+        var h1 = document.querySelector('main h1');
+        var contentEl = document.querySelector('.article-content');
+        if (!h1 || !contentEl) return;
+
+        var catEl = document.querySelector('main .space-y-4 > div:first-child');
+        var breadcrumbEl = document.querySelector('main nav span.text-luxury-gold');
+        var metaBar = document.querySelector('main .space-y-4 .flex.flex-wrap');
+        var authorEl = metaBar ? metaBar.querySelector('span:nth-child(1) span') : null;
+        var dateEl = metaBar ? metaBar.querySelector('span:nth-child(2) span') : null;
+        var updatedEl = metaBar ? metaBar.querySelector('span:nth-child(3) span') : null;
+
+        var faqs = [];
+        for (var i = 0; i < 25; i++) {
+            var btn = document.querySelector('button[onclick*="faq-dyn-' + i + '"]');
+            var ansP = document.querySelector('#content-faq-dyn-' + i + ' p');
+            if (btn && ansP) {
+                var qSpan = btn.querySelector('span:first-child');
+                faqs.push({
+                    q: qSpan ? qSpan.textContent.trim() : '',
+                    a: ansP.textContent.trim()
+                });
+            }
+        }
+
+        originalStaticData = {
+            docTitle: document.title,
+            title: h1.textContent.trim(),
+            breadcrumb: breadcrumbEl ? breadcrumbEl.textContent.trim() : h1.textContent.trim(),
+            category: catEl ? catEl.textContent.trim() : '',
+            author: authorEl ? authorEl.textContent.trim() : '',
+            date: dateEl ? dateEl.textContent.trim() : '',
+            updated: updatedEl ? updatedEl.textContent.trim() : '',
+            content: contentEl.innerHTML,
+            faqs: faqs
+        };
+    }
+
+    function translateStaticArticlePage(lang) {
+        var slug = getArticleSlugFromPath();
+        if (!slug) return;
+
+        var contentEl = document.querySelector('.article-content');
+        var h1 = document.querySelector('main h1');
+        if (!contentEl || !h1) return;
+
+        captureOriginalStaticContent();
+
+        var curLang = lang || (window.getCurrentLanguage ? window.getCurrentLanguage() : getStoredOrInitialLang());
+
+        // If English, restore original content
+        if (curLang === 'en') {
+            if (originalStaticData) {
+                document.title = originalStaticData.docTitle;
+                h1.textContent = originalStaticData.title;
+                var breadcrumbEl = document.querySelector('main nav span.text-luxury-gold');
+                if (breadcrumbEl) breadcrumbEl.textContent = originalStaticData.breadcrumb;
+                var catEl = document.querySelector('main .space-y-4 > div:first-child');
+                if (catEl) catEl.textContent = originalStaticData.category;
+                var metaBar = document.querySelector('main .space-y-4 .flex.flex-wrap');
+                if (metaBar) {
+                    var authorEl = metaBar.querySelector('span:nth-child(1) span');
+                    var dateEl = metaBar.querySelector('span:nth-child(2) span');
+                    var updatedEl = metaBar.querySelector('span:nth-child(3) span');
+                    if (authorEl) authorEl.textContent = originalStaticData.author;
+                    if (dateEl) dateEl.textContent = originalStaticData.date;
+                    if (updatedEl) updatedEl.textContent = originalStaticData.updated;
+                }
+                contentEl.innerHTML = originalStaticData.content;
+                var backLink = document.querySelector('main a[href="/blog/"]');
+                if (backLink) backLink.innerHTML = '<i class="fa-solid fa-arrow-left"></i> Back to All Articles';
+
+                // Restore FAQs
+                if (originalStaticData.faqs && originalStaticData.faqs.length) {
+                    originalStaticData.faqs.forEach(function(f, idx) {
+                        var btn = document.querySelector('button[onclick*="faq-dyn-' + idx + '"]');
+                        if (btn) {
+                            var qSpan = btn.querySelector('span:first-child');
+                            if (qSpan) qSpan.textContent = f.q;
+                        }
+                        var ansP = document.querySelector('#content-faq-dyn-' + idx + ' p');
+                        if (ansP) ansP.textContent = f.a;
+                    });
+                }
+            }
+            return;
+        }
+
+        // Apply translations for target language
+        function applyData(art) {
+            if (!art) return;
+
+            // 1. Title
+            if (art.title) {
+                h1.textContent = art.title;
+                var brandSuffix = curLang === 'ar' ? ' | مجموعة شريف دبي' : (curLang === 'fa' ? ' | شریف گروپ دبی' : (curLang === 'zh' ? ' | 谢里夫集团迪拜' : ' | Sharif Group'));
+                document.title = art.title + brandSuffix;
+
+                var breadcrumbEl = document.querySelector('main nav span.text-luxury-gold');
+                if (breadcrumbEl) breadcrumbEl.textContent = art.title;
+            }
+
+            // 2. Category
+            var catEl = document.querySelector('main .space-y-4 > div:first-child');
+            if (catEl) {
+                var rawCat = art.category || (originalStaticData ? originalStaticData.category : '');
+                var translatedCat = translateCategory(rawCat, curLang);
+                if (translatedCat) catEl.textContent = translatedCat;
+            }
+
+            // 3. Meta (Author, Date, Updated)
+            var metaBar = document.querySelector('main .space-y-4 .flex.flex-wrap');
+            if (metaBar) {
+                var authorEl = metaBar.querySelector('span:nth-child(1) span');
+                var dateEl = metaBar.querySelector('span:nth-child(2) span');
+                var updatedEl = metaBar.querySelector('span:nth-child(3) span');
+                if (authorEl) {
+                    var rawAuthor = art.author || (originalStaticData ? originalStaticData.author : '');
+                    var transAuthor = translateAuthor(rawAuthor, curLang);
+                    if (transAuthor) authorEl.textContent = transAuthor;
+                }
+                if (dateEl) {
+                    var rawDate = art.date || (originalStaticData ? originalStaticData.date : '');
+                    var transDate = translateDate(rawDate, curLang);
+                    if (transDate) dateEl.textContent = transDate;
+                }
+                if (updatedEl) {
+                    var rawUpdated = art.updated || (originalStaticData ? originalStaticData.updated : '');
+                    var transUpdated = translateDate(rawUpdated, curLang);
+                    if (transUpdated) {
+                        var updatedPrefix = curLang === 'ar' ? 'آخر تحديث: ' : (curLang === 'fa' ? 'آخرین به‌روزرسانی: ' : (curLang === 'zh' ? '最近更新：' : 'Last Updated: '));
+                        updatedEl.textContent = updatedPrefix + transUpdated;
+                    }
+                }
+            }
+
+            // 4. Content HTML
+            if (art.content && art.content.trim()) {
+                contentEl.innerHTML = art.content;
+            }
+
+            // 5. Back link
+            var backLink = document.querySelector('main a[href="/blog/"]');
+            if (backLink) {
+                var arrowIcon = (curLang === 'ar' || curLang === 'fa') ? 'fa-arrow-right' : 'fa-arrow-left';
+                var backText = curLang === 'ar' ? 'العودة إلى جميع المقالات' : (curLang === 'fa' ? 'بازگشت به همه مقالات' : (curLang === 'zh' ? '返回所有文章' : 'Back to All Articles'));
+                backLink.innerHTML = '<i class="fa-solid ' + arrowIcon + '"></i> ' + backText;
+            }
+
+            // 6. FAQ Header
+            var faqSection = document.querySelector('.pt-12.border-t.border-neutral-200');
+            if (faqSection) {
+                var deskBadge = faqSection.querySelector('span.text-luxury-gold');
+                if (deskBadge) {
+                    var badgeText = curLang === 'ar' ? 'إجابات الخبراء' : (curLang === 'fa' ? 'پاسخ‌های کارشناسان' : (curLang === 'zh' ? '专家解答' : 'Desk Answers'));
+                    deskBadge.innerHTML = '<i class="fa-regular fa-circle-question"></i> ' + badgeText;
+                }
+                var faqH2 = faqSection.querySelector('h2');
+                if (faqH2) {
+                    var h2Text = curLang === 'ar' ? 'الأسئلة الشائعة ونزاهة البرامج' : (curLang === 'fa' ? 'سوالات متداول و سلامت برنامه‌ها' : (curLang === 'zh' ? '常见问题解答与合规标准' : 'Program Integrity & FAQs'));
+                    faqH2.textContent = h2Text;
+                }
+                var faqDesc = faqSection.querySelector('p.text-neutral-500');
+                if (faqDesc) {
+                    var descText = curLang === 'ar' ? 'إجابات واضحة وشاملة حول المعايير القانونية والاستثمارية والإقامة' : (curLang === 'fa' ? 'پاسخ‌های شفاف و جامع درباره معیارهای قانونی، سرمایه‌گذاری و اقامت' : (curLang === 'zh' ? '针对法律、投资和居留参数的清晰全面解答' : 'Clear and comprehensive answers regarding legal, investment, and residency parameters'));
+                    faqDesc.textContent = descText;
+                }
+            }
+
+            // 7. FAQs
+            if (Array.isArray(art.faqs) && art.faqs.length) {
+                art.faqs.forEach(function(faq, idx) {
+                    var btn = document.querySelector('button[onclick*="faq-dyn-' + idx + '"]');
+                    if (btn) {
+                        var qSpan = btn.querySelector('span:first-child');
+                        if (qSpan) qSpan.textContent = faq.q;
+                    }
+                    var ansP = document.querySelector('#content-faq-dyn-' + idx + ' p');
+                    if (ansP) ansP.textContent = faq.a;
+                });
+            }
+        }
+
+        // Check if cached already
+        var store = window.articlesTranslations && window.articlesTranslations[curLang];
+        if (store && store[slug]) {
+            applyData(store[slug]);
+            return;
+        }
+
+        // Check curated FULL_ARTICLES
+        if (FULL_ARTICLES[slug] && FULL_ARTICLES[slug][curLang]) {
+            applyData(FULL_ARTICLES[slug][curLang]);
+            return;
+        }
+
+        // Otherwise load dataset and apply
+        loadArticlesDataset(curLang, function(dataset) {
+            if (dataset && dataset[slug]) {
+                applyData(dataset[slug]);
+            } else if (FULL_ARTICLES[slug] && FULL_ARTICLES[slug][curLang]) {
+                applyData(FULL_ARTICLES[slug][curLang]);
+            }
+        });
+    }
+
+    // Auto-init for static blog article page
+    function initStaticBlogTranslator() {
+        var slug = getArticleSlugFromPath();
+        if (!slug) return;
+
+        var curLang = (window.getCurrentLanguage ? window.getCurrentLanguage() : null) || getStoredOrInitialLang();
+        if (curLang && curLang !== 'en') {
+            translateStaticArticlePage(curLang);
+        }
+
+        // Listen for language switch
+        window.addEventListener('languageChanged', function(e) {
+            var newLang = (e.detail && e.detail.lang) || (window.getCurrentLanguage && window.getCurrentLanguage()) || 'en';
+            translateStaticArticlePage(newLang);
+        });
+    }
+
+    if (document.readyState === 'loading') {
+        document.addEventListener('DOMContentLoaded', initStaticBlogTranslator);
+    } else {
+        initStaticBlogTranslator();
+    }
 
 })();
 

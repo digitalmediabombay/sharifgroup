@@ -730,8 +730,9 @@ $footerHtml
             }
         }
     </script>
-    <script src="/assets/js/language-switcher.js"></script>
-    <script src="/assets/js/forms.js"></script>
+    <script src="../../assets/js/language-switcher.js"></script>
+    <script src="../../assets/js/blog-translator.js"></script>
+    <script src="../../assets/js/forms.js"></script>
 </body>
 </html>
 "@

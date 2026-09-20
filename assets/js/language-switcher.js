@@ -963,6 +963,30 @@
         (document.body || document.head).appendChild(widgetScript);
     }
 
+    function loadBlogTranslator() {
+        try {
+            var path = (window.location && window.location.pathname) ? window.location.pathname.toLowerCase() : '';
+            if (path.indexOf('/blog/') === -1 && path.indexOf('/blog') === -1) return;
+        } catch (e) { return; }
+
+        if (window.getLocalizedArticleData || document.getElementById('sg-blog-translator-script')) return;
+
+        var langScript = document.querySelector('script[src*="language-switcher.js"]');
+        var basePath = '';
+        if (langScript) {
+            var src = langScript.getAttribute('src');
+            basePath = src.substring(0, src.indexOf('language-switcher.js'));
+        } else {
+            basePath = '/assets/js/';
+        }
+
+        var btScript = document.createElement('script');
+        btScript.id = 'sg-blog-translator-script';
+        btScript.src = basePath + 'blog-translator.js?v=' + Date.now();
+        btScript.async = true;
+        (document.body || document.head).appendChild(btScript);
+    }
+
     function init() {
         currentLang = getInitialLang();
         if (currentLang === 'en') {
@@ -972,6 +996,9 @@
         loadTranslation(currentLang, function (data) {
             applyTranslations(data, currentLang);
         });
+
+        // Initialize blog translation engine on blog pages
+        loadBlogTranslator();
 
         // Initialize floating WhatsApp advisor widget site-wide
         loadWhatsAppWidget();
