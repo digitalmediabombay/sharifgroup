@@ -30,7 +30,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'OPTIONS') {
  * Singleton Database Connection
  * @return PDO
  */
-function getDb() {
+function getDb($silentFail = false) {
     static $pdo = null;
     if ($pdo !== null) {
         return $pdo;
@@ -55,10 +55,12 @@ function getDb() {
         return $pdo;
     } catch (PDOException $e) {
         error_log('[SharifCMS DB Error] ' . $e->getMessage());
+        if ($silentFail) {
+            return null;
+        }
         jsonResponse([
             'success' => false,
-            'error'   => 'Database connection failed. Please verify DB_HOST, DB_NAME, DB_USER, and DB_PASS in admin/api/config.php.',
-            'details' => $e->getMessage()
+            'error'   => 'Database connection failed. Please verify DB_HOST, DB_NAME, DB_USER, and DB_PASS in admin/api/config.php.'
         ], 500);
     }
 }

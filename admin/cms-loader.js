@@ -55,6 +55,12 @@
   const isEditor = params.get('cms_editor') === '1' || isInsideIframe;
   const isPreview = params.get('cms_preview') === '1' || isEditor;
 
+  // Strict Safety Guard: Exit immediately if not in CMS editor session or explicit preview
+  // Public visitors must never run cms-loader.js, never call the CMS API, and never enter Preview Mode
+  if (!isEditor && !isPreview) {
+    return;
+  }
+
   // Auto-prune legacy duplicate dummy article b001 from localStorage
   try {
     ['sgcms_blog', 'sgcms_blog_live'].forEach(key => {
@@ -320,6 +326,7 @@
       'antiguaandbarbuda': 'Antigua & Barbuda',
       'stlucia': 'Saint Lucia',
       'greneda': 'Grenada',
+      'grenada': 'Grenada',
       'vanuatu': 'Vanuatu',
       'nauru': 'Republic of Nauru',
       'saotomeandprincipe': 'São Tomé & Príncipe',
@@ -1464,10 +1471,10 @@
 
   const KNOWN_PROGRAM_PATHS = {
     dominica: 'programs/citizenshipbyinvestment/dominica/index.html',
-    stkitts: 'programs/citizenshipbyinvestment/stkittis/index.html',
+    stkitts: 'programs/citizenshipbyinvestment/stkitts/index.html',
     antigua: 'programs/citizenshipbyinvestment/antiguaandbarbuda/index.html',
     stlucia: 'programs/citizenshipbyinvestment/stlucia/index.html',
-    grenada: 'programs/citizenshipbyinvestment/greneda/index.html',
+    grenada: 'programs/citizenshipbyinvestment/grenada/index.html',
     vanuatu: 'programs/citizenshipbyinvestment/vanuatu/index.html',
     saotome: 'programs/citizenshipbyinvestment/sao-tome-and-principe/index.html',
     nauru: 'programs/citizenshipbyinvestment/nauru/index.html',
@@ -1690,7 +1697,7 @@
         zh: { nav_label: '多米尼克 | 护照', hero_subtitle: '投资入籍' }
       },
       {
-        id: 'stkitts', slug: 'stkittis', name: 'St. Kitts & Nevis', portfolio: 'caribbean', flag: 'https://flagcdn.com/kn.svg',
+        id: 'stkitts', slug: 'stkitts', name: 'St. Kitts & Nevis', portfolio: 'caribbean', flag: 'https://flagcdn.com/kn.svg',
         en: { nav_label: 'St. Kitts & Nevis | Passport', hero_subtitle: 'Citizenship By Investment' },
         ar: { nav_label: 'سانت كيتس ونيفيس | جواز سفر', hero_subtitle: 'الجنسية عن طريق الاستثمار' },
         fa: { nav_label: 'سنت کیتس و نویس | پاسپورت', hero_subtitle: 'شهروندی از طریق سرمایه‌گذاری' },
@@ -1711,7 +1718,7 @@
         zh: { nav_label: '圣卢西亚 | 护照', hero_subtitle: '投资入籍' }
       },
       {
-        id: 'grenada', slug: 'greneda', name: 'Grenada', portfolio: 'caribbean', flag: 'https://flagcdn.com/gd.svg',
+        id: 'grenada', slug: 'grenada', name: 'Grenada', portfolio: 'caribbean', flag: 'https://flagcdn.com/gd.svg',
         en: { nav_label: 'Grenada | Passport', hero_subtitle: 'Citizenship By Investment' },
         ar: { nav_label: 'غرينادا | جواز سفر', hero_subtitle: 'الجنسية عن طريق الاستثمار' },
         fa: { nav_label: 'گرنادا | پاسپورت', hero_subtitle: 'شهروندی از طریق سرمایه‌گذاری' },
@@ -3259,7 +3266,9 @@
     if (!isEditor) {
       syncLiveFromBackend();
     }
-    console.log('%c[Sharif Group CMS Studio] Active mode:', 'color:#C5A880;font-weight:700', isEditor ? 'Visual Editor (Live Studio)' : 'Preview Mode');
+    if (isEditor) {
+      console.log('%c[Sharif Group CMS Studio] Active mode: Visual Editor (Live Studio)', 'color:#C5A880;font-weight:700');
+    }
   }
 
   if (document.readyState === 'loading') {

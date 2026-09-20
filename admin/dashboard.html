@@ -2424,6 +2424,7 @@
         blog: '../blog/index.html',
         contact: '../contact/index.html',
         aboutus: '../aboutus/index.html',
+        founder: '../about-founder/index.html',
         cookiepolicy: '../cookiepolicy/index.html',
         legal: '../privacypolicy/index.html'
       };
@@ -2431,9 +2432,9 @@
       // Program specific URLs
       const PROGRAM_URLS = {
         dominica: '../programs/citizenshipbyinvestment/dominica/index.html',
-        stkitts: '../programs/citizenshipbyinvestment/stkittis/index.html',
+        stkitts: '../programs/citizenshipbyinvestment/stkitts/index.html',
         antigua: '../programs/citizenshipbyinvestment/antiguaandbarbuda/index.html',
-        grenada: '../programs/citizenshipbyinvestment/greneda/index.html',
+        grenada: '../programs/citizenshipbyinvestment/grenada/index.html',
         vanuatu: '../programs/citizenshipbyinvestment/vanuatu/index.html',
         stlucia: '../programs/citizenshipbyinvestment/stlucia/index.html',
         nauru: '../programs/citizenshipbyinvestment/nauru/index.html',
@@ -2806,11 +2807,21 @@
         const iframe = document.getElementById('live-iframe');
         if (!iframe) return;
         iframe.addEventListener('load', () => {
+          // Dynamically inject cms-loader.js into the iframe if not present (since removed from public templates)
+          try {
+            const doc = iframe.contentDocument || iframe.contentWindow.document;
+            if (doc && !doc.querySelector('script[src*="cms-loader.js"]')) {
+              const s = doc.createElement('script');
+              s.src = '/admin/cms-loader.js?v=' + Date.now();
+              doc.body.appendChild(s);
+            }
+          } catch(e) {}
+
           // Give cms-loader.js a moment to initialise, then push the current mode
           setTimeout(() => {
             sendToIframe({ type: 'CMS_SET_LANG', lang: state.lang });
             sendToIframe({ type: 'CMS_SET_MODE', mode: state.canvasMode });
-          }, 300);
+          }, 350);
         });
       })();
 
@@ -3987,6 +3998,19 @@
         document.getElementById('page-title').textContent = title;
         document.getElementById('page-subtitle').textContent = sub || 'Sharif Group CMS Studio';
       }
+      function updateCharCnt(input, cntId, max, min) {
+        const el = document.getElementById(cntId);
+        if (!el) return;
+        const len = (input.value || '').length;
+        el.textContent = `${len} / ${max}`;
+        if (min && (len < min || len > max)) {
+          el.style.color = '#f87171';
+        } else if (!min && len > max) {
+          el.style.color = '#f87171';
+        } else {
+          el.style.color = '#4ade80';
+        }
+      }
 
       // ══════════════════════════════════════════════════════════
       // LIST BUILDER HELPERS
@@ -4760,6 +4784,23 @@
       <div class="form-group"><label class="form-label">Contact Email</label><input class="form-input" id="cd-email" value="${escH(cb.email || 'contact@sharifgroup.ae')}" oninput="markUnsaved();liveUpdateField('contact_email',this.value)"></div>
     </div>`;
 
+        // 8. Search Engine Optimization (SEO)
+        const hpSeoBody = `
+    <div class="form-group" style="margin-bottom:10px">
+      <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:4px">
+        <label class="form-label" style="margin-bottom:0">Homepage Title <span style="color:var(--gold);font-size:10px">(Max 60 chars)</span></label>
+        <span id="hp-seo-title-cnt" style="font-size:11px;color:var(--muted)">${(d.seo?.title || 'Second Passport & Golden Visa | Sharif Group Dubai').length} / 60</span>
+      </div>
+      <input class="form-input" ${dir} id="hp-seo-title" maxlength="60" value="${escH(d.seo?.title || 'Second Passport & Golden Visa | Sharif Group Dubai')}" placeholder="Title for Google search results (max 60 chars)..." oninput="markUnsaved();updateCharCnt(this,'hp-seo-title-cnt',60)">
+    </div>
+    <div class="form-group">
+      <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:4px">
+        <label class="form-label" style="margin-bottom:0">Meta Description <span style="color:var(--gold);font-size:10px">(140–155 chars with benefit & CTA)</span></label>
+        <span id="hp-seo-desc-cnt" style="font-size:11px;color:var(--muted)">${(d.seo?.description || 'Secure your second passport or UAE Golden Visa with Sharif Group Dubai. Fast, legal citizenship and residency solutions. Book your consultation today.').length} / 155</span>
+      </div>
+      <textarea class="form-textarea" ${dir} id="hp-seo-desc" maxlength="155" placeholder="Search snippet with benefit and call to action (140-155 chars)..." oninput="markUnsaved();updateCharCnt(this,'hp-seo-desc-cnt',155,140)">${escH(d.seo?.description || 'Secure your second passport or UAE Golden Visa with Sharif Group Dubai. Fast, legal citizenship and residency solutions. Book your consultation today.')}</textarea>
+    </div>`;
+
         document.getElementById('editor').innerHTML =
           `<div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:18px">
       <div>
@@ -4774,7 +4815,8 @@
           block('services', 'rgba(168,85,247,.15)', '#a855f7', '<i class="fa-solid fa-layer-group"></i>', 'Services & Pathways (All 5 Pillars + Cards)', `${(cbiPillar.items || []).length + (rbiPillar.items || []).length} cards`, servicesBody, true) +
           block('social-resp', 'rgba(245,158,11,.15)', 'var(--yellow)', '<i class="fa-solid fa-hand-holding-heart"></i>', 'Social Responsibility Banner', l.toUpperCase(), srBody, true) +
           block('reviews', 'rgba(236,72,153,.15)', '#ec4899', '<i class="fa-solid fa-quote-left"></i>', 'Client Success Stories & Handover Photos', `${(rev.slides || []).length} stories`, reviewsBody, true) +
-          block('contact-block', 'rgba(14,165,233,.15)', '#0ea5e9', '<i class="fa-solid fa-headset"></i>', 'Contact & Office Registration Desk', l.toUpperCase(), contactDeskBody, true);
+          block('contact-block', 'rgba(14,165,233,.15)', '#0ea5e9', '<i class="fa-solid fa-headset"></i>', 'Contact & Office Registration Desk', l.toUpperCase(), contactDeskBody, true) +
+          block('hp-seo-blk', 'rgba(245,158,11,.15)', 'var(--yellow)', '<i class="fa-solid fa-magnifying-glass"></i>', 'Search Engine Optimization (SEO)', 'Google Meta', hpSeoBody, true);
       }
 
       function addPillarCard(containerId) {
@@ -6122,12 +6164,18 @@
 
         const seoBody = `
     <div class="form-group" style="margin-bottom:10px">
-      <label class="form-label">SEO Meta Title</label>
-      <input class="form-input" ${dir} id="blog-meta-title" value="${escH(ld.meta_title || '')}" placeholder="Title for Google search results..." oninput="markUnsaved()">
+      <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:4px">
+        <label class="form-label" style="margin-bottom:0">SEO Meta Title <span style="color:var(--gold);font-size:10px">(Max 60 chars)</span></label>
+        <span id="blog-meta-title-cnt" style="font-size:11px;color:var(--muted)">${(ld.meta_title || '').length} / 60</span>
+      </div>
+      <input class="form-input" ${dir} id="blog-meta-title" maxlength="60" value="${escH(ld.meta_title || '')}" placeholder="Title for Google search results (max 60 chars)..." oninput="markUnsaved();updateCharCnt(this,'blog-meta-title-cnt',60)">
     </div>
     <div class="form-group" style="margin-bottom:10px">
-      <label class="form-label">SEO Meta Description</label>
-      <textarea class="form-textarea" ${dir} id="blog-meta-desc" placeholder="Brief snippet (150-160 chars) for search engines..." oninput="markUnsaved()">${escH(ld.meta_desc || '')}</textarea>
+      <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:4px">
+        <label class="form-label" style="margin-bottom:0">SEO Meta Description <span style="color:var(--gold);font-size:10px">(140–155 chars with benefit & CTA)</span></label>
+        <span id="blog-meta-desc-cnt" style="font-size:11px;color:var(--muted)">${(ld.meta_desc || '').length} / 155</span>
+      </div>
+      <textarea class="form-textarea" ${dir} id="blog-meta-desc" maxlength="155" placeholder="Brief snippet (140-155 chars) with clear benefit & call to action..." oninput="markUnsaved();updateCharCnt(this,'blog-meta-desc-cnt',155,140)">${escH(ld.meta_desc || '')}</textarea>
     </div>
     <div class="form-group">
       <label class="form-label">Tags & Focus Keywords (comma separated)</label>
@@ -6675,7 +6723,7 @@
       </div>
       <div class="form-group">
         <label class="form-label">Founder Biography Profile Link</label>
-        <input class="form-input" id="about-founder-link" value="${escH(founder.profile_link || 'https://sharifgroup.ae/ali-sharif/')}" placeholder="https://sharifgroup.ae/ali-sharif/" oninput="markUnsaved()">
+        <input class="form-input" id="about-founder-link" value="${escH(founder.profile_link || 'https://sharifgroup.ae/about-founder/')}" placeholder="https://sharifgroup.ae/about-founder/" oninput="markUnsaved()">
       </div>
     `) +
 
@@ -7238,6 +7286,11 @@
           d.contact_block.office_address = document.getElementById('cd-address')?.value || '';
           d.contact_block.phone = document.getElementById('cd-phone')?.value || '';
           d.contact_block.email = document.getElementById('cd-email')?.value || '';
+
+          // 8. SEO Meta
+          d.seo = d.seo || {};
+          d.seo.title = document.getElementById('hp-seo-title')?.value || '';
+          d.seo.description = document.getElementById('hp-seo-desc')?.value || '';
 
           window.CMS.saveData(window.CMS.KEYS.HOMEPAGE, d);
           sendToIframe({ type: 'CMS_SET_LANG', lang: l });

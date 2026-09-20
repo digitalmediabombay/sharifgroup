@@ -1,0 +1,126 @@
+# ==============================================================================
+# Sharif Group - Robots Configuration
+# Allows Verified Search Engines, AdsBot & AI Search Crawlers
+# Protects internal admin and API endpoints
+# ==============================================================================
+
+User-agent: *
+Allow: /
+Disallow: /admin/
+Disallow: /admin/api/
+Disallow: /dashboard.html
+
+# ── Primary Search Engine Crawlers ──────────────────────────────────────────
+User-agent: Googlebot
+Allow: /
+Disallow: /admin/
+Disallow: /admin/api/
+Disallow: /dashboard.html
+
+User-agent: Google-InspectionTool
+Allow: /
+Disallow: /admin/
+Disallow: /admin/api/
+Disallow: /dashboard.html
+
+User-agent: Bingbot
+Allow: /
+Disallow: /admin/
+Disallow: /admin/api/
+Disallow: /dashboard.html
+
+# ── Google Ads Review Crawlers (Critical for Ad Approvals) ──────────────────
+User-agent: AdsBot-Google
+Allow: /
+Disallow: /admin/
+Disallow: /admin/api/
+
+User-agent: AdsBot-Google-Mobile
+Allow: /
+Disallow: /admin/
+Disallow: /admin/api/
+
+User-agent: Mediapartners-Google
+Allow: /
+Disallow: /admin/
+Disallow: /admin/api/
+
+# ── Social Media Preview Crawlers ───────────────────────────────────────────
+User-agent: facebookexternalhit
+Allow: /
+Disallow: /admin/
+Disallow: /admin/api/
+
+User-agent: Twitterbot
+Allow: /
+Disallow: /admin/
+Disallow: /admin/api/
+
+User-agent: LinkedInBot
+Allow: /
+Disallow: /admin/
+Disallow: /admin/api/
+
+# ── AI Search & Citation Crawlers (ChatGPT, Perplexity, Claude, Gemini) ────
+User-agent: GPTBot
+Allow: /
+Disallow: /admin/
+Disallow: /admin/api/
+Disallow: /dashboard.html
+
+User-agent: OAI-SearchBot
+Allow: /
+Disallow: /admin/
+Disallow: /admin/api/
+Disallow: /dashboard.html
+
+User-agent: ChatGPT-User
+Allow: /
+Disallow: /admin/
+Disallow: /admin/api/
+Disallow: /dashboard.html
+
+User-agent: PerplexityBot
+Allow: /
+Disallow: /admin/
+Disallow: /admin/api/
+Disallow: /dashboard.html
+
+User-agent: ClaudeBot
+Allow: /
+Disallow: /admin/
+Disallow: /admin/api/
+Disallow: /dashboard.html
+
+User-agent: Claude-Web
+Allow: /
+Disallow: /admin/
+Disallow: /admin/api/
+Disallow: /dashboard.html
+
+User-agent: anthropic-ai
+Allow: /
+Disallow: /admin/
+Disallow: /admin/api/
+Disallow: /dashboard.html
+
+User-agent: Google-Extended
+Allow: /
+Disallow: /admin/
+Disallow: /admin/api/
+Disallow: /dashboard.html
+
+User-agent: Applebot
+Allow: /
+Disallow: /admin/
+Disallow: /admin/api/
+Disallow: /dashboard.html
+
+User-agent: Amazonbot
+Allow: /
+Disallow: /admin/
+Disallow: /admin/api/
+Disallow: /dashboard.html
+
+# ── XML Sitemap ─────────────────────────────────────────────────────────────
+Sitemap: https://sharifgroup.ae/sitemap.xml

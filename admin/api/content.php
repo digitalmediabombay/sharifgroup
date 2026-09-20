@@ -14,7 +14,39 @@ if ($method !== 'GET') {
 $mode = isset($_GET['mode']) && strtolower($_GET['mode']) === 'draft' ? 'draft' : 'live';
 $key = isset($_GET['key']) ? trim($_GET['key']) : '';
 
-$db = getDb();
+$db = getDb(true);
+
+if ($db === null) {
+    // Database connection could not be established (e.g., credentials not yet set in config.php)
+    $staticFile = __DIR__ . '/published_content.json';
+    $staticData = file_exists($staticFile) ? json_decode(file_get_contents($staticFile), true) : null;
+
+    if (!empty($key)) {
+        if (is_array($staticData) && isset($staticData[$key])) {
+            jsonResponse([
+                'success'      => true,
+                'key'          => $key,
+                'mode'         => 'live',
+                'data'         => $staticData[$key],
+                'updated_at'   => null,
+                'published_at' => null
+            ]);
+        }
+        jsonResponse([
+            'success' => false,
+            'key'     => $key,
+            'error'   => 'Database connection not available and key not in local snapshot.'
+        ], 404);
+    } else {
+        jsonResponse([
+            'success'    => true,
+            'mode'       => $mode,
+            'count'      => is_array($staticData) ? count($staticData) : 0,
+            'data'       => is_array($staticData) ? $staticData : (object)[],
+            'timestamps' => (object)[]
+        ], 200);
+    }
+}
 
 if (!empty($key)) {
     // Single section requested

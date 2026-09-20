@@ -25,7 +25,7 @@ try {
 
     $stmt = $db->prepare("
         INSERT INTO cms_content (content_key, draft_data, live_data, updated_at)
-        VALUES (:key, :draft, :draft, NOW())
+        VALUES (:key, :draft, NULL, NOW())
         ON DUPLICATE KEY UPDATE
             draft_data = VALUES(draft_data),
             updated_at = NOW()

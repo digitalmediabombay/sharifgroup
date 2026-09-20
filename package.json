@@ -1,0 +1,13 @@
+{
+  "name": "sharifgroup",
+  "version": "3.1.0",
+  "description": "Sharif Group Dubai - Citizenship by Investment & Golden Visa Portal",
+  "private": true,
+  "scripts": {
+    "build:css": "tailwindcss -i assets/css/tailwind-input.css -o assets/css/tailwind.min.css --minify",
+    "watch:css": "tailwindcss -i assets/css/tailwind-input.css -o assets/css/tailwind.min.css --watch"
+  },
+  "devDependencies": {
+    "tailwindcss": "^3.4.17"
+  }
+}

@@ -1,4 +1,6 @@
 {
+  "cleanUrls": true,
+  "trailingSlash": true,
   "redirects": [
     {
       "source": "/dashboard.html",
@@ -11,63 +13,63 @@
       "permanent": false
     },
     {
-      "source": "/index.html/ar",
-      "destination": "/ar/",
-      "permanent": false
-    },
-    {
-      "source": "/index.html/zh",
-      "destination": "/zh/",
-      "permanent": false
-    },
-    {
-      "source": "/index.html/fa",
-      "destination": "/fa/",
-      "permanent": false
-    },
-    {
-      "source": "/:path*/index.html/ar",
-      "destination": "/ar/:path*/",
-      "permanent": false
-    },
-    {
-      "source": "/:path*/index.html/zh",
-      "destination": "/zh/:path*/",
-      "permanent": false
-    },
-    {
-      "source": "/:path*/index.html/fa",
-      "destination": "/fa/:path*/",
-      "permanent": false
-    },
-    {
       "source": "/termsofservice",
-      "destination": "/termsofuse/index.html",
+      "destination": "/termsofuse/",
       "permanent": true
     },
     {
-      "source": "/termsofservice/index.html",
-      "destination": "/termsofuse/index.html",
-      "permanent": true
-    },
-    {
-      "source": "/termsofservice/(.*)",
-      "destination": "/termsofuse/$1",
+      "source": "/termsofservice/:path*",
+      "destination": "/termsofuse/",
       "permanent": true
     },
     {
       "source": "/aboutfounder",
-      "destination": "/ali-sharif/",
+      "destination": "/about-founder/",
       "permanent": true
     },
     {
-      "source": "/aboutfounder/",
-      "destination": "/ali-sharif/",
+      "source": "/aboutfounder/:path*",
+      "destination": "/about-founder/",
       "permanent": true
     },
     {
-      "source": "/aboutfounder/index.html",
-      "destination": "/ali-sharif/",
+      "source": "/ali-sharif",
+      "destination": "/about-founder/",
+      "permanent": true
+    },
+    {
+      "source": "/ali-sharif/:path*",
+      "destination": "/about-founder/",
+      "permanent": true
+    },
+    {
+      "source": "/programs/citizenshipbyinvestment/stkittis",
+      "destination": "/programs/citizenshipbyinvestment/stkitts/",
+      "permanent": true
+    },
+    {
+      "source": "/programs/citizenshipbyinvestment/stkittis/:path*",
+      "destination": "/programs/citizenshipbyinvestment/stkitts/",
+      "permanent": true
+    },
+    {
+      "source": "/programs/citizenshipbyinvestment/st-kitts",
+      "destination": "/programs/citizenshipbyinvestment/stkitts/",
+      "permanent": true
+    },
+    {
+      "source": "/programs/citizenshipbyinvestment/st-kitts-and-nevis",
+      "destination": "/programs/citizenshipbyinvestment/stkitts/",
+      "permanent": true
+    },
+    {
+      "source": "/programs/citizenshipbyinvestment/greneda",
+      "destination": "/programs/citizenshipbyinvestment/grenada/",
+      "permanent": true
+    },
+    {
+      "source": "/programs/citizenshipbyinvestment/greneda/:path*",
+      "destination": "/programs/citizenshipbyinvestment/grenada/",
       "permanent": true
     },
     {
@@ -76,18 +78,8 @@
       "permanent": true
     },
     {
-      "source": "/programs/citizenshipbyinvestment/saotomeprinciple/(.*)",
-      "destination": "/programs/citizenshipbyinvestment/sao-tome-and-principe/$1",
-      "permanent": true
-    },
-    {
-      "source": "/programs/citizenshipbyinvestment/saotomeprincipe",
+      "source": "/programs/citizenshipbyinvestment/saotomeprinciple/:path*",
       "destination": "/programs/citizenshipbyinvestment/sao-tome-and-principe/",
-      "permanent": true
-    },
-    {
-      "source": "/programs/citizenshipbyinvestment/saotomeprincipe/(.*)",
-      "destination": "/programs/citizenshipbyinvestment/sao-tome-and-principe/$1",
       "permanent": true
     },
     {
@@ -96,8 +88,8 @@
       "permanent": true
     },
     {
-      "source": "/programs/citizenshipbyinvestment/sao-tome-principle/(.*)",
-      "destination": "/programs/citizenshipbyinvestment/sao-tome-and-principe/$1",
+      "source": "/programs/citizenshipbyinvestment/sao-tome-principle/:path*",
+      "destination": "/programs/citizenshipbyinvestment/sao-tome-and-principe/",
       "permanent": true
     }
   ],
@@ -137,10 +129,26 @@
     {
       "source": "/fa/:path*",
       "destination": "/:path*"
+    }
+  ],
+  "headers": [
+    {
+      "source": "/assets/css/(.*)",
+      "headers": [
+        {
+          "key": "Cache-Control",
+          "value": "public, max-age=31536000, immutable"
+        }
+      ]
     },
     {
-      "source": "/blog/:slug*",
-      "destination": "/blog/index.html"
+      "source": "/assets/(.*)",
+      "headers": [
+        {
+          "key": "Cache-Control",
+          "value": "public, max-age=2592000"
+        }
+      ]
     }
   ]
 }

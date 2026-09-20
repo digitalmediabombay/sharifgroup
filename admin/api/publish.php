@@ -63,6 +63,19 @@ try {
 
     $db->commit();
 
+    // Cache live content snapshot to static JSON for instant fallback & high performance
+    try {
+        $exportStmt = $db->query("SELECT content_key, live_data FROM cms_content WHERE live_data IS NOT NULL");
+        $snapshot = [];
+        while ($row = $exportStmt->fetch()) {
+            $dec = json_decode($row['live_data'], true);
+            $snapshot[$row['content_key']] = $dec !== null ? $dec : $row['live_data'];
+        }
+        @file_put_contents(__DIR__ . '/published_content.json', json_encode($snapshot, JSON_UNESCAPED_UNICODE | JSON_PRETTY_PRINT));
+    } catch (Exception $ignored) {
+        // Non-blocking caching
+    }
+
     jsonResponse([
         'success'       => true,
         'message'       => 'Content successfully published to live website and MySQL database.',

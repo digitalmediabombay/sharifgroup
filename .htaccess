@@ -7,31 +7,61 @@
     RewriteEngine On
     RewriteBase /
 
-    # Redirect termsofservice to termsofuse
-    RewriteRule ^termsofservice/?$ /termsofuse/ [R=301,L]
-    RewriteRule ^termsofservice/index\.html$ /termsofuse/index.html [R=301,L]
-    RewriteRule ^termsofservice/(.*)$ /termsofuse/$1 [R=301,L]
+    # 1. Strip /index.html from all URLs (301 redirect to clean trailing slash)
+    RewriteCond %{THE_REQUEST} \s/index\.html(?:\s|\?) [NC]
+    RewriteRule ^index\.html$ / [R=301,L]
 
-    # Redirect aboutfounder to ali-sharif
-    RewriteRule ^aboutfounder/?$ /ali-sharif/ [R=301,L]
-    RewriteRule ^aboutfounder/index\.html$ /ali-sharif/ [R=301,L]
-    RewriteRule ^aboutfounder/(.*)$ /ali-sharif/$1 [R=301,L]
+    RewriteCond %{THE_REQUEST} \s/(.+)/index\.html(?:\s|\?) [NC]
+    RewriteRule ^(.+)/index\.html$ /$1/ [R=301,L]
 
-    # Redirect São Tomé variations to clean hyphenated URL /programs/citizenshipbyinvestment/sao-tome-and-principe/
-    RewriteRule ^programs/citizenshipbyinvestment/saotomeprinciple/?$ /programs/citizenshipbyinvestment/sao-tome-and-principe/ [R=301,L]
-    RewriteRule ^programs/citizenshipbyinvestment/saotomeprinciple/(.*)$ /programs/citizenshipbyinvestment/sao-tome-and-principe/$1 [R=301,L]
-    RewriteRule ^programs/citizenshipbyinvestment/saotomeprinciple/?$ /programs/citizenshipbyinvestment/sao-tome-and-principe/ [R=301,L]
-    RewriteRule ^programs/citizenshipbyinvestment/saotomeprinciple/(.*)$ /programs/citizenshipbyinvestment/sao-tome-and-principe/$1 [R=301,L]
-    RewriteRule ^programs/citizenshipbyinvestment/sao-tome-principle/?$ /programs/citizenshipbyinvestment/sao-tome-and-principe/ [R=301,L]
-    RewriteRule ^programs/citizenshipbyinvestment/sao-tome-principle/(.*)$ /programs/citizenshipbyinvestment/sao-tome-and-principe/$1 [R=301,L]
-    RewriteRule ^programs/citizenshipbyinvestment/sao-tome-principe/?$ /programs/citizenshipbyinvestment/sao-tome-and-principe/ [R=301,L]
-    RewriteRule ^programs/citizenshipbyinvestment/sao-tome-principe/(.*)$ /programs/citizenshipbyinvestment/sao-tome-and-principe/$1 [R=301,L]
+    # 2. Redirect /aboutfounder and /ali-sharif to clean /about-founder/
+    RewriteRule ^aboutfounder(?:/.*)?$ /about-founder/ [R=301,L]
+    RewriteRule ^ali-sharif(?:/.*)?$ /about-founder/ [R=301,L]
 
-    # Clean Language Path Rewrites (/ar/, /fa/, /zh/)
+    # 3. Redirect termsofservice to termsofuse
+    RewriteRule ^termsofservice(?:/.*)?$ /termsofuse/ [R=301,L]
+
+    # 4. Redirect misspelled program slugs (stkittis -> stkitts, greneda -> grenada)
+    RewriteRule ^programs/citizenshipbyinvestment/stkittis(?:/.*)?$ /programs/citizenshipbyinvestment/stkitts/ [R=301,L]
+    RewriteRule ^programs/citizenshipbyinvestment/st-kitts-and-nevis(?:/.*)?$ /programs/citizenshipbyinvestment/stkitts/ [R=301,L]
+    RewriteRule ^programs/citizenshipbyinvestment/st-kitts(?:/.*)?$ /programs/citizenshipbyinvestment/stkitts/ [R=301,L]
+    RewriteRule ^programs/citizenshipbyinvestment/greneda(?:/.*)?$ /programs/citizenshipbyinvestment/grenada/ [R=301,L]
+
+    # 5. Redirect São Tomé variations to clean URL
+    RewriteRule ^programs/citizenshipbyinvestment/saotomeprinciple(?:/.*)?$ /programs/citizenshipbyinvestment/sao-tome-and-principe/ [R=301,L]
+    RewriteRule ^programs/citizenshipbyinvestment/sao-tome-principle(?:/.*)?$ /programs/citizenshipbyinvestment/sao-tome-and-principe/ [R=301,L]
+
+    # 6. Redirect legacy .html URLs from old canonicals to clean folders
+    RewriteRule ^programs/st-kitts\.html$ /programs/citizenshipbyinvestment/stkitts/ [R=301,L]
+    RewriteRule ^programs/grenada\.html$ /programs/citizenshipbyinvestment/grenada/ [R=301,L]
+    RewriteRule ^programs/antigua\.html$ /programs/citizenshipbyinvestment/antiguaandbarbuda/ [R=301,L]
+    RewriteRule ^programs/dominica\.html$ /programs/citizenshipbyinvestment/dominica/ [R=301,L]
+    RewriteRule ^programs/nauru\.html$ /programs/citizenshipbyinvestment/nauru/ [R=301,L]
+    RewriteRule ^programs/sao-tome\.html$ /programs/citizenshipbyinvestment/sao-tome-and-principe/ [R=301,L]
+    RewriteRule ^programs/saint-lucia\.html$ /programs/citizenshipbyinvestment/stlucia/ [R=301,L]
+    RewriteRule ^programs/vanuatu\.html$ /programs/citizenshipbyinvestment/vanuatu/ [R=301,L]
+    RewriteRule ^residency/greece\.html$ /programs/residencybyinvestment/greece/ [R=301,L]
+    RewriteRule ^residency/panama\.html$ /programs/residencybyinvestment/panama/ [R=301,L]
+    RewriteRule ^residency/portugal\.html$ /programs/residencybyinvestment/portugal/ [R=301,L]
+    RewriteRule ^residency/uae\.html$ /programs/residencybyinvestment/uae/ [R=301,L]
+    RewriteRule ^about\.html$ /aboutus/ [R=301,L]
+    RewriteRule ^services/real-estate\.html$ /realestate/ [R=301,L]
+    RewriteRule ^services/educational-advisory\.html$ /educationaladvisory/ [R=301,L]
+
+    # 7. 301 Redirect old blog query URLs (?slug=X or ?article_slug=X) to clean canonical /blog/X/
+    RewriteCond %{THE_REQUEST} \s/blog/(?:index\.html)?\?(?:.*&)?(?:slug|article_slug)=([^&\s]+) [NC]
+    RewriteRule ^ /blog/%1/? [R=301,L,NE]
+
+    # 8. Enforce trailing slash on existing directories (no-slash to slash)
+    RewriteCond %{REQUEST_FILENAME} -d
+    RewriteCond %{REQUEST_URI} !(.*)/$
+    RewriteRule ^(.*)$ /$1/ [R=301,L]
+
+    # 9. Clean Language Path Rewrites (/ar/, /fa/, /zh/)
     RewriteRule ^(ar|fa|zh)/?$ /index.html [L,QSA]
     RewriteRule ^(ar|fa|zh)/(.*)$ /$2 [L,QSA]
 
-    # Blog slug direct routing to blog/index.html
+    # 10. Blog slug fallback
     RewriteCond %{REQUEST_FILENAME} !-f
     RewriteCond %{REQUEST_FILENAME} !-d
     RewriteRule ^blog/([^/]+)/?$ /blog/index.html [L,QSA]
@@ -108,6 +138,11 @@
 # 3. HTTP Header Controls & Keep-Alive
 # ------------------------------------------------------------------------------
 <IfModule mod_headers.c>
+    # Versioned & Minified CSS/JS (1 year immutable cache)
+    <FilesMatch "\.(min\.css|min\.js)$">
+        Header set Cache-Control "max-age=31536000, public, immutable"
+    </FilesMatch>
+
     # Static Assets Cache-Control
     <FilesMatch "\.(ico|jpe?g|png|gif|webp|svg|woff|woff2|ttf|css|js)$">
         Header set Cache-Control "max-age=2592000, public"
@@ -120,6 +155,11 @@
 
     # Enable Keep-Alive for persistent connections
     Header set Connection keep-alive
+
+    # Allow Public Search Engines & AI Crawlers
+    <FilesMatch "\.(html|htm)$">
+        Header set X-Robots-Tag "index, follow, max-image-preview:large, max-snippet:-1, max-video-preview:-1"
+    </FilesMatch>
 </IfModule>
 
 # UTF-8 Charset Encoding
