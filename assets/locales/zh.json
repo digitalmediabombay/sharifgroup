@@ -27,6 +27,11 @@
     "otherServices": "其他服务",
     "readMore": "阅读更多"
   },
+  "blog": {
+    "recommendedReading": "推荐阅读",
+    "relatedGuidesHeading": "相关咨询指南",
+    "readMore": "阅读全文"
+  },
   "megaMenu": {
     "citizenshipTitle": "投资入籍",
     "caribbeanPortfolios": "加勒比项目组合",

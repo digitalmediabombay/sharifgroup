@@ -27,6 +27,11 @@
     "otherServices": "Other Services",
     "readMore": "Read More"
   },
+  "blog": {
+    "recommendedReading": "Recommended Reading",
+    "relatedGuidesHeading": "Related Advisory Guides",
+    "readMore": "Read More"
+  },
   "megaMenu": {
     "citizenshipTitle": "Citizenship By Investment",
     "caribbeanPortfolios": "Caribbean Portfolios",

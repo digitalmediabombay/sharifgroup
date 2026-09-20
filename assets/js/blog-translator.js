@@ -106,13 +106,7 @@
                     <h2 class="font-serif text-2xl text-neutral-900 font-bold pt-4">فريق الامتثال الداخلي وخبراء تدقيق المستندات</h2>
                     <p>أحد الركائز الأساسية لنجاحنا التشغيلي هو مكتب الامتثال والتدقيق الداخلي المتخصص لدينا. فقبل إرسال أي ملف إلى الدوائر الحكومية المعنية، يُجري مسؤولو الامتثال تدقيقاً أمنياً وقانونياً شاملاً لكل متقدم باستخدام أحدث أنظمة الفحص وقواعد البيانات الدولية المعتمدة لدى جهات الاستخبارات السيادية، للتحقق من خلو السجل من العقوبات الدولية وتصنيفات الشخصيات السياسية البارزة ومطابقة معايير مكافحة غسل الأموال. يتيح لنا هذا الفحص المسبق حل أي ملاحظات أو استفسارات مبكراً قبل التقديم الرسمي، مما يضمن نسبة القبول المتميزة لملفاتنا.</p>
                     <p>يتولى خبراؤنا إدارة كافة الإجراءات الإدارية واللوجستية المعقدة، بما في ذلك الترجمات القانونية المعتمدة، وتوثيقات الكاتب العدل، وتصديقات وزارة الخارجية (MOFA) والأبوستيل لشهادات الميلاد والزواج وبطاقات خلو السوابق والسجلات التجارية. وعقب صدور الموافقة، يقدم فريقنا رعاية مستمرة لعملائنا تشمل تجديد الجوازات وإضافة المواليد الجدد والمساعدة في فتح الحسابات البنكية الخاصة الدولية.</p>
-                `,
-                faqs: [
-                    { q: "ما هي المؤهلات الرسمية التي يحملها مستشارو مجموعة شريف؟", a: "يحمل كبار مستشارينا عضويات رسمية في مجلس الهجرة الاستثمارية (IMC) وتراخيص عقارية معتمدة من دائرة الأراضي والأملاك في دبي (RERA) ونقابات المحامين الدولية." },
-                    { q: "كيف تضمن مجموعة شريف سرية وأمان بيانات العملاء؟", a: "نطبق بروتوكولات تشفير مصرفية صارمة وسياسات سرية مطلقة، حيث يتم تخزين كافة البيانات في خوادم سحابية آمنة ومشفرة بالكامل." },
-                    { q: "ما هي اللغات التي يتحدث بها فريق الاستشارة؟", a: "يقدم فريقنا الاستشارات بطلاقة باللغات العربية، الإنجليزية، الفارسية، الروسية، الفرنسية، الأردية، والهندية." },
-                    { q: "هل تقدمون خدمات المتابعة بعد استلام الجواز أو الإقامة؟", a: "نعم، تتضمن خدماتنا الدعم المستمر مدى الحياة بما في ذلك تجديد الجوازات وإضافة المواليد والزوجات وفتح الحسابات البنكية." }
-                ]
+                `
             },
             'fa': {
                 title: 'با تیم متخصص پشت شریف گروپ آشنا شوید',
@@ -127,13 +121,7 @@
                     <h2 class="font-serif text-2xl text-neutral-900 font-bold pt-4">کارشناسان انطباق داخلی و متخصصان مدارک</h2>
                     <p>یکی از ارکان اصلی موفقیت عملیاتی ما، دپارتمان تخصصی انطباق قانونی و بررسی پیشینه است. قبل از ارسال هر پرونده به مراجع دولتی، کارشناسان ما یک بررسی جامع امنیتی بر روی مدارک انجام می‌دهند. این ارزیابی اولیه موجب رفع هرگونه نقص احتمالی پیش از ارسال رسمی شده و قبولی ۱۰۰ درصدی پرونده را تضمین می‌کند.</p>
                     <p>متخصصان اسناد ما تمامی هماهنگی‌های لجستیکی پیچیده از جمله ترجمه رسمی، تایید دادگستری، تصدیق وزارت امور خارجه و آپوستیل مدارک هویتی را مدیریت می‌کنند. پس از صدور پاسپورت و کارت اقامت نیز خدمات پشتیبانی مادام‌العمر شامل تمدید گذرنامه، ثبت فرزندان جدید و تسهیل گشایش حساب‌های بانکی بین‌المللی ارائه می‌گردد.</p>
-                `,
-                faqs: [
-                    { q: "مشاوران شریف گروپ چه مدارک و صلاحیت‌های رسمی دارند؟", a: "مشاوران ما دارای عضویت رسمی در شورای بین‌المللی مهاجرت سرمایه‌گذاری (IMC) و مجوزهای رسمی املاک از دپارتمان اراضی دبی (RERA) هستند." },
-                    { q: "شریف گروپ چگونه محرمانگی اطلاعات موکلان را تضمین می‌کند؟", a: "ما از استانداردهای سختگیرانه رمزنگاری بانکی و پروتکل‌های امنیتی چندلایه برای حفاظت کامل از داده‌های هویتی و مالی شما استفاده می‌کنیم." },
-                    { q: "مشاوران به چه زبان‌هایی پاسخگوی متقاضیان هستند؟", a: "تیم ما به زبان‌های فارسی، عربی، انگلیسی، فرانسوی، روسی، اردو و هندی مسلط است." },
-                    { q: "آیا پس از اخذ شهروندی خدمات پس از فروش ارائه می‌دهید؟", a: "بله، خدمات ما شامل تمدید پاسپورت‌ها، ثبت تولد فرزندان، دریافت گواهینامه رانندگی و معرفی به بانک‌های خصوصی بین‌المللی است." }
-                ]
+                `
             },
             'zh': {
                 title: '走进谢里夫集团背后的专家团队',
@@ -148,13 +136,7 @@
                     <h2 class="font-serif text-2xl text-neutral-900 font-bold pt-4">内部合规风控与文件背调专员</h2>
                     <p>专业独立的内部合规审核部是我们保持无瑕获批纪录的核心基石。在向主权政府部门正式递交档案前，合规专员将使用与国际主权情报机构同级别的全球背调数据库，对所有申请人进行前置尽职调查，排查制裁名单、政治公众人物（PEP）合规及反洗钱（AML）风险，提前化解潜在疑点，确保正式申报万无一失。</p>
                     <p>我们的文件专家全面统筹跨国涉外文件的复杂公证认证链条，包括司法翻译、公证处公证、阿联酋外交部（MOFA）认证及海牙认证（Apostille）。在获批后，我们提供终身礼宾关怀服务，包括5年及10年期护照换发、新生儿血统入籍申报及国际私人银行账户开户引介。</p>
-                `,
-                faqs: [
-                    { q: "谢里夫集团顾问拥有哪些官方资质？", a: "资深顾问持有国际投资移民理事会（IMC）权威认证及迪拜土地局（RERA）专业执照。" },
-                    { q: "如何确保客户的商业机密与隐私安全？", a: "我们采用银行级加密传输与私有云服务器架构，严格遵守国际最高标准的数据保密协议。" },
-                    { q: "顾问团队可以使用哪些语言沟通？", a: "团队支持英语、阿拉伯语、波斯语、俄语、法语等多语种流利交流。" },
-                    { q: "获批后是否提供后续延伸服务？", a: "我们提供终身专属礼宾支持，包括护照换发、新生儿入籍、开立离岸私人银行账户等。" }
-                ]
+                `
             }
         },
         'what-is-citizenship-by-investment-a-simple-guide': {
@@ -171,13 +153,7 @@
                     <h2 class="font-serif text-2xl text-neutral-900 font-bold pt-4">المسارات الاستثمارية المعتمدة</h2>
                     <p>توفر برامج الجنسية مسارات تأهيلية متعددة لتناسب ميزانيات المستثمرين وتفضيلات السيولة لديهم. والمسار الأكثر شيوعاً هو المساهمة المالية المباشرة غير القابلة للاسترداد لصالح الصناديق السيادية الوطنية (مثل صندوق التنويع الاقتصادي في دومينيكا أو مساهمة الدولة المستدامة في سانت كيتس ونيفيس)، وهو الخيار الأسرع والأقل تكلفة بدون أي التزامات لإدارة ممتلكات.</p>
                     <p>أما بالنسبة للمستثمرين الباحثين عن استرداد رأس المال وحيازة أصول ملموسة، فيتيح مسار العقارات المعتمد شراء حصص في منتجعات فاخرة أو فلل خاصة يتم الاحتفاظ بها لمدة تتراوح بين 3 إلى 7 سنوات مع إمكانية تحقيق عوائد إيجارية بالدولار قبل إعادة بيع العقار مع الاحتفاظ بالجنسية مدى الحياة.</p>
-                `,
-                faqs: [
-                    { q: "هل برامج الجنسية عن طريق الاستثمار قانونية ومعتمدة دولياً؟", a: "نعم، جميع برامج الجنسية التي نقدمها صادرة بموجب تشريعات برلمانية ودستورية وطنية رسمية." },
-                    { q: "هل يُشترط الإقامة أو السفر إلى الدولة للحصول على الجواز؟", a: "كلا، لا تشترط برامج الكاريبي ودول الهادئ أي إقامة فعلية أو سفر مسبق." },
-                    { q: "هل يمكن ضم أفراد العائلة في نفس الطلب؟", a: "نعم، يمكن شمل الزوج/الزوجة والأبناء والوالدين المعالين ضمن نفس الملف." },
-                    { q: "كم تستغرق إجراءات إصدار جواز السفر؟", a: "تستغرق الإجراءات عادة ما بين 45 يوماً (فانواتو) إلى 3-5 أشهر للبرامج الكاريبية." }
-                ]
+                `
             },
             'fa': {
                 title: 'شهروندی از طریق سرمایه‌گذاری چیست؟ راهنمای جامع و ساده',
@@ -191,11 +167,7 @@
 
                     <h2 class="font-serif text-2xl text-neutral-900 font-bold pt-4">مسیرهای محبوب سرمایه‌گذاری</h2>
                     <p>مسیر کمک بلاعوض دولتی سریع‌ترین و کم‌هزینه‌ترین شیوه است. همچنین خرید املاک و مستغلات در پروژه‌های لوکس با قابلیت فروش مجدد پس از چند سال، امکان بازگشت اصل سرمایه را میسر می‌سازد.</p>
-                `,
-                faqs: [
-                    { q: "آیا اخذ شهروندی با سرمایه‌گذاری قانونی است؟", a: "بله، تمامی برنامه‌ها بر اساس قوانین مصوب مجالس کشورها اجرا می‌شوند." },
-                    { q: "آیا نیاز به سکونت در کشور مقصد وجود دارد؟", a: "خیر، هیچ الزامی برای سکونت فیزیکی در برنامه‌های کارائیب وجود ندارد." }
-                ]
+                `
             },
             'zh': {
                 title: '什么是投资入籍（CBI）？极简实用指南',
@@ -206,11 +178,7 @@
                     <h2 class="font-serif text-2xl text-neutral-900 font-bold pt-4">全球精英家庭选择第二身份的核心考量</h2>
                     <p>加勒比海或英联邦护照能够免签畅行全球140至155个以上国家和地区，包括英国、瑞士、新加坡、中国香港及欧洲申根区。</p>
                     <p>同时，这些国家无全球征税、无资本利得税、无遗产税，是离岸财富传承与资产配置的理想护城河。</p>
-                `,
-                faqs: [
-                    { q: "投资入籍项目是否受到法律保护？", a: "是的，所有项目均有明确的主权国家宪法和议会法案支撑。" },
-                    { q: "办理期间是否需要登陆居住？", a: "绝大多数加勒比海与太平洋国家项目全程无需实地居住。" }
-                ]
+                `
             }
         },
         'about-sharif-group-who-we-are-and-how-we-help': {
@@ -544,35 +512,98 @@
         if (!h1 || !contentEl) return;
 
         var catEl = document.querySelector('main .space-y-4 > div:first-child');
-        var breadcrumbEl = document.querySelector('main nav span.text-luxury-gold');
+        var breadcrumbNav = document.querySelector('main nav');
+        var breadcrumbHome = breadcrumbNav ? breadcrumbNav.querySelector('a[href="/"]') : null;
+        var breadcrumbBlog = breadcrumbNav ? breadcrumbNav.querySelector('a[href="/blog/"]') : null;
+        var breadcrumbTitle = breadcrumbNav ? breadcrumbNav.querySelector('span.text-luxury-gold') : null;
         var metaBar = document.querySelector('main .space-y-4 .flex.flex-wrap');
         var authorEl = metaBar ? metaBar.querySelector('span:nth-child(1) span') : null;
         var dateEl = metaBar ? metaBar.querySelector('span:nth-child(2) span') : null;
         var updatedEl = metaBar ? metaBar.querySelector('span:nth-child(3) span') : null;
 
         var faqs = [];
-        for (var i = 0; i < 25; i++) {
+        for (var i = 0; i < 30; i++) {
             var btn = document.querySelector('button[onclick*="faq-dyn-' + i + '"]');
             var ansP = document.querySelector('#content-faq-dyn-' + i + ' p');
             if (btn && ansP) {
                 var qSpan = btn.querySelector('span:first-child');
                 faqs.push({
+                    idx: i,
                     q: qSpan ? qSpan.textContent.trim() : '',
                     a: ansP.textContent.trim()
                 });
             }
         }
 
+        var faqSection = document.querySelector('.pt-12.border-t.border-neutral-200');
+        var faqHeaderData = null;
+        if (faqSection) {
+            var deskBadge = faqSection.querySelector('span.text-luxury-gold');
+            var faqH2 = faqSection.querySelector('h2');
+            var faqDesc = faqSection.querySelector('p.text-neutral-500');
+            faqHeaderData = {
+                badgeHtml: deskBadge ? deskBadge.innerHTML : '',
+                h2: faqH2 ? faqH2.textContent.trim() : '',
+                desc: faqDesc ? faqDesc.textContent.trim() : ''
+            };
+        }
+
+        // Capture Related Articles section
+        var relSection = document.querySelector('div.pt-16.border-t.border-neutral-200\\/80.space-y-8') ||
+                         document.querySelector('#related-articles-section') ||
+                         (function() {
+                             var h2s = document.querySelectorAll('main h2');
+                             for (var k = 0; k < h2s.length; k++) {
+                                 var txt = h2s[k].textContent.toLowerCase();
+                                 if (txt.includes('related advisory guides') || txt.includes('أدلة استشارية') || txt.includes('راهنماهای مشاوره‌ای') || txt.includes('相关咨询指南')) {
+                                     return h2s[k].closest('.space-y-8') || h2s[k].parentElement.parentElement;
+                                 }
+                             }
+                             return null;
+                         })();
+
+        var relatedData = null;
+        if (relSection) {
+            var relBadge = relSection.querySelector('span.text-luxury-gold');
+            var relH2 = relSection.querySelector('h2');
+            var relCards = relSection.querySelectorAll('article, .blog-item');
+            var cardList = [];
+            relCards.forEach(function(card) {
+                var catEl = card.querySelector('.text-luxury-gold.uppercase') || card.querySelector('div.text-\\[11px\\]');
+                var titleEl = card.querySelector('h3');
+                var linkEl = card.querySelector('a[href*="/blog/"]');
+                var imgEl = card.querySelector('img');
+                var href = linkEl ? linkEl.getAttribute('href') : '';
+                var m = href.match(/\/blog\/([^\/]+)/);
+                cardList.push({
+                    slug: m ? m[1] : '',
+                    cat: catEl ? catEl.textContent.trim() : '',
+                    title: titleEl ? titleEl.textContent.trim() : '',
+                    alt: imgEl ? imgEl.getAttribute('alt') : '',
+                    btn: linkEl ? linkEl.textContent.trim() : ''
+                });
+            });
+            relatedData = {
+                badge: relBadge ? relBadge.textContent.trim() : '',
+                heading: relH2 ? relH2.textContent.trim() : '',
+                cards: cardList
+            };
+        }
+
         originalStaticData = {
             docTitle: document.title,
             title: h1.textContent.trim(),
-            breadcrumb: breadcrumbEl ? breadcrumbEl.textContent.trim() : h1.textContent.trim(),
+            breadcrumbHome: breadcrumbHome ? breadcrumbHome.textContent.trim() : 'Home',
+            breadcrumbBlog: breadcrumbBlog ? breadcrumbBlog.textContent.trim() : 'Blog',
+            breadcrumb: breadcrumbTitle ? breadcrumbTitle.textContent.trim() : h1.textContent.trim(),
             category: catEl ? catEl.textContent.trim() : '',
             author: authorEl ? authorEl.textContent.trim() : '',
             date: dateEl ? dateEl.textContent.trim() : '',
             updated: updatedEl ? updatedEl.textContent.trim() : '',
             content: contentEl.innerHTML,
-            faqs: faqs
+            faqs: faqs,
+            faqHeader: faqHeaderData,
+            related: relatedData
         };
     }
 
@@ -588,15 +619,41 @@
 
         var curLang = lang || (window.getCurrentLanguage ? window.getCurrentLanguage() : getStoredOrInitialLang());
 
+        // Helper to locate the Related Advisory Guides container
+        function getRelatedSection() {
+            return document.querySelector('div.pt-16.border-t.border-neutral-200\\/80.space-y-8') ||
+                   document.querySelector('#related-articles-section') ||
+                   (function() {
+                       var h2s = document.querySelectorAll('main h2');
+                       for (var k = 0; k < h2s.length; k++) {
+                           var txt = h2s[k].textContent.toLowerCase();
+                           if (txt.includes('related advisory guides') || txt.includes('أدلة استشارية') || txt.includes('راهنماهای مشاوره‌ای') || txt.includes('相关咨询指南')) {
+                               return h2s[k].closest('.space-y-8') || h2s[k].parentElement.parentElement;
+                           }
+                       }
+                       return null;
+                   })();
+        }
+
         // If English, restore original content
         if (curLang === 'en') {
             if (originalStaticData) {
                 document.title = originalStaticData.docTitle;
                 h1.textContent = originalStaticData.title;
-                var breadcrumbEl = document.querySelector('main nav span.text-luxury-gold');
-                if (breadcrumbEl) breadcrumbEl.textContent = originalStaticData.breadcrumb;
+
+                var breadcrumbNav = document.querySelector('main nav');
+                if (breadcrumbNav) {
+                    var bHome = breadcrumbNav.querySelector('a[href="/"]');
+                    var bBlog = breadcrumbNav.querySelector('a[href="/blog/"]');
+                    var bTitle = breadcrumbNav.querySelector('span.text-luxury-gold');
+                    if (bHome) bHome.textContent = originalStaticData.breadcrumbHome || 'Home';
+                    if (bBlog) bBlog.textContent = originalStaticData.breadcrumbBlog || 'Blog';
+                    if (bTitle) bTitle.textContent = originalStaticData.breadcrumb;
+                }
+
                 var catEl = document.querySelector('main .space-y-4 > div:first-child');
                 if (catEl) catEl.textContent = originalStaticData.category;
+
                 var metaBar = document.querySelector('main .space-y-4 .flex.flex-wrap');
                 if (metaBar) {
                     var authorEl = metaBar.querySelector('span:nth-child(1) span');
@@ -607,19 +664,54 @@
                     if (updatedEl) updatedEl.textContent = originalStaticData.updated;
                 }
                 contentEl.innerHTML = originalStaticData.content;
+
                 var backLink = document.querySelector('main a[href="/blog/"]');
                 if (backLink) backLink.innerHTML = '<i class="fa-solid fa-arrow-left"></i> Back to All Articles';
 
+                // Restore FAQ Header
+                var faqSection = document.querySelector('.pt-12.border-t.border-neutral-200');
+                if (faqSection && originalStaticData.faqHeader) {
+                    var deskBadge = faqSection.querySelector('span.text-luxury-gold');
+                    if (deskBadge && originalStaticData.faqHeader.badgeHtml) deskBadge.innerHTML = originalStaticData.faqHeader.badgeHtml;
+                    var faqH2 = faqSection.querySelector('h2');
+                    if (faqH2 && originalStaticData.faqHeader.h2) faqH2.textContent = originalStaticData.faqHeader.h2;
+                    var faqDesc = faqSection.querySelector('p.text-neutral-500');
+                    if (faqDesc && originalStaticData.faqHeader.desc) faqDesc.textContent = originalStaticData.faqHeader.desc;
+                }
+
                 // Restore FAQs
                 if (originalStaticData.faqs && originalStaticData.faqs.length) {
-                    originalStaticData.faqs.forEach(function(f, idx) {
-                        var btn = document.querySelector('button[onclick*="faq-dyn-' + idx + '"]');
+                    originalStaticData.faqs.forEach(function(f) {
+                        var btn = document.querySelector('button[onclick*="faq-dyn-' + f.idx + '"]');
                         if (btn) {
                             var qSpan = btn.querySelector('span:first-child');
                             if (qSpan) qSpan.textContent = f.q;
                         }
-                        var ansP = document.querySelector('#content-faq-dyn-' + idx + ' p');
+                        var ansP = document.querySelector('#content-faq-dyn-' + f.idx + ' p');
                         if (ansP) ansP.textContent = f.a;
+                    });
+                }
+
+                // Restore Related Advisory Guides
+                var relSec = getRelatedSection();
+                if (relSec && originalStaticData.related) {
+                    var rBadge = relSec.querySelector('span.text-luxury-gold');
+                    if (rBadge) rBadge.textContent = originalStaticData.related.badge;
+                    var rH2 = relSec.querySelector('h2');
+                    if (rH2) rH2.textContent = originalStaticData.related.heading;
+
+                    var rCards = relSec.querySelectorAll('article, .blog-item');
+                    rCards.forEach(function(card, idx) {
+                        var origCard = originalStaticData.related.cards[idx];
+                        if (!origCard) return;
+                        var cCat = card.querySelector('.text-luxury-gold.uppercase') || card.querySelector('div.text-\\[11px\\]');
+                        if (cCat) cCat.textContent = origCard.cat;
+                        var cTitle = card.querySelector('h3');
+                        if (cTitle) cTitle.textContent = origCard.title;
+                        var cImg = card.querySelector('img');
+                        if (cImg && origCard.alt) cImg.setAttribute('alt', origCard.alt);
+                        var cBtn = card.querySelector('a[href*="/blog/"]');
+                        if (cBtn) cBtn.textContent = origCard.btn;
                     });
                 }
             }
@@ -627,23 +719,38 @@
         }
 
         // Apply translations for target language
-        function applyData(art) {
-            if (!art) return;
+        function applyData(dataset) {
+            var baseArt = (dataset && dataset[slug]) || null;
+            var curatedArt = (FULL_ARTICLES[slug] && FULL_ARTICLES[slug][curLang]) || null;
 
             // 1. Title
-            if (art.title) {
-                h1.textContent = art.title;
+            var transTitle = (curatedArt && curatedArt.title) || (baseArt && baseArt.title);
+            if (transTitle) {
+                h1.textContent = transTitle;
                 var brandSuffix = curLang === 'ar' ? ' | مجموعة شريف دبي' : (curLang === 'fa' ? ' | شریف گروپ دبی' : (curLang === 'zh' ? ' | 谢里夫集团迪拜' : ' | Sharif Group'));
-                document.title = art.title + brandSuffix;
+                document.title = transTitle + brandSuffix;
 
-                var breadcrumbEl = document.querySelector('main nav span.text-luxury-gold');
-                if (breadcrumbEl) breadcrumbEl.textContent = art.title;
+                var breadcrumbNav = document.querySelector('main nav');
+                if (breadcrumbNav) {
+                    var bHome = breadcrumbNav.querySelector('a[href="/"]');
+                    var bBlog = breadcrumbNav.querySelector('a[href="/blog/"]');
+                    var bTitle = breadcrumbNav.querySelector('span.text-luxury-gold');
+                    if (bHome) {
+                        var homeMap = { 'ar': 'الرئيسية', 'fa': 'صفحه اصلی', 'zh': '首页' };
+                        bHome.textContent = homeMap[curLang] || 'Home';
+                    }
+                    if (bBlog) {
+                        var blogMap = { 'ar': 'المدونة', 'fa': 'وبلاگ', 'zh': '博客' };
+                        bBlog.textContent = blogMap[curLang] || 'Blog';
+                    }
+                    if (bTitle) bTitle.textContent = transTitle;
+                }
             }
 
             // 2. Category
             var catEl = document.querySelector('main .space-y-4 > div:first-child');
             if (catEl) {
-                var rawCat = art.category || (originalStaticData ? originalStaticData.category : '');
+                var rawCat = (baseArt && baseArt.category) || (originalStaticData ? originalStaticData.category : '');
                 var translatedCat = translateCategory(rawCat, curLang);
                 if (translatedCat) catEl.textContent = translatedCat;
             }
@@ -655,17 +762,17 @@
                 var dateEl = metaBar.querySelector('span:nth-child(2) span');
                 var updatedEl = metaBar.querySelector('span:nth-child(3) span');
                 if (authorEl) {
-                    var rawAuthor = art.author || (originalStaticData ? originalStaticData.author : '');
+                    var rawAuthor = (baseArt && baseArt.author) || (originalStaticData ? originalStaticData.author : '');
                     var transAuthor = translateAuthor(rawAuthor, curLang);
                     if (transAuthor) authorEl.textContent = transAuthor;
                 }
                 if (dateEl) {
-                    var rawDate = art.date || (originalStaticData ? originalStaticData.date : '');
+                    var rawDate = (baseArt && baseArt.date) || (originalStaticData ? originalStaticData.date : '');
                     var transDate = translateDate(rawDate, curLang);
                     if (transDate) dateEl.textContent = transDate;
                 }
                 if (updatedEl) {
-                    var rawUpdated = art.updated || (originalStaticData ? originalStaticData.updated : '');
+                    var rawUpdated = (baseArt && baseArt.updated) || (originalStaticData ? originalStaticData.updated : '');
                     var transUpdated = translateDate(rawUpdated, curLang);
                     if (transUpdated) {
                         var updatedPrefix = curLang === 'ar' ? 'آخر تحديث: ' : (curLang === 'fa' ? 'آخرین به‌روزرسانی: ' : (curLang === 'zh' ? '最近更新：' : 'Last Updated: '));
@@ -675,8 +782,9 @@
             }
 
             // 4. Content HTML
-            if (art.content && art.content.trim()) {
-                contentEl.innerHTML = art.content;
+            var contentHtml = (curatedArt && curatedArt.content) || (baseArt && baseArt.content);
+            if (contentHtml && contentHtml.trim()) {
+                contentEl.innerHTML = contentHtml;
             }
 
             // 5. Back link
@@ -707,39 +815,105 @@
                 }
             }
 
-            // 7. FAQs
-            if (Array.isArray(art.faqs) && art.faqs.length) {
-                art.faqs.forEach(function(faq, idx) {
+            // 7. ALL FAQs (Always apply full list from baseArt.faqs)
+            var faqsToApply = (baseArt && Array.isArray(baseArt.faqs) && baseArt.faqs.length) ? baseArt.faqs : ((curatedArt && curatedArt.faqs) || []);
+            if (Array.isArray(faqsToApply) && faqsToApply.length) {
+                faqsToApply.forEach(function(faq, idx) {
                     var btn = document.querySelector('button[onclick*="faq-dyn-' + idx + '"]');
                     if (btn) {
                         var qSpan = btn.querySelector('span:first-child');
-                        if (qSpan) qSpan.textContent = faq.q;
+                        if (qSpan && faq.q) qSpan.textContent = faq.q;
                     }
                     var ansP = document.querySelector('#content-faq-dyn-' + idx + ' p');
-                    if (ansP) ansP.textContent = faq.a;
+                    if (ansP && faq.a) ansP.textContent = faq.a;
+                });
+            }
+
+            // 8. Related Advisory Guides Section
+            var relSec = getRelatedSection();
+            if (relSec) {
+                var rBadge = relSec.querySelector('span.text-luxury-gold');
+                if (rBadge) {
+                    var BADGE_TEXTS = {
+                        'ar': 'قراءات موصى بها',
+                        'fa': 'مطالعه پیشنهادی',
+                        'zh': '推荐阅读'
+                    };
+                    rBadge.textContent = BADGE_TEXTS[curLang] || 'Recommended Reading';
+                }
+
+                var rH2 = relSec.querySelector('h2');
+                if (rH2) {
+                    var HEADING_TEXTS = {
+                        'ar': 'أدلة استشارية ذات صلة',
+                        'fa': 'راهنماهای مشاوره‌ای مرتبط',
+                        'zh': '相关咨询指南'
+                    };
+                    rH2.textContent = HEADING_TEXTS[curLang] || 'Related Advisory Guides';
+                }
+
+                var rCards = relSec.querySelectorAll('article, .blog-item');
+                var READ_MORE_TEXTS = {
+                    'ar': 'اقرأ المزيد',
+                    'fa': 'بیشتر بخوانید',
+                    'zh': '阅读全文'
+                };
+                var readMoreText = READ_MORE_TEXTS[curLang] || 'READ MORE';
+
+                rCards.forEach(function(card, cIdx) {
+                    var linkEl = card.querySelector('a[href*="/blog/"]');
+                    var href = linkEl ? linkEl.getAttribute('href') : '';
+                    var m = href.match(/\/blog\/([^\/]+)/);
+                    var cardSlug = m ? m[1] : '';
+
+                    // Category
+                    var catEl = card.querySelector('.text-luxury-gold.uppercase') || card.querySelector('div.text-\\[11px\\]');
+                    if (catEl) {
+                        var rawCat = (originalStaticData && originalStaticData.related && originalStaticData.related.cards[cIdx]) ? originalStaticData.related.cards[cIdx].cat : catEl.textContent.trim();
+                        var transCat = translateCategory(rawCat, curLang);
+                        if (transCat) catEl.textContent = transCat;
+                    }
+
+                    // Title & Image Alt
+                    var titleEl = card.querySelector('h3');
+                    var imgEl = card.querySelector('img');
+                    var cardTitle = null;
+                    if (dataset && dataset[cardSlug] && dataset[cardSlug].title) {
+                        cardTitle = dataset[cardSlug].title;
+                    } else if (FULL_ARTICLES[cardSlug] && FULL_ARTICLES[cardSlug][curLang] && FULL_ARTICLES[cardSlug][curLang].title) {
+                        cardTitle = FULL_ARTICLES[cardSlug][curLang].title;
+                    } else if (window.getTranslation) {
+                        cardTitle = window.getTranslation('blog.articles.' + cardSlug + '.title', curLang);
+                    }
+                    if (cardTitle) {
+                        if (titleEl) titleEl.textContent = cardTitle;
+                        if (imgEl) imgEl.setAttribute('alt', cardTitle);
+                    }
+
+                    // Read More Button
+                    if (linkEl) {
+                        linkEl.textContent = readMoreText;
+                    }
                 });
             }
         }
 
-        // Check if cached already
+        // 1. If we already have dataset cached, apply immediately!
         var store = window.articlesTranslations && window.articlesTranslations[curLang];
-        if (store && store[slug]) {
-            applyData(store[slug]);
+        if (store) {
+            applyData(store);
             return;
         }
 
-        // Check curated FULL_ARTICLES
+        // 2. If curated content is available, apply immediately for instant zero-delay rendering
         if (FULL_ARTICLES[slug] && FULL_ARTICLES[slug][curLang]) {
-            applyData(FULL_ARTICLES[slug][curLang]);
-            return;
+            applyData(null);
         }
 
-        // Otherwise load dataset and apply
+        // 3. Always fetch and ensure full dataset is loaded, then apply complete faqs & related guides
         loadArticlesDataset(curLang, function(dataset) {
-            if (dataset && dataset[slug]) {
-                applyData(dataset[slug]);
-            } else if (FULL_ARTICLES[slug] && FULL_ARTICLES[slug][curLang]) {
-                applyData(FULL_ARTICLES[slug][curLang]);
+            if (dataset) {
+                applyData(dataset);
             }
         });
     }

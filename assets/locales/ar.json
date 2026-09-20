@@ -27,6 +27,11 @@
     "otherServices": "خدمات أخرى",
     "readMore": "اقرأ المزيد"
   },
+  "blog": {
+    "recommendedReading": "قراءات موصى بها",
+    "relatedGuidesHeading": "أدلة استشارية ذات صلة",
+    "readMore": "اقرأ المزيد"
+  },
   "megaMenu": {
     "citizenshipTitle": "الجنسية عن طريق الاستثمار",
     "caribbeanPortfolios": "برامج الكاريبي",

@@ -27,6 +27,11 @@
     "otherServices": "سایر خدمات",
     "readMore": "بیشتر بخوانید"
   },
+  "blog": {
+    "recommendedReading": "مطالعه پیشنهادی",
+    "relatedGuidesHeading": "راهنماهای مشاوره‌ای مرتبط",
+    "readMore": "بیشتر بخوانید"
+  },
   "megaMenu": {
     "citizenshipTitle": "شهروندی از طریق سرمایه‌گذاری",
     "caribbeanPortfolios": "برنامه‌های حوزه کارائیب",
