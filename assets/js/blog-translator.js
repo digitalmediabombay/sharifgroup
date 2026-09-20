@@ -276,6 +276,7 @@
 
         pendingFetches[lang] = callback ? [callback] : [];
 
+        var BLOG_I18N_VERSION = '20260921_v15';
         var candidates = getArticleCandidateUrls(lang);
         var index = 0;
 
@@ -287,7 +288,8 @@
                 return;
             }
             var url = candidates[index++];
-            fetch(url)
+            var fetchUrl = url + (url.indexOf('?') === -1 ? '?v=' + BLOG_I18N_VERSION : '&v=' + BLOG_I18N_VERSION);
+            fetch(fetchUrl)
                 .then(function(res) {
                     if (!res.ok) throw new Error('HTTP ' + res.status);
                     return res.json();
@@ -503,6 +505,33 @@
             }
         }
         return null;
+    }
+
+    function sanitizeLocalizedText(text, lang) {
+        if (!text || typeof text !== 'string') return text;
+        if (lang === 'ar') {
+            return text
+                .replace(/Sharif Group Advisory Desk/gi, 'مكتب استشارات مجموعة شريف')
+                .replace(/Sharif Group Dubai/gi, 'مجموعة شريف دبي')
+                .replace(/SHARIF GROUP/g, 'مجموعة شريف')
+                .replace(/Sharif Group/gi, 'مجموعة شريف')
+                .replace(/\bSharif\b/g, 'شريف');
+        } else if (lang === 'fa') {
+            return text
+                .replace(/Sharif Group Advisory Desk/gi, 'میز مشاوره شریف گروپ')
+                .replace(/Sharif Group Dubai/gi, 'شریف گروپ دبی')
+                .replace(/SHARIF GROUP/g, 'شریف گروپ')
+                .replace(/Sharif Group/gi, 'شریف گروپ')
+                .replace(/\bSharif\b/g, 'شریف');
+        } else if (lang === 'zh') {
+            return text
+                .replace(/Sharif Group Advisory Desk/gi, '谢里夫集团咨询顾问部')
+                .replace(/Sharif Group Dubai/gi, '谢里夫集团迪拜')
+                .replace(/SHARIF GROUP/g, '谢里夫集团')
+                .replace(/Sharif Group/gi, '谢里夫集团')
+                .replace(/\bSharif\b/g, '谢里夫');
+        }
+        return text;
     }
 
     function captureOriginalStaticContent() {
@@ -726,6 +755,7 @@
             // 1. Title
             var transTitle = (curatedArt && curatedArt.title) || (baseArt && baseArt.title);
             if (transTitle) {
+                transTitle = sanitizeLocalizedText(transTitle, curLang);
                 h1.textContent = transTitle;
                 var brandSuffix = curLang === 'ar' ? ' | مجموعة شريف دبي' : (curLang === 'fa' ? ' | شریف گروپ دبی' : (curLang === 'zh' ? ' | 谢里夫集团迪拜' : ' | Sharif Group'));
                 document.title = transTitle + brandSuffix;
@@ -752,7 +782,7 @@
             if (catEl) {
                 var rawCat = (baseArt && baseArt.category) || (originalStaticData ? originalStaticData.category : '');
                 var translatedCat = translateCategory(rawCat, curLang);
-                if (translatedCat) catEl.textContent = translatedCat;
+                if (translatedCat) catEl.textContent = sanitizeLocalizedText(translatedCat, curLang);
             }
 
             // 3. Meta (Author, Date, Updated)
@@ -764,7 +794,7 @@
                 if (authorEl) {
                     var rawAuthor = (baseArt && baseArt.author) || (originalStaticData ? originalStaticData.author : '');
                     var transAuthor = translateAuthor(rawAuthor, curLang);
-                    if (transAuthor) authorEl.textContent = transAuthor;
+                    if (transAuthor) authorEl.textContent = sanitizeLocalizedText(transAuthor, curLang);
                 }
                 if (dateEl) {
                     var rawDate = (baseArt && baseArt.date) || (originalStaticData ? originalStaticData.date : '');
@@ -784,7 +814,7 @@
             // 4. Content HTML
             var contentHtml = (curatedArt && curatedArt.content) || (baseArt && baseArt.content);
             if (contentHtml && contentHtml.trim()) {
-                contentEl.innerHTML = contentHtml;
+                contentEl.innerHTML = sanitizeLocalizedText(contentHtml, curLang);
             }
 
             // 5. Back link
@@ -822,10 +852,10 @@
                     var btn = document.querySelector('button[onclick*="faq-dyn-' + idx + '"]');
                     if (btn) {
                         var qSpan = btn.querySelector('span:first-child');
-                        if (qSpan && faq.q) qSpan.textContent = faq.q;
+                        if (qSpan && faq.q) qSpan.textContent = sanitizeLocalizedText(faq.q, curLang);
                     }
                     var ansP = document.querySelector('#content-faq-dyn-' + idx + ' p');
-                    if (ansP && faq.a) ansP.textContent = faq.a;
+                    if (ansP && faq.a) ansP.textContent = sanitizeLocalizedText(faq.a, curLang);
                 });
             }
 
@@ -871,7 +901,7 @@
                     if (catEl) {
                         var rawCat = (originalStaticData && originalStaticData.related && originalStaticData.related.cards[cIdx]) ? originalStaticData.related.cards[cIdx].cat : catEl.textContent.trim();
                         var transCat = translateCategory(rawCat, curLang);
-                        if (transCat) catEl.textContent = transCat;
+                        if (transCat) catEl.textContent = sanitizeLocalizedText(transCat, curLang);
                     }
 
                     // Title & Image Alt
@@ -886,6 +916,7 @@
                         cardTitle = window.getTranslation('blog.articles.' + cardSlug + '.title', curLang);
                     }
                     if (cardTitle) {
+                        cardTitle = sanitizeLocalizedText(cardTitle, curLang);
                         if (titleEl) titleEl.textContent = cardTitle;
                         if (imgEl) imgEl.setAttribute('alt', cardTitle);
                     }
