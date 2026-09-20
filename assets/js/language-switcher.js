@@ -987,7 +987,28 @@
         (document.body || document.head).appendChild(btScript);
     }
 
+    function ensureMultilingualCSS() {
+        if (document.querySelector('link[href*="multilingual.css"]')) return;
+        var langScript = document.querySelector('script[src*="language-switcher.js"]');
+        var basePath = '';
+        if (langScript) {
+            var src = langScript.getAttribute('src');
+            var idx = src.indexOf('js/');
+            if (idx !== -1) {
+                basePath = src.substring(0, idx);
+            }
+        }
+        if (!basePath) basePath = '/assets/';
+        var link = document.createElement('link');
+        link.rel = 'stylesheet';
+        link.href = basePath + 'css/multilingual.css?v=7';
+        document.head.appendChild(link);
+    }
+
     function init() {
+        // Ensure multilingual CSS styling is always loaded
+        ensureMultilingualCSS();
+
         currentLang = getInitialLang();
         if (currentLang === 'en') {
             document.documentElement.classList.remove('i18n-pending');
