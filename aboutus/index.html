@@ -1,4 +1,4 @@
-﻿<!DOCTYPE html>
+<!DOCTYPE html>
 
 <html class="scroll-smooth" lang="en">
 <head>
@@ -2157,7 +2157,12 @@
                     }
                     // Update Badge
                     if (badge) {
-                        var curL = (window.getCurrentLanguage ? window.getCurrentLanguage() : 'en');
+                        var curL = (window.getCurrentLanguage ? window.getCurrentLanguage() : null) || document.documentElement.lang || 'en';
+                        if (curL) curL = String(curL).toLowerCase().trim();
+                        if (curL === 'arabic') curL = 'ar';
+                        if (curL === 'persian') curL = 'fa';
+                        if (curL === 'chinese' || curL === 'zh-cn' || curL === 'zh-hans') curL = 'zh';
+
                         var activeMap = {
                             'zh': '已展开',
                             'ar': 'الوحدة النشطة',
@@ -2194,7 +2199,19 @@
                         icon.style.transform = 'none';
                     }
                     if (badge) {
-                        var expandText = window.getTranslation ? (window.getTranslation('pages.aboutUs.corporate_architecture_item6') || 'Hover to Expand') : 'Hover to Expand';
+                        var curL = (window.getCurrentLanguage ? window.getCurrentLanguage() : null) || document.documentElement.lang || 'en';
+                        if (curL) curL = String(curL).toLowerCase().trim();
+                        if (curL === 'arabic') curL = 'ar';
+                        if (curL === 'persian') curL = 'fa';
+                        if (curL === 'chinese' || curL === 'zh-cn' || curL === 'zh-hans') curL = 'zh';
+
+                        var hoverMap = {
+                            'ar': 'مرر للتوسيع',
+                            'fa': 'برای مشاهده کامل لمس کنید',
+                            'zh': '悬停展开详情',
+                            'en': 'Hover to Expand'
+                        };
+                        var expandText = (window.getTranslation ? window.getTranslation('pages.aboutUs.corporate_architecture_item6', curL) : null) || hoverMap[curL] || 'Hover to Expand';
                         badge.innerText = expandText;
                         badge.classList.remove('border-luxury-gold', 'text-luxury-gold', 'bg-luxury-gold/15');
                         badge.classList.add('border-white/15', 'text-neutral-400');
@@ -2239,7 +2256,19 @@
                     icon.style.transform = 'none';
                 }
                 if (badge) {
-                    var defaultExpandText = window.getTranslation ? (window.getTranslation('pages.aboutUs.corporate_architecture_item6') || 'Hover to Expand') : 'Hover to Expand';
+                    var curL = (window.getCurrentLanguage ? window.getCurrentLanguage() : null) || document.documentElement.lang || 'en';
+                    if (curL) curL = String(curL).toLowerCase().trim();
+                    if (curL === 'arabic') curL = 'ar';
+                    if (curL === 'persian') curL = 'fa';
+                    if (curL === 'chinese' || curL === 'zh-cn' || curL === 'zh-hans') curL = 'zh';
+
+                    var hoverMap = {
+                        'ar': 'مرر للتوسيع',
+                        'fa': 'برای مشاهده کامل لمس کنید',
+                        'zh': '悬停展开详情',
+                        'en': 'Hover to Expand'
+                    };
+                    var defaultExpandText = (window.getTranslation ? window.getTranslation('pages.aboutUs.corporate_architecture_item6', curL) : null) || hoverMap[curL] || 'Hover to Expand';
                     badge.innerText = defaultExpandText;
                     badge.classList.remove('border-luxury-gold', 'text-luxury-gold', 'bg-luxury-gold/15');
                     badge.classList.add('border-white/15', 'text-neutral-400');

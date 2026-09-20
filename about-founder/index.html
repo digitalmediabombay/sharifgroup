@@ -1,4 +1,4 @@
-﻿<!DOCTYPE html>
+<!DOCTYPE html>
 
 <html class="scroll-smooth" lang="en">
 
@@ -2110,7 +2110,19 @@
                             icon.style.transform = 'rotate(12deg)';
                         }
                         if (badge) {
-                            badge.innerText = 'Active Service';
+                            var curL = (window.getCurrentLanguage ? window.getCurrentLanguage() : null) || document.documentElement.lang || 'en';
+                            if (curL) curL = String(curL).toLowerCase().trim();
+                            if (curL === 'arabic') curL = 'ar';
+                            if (curL === 'persian') curL = 'fa';
+                            if (curL === 'chinese' || curL === 'zh-cn' || curL === 'zh-hans') curL = 'zh';
+
+                            var activeMap = {
+                                'zh': '当前服务',
+                                'ar': 'الخدمة النشطة',
+                                'fa': 'سرویس فعال',
+                                'en': 'Active Service'
+                            };
+                            badge.innerText = activeMap[curL] || 'Active Service';
                             badge.classList.remove('border-white/15', 'text-neutral-400');
                             badge.classList.add('border-luxury-gold', 'text-luxury-gold', 'bg-luxury-gold/15');
                         }
@@ -2139,7 +2151,19 @@
                             icon.style.transform = 'none';
                         }
                         if (badge) {
-                            badge.innerText = 'Hover to Expand';
+                            var curL = (window.getCurrentLanguage ? window.getCurrentLanguage() : null) || document.documentElement.lang || 'en';
+                            if (curL) curL = String(curL).toLowerCase().trim();
+                            if (curL === 'arabic') curL = 'ar';
+                            if (curL === 'persian') curL = 'fa';
+                            if (curL === 'chinese' || curL === 'zh-cn' || curL === 'zh-hans') curL = 'zh';
+
+                            var hoverMap = {
+                                'ar': 'مرر للتوسيع',
+                                'fa': 'برای مشاهده کامل لمس کنید',
+                                'zh': '悬停展开详情',
+                                'en': 'Hover to Expand'
+                            };
+                            badge.innerText = hoverMap[curL] || 'Hover to Expand';
                             badge.classList.remove('border-luxury-gold', 'text-luxury-gold', 'bg-luxury-gold/15');
                             badge.classList.add('border-white/15', 'text-neutral-400');
                         }
@@ -2182,7 +2206,19 @@
                         icon.style.transform = 'none';
                     }
                     if (badge) {
-                        badge.innerText = 'Hover to Expand';
+                        var curL = (window.getCurrentLanguage ? window.getCurrentLanguage() : null) || document.documentElement.lang || 'en';
+                        if (curL) curL = String(curL).toLowerCase().trim();
+                        if (curL === 'arabic') curL = 'ar';
+                        if (curL === 'persian') curL = 'fa';
+                        if (curL === 'chinese' || curL === 'zh-cn' || curL === 'zh-hans') curL = 'zh';
+
+                        var hoverMap = {
+                            'ar': 'مرر للتوسيع',
+                            'fa': 'برای مشاهده کامل لمس کنید',
+                            'zh': '悬停展开详情',
+                            'en': 'Hover to Expand'
+                        };
+                        badge.innerText = hoverMap[curL] || 'Hover to Expand';
                         badge.classList.remove('border-luxury-gold', 'text-luxury-gold', 'bg-luxury-gold/15');
                         badge.classList.add('border-white/15', 'text-neutral-400');
                     }

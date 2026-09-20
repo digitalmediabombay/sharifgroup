@@ -103,6 +103,7 @@ window.LEGAL_TRANSLATIONS = {
       "headingItalic": "Pathways",
       "description": "Sovereign dual citizenship, European golden visas, Dubai luxury property portfolios, and Ivy League academic guidance.",
       "hoverToExpand": "HOVER TO EXPAND",
+      "activeUnit": "ACTIVE UNIT",
       "knowMore": "Know More",
       "cbi": {
         "pillar": "Pillar 01 • Passports",
@@ -422,6 +423,7 @@ window.LEGAL_TRANSLATIONS = {
       "headingItalic": "مساراتنا",
       "description": "جنسية ثانية سيادية، تأشيرات ذهبية أوروبية، محافظ عقارية فاخرة في دبي، وتوجيه أكاديمي لجامعات النخبة.",
       "hoverToExpand": "مرر للتوسيع",
+      "activeUnit": "الوحدة النشطة",
       "knowMore": "اعرف المزيد",
       "cbi": {
         "pillar": "الركيزة 01 • جوازات السفر",
@@ -741,6 +743,7 @@ window.LEGAL_TRANSLATIONS = {
       "headingItalic": "مسیرهای ما",
       "description": "پاسپورت دوم قانونی، ویزای طلایی اروپا، سبد املاک لوکس دبی و مشاوره تحصیلی برای دانشگاه‌های برتر جهان.",
       "hoverToExpand": "برای مشاهده کامل لمس کنید",
+      "activeUnit": "بخش فعال",
       "knowMore": "اطلاعات بیشتر",
       "cbi": {
         "pillar": "رکن اول • پاسپورت‌ها",
@@ -1060,6 +1063,7 @@ window.LEGAL_TRANSLATIONS = {
       "headingItalic": "通道方案",
       "description": "主权双重国籍、欧洲黄金签证、迪拜顶级豪宅资产配置，以及常春藤名校学业规划。",
       "hoverToExpand": "悬停展开详情",
+      "activeUnit": "已展开",
       "knowMore": "了解更多",
       "cbi": {
         "pillar": "第一支柱 • 护照项目",

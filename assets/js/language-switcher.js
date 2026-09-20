@@ -58,6 +58,12 @@
     };
 
     window.getCurrentLanguage = function () {
+        if (!currentLang || currentLang === 'en') {
+            var initial = getInitialLang();
+            if (initial && initial !== 'en') {
+                currentLang = initial;
+            }
+        }
         return currentLang;
     };
 

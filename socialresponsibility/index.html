@@ -1,4 +1,4 @@
-﻿        <!DOCTYPE html>
+        <!DOCTYPE html>
 <html lang="en" class="scroll-smooth">
 
 <head>
@@ -2382,7 +2382,38 @@
             initCountryPickers();
         });
 
+        function getSocialFocusBadgeTexts() {
+            var lang = (window.getCurrentLanguage ? window.getCurrentLanguage() : null) ||
+                       document.documentElement.lang ||
+                       'en';
+            if (lang) lang = String(lang).toLowerCase().trim();
+            if (lang === 'arabic') lang = 'ar';
+            if (lang === 'persian') lang = 'fa';
+            if (lang === 'chinese' || lang === 'zh-cn' || lang === 'zh-hans') lang = 'zh';
+
+            var activeMap = {
+                'ar': 'الوحدة النشطة',
+                'fa': 'بخش فعال',
+                'zh': '已展开',
+                'en': 'ACTIVE UNIT'
+            };
+            var hoverMap = {
+                'ar': 'مرر للتوسيع',
+                'fa': 'برای مشاهده کامل لمس کنید',
+                'zh': '悬停展开详情',
+                'en': 'HOVER TO EXPAND'
+            };
+
+            var activeText = (window.getTranslation ? window.getTranslation('services.activeUnit', lang) : null) ||
+                             activeMap[lang] || 'ACTIVE UNIT';
+            var hoverText = (window.getTranslation ? window.getTranslation('pages.socialResp.focus_areas_item6', lang) : null) ||
+                            hoverMap[lang] || 'HOVER TO EXPAND';
+
+            return { activeText: activeText, hoverText: hoverText };
+        }
+
         function activateFocusCard(card) {
+            const texts = getSocialFocusBadgeTexts();
             const allCards = document.querySelectorAll('.focus-acc-item');
             allCards.forEach(c => {
                 if (c !== card) {
@@ -2390,7 +2421,7 @@
                     const badge = c.querySelector('.focus-badge');
                     if (badge && window.innerWidth >= 648) {
                         badge.className = 'focus-badge hidden sm:inline-block text-[10px] font-bold uppercase tracking-widest px-4 py-1.5 rounded-full border border-neutral-700 text-neutral-400 shrink-0 transition-all duration-500';
-                        badge.textContent = 'HOVER TO EXPAND';
+                        badge.textContent = texts.hoverText;
                     }
                 }
             });
@@ -2399,16 +2430,17 @@
             const activeBadge = card.querySelector('.focus-badge');
             if (activeBadge && window.innerWidth >= 648) {
                 activeBadge.className = 'focus-badge hidden sm:inline-block text-[10px] font-bold uppercase tracking-widest px-4 py-1.5 rounded-full border border-luxury-gold bg-luxury-gold/20 text-luxury-gold shrink-0 transition-all duration-500';
-                activeBadge.textContent = 'ACTIVE UNIT';
+                activeBadge.textContent = texts.activeText;
             }
         }
 
         function deactivateFocusCard(card) {
+            const texts = getSocialFocusBadgeTexts();
             card.classList.remove('is-active');
             const badge = card.querySelector('.focus-badge');
             if (badge && window.innerWidth >= 648) {
                 badge.className = 'focus-badge hidden sm:inline-block text-[10px] font-bold uppercase tracking-widest px-4 py-1.5 rounded-full border border-neutral-700 text-neutral-400 shrink-0 transition-all duration-500';
-                badge.textContent = 'HOVER TO EXPAND';
+                badge.textContent = texts.hoverText;
             }
         }
     </script>
