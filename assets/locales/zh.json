@@ -613,7 +613,7 @@
     "salutationLord": "勋爵",
     "salutationLady": "夫人",
     "preferredMethod": "首选联系方式",
-    "timeZone": "国家 / 时区",
+    "timeZone": "所在时区",
     "methodPhone": "电话沟通",
     "methodWhatsApp": "WhatsApp",
     "methodZoom": "视频通话"

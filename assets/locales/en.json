@@ -613,7 +613,7 @@
     "salutationLord": "Lord",
     "salutationLady": "Lady",
     "preferredMethod": "Preferred Method",
-    "timeZone": "Country / Time Zone",
+    "timeZone": "Time Zone",
     "methodPhone": "Phone Call",
     "methodWhatsApp": "WhatsApp",
     "methodZoom": "Video Call"

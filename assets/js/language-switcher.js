@@ -209,7 +209,7 @@
         }
     }
 
-    var I18N_VERSION = '20260921_v17';
+    var I18N_VERSION = '20260921_v18';
 
     function loadTranslation(lang, callback) {
         var pathname = (window.location && window.location.pathname) ? window.location.pathname.toLowerCase() : '';
@@ -480,10 +480,422 @@
         'zh': '请选择子项目'
     };
 
+    var TARGET_PROGRAM_OPTIONS_MAP = {
+        'citizenship': {
+            'en': 'Citizenship By Investment',
+            'ar': 'الجنسية عن طريق الاستثمار',
+            'fa': 'شهروندی از طریق سرمایه‌گذاری',
+            'zh': '投资入籍（第二护照）'
+        },
+        'residency': {
+            'en': 'Residency By Investment',
+            'ar': 'الإقامة عن طريق الاستثمار',
+            'fa': 'اقامت از طریق سرمایه‌گذاری',
+            'zh': '投资居留（黄金签证）'
+        },
+        'real-estate': {
+            'en': 'Real Estate',
+            'ar': 'الاستثمار العقاري',
+            'fa': 'سرمایه‌گذاری املاک',
+            'zh': '海外高端房产投资'
+        },
+        'education': {
+            'en': 'Educational Advisory',
+            'ar': 'الاستشارات التعليمية',
+            'fa': 'مشاوره تحصیلی',
+            'zh': '国际名校教育咨询'
+        }
+    };
+
+    var FORM_LABELS_MAP = {
+        'firstName': {
+            'en': 'First Name',
+            'ar': 'الاسم الأول',
+            'fa': 'نام کوچک',
+            'zh': '名',
+            required: true
+        },
+        'lastName': {
+            'en': 'Last Name',
+            'ar': 'اسم العائلة',
+            'fa': 'نام خانوادگی',
+            'zh': '姓',
+            required: true
+        },
+        'fullName': {
+            'en': 'Full Name',
+            'ar': 'الاسم الكامل',
+            'fa': 'نام و نام خانوادگی',
+            'zh': '姓名',
+            required: true
+        },
+        'name': {
+            'en': 'Full Name',
+            'ar': 'الاسم الكامل',
+            'fa': 'نام و نام خانوادگی',
+            'zh': '姓名',
+            required: true
+        },
+        'email': {
+            'en': 'Email Address',
+            'ar': 'البريد الإلكتروني',
+            'fa': 'آدرس ایمیل',
+            'zh': '电子邮箱',
+            required: true
+        },
+        'phone': {
+            'en': 'Phone Number',
+            'ar': 'رقم الهاتف',
+            'fa': 'شماره تماس',
+            'zh': '联系电话',
+            required: true
+        },
+        'targetProgram': {
+            'en': 'Program of Choice',
+            'ar': 'البرنامج المطلوب',
+            'fa': 'انتخاب برنامه',
+            'zh': '意向申请项目',
+            required: true
+        },
+        'subProgram': {
+            'en': 'Sub-Program Pathway',
+            'ar': 'المسار الفرعي',
+            'fa': 'انتخاب زیربرنامه',
+            'zh': '细分通道选项',
+            required: true
+        },
+        'preferredLanguage': {
+            'en': 'Preferred Language',
+            'ar': 'لغة التواصل المفضلة',
+            'fa': 'زبان مورد نظر',
+            'zh': '首选沟通语言',
+            required: true
+        },
+        'preferredDate': {
+            'en': 'Preferred Date',
+            'ar': 'التاريخ المفضل',
+            'fa': 'تاریخ پیشنهادی',
+            'zh': '期望沟通日期',
+            required: true
+        },
+        'preferredMethod': {
+            'en': 'Preferred Method',
+            'ar': 'طريقة التواصل المفضلة',
+            'fa': 'روش تماس ترجیحی',
+            'zh': '首选联系方式',
+            required: true
+        },
+        'timezone': {
+            'en': 'Time Zone',
+            'ar': 'المنطقة الزمنية',
+            'fa': 'منطقه زمانی',
+            'zh': '所在时区',
+            required: true
+        },
+        'address': {
+            'en': 'Corporate Physical Address (Optional)',
+            'ar': 'العنوان الفعلي للشركة (اختياري)',
+            'fa': 'نشانی فیزیکی شرکت (اختیاری)',
+            'zh': '公司办公地址（选填）',
+            required: false
+        },
+        'notes': {
+            'en': 'Confidential notes (Optional)',
+            'ar': 'ملاحظات وتفاصيل سرية (اختياري)',
+            'fa': 'یادداشت‌ها و توضیحات محرمانه (اختیاری)',
+            'zh': '保密咨询备注与需求（选填）',
+            required: false
+        }
+    };
+
+    var TIMEZONE_OPTIONS_MAP = {
+        'UTC-12:00': {
+            'en': 'UTC-12:00 (Baker Island)',
+            'ar': 'UTC-12:00 (جزيرة بيكر)',
+            'fa': 'UTC-12:00 (جزیره بیکر)',
+            'zh': 'UTC-12:00 (贝克岛)'
+        },
+        'UTC-11:00': {
+            'en': 'UTC-11:00 (American Samoa, Niue)',
+            'ar': 'UTC-11:00 (ساموا الأمريكية، نييوي)',
+            'fa': 'UTC-11:00 (ساموآی آمریکا، نیووی)',
+            'zh': 'UTC-11:00 (美属萨摩亚、纽埃)'
+        },
+        'UTC-10:00': {
+            'en': 'UTC-10:00 (Hawaii, Cook Islands)',
+            'ar': 'UTC-10:00 (هاواي، جزر كوك)',
+            'fa': 'UTC-10:00 (هاوایی، جزایر کوک)',
+            'zh': 'UTC-10:00 (夏威夷、库克群岛)'
+        },
+        'UTC-09:30': {
+            'en': 'UTC-09:30 (Marquesas Islands)',
+            'ar': 'UTC-09:30 (جزر ماركيساس)',
+            'fa': 'UTC-09:30 (جزایر مارکیز)',
+            'zh': 'UTC-09:30 (马克萨斯群岛)'
+        },
+        'UTC-09:00': {
+            'en': 'UTC-09:00 (Alaska)',
+            'ar': 'UTC-09:00 (ألاسكا)',
+            'fa': 'UTC-09:00 (آلاسکا)',
+            'zh': 'UTC-09:00 (阿拉斯加)'
+        },
+        'UTC-08:00': {
+            'en': 'UTC-08:00 (Pacific Time - US/Canada, Los Angeles)',
+            'ar': 'UTC-08:00 (توقيت المحيط الهادئ - لوس أنجلوس)',
+            'fa': 'UTC-08:00 (زمان اقیانوس آرام - لس آنجلس)',
+            'zh': 'UTC-08:00 (太平洋时间 - 洛杉矶)'
+        },
+        'UTC-07:00': {
+            'en': 'UTC-07:00 (Mountain Time - US/Canada, Denver)',
+            'ar': 'UTC-07:00 (التوقيت الجبلي - دنفر)',
+            'fa': 'UTC-07:00 (زمان کوهستانی - دنور)',
+            'zh': 'UTC-07:00 (山地时间 - 丹佛)'
+        },
+        'UTC-06:00': {
+            'en': 'UTC-06:00 (Central Time - US/Canada, Mexico City)',
+            'ar': 'UTC-06:00 (التوقيت المركزي - مكسيكو سيتي)',
+            'fa': 'UTC-06:00 (زمان مرکزی - مکزیکوسیتی)',
+            'zh': 'UTC-06:00 (中部时间 - 墨西哥城)'
+        },
+        'UTC-05:00': {
+            'en': 'UTC-05:00 (Eastern Time - US/Canada, New York)',
+            'ar': 'UTC-05:00 (التوقيت الشرقي - نيويورك)',
+            'fa': 'UTC-05:00 (زمان شرقی - نیویورک)',
+            'zh': 'UTC-05:00 (东部时间 - 纽约)'
+        },
+        'UTC-04:00': {
+            'en': 'UTC-04:00 (Atlantic Time - Canada, Santiago)',
+            'ar': 'UTC-04:00 (توقيت الأطلسي - سانتياغو)',
+            'fa': 'UTC-04:00 (زمان اقیانوس اطلس - سانتیاگو)',
+            'zh': 'UTC-04:00 (大西洋时间 - 圣地亚哥)'
+        },
+        'UTC-03:30': {
+            'en': 'UTC-03:30 (Newfoundland)',
+            'ar': 'UTC-03:30 (نيوفاوندلاند)',
+            'fa': 'UTC-03:30 (نیوفاندلند)',
+            'zh': 'UTC-03:30 (纽芬兰)'
+        },
+        'UTC-03:00': {
+            'en': 'UTC-03:00 (Buenos Aires, Brasilia)',
+            'ar': 'UTC-03:00 (بوينس آيرس، برازيليا)',
+            'fa': 'UTC-03:00 (بوئنوس آیرس، برازیلیا)',
+            'zh': 'UTC-03:00 (布宜诺斯艾利斯、巴西利亚)'
+        },
+        'UTC-02:00': {
+            'en': 'UTC-02:00 (South Georgia/Sandwich Islands)',
+            'ar': 'UTC-02:00 (جورجيا الجنوبية)',
+            'fa': 'UTC-02:00 (جورجیای جنوبی)',
+            'zh': 'UTC-02:00 (南乔治亚岛)'
+        },
+        'UTC-01:00': {
+            'en': 'UTC-01:00 (Azores, Cape Verde)',
+            'ar': 'UTC-01:00 (جزر الأزور، الرأس الأخضر)',
+            'fa': 'UTC-01:00 (آزور، کیپ ورد)',
+            'zh': 'UTC-01:00 (亚速尔群岛、佛得角)'
+        },
+        'UTC+00:00': {
+            'en': 'UTC+00:00 (GMT / London, Lisbon, Casablanca)',
+            'ar': 'UTC+00:00 (غرينتش / لندن، لشبونة، الدار البيضاء)',
+            'fa': 'UTC+00:00 (گرینویچ / لندن، لیسبون، کازابلانکا)',
+            'zh': 'UTC+00:00 (格林威治 / 伦敦、里斯本、卡萨布兰卡)'
+        },
+        'UTC+01:00': {
+            'en': 'UTC+01:00 (Central European Time - Paris, Berlin, Rome)',
+            'ar': 'UTC+01:00 (توقيت وسط أوروبا - باريس، برلين، روما)',
+            'fa': 'UTC+01:00 (زمان اروپای مرکزی - پاریس، برلین، رم)',
+            'zh': 'UTC+01:00 (欧洲中部时间 - 巴黎、柏林、罗马)'
+        },
+        'UTC+02:00': {
+            'en': 'UTC+02:00 (Eastern European Time - Cairo, Athens, Istanbul)',
+            'ar': 'UTC+02:00 (توقيت شرق أوروبا - القاهرة، أثينا، إسطنبول)',
+            'fa': 'UTC+02:00 (زمان اروپای شرقی - قاهره، آتن، استانبول)',
+            'zh': 'UTC+02:00 (欧洲东部时间 - 开罗、雅典、伊斯坦布尔)'
+        },
+        'UTC+03:00': {
+            'en': 'UTC+03:00 (Moscow, Riyadh, Nairobi)',
+            'ar': 'UTC+03:00 (موسكو، الرياض، نيروبي)',
+            'fa': 'UTC+03:00 (مسکو، ریاض، نایروبی)',
+            'zh': 'UTC+03:00 (莫斯科、利雅得、内罗毕)'
+        },
+        'UTC+03:30': {
+            'en': 'UTC+03:30 (Tehran)',
+            'ar': 'UTC+03:30 (طهران)',
+            'fa': 'UTC+03:30 (تهران)',
+            'zh': 'UTC+03:30 (德黑兰)'
+        },
+        'UTC+04:00': {
+            'en': 'UTC+04:00 (GST - Gulf Standard Time / Dubai, Abu Dhabi)',
+            'ar': 'UTC+04:00 (توقيت الخليج / دبي، أبوظبي)',
+            'fa': 'UTC+04:00 (زمان استاندارد خلیج / دبی، ابوظبی)',
+            'zh': 'UTC+04:00 (海湾标准时间 / 迪拜、阿布扎比)'
+        },
+        'UTC+04:30': {
+            'en': 'UTC+04:30 (Kabul)',
+            'ar': 'UTC+04:30 (كابول)',
+            'fa': 'UTC+04:30 (کابل)',
+            'zh': 'UTC+04:30 (喀布尔)'
+        },
+        'UTC+05:00': {
+            'en': 'UTC+05:00 (Karachi, Tashkent)',
+            'ar': 'UTC+05:00 (كراتشي، طشقند)',
+            'fa': 'UTC+05:00 (کراچی، تاشکند)',
+            'zh': 'UTC+05:00 (卡拉奇、塔什干)'
+        },
+        'UTC+05:30': {
+            'en': 'UTC+05:30 (IST - Indian Standard Time / Mumbai, New Delhi)',
+            'ar': 'UTC+05:30 (توقيت الهند القياسي / مومباي، نيودلهي)',
+            'fa': 'UTC+05:30 (زمان استاندارد هند / بمبئی، دهلی نو)',
+            'zh': 'UTC+05:30 (印度标准时间 / 孟买、新德里)'
+        },
+        'UTC+05:45': {
+            'en': 'UTC+05:45 (Kathmandu)',
+            'ar': 'UTC+05:45 (كاتماندو)',
+            'fa': 'UTC+05:45 (کاتماندو)',
+            'zh': 'UTC+05:45 (加德满都)'
+        },
+        'UTC+06:00': {
+            'en': 'UTC+06:00 (Dhaka, Almaty)',
+            'ar': 'UTC+06:00 (دكا، ألماتي)',
+            'fa': 'UTC+06:00 (داکا، آلماتی)',
+            'zh': 'UTC+06:00 (达卡、阿拉木图)'
+        },
+        'UTC+06:30': {
+            'en': 'UTC+06:30 (Yangon)',
+            'ar': 'UTC+06:30 (يانغون)',
+            'fa': 'UTC+06:30 (یانگون)',
+            'zh': 'UTC+06:30 (仰光)'
+        },
+        'UTC+07:00': {
+            'en': 'UTC+07:00 (Bangkok, Jakarta, Hanoi)',
+            'ar': 'UTC+07:00 (بانكوك، جاكرتا، هانوي)',
+            'fa': 'UTC+07:00 (بانکوک، جاکارتا، هانوی)',
+            'zh': 'UTC+07:00 (曼谷、雅加达、河内)'
+        },
+        'UTC+08:00': {
+            'en': 'UTC+08:00 (Singapore, Beijing, Hong Kong)',
+            'ar': 'UTC+08:00 (سنغافورة، بكين، هونغ كونغ)',
+            'fa': 'UTC+08:00 (سنگاپور، پکن، هنگ‌کنگ)',
+            'zh': 'UTC+08:00 (新加坡、北京、香港)'
+        },
+        'UTC+08:45': {
+            'en': 'UTC+08:45 (Eucla)',
+            'ar': 'UTC+08:45 (يوكلا)',
+            'fa': 'UTC+08:45 (یوکلا)',
+            'zh': 'UTC+08:45 (尤克拉)'
+        },
+        'UTC+09:00': {
+            'en': 'UTC+09:00 (Tokyo, Seoul)',
+            'ar': 'UTC+09:00 (طوكيو، سيول)',
+            'fa': 'UTC+09:00 (توکیو، سئول)',
+            'zh': 'UTC+09:00 (东京、首尔)'
+        },
+        'UTC+09:30': {
+            'en': 'UTC+09:30 (Adelaide, Darwin)',
+            'ar': 'UTC+09:30 (أديلايد، داروين)',
+            'fa': 'UTC+09:30 (آدلاید، داروین)',
+            'zh': 'UTC+09:30 (阿德莱德、达尔文)'
+        },
+        'UTC+10:00': {
+            'en': 'UTC+10:00 (Sydney, Melbourne, Guam)',
+            'ar': 'UTC+10:00 (سيدني، ملبورن، غوام)',
+            'fa': 'UTC+10:00 (سیدنی، ملبورن، گوام)',
+            'zh': 'UTC+10:00 (悉尼、墨尔本、关岛)'
+        },
+        'UTC+10:30': {
+            'en': 'UTC+10:30 (Lord Howe Island)',
+            'ar': 'UTC+10:30 (جزيرة لورد هاو)',
+            'fa': 'UTC+10:30 (جزیره لرد هاو)',
+            'zh': 'UTC+10:30 (豪勋爵岛)'
+        },
+        'UTC+11:00': {
+            'en': 'UTC+11:00 (Solomon Islands, Vanuatu)',
+            'ar': 'UTC+11:00 (جزر سليمان، فانواتو)',
+            'fa': 'UTC+11:00 (جزایر سلیمان، وانواتو)',
+            'zh': 'UTC+11:00 (所罗门群岛、瓦努阿图)'
+        },
+        'UTC+12:00': {
+            'en': 'UTC+12:00 (Auckland, Fiji)',
+            'ar': 'UTC+12:00 (أوكلاند، فيجي)',
+            'fa': 'UTC+12:00 (اوکلند، فیجی)',
+            'zh': 'UTC+12:00 (奥克兰、斐济)'
+        },
+        'UTC+12:45': {
+            'en': 'UTC+12:45 (Chatham Islands)',
+            'ar': 'UTC+12:45 (جزر تشاتام)',
+            'fa': 'UTC+12:45 (جزایر چاتام)',
+            'zh': 'UTC+12:45 (查塔姆群岛)'
+        },
+        'UTC+13:00': {
+            'en': 'UTC+13:00 (Samoa, Tonga)',
+            'ar': 'UTC+13:00 (ساموا، تونغا)',
+            'fa': 'UTC+13:00 (ساموآ، تونگا)',
+            'zh': 'UTC+13:00 (萨摩亚、汤加)'
+        },
+        'UTC+14:00': {
+            'en': 'UTC+14:00 (Line Islands, Kiribati)',
+            'ar': 'UTC+14:00 (جزر لاين، كيريباتي)',
+            'fa': 'UTC+14:00 (جزایر لاین، کیریباتی)',
+            'zh': 'UTC+14:00 (莱恩群岛、基里巴斯)'
+        }
+    };
+
+    var SUBMIT_BTN_MAP = {
+        'en': 'Register Inquiry',
+        'ar': 'تسجيل استفسار',
+        'fa': 'ثبت درخواست',
+        'zh': '提交咨询'
+    };
+
+    function findFieldLabel(el) {
+        if (!el) return null;
+        if (el.id) {
+            var lbl = document.querySelector('label[for="' + el.id + '"]');
+            if (lbl) return lbl;
+        }
+        var prev = el.previousElementSibling;
+        while (prev) {
+            if (prev.tagName && prev.tagName.toLowerCase() === 'label') return prev;
+            prev = prev.previousElementSibling;
+        }
+        var parent = el.parentElement;
+        if (parent) {
+            var pPrev = parent.previousElementSibling;
+            while (pPrev) {
+                if (pPrev.tagName && pPrev.tagName.toLowerCase() === 'label') return pPrev;
+                pPrev = pPrev.previousElementSibling;
+            }
+            var container = el.closest('div:not(.flex):not(.custom-select-wrapper)');
+            if (container) {
+                var cLbl = container.querySelector('label');
+                if (cLbl) return cLbl;
+            }
+        }
+        return null;
+    }
+
     function translateConsultationForms(lang) {
         var curLang = lang || 'en';
 
-        // 1. Preferred Language dropdown
+        // 1. Form Labels
+        for (var fKey in FORM_LABELS_MAP) {
+            var cfg = FORM_LABELS_MAP[fKey];
+            var fInputs = document.querySelectorAll(
+                'input[name="' + fKey + '"], select[name="' + fKey + '"], textarea[name="' + fKey + '"]'
+            );
+            fInputs.forEach(function(inputEl) {
+                var label = findFieldLabel(inputEl);
+                if (label) {
+                    var text = cfg[curLang] || cfg['en'];
+                    if (cfg.required) {
+                        label.innerHTML = text + ' <span class="text-red-500">*</span>';
+                    } else {
+                        label.textContent = text;
+                    }
+                }
+            });
+        }
+
+        // 2. Preferred Language dropdown
         document.querySelectorAll('select[name="preferredLanguage"]').forEach(function(sel) {
             for (var i = 0; i < sel.options.length; i++) {
                 var opt = sel.options[i];
@@ -494,7 +906,7 @@
             }
         });
 
-        // 2. Preferred Method dropdown
+        // 3. Preferred Method dropdown
         document.querySelectorAll('select[name="preferredMethod"]').forEach(function(sel) {
             for (var i = 0; i < sel.options.length; i++) {
                 var opt = sel.options[i];
@@ -505,30 +917,40 @@
             }
         });
 
-        // 3. Timezone Select (Set dir="ltr" to prevent reversing UTC+04:00 into -UTC in RTL, and translate first option)
+        // 4. Timezone Select (Set dir="ltr" to prevent reversing UTC+04:00 into -UTC in RTL, and translate all options)
         document.querySelectorAll('select[name="timezone"]').forEach(function(sel) {
             sel.setAttribute('dir', 'ltr');
-            if (sel.options && sel.options.length > 0) {
-                var first = sel.options[0];
-                if (!first.value || first.value === '') {
-                    first.textContent = TIMEZONE_FIRST_OPTION[curLang] || 'Select Time Zone';
+            for (var i = 0; i < sel.options.length; i++) {
+                var opt = sel.options[i];
+                var val = (opt.value || '').trim();
+                if (!val) {
+                    opt.textContent = TIMEZONE_FIRST_OPTION[curLang] || 'Select Time Zone';
+                } else if (TIMEZONE_OPTIONS_MAP[val] && TIMEZONE_OPTIONS_MAP[val][curLang]) {
+                    opt.textContent = TIMEZONE_OPTIONS_MAP[val][curLang];
                 }
             }
         });
 
-        // 4. Target Program and Sub-program default options
+        // 5. Target Program and Sub-program options
         document.querySelectorAll('select[name="targetProgram"]').forEach(function(sel) {
-            if (sel.options && sel.options.length > 0 && (!sel.options[0].value || sel.options[0].value === '')) {
-                sel.options[0].textContent = SELECT_PROGRAM_FIRST_OPTION[curLang] || 'Select Option';
+            for (var i = 0; i < sel.options.length; i++) {
+                var opt = sel.options[i];
+                var val = (opt.value || '').trim();
+                if (!val) {
+                    opt.textContent = SELECT_PROGRAM_FIRST_OPTION[curLang] || 'Select Option';
+                } else if (TARGET_PROGRAM_OPTIONS_MAP[val] && TARGET_PROGRAM_OPTIONS_MAP[val][curLang]) {
+                    opt.textContent = TARGET_PROGRAM_OPTIONS_MAP[val][curLang];
+                }
             }
         });
+
         document.querySelectorAll('select[name="subProgram"], select#sub-service-choice, select#sub-service-choice-standalone').forEach(function(sel) {
             if (sel.options && sel.options.length > 0 && (!sel.options[0].value || sel.options[0].value === '')) {
                 sel.options[0].textContent = SELECT_SUBPROGRAM_FIRST_OPTION[curLang] || 'Select Sub-Program';
             }
         });
 
-        // 5. Placeholders for common form fields
+        // 6. Placeholders for common form fields
         for (var fName in FORM_PLACEHOLDER_MAP) {
             var fields = document.querySelectorAll('input[name="' + fName + '"], textarea[name="' + fName + '"]');
             fields.forEach(function(fEl) {
@@ -537,6 +959,13 @@
                 }
             });
         }
+
+        // 7. Submit Button inside consultation forms
+        document.querySelectorAll('form[onsubmit*="handleContactSubmit"] button[type="submit"], #standalone-contact-form button[type="submit"], #contact-portal-form button[type="submit"]').forEach(function(btn) {
+            if (!btn.disabled && !btn.getAttribute('data-i18n')) {
+                btn.textContent = SUBMIT_BTN_MAP[curLang] || SUBMIT_BTN_MAP['en'];
+            }
+        });
     }
 
     window.translateConsultationForms = translateConsultationForms;
