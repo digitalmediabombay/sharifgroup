@@ -568,7 +568,7 @@ $faqSchemaJson
 $navHtml
 
     <!-- MAIN ARTICLE LAYOUT -->
-    <main class="pt-28 pb-20 max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
+    <main class="blog-article-layout pt-28 sm:pt-32 pb-20 max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
         <div class="space-y-10">
             <!-- Breadcrumbs + Back Button -->
             <div class="flex items-center justify-between gap-4 pb-4 border-b border-neutral-200/80">

@@ -8183,9 +8183,15 @@
                     }
                 }
 
-                // Smooth scroll to top of article if not already inside detail view
+                // Smooth scroll to top of article if not already inside detail view with navbar offset
                 if (arguments[1] !== true) {
-                    detailSection.scrollIntoView({ behavior: 'smooth' });
+                    const headerOffset = 90;
+                    const elementPosition = detailSection.getBoundingClientRect().top;
+                    const offsetPosition = elementPosition + window.pageYOffset - headerOffset;
+                    window.scrollTo({
+                        top: Math.max(0, offsetPosition),
+                        behavior: 'smooth'
+                    });
                 }
             }
            
