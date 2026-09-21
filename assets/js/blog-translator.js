@@ -540,7 +540,7 @@
         var contentEl = document.querySelector('.article-content');
         if (!h1 || !contentEl) return;
 
-        var catEl = document.querySelector('main .space-y-4 > div:first-child');
+        var catEl = document.querySelector('#detail-category-badge') || document.querySelector('main .space-y-4 > div:first-child');
         var breadcrumbNav = document.querySelector('main nav');
         var breadcrumbHome = breadcrumbNav ? breadcrumbNav.querySelector('a[href="/"]') : null;
         var breadcrumbBlog = breadcrumbNav ? breadcrumbNav.querySelector('a[href="/blog/"]') : null;
@@ -598,7 +598,7 @@
             var relCards = relSection.querySelectorAll('article, .blog-item');
             var cardList = [];
             relCards.forEach(function(card) {
-                var catEl = card.querySelector('.text-luxury-gold.uppercase') || card.querySelector('div.text-\\[11px\\]');
+                var catEl = card.querySelector('.text-\\[\\#786142\\]') || card.querySelector('.text-luxury-gold.uppercase') || card.querySelector('div.text-\\[11px\\]');
                 var titleEl = card.querySelector('h3');
                 var linkEl = card.querySelector('a[href*="/blog/"]');
                 var imgEl = card.querySelector('img');
@@ -680,7 +680,7 @@
                     if (bTitle) bTitle.textContent = originalStaticData.breadcrumb;
                 }
 
-                var catEl = document.querySelector('main .space-y-4 > div:first-child');
+                var catEl = document.querySelector('#detail-category-badge') || document.querySelector('main .space-y-4 > div:first-child');
                 if (catEl) catEl.textContent = originalStaticData.category;
 
                 var metaBar = document.querySelector('main .space-y-4 .flex.flex-wrap');
@@ -733,7 +733,7 @@
                     rCards.forEach(function(card, idx) {
                         var origCard = originalStaticData.related.cards[idx];
                         if (!origCard) return;
-                        var cCat = card.querySelector('.text-luxury-gold.uppercase') || card.querySelector('div.text-\\[11px\\]');
+                        var cCat = card.querySelector('.text-\\[\\#786142\\]') || card.querySelector('.text-luxury-gold.uppercase') || card.querySelector('div.text-\\[11px\\]');
                         if (cCat) cCat.textContent = origCard.cat;
                         var cTitle = card.querySelector('h3');
                         if (cTitle) cTitle.textContent = origCard.title;
@@ -778,7 +778,7 @@
             }
 
             // 2. Category
-            var catEl = document.querySelector('main .space-y-4 > div:first-child');
+            var catEl = document.querySelector('#detail-category-badge') || document.querySelector('main .space-y-4 > div:first-child');
             if (catEl) {
                 var rawCat = (baseArt && baseArt.category) || (originalStaticData ? originalStaticData.category : '');
                 var translatedCat = translateCategory(rawCat, curLang);
@@ -897,7 +897,7 @@
                     var cardSlug = m ? m[1] : '';
 
                     // Category
-                    var catEl = card.querySelector('.text-luxury-gold.uppercase') || card.querySelector('div.text-\\[11px\\]');
+                    var catEl = card.querySelector('.text-\\[\\#786142\\]') || card.querySelector('.text-luxury-gold.uppercase') || card.querySelector('div.text-\\[11px\\]');
                     if (catEl) {
                         var rawCat = (originalStaticData && originalStaticData.related && originalStaticData.related.cards[cIdx]) ? originalStaticData.related.cards[cIdx].cat : catEl.textContent.trim();
                         var transCat = translateCategory(rawCat, curLang);

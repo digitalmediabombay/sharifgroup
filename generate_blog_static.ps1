@@ -167,7 +167,7 @@ function Get-AbsoluteImageUrl([string]$img) {
     return "https://sharifgroup.ae" + $fixed
 }
 
-# Extract Navbar
+# Extract Complete Header (Navbar, Language Switcher, Mobile Drawer, and Mega-Dropdowns)
 $headerStart = $content.IndexOf("<header")
 $headerEnd = $content.IndexOf("</header>", $headerStart) + 9
 $navHtml = $content.Substring($headerStart, $headerEnd - $headerStart)
@@ -184,28 +184,10 @@ $navHtml = $navHtml.Replace('href="../programs/citizenshipbyinvestment/stkittis/
 $navHtml = $navHtml.Replace('href="../programs/citizenshipbyinvestment/greneda/index.html"', 'href="/programs/citizenshipbyinvestment/grenada/"')
 $navHtml = $navHtml.Replace('href="../programs/', 'href="/programs/')
 $navHtml = $navHtml.Replace('href="index.html"', 'href="/blog/"')
+$navHtml = $navHtml.Replace('src="../assets/', 'src="/assets/')
+$navHtml = $navHtml.Replace('src="../alirezasharif.svg"', 'src="/blog/alirezasharif.svg"')
 $navHtml = $navHtml.Replace('src="alirezasharif.svg"', 'src="/blog/alirezasharif.svg"')
 $navHtml = $navHtml.Replace('src="imclogo.webp"', 'src="/blog/imclogo.webp"')
-
-# Extract Mobile Menu Drawer
-$mobileDrawerStart = $content.IndexOf('id="mobile-menu-drawer"')
-$drawerStart = $content.LastIndexOf('<div class="fixed top-20', $mobileDrawerStart)
-$drawerEnd = $content.IndexOf('<main', $drawerStart)
-if ($drawerEnd -lt 0) { $drawerEnd = $content.IndexOf('<!-- MAIN', $drawerStart) }
-$drawerHtml = $content.Substring($drawerStart, $drawerEnd - $drawerStart).Trim()
-$drawerHtml = $drawerHtml.Replace('href="../index.html"', 'href="/"')
-$drawerHtml = $drawerHtml.Replace('href="../citizenshipbyinvestment/index.html"', 'href="/citizenshipbyinvestment/"')
-$drawerHtml = $drawerHtml.Replace('href="../residencybyinvestment/index.html"', 'href="/residencybyinvestment/"')
-$drawerHtml = $drawerHtml.Replace('href="../realestate/index.html"', 'href="/realestate/"')
-$drawerHtml = $drawerHtml.Replace('href="../educationaladvisory/index.html"', 'href="/educationaladvisory/"')
-$drawerHtml = $drawerHtml.Replace('href="../aboutus/index.html"', 'href="/aboutus/"')
-$drawerHtml = $drawerHtml.Replace('href="../ali-sharif/index.html"', 'href="/about-founder/"')
-$drawerHtml = $drawerHtml.Replace('href="../contact/index.html"', 'href="/contact/"')
-$drawerHtml = $drawerHtml.Replace('href="../eligibilitychecker/index.html"', 'href="/eligibilitychecker/"')
-$drawerHtml = $drawerHtml.Replace('href="../programs/citizenshipbyinvestment/stkittis/index.html"', 'href="/programs/citizenshipbyinvestment/stkitts/"')
-$drawerHtml = $drawerHtml.Replace('href="../programs/citizenshipbyinvestment/greneda/index.html"', 'href="/programs/citizenshipbyinvestment/grenada/"')
-$drawerHtml = $drawerHtml.Replace('href="../programs/', 'href="/programs/')
-$drawerHtml = $drawerHtml.Replace('href="index.html"', 'href="/blog/"')
 
 # Extract Footer
 $footerStart = $content.IndexOf("<footer")
@@ -224,6 +206,8 @@ $footerHtml = $footerHtml.Replace('href="../programs/citizenshipbyinvestment/stk
 $footerHtml = $footerHtml.Replace('href="../programs/citizenshipbyinvestment/greneda/index.html"', 'href="/programs/citizenshipbyinvestment/grenada/"')
 $footerHtml = $footerHtml.Replace('href="../programs/', 'href="/programs/')
 $footerHtml = $footerHtml.Replace('href="index.html"', 'href="/blog/"')
+$navHtml = $navHtml.Replace('../assets/', '../../assets/')
+$footerHtml = $footerHtml.Replace('../assets/', '../../assets/')
 $footerHtml = $footerHtml.Replace('href="../cookiepolicy/index.html"', 'href="/cookiepolicy/"')
 $footerHtml = $footerHtml.Replace('href="../privacypolicy/index.html"', 'href="/privacypolicy/"')
 $footerHtml = $footerHtml.Replace('href="../termsofuse/index.html"', 'href="/termsofuse/"')
@@ -233,7 +217,8 @@ $formSectionStart = $content.IndexOf('id="detail-consultation-section"')
 $formStart = $content.LastIndexOf('<div class="py-24', $formSectionStart)
 $sectionClose = $content.IndexOf('</section>', $formStart)
 $formHtml = $content.Substring($formStart, $sectionClose - $formStart)
-$formHtml = $formHtml.Replace('-mx-4 sm:-mx-8 mt-16 w-[calc(100%+2rem)] sm:w-[calc(100%+4rem)]', 'mt-16 rounded-3xl border')
+$formHtml = [regex]::Replace($formHtml, '^<div\s+class="py-24\s+px-6\s+bg-\[#FAF6EE\][^"]*"\s+id="detail-consultation-section">', '<section class="py-24 px-6 bg-[#FAF6EE] relative overflow-hidden border-t border-neutral-200/80" id="detail-consultation-section">')
+$formHtml = [regex]::Replace($formHtml, '</div>\s*$', '</section>')
 $formHtml = [regex]::Replace($formHtml, '<h3(\s+class="[^"]*font-serif[^"]*"(?:[^>]*)data-i18n-html="contact\.consultationHeading"[^>]*)>([\s\S]*?)</h3>', '<h2$1>$2</h2>')
 
 # Pre-collect all articles metadata
@@ -360,14 +345,14 @@ for ($i = 0; $i -lt $count; $i++) {
                 <div class="aspect-[4/3] rounded-xl overflow-hidden bg-neutral-100 shadow-sm">
                     <img alt="$relTitleEnc" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" src="$($relArt.image)" onerror="this.src='/assets/images/dubai-office-2.webp'"/>
                 </div>
-                <div class="text-[11px] font-bold tracking-wider text-luxury-gold uppercase">
+                <div class="text-[11px] font-bold tracking-wider text-[#786142] uppercase">
                     $relCatEnc
                 </div>
                 <h3 class="font-serif font-bold text-base text-neutral-900 leading-snug line-clamp-2">
                     $relTitleEnc
                 </h3>
             </div>
-            <a class="inline-block text-[11px] font-bold uppercase tracking-wider text-neutral-800 border-b border-neutral-800 hover:text-luxury-gold hover:border-luxury-gold transition-colors pb-0.5 self-start" href="/blog/$($relArt.slug)/">
+            <a class="inline-block text-[11px] font-bold uppercase tracking-wider text-neutral-800 border-b border-neutral-800 hover:text-luxury-gold hover:border-luxury-gold transition-colors pb-0.5 self-start" href="/blog/$($relArt.slug)/" data-i18n="blog.readMore">
                 READ MORE
             </a>
         </article>
@@ -406,6 +391,12 @@ for ($i = 0; $i -lt $count; $i++) {
             } catch(e) {}
         })();
     </script>
+
+    <!-- Favicon & App Icons -->
+    <link href="https://shariftrip.com/wp-content/uploads/2024/06/Group-427321463.svg" rel="icon" type="image/svg+xml"/>
+    <link href="/assets/images/shariftrip-logo-1.svg" rel="alternate icon" type="image/svg+xml"/>
+    <link href="../../assets/images/shariftrip-logo-1.svg" rel="alternate icon" type="image/svg+xml"/>
+    <link href="https://shariftrip.com/wp-content/uploads/2024/06/Group-427321463.svg" rel="apple-touch-icon" sizes="180x180"/>
 
     <!-- Primary SEO & AEO Meta Tags -->
     <title>$encSeoTitle</title>
@@ -543,6 +534,15 @@ $faqSchemaJson
             max-height: calc(100vh - 80px);
             overflow-y: auto;
         }
+        .mega-dropdown::before {
+            content: '';
+            position: absolute;
+            top: -20px;
+            left: 0;
+            width: 100%;
+            height: 20px;
+            background: transparent;
+        }
         .custom-select-wrapper { position: relative !important; }
         .custom-select-dropdown {
             display: none;
@@ -567,8 +567,6 @@ $faqSchemaJson
 
 $navHtml
 
-$drawerHtml
-
     <!-- MAIN ARTICLE LAYOUT -->
     <main class="pt-28 pb-20 max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
         <div class="space-y-10">
@@ -588,7 +586,7 @@ $drawerHtml
 
             <!-- Hero Header of Article -->
             <div class="space-y-4">
-                <div class="inline-block bg-[#FAF6EE] text-luxury-gold font-bold text-xs uppercase tracking-widest px-3 py-1 rounded-full border border-luxury-gold/30">
+                <div id="detail-category-badge" class="inline-block bg-[#FAF6EE] text-[#786142] font-bold text-xs uppercase tracking-widest px-4 py-1.5 rounded-full border border-[#786142]/30">
                     $encCategory
                 </div>
                 <h1 class="font-serif text-3xl sm:text-4xl md:text-5xl font-bold text-neutral-900 leading-tight">
@@ -629,28 +627,31 @@ $faqCol2Html
                     </div>
                 </div>
             </div>
-
-            <!-- FULL FREE CONSULTATION FORM SECTION -->
-$formHtml
-
-            <!-- RELATED ARTICLES -->
-            <div class="pt-16 border-t border-neutral-200/80 space-y-8">
-                <div class="text-center space-y-2">
-                    <span class="text-xs font-bold uppercase tracking-[0.25em] text-luxury-gold">Recommended Reading</span>
-                    <h2 class="font-serif text-2xl sm:text-3xl font-bold text-neutral-900">Related Advisory Guides</h2>
-                </div>
-                <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
-$relCardsHtml
-                </div>
-            </div>
         </div>
     </main>
+
+    <!-- RELATED ARTICLES -->
+    <section class="py-20 bg-[#FDFCFB] border-t border-neutral-200/80" id="related-articles-section">
+        <div class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 space-y-8">
+            <div class="text-center space-y-2">
+                <span class="text-xs font-bold uppercase tracking-[0.25em] text-luxury-gold" data-i18n="blog.recommendedReading">Recommended Reading</span>
+                <h2 class="font-serif text-2xl sm:text-3xl font-bold text-neutral-900" data-i18n="blog.relatedGuides">Related Advisory Guides</h2>
+            </div>
+            <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+$relCardsHtml
+            </div>
+        </div>
+    </section>
+
+    <!-- FULL FREE CONSULTATION FORM SECTION -->
+$formHtml
 
 $footerHtml
 
     <!-- Core Scripts -->
     <script>
         let megaMenuTimer = null;
+
         function openMegaMenu(menuId) {
             clearTimeout(megaMenuTimer);
             document.querySelectorAll('.mega-dropdown').forEach(menu => {
@@ -670,6 +671,18 @@ $footerHtml
             const activeArrow = document.getElementById('arrow-' + menuId);
             if (activeArrow) activeArrow.style.transform = "rotate(180deg)";
         }
+
+        function keepMegaMenuOpen() {
+            clearTimeout(megaMenuTimer);
+        }
+
+        function scheduleCloseMegaMenus() {
+            clearTimeout(megaMenuTimer);
+            megaMenuTimer = setTimeout(() => {
+                closeAllMegaMenus();
+            }, 250);
+        }
+
         function closeAllMegaMenus() {
             clearTimeout(megaMenuTimer);
             document.querySelectorAll('.mega-dropdown').forEach(menu => {
@@ -680,6 +693,34 @@ $footerHtml
                 arrow.style.transform = "rotate(0deg)";
             });
         }
+
+        // Global safety listeners: close when clicking outside, scrolling, or pressing Escape
+        document.addEventListener('click', function(e) {
+            if (!e.target.closest('#main-header') && !e.target.closest('.mega-dropdown')) {
+                closeAllMegaMenus();
+            }
+        });
+
+        document.addEventListener('keydown', function(e) {
+            if (e.key === 'Escape') {
+                closeAllMegaMenus();
+            }
+        });
+
+        window.addEventListener('scroll', function() {
+            closeAllMegaMenus();
+        }, { passive: true });
+
+        document.addEventListener('DOMContentLoaded', function() {
+            document.querySelectorAll('.mega-dropdown').forEach(function(dropdown) {
+                dropdown.addEventListener('mouseenter', keepMegaMenuOpen);
+                dropdown.addEventListener('mouseleave', scheduleCloseMegaMenus);
+            });
+            const mainHeader = document.getElementById('main-header');
+            if (mainHeader) {
+                mainHeader.addEventListener('mouseleave', scheduleCloseMegaMenus);
+            }
+        });
 
         // Accordion toggle handler
         function toggleBlogFAQ(id) {
