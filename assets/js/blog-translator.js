@@ -6,37 +6,47 @@
     'use strict';
 
     var CATEGORY_MAP = {
-        'Sharif Group Insights': {
+        'sharif group insights': {
             'ar': 'رؤى مجموعة شريف',
             'fa': 'دیدگاه‌های شریف گروپ',
             'zh': '谢里夫集团专栏'
         },
-        'Citizenship': {
+        'citizenship by investment': {
             'ar': 'الجنسية عن طريق الاستثمار',
             'fa': 'شهروندی از طریق سرمایه‌گذاری',
-            'zh': '投资入籍项目'
+            'zh': '投资入籍'
         },
-        'Residency': {
+        'citizenship': {
+            'ar': 'الجنسية عن طريق الاستثمار',
+            'fa': 'شهروندی از طریق سرمایه‌گذاری',
+            'zh': '投资入籍'
+        },
+        'residency by investment': {
             'ar': 'الإقامة عن طريق الاستثمار',
             'fa': 'اقامت از طریق سرمایه‌گذاری',
-            'zh': '投资居留项目'
+            'zh': '投资居留'
         },
-        'Golden Visa': {
+        'residency': {
+            'ar': 'الإقامة عن طريق الاستثمار',
+            'fa': 'اقامت از طریق سرمایه‌گذاری',
+            'zh': '投资居留'
+        },
+        'golden visa': {
             'ar': 'التأشيرة الذهبية',
             'fa': 'ویزای طلایی',
             'zh': '黄金签证'
         },
-        'Real Estate': {
+        'real estate': {
             'ar': 'العقارات الفاخرة',
             'fa': 'املاک و مستغلات',
             'zh': '高端房地产'
         },
-        'Educational Advisory': {
+        'educational advisory': {
             'ar': 'الاستشارات التعليمية',
             'fa': 'مشاوره تحصیلی',
             'zh': '教育咨询'
         },
-        'Corporate & Tax Strategy': {
+        'corporate & tax strategy': {
             'ar': 'استراتيجيات الشركات والضرائب',
             'fa': 'استراتژی شرکتی و مالیاتی',
             'zh': '企业与税务战略'
@@ -82,7 +92,29 @@
 
     function translateCategory(cat, lang) {
         if (!cat || lang === 'en') return cat;
-        return (CATEGORY_MAP[cat] && CATEGORY_MAP[cat][lang]) || cat;
+        var norm = String(cat).trim().toLowerCase().replace(/\s+/g, ' ');
+        if (CATEGORY_MAP[norm] && CATEGORY_MAP[norm][lang]) {
+            return CATEGORY_MAP[norm][lang];
+        }
+        if (norm.indexOf('citizenship') !== -1) {
+            return (CATEGORY_MAP['citizenship by investment'] && CATEGORY_MAP['citizenship by investment'][lang]) || cat;
+        }
+        if (norm.indexOf('residency') !== -1) {
+            return (CATEGORY_MAP['residency by investment'] && CATEGORY_MAP['residency by investment'][lang]) || cat;
+        }
+        if (norm.indexOf('real estate') !== -1) {
+            return (CATEGORY_MAP['real estate'] && CATEGORY_MAP['real estate'][lang]) || cat;
+        }
+        if (norm.indexOf('educational') !== -1) {
+            return (CATEGORY_MAP['educational advisory'] && CATEGORY_MAP['educational advisory'][lang]) || cat;
+        }
+        if (norm.indexOf('corporate') !== -1 || norm.indexOf('tax') !== -1) {
+            return (CATEGORY_MAP['corporate & tax strategy'] && CATEGORY_MAP['corporate & tax strategy'][lang]) || cat;
+        }
+        if (norm.indexOf('sharif') !== -1 || norm.indexOf('insight') !== -1) {
+            return (CATEGORY_MAP['sharif group insights'] && CATEGORY_MAP['sharif group insights'][lang]) || cat;
+        }
+        return cat;
     }
 
     function translateAuthor(auth, lang) {
@@ -598,7 +630,7 @@
             var relCards = relSection.querySelectorAll('article, .blog-item');
             var cardList = [];
             relCards.forEach(function(card) {
-                var catEl = card.querySelector('.text-\\[\\#786142\\]') || card.querySelector('.text-luxury-gold.uppercase') || card.querySelector('div.text-\\[11px\\]');
+                var catEl = card.querySelector('.related-category-tag') || card.querySelector('.text-\\[\\#786142\\]') || card.querySelector('.text-luxury-gold.uppercase') || card.querySelector('div.text-\\[11px\\]');
                 var titleEl = card.querySelector('h3');
                 var linkEl = card.querySelector('a[href*="/blog/"]');
                 var imgEl = card.querySelector('img');
@@ -606,7 +638,7 @@
                 var m = href.match(/\/blog\/([^\/]+)/);
                 cardList.push({
                     slug: m ? m[1] : '',
-                    cat: catEl ? catEl.textContent.trim() : '',
+                    cat: (catEl && catEl.getAttribute('data-category')) || (catEl ? catEl.textContent.trim() : ''),
                     title: titleEl ? titleEl.textContent.trim() : '',
                     alt: imgEl ? imgEl.getAttribute('alt') : '',
                     btn: linkEl ? linkEl.textContent.trim() : ''
@@ -733,7 +765,7 @@
                     rCards.forEach(function(card, idx) {
                         var origCard = originalStaticData.related.cards[idx];
                         if (!origCard) return;
-                        var cCat = card.querySelector('.text-\\[\\#786142\\]') || card.querySelector('.text-luxury-gold.uppercase') || card.querySelector('div.text-\\[11px\\]');
+                        var cCat = card.querySelector('.related-category-tag') || card.querySelector('.text-\\[\\#786142\\]') || card.querySelector('.text-luxury-gold.uppercase') || card.querySelector('div.text-\\[11px\\]');
                         if (cCat) cCat.textContent = origCard.cat;
                         var cTitle = card.querySelector('h3');
                         if (cTitle) cTitle.textContent = origCard.title;
@@ -897,10 +929,24 @@
                     var cardSlug = m ? m[1] : '';
 
                     // Category
-                    var catEl = card.querySelector('.text-\\[\\#786142\\]') || card.querySelector('.text-luxury-gold.uppercase') || card.querySelector('div.text-\\[11px\\]');
+                    var catEl = card.querySelector('.related-category-tag') || card.querySelector('.text-\\[\\#786142\\]') || card.querySelector('.text-luxury-gold.uppercase') || card.querySelector('div.text-\\[11px\\]');
                     if (catEl) {
-                        var rawCat = (originalStaticData && originalStaticData.related && originalStaticData.related.cards[cIdx]) ? originalStaticData.related.cards[cIdx].cat : catEl.textContent.trim();
-                        var transCat = translateCategory(rawCat, curLang);
+                        var transCat = null;
+                        if (cardSlug && dataset && dataset[cardSlug] && dataset[cardSlug].category) {
+                            transCat = dataset[cardSlug].category;
+                        } else if (cardSlug && FULL_ARTICLES[cardSlug] && FULL_ARTICLES[cardSlug][curLang] && FULL_ARTICLES[cardSlug][curLang].category) {
+                            transCat = FULL_ARTICLES[cardSlug][curLang].category;
+                        }
+                        if (!transCat) {
+                            var rawCat = (catEl.getAttribute('data-category')) ||
+                                         (originalStaticData && originalStaticData.related && originalStaticData.related.cards[cIdx] && originalStaticData.related.cards[cIdx].cat) ||
+                                         catEl.textContent.trim();
+                            if ((!rawCat || rawCat === '') && cardSlug) {
+                                var b = getBaseArticleBySlug(cardSlug);
+                                if (b && b.category) rawCat = b.category;
+                            }
+                            transCat = translateCategory(rawCat, curLang);
+                        }
                         if (transCat) catEl.textContent = sanitizeLocalizedText(transCat, curLang);
                     }
 

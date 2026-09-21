@@ -345,7 +345,7 @@ for ($i = 0; $i -lt $count; $i++) {
                 <div class="aspect-[4/3] rounded-xl overflow-hidden bg-neutral-100 shadow-sm">
                     <img alt="$relTitleEnc" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" src="$($relArt.image)" onerror="this.src='/assets/images/dubai-office-2.webp'"/>
                 </div>
-                <div class="text-[11px] font-bold tracking-wider text-[#786142] uppercase">
+                <div class="text-[11px] font-bold tracking-wider text-[#786142] uppercase related-category-tag" data-category="$relCatEnc">
                     $relCatEnc
                 </div>
                 <h3 class="font-serif font-bold text-base text-neutral-900 leading-snug line-clamp-2">
