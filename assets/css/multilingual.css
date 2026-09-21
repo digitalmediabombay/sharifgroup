@@ -1161,3 +1161,19 @@ main[class*="pt-28"],
         scroll-margin-top: 100px !important;
     }
 }
+
+/* ==========================================================================
+   FIX: Footer Background Video Canvas Decoding (Fix display:none compositor block)
+   ========================================================================== */
+#footer-hidden-video,
+#footer-hidden-video-2 {
+    display: block !important;
+    position: absolute !important;
+    top: 0 !important;
+    left: 0 !important;
+    width: 1px !important;
+    height: 1px !important;
+    opacity: 0.001 !important;
+    pointer-events: none !important;
+    z-index: -100 !important;
+}

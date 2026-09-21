@@ -1024,10 +1024,152 @@
         // Initialize floating WhatsApp advisor widget site-wide
         loadWhatsAppWidget();
 
+        // Initialize footer canvas video site-wide
+        initFooterCanvasVideo();
+
         // Safety fallback: if anything stalls, unmask the UI so user is never blocked
         setTimeout(function () {
             document.documentElement.classList.remove('i18n-pending');
         }, 1500);
+    }
+
+    // Global Robust Footer Canvas Video Controller
+    function initFooterCanvasVideo() {
+        const canvas = document.getElementById("footer-seamless-canvas");
+        if (!canvas || canvas._hasCanvasEngine) return;
+        canvas._hasCanvasEngine = true;
+
+        const v1 = document.getElementById("footer-hidden-video");
+        const v2 = document.getElementById("footer-hidden-video-2");
+        if (!v1) return;
+
+        // Ensure video elements are active in browser rendering pipeline (not display: none)
+        // while remaining invisible to the user
+        [v1, v2].forEach(function(v) {
+            if (!v) return;
+            v.classList.remove('hidden');
+            v.style.cssText = 'position:absolute;top:0;left:0;width:1px;height:1px;opacity:0.001;pointer-events:none;z-index:-100;';
+            v.muted = true;
+            v.playsInline = true;
+            v.setAttribute('muted', '');
+            v.setAttribute('playsinline', '');
+            v.setAttribute('webkit-playsinline', '');
+            v.preload = 'auto';
+
+            // Verify source
+            var srcEl = v.querySelector('source');
+            if (srcEl && srcEl.getAttribute('src')) {
+                var rawSrc = srcEl.getAttribute('src');
+                if (!rawSrc.startsWith('/') && !rawSrc.startsWith('http') && window.location.pathname.startsWith('/blog/')) {
+                    srcEl.src = '/assets/videos/footer_bg_e58bba71.mp4';
+                    v.src = '/assets/videos/footer_bg_e58bba71.mp4';
+                }
+            }
+        });
+
+        const ctx = canvas.getContext("2d", { alpha: false });
+        let activeVideo = v1;
+        let standbyVideo = v2;
+        let crossfadeAlpha = 0;
+        let isFading = false;
+        let animationFrameId = null;
+        let isFooterVisible = false;
+
+        function resizeCanvas() {
+            const dpr = Math.min(window.devicePixelRatio || 1, 1.5);
+            const parent = canvas.parentElement || canvas;
+            const w = Math.floor((parent.clientWidth || canvas.offsetWidth || window.innerWidth) * dpr);
+            const h = Math.floor((parent.clientHeight || canvas.offsetHeight || 500) * dpr);
+            if (w > 0 && h > 0 && (canvas.width !== w || canvas.height !== h)) {
+                canvas.width = w;
+                canvas.height = h;
+            }
+        }
+
+        if (window.ResizeObserver) {
+            try {
+                new ResizeObserver(resizeCanvas).observe(canvas.parentElement || canvas);
+            } catch(e) {}
+        }
+        window.addEventListener("resize", resizeCanvas, { passive: true });
+        resizeCanvas();
+
+        function renderFrame() {
+            if (!isFooterVisible) return;
+
+            if (activeVideo && activeVideo.duration && activeVideo.currentTime >= activeVideo.duration - 1.2 && !isFading && standbyVideo) {
+                isFading = true;
+                standbyVideo.currentTime = 0;
+                standbyVideo.play().catch(function() {});
+            }
+            if (isFading) {
+                crossfadeAlpha += 0.04;
+                if (crossfadeAlpha >= 1) {
+                    crossfadeAlpha = 1;
+                    if (activeVideo) activeVideo.pause();
+                    let temp = activeVideo;
+                    activeVideo = standbyVideo;
+                    standbyVideo = temp;
+                    isFading = false;
+                    crossfadeAlpha = 0;
+                }
+            }
+            ctx.globalAlpha = 1;
+            if (activeVideo && activeVideo.readyState >= 2) {
+                ctx.drawImage(activeVideo, 0, 0, canvas.width, canvas.height);
+            }
+            if (isFading && standbyVideo && standbyVideo.readyState >= 2) {
+                ctx.globalAlpha = crossfadeAlpha;
+                ctx.drawImage(standbyVideo, 0, 0, canvas.width, canvas.height);
+            }
+            animationFrameId = requestAnimationFrame(renderFrame);
+        }
+
+        function startPlayback() {
+            if (activeVideo && activeVideo.paused) {
+                activeVideo.play().catch(function() {});
+            }
+            if (!animationFrameId) {
+                renderFrame();
+            }
+        }
+
+        function pausePlayback() {
+            if (activeVideo) activeVideo.pause();
+            if (standbyVideo) standbyVideo.pause();
+            if (animationFrameId) {
+                cancelAnimationFrame(animationFrameId);
+                animationFrameId = null;
+            }
+        }
+
+        const target = canvas.closest('footer') || canvas.parentElement || canvas;
+        if ('IntersectionObserver' in window) {
+            const observer = new IntersectionObserver(function(entries) {
+                entries.forEach(function(entry) {
+                    isFooterVisible = entry.isIntersecting;
+                    if (isFooterVisible) {
+                        startPlayback();
+                    } else {
+                        pausePlayback();
+                    }
+                });
+            }, { rootMargin: '350px' });
+            observer.observe(target);
+        } else {
+            isFooterVisible = true;
+            startPlayback();
+        }
+
+        // Handle user interaction unlock for mobile browsers
+        function unlockAutoplay() {
+            if (activeVideo && activeVideo.paused && isFooterVisible) {
+                activeVideo.play().catch(function() {});
+            }
+        }
+        ['touchstart', 'click', 'scroll'].forEach(function(evt) {
+            window.addEventListener(evt, unlockAutoplay, { once: true, passive: true });
+        });
     }
 
     if (document.readyState === 'loading') {
