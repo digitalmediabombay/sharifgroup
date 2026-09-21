@@ -188,6 +188,8 @@ $navHtml = $navHtml.Replace('src="../assets/', 'src="/assets/')
 $navHtml = $navHtml.Replace('src="../alirezasharif.svg"', 'src="/blog/alirezasharif.svg"')
 $navHtml = $navHtml.Replace('src="alirezasharif.svg"', 'src="/blog/alirezasharif.svg"')
 $navHtml = $navHtml.Replace('src="imclogo.webp"', 'src="/blog/imclogo.webp"')
+$navHtml = [regex]::Replace($navHtml, '(<a[^>]+data-i18n="nav\.blog"[^>]+href=)"[^"]*"', '$1"/blog/"')
+$navHtml = [regex]::Replace($navHtml, '(<a[^>]+href=)"[^"]*"([^>]+data-i18n="nav\.blog")', '$1"/blog/"$2')
 
 # Extract Footer
 $footerStart = $content.IndexOf("<footer")
@@ -206,6 +208,9 @@ $footerHtml = $footerHtml.Replace('href="../programs/citizenshipbyinvestment/stk
 $footerHtml = $footerHtml.Replace('href="../programs/citizenshipbyinvestment/greneda/index.html"', 'href="/programs/citizenshipbyinvestment/grenada/"')
 $footerHtml = $footerHtml.Replace('href="../programs/', 'href="/programs/')
 $footerHtml = $footerHtml.Replace('href="index.html"', 'href="/blog/"')
+$footerHtml = [regex]::Replace($footerHtml, '(<a[^>]+data-i18n="megaMenu\.insights"[^>]+href=)"[^"]*"', '$1"/blog/"')
+$footerHtml = [regex]::Replace($footerHtml, '(<a[^>]+href=)"[^"]*"([^>]+data-i18n="megaMenu\.insights")', '$1"/blog/"$2')
+
 $navHtml = $navHtml.Replace('../assets/', '../../assets/')
 $footerHtml = $footerHtml.Replace('../assets/', '../../assets/')
 $footerHtml = $footerHtml.Replace('href="../cookiepolicy/index.html"', 'href="/cookiepolicy/"')

@@ -1027,6 +1027,17 @@
         // Initialize footer canvas video site-wide
         initFooterCanvasVideo();
 
+        // Ensure Blog navigation links site-wide always route to /blog/ (never root /)
+        function normalizeNavLinks() {
+            document.querySelectorAll('a[data-i18n="nav.blog"], a[data-i18n="megaMenu.insights"]').forEach(function(el) {
+                var href = el.getAttribute('href') || '';
+                if (href === '/' || href === 'index.html' || href === '../index.html' || href === '') {
+                    el.setAttribute('href', '/blog/');
+                }
+            });
+        }
+        normalizeNavLinks();
+
         // Safety fallback: if anything stalls, unmask the UI so user is never blocked
         setTimeout(function () {
             document.documentElement.classList.remove('i18n-pending');
