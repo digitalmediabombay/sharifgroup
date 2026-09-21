@@ -540,7 +540,7 @@
         var contentEl = document.querySelector('.article-content');
         if (!h1 || !contentEl) return;
 
-        var catEl = document.querySelector('#detail-category-badge') || document.querySelector('main .space-y-4 > div:first-child');
+        var catEl = document.querySelector('#detail-category-badge');
         var breadcrumbNav = document.querySelector('main nav');
         var breadcrumbHome = breadcrumbNav ? breadcrumbNav.querySelector('a[href="/"]') : null;
         var breadcrumbBlog = breadcrumbNav ? breadcrumbNav.querySelector('a[href="/blog/"]') : null;
@@ -680,7 +680,7 @@
                     if (bTitle) bTitle.textContent = originalStaticData.breadcrumb;
                 }
 
-                var catEl = document.querySelector('#detail-category-badge') || document.querySelector('main .space-y-4 > div:first-child');
+                var catEl = document.querySelector('#detail-category-badge');
                 if (catEl) catEl.textContent = originalStaticData.category;
 
                 var metaBar = document.querySelector('main .space-y-4 .flex.flex-wrap');
@@ -778,7 +778,7 @@
             }
 
             // 2. Category
-            var catEl = document.querySelector('#detail-category-badge') || document.querySelector('main .space-y-4 > div:first-child');
+            var catEl = document.querySelector('#detail-category-badge');
             if (catEl) {
                 var rawCat = (baseArt && baseArt.category) || (originalStaticData ? originalStaticData.category : '');
                 var translatedCat = translateCategory(rawCat, curLang);
