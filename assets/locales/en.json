@@ -403,7 +403,12 @@
       "ready-properties-vs-off-plan-which-is-better": {
         "title": "Ready Properties vs Off-Plan: Which is Better?"
       }
-    }
+    },
+    "contactBannerTitle": "Contact Sharif Group <span class=\"italic text-luxury-gold font-normal\">today</span>",
+    "contactBannerDesc": "Sharif Group offers services to help global clients achieve investment goals, from acquiring residency and citizenship to buying luxury real estate and establishing businesses. Contact us to schedule a consultation and learn how we can support your successful investment journey.",
+    "contactBannerBtn": "CONTACT US",
+    "loadMore": "LOAD MORE ↓",
+    "filterResidencyLabel": "Residency Filter:"
   },
   "megaMenu": {
     "citizenshipTitle": "Citizenship By Investment",

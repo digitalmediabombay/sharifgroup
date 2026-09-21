@@ -403,7 +403,12 @@
       "ready-properties-vs-off-plan-which-is-better": {
         "title": "现房对比期房：哪种迪拜房产投资更适合您？"
       }
-    }
+    },
+    "contactBannerTitle": "立即联系<span class=\"italic text-luxury-gold font-normal\">谢里夫集团</span>",
+    "contactBannerDesc": "谢里夫集团提供全方位专业服务，协助全球客户实现投资目标，涵盖居留权与公民身份办理、高端豪宅购置以及企业设立。欢迎联系我们预约咨询，携手开启成功的投资之旅。",
+    "contactBannerBtn": "联系我们",
+    "loadMore": "加载更多 ↓",
+    "filterResidencyLabel": "居留项目筛选："
   },
   "megaMenu": {
     "citizenshipTitle": "投资入籍",

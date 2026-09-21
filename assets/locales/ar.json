@@ -403,7 +403,12 @@
       "ready-properties-vs-off-plan-which-is-better": {
         "title": "العقارات الجاهزة مقابل قيد الإنشاء: أيهما أفضل لمستثمري دبي؟"
       }
-    }
+    },
+    "contactBannerTitle": "اتصل بمجموعة شريف <span class=\"italic text-luxury-gold font-normal\">اليوم</span>",
+    "contactBannerDesc": "تقدم مجموعة شريف خدمات متكاملة لمساعدة العملاء العالميين على تحقيق أهدافهم الاستثمارية، بدءاً من الحصول على الإقامة والجنسية إلى شراء العقارات الفاخرة وتأسيس الشركات. تواصل معنا لحجز استشارة واكتشف كيف ندعم رحلتك الاستثمارية بنجاح.",
+    "contactBannerBtn": "اتصل بنا",
+    "loadMore": "تحميل المزيد ↓",
+    "filterResidencyLabel": "تصفية الإقامة:"
   },
   "megaMenu": {
     "citizenshipTitle": "الجنسية عن طريق الاستثمار",
