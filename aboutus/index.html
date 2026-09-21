@@ -1479,7 +1479,7 @@
 <p class="text-xs md:text-sm text-neutral-600 font-light leading-relaxed max-w-xl mx-auto" data-i18n="pages.aboutUs.delivery_milestone_item3">Here is a look at the special moment when a client receives their official second passport after completing their application process.</p>
 </div>
 <div class="rounded-3xl overflow-hidden shadow-2xl border border-neutral-200/80 bg-black neon-card-hover group max-w-6xl w-full mx-auto">
-<video id="passport-delivery-video" class="w-full h-auto aspect-video object-cover" loop="" muted="" playsinline="" preload="none" controls>
+<video id="passport-delivery-video" class="w-full h-auto aspect-video object-cover" autoplay="" loop="" muted="" playsinline="" preload="auto">
 <source src="SecondPassportGranted.mp4" type="video/mp4"/>
                 Your browser does not support the video tag.
             </video>
@@ -2335,12 +2335,32 @@
             milestoneVideo.muted = true;
             milestoneVideo.defaultMuted = true;
 
+            const tryPlay = () => {
+                const playPromise = milestoneVideo.play();
+                if (playPromise !== undefined) {
+                    playPromise.catch(() => {});
+                }
+            };
+
+            tryPlay();
+
+            // Unlock playback on first user touch/scroll if browser paused it
+            const unlockPlayback = () => {
+                tryPlay();
+                document.removeEventListener('touchstart', unlockPlayback);
+                document.removeEventListener('scroll', unlockPlayback);
+                document.removeEventListener('click', unlockPlayback);
+            };
+            document.addEventListener('touchstart', unlockPlayback, { passive: true });
+            document.addEventListener('scroll', unlockPlayback, { passive: true });
+            document.addEventListener('click', unlockPlayback, { passive: true });
+
             // IntersectionObserver: Only buffer and play when scrolled into view
             if ('IntersectionObserver' in window) {
                 const videoObserver = new IntersectionObserver((entries) => {
                     entries.forEach((entry) => {
                         if (entry.isIntersecting) {
-                            milestoneVideo.play().catch(() => {});
+                            tryPlay();
                         } else {
                             milestoneVideo.pause();
                         }
