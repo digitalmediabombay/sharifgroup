@@ -209,7 +209,7 @@
         }
     }
 
-    var I18N_VERSION = '20260921_v16';
+    var I18N_VERSION = '20260921_v17';
 
     function loadTranslation(lang, callback) {
         var pathname = (window.location && window.location.pathname) ? window.location.pathname.toLowerCase() : '';
@@ -415,6 +415,132 @@
         localizeDomNumbers(lang);
     }
 
+    var PREFERRED_LANG_MAP = {
+        'english': { 'en': 'English', 'ar': 'الإنجليزية (English)', 'fa': 'انگلیسی (English)', 'zh': '英语 (English)' },
+        'arabic': { 'en': 'Arabic', 'ar': 'العربية', 'fa': 'عربی', 'zh': '阿拉伯语' },
+        'russian': { 'en': 'Russian', 'ar': 'الروسية', 'fa': 'روسی', 'zh': '俄语' },
+        'french': { 'en': 'French', 'ar': 'الفرنسية', 'fa': 'فرانسوی', 'zh': '法语' },
+        'hindi': { 'en': 'Hindi', 'ar': 'الهندية', 'fa': 'هندی', 'zh': '印地语' },
+        'urdu': { 'en': 'Urdu', 'ar': 'الأردية', 'fa': 'اردو', 'zh': '乌尔都语' },
+        'farsi': { 'en': 'Persian (Farsi)', 'ar': 'الفارسية (فارسی)', 'fa': 'فارسی', 'zh': '波斯语' },
+        'spanish': { 'en': 'Spanish', 'ar': 'الإسبانية', 'fa': 'اسپانیایی', 'zh': '西班牙语' }
+    };
+
+    var METHOD_OPTIONS_MAP = {
+        'phone': { 'en': 'Phone Call', 'ar': 'اتصال هاتفي', 'fa': 'تماس تلفنی', 'zh': '电话沟通' },
+        'whatsapp': { 'en': 'WhatsApp', 'ar': 'واتساب', 'fa': 'واتس‌اپ', 'zh': 'WhatsApp' },
+        'zoom': { 'en': 'Video Call', 'ar': 'مكالمة فيديو', 'fa': 'تماس تصویری', 'zh': '视频通话' }
+    };
+
+    var FORM_PLACEHOLDER_MAP = {
+        'firstName': {
+            'en': 'John',
+            'ar': 'الاسم الأول',
+            'fa': 'نام کوچک',
+            'zh': '名'
+        },
+        'lastName': {
+            'en': 'Doe',
+            'ar': 'اسم العائلة',
+            'fa': 'نام خانوادگی',
+            'zh': '姓'
+        },
+        'address': {
+            'en': 'Suite, Tower, City, Country',
+            'ar': 'الجناح، البرج، المدينة، الدولة',
+            'fa': 'ساختمان، شهر، کشور',
+            'zh': '套房、大厦、城市、国家'
+        },
+        'notes': {
+            'en': '...Detail any specific family parameters',
+            'ar': 'تفاصيل متطلبات العائلة أو أي استفسار خاص...',
+            'fa': 'جزئیات شرایط خانواده یا یادداشت‌های خاص...',
+            'zh': '填写您的具体家庭需求或咨询细节...'
+        }
+    };
+
+    var TIMEZONE_FIRST_OPTION = {
+        'en': 'Select Time Zone',
+        'ar': 'اختر المنطقة الزمنية',
+        'fa': 'انتخاب منطقه زمانی',
+        'zh': '请选择时区'
+    };
+
+    var SELECT_PROGRAM_FIRST_OPTION = {
+        'en': 'Select Option',
+        'ar': 'اختر البرنامج',
+        'fa': 'انتخاب برنامه',
+        'zh': '请选择项目'
+    };
+
+    var SELECT_SUBPROGRAM_FIRST_OPTION = {
+        'en': 'Select Sub-Program',
+        'ar': 'اختر المسار الفرعي',
+        'fa': 'انتخاب زیربرنامه',
+        'zh': '请选择子项目'
+    };
+
+    function translateConsultationForms(lang) {
+        var curLang = lang || 'en';
+
+        // 1. Preferred Language dropdown
+        document.querySelectorAll('select[name="preferredLanguage"]').forEach(function(sel) {
+            for (var i = 0; i < sel.options.length; i++) {
+                var opt = sel.options[i];
+                var val = (opt.value || '').toLowerCase().trim();
+                if (PREFERRED_LANG_MAP[val] && PREFERRED_LANG_MAP[val][curLang]) {
+                    opt.textContent = PREFERRED_LANG_MAP[val][curLang];
+                }
+            }
+        });
+
+        // 2. Preferred Method dropdown
+        document.querySelectorAll('select[name="preferredMethod"]').forEach(function(sel) {
+            for (var i = 0; i < sel.options.length; i++) {
+                var opt = sel.options[i];
+                var val = (opt.value || '').toLowerCase().trim();
+                if (METHOD_OPTIONS_MAP[val] && METHOD_OPTIONS_MAP[val][curLang]) {
+                    opt.textContent = METHOD_OPTIONS_MAP[val][curLang];
+                }
+            }
+        });
+
+        // 3. Timezone Select (Set dir="ltr" to prevent reversing UTC+04:00 into -UTC in RTL, and translate first option)
+        document.querySelectorAll('select[name="timezone"]').forEach(function(sel) {
+            sel.setAttribute('dir', 'ltr');
+            if (sel.options && sel.options.length > 0) {
+                var first = sel.options[0];
+                if (!first.value || first.value === '') {
+                    first.textContent = TIMEZONE_FIRST_OPTION[curLang] || 'Select Time Zone';
+                }
+            }
+        });
+
+        // 4. Target Program and Sub-program default options
+        document.querySelectorAll('select[name="targetProgram"]').forEach(function(sel) {
+            if (sel.options && sel.options.length > 0 && (!sel.options[0].value || sel.options[0].value === '')) {
+                sel.options[0].textContent = SELECT_PROGRAM_FIRST_OPTION[curLang] || 'Select Option';
+            }
+        });
+        document.querySelectorAll('select[name="subProgram"], select#sub-service-choice, select#sub-service-choice-standalone').forEach(function(sel) {
+            if (sel.options && sel.options.length > 0 && (!sel.options[0].value || sel.options[0].value === '')) {
+                sel.options[0].textContent = SELECT_SUBPROGRAM_FIRST_OPTION[curLang] || 'Select Sub-Program';
+            }
+        });
+
+        // 5. Placeholders for common form fields
+        for (var fName in FORM_PLACEHOLDER_MAP) {
+            var fields = document.querySelectorAll('input[name="' + fName + '"], textarea[name="' + fName + '"]');
+            fields.forEach(function(fEl) {
+                if (FORM_PLACEHOLDER_MAP[fName][curLang]) {
+                    fEl.setAttribute('placeholder', FORM_PLACEHOLDER_MAP[fName][curLang]);
+                }
+            });
+        }
+    }
+
+    window.translateConsultationForms = translateConsultationForms;
+
     function applyTranslations(data, lang) {
         if (!data) return;
         var cfg = LANG_CONFIG[lang] || LANG_CONFIG['en'];
@@ -525,6 +651,11 @@
                     // Parent has icon and inner span: update the span only
                     var targetSpan = el.querySelector('span');
                     if (targetSpan) targetSpan.textContent = localized;
+                } else if (el.querySelector('.text-red-500, span.text-red-500')) {
+                    // Form label has a required asterisk span: preserve it!
+                    var starEl = el.querySelector('.text-red-500, span.text-red-500');
+                    var starHtml = starEl ? starEl.outerHTML : ' <span class="text-red-500">*</span>';
+                    el.innerHTML = localized + ' ' + starHtml;
                 } else if (typeof localized === 'string' && localized.indexOf('<') !== -1 && localized.indexOf('>') !== -1) {
                     // If the translation contains HTML formatting (e.g. italic spans, line breaks), preserve it
                     el.innerHTML = localized;
@@ -589,6 +720,9 @@
                 .replace(/[٠-٩]/g, function (d) { return ARABIC_DIGITS.indexOf(d); })
                 .replace(/[۰-۹]/g, function (d) { return PERSIAN_DIGITS.indexOf(d); });
         });
+
+        // 7c. Localize Consultation & Inquiry Form elements (Dropdowns, Placeholders, Timezone)
+        translateConsultationForms(lang);
 
         // 8. Update UI switcher states
         updateLanguageUI(lang);

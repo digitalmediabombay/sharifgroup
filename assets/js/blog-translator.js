@@ -308,7 +308,7 @@
 
         pendingFetches[lang] = callback ? [callback] : [];
 
-        var BLOG_I18N_VERSION = '20260921_v15';
+        var BLOG_I18N_VERSION = '20260921_v17';
         var candidates = getArticleCandidateUrls(lang);
         var index = 0;
 
@@ -541,6 +541,15 @@
 
     function sanitizeLocalizedText(text, lang) {
         if (!text || typeof text !== 'string') return text;
+        // Strip any accidental backslashes before HTML tags, backticks or line endings
+        text = text
+            .replace(/\\`+/g, '')
+            .replace(/\\+<([a-zA-Z0-9\/])/g, '<$1')
+            .replace(/\\+<\/([a-zA-Z0-9]+)>/g, '</$1>')
+            .replace(/\\+(<\/[a-zA-Z0-9]+>)/g, '$1')
+            .replace(/\\+\s*(\r?\n|$)/g, '$1')
+            .replace(/^[`\\]+/, '')
+            .replace(/[`\\]+$/, '');
         if (lang === 'ar') {
             return text
                 .replace(/Sharif Group Advisory Desk/gi, 'مكتب استشارات مجموعة شريف')
@@ -745,6 +754,8 @@
                     originalStaticData.faqs.forEach(function(f) {
                         var btn = document.querySelector('button[onclick*="faq-dyn-' + f.idx + '"]');
                         if (btn) {
+                            var card = btn.closest('.border-b');
+                            if (card) card.style.display = '';
                             var qSpan = btn.querySelector('span:first-child');
                             if (qSpan) qSpan.textContent = f.q;
                         }
@@ -775,6 +786,9 @@
                         if (cBtn) cBtn.textContent = origCard.btn;
                     });
                 }
+            }
+            if (typeof window.translateConsultationForms === 'function') {
+                window.translateConsultationForms('en');
             }
             return;
         }
@@ -879,16 +893,22 @@
 
             // 7. ALL FAQs (Always apply full list from baseArt.faqs)
             var faqsToApply = (baseArt && Array.isArray(baseArt.faqs) && baseArt.faqs.length) ? baseArt.faqs : ((curatedArt && curatedArt.faqs) || []);
-            if (Array.isArray(faqsToApply) && faqsToApply.length) {
-                faqsToApply.forEach(function(faq, idx) {
-                    var btn = document.querySelector('button[onclick*="faq-dyn-' + idx + '"]');
-                    if (btn) {
-                        var qSpan = btn.querySelector('span:first-child');
-                        if (qSpan && faq.q) qSpan.textContent = sanitizeLocalizedText(faq.q, curLang);
-                    }
-                    var ansP = document.querySelector('#content-faq-dyn-' + idx + ' p');
-                    if (ansP && faq.a) ansP.textContent = sanitizeLocalizedText(faq.a, curLang);
-                });
+            for (var fIdx = 0; fIdx < 30; fIdx++) {
+                var fBtn = document.querySelector('button[onclick*="faq-dyn-' + fIdx + '"]');
+                if (!fBtn) continue;
+                var fCard = fBtn.closest('.border-b');
+                var fAnsP = document.querySelector('#content-faq-dyn-' + fIdx + ' p');
+                if (fIdx < faqsToApply.length && faqsToApply[fIdx]) {
+                    if (fCard) fCard.style.display = '';
+                    var qSpan = fBtn.querySelector('span:first-child');
+                    if (qSpan && faqsToApply[fIdx].q) qSpan.textContent = sanitizeLocalizedText(faqsToApply[fIdx].q, curLang);
+                    if (fAnsP && faqsToApply[fIdx].a) fAnsP.textContent = sanitizeLocalizedText(faqsToApply[fIdx].a, curLang);
+                } else if (curLang !== 'en') {
+                    // Safe guard: hide any extra untranslated English card so it doesn't leak
+                    if (fCard) fCard.style.display = 'none';
+                } else {
+                    if (fCard) fCard.style.display = '';
+                }
             }
 
             // 8. Related Advisory Guides Section
@@ -972,6 +992,11 @@
                         linkEl.textContent = readMoreText;
                     }
                 });
+            }
+
+            // 9. Localize Consultation & Inquiry Form elements
+            if (typeof window.translateConsultationForms === 'function') {
+                window.translateConsultationForms(curLang);
             }
         }
 
