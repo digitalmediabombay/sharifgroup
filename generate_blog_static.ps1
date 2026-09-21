@@ -225,6 +225,7 @@ $formHtml = $content.Substring($formStart, $sectionClose - $formStart)
 $formHtml = [regex]::Replace($formHtml, '^<div\s+class="py-24\s+px-6\s+bg-\[#FAF6EE\][^"]*"\s+id="detail-consultation-section">', '<section class="py-24 px-6 bg-[#FAF6EE] relative overflow-hidden border-t border-neutral-200/80" id="detail-consultation-section">')
 $formHtml = [regex]::Replace($formHtml, '</div>\s*$', '</section>')
 $formHtml = [regex]::Replace($formHtml, '<h3(\s+class="[^"]*font-serif[^"]*"(?:[^>]*)data-i18n-html="contact\.consultationHeading"[^>]*)>([\s\S]*?)</h3>', '<h2$1>$2</h2>')
+$formHtml = $formHtml.Replace('style="display: none !important;"', '')
 
 # Pre-collect all articles metadata
 $articlesList = @()

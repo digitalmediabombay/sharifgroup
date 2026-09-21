@@ -115,9 +115,9 @@ STEP 4: Update the Database Connection File (config.php)
 
    ┌──────────────────────────────────────────────────────────────────┐
    │  define('DB_HOST', 'localhost');                                 │
-   │  define('DB_NAME', 'cpaneluser_sharif_cms');     ← Step 1 exact │
-   │  define('DB_USER', 'cpaneluser_sharif_admin');   ← Step 1 exact │
-   │  define('DB_PASS', 'YourStrongPasswordHere');    ← Step 1 exact │
+   │  define('DB_NAME', 'cpaneluser_sharif_cms');     ← Step 1 exact  │
+   │  define('DB_USER', 'cpaneluser_sharif_admin');   ← Step 1 exact  │
+   │  define('DB_PASS', 'YourStrongPasswordHere');    ← Step 1 exact  │
    └──────────────────────────────────────────────────────────────────┘
 
    * Note: On almost all cPanel hosts, DB_HOST remains 'localhost'.
