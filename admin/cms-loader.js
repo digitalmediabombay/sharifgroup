@@ -2371,7 +2371,7 @@
       return path.join(' > ');
     }
 
-    const EDITABLE_SELECTOR = 'h1, h2, h3, h4, h5, h6, p, a, button, span, label, strong, em, b, i, u, s, li, blockquote, q, cite, figcaption, small, [data-i18n], [data-cms], .counter-value';
+    const EDITABLE_SELECTOR = 'h1, h2, h3, h4, h5, h6, p, a, button, span, label, strong, em, b, i, u, s, li, blockquote, q, cite, figcaption, small, img, [data-i18n], [data-cms], .counter-value';
 
     function getCleanBodyHtml(bodyEl) {
       if (!bodyEl) return '';
@@ -2388,15 +2388,21 @@
       const tag = el.tagName;
       const ignoreTags = ['SCRIPT', 'STYLE', 'SVG', 'PATH', 'IFRAME', 'INPUT', 'TEXTAREA', 'SELECT', 'VIDEO', 'CANVAS'];
       if (ignoreTags.includes(tag)) return false;
-      if (el.closest('#cms-inline-toolbar') || el.closest('#cms-hover-tooltip') || el.closest('#cms-save-toast') || el.closest('#cms-preview-badge') || el.closest('.cms-section-tool')) return false;
+      if (el.closest('#cms-inline-toolbar') || el.closest('#cms-hover-tooltip') || el.closest('#cms-save-toast') || el.closest('#cms-preview-badge') || el.closest('.cms-section-tool') || el.closest('#cms-image-popover')) return false;
 
       // Navigation header, navbar, mobile menu and mega-menus are site navigation, NOT editable body text
       if (el.closest('header, nav, #main-header, #mobile-menu, .mega-menu, [id*="mega"], [class*="navbar"]')) {
         return false;
       }
 
+      if (tag === 'IMG') {
+        return true;
+      }
+
       const textTags = ['H1', 'H2', 'H3', 'H4', 'H5', 'H6', 'P', 'A', 'BUTTON', 'SPAN', 'LABEL', 'STRONG', 'EM', 'B', 'I', 'U', 'S', 'LI', 'BLOCKQUOTE', 'Q', 'CITE', 'FIGCAPTION', 'SMALL'];
-      if (textTags.includes(tag) || el.className.includes('-hero-glow') || el.classList.contains('dominica-hero-glow') || el.classList.contains('stlucia-hero-glow') || el.classList.contains('counter-value')) {
+      const classStr = typeof el.className === 'string' ? el.className : (el.className?.baseVal || '');
+      const hasGlow = classStr.includes('-hero-glow') || (el.classList && (el.classList.contains('dominica-hero-glow') || el.classList.contains('stlucia-hero-glow') || el.classList.contains('counter-value')));
+      if (textTags.includes(tag) || hasGlow) {
         // Return true if it has text
         return Boolean(el.innerText && el.innerText.trim().length > 0);
       }
@@ -2696,7 +2702,10 @@
     // Delegated Hover
     document.addEventListener('mouseover', (e) => {
       if (!editMode || activeEl) return;
-      const target = e.target.closest(EDITABLE_SELECTOR);
+      let targetEl = e.target;
+      if (targetEl && targetEl.nodeType === 3) targetEl = targetEl.parentElement;
+      if (!targetEl || targetEl === document.body || targetEl === document.documentElement || !targetEl.closest) return;
+      const target = targetEl.closest(EDITABLE_SELECTOR);
       if (target && isEditableTarget(target)) {
         if (hoveredEl && hoveredEl !== target) hoveredEl.classList.remove('cms-target-hover');
         hoveredEl = target;
@@ -2704,10 +2713,15 @@
 
         const rect = target.getBoundingClientRect();
         tooltip.style.display = 'block';
-        let top = rect.top - 20;
-        if (top < 5) top = rect.bottom + 4;
-        tooltip.style.top = `${top}px`;
-        tooltip.style.left = `${Math.max(5, rect.left)}px`;
+        if (target.tagName === 'IMG') {
+          tooltip.textContent = 'Click to change image';
+        } else {
+          tooltip.textContent = 'Click to edit text';
+        }
+        let top = rect.top - 24;
+        if (top < 5) top = rect.bottom + 6;
+        tooltip.style.top = `${Math.max(5, top)}px`;
+        tooltip.style.left = `${Math.max(5, Math.min(window.innerWidth - 150, rect.left))}px`;
       } else {
         if (hoveredEl) {
           hoveredEl.classList.remove('cms-target-hover');
@@ -2962,6 +2976,10 @@
         }
       } else if (msg.type === 'CMS_SET_MODE') {
         setEditMode(msg.mode === 'edit', false, false);
+      } else if (msg.type === 'CMS_SAVE_ACTIVE') {
+        if (activeEl) {
+          saveCurrentActive();
+        }
       } else if (msg.type === 'CMS_UPDATE_BLOG_DRAFT') {
         updateLiveBlogDraft(msg.draft);
       } else if (msg.type === 'CMS_BLOG_SAVED') {
@@ -3268,6 +3286,15 @@
     }
     if (isEditor) {
       console.log('%c[Sharif Group CMS Studio] Active mode: Visual Editor (Live Studio)', 'color:#C5A880;font-weight:700');
+      if (isInsideIframe && window.parent && window.parent !== window) {
+        try {
+          window.parent.postMessage({
+            type: 'CMS_FRAME_READY',
+            path: window.location.pathname,
+            href: window.location.href
+          }, '*');
+        } catch(e) {}
+      }
     }
   }
 

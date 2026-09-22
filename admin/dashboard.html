@@ -2797,7 +2797,12 @@
         } else if (msg.type === 'CMS_OPEN_SECTION_BUILDER') {
           openEditorDrawer(msg.section);
         } else if (msg.type === 'CMS_INLINE_SAVED') {
+          markDraft();
           markSaved();
+          if (window.CMS && window.CMS.Backend) {
+            window.CMS.Backend.syncToDb('draft');
+          }
+          showToast('Live studio edit saved!', 'success');
         }
       });
 
@@ -2807,17 +2812,26 @@
         const iframe = document.getElementById('live-iframe');
         if (!iframe) return;
         iframe.addEventListener('load', () => {
-          // Dynamically inject cms-loader.js into the iframe if not present (since removed from public templates)
           try {
             const doc = iframe.contentDocument || iframe.contentWindow.document;
-            if (doc && !doc.querySelector('script[src*="cms-loader.js"]')) {
-              const s = doc.createElement('script');
-              s.src = '/admin/cms-loader.js?v=' + Date.now();
-              doc.body.appendChild(s);
+            if (doc && doc.location.href && doc.location.href !== 'about:blank') {
+              if (!doc.querySelector('script[src*="cms-loader.js"]')) {
+                const s = doc.createElement('script');
+                s.src = '/admin/cms-loader.js?v=' + Date.now();
+                s.onload = () => {
+                  sendToIframe({ type: 'CMS_SET_LANG', lang: state.lang });
+                  sendToIframe({ type: 'CMS_SET_MODE', mode: state.canvasMode });
+                  syncActiveFormToLivePreview();
+                };
+                doc.body.appendChild(s);
+              } else {
+                sendToIframe({ type: 'CMS_SET_LANG', lang: state.lang });
+                sendToIframe({ type: 'CMS_SET_MODE', mode: state.canvasMode });
+                syncActiveFormToLivePreview();
+              }
             }
           } catch(e) {}
 
-          // Give cms-loader.js a moment to initialise, then push the current mode
           setTimeout(() => {
             sendToIframe({ type: 'CMS_SET_LANG', lang: state.lang });
             sendToIframe({ type: 'CMS_SET_MODE', mode: state.canvasMode });
@@ -6401,15 +6415,17 @@
         const team = window.CMS.getData(window.CMS.KEYS.TEAM) || [];
         const idx = team.findIndex(m => m.id === id);
         if (idx < 0) return;
-        team[idx].name = document.getElementById('tm-name')?.value || '';
-        team[idx].title = document.getElementById('tm-title')?.value || '';
-        team[idx].dept = document.getElementById('tm-dept')?.value || '';
-        team[idx].bio = document.getElementById('tm-bio')?.value || '';
-        team[idx].photo = document.getElementById('tm-photo')?.value || '';
-        team[idx].linkedin = document.getElementById('tm-linkedin')?.value || '';
-        team[idx].sort = parseInt(document.getElementById('tm-sort')?.value) || 1;
-        team[idx].visible = document.getElementById('tm-vis')?.value === 'true';
+        if (document.getElementById('tm-name')) team[idx].name = document.getElementById('tm-name').value;
+        if (document.getElementById('tm-title')) team[idx].title = document.getElementById('tm-title').value;
+        if (document.getElementById('tm-dept')) team[idx].dept = document.getElementById('tm-dept').value;
+        if (document.getElementById('tm-bio')) team[idx].bio = document.getElementById('tm-bio').value;
+        if (document.getElementById('tm-photo')) team[idx].photo = document.getElementById('tm-photo').value;
+        if (document.getElementById('tm-linkedin')) team[idx].linkedin = document.getElementById('tm-linkedin').value;
+        if (document.getElementById('tm-sort')) team[idx].sort = parseInt(document.getElementById('tm-sort').value) || 1;
+        if (document.getElementById('tm-vis')) team[idx].visible = document.getElementById('tm-vis').value === 'true';
         window.CMS.saveData(window.CMS.KEYS.TEAM, team);
+        if (window.CMS && window.CMS.Backend) window.CMS.Backend.syncToDb('draft');
+        markDraft();
         markSaved();
         showToast('Team member saved!');
         populateSidebar();
@@ -6482,19 +6498,20 @@
 
       function saveContactSales() {
         const c = window.CMS.getData(window.CMS.KEYS.CONTACT) || {};
-        c.general_email = document.getElementById('cs-gen-email')?.value.trim() || 'contact@sharifgroup.ae';
-        c.sales_email = document.getElementById('cs-sales-email')?.value.trim() || 'sales@sharifgroup.ae';
-        c.phone = document.getElementById('cs-phone')?.value.trim() || '+971 4 357 8737';
-        c.whatsapp = document.getElementById('cs-wa')?.value.trim() || '+971 4 357 8737';
-        c.address = document.getElementById('cs-address')?.value.trim() || '116, The Binary Tower, Business Bay, Dubai, United Arab Emirates';
-        c.hours = document.getElementById('cs-hours')?.value.trim() || 'Monday to Saturday 09:00 AM to 06:00 PM (GST)';
-        c.form_recipient = document.getElementById('cs-form-recipient')?.value.trim() || c.general_email;
+        if (document.getElementById('cs-gen-email')) c.general_email = document.getElementById('cs-gen-email').value.trim();
+        if (document.getElementById('cs-sales-email')) c.sales_email = document.getElementById('cs-sales-email').value.trim();
+        if (document.getElementById('cs-phone')) c.phone = document.getElementById('cs-phone').value.trim();
+        if (document.getElementById('cs-wa')) c.whatsapp = document.getElementById('cs-wa').value.trim();
+        if (document.getElementById('cs-address')) c.address = document.getElementById('cs-address').value.trim();
+        if (document.getElementById('cs-hours')) c.hours = document.getElementById('cs-hours').value.trim();
+        if (document.getElementById('cs-form-recipient')) c.form_recipient = document.getElementById('cs-form-recipient').value.trim();
 
         window.CMS.saveData(window.CMS.KEYS.CONTACT, c);
         markDraft();
         markSaved();
+        if (window.CMS && window.CMS.Backend) window.CMS.Backend.syncToDb('draft');
         sendToIframe({ type: 'CMS_SET_LANG', lang: state.lang });
-        showToast('Contact & Sales information saved!');
+        showToast('Contact & Sales information saved!', 'success');
       }
 
       // ──────────────────────────────────────────────────────────
@@ -6763,73 +6780,71 @@
         const l = state.lang;
         const about = window.CMS.getData(window.CMS.KEYS.ABOUTUS) || window.CMS.DEFAULTS.aboutus || {};
 
-        // 1. Hero
         about.hero = about.hero || {};
         about.hero[l] = about.hero[l] || {};
-        about.hero[l].badge = document.getElementById('about-hero-badge')?.value || '';
-        about.hero[l].title = document.getElementById('about-hero-title')?.value || '';
-        about.hero[l].subtitle = document.getElementById('about-hero-sub')?.value || '';
-        about.hero[l].img = document.getElementById('about-hero-img')?.value || '';
+        if (document.getElementById('about-hero-badge')) about.hero[l].badge = document.getElementById('about-hero-badge').value;
+        if (document.getElementById('about-hero-title')) about.hero[l].title = document.getElementById('about-hero-title').value;
+        if (document.getElementById('about-hero-sub')) about.hero[l].subtitle = document.getElementById('about-hero-sub').value;
+        if (document.getElementById('about-hero-img')) about.hero[l].img = document.getElementById('about-hero-img').value;
 
-        // 2. Overview
         about.overview = about.overview || {};
         about.overview[l] = about.overview[l] || {};
-        about.overview[l].badge = document.getElementById('about-ov-badge')?.value || '';
-        about.overview[l].heading = document.getElementById('about-ov-heading')?.value || '';
-        about.overview[l].p1 = document.getElementById('about-ov-p1')?.value || '';
-        about.overview[l].p2 = document.getElementById('about-ov-p2')?.value || '';
-        about.overview[l].cta_text = document.getElementById('about-ov-cta-text')?.value || '';
-        about.overview[l].cta_link = document.getElementById('about-ov-cta-link')?.value || '';
+        if (document.getElementById('about-ov-badge')) about.overview[l].badge = document.getElementById('about-ov-badge').value;
+        if (document.getElementById('about-ov-heading')) about.overview[l].heading = document.getElementById('about-ov-heading').value;
+        if (document.getElementById('about-ov-p1')) about.overview[l].p1 = document.getElementById('about-ov-p1').value;
+        if (document.getElementById('about-ov-p2')) about.overview[l].p2 = document.getElementById('about-ov-p2').value;
+        if (document.getElementById('about-ov-cta-text')) about.overview[l].cta_text = document.getElementById('about-ov-cta-text').value;
+        if (document.getElementById('about-ov-cta-link')) about.overview[l].cta_link = document.getElementById('about-ov-cta-link').value;
 
-        // 3. Stats
-        about.stats = [
-          { value: document.getElementById('about-stat1-val')?.value || '10+', ['label_' + l]: document.getElementById('about-stat1-lbl')?.value || '', label_en: document.getElementById('about-stat1-lbl')?.value || '' },
-          { value: document.getElementById('about-stat2-val')?.value || '1000+', ['label_' + l]: document.getElementById('about-stat2-lbl')?.value || '', label_en: document.getElementById('about-stat2-lbl')?.value || '' },
-          { value: document.getElementById('about-stat3-val')?.value || '100+', ['label_' + l]: document.getElementById('about-stat3-lbl')?.value || '', label_en: document.getElementById('about-stat3-lbl')?.value || '' },
-          { value: document.getElementById('about-stat4-val')?.value || '450+', ['label_' + l]: document.getElementById('about-stat4-lbl')?.value || '', label_en: document.getElementById('about-stat4-lbl')?.value || '' }
-        ];
+        if (document.getElementById('about-stat1-val')) {
+          about.stats = [
+            { value: document.getElementById('about-stat1-val')?.value || '10+', ['label_' + l]: document.getElementById('about-stat1-lbl')?.value || '', label_en: document.getElementById('about-stat1-lbl')?.value || '' },
+            { value: document.getElementById('about-stat2-val')?.value || '1000+', ['label_' + l]: document.getElementById('about-stat2-lbl')?.value || '', label_en: document.getElementById('about-stat2-lbl')?.value || '' },
+            { value: document.getElementById('about-stat3-val')?.value || '100+', ['label_' + l]: document.getElementById('about-stat3-lbl')?.value || '', label_en: document.getElementById('about-stat3-lbl')?.value || '' },
+            { value: document.getElementById('about-stat4-val')?.value || '450+', ['label_' + l]: document.getElementById('about-stat4-lbl')?.value || '', label_en: document.getElementById('about-stat4-lbl')?.value || '' }
+          ];
+        }
 
-        // 4. Architecture
         about.architecture = about.architecture || {};
         about.architecture[l] = about.architecture[l] || {};
-        about.architecture[l].badge = document.getElementById('about-arch-badge')?.value || '';
-        about.architecture[l].title = document.getElementById('about-arch-title')?.value || '';
-        about.architecture[l].desc = document.getElementById('about-arch-desc')?.value || '';
-        about.architecture[l].c1_badge = document.getElementById('about-c1-badge')?.value || '';
-        about.architecture[l].c1_p1 = document.getElementById('about-c1-p1')?.value || '';
-        about.architecture[l].c1_p2 = document.getElementById('about-c1-p2')?.value || '';
-        about.architecture[l].c2_badge = document.getElementById('about-c2-badge')?.value || '';
-        about.architecture[l].c2_p1 = document.getElementById('about-c2-p1')?.value || '';
-        about.architecture[l].c2_p2 = document.getElementById('about-c2-p2')?.value || '';
-        about.architecture[l].c3_badge = document.getElementById('about-c3-badge')?.value || '';
-        about.architecture[l].c3_p1 = document.getElementById('about-c3-p1')?.value || '';
-        about.architecture[l].c3_p2 = document.getElementById('about-c3-p2')?.value || '';
+        if (document.getElementById('about-arch-badge')) about.architecture[l].badge = document.getElementById('about-arch-badge').value;
+        if (document.getElementById('about-arch-title')) about.architecture[l].title = document.getElementById('about-arch-title').value;
+        if (document.getElementById('about-arch-desc')) about.architecture[l].desc = document.getElementById('about-arch-desc').value;
+        if (document.getElementById('about-c1-badge')) about.architecture[l].c1_badge = document.getElementById('about-c1-badge').value;
+        if (document.getElementById('about-c1-p1')) about.architecture[l].c1_p1 = document.getElementById('about-c1-p1').value;
+        if (document.getElementById('about-c1-p2')) about.architecture[l].c1_p2 = document.getElementById('about-c1-p2').value;
+        if (document.getElementById('about-c2-badge')) about.architecture[l].c2_badge = document.getElementById('about-c2-badge').value;
+        if (document.getElementById('about-c2-p1')) about.architecture[l].c2_p1 = document.getElementById('about-c2-p1').value;
+        if (document.getElementById('about-c2-p2')) about.architecture[l].c2_p2 = document.getElementById('about-c2-p2').value;
+        if (document.getElementById('about-c3-badge')) about.architecture[l].c3_badge = document.getElementById('about-c3-badge').value;
+        if (document.getElementById('about-c3-p1')) about.architecture[l].c3_p1 = document.getElementById('about-c3-p1').value;
+        if (document.getElementById('about-c3-p2')) about.architecture[l].c3_p2 = document.getElementById('about-c3-p2').value;
 
-        // 5. Founder
         about.founder = about.founder || {};
         about.founder[l] = about.founder[l] || {};
-        about.founder[l].name = document.getElementById('about-founder-name')?.value || '';
-        about.founder[l].title = document.getElementById('about-founder-title')?.value || '';
-        about.founder[l].badge = document.getElementById('about-founder-badge')?.value || '';
-        about.founder[l].quote = document.getElementById('about-founder-quote')?.value || '';
-        about.founder[l].p1 = document.getElementById('about-founder-p1')?.value || '';
-        about.founder[l].p2 = document.getElementById('about-founder-p2')?.value || '';
-        about.founder[l].photo = document.getElementById('about-founder-photo')?.value || '';
-        about.founder[l].profile_link = document.getElementById('about-founder-link')?.value || '';
+        if (document.getElementById('about-founder-name')) about.founder[l].name = document.getElementById('about-founder-name').value;
+        if (document.getElementById('about-founder-title')) about.founder[l].title = document.getElementById('about-founder-title').value;
+        if (document.getElementById('about-founder-badge')) about.founder[l].badge = document.getElementById('about-founder-badge').value;
+        if (document.getElementById('about-founder-quote')) about.founder[l].quote = document.getElementById('about-founder-quote').value;
+        if (document.getElementById('about-founder-p1')) about.founder[l].p1 = document.getElementById('about-founder-p1').value;
+        if (document.getElementById('about-founder-p2')) about.founder[l].p2 = document.getElementById('about-founder-p2').value;
+        if (document.getElementById('about-founder-photo')) about.founder[l].photo = document.getElementById('about-founder-photo').value;
+        if (document.getElementById('about-founder-link')) about.founder[l].profile_link = document.getElementById('about-founder-link').value;
 
-        // 6. CTA
         about.cta = about.cta || {};
         about.cta[l] = about.cta[l] || {};
-        about.cta[l].badge = document.getElementById('about-cta-badge')?.value || '';
-        about.cta[l].heading = document.getElementById('about-cta-heading')?.value || '';
-        about.cta[l].desc = document.getElementById('about-cta-desc')?.value || '';
-        about.cta[l].btn_text = document.getElementById('about-cta-btn')?.value || '';
-        about.cta[l].btn_link = document.getElementById('about-cta-link')?.value || '';
+        if (document.getElementById('about-cta-badge')) about.cta[l].badge = document.getElementById('about-cta-badge').value;
+        if (document.getElementById('about-cta-heading')) about.cta[l].heading = document.getElementById('about-cta-heading').value;
+        if (document.getElementById('about-cta-desc')) about.cta[l].desc = document.getElementById('about-cta-desc').value;
+        if (document.getElementById('about-cta-btn')) about.cta[l].btn_text = document.getElementById('about-cta-btn').value;
+        if (document.getElementById('about-cta-link')) about.cta[l].btn_link = document.getElementById('about-cta-link').value;
 
         window.CMS.saveData(window.CMS.KEYS.ABOUTUS, about);
+        if (window.CMS && window.CMS.Backend) window.CMS.Backend.syncToDb('draft');
         sendToIframe({ type: 'CMS_SET_LANG', lang: l });
+        markDraft();
         markSaved();
-        showToast('About Us page saved successfully!');
+        showToast('About Us page saved successfully!', 'success');
       }
 
       // ──────────────────────────────────────────────────────────
@@ -6891,15 +6906,16 @@
         const cp = window.CMS.getData('sgcms_cookiepolicy') || {};
         const l = state.lang;
         cp[l] = cp[l] || {};
-        cp[l].hero_badge = document.getElementById('cp-badge')?.value.trim() || '';
-        cp[l].hero_title = document.getElementById('cp-title')?.value.trim() || '';
-        cp[l].hero_desc = document.getElementById('cp-desc')?.value.trim() || '';
-        cp[l].p1_title = document.getElementById('cp-p1-title')?.value.trim() || '';
-        cp[l].p1_desc = document.getElementById('cp-p1-desc')?.value.trim() || '';
-        cp[l].p2_title = document.getElementById('cp-p2-title')?.value.trim() || '';
-        cp[l].p2_desc = document.getElementById('cp-p2-desc')?.value.trim() || '';
+        if (document.getElementById('cp-badge')) cp[l].hero_badge = document.getElementById('cp-badge').value.trim();
+        if (document.getElementById('cp-title')) cp[l].hero_title = document.getElementById('cp-title').value.trim();
+        if (document.getElementById('cp-desc')) cp[l].hero_desc = document.getElementById('cp-desc').value.trim();
+        if (document.getElementById('cp-p1-title')) cp[l].p1_title = document.getElementById('cp-p1-title').value.trim();
+        if (document.getElementById('cp-p1-desc')) cp[l].p1_desc = document.getElementById('cp-p1-desc').value.trim();
+        if (document.getElementById('cp-p2-title')) cp[l].p2_title = document.getElementById('cp-p2-title').value.trim();
+        if (document.getElementById('cp-p2-desc')) cp[l].p2_desc = document.getElementById('cp-p2-desc').value.trim();
 
         window.CMS.saveData('sgcms_cookiepolicy', cp);
+        if (window.CMS && window.CMS.Backend) window.CMS.Backend.syncToDb('draft');
         markDraft();
         markSaved();
         sendToIframe({ type: 'CMS_SET_LANG', lang: l });
@@ -6932,11 +6948,15 @@
       function saveLegal() {
         const l = state.lang;
         const legal = window.CMS.getData(window.CMS.KEYS.LEGAL) || {};
-        legal['privacy_' + l] = document.getElementById('legal-privacy')?.value || '';
-        legal['terms_' + l] = document.getElementById('legal-terms')?.value || '';
-        legal['cookies_' + l] = document.getElementById('legal-cookies')?.value || '';
+        if (document.getElementById('legal-privacy')) legal['privacy_' + l] = document.getElementById('legal-privacy').value;
+        if (document.getElementById('legal-terms')) legal['terms_' + l] = document.getElementById('legal-terms').value;
+        if (document.getElementById('legal-cookies')) legal['cookies_' + l] = document.getElementById('legal-cookies').value;
         window.CMS.saveData(window.CMS.KEYS.LEGAL, legal);
-        markSaved(); showToast('Legal pages saved!');
+        if (window.CMS && window.CMS.Backend) window.CMS.Backend.syncToDb('draft');
+        markDraft();
+        markSaved();
+        sendToIframe({ type: 'CMS_SET_LANG', lang: l });
+        showToast('Legal pages saved!');
       }
 
       // ──────────────────────────────────────────────────────────
@@ -7169,316 +7189,362 @@
       // SAVE CURRENT PAGE
       // ══════════════════════════════════════════════════════════
       function saveCurrentPage() {
-        const { section, itemType, itemId, lang } = state;
-        const l = lang;
+        try {
+          const { section, itemType, itemId, lang } = state;
+          const l = lang;
 
-        if (section === 'new-program') {
-          executeCreateProgram();
-          return;
-        }
+          // Commit any active inline editing in the studio canvas
+          sendToIframe({ type: 'CMS_SAVE_ACTIVE' });
 
-        if (section === 'homepage') {
-          const d = window.CMS.getData(window.CMS.KEYS.HOMEPAGE) || window.CMS.DEFAULTS.homepage;
-
-          // 1. Hero
-          d.hero = d.hero || {};
-          d.hero[l] = d.hero[l] || {};
-          d.hero[l].tagline = document.getElementById('hero-tagline')?.value || '';
-          d.hero[l].headline = document.getElementById('hero-headline')?.value || '';
-          d.hero[l].subheadline = document.getElementById('hero-sub')?.value || '';
-          d.hero[l].pathway_citizenship = document.getElementById('hero-cat-cbi')?.value || '';
-          d.hero[l].pathway_residency = document.getElementById('hero-cat-rbi')?.value || '';
-          d.hero[l].pathway_realestate = document.getElementById('hero-cat-re')?.value || '';
-          d.hero[l].pathway_education = document.getElementById('hero-cat-edu')?.value || '';
-          d.hero[l].cta_primary = document.getElementById('hero-cta1')?.value || '';
-          d.hero[l].cta_primary_link = document.getElementById('hero-cta1-link')?.value || '';
-
-          // 2. Stats
-          const statRows = [...document.querySelectorAll('#stats-builder .stat-row')];
-          d.stats = statRows.map((row, i) => {
-            const inputs = row.querySelectorAll('input');
-            const existing = (d.stats || [])[i] || {};
-            const result = { ...existing, value: inputs[0]?.value || '' };
-            result['label_' + l] = inputs[1]?.value || '';
-            if (l === 'en') result.label_en = inputs[1]?.value || '';
-            return result;
-          });
-
-          // 3. About
-          d.about = d.about || {};
-          d.about[l] = d.about[l] || {};
-          d.about[l].badge = document.getElementById('about-badge')?.value || '';
-          d.about[l].subheading = document.getElementById('about-subheading')?.value || '';
-          d.about[l].heading = document.getElementById('about-heading')?.value || '';
-          d.about[l].p1 = document.getElementById('about-p1')?.value || '';
-          d.about[l].p2 = document.getElementById('about-p2')?.value || '';
-          d.about[l].btn1_text = document.getElementById('about-btn1-text')?.value || '';
-          d.about[l].btn1_link = document.getElementById('about-btn1-link')?.value || '';
-          d.about[l].btn2_text = document.getElementById('about-btn2-text')?.value || '';
-          d.about[l].btn2_link = document.getElementById('about-btn2-link')?.value || '';
-
-          // 4. Services
-          d.services = d.services || {};
-          d.services.badge = document.getElementById('srv-badge')?.value || '';
-          d.services.heading = document.getElementById('srv-heading')?.value || '';
-          d.services.heading_italic = document.getElementById('srv-heading-italic')?.value || '';
-          d.services.description = document.getElementById('srv-desc')?.value || '';
-
-          // Pillar 1 items
-          d.services.pillar_cbi = d.services.pillar_cbi || {};
-          d.services.pillar_cbi.pillar_badge = document.getElementById('p1-badge')?.value || '';
-          d.services.pillar_cbi.title = document.getElementById('p1-title')?.value || '';
-          d.services.pillar_cbi.p1 = document.getElementById('p1-p1')?.value || '';
-          d.services.pillar_cbi.p2 = document.getElementById('p1-p2')?.value || '';
-          const p1Rows = [...document.querySelectorAll('#p1-cards-builder .pillar-card-row')];
-          d.services.pillar_cbi.items = p1Rows.map(row => ({
-            title: row.querySelector('.p1-item-title')?.value || '',
-            desc: row.querySelector('.p1-item-desc')?.value || '',
-            link: row.querySelector('.p1-item-link')?.value || ''
-          }));
-
-          // Pillar 2 items
-          d.services.pillar_rbi = d.services.pillar_rbi || {};
-          d.services.pillar_rbi.pillar_badge = document.getElementById('p2-badge')?.value || '';
-          d.services.pillar_rbi.title = document.getElementById('p2-title')?.value || '';
-          d.services.pillar_rbi.p1 = document.getElementById('p2-p1')?.value || '';
-          d.services.pillar_rbi.p2 = document.getElementById('p2-p2')?.value || '';
-          const p2Rows = [...document.querySelectorAll('#p2-cards-builder .pillar-card-row')];
-          d.services.pillar_rbi.items = p2Rows.map(row => ({
-            title: row.querySelector('.p2-item-title')?.value || '',
-            desc: row.querySelector('.p2-item-desc')?.value || '',
-            link: row.querySelector('.p2-item-link')?.value || ''
-          }));
-
-          // Pillars 3, 4, 5
-          d.services.pillar_uae = d.services.pillar_uae || {};
-          d.services.pillar_uae.title = document.getElementById('p3-title')?.value || '';
-          d.services.pillar_realestate = d.services.pillar_realestate || {};
-          d.services.pillar_realestate.title = document.getElementById('p4-title')?.value || '';
-          d.services.pillar_education = d.services.pillar_education || {};
-          d.services.pillar_education.title = document.getElementById('p5-title')?.value || '';
-
-          // 5. Social Responsibility
-          d.social_responsibility = d.social_responsibility || {};
-          d.social_responsibility.badge = document.getElementById('sr-badge')?.value || '';
-          d.social_responsibility.heading = document.getElementById('sr-heading')?.value || '';
-          d.social_responsibility.description = document.getElementById('sr-desc')?.value || '';
-          d.social_responsibility.btn_text = document.getElementById('sr-btn')?.value || '';
-          d.social_responsibility.btn_link = document.getElementById('sr-link')?.value || '';
-
-          // 6. Reviews
-          d.reviews = d.reviews || {};
-          d.reviews.badge = document.getElementById('rev-badge')?.value || '';
-          d.reviews.heading = document.getElementById('rev-heading')?.value || '';
-          const revRows = [...document.querySelectorAll('#reviews-builder .review-row')];
-          d.reviews.slides = revRows.map(row => ({
-            quote: row.querySelector('.rev-quote')?.value || '',
-            img: row.querySelector('.rev-img')?.value || '',
-            btn_text: 'Start Your Journey Now',
-            btn_link: 'contact/index.html'
-          }));
-
-          // 7. Contact Desk
-          d.contact_block = d.contact_block || {};
-          d.contact_block.badge = document.getElementById('cd-badge')?.value || '';
-          d.contact_block.heading = document.getElementById('cd-heading')?.value || '';
-          d.contact_block.subheading = document.getElementById('cd-sub')?.value || '';
-          d.contact_block.office_address = document.getElementById('cd-address')?.value || '';
-          d.contact_block.phone = document.getElementById('cd-phone')?.value || '';
-          d.contact_block.email = document.getElementById('cd-email')?.value || '';
-
-          // 8. SEO Meta
-          d.seo = d.seo || {};
-          d.seo.title = document.getElementById('hp-seo-title')?.value || '';
-          d.seo.description = document.getElementById('hp-seo-desc')?.value || '';
-
-          window.CMS.saveData(window.CMS.KEYS.HOMEPAGE, d);
-          sendToIframe({ type: 'CMS_SET_LANG', lang: l });
-
-        } else if (section === 'program' && itemId) {
-          const list = window.CMS.getData(window.CMS.KEYS[itemType.toUpperCase()]) || window.CMS.DEFAULTS[itemType];
-          const idx = list.findIndex(p => p.id === itemId);
-          if (idx >= 0) {
-            list[idx].flag = document.getElementById('prog-flag')?.value || list[idx].flag;
-            list[idx].status = document.getElementById('prog-status')?.value || list[idx].status;
-            list[idx].portfolio = document.getElementById('prog-portfolio')?.value || list[idx].portfolio;
-            list[idx].nav_sort = parseInt(document.getElementById('prog-nav-sort')?.value) || list[idx].nav_sort;
-            list[idx].nav_visible = document.getElementById('prog-nav-vis')?.value === 'true';
-
-            const rawTitle = (document.getElementById('prog-title')?.value || '').trim();
-            const heroT = (document.getElementById('prog-hero-title')?.value || '').trim();
-            const heroS = (document.getElementById('prog-hero-sub')?.value || '').trim();
-            const countryCandidate = (heroT || list[idx].name || itemId || '').replace(/\s+(citizenship|residency).*$/i, '').trim();
-            const cleanC = countryCandidate ? (countryCandidate.charAt(0).toUpperCase() + countryCandidate.slice(1)) : 'Dominica';
-            const defaultTab = itemType === 'citizenship' ? 'Citizenship by investment' : 'Residency by investment';
-            const finalSub = heroS || defaultTab;
-
-            let finalTitle = rawTitle;
-            if (l === 'en') {
-              if (!finalTitle || /^(citizenship(\s+by\s+investment)?|residency(\s+by\s+investment)?)$/i.test(finalTitle) || finalTitle.toLowerCase() === cleanC.toLowerCase()) {
-                finalTitle = formatProgramPageTitle(cleanC, itemType, finalSub);
-              } else if (!finalTitle.toLowerCase().includes('citizenship') && !finalTitle.toLowerCase().includes('residency') && !finalTitle.toLowerCase().includes('visa')) {
-                finalTitle = formatProgramPageTitle(cleanC, itemType, finalSub);
-              }
-            }
-            list[idx][l] = list[idx][l] || {};
-            list[idx][l].title = finalTitle;
-            list[idx][l].hero_title = heroT || cleanC;
-            list[idx][l].hero_subtitle = finalSub;
-            if (list[idx].en) {
-              list[idx].en.title = finalTitle;
-              list[idx].en.hero_title = heroT || cleanC;
-              list[idx].en.hero_subtitle = finalSub;
-            }
-            list[idx][l].nav_label = document.getElementById('prog-nav-label')?.value || '';
-            list[idx][l].hero_subtitle = finalSub;
-            list[idx][l].investment_from = document.getElementById('prog-investment')?.value || '';
-            list[idx][l].processing_time = document.getElementById('prog-time')?.value || '';
-            list[idx][l].visa_free = document.getElementById('prog-visa')?.value || '';
-            list[idx][l].overview_title = document.getElementById('prog-ov-title')?.value || '';
-            list[idx][l].overview = document.getElementById('prog-overview')?.value || '';
-
-            list[idx][l].hero_title = document.getElementById('prog-hero-title')?.value || '';
-            list[idx][l].hero_tagline = document.getElementById('prog-hero-tagline')?.value || '';
-            list[idx][l].hero_cta1_text = document.getElementById('prog-cta1-text')?.value || '';
-            list[idx][l].hero_cta1_link = document.getElementById('prog-cta1-link')?.value || '';
-            list[idx][l].hero_cta2_text = document.getElementById('prog-cta2-text')?.value || '';
-            list[idx][l].hero_cta2_link = document.getElementById('prog-cta2-link')?.value || '';
-
-            // Badges
-            list[idx][l].badges = [
-              document.getElementById('prog-badge-1')?.value || '',
-              document.getElementById('prog-badge-2')?.value || '',
-              document.getElementById('prog-badge-3')?.value || '',
-              document.getElementById('prog-badge-4')?.value || '',
-              document.getElementById('prog-badge-5')?.value || ''
-            ].filter(b => b.trim());
-
-            // Specs
-            const s1Val = document.getElementById('prog-spec1-val')?.value || '';
-            const s2Val = document.getElementById('prog-spec2-val')?.value || '';
-            const s3Val = document.getElementById('prog-spec3-val')?.value || '';
-            const s4Val = document.getElementById('prog-spec4-val')?.value || '';
-            const s5Val = document.getElementById('prog-spec5-val')?.value || '';
-            const s6Val = document.getElementById('prog-spec6-val')?.value || '';
-
-            list[idx][l].processing_time = s1Val || list[idx][l].processing_time;
-            list[idx][l].visa_free = s2Val || list[idx][l].visa_free;
-            list[idx][l].investment_from = s4Val || list[idx][l].investment_from;
-
-            list[idx][l].specs = [
-              { title: 'PROCESSING TIME', value: s1Val, desc: document.getElementById('prog-spec1-desc')?.value || s1Val },
-              { title: 'VISA-FREE TRAVEL', value: s2Val, desc: document.getElementById('prog-spec2-desc')?.value || s2Val },
-              { title: 'INVESTMENT TYPE', value: s3Val, desc: document.getElementById('prog-spec3-desc')?.value || s3Val },
-              { title: 'INVESTMENT COST', value: s4Val, desc: document.getElementById('prog-spec4-desc')?.value || s4Val },
-              { title: 'FAMILY DEPENDENTS', value: s5Val, desc: document.getElementById('prog-spec5-desc')?.value || s5Val },
-              { title: 'PHYSICAL PRESENCE', value: s6Val, desc: document.getElementById('prog-spec6-desc')?.value || s6Val }
-            ];
-
-            // Overview
-            list[idx][l].overview_badge = document.getElementById('prog-ov-badge')?.value || '';
-            list[idx][l].overview_p1 = document.getElementById('prog-ov-p1')?.value || '';
-            list[idx][l].overview_p2 = document.getElementById('prog-ov-p2')?.value || '';
-            list[idx][l].overview = document.getElementById('prog-ov-p1')?.value || '';
-            list[idx][l].overview_cta_text = document.getElementById('prog-ov-cta-text')?.value || '';
-            list[idx][l].overview_cta_link = document.getElementById('prog-ov-cta-link')?.value || '';
-
-            // Benefits
-            list[idx][l].benefits_badge = document.getElementById('prog-ben-badge')?.value || '';
-            list[idx][l].benefits_title = document.getElementById('prog-ben-title')?.value || '';
-            list[idx][l].benefits_desc = document.getElementById('prog-ben-desc')?.value || '';
-            list[idx][l].benefits = getBenefitCards('benefits-builder');
-
-            // Investment Routes
-            list[idx][l].investment_badge = document.getElementById('prog-inv-badge')?.value || '';
-            list[idx][l].investment_title = document.getElementById('prog-inv-title')?.value || '';
-            list[idx][l].investment_desc = document.getElementById('prog-inv-desc')?.value || '';
-            list[idx][l].investment_options = getInvestmentRoutes('routes-builder');
-            list[idx][l].gov_fees = document.getElementById('prog-inv-fees')?.value || '';
-
-            // Eligibility
-            list[idx][l].who_can_apply_badge = document.getElementById('prog-elig-badge')?.value || '';
-            list[idx][l].who_can_apply_title = document.getElementById('prog-elig-title')?.value || '';
-            list[idx][l].who_can_apply_desc = document.getElementById('prog-elig-desc')?.value || '';
-            list[idx][l].applicant_reqs = [
-              document.getElementById('prog-elig-req1')?.value || '',
-              document.getElementById('prog-elig-req2')?.value || '',
-              document.getElementById('prog-elig-req3')?.value || '',
-              document.getElementById('prog-elig-req4')?.value || ''
-            ].filter(r => r.trim());
-            list[idx][l].family_reqs = [
-              document.getElementById('prog-elig-fam1')?.value || '',
-              document.getElementById('prog-elig-fam2')?.value || '',
-              document.getElementById('prog-elig-fam3')?.value || '',
-              document.getElementById('prog-elig-fam4')?.value || ''
-            ].filter(r => r.trim());
-
-            // Documents
-            list[idx][l].docs_badge = document.getElementById('prog-doc-badge')?.value || '';
-            list[idx][l].docs_title = document.getElementById('prog-doc-title')?.value || '';
-            list[idx][l].docs_desc = document.getElementById('prog-doc-desc')?.value || '';
-            list[idx][l].documents = [
-              { title: document.getElementById('prog-doc1-title')?.value || '', desc: document.getElementById('prog-doc1-desc')?.value || '' },
-              { title: document.getElementById('prog-doc2-title')?.value || '', desc: document.getElementById('prog-doc2-desc')?.value || '' },
-              { title: document.getElementById('prog-doc3-title')?.value || '', desc: document.getElementById('prog-doc3-desc')?.value || '' },
-              { title: document.getElementById('prog-doc4-title')?.value || '', desc: document.getElementById('prog-doc4-desc')?.value || '' }
-            ].filter(d => d.title.trim() || d.desc.trim());
-
-            // Timeline
-            list[idx][l].timeline_badge = document.getElementById('prog-tl-badge')?.value || '';
-            list[idx][l].timeline_title = document.getElementById('prog-tl-title')?.value || '';
-            list[idx][l].timeline_desc = document.getElementById('prog-tl-desc')?.value || '';
-            list[idx][l].timeline_steps = getTimelineSteps('timeline-builder');
-
-            // FAQs
-            list[idx][l].faq_title = document.getElementById('prog-faq-title')?.value || '';
-            list[idx][l].faq_desc = document.getElementById('prog-faq-desc')?.value || '';
-            list[idx][l].faqs = getFaqs('faq-builder');
-
-            // Consultation
-            list[idx][l].consult_heading = document.getElementById('prog-cta-heading')?.value || '';
-            list[idx][l].consult_subheading = document.getElementById('prog-cta-sub')?.value || '';
-            list[idx][l].consult_btn_text = document.getElementById('prog-cta-btn')?.value || '';
-            list[idx][l].consult_phone = document.getElementById('prog-cta-phone')?.value || '';
-
-            window.CMS.saveData(window.CMS.KEYS[itemType.toUpperCase()], list);
-            populateSidebar();
-            sendToIframe({ type: 'CMS_SET_LANG', lang: l });
+          if (section === 'new-program') {
+            executeCreateProgram();
+            return;
           }
 
-        } else if (section === 'blog' || section === 'blog-new' || section === 'blog-edit') {
-          const id = state.itemId || (document.getElementById('blog-title') ? 'b' + uid() : null);
-          if (id) saveBlogItem(id);
-          markDraft();
-          if (window.CMS.Settings.getGeminiKey()) autoTranslateOnSave('blog', id);
-          return;
-        } else if (section === 'aboutus') {
-          saveAboutUs();
-          markDraft();
-          if (window.CMS.Settings.getGeminiKey()) autoTranslateOnSave('aboutus', null);
-          return;
-        } else if (section === 'contact') {
-          saveContactSales();
-          markDraft();
-          return;
-        } else if (section === 'cookiepolicy' || section === 'cookies') {
-          saveCookiePolicy();
-          markDraft();
-          return;
-        } else if (section === 'legal') {
-          saveLegal();
-          markDraft();
-          return;
-        } else if (section === 'settings') {
-          saveSettings();
-          return;
-        }
+          if (section === 'homepage') {
+            const d = window.CMS.getData(window.CMS.KEYS.HOMEPAGE) || window.CMS.DEFAULTS.homepage;
 
-        markDraft();
-        markSaved();
-        showToast('Draft changes saved successfully!');
-        if (window.CMS.Settings.getAiKey()) {
-          autoTranslateOnSave(section, itemId);
+            // 1. Hero
+            d.hero = d.hero || {};
+            d.hero[l] = d.hero[l] || {};
+            if (document.getElementById('hero-tagline')) d.hero[l].tagline = document.getElementById('hero-tagline').value;
+            if (document.getElementById('hero-headline')) d.hero[l].headline = document.getElementById('hero-headline').value;
+            if (document.getElementById('hero-sub')) d.hero[l].subheadline = document.getElementById('hero-sub').value;
+            if (document.getElementById('hero-cat-cbi')) d.hero[l].pathway_citizenship = document.getElementById('hero-cat-cbi').value;
+            if (document.getElementById('hero-cat-rbi')) d.hero[l].pathway_residency = document.getElementById('hero-cat-rbi').value;
+            if (document.getElementById('hero-cat-re')) d.hero[l].pathway_realestate = document.getElementById('hero-cat-re').value;
+            if (document.getElementById('hero-cat-edu')) d.hero[l].pathway_education = document.getElementById('hero-cat-edu').value;
+            if (document.getElementById('hero-cta1')) d.hero[l].cta_primary = document.getElementById('hero-cta1').value;
+            if (document.getElementById('hero-cta1-link')) d.hero[l].cta_primary_link = document.getElementById('hero-cta1-link').value;
+
+            // 2. Stats
+            const statRows = [...document.querySelectorAll('#stats-builder .stat-row')];
+            if (statRows.length > 0) {
+              d.stats = statRows.map((row, i) => {
+                const inputs = row.querySelectorAll('input');
+                const existing = (d.stats || [])[i] || {};
+                const result = { ...existing, value: inputs[0]?.value || existing.value || '' };
+                result['label_' + l] = inputs[1]?.value || existing['label_' + l] || '';
+                if (l === 'en') result.label_en = inputs[1]?.value || existing.label_en || '';
+                return result;
+              });
+            }
+
+            // 3. About
+            d.about = d.about || {};
+            d.about[l] = d.about[l] || {};
+            if (document.getElementById('about-badge')) d.about[l].badge = document.getElementById('about-badge').value;
+            if (document.getElementById('about-subheading')) d.about[l].subheading = document.getElementById('about-subheading').value;
+            if (document.getElementById('about-heading')) d.about[l].heading = document.getElementById('about-heading').value;
+            if (document.getElementById('about-p1')) d.about[l].p1 = document.getElementById('about-p1').value;
+            if (document.getElementById('about-p2')) d.about[l].p2 = document.getElementById('about-p2').value;
+            if (document.getElementById('about-btn1-text')) d.about[l].btn1_text = document.getElementById('about-btn1-text').value;
+            if (document.getElementById('about-btn1-link')) d.about[l].btn1_link = document.getElementById('about-btn1-link').value;
+            if (document.getElementById('about-btn2-text')) d.about[l].btn2_text = document.getElementById('about-btn2-text').value;
+            if (document.getElementById('about-btn2-link')) d.about[l].btn2_link = document.getElementById('about-btn2-link').value;
+
+            // 4. Services
+            d.services = d.services || {};
+            if (document.getElementById('srv-badge')) d.services.badge = document.getElementById('srv-badge').value;
+            if (document.getElementById('srv-heading')) d.services.heading = document.getElementById('srv-heading').value;
+            if (document.getElementById('srv-heading-italic')) d.services.heading_italic = document.getElementById('srv-heading-italic').value;
+            if (document.getElementById('srv-desc')) d.services.description = document.getElementById('srv-desc').value;
+
+            // Pillar 1 items
+            const p1Rows = [...document.querySelectorAll('#p1-cards-builder .pillar-card-row')];
+            if (p1Rows.length > 0) {
+              d.services.pillar_cbi = d.services.pillar_cbi || {};
+              if (document.getElementById('p1-badge')) d.services.pillar_cbi.pillar_badge = document.getElementById('p1-badge').value;
+              if (document.getElementById('p1-title')) d.services.pillar_cbi.title = document.getElementById('p1-title').value;
+              if (document.getElementById('p1-p1')) d.services.pillar_cbi.p1 = document.getElementById('p1-p1').value;
+              if (document.getElementById('p1-p2')) d.services.pillar_cbi.p2 = document.getElementById('p1-p2').value;
+              d.services.pillar_cbi.items = p1Rows.map(row => ({
+                title: row.querySelector('.p1-item-title')?.value || '',
+                desc: row.querySelector('.p1-item-desc')?.value || '',
+                link: row.querySelector('.p1-item-link')?.value || ''
+              }));
+            }
+
+            // Pillar 2 items
+            const p2Rows = [...document.querySelectorAll('#p2-cards-builder .pillar-card-row')];
+            if (p2Rows.length > 0) {
+              d.services.pillar_rbi = d.services.pillar_rbi || {};
+              if (document.getElementById('p2-badge')) d.services.pillar_rbi.pillar_badge = document.getElementById('p2-badge').value;
+              if (document.getElementById('p2-title')) d.services.pillar_rbi.title = document.getElementById('p2-title').value;
+              if (document.getElementById('p2-p1')) d.services.pillar_rbi.p1 = document.getElementById('p2-p1').value;
+              if (document.getElementById('p2-p2')) d.services.pillar_rbi.p2 = document.getElementById('p2-p2').value;
+              d.services.pillar_rbi.items = p2Rows.map(row => ({
+                title: row.querySelector('.p2-item-title')?.value || '',
+                desc: row.querySelector('.p2-item-desc')?.value || '',
+                link: row.querySelector('.p2-item-link')?.value || ''
+              }));
+            }
+
+            // Pillars 3, 4, 5
+            d.services.pillar_uae = d.services.pillar_uae || {};
+            if (document.getElementById('p3-title')) d.services.pillar_uae.title = document.getElementById('p3-title').value;
+            d.services.pillar_realestate = d.services.pillar_realestate || {};
+            if (document.getElementById('p4-title')) d.services.pillar_realestate.title = document.getElementById('p4-title').value;
+            d.services.pillar_education = d.services.pillar_education || {};
+            if (document.getElementById('p5-title')) d.services.pillar_education.title = document.getElementById('p5-title').value;
+
+            // 5. Social Responsibility
+            d.social_responsibility = d.social_responsibility || {};
+            if (document.getElementById('sr-badge')) d.social_responsibility.badge = document.getElementById('sr-badge').value;
+            if (document.getElementById('sr-heading')) d.social_responsibility.heading = document.getElementById('sr-heading').value;
+            if (document.getElementById('sr-desc')) d.social_responsibility.description = document.getElementById('sr-desc').value;
+            if (document.getElementById('sr-btn')) d.social_responsibility.btn_text = document.getElementById('sr-btn').value;
+            if (document.getElementById('sr-link')) d.social_responsibility.btn_link = document.getElementById('sr-link').value;
+
+            // 6. Reviews
+            const revRows = [...document.querySelectorAll('#reviews-builder .review-row')];
+            if (revRows.length > 0) {
+              d.reviews = d.reviews || {};
+              if (document.getElementById('rev-badge')) d.reviews.badge = document.getElementById('rev-badge').value;
+              if (document.getElementById('rev-heading')) d.reviews.heading = document.getElementById('rev-heading').value;
+              d.reviews.slides = revRows.map(row => ({
+                quote: row.querySelector('.rev-quote')?.value || '',
+                img: row.querySelector('.rev-img')?.value || '',
+                btn_text: 'Start Your Journey Now',
+                btn_link: 'contact/index.html'
+              }));
+            }
+
+            // 7. Contact Desk
+            d.contact_block = d.contact_block || {};
+            if (document.getElementById('cd-badge')) d.contact_block.badge = document.getElementById('cd-badge').value;
+            if (document.getElementById('cd-heading')) d.contact_block.heading = document.getElementById('cd-heading').value;
+            if (document.getElementById('cd-sub')) d.contact_block.subheading = document.getElementById('cd-sub').value;
+            if (document.getElementById('cd-address')) d.contact_block.office_address = document.getElementById('cd-address').value;
+            if (document.getElementById('cd-phone')) d.contact_block.phone = document.getElementById('cd-phone').value;
+            if (document.getElementById('cd-email')) d.contact_block.email = document.getElementById('cd-email').value;
+
+            // 8. SEO Meta
+            d.seo = d.seo || {};
+            if (document.getElementById('hp-seo-title')) d.seo.title = document.getElementById('hp-seo-title').value;
+            if (document.getElementById('hp-seo-desc')) d.seo.description = document.getElementById('hp-seo-desc').value;
+
+            window.CMS.saveData(window.CMS.KEYS.HOMEPAGE, d);
+            sendToIframe({ type: 'CMS_SET_LANG', lang: l });
+
+          } else if (section === 'program' && itemId) {
+            const list = window.CMS.getData(window.CMS.KEYS[itemType.toUpperCase()]) || window.CMS.DEFAULTS[itemType];
+            const idx = list.findIndex(p => p.id === itemId);
+            if (idx >= 0) {
+              if (document.getElementById('prog-flag')) list[idx].flag = document.getElementById('prog-flag').value;
+              if (document.getElementById('prog-status')) list[idx].status = document.getElementById('prog-status').value;
+              if (document.getElementById('prog-portfolio')) list[idx].portfolio = document.getElementById('prog-portfolio').value;
+              if (document.getElementById('prog-nav-sort')) list[idx].nav_sort = parseInt(document.getElementById('prog-nav-sort').value) || list[idx].nav_sort;
+              if (document.getElementById('prog-nav-vis')) list[idx].nav_visible = document.getElementById('prog-nav-vis').value === 'true';
+
+              const rawTitle = (document.getElementById('prog-title')?.value || '').trim();
+              const heroT = (document.getElementById('prog-hero-title')?.value || '').trim();
+              const heroS = (document.getElementById('prog-hero-sub')?.value || '').trim();
+              const countryCandidate = (heroT || list[idx].name || itemId || '').replace(/\s+(citizenship|residency).*$/i, '').trim();
+              const cleanC = countryCandidate ? (countryCandidate.charAt(0).toUpperCase() + countryCandidate.slice(1)) : 'Dominica';
+              const defaultTab = itemType === 'citizenship' ? 'Citizenship by investment' : 'Residency by investment';
+              const finalSub = heroS || defaultTab;
+
+              let finalTitle = rawTitle;
+              if (l === 'en' && finalTitle) {
+                if (/^(citizenship(\s+by\s+investment)?|residency(\s+by\s+investment)?)$/i.test(finalTitle) || finalTitle.toLowerCase() === cleanC.toLowerCase()) {
+                  finalTitle = formatProgramPageTitle(cleanC, itemType, finalSub);
+                } else if (!finalTitle.toLowerCase().includes('citizenship') && !finalTitle.toLowerCase().includes('residency') && !finalTitle.toLowerCase().includes('visa')) {
+                  finalTitle = formatProgramPageTitle(cleanC, itemType, finalSub);
+                }
+              }
+              list[idx][l] = list[idx][l] || {};
+              if (finalTitle) {
+                list[idx][l].title = finalTitle;
+                if (list[idx].en) list[idx].en.title = finalTitle;
+              }
+              if (heroT) {
+                list[idx][l].hero_title = heroT;
+                if (list[idx].en) list[idx].en.hero_title = heroT;
+              }
+              if (heroS) {
+                list[idx][l].hero_subtitle = finalSub;
+                if (list[idx].en) list[idx].en.hero_subtitle = finalSub;
+              }
+              if (document.getElementById('prog-nav-label')) list[idx][l].nav_label = document.getElementById('prog-nav-label').value;
+              if (document.getElementById('prog-investment')) list[idx][l].investment_from = document.getElementById('prog-investment').value;
+              if (document.getElementById('prog-time')) list[idx][l].processing_time = document.getElementById('prog-time').value;
+              if (document.getElementById('prog-visa')) list[idx][l].visa_free = document.getElementById('prog-visa').value;
+              if (document.getElementById('prog-ov-title')) list[idx][l].overview_title = document.getElementById('prog-ov-title').value;
+              if (document.getElementById('prog-overview')) list[idx][l].overview = document.getElementById('prog-overview').value;
+              if (document.getElementById('prog-hero-tagline')) list[idx][l].hero_tagline = document.getElementById('prog-hero-tagline').value;
+              if (document.getElementById('prog-cta1-text')) list[idx][l].hero_cta1_text = document.getElementById('prog-cta1-text').value;
+              if (document.getElementById('prog-cta1-link')) list[idx][l].hero_cta1_link = document.getElementById('prog-cta1-link').value;
+              if (document.getElementById('prog-cta2-text')) list[idx][l].hero_cta2_text = document.getElementById('prog-cta2-text').value;
+              if (document.getElementById('prog-cta2-link')) list[idx][l].hero_cta2_link = document.getElementById('prog-cta2-link').value;
+
+              // Badges
+              if (document.getElementById('prog-badge-1')) {
+                const badges = [
+                  document.getElementById('prog-badge-1')?.value || '',
+                  document.getElementById('prog-badge-2')?.value || '',
+                  document.getElementById('prog-badge-3')?.value || '',
+                  document.getElementById('prog-badge-4')?.value || '',
+                  document.getElementById('prog-badge-5')?.value || ''
+                ].filter(b => b.trim());
+                if (badges.length > 0) list[idx][l].badges = badges;
+              }
+
+              // Specs
+              if (document.getElementById('prog-spec1-val')) {
+                const s1Val = document.getElementById('prog-spec1-val')?.value || '';
+                const s2Val = document.getElementById('prog-spec2-val')?.value || '';
+                const s3Val = document.getElementById('prog-spec3-val')?.value || '';
+                const s4Val = document.getElementById('prog-spec4-val')?.value || '';
+                const s5Val = document.getElementById('prog-spec5-val')?.value || '';
+                const s6Val = document.getElementById('prog-spec6-val')?.value || '';
+                list[idx][l].processing_time = s1Val || list[idx][l].processing_time;
+                list[idx][l].visa_free = s2Val || list[idx][l].visa_free;
+                list[idx][l].investment_from = s4Val || list[idx][l].investment_from;
+                list[idx][l].specs = [
+                  { title: 'PROCESSING TIME', value: s1Val, desc: document.getElementById('prog-spec1-desc')?.value || s1Val },
+                  { title: 'VISA-FREE TRAVEL', value: s2Val, desc: document.getElementById('prog-spec2-desc')?.value || s2Val },
+                  { title: 'INVESTMENT TYPE', value: s3Val, desc: document.getElementById('prog-spec3-desc')?.value || s3Val },
+                  { title: 'INVESTMENT COST', value: s4Val, desc: document.getElementById('prog-spec4-desc')?.value || s4Val },
+                  { title: 'FAMILY DEPENDENTS', value: s5Val, desc: document.getElementById('prog-spec5-desc')?.value || s5Val },
+                  { title: 'PHYSICAL PRESENCE', value: s6Val, desc: document.getElementById('prog-spec6-desc')?.value || s6Val }
+                ];
+              }
+
+              // Overview
+              if (document.getElementById('prog-ov-badge')) list[idx][l].overview_badge = document.getElementById('prog-ov-badge').value;
+              if (document.getElementById('prog-ov-p1')) {
+                list[idx][l].overview_p1 = document.getElementById('prog-ov-p1').value;
+                list[idx][l].overview = document.getElementById('prog-ov-p1').value;
+              }
+              if (document.getElementById('prog-ov-p2')) list[idx][l].overview_p2 = document.getElementById('prog-ov-p2').value;
+              if (document.getElementById('prog-ov-cta-text')) list[idx][l].overview_cta_text = document.getElementById('prog-ov-cta-text').value;
+              if (document.getElementById('prog-ov-cta-link')) list[idx][l].overview_cta_link = document.getElementById('prog-ov-cta-link').value;
+
+              // Benefits
+              if (document.getElementById('benefits-builder')) {
+                const b = getBenefitCards('benefits-builder');
+                if (b.length > 0) list[idx][l].benefits = b;
+              }
+              if (document.getElementById('prog-ben-badge')) list[idx][l].benefits_badge = document.getElementById('prog-ben-badge').value;
+              if (document.getElementById('prog-ben-title')) list[idx][l].benefits_title = document.getElementById('prog-ben-title').value;
+              if (document.getElementById('prog-ben-desc')) list[idx][l].benefits_desc = document.getElementById('prog-ben-desc').value;
+
+              // Investment Routes
+              if (document.getElementById('routes-builder')) {
+                const r = getInvestmentRoutes('routes-builder');
+                if (r.length > 0) list[idx][l].investment_options = r;
+              }
+              if (document.getElementById('prog-inv-badge')) list[idx][l].investment_badge = document.getElementById('prog-inv-badge').value;
+              if (document.getElementById('prog-inv-title')) list[idx][l].investment_title = document.getElementById('prog-inv-title').value;
+              if (document.getElementById('prog-inv-desc')) list[idx][l].investment_desc = document.getElementById('prog-inv-desc').value;
+              if (document.getElementById('prog-inv-fees')) list[idx][l].gov_fees = document.getElementById('prog-inv-fees').value;
+
+              // Eligibility
+              if (document.getElementById('prog-elig-badge')) list[idx][l].who_can_apply_badge = document.getElementById('prog-elig-badge').value;
+              if (document.getElementById('prog-elig-title')) list[idx][l].who_can_apply_title = document.getElementById('prog-elig-title').value;
+              if (document.getElementById('prog-elig-desc')) list[idx][l].who_can_apply_desc = document.getElementById('prog-elig-desc').value;
+              if (document.getElementById('prog-elig-req1')) {
+                const reqs = [
+                  document.getElementById('prog-elig-req1')?.value || '',
+                  document.getElementById('prog-elig-req2')?.value || '',
+                  document.getElementById('prog-elig-req3')?.value || '',
+                  document.getElementById('prog-elig-req4')?.value || ''
+                ].filter(r => r.trim());
+                if (reqs.length > 0) list[idx][l].applicant_reqs = reqs;
+              }
+              if (document.getElementById('prog-elig-fam1')) {
+                const fam = [
+                  document.getElementById('prog-elig-fam1')?.value || '',
+                  document.getElementById('prog-elig-fam2')?.value || '',
+                  document.getElementById('prog-elig-fam3')?.value || '',
+                  document.getElementById('prog-elig-fam4')?.value || ''
+                ].filter(r => r.trim());
+                if (fam.length > 0) list[idx][l].family_reqs = fam;
+              }
+
+              // Documents
+              if (document.getElementById('prog-doc-badge')) list[idx][l].docs_badge = document.getElementById('prog-doc-badge').value;
+              if (document.getElementById('prog-doc-title')) list[idx][l].docs_title = document.getElementById('prog-doc-title').value;
+              if (document.getElementById('prog-doc-desc')) list[idx][l].docs_desc = document.getElementById('prog-doc-desc').value;
+              if (document.getElementById('prog-doc1-title')) {
+                const docs = [
+                  { title: document.getElementById('prog-doc1-title')?.value || '', desc: document.getElementById('prog-doc1-desc')?.value || '' },
+                  { title: document.getElementById('prog-doc2-title')?.value || '', desc: document.getElementById('prog-doc2-desc')?.value || '' },
+                  { title: document.getElementById('prog-doc3-title')?.value || '', desc: document.getElementById('prog-doc3-desc')?.value || '' },
+                  { title: document.getElementById('prog-doc4-title')?.value || '', desc: document.getElementById('prog-doc4-desc')?.value || '' }
+                ].filter(d => d.title.trim() || d.desc.trim());
+                if (docs.length > 0) list[idx][l].documents = docs;
+              }
+
+              // Timeline
+              if (document.getElementById('timeline-builder')) {
+                const tl = getTimelineSteps('timeline-builder');
+                if (tl.length > 0) list[idx][l].timeline_steps = tl;
+              }
+              if (document.getElementById('prog-tl-badge')) list[idx][l].timeline_badge = document.getElementById('prog-tl-badge').value;
+              if (document.getElementById('prog-tl-title')) list[idx][l].timeline_title = document.getElementById('prog-tl-title').value;
+              if (document.getElementById('prog-tl-desc')) list[idx][l].timeline_desc = document.getElementById('prog-tl-desc').value;
+
+              // FAQs
+              if (document.getElementById('faq-builder')) {
+                const f = getFaqs('faq-builder');
+                if (f.length > 0) list[idx][l].faqs = f;
+              }
+              if (document.getElementById('prog-faq-title')) list[idx][l].faq_title = document.getElementById('prog-faq-title').value;
+              if (document.getElementById('prog-faq-desc')) list[idx][l].faq_desc = document.getElementById('prog-faq-desc').value;
+
+              // Consultation
+              if (document.getElementById('prog-cta-heading')) list[idx][l].consult_heading = document.getElementById('prog-cta-heading').value;
+              if (document.getElementById('prog-cta-sub')) list[idx][l].consult_subheading = document.getElementById('prog-cta-sub').value;
+              if (document.getElementById('prog-cta-btn')) list[idx][l].consult_btn_text = document.getElementById('prog-cta-btn').value;
+              if (document.getElementById('prog-cta-phone')) list[idx][l].consult_phone = document.getElementById('prog-cta-phone').value;
+
+              window.CMS.saveData(window.CMS.KEYS[itemType.toUpperCase()], list);
+              populateSidebar();
+              sendToIframe({ type: 'CMS_SET_LANG', lang: l });
+            }
+
+          } else if (section === 'blog' || section === 'blog-new' || section === 'blog-edit') {
+            const id = state.itemId || (document.getElementById('blog-title') ? 'b' + uid() : null);
+            if (id) saveBlogItem(id);
+            markDraft();
+            if (window.CMS.Settings.getGeminiKey()) autoTranslateOnSave('blog', id);
+            return;
+          } else if (section === 'aboutus') {
+            saveAboutUs();
+            markDraft();
+            if (window.CMS.Settings.getGeminiKey()) autoTranslateOnSave('aboutus', null);
+            return;
+          } else if (section === 'contact') {
+            saveContactSales();
+            markDraft();
+            return;
+          } else if (section === 'cookiepolicy' || section === 'cookies') {
+            saveCookiePolicy();
+            markDraft();
+            return;
+          } else if (section === 'legal') {
+            saveLegal();
+            markDraft();
+            return;
+          } else if (section === 'settings') {
+            saveSettings();
+            return;
+          }
+
+          markDraft();
+          markSaved();
+          if (window.CMS && window.CMS.Backend) {
+            window.CMS.Backend.syncToDb('draft');
+          }
+          showToast('Draft changes saved successfully!', 'success');
+          if (window.CMS.Settings.getAiKey()) {
+            autoTranslateOnSave(section, itemId);
+          }
+        } catch (err) {
+          console.error('Error saving current page:', err);
+          showToast('Error saving: ' + (err.message || 'Unknown error'), 'error');
         }
       }
 
