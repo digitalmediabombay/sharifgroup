@@ -1199,6 +1199,10 @@
         if (typeof window.updateWhatsAppWidget === 'function') {
             try { window.updateWhatsAppWidget(); } catch (e) {}
         }
+        // Re-apply any CMS published overrides on top of the fresh translations
+        if (typeof window.reapplyCmsHydration === 'function') {
+            try { window.reapplyCmsHydration(lang); } catch (e) {}
+        }
     }
 
     // Intercept counter animation updates to format in Arabic / Persian digits
@@ -1568,6 +1572,15 @@
         document.head.appendChild(link);
     }
 
+    // Dynamically inject cms-live.js (public CMS overlay, safe for all visitors)
+    function loadCmsLive() {
+        if (document.querySelector('script[src*="cms-live.js"]')) return; // already loaded
+        var s = document.createElement('script');
+        s.src = basePath + 'js/cms-live.js';
+        s.async = true;
+        document.head.appendChild(s);
+    }
+
     function init() {
         // Ensure multilingual CSS styling is always loaded
         ensureMultilingualCSS();
@@ -1580,6 +1593,9 @@
         loadTranslation(currentLang, function (data) {
             applyTranslations(data, currentLang);
         });
+
+        // Load CMS live-content overlay on all public pages
+        loadCmsLive();
 
         // Initialize blog translation engine on blog pages
         loadBlogTranslator();
