@@ -7535,10 +7535,17 @@
 
           markDraft();
           markSaved();
-          if (window.CMS && window.CMS.Backend) {
-            window.CMS.Backend.syncToDb('draft');
-          }
           showToast('Draft changes saved successfully!', 'success');
+          if (window.CMS && window.CMS.Backend) {
+            window.CMS.Backend.syncToDb('draft').then(function(ok) {
+              if (ok) {
+                console.log('[CMS] Draft synced to database successfully.');
+              } else {
+                console.warn('[CMS] Backend offline or auth failed — changes stored in browser only.');
+                showToast('Saved locally (database sync pending — check cPanel config)', 'warning');
+              }
+            });
+          }
           if (window.CMS.Settings.getAiKey()) {
             autoTranslateOnSave(section, itemId);
           }
