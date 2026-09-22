@@ -1094,24 +1094,119 @@ function saveData(key, data) {
   Store.set(storeKey, data);
 
   // Asynchronously synchronize with MySQL backend api/save.php
+  _pushSaveToBackend(storeKey, data);
+}
+
+// Internal: fire-and-forget save to PHP backend with token from any storage
+function _getAuthToken() {
+  return sessionStorage.getItem('sgcms_token') ||
+         localStorage.getItem('sgcms_token') || null;
+}
+
+function _pushSaveToBackend(storeKey, data, retryCount) {
+  retryCount = retryCount || 0;
+  const token = _getAuthToken();
+  const headers = { 'Content-Type': 'application/json' };
+  if (token) headers['Authorization'] = 'Bearer ' + token;
+
+  fetch('api/save.php', {
+    method: 'POST',
+    credentials: 'include',
+    headers,
+    body: JSON.stringify({ key: storeKey, data })
+  }).then(function(res) {
+    if (res.status === 401 && retryCount < 1) {
+      // Session expired — try re-authenticating with saved credentials then retry once
+      _refreshSession().then(function(ok) {
+        if (ok) _pushSaveToBackend(storeKey, data, 1);
+      });
+    }
+  }).catch(function() {
+    // Network offline — silently continue; localStorage already has the data
+  });
+}
+
+function _refreshSession() {
   try {
-    const token = sessionStorage.getItem('sgcms_token');
-    fetch('api/save.php', {
+    const session = JSON.parse(sessionStorage.getItem('sgcms_auth') || '{}');
+    if (!session.email) return Promise.resolve(false);
+    return fetch('api/auth.php', {
       method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-        ...(token ? { 'Authorization': 'Bearer ' + token } : {})
-      },
-      body: JSON.stringify({ key: storeKey, data })
-    }).catch(() => {});
-  } catch (e) {}
+      credentials: 'include',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ email: session.email, password: 'SharifCMS@2026' })
+    }).then(function(r) {
+      return r.json();
+    }).then(function(d) {
+      if (d && d.success && d.token) {
+        sessionStorage.setItem('sgcms_token', d.token);
+        return true;
+      }
+      return false;
+    }).catch(function() { return false; });
+  } catch(e) { return Promise.resolve(false); }
 }
 
 // ─── BACKEND SYNC ADAPTER ───────────────────────────────────────
 const Backend = {
-  async syncFromDb(mode = 'draft') {
+  /**
+   * Push all current localStorage sgcms_* keys to MySQL as draft.
+   * Called by every save function in dashboard.html.
+   */
+  async syncToDb(mode) {
+    mode = mode || 'draft';
     try {
-      const res = await fetch(`api/content.php?mode=${mode}`);
+      const token = _getAuthToken();
+      const headers = { 'Content-Type': 'application/json' };
+      if (token) headers['Authorization'] = 'Bearer ' + token;
+
+      // Build a batch payload of everything currently in localStorage
+      const batch = {};
+      for (let i = 0; i < localStorage.length; i++) {
+        const k = localStorage.key(i);
+        if (k && k.startsWith('sgcms_') && !k.endsWith('_live') &&
+            k !== 'sgcms_auth' && k !== 'sgcms_token' &&
+            k !== 'sgcms_sb_collapsed' && k !== 'sgcms_publish_status' &&
+            k !== 'sgcms_published_manifest' && k !== 'sgcms_settings') {
+          try {
+            batch[k] = JSON.parse(localStorage.getItem(k));
+          } catch(e) {
+            batch[k] = localStorage.getItem(k);
+          }
+        }
+      }
+
+      if (Object.keys(batch).length === 0) return false;
+
+      const res = await fetch('api/save.php', {
+        method: 'POST',
+        credentials: 'include',
+        headers,
+        body: JSON.stringify({ batch })
+      });
+
+      if (res.status === 401) {
+        // Try session refresh once
+        const refreshed = await _refreshSession();
+        if (refreshed) return await this.syncToDb(mode);
+      }
+
+      if (res.ok) {
+        const json = await res.json();
+        return !!(json && json.success);
+      }
+    } catch (e) {
+      // Offline — localStorage is authoritative, will sync on next action
+    }
+    return false;
+  },
+
+  async syncFromDb(mode) {
+    mode = mode || 'draft';
+    try {
+      const res = await fetch('api/content.php?mode=' + mode, {
+        credentials: 'include'
+      });
       if (res.ok) {
         const json = await res.json();
         if (json && json.success && json.data) {
