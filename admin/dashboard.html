@@ -2887,6 +2887,16 @@
           sendToIframe({ type: 'CMS_SET_MODE', mode: state.canvasMode });
           syncActiveFormToLivePreview();
 
+          // If the iframe is reporting that it loaded with a blog article slug, re-send CMS_OPEN_ARTICLE
+          // This ensures the article is opened even if the initial dispatch was too early.
+          const frameSlug = msg.slug;
+          if (frameSlug && state.activeBlogSlug && frameSlug === state.activeBlogSlug) {
+            setTimeout(() => sendToIframe({ type: 'CMS_OPEN_ARTICLE', slug: frameSlug }), 200);
+          } else if (frameSlug && state.section === 'blog-edit' && !state.activeBlogSlug) {
+            state.activeBlogSlug = frameSlug;
+            setTimeout(() => sendToIframe({ type: 'CMS_OPEN_ARTICLE', slug: frameSlug }), 200);
+          }
+
           if (msg.path || msg.href) {
             const route = resolveRouteFromUrl(msg.path || msg.href);
             if (route && (route.section !== state.section || route.itemId !== state.itemId)) {
@@ -2897,6 +2907,10 @@
               renderSection();
             }
           }
+        } else if (msg.type === 'CMS_ARTICLE_OPENED') {
+          // iframe confirmed article is open – stop the retry loop
+          state._articleOpenConfirmed = msg.slug;
+          showToast('Live Visual Editor Ready: Click any text on canvas to edit!', 'info');
         } else if (msg.type === 'CMS_NAVIGATE_PAGE') {
           const route = resolveRouteFromUrl(msg.url || msg.path);
           if (route) {
@@ -4112,17 +4126,22 @@
         const slug = b.slug || b.en?.slug || b.id;
         state.activeBlogSlug = slug;
         navigate('blog-edit', null, id);
-
-        const iframe = document.getElementById('live-iframe');
-        const targetUrl = '../blog/index.html?cms_editor=1&article_slug=' + encodeURIComponent(slug);
-        if (iframe && iframe.src.indexOf(encodeURIComponent(slug)) === -1) {
-          iframe.src = targetUrl;
-        }
-
-        setTimeout(() => {
+        // navigate() already calls loadPreviewPage() which sets iframe.src with the correct slug.
+        // We do NOT set iframe.src again here to avoid a double reload.
+        // Instead, we send CMS_OPEN_ARTICLE with a retry loop until the iframe confirms receipt.
+        state._articleOpenConfirmed = null;
+        let articleOpenAttempts = 0;
+        const tryOpenArticle = () => {
+          if (state._articleOpenConfirmed === slug) return; // iframe confirmed — stop
+          articleOpenAttempts++;
           sendToIframe({ type: 'CMS_OPEN_ARTICLE', slug });
-          showToast('Live Visual Editor Ready: Click any text on canvas to edit!', 'info');
-        }, 500);
+          if (articleOpenAttempts < 10) {
+            setTimeout(tryOpenArticle, 700);
+          } else {
+            showToast('Live Visual Editor Ready: Click any text on canvas to edit!', 'info');
+          }
+        };
+        setTimeout(tryOpenArticle, 800);
       }
 
       function toggleGroup(group, forceOpen) {

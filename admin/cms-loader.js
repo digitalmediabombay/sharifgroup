@@ -2439,7 +2439,9 @@
       if (el.closest('#cms-inline-toolbar') || el.closest('#cms-hover-tooltip') || el.closest('#cms-save-toast') || el.closest('#cms-preview-badge') || el.closest('.cms-section-tool') || el.closest('#cms-image-popover')) return false;
 
       // Navigation header, navbar, mobile menu and mega-menus are site navigation, NOT editable body text
-      if (el.closest('header, nav, #main-header, #mobile-menu, .mega-menu, [id*="mega"], [class*="navbar"]')) {
+      // NOTE: Exempt the blog detail breadcrumb nav — it is inside #blog-detail-view-container, not a site nav
+      const navEl = el.closest('header, nav, #main-header, #mobile-menu, .mega-menu, [id*="mega"], [class*="navbar"]');
+      if (navEl && !navEl.closest('#blog-detail-view-container')) {
         return false;
       }
 
@@ -3002,13 +3004,20 @@
 
     if (isInsideIframe) {
       try {
+        const urlParams = new URLSearchParams(window.location.search);
+        const frameSlug = urlParams.get('article_slug') || urlParams.get('slug') || extractSlug();
         window.parent.postMessage({
           type: 'CMS_FRAME_READY',
           path: window.location.pathname,
           search: window.location.search,
           href: window.location.href,
-          slug: extractSlug()
+          slug: frameSlug
         }, '*');
+        // If a slug is in the URL, auto-open the article now that the visual editor is ready
+        if (frameSlug && typeof window.openBlogDetailBySlug === 'function') {
+          setEditMode(true, false, false);
+          window.openBlogDetailBySlug(frameSlug);
+        }
       } catch (e) { }
     }
 
@@ -3052,6 +3061,10 @@
         const openFn = () => {
           if (typeof window.openBlogDetailBySlug === 'function') {
             window.openBlogDetailBySlug(msg.slug);
+            // Confirm to dashboard that article is open and editor is live
+            if (window.parent && window.parent !== window) {
+              try { window.parent.postMessage({ type: 'CMS_ARTICLE_OPENED', slug: msg.slug }, '*'); } catch (e) {}
+            }
           } else {
             setTimeout(openFn, 80);
           }
