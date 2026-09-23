@@ -421,52 +421,7 @@ if (!function_exists('translateTextServer')) {
         // 3. BLOG (sgcms_blog)
         // ══════════════════════════════════════════════════════════════
         elseif ($contentKey === 'sgcms_blog') {
-            $oldMap = [];
-            if (is_array($oldData)) {
-                foreach ($oldData as $ob) {
-                    $slug = $ob['slug'] ?? ($ob['id'] ?? '');
-                    if ($slug) $oldMap[$slug] = $ob;
-                }
-            }
-
-            foreach ($newData as &$post) {
-                if (!is_array($post)) continue;
-                $slug = $post['slug'] ?? ($post['id'] ?? '');
-                $oldPost = $oldMap[$slug] ?? [];
-
-                $enData = $post['en'] ?? $post;
-                $oldEnData = $oldPost['en'] ?? $oldPost;
-
-                foreach ($targetLangs as $lang) {
-                    if (!isset($post[$lang]) || !is_array($post[$lang])) {
-                        $post[$lang] = [];
-                    }
-
-                    $fields = ['title', 'excerpt'];
-                    foreach ($fields as $f) {
-                        $newVal = trim((string)($enData[$f] ?? ''));
-                        if ($newVal === '') continue;
-
-                        $oldVal = trim((string)($oldEnData[$f] ?? ''));
-                        $currVal = trim((string)($post[$lang][$f] ?? ''));
-
-                        if (($oldVal !== '' && $newVal !== $oldVal) || $currVal === '' || ($currVal === $newVal && !hasNonLatinChars($currVal))) {
-                            $post[$lang][$f] = translateTextServer($newVal, $lang, 'en');
-                        }
-                    }
-
-                    // Body translation if changed and not excessively huge
-                    $newBody = trim((string)($enData['body'] ?? ''));
-                    $oldBody = trim((string)($oldEnData['body'] ?? ''));
-                    $currBody = trim((string)($post[$lang]['body'] ?? ''));
-                    if ($newBody !== '' && (($oldBody !== '' && $newBody !== $oldBody) || $currBody === '')) {
-                        if (strlen($newBody) < 8000) {
-                            $post[$lang]['body'] = translateTextServer($newBody, $lang, 'en');
-                        }
-                    }
-                }
-            }
-            unset($post);
+            // Blogs use 100% manual translation: preserve user-written drafts in all languages
         }
 
         // ══════════════════════════════════════════════════════════════

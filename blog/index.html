@@ -8365,6 +8365,9 @@
                     }
                 }
 
+                // Dynamically update SEO, GEO, AEO, OpenGraph & Schema.org JSON-LD for new & existing articles
+                updateBlogArticleSeo(article, slug, currentLang);
+
                 // Switch Views
                 if (listingSection) listingSection.style.display = 'none';
                 if (detailSection) {
@@ -8398,6 +8401,145 @@
                     });
                 }
             }
+
+            function setMetaTag(selector, attr, value) {
+                if (!selector || !attr || typeof value === 'undefined') return;
+                var el = document.querySelector(selector);
+                if (!el) {
+                    el = document.createElement('meta');
+                    var m = selector.match(/\[([a-zA-Z:-]+)="([^"]+)"\]/);
+                    if (m) {
+                        el.setAttribute(m[1], m[2]);
+                        document.head.appendChild(el);
+                    }
+                }
+                if (el) el.setAttribute(attr, value);
+            }
+
+            function updateBlogArticleSeo(article, slug, currentLang) {
+                if (!article) return;
+                var titleText = article.title ? (article.title + ' | Sharif Group Dubai') : 'Investment Migration Insights & Blog | Sharif Group';
+                document.title = titleText;
+
+                // Extract clean text snippet for description
+                var tmp = document.createElement('div');
+                tmp.innerHTML = article.content || '';
+                var rawDesc = (tmp.textContent || tmp.innerText || '').trim().replace(/\s+/g, ' ');
+                var excerpt = rawDesc ? rawDesc.slice(0, 160) : 'Strategic legal insights and investment migration parameters prepared by Sharif Group advisory desk in Business Bay, Dubai.';
+
+                var canonicalUrl = `https://sharifgroup.ae/blog/${slug}/`;
+                var imageUrl = article.image || 'https://sharifgroup.ae/assets/images/dubai-office-2.webp';
+
+                // Standard SEO
+                setMetaTag('meta[name="title"]', 'content', titleText);
+                setMetaTag('meta[name="description"]', 'content', excerpt);
+                var canLink = document.querySelector('link[rel="canonical"]');
+                if (canLink) canLink.setAttribute('href', canonicalUrl);
+
+                // Open Graph (Facebook, WhatsApp, LinkedIn)
+                setMetaTag('meta[property="og:title"]', 'content', titleText);
+                setMetaTag('meta[property="og:description"]', 'content', excerpt);
+                setMetaTag('meta[property="og:url"]', 'content', canonicalUrl);
+                setMetaTag('meta[property="og:image"]', 'content', imageUrl);
+                setMetaTag('meta[property="og:type"]', 'content', 'article');
+                setMetaTag('meta[property="article:section"]', 'content', article.category || 'Citizenship by Investment');
+                setMetaTag('meta[property="article:published_time"]', 'content', article.date || new Date().toISOString());
+
+                // Twitter Cards
+                setMetaTag('meta[name="twitter:title"]', 'content', titleText);
+                setMetaTag('meta[name="twitter:description"]', 'content', excerpt);
+                setMetaTag('meta[name="twitter:image"]', 'content', imageUrl);
+
+                // AEO (AI Engine Optimization - ChatGPT, Perplexity, Gemini, Claude)
+                setMetaTag('meta[name="ai-content-declaration"]', 'content', 'verified-editorial-blog');
+                setMetaTag('meta[name="topic"]', 'content', article.category || 'Citizenship by Investment, Golden Visa');
+                setMetaTag('meta[name="summary"]', 'content', excerpt);
+
+                // GEO Local SEO (Dubai, UAE Local Authority)
+                setMetaTag('meta[name="geo.region"]', 'content', 'AE-DU');
+                setMetaTag('meta[name="geo.placename"]', 'content', 'Dubai');
+                setMetaTag('meta[name="geo.position"]', 'content', '25.1874464;55.2641931');
+                setMetaTag('meta[name="ICBM"]', 'content', '25.1874464, 55.2641931');
+
+                // Dynamic Schema.org JSON-LD (Article + FAQPage + BreadcrumbList)
+                var oldScript = document.getElementById('sg-dynamic-article-schema');
+                if (oldScript) oldScript.remove();
+
+                var schemaScript = document.createElement('script');
+                schemaScript.type = 'application/ld+json';
+                schemaScript.id = 'sg-dynamic-article-schema';
+
+                var graph = [
+                    {
+                        "@type": "BlogPosting",
+                        "@id": `${canonicalUrl}#article`,
+                        "isPartOf": { "@type": "WebSite", "@id": "https://sharifgroup.ae/#website" },
+                        "headline": article.title || 'Investment Migration Insights',
+                        "description": excerpt,
+                        "url": canonicalUrl,
+                        "image": imageUrl,
+                        "datePublished": article.date || '2026-01-01',
+                        "dateModified": article.updated || article.date || '2026-01-01',
+                        "author": {
+                            "@type": "Organization",
+                            "name": article.author || "Sharif Group Legal Desk",
+                            "url": "https://sharifgroup.ae/"
+                        },
+                        "publisher": {
+                            "@type": "LegalService",
+                            "name": "Sharif Group",
+                            "url": "https://sharifgroup.ae/",
+                            "logo": "https://sharifgroup.ae/assets/images/vector_2d09c4bb.svg"
+                        }
+                    },
+                    {
+                        "@type": "BreadcrumbList",
+                        "itemListElement": [
+                            { "@type": "ListItem", "position": 1, "name": "Home", "item": "https://sharifgroup.ae/" },
+                            { "@type": "ListItem", "position": 2, "name": "Blog", "item": "https://sharifgroup.ae/blog/" },
+                            { "@type": "ListItem", "position": 3, "name": article.title || "Article", "item": canonicalUrl }
+                        ]
+                    }
+                ];
+
+                // If article has FAQs, add FAQPage schema for Google Rich Search snippets!
+                if (Array.isArray(article.faqs) && article.faqs.length) {
+                    var faqEntities = article.faqs.map(function(f) {
+                        return {
+                            "@type": "Question",
+                            "name": f.q,
+                            "acceptedAnswer": {
+                                "@type": "Answer",
+                                "text": f.a
+                            }
+                        };
+                    });
+                    graph.push({
+                        "@type": "FAQPage",
+                        "@id": `${canonicalUrl}#faqs`,
+                        "mainEntity": faqEntities
+                    });
+                }
+
+                schemaScript.textContent = JSON.stringify({
+                    "@context": "https://schema.org",
+                    "@graph": graph
+                });
+                document.head.appendChild(schemaScript);
+            }
+
+            function resetBlogListingSeo() {
+                document.title = 'Investment Migration Insights & Blog | Sharif Group';
+                setMetaTag('meta[name="title"]', 'content', 'Investment Migration Insights & Blog | Sharif Group');
+                setMetaTag('meta[name="description"]', 'content', 'Explore expert guides on second citizenship, European Golden Visas, Dubai real estate, and international tax planning. Read our latest articles today.');
+                var canLink = document.querySelector('link[rel="canonical"]');
+                if (canLink) canLink.setAttribute('href', 'https://sharifgroup.ae/blog/');
+                setMetaTag('meta[property="og:title"]', 'content', 'Investment Migration Insights & Blog | Sharif Group');
+                setMetaTag('meta[property="og:url"]', 'content', 'https://sharifgroup.ae/blog/');
+                setMetaTag('meta[name="twitter:title"]', 'content', 'Investment Migration Insights & Blog | Sharif Group');
+                var dynSchema = document.getElementById('sg-dynamic-article-schema');
+                if (dynSchema) dynSchema.remove();
+            }
            
             function closeBlogDetail() {
                 window.currentActiveArticleSlug = null;
@@ -8412,6 +8554,7 @@
                         window.history.pushState({}, "Sharif Group Blog", "/blog/");
                     }
                 }
+                resetBlogListingSeo();
             }
 
             // Re-render open article when language is changed without triggering recursive loops
