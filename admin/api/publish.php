@@ -39,6 +39,19 @@ foreach ($payload['data'] as $k => $v) {
     }
 }
 
+// Automatically detect changes in English and auto-translate into Arabic, Farsi, Chinese
+require_once __DIR__ . '/translate_sync.php';
+try {
+    $existingPublished = readPublishedSnapshot();
+    foreach ($payload['data'] as $k => &$v) {
+        $oldVal = isset($existingPublished[$k]) ? $existingPublished[$k] : null;
+        autoTranslateChangedData($k, $v, $oldVal);
+    }
+    unset($v);
+} catch (Exception $e) {
+    error_log('[SharifCMS AutoTranslate Publish Error] ' . $e->getMessage());
+}
+
 // 1. GUARANTEED LIVE UPDATE: Merge and write published snapshot directly to published_content.json
 $currentPublished = readPublishedSnapshot();
 foreach ($payload['data'] as $k => $v) {

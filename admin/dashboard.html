@@ -7637,12 +7637,12 @@
             const id = state.itemId || (document.getElementById('blog-title') ? 'b' + uid() : null);
             if (id) saveBlogItem(id);
             markDraft();
-            if (window.CMS.Settings.getGeminiKey()) autoTranslateOnSave('blog', id);
+            autoTranslateOnSave('blog', id);
             return;
           } else if (section === 'aboutus') {
             saveAboutUs();
             markDraft();
-            if (window.CMS.Settings.getGeminiKey()) autoTranslateOnSave('aboutus', null);
+            autoTranslateOnSave('aboutus', null);
             return;
           } else if (section === 'contact') {
             saveContactSales();
@@ -7651,6 +7651,7 @@
           } else if (section === 'cookiepolicy' || section === 'cookies') {
             saveCookiePolicy();
             markDraft();
+            autoTranslateOnSave('cookiepolicy', null);
             return;
           } else if (section === 'legal') {
             saveLegal();
@@ -7674,9 +7675,8 @@
               }
             });
           }
-          if (window.CMS.Settings.getAiKey()) {
-            autoTranslateOnSave(section, itemId);
-          }
+          // Automatically detect changes and translate to AR, FA, ZH
+          autoTranslateOnSave(section, itemId);
         } catch (err) {
           console.error('Error saving current page:', err);
           showToast('Error saving: ' + (err.message || 'Unknown error'), 'error');
@@ -7888,67 +7888,113 @@
       // ══════════════════════════════════════════════════════════
       let isAutoTranslating = false;
       async function autoTranslateOnSave(section, itemId) {
-        const key = window.CMS.Settings.getAiKey();
-        if (!key || isAutoTranslating) return;
+        if (isAutoTranslating) return;
 
         const statusEl = document.getElementById('ai-auto-status');
         if (statusEl) {
           statusEl.style.display = 'flex';
-          statusEl.innerHTML = '<i class="fa-solid fa-wand-magic-sparkles fa-spin" style="color:var(--gold)"></i> <span>Auto-translating (AR, FA, ZH)...</span>';
+          statusEl.innerHTML = '<i class="fa-solid fa-wand-magic-sparkles fa-spin" style="color:var(--gold)"></i> <span>Auto-syncing translations (AR, FA, ZH)...</span>';
         }
 
         isAutoTranslating = true;
         try {
           const targetLangs = ['ar', 'fa', 'zh'];
-          for (const lang of targetLangs) {
-            if (section === 'homepage') {
-              const d = window.CMS.getData(window.CMS.KEYS.HOMEPAGE) || window.CMS.DEFAULTS.homepage;
-              const en = d.hero?.en || {};
+
+          if (section === 'homepage') {
+            const d = window.CMS.getData(window.CMS.KEYS.HOMEPAGE) || window.CMS.DEFAULTS.homepage;
+            const en = d.hero?.en || {};
+            d.hero = d.hero || {};
+            d.hero._last_en = d.hero._last_en || {};
+
+            for (const lang of targetLangs) {
               d.hero[lang] = d.hero[lang] || {};
-              if (en.headline && !d.hero[lang].headline) d.hero[lang].headline = await window.CMS.AI.translate(en.headline, lang);
-              if (en.subheadline && !d.hero[lang].subheadline) d.hero[lang].subheadline = await window.CMS.AI.translate(en.subheadline, lang);
-              if (en.cta_primary && !d.hero[lang].cta_primary) d.hero[lang].cta_primary = await window.CMS.AI.translate(en.cta_primary, lang);
-              if (en.cta_secondary && !d.hero[lang].cta_secondary) d.hero[lang].cta_secondary = await window.CMS.AI.translate(en.cta_secondary, lang);
+              const heroFields = ['tagline', 'headline', 'subheadline', 'cta_primary', 'cta_secondary', 'pathway_citizenship', 'pathway_residency', 'pathway_realestate', 'pathway_education'];
+              for (const f of heroFields) {
+                if (en[f]) {
+                  const curr = d.hero[lang][f];
+                  const lastEn = d.hero._last_en[f];
+                  if (!curr || (lastEn && en[f] !== lastEn) || curr === en[f]) {
+                    d.hero[lang][f] = await window.CMS.AI.translate(en[f], lang);
+                  }
+                }
+              }
               d.hero[lang].cta_primary_link = en.cta_primary_link;
               d.hero[lang].cta_secondary_link = en.cta_secondary_link;
-              window.CMS.saveData(window.CMS.KEYS.HOMEPAGE, d);
-            } else if (section === 'program' && itemId) {
-              const itemType = state.itemType || 'citizenship';
-              const list = window.CMS.getData(window.CMS.KEYS[itemType.toUpperCase()]) || window.CMS.DEFAULTS[itemType];
-              const idx = list.findIndex(p => p.id === itemId);
-              if (idx >= 0) {
-                const en = list[idx].en || {};
-                list[idx][lang] = list[idx][lang] || {};
-                if (en.title) list[idx][lang].title = await window.CMS.AI.translate(en.title, lang);
-                if (en.nav_label) list[idx][lang].nav_label = await window.CMS.AI.translate(en.nav_label, lang);
-                if (en.overview) list[idx][lang].overview = await window.CMS.AI.translate(en.overview, lang);
-                window.CMS.saveData(window.CMS.KEYS[itemType.toUpperCase()], list);
-              }
-            } else if (section === 'blog' || section === 'blog-edit') {
-              const bSlug = state.activeBlogSlug || itemId;
-              const blogs = window.CMS.getData(window.CMS.KEYS.BLOG) || [];
-              const b = blogs.find(x => x.slug === bSlug || x.id === bSlug || (x.en && x.en.slug === bSlug));
-              if (b) {
-                const srcLang = (state.lang && b[state.lang] && (b[state.lang].body || b[state.lang].title)) ? state.lang : 'en';
-                const srcData = (b[srcLang] && (b[srcLang].body || b[srcLang].title)) ? b[srcLang] : (b.en || b);
-                b[lang] = b[lang] || {};
-                if (srcData.title) b[lang].title = await window.CMS.AI.translate(srcData.title, lang, srcLang);
-                if (srcData.excerpt) b[lang].excerpt = await window.CMS.AI.translate(srcData.excerpt, lang, srcLang);
-                if (srcData.body) b[lang].body = await window.CMS.AI.translate(srcData.body, lang, srcLang);
 
-                const srcFaqs = (Array.isArray(srcData.faqs) && srcData.faqs.length) ? srcData.faqs
-                  : ((b.en && Array.isArray(b.en.faqs) && b.en.faqs.length) ? b.en.faqs : (b.faqs || []));
-                if (Array.isArray(srcFaqs) && srcFaqs.length) {
-                  b[lang].faqs = await Promise.all(srcFaqs.map(async f => ({
-                    q: await window.CMS.AI.translate(f.q, lang, srcLang),
-                    a: await window.CMS.AI.translate(f.a, lang, srcLang)
-                  })));
+              // About section
+              const enAbout = d.about?.en || {};
+              d.about = d.about || {};
+              d.about._last_en = d.about._last_en || {};
+              d.about[lang] = d.about[lang] || {};
+              const aboutFields = ['badge', 'heading', 'subheading', 'p1', 'p2', 'btn1_text', 'btn2_text'];
+              for (const af of aboutFields) {
+                if (enAbout[af]) {
+                  const curr = d.about[lang][af];
+                  const lastEn = d.about._last_en[af];
+                  if (!curr || (lastEn && enAbout[af] !== lastEn) || curr === enAbout[af]) {
+                    d.about[lang][af] = await window.CMS.AI.translate(enAbout[af], lang);
+                  }
                 }
-                window.CMS.saveData(window.CMS.KEYS.BLOG, blogs);
-                // Background translations updated safely without re-rendering active visual canvas
               }
-            } else if (section === 'aboutus') {
-              const about = window.CMS.getData(window.CMS.KEYS.ABOUTUS) || window.CMS.DEFAULTS.aboutus;
+              d.about[lang].btn1_link = enAbout.btn1_link || 'aboutus/index.html';
+              d.about[lang].btn2_link = enAbout.btn2_link || 'contact/index.html';
+            }
+
+            d.hero._last_en = { ...en };
+            if (d.about?.en) d.about._last_en = { ...d.about.en };
+            window.CMS.saveData(window.CMS.KEYS.HOMEPAGE, d);
+
+          } else if (section === 'program' && itemId) {
+            const itemType = state.itemType || 'citizenship';
+            const list = window.CMS.getData(window.CMS.KEYS[itemType.toUpperCase()]) || window.CMS.DEFAULTS[itemType];
+            const idx = list.findIndex(p => p.id === itemId);
+            if (idx >= 0) {
+              const en = list[idx].en || {};
+              list[idx]._last_en = list[idx]._last_en || {};
+              for (const lang of targetLangs) {
+                list[idx][lang] = list[idx][lang] || {};
+                const progFields = ['title', 'hero_title', 'hero_subtitle', 'hero_tagline', 'nav_label', 'overview_title', 'overview', 'investment_title', 'investment_desc', 'who_can_apply_title', 'who_can_apply_desc', 'docs_title', 'docs_desc', 'timeline_title', 'timeline_desc', 'faq_title', 'faq_desc', 'consult_heading', 'consult_subheading', 'consult_btn_text'];
+                for (const pf of progFields) {
+                  if (en[pf]) {
+                    const curr = list[idx][lang][pf];
+                    const lastEn = list[idx]._last_en[pf];
+                    if (!curr || (lastEn && en[pf] !== lastEn) || curr === en[pf]) {
+                      list[idx][lang][pf] = await window.CMS.AI.translate(en[pf], lang);
+                    }
+                  }
+                }
+              }
+              list[idx]._last_en = { ...en };
+              window.CMS.saveData(window.CMS.KEYS[itemType.toUpperCase()], list);
+            }
+
+          } else if (section === 'blog' || section === 'blog-edit') {
+            const bSlug = state.activeBlogSlug || itemId;
+            const blogs = window.CMS.getData(window.CMS.KEYS.BLOG) || [];
+            const b = blogs.find(x => x.slug === bSlug || x.id === bSlug || (x.en && x.en.slug === bSlug));
+            if (b) {
+              const srcLang = (state.lang && b[state.lang] && (b[state.lang].body || b[state.lang].title)) ? state.lang : 'en';
+              const srcData = (b[srcLang] && (b[srcLang].body || b[srcLang].title)) ? b[srcLang] : (b.en || b);
+              b._last_en = b._last_en || {};
+              for (const lang of targetLangs) {
+                b[lang] = b[lang] || {};
+                if (srcData.title && (!b[lang].title || srcData.title !== b._last_en.title)) {
+                  b[lang].title = await window.CMS.AI.translate(srcData.title, lang, srcLang);
+                }
+                if (srcData.excerpt && (!b[lang].excerpt || srcData.excerpt !== b._last_en.excerpt)) {
+                  b[lang].excerpt = await window.CMS.AI.translate(srcData.excerpt, lang, srcLang);
+                }
+                if (srcData.body && (!b[lang].body || srcData.body !== b._last_en.body)) {
+                  b[lang].body = await window.CMS.AI.translate(srcData.body, lang, srcLang);
+                }
+              }
+              b._last_en = { title: srcData.title, excerpt: srcData.excerpt, body: srcData.body };
+              window.CMS.saveData(window.CMS.KEYS.BLOG, blogs);
+            }
+
+          } else if (section === 'aboutus') {
+            const about = window.CMS.getData(window.CMS.KEYS.ABOUTUS) || window.CMS.DEFAULTS.aboutus;
+            for (const lang of targetLangs) {
               if (about.hero?.en) {
                 about.hero[lang] = about.hero[lang] || {};
                 if (about.hero.en.title) about.hero[lang].title = await window.CMS.AI.translate(about.hero.en.title, lang);
@@ -7959,29 +8005,31 @@
                 if (about.overview.en.heading) about.overview[lang].heading = await window.CMS.AI.translate(about.overview.en.heading, lang);
                 if (about.overview.en.p1) about.overview[lang].p1 = await window.CMS.AI.translate(about.overview.en.p1, lang);
               }
-              window.CMS.saveData(window.CMS.KEYS.ABOUTUS, about);
-            } else if (section === 'cookiepolicy') {
-              const cp = window.CMS.getData('sgcms_cookiepolicy') || {};
-              const en = cp.en || {};
+            }
+            window.CMS.saveData(window.CMS.KEYS.ABOUTUS, about);
+
+          } else if (section === 'cookiepolicy') {
+            const cp = window.CMS.getData('sgcms_cookiepolicy') || {};
+            const en = cp.en || {};
+            for (const lang of targetLangs) {
               cp[lang] = cp[lang] || {};
               if (en.hero_badge) cp[lang].hero_badge = await window.CMS.AI.translate(en.hero_badge, lang);
               if (en.hero_title) cp[lang].hero_title = await window.CMS.AI.translate(en.hero_title, lang);
               if (en.hero_desc) cp[lang].hero_desc = await window.CMS.AI.translate(en.hero_desc, lang);
               if (en.p1_title) cp[lang].p1_title = await window.CMS.AI.translate(en.p1_title, lang);
               if (en.p1_desc) cp[lang].p1_desc = await window.CMS.AI.translate(en.p1_desc, lang);
-              window.CMS.saveData('sgcms_cookiepolicy', cp);
             }
+            window.CMS.saveData('sgcms_cookiepolicy', cp);
           }
 
           if (statusEl) {
-            statusEl.innerHTML = '<i class="fa-solid fa-check" style="color:#4ade80"></i> <span style="color:#4ade80">Auto-translated to AR, FA, ZH!</span>';
-            setTimeout(() => { statusEl.style.display = 'none'; }, 4000);
+            statusEl.innerHTML = '<i class="fa-solid fa-check" style="color:#4ade80"></i> <span style="color:#4ade80">Auto-synced in AR, FA, ZH!</span>';
+            setTimeout(() => { statusEl.style.display = 'none'; }, 3500);
           }
         } catch (err) {
           console.warn('[Auto-Translate error]:', err.message);
           if (statusEl) {
-            statusEl.innerHTML = '<i class="fa-solid fa-triangle-exclamation" style="color:#f87171"></i> <span style="color:#f87171">Auto-translate paused</span>';
-            setTimeout(() => { statusEl.style.display = 'none'; }, 3000);
+            statusEl.style.display = 'none';
           }
         } finally {
           isAutoTranslating = false;
@@ -8003,6 +8051,11 @@
           if (typeof saveCurrentPage === 'function' && state.section && state.section !== 'overview') {
             saveCurrentPage();
           }
+        } catch (e) { }
+
+        // Automatically sync all translations before publishing live
+        try {
+          await autoTranslateOnSave(state.section, state.itemId);
         } catch (e) { }
 
         // 1. Gather all current draft CMS keys comprehensively

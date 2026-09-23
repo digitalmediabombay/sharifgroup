@@ -97,15 +97,16 @@ const AI = {
   LANG_NAMES: { en: 'English', ar: 'Arabic', fa: 'Farsi (Persian)', zh: 'Chinese (Simplified)' },
 
   async translate(text, targetLang, sourceLang = 'en') {
+    if (!text || !String(text).trim()) return '';
+    text = String(text).trim();
+    if (targetLang === sourceLang) return text;
+
     const openrouterKey = Settings.getOpenRouterKey();
     const geminiKey = Settings.getGeminiKey();
-    const provider = openrouterKey ? 'openrouter' : 'gemini';
-    const apiKey = openrouterKey || geminiKey;
+    const provider = openrouterKey ? 'openrouter' : (geminiKey ? 'gemini' : '');
+    const apiKey = openrouterKey || geminiKey || '';
 
-    if (!apiKey) throw new Error('No AI key configured. Please enter your OpenRouter or Gemini API key in Settings.');
-    if (!text || !text.trim()) return '';
-
-    // 1. Attempt server-side PHP API backend first (avoids CORS & hides keys)
+    // 1. Attempt server-side PHP API backend first (uses OpenRouter, Gemini, or zero-config Google Translate)
     try {
       const res = await fetch('api/ai.php?action=translate', {
         method: 'POST',
@@ -128,79 +129,83 @@ const AI = {
       // Proceed to direct browser fallback
     }
 
-    // 2. Client-side direct fallback
-    const prompt = `You are a professional luxury translator for a premier investment migration, second citizenship, and residency advisory firm (Sharif Group, Dubai). Translate the following text from ${this.LANG_NAMES[sourceLang]} to ${this.LANG_NAMES[targetLang]}. Maintain a formal, premium, high-end advisory tone appropriate for ultra-high-net-worth clients. Return ONLY the translated text, nothing else.\n\nText:\n${text}`;
-
-    if (provider === 'openrouter') {
-      const openRouterModels = [
-        'openrouter/free',
-        'google/gemini-2.0-flash-exp:free',
-        'meta-llama/llama-3.3-70b-instruct:free',
-        'meta-llama/llama-3.1-8b-instruct:free',
-        'mistralai/mistral-small-24b-instruct-2501:free',
-        'google/gemini-2.0-flash-001',
-        'openrouter/auto'
-      ];
-
-      let lastError = null;
-      for (const model of openRouterModels) {
-        try {
-          const res = await fetch('https://openrouter.ai/api/v1/chat/completions', {
-            method: 'POST',
-            headers: {
-              'Content-Type': 'application/json',
-              'Authorization': 'Bearer ' + apiKey,
-              'HTTP-Referer': 'https://sharifgroup.ae',
-              'X-Title': 'Sharif Group CMS'
-            },
-            body: JSON.stringify({
-              model,
-              messages: [{ role: 'user', content: prompt }]
-            })
-          });
-
-          if (res.ok) {
-            const data = await res.json();
-            const content = data?.choices?.[0]?.message?.content?.trim();
-            if (content) return content;
-          } else {
-            const errData = await res.json().catch(() => null);
-            lastError = errData?.error?.message || `HTTP ${res.status}`;
-          }
-        } catch (fetchErr) {
-          lastError = fetchErr.message;
+    // 2. Direct browser Google Translate GTX fallback (always works, zero key required)
+    try {
+      const tl = targetLang === 'fa' ? 'fa' : (targetLang === 'zh' ? 'zh-CN' : targetLang);
+      const gtxUrl = `https://translate.googleapis.com/translate_a/single?client=gtx&sl=${encodeURIComponent(sourceLang)}&tl=${encodeURIComponent(tl)}&dt=t&q=${encodeURIComponent(text)}`;
+      const gtxRes = await fetch(gtxUrl);
+      if (gtxRes.ok) {
+        const gtxData = await gtxRes.json();
+        if (Array.isArray(gtxData) && Array.isArray(gtxData[0])) {
+          const joined = gtxData[0].map(s => s[0]).join('');
+          if (joined && joined.trim()) return joined.trim();
         }
       }
-
-      throw new Error(lastError || 'OpenRouter translation failed across available models.');
-    } else {
-      const geminiModels = ['gemini-2.0-flash', 'gemini-2.0-flash-lite', 'gemini-1.5-flash', 'gemini-1.5-flash-latest', 'gemini-1.5-pro'];
-      let lastErr = null;
-      for (const m of geminiModels) {
-        try {
-          const res = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/${m}:generateContent?key=${encodeURIComponent(apiKey)}`, {
-            method: 'POST',
-            headers: {
-              'Content-Type': 'application/json',
-              'x-goog-api-key': apiKey
-            },
-            body: JSON.stringify({ contents: [{ parts: [{ text: prompt }] }] })
-          });
-          if (res.ok) {
-            const data = await res.json();
-            const text = data?.candidates?.[0]?.content?.parts?.[0]?.text?.trim();
-            if (text) return text;
-          } else {
-            const err = await res.json().catch(() => null);
-            lastErr = err?.error?.message || `HTTP ${res.status}`;
-            if (lastErr.includes('API key not valid') || lastErr.includes('API_KEY_INVALID')) break;
-          }
-        } catch (fetchErr) {
-          lastErr = fetchErr.message;
-        }
-      }
-      throw new Error(lastErr || 'Gemini translation failed across available models.');
+    } catch (e) {
+      // Proceed to client AI key fallback
     }
+
+    // 3. Client-side direct fallback if an API key is available
+    if (apiKey) {
+      const prompt = `You are a professional luxury translator for a premier investment migration, second citizenship, and residency advisory firm (Sharif Group, Dubai). Translate the following text from ${this.LANG_NAMES[sourceLang]} to ${this.LANG_NAMES[targetLang]}. Maintain a formal, premium, high-end advisory tone appropriate for ultra-high-net-worth clients. Return ONLY the translated text, nothing else.\n\nText:\n${text}`;
+
+      if (provider === 'openrouter') {
+        const openRouterModels = [
+          'openrouter/free',
+          'google/gemini-2.0-flash-exp:free',
+          'meta-llama/llama-3.3-70b-instruct:free',
+          'meta-llama/llama-3.1-8b-instruct:free',
+          'mistralai/mistral-small-24b-instruct-2501:free',
+          'google/gemini-2.0-flash-001',
+          'openrouter/auto'
+        ];
+
+        for (const model of openRouterModels) {
+          try {
+            const res = await fetch('https://openrouter.ai/api/v1/chat/completions', {
+              method: 'POST',
+              headers: {
+                'Content-Type': 'application/json',
+                'Authorization': 'Bearer ' + apiKey,
+                'HTTP-Referer': 'https://sharifgroup.ae',
+                'X-Title': 'Sharif Group CMS'
+              },
+              body: JSON.stringify({
+                model,
+                messages: [{ role: 'user', content: prompt }]
+              })
+            });
+
+            if (res.ok) {
+              const data = await res.json();
+              const content = data?.choices?.[0]?.message?.content?.trim();
+              if (content) return content;
+            }
+          } catch (fetchErr) {}
+        }
+      } else {
+        const geminiModels = ['gemini-2.0-flash', 'gemini-2.0-flash-lite', 'gemini-1.5-flash', 'gemini-1.5-flash-latest', 'gemini-1.5-pro'];
+        for (const m of geminiModels) {
+          try {
+            const res = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/${m}:generateContent?key=${encodeURIComponent(apiKey)}`, {
+              method: 'POST',
+              headers: {
+                'Content-Type': 'application/json',
+                'x-goog-api-key': apiKey
+              },
+              body: JSON.stringify({ contents: [{ parts: [{ text: prompt }] }] })
+            });
+            if (res.ok) {
+              const data = await res.json();
+              const text = data?.candidates?.[0]?.content?.parts?.[0]?.text?.trim();
+              if (text) return text;
+            }
+          } catch (fetchErr) {}
+        }
+      }
+    }
+
+    return text;
   },
 
   async translateAllFields(fields, targetLang, onProgress) {

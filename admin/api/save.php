@@ -54,6 +54,19 @@ foreach ($incomingData as $k => $v) {
     }
 }
 
+// Automatically detect changes in English and auto-translate into Arabic, Farsi, Chinese
+require_once __DIR__ . '/translate_sync.php';
+try {
+    $existingDraft = readDraftSnapshot();
+    foreach ($incomingData as $k => &$v) {
+        $oldVal = isset($existingDraft[$k]) ? $existingDraft[$k] : null;
+        autoTranslateChangedData($k, $v, $oldVal);
+    }
+    unset($v);
+} catch (Exception $e) {
+    error_log('[SharifCMS AutoTranslate Save Error] ' . $e->getMessage());
+}
+
 // 1. Dual-Write: Update server-side draft snapshot file immediately
 try {
     $currentDraft = readDraftSnapshot();
