@@ -1715,11 +1715,13 @@
       white-space: nowrap;
       user-select: none;
     }
+
     .qp-flag-chip:hover {
       background: rgba(197, 168, 128, 0.18);
       border-color: var(--gold);
       color: #fff;
     }
+
     .qp-flag-chip.selected {
       background: var(--gold);
       border-color: var(--gold);
@@ -1828,7 +1830,8 @@
         </div>
 
         <!-- Auto-Translate & Save status indicator -->
-        <div id="ai-auto-status" style="display:none;font-size:11px;color:var(--gold);align-items:center;gap:6px;background:rgba(197,168,128,0.1);border:1px solid rgba(197,168,128,0.25);border-radius:6px;padding:3px 8px">
+        <div id="ai-auto-status"
+          style="display:none;font-size:11px;color:var(--gold);align-items:center;gap:6px;background:rgba(197,168,128,0.1);border:1px solid rgba(197,168,128,0.25);border-radius:6px;padding:3px 8px">
           <i class="fa-solid fa-wand-magic-sparkles fa-spin"></i> <span>Auto-translating...</span>
         </div>
 
@@ -1841,12 +1844,14 @@
         <div id="save-ind" class="saved"><i class="fa-solid fa-circle-check" style="font-size:9px"></i> All saved</div>
 
         <!-- Save Draft button -->
-        <button class="btn btn-ghost" id="btn-save-draft" onclick="saveCurrentPage()" title="Save changes as working draft">
+        <button class="btn btn-ghost" id="btn-save-draft" onclick="saveCurrentPage()"
+          title="Save changes as working draft">
           <i class="fa-solid fa-floppy-disk"></i> Save Draft
         </button>
 
         <!-- Publish Live button -->
-        <button class="btn btn-publish" id="btn-publish-live" onclick="publishLiveSite()" title="Publish all changes to live website">
+        <button class="btn btn-publish" id="btn-publish-live" onclick="publishLiveSite()"
+          title="Publish all changes to live website">
           <i class="fa-solid fa-cloud-arrow-up"></i> Publish
         </button>
 
@@ -2020,7 +2025,8 @@
       <!-- Bottom Left Copyright -->
       <div class="sb-bottom-footer">
         <span class="sb-copyright">
-          Designed and Developed by <a href="https://www.digitalmediabombay.com/" target="_blank" rel="noopener noreferrer">Digital Media Bombay</a>
+          Designed and Developed by <a href="https://www.digitalmediabombay.com/" target="_blank"
+            rel="noopener noreferrer">Digital Media Bombay</a>
         </span>
       </div>
     </aside>
@@ -2126,7 +2132,8 @@
         <button class="pv-btn" onclick="refreshPreview()" title="Refresh preview"><i
             class="fa-solid fa-rotate-right"></i></button>
         <button type="button" class="btn btn-ghost" id="btn-toggle-builder" onclick="toggleEditorDrawer()"
-          title="Toggle Section Builder & Form Editor" style="margin-left:6px;padding:4px 11px;font-size:11px;font-weight:600;display:inline-flex;align-items:center;gap:6px">
+          title="Toggle Section Builder & Form Editor"
+          style="margin-left:6px;padding:4px 11px;font-size:11px;font-weight:600;display:inline-flex;align-items:center;gap:6px">
           <i class="fa-solid fa-sliders"></i> <span id="btn-toggle-builder-lbl">Section Builder</span>
         </button>
       </div>
@@ -2146,9 +2153,12 @@
           <button type="button" class="sg-modal-close" onclick="closeQuickBlogModal()">&times;</button>
         </div>
         <div class="sg-modal-body">
-          <p class="sg-modal-desc">Enter the article title and choose a featured image. The complete article template will open immediately in the Studio Canvas with meta tags configured, ready to edit visually by clicking on any text!</p>
+          <p class="sg-modal-desc">Enter the article title and choose a featured image. The complete article template
+            will open immediately in the Studio Canvas with meta tags configured, ready to edit visually by clicking on
+            any text!</p>
           <div class="form-group" style="margin-bottom:14px">
-            <label class="form-label" style="font-weight:600">Article Title <span style="color:var(--red)">*</span></label>
+            <label class="form-label" style="font-weight:600">Article Title <span
+                style="color:var(--red)">*</span></label>
             <input type="text" id="qb-title" class="form-input form-input-headline"
               placeholder="e.g. Dubai Golden Visa 2026: The Complete Guide for Global Families" autofocus
               onkeydown="if(event.key==='Enter')submitQuickBlog()">
@@ -2202,46 +2212,69 @@
         </div>
         <div class="sg-modal-body">
           <!-- Context Banner -->
-          <div id="qp-context-banner" style="display:flex;background:rgba(197,168,128,0.12);border:1px solid rgba(197,168,128,0.3);border-radius:8px;padding:8px 12px;margin-bottom:14px;align-items:center;justify-content:space-between">
+          <div id="qp-context-banner"
+            style="display:flex;background:rgba(197,168,128,0.12);border:1px solid rgba(197,168,128,0.3);border-radius:8px;padding:8px 12px;margin-bottom:14px;align-items:center;justify-content:space-between">
             <div style="font-size:12px;color:var(--text);display:flex;align-items:center;gap:6px">
               <span style="color:var(--gold);font-weight:600" id="qp-context-type">Citizenship by Investment</span>
               <i class="fa-solid fa-chevron-right" style="font-size:9px;color:var(--muted)"></i>
               <span style="font-weight:600;color:var(--text)" id="qp-context-section">Caribbean</span>
             </div>
-            <span style="font-size:10px;color:var(--muted);background:rgba(255,255,255,0.06);padding:2px 6px;border-radius:4px">Section Pre-Selected</span>
+            <span
+              style="font-size:10px;color:var(--muted);background:rgba(255,255,255,0.06);padding:2px 6px;border-radius:4px">Section
+              Pre-Selected</span>
           </div>
 
-          <p class="sg-modal-desc" id="qp-modal-desc">Enter the page name. A complete luxury blueprint will immediately open in the Studio Canvas with meta tags set automatically, ready to edit visually by clicking on any text!</p>
+          <p class="sg-modal-desc" id="qp-modal-desc">Enter the page name. A complete luxury blueprint will immediately
+            open in the Studio Canvas with meta tags set automatically, ready to edit visually by clicking on any text!
+          </p>
 
           <div class="form-group" style="margin-bottom:14px">
-            <label class="form-label" style="font-weight:600">Page / Country Name <span style="color:var(--red)">*</span></label>
-            <input type="text" id="qp-name" class="form-input form-input-headline" placeholder="e.g. Bahamas, Malta, Cyprus, or Singapore" autofocus oninput="handleQuickProgramNameInput(this.value)" onkeydown="if(event.key==='Enter')submitQuickProgram()">
+            <label class="form-label" style="font-weight:600">Page / Country Name <span
+                style="color:var(--red)">*</span></label>
+            <input type="text" id="qp-name" class="form-input form-input-headline"
+              placeholder="e.g. Bahamas, Malta, Cyprus, or Singapore" autofocus
+              oninput="handleQuickProgramNameInput(this.value)" onkeydown="if(event.key==='Enter')submitQuickProgram()">
           </div>
 
           <!-- Country Flag Selector -->
           <div class="form-group" style="margin-bottom:14px">
-            <label class="form-label" style="font-weight:600;display:flex;align-items:center;justify-content:space-between">
+            <label class="form-label"
+              style="font-weight:600;display:flex;align-items:center;justify-content:space-between">
               <span>Country Flag</span>
-              <span style="font-size:10px;font-weight:400;color:var(--muted)" id="qp-flag-status">Auto-detected from country name</span>
+              <span style="font-size:10px;font-weight:400;color:var(--muted)" id="qp-flag-status">Auto-detected from
+                country name</span>
             </label>
             <div style="display:flex;align-items:center;gap:10px;margin-bottom:8px">
-              <div id="qp-flag-preview-box" style="width:48px;height:32px;border-radius:4px;border:1px solid rgba(197,168,128,0.3);background:rgba(0,0,0,0.3);display:flex;align-items:center;justify-content:center;overflow:hidden;flex-shrink:0">
-                <img id="qp-flag-preview" src="" style="width:100%;height:100%;object-fit:cover;display:none" onerror="this.style.display='none';document.getElementById('qp-flag-empty').style.display='flex'">
-                <div id="qp-flag-empty" style="color:var(--muted);font-size:12px;display:flex"><i class="fa-regular fa-flag"></i></div>
+              <div id="qp-flag-preview-box"
+                style="width:48px;height:32px;border-radius:4px;border:1px solid rgba(197,168,128,0.3);background:rgba(0,0,0,0.3);display:flex;align-items:center;justify-content:center;overflow:hidden;flex-shrink:0">
+                <img id="qp-flag-preview" src="" style="width:100%;height:100%;object-fit:cover;display:none"
+                  onerror="this.style.display='none';document.getElementById('qp-flag-empty').style.display='flex'">
+                <div id="qp-flag-empty" style="color:var(--muted);font-size:12px;display:flex"><i
+                    class="fa-regular fa-flag"></i></div>
               </div>
-              <input type="text" id="qp-flag-url" class="form-input" placeholder="Flag image/SVG URL or select below..." style="flex:1" oninput="updateQuickProgramFlagPreview(this.value)">
+              <input type="text" id="qp-flag-url" class="form-input" placeholder="Flag image/SVG URL or select below..."
+                style="flex:1" oninput="updateQuickProgramFlagPreview(this.value)">
             </div>
             <!-- Quick Flag Preset Chips -->
             <div style="display:flex;gap:5px;flex-wrap:wrap" id="qp-flag-presets">
-              <button type="button" class="qp-flag-chip" onclick="setQuickProgramFlag('mt','https://flagcdn.com/mt.svg','Malta')">🇲🇹 Malta</button>
-              <button type="button" class="qp-flag-chip" onclick="setQuickProgramFlag('cy','https://flagcdn.com/cy.svg','Cyprus')">🇨🇾 Cyprus</button>
-              <button type="button" class="qp-flag-chip" onclick="setQuickProgramFlag('bs','https://flagcdn.com/bs.svg','Bahamas')">🇧🇸 Bahamas</button>
-              <button type="button" class="qp-flag-chip" onclick="setQuickProgramFlag('tr','https://flagcdn.com/tr.svg','Turkey')">🇹🇷 Turkey</button>
-              <button type="button" class="qp-flag-chip" onclick="setQuickProgramFlag('es','https://flagcdn.com/es.svg','Spain')">🇪🇸 Spain</button>
-              <button type="button" class="qp-flag-chip" onclick="setQuickProgramFlag('gr','https://flagcdn.com/gr.svg','Greece')">🇬🇷 Greece</button>
-              <button type="button" class="qp-flag-chip" onclick="setQuickProgramFlag('pt','https://flagcdn.com/pt.svg','Portugal')">🇵🇹 Portugal</button>
-              <button type="button" class="qp-flag-chip" onclick="setQuickProgramFlag('dm','https://flagcdn.com/dm.svg','Dominica')">🇩🇲 Dominica</button>
-              <button type="button" class="qp-flag-chip" onclick="setQuickProgramFlag('vu','https://flagcdn.com/vu.svg','Vanuatu')">🇻🇺 Vanuatu</button>
+              <button type="button" class="qp-flag-chip"
+                onclick="setQuickProgramFlag('mt','https://flagcdn.com/mt.svg','Malta')">🇲🇹 Malta</button>
+              <button type="button" class="qp-flag-chip"
+                onclick="setQuickProgramFlag('cy','https://flagcdn.com/cy.svg','Cyprus')">🇨🇾 Cyprus</button>
+              <button type="button" class="qp-flag-chip"
+                onclick="setQuickProgramFlag('bs','https://flagcdn.com/bs.svg','Bahamas')">🇧🇸 Bahamas</button>
+              <button type="button" class="qp-flag-chip"
+                onclick="setQuickProgramFlag('tr','https://flagcdn.com/tr.svg','Turkey')">🇹🇷 Turkey</button>
+              <button type="button" class="qp-flag-chip"
+                onclick="setQuickProgramFlag('es','https://flagcdn.com/es.svg','Spain')">🇪🇸 Spain</button>
+              <button type="button" class="qp-flag-chip"
+                onclick="setQuickProgramFlag('gr','https://flagcdn.com/gr.svg','Greece')">🇬🇷 Greece</button>
+              <button type="button" class="qp-flag-chip"
+                onclick="setQuickProgramFlag('pt','https://flagcdn.com/pt.svg','Portugal')">🇵🇹 Portugal</button>
+              <button type="button" class="qp-flag-chip"
+                onclick="setQuickProgramFlag('dm','https://flagcdn.com/dm.svg','Dominica')">🇩🇲 Dominica</button>
+              <button type="button" class="qp-flag-chip"
+                onclick="setQuickProgramFlag('vu','https://flagcdn.com/vu.svg','Vanuatu')">🇻🇺 Vanuatu</button>
             </div>
           </div>
 
@@ -2252,7 +2285,8 @@
         </div>
         <div class="sg-modal-footer">
           <button type="button" class="btn btn-ghost" onclick="closeQuickProgramModal()">Cancel</button>
-          <button type="button" class="btn btn-primary" onclick="submitQuickProgram()"><i class="fa-solid fa-wand-magic-sparkles"></i> Open Blueprint in Canvas</button>
+          <button type="button" class="btn btn-primary" onclick="submitQuickProgram()"><i
+              class="fa-solid fa-wand-magic-sparkles"></i> Open Blueprint in Canvas</button>
         </div>
       </div>
     </div>
@@ -2322,21 +2356,76 @@
     <div class="sg-modal-overlay" id="modal-publish-success">
       <div class="sg-modal-card" style="max-width:440px;text-align:center">
         <div style="padding:28px 24px 22px">
-          <div style="width:58px;height:58px;border-radius:50%;background:rgba(16,185,129,0.15);border:1.5px solid rgba(16,185,129,0.35);color:#10b981;font-size:26px;display:flex;align-items:center;justify-content:center;margin:0 auto 16px;box-shadow:0 0 20px rgba(16,185,129,0.25)">
+          <div
+            style="width:58px;height:58px;border-radius:50%;background:rgba(16,185,129,0.15);border:1.5px solid rgba(16,185,129,0.35);color:#10b981;font-size:26px;display:flex;align-items:center;justify-content:center;margin:0 auto 16px;box-shadow:0 0 20px rgba(16,185,129,0.25)">
             <i class="fa-solid fa-cloud-arrow-up"></i>
           </div>
           <h3 style="font-size:18px;font-weight:700;color:#fff;margin-bottom:8px">Published to Live Website!</h3>
           <p style="font-size:12.5px;color:var(--muted);line-height:1.6;margin-bottom:18px" id="publish-modal-desc">
-            All your updates, programs, sections, and translations are now officially published and live for website visitors worldwide.
+            All your updates, programs, sections, and translations are now officially published and live for website
+            visitors worldwide.
           </p>
-          <div style="background:rgba(255,255,255,0.03);border:1px solid var(--border);border-radius:8px;padding:10px 14px;margin-bottom:20px;display:flex;align-items:center;justify-content:space-between;font-size:11px;color:var(--muted)">
+          <div
+            style="background:rgba(255,255,255,0.03);border:1px solid var(--border);border-radius:8px;padding:10px 14px;margin-bottom:20px;display:flex;align-items:center;justify-content:space-between;font-size:11px;color:var(--muted)">
             <span><i class="fa-solid fa-clock" style="color:var(--gold);margin-right:4px"></i> Timestamp</span>
             <span id="publish-timestamp-lbl" style="color:#fff;font-weight:600">Just now</span>
           </div>
           <div style="display:flex;gap:10px;justify-content:center">
-            <button type="button" class="btn btn-ghost" onclick="closePublishModal()" style="flex:1;justify-content:center">Continue Editing</button>
-            <button type="button" class="btn btn-publish" onclick="openLiveSiteFromModal()" style="flex:1;justify-content:center">
+            <button type="button" class="btn btn-ghost" onclick="closePublishModal()"
+              style="flex:1;justify-content:center">Continue Editing</button>
+            <button type="button" class="btn btn-publish" onclick="openLiveSiteFromModal()"
+              style="flex:1;justify-content:center">
               <i class="fa-solid fa-arrow-up-right-from-square"></i> View Live Site
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ═══ MODAL: PUBLISH ERROR ═══════════════════════════════════════════ -->
+    <div class="sg-modal-overlay" id="modal-publish-error">
+      <div class="sg-modal-card" style="max-width:500px">
+        <div style="padding:28px 24px 22px">
+          <div
+            style="width:58px;height:58px;border-radius:50%;background:rgba(220,38,38,0.15);border:1.5px solid rgba(220,38,38,0.35);color:#dc2626;font-size:26px;display:flex;align-items:center;justify-content:center;margin:0 auto 16px;box-shadow:0 0 20px rgba(220,38,38,0.2)">
+            <i class="fa-solid fa-triangle-exclamation"></i>
+          </div>
+          <h3 style="font-size:18px;font-weight:700;color:#fff;margin-bottom:8px;text-align:center">Publish Failed —
+            Server Error</h3>
+          <p style="font-size:12px;color:var(--muted);line-height:1.6;margin-bottom:14px;text-align:center"
+            id="publish-error-summary">
+            The server could not write your changes. Your edits are safe in the browser but not yet live.
+          </p>
+          <!-- Error detail box -->
+          <div
+            style="background:#0f172a;border:1px solid rgba(220,38,38,0.4);border-radius:8px;padding:12px 14px;margin-bottom:16px;font-family:monospace;font-size:11px;color:#fca5a5;white-space:pre-wrap;word-break:break-word;max-height:160px;overflow-y:auto"
+            id="publish-error-detail"></div>
+          <!-- Diagnostic info -->
+          <div
+            style="background:rgba(255,255,255,0.03);border:1px solid var(--border);border-radius:8px;padding:10px 14px;margin-bottom:18px;font-size:11px;color:var(--muted)">
+            <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:6px">
+              <span><i class="fa-solid fa-key" style="color:var(--gold);margin-right:4px"></i> Keys in payload</span>
+              <span id="publish-error-keys" style="color:#fff;font-weight:600">—</span>
+            </div>
+            <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:6px">
+              <span><i class="fa-solid fa-server" style="color:var(--gold);margin-right:4px"></i> HTTP status</span>
+              <span id="publish-error-status" style="color:#fff;font-weight:600">—</span>
+            </div>
+            <div style="display:flex;align-items:center;justify-content:space-between">
+              <span><i class="fa-solid fa-stethoscope" style="color:var(--gold);margin-right:4px"></i> Run
+                diagnostics</span>
+              <a href="api/diagnostics.php" target="_blank"
+                style="color:var(--gold);font-weight:600;text-decoration:none">Open &rarr;</a>
+            </div>
+          </div>
+          <div style="display:flex;gap:10px;justify-content:center">
+            <button type="button" class="btn btn-ghost"
+              onclick="document.getElementById('modal-publish-error').classList.remove('open')"
+              style="flex:1;justify-content:center">Close</button>
+            <button type="button" class="btn btn-publish"
+              onclick="publishLiveSite();document.getElementById('modal-publish-error').classList.remove('open')"
+              style="flex:1;justify-content:center">
+              <i class="fa-solid fa-rotate-right"></i> Retry Publish
             </button>
           </div>
         </div>
@@ -2568,11 +2657,16 @@
         const sep = url.includes('?') ? '&' : '?';
         const currentSrc = url + sep + 'cms_editor=1';
         const cleanUrl = url.split('?')[0].replace(/^\.\.\//, '');
-        const needsSlugReload = (state.section === 'blog-edit' && iframe.src.indexOf('article_slug=' + encodeURIComponent(state.activeBlogSlug || '')) === -1)
+        const needsSlugReload = (state.section === 'blog-edit' && state.activeBlogSlug && iframe.src.indexOf('article_slug=' + encodeURIComponent(state.activeBlogSlug)) === -1)
           || (state.section === 'blog' && iframe.src.indexOf('article_slug=') !== -1);
         if (!iframe.src || iframe.src.indexOf(cleanUrl) === -1 || iframe.src === 'about:blank' || needsSlugReload) {
           iframe.src = currentSrc;
         } else {
+          if (state.section === 'blog-edit' && state.activeBlogSlug && iframe.contentWindow) {
+            try {
+              iframe.contentWindow.postMessage({ type: 'CMS_OPEN_ARTICLE', slug: state.activeBlogSlug }, '*');
+            } catch (e) { }
+          }
           syncActiveFormToLivePreview();
         }
       }
@@ -2735,7 +2829,7 @@
             const parsed = new URL(p);
             p = parsed.pathname;
           }
-        } catch(e) {}
+        } catch (e) { }
         p = p.replace(/\\/g, '/');
 
         // Check programs
@@ -2830,7 +2924,7 @@
                 syncActiveFormToLivePreview();
               }
             }
-          } catch(e) {}
+          } catch (e) { }
 
           setTimeout(() => {
             sendToIframe({ type: 'CMS_SET_LANG', lang: state.lang });
@@ -3250,7 +3344,8 @@
           }
         };
 
-        let existingBlogs = window.CMS.getData(window.CMS.KEYS.BLOG) || [];
+        let existingBlogs = window.CMS.getData(window.CMS.KEYS.BLOG);
+        if (!Array.isArray(existingBlogs)) existingBlogs = [];
         existingBlogs.unshift(newArticle);
         existingBlogs = repairBlogFaqsAndTranslations(existingBlogs);
         window.CMS.saveData(window.CMS.KEYS.BLOG, existingBlogs);
@@ -3640,7 +3735,7 @@
                 localStorage.setItem(liveKey, JSON.stringify(liveList));
               }
             }
-          } catch(e) {}
+          } catch (e) { }
         });
 
         // Also clean up published manifest immediately
@@ -3678,7 +3773,7 @@
           if (iframe && iframe.contentWindow) {
             iframe.contentWindow.postMessage({ type: 'CMS_REHYDRATE' }, '*');
           }
-        } catch(e) {}
+        } catch (e) { }
 
         if (state.itemId === targetId) {
           closeEditorDrawer();
@@ -3943,7 +4038,7 @@
           if (p.timestamp) {
             try {
               timeStr = ` (${new Date(p.timestamp).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })})`;
-            } catch (e) {}
+            } catch (e) { }
           }
           pill.innerHTML = `<span class="pub-dot"></span> <span class="pub-text">LIVE${timeStr}</span>`;
           pill.title = 'All changes are currently live on the website.';
@@ -4634,7 +4729,7 @@
     </div>
     <div class="form-group" style="margin-bottom:12px">
       <label class="form-label">Heading</label>
-      <input class="form-input" ${dir} id="about-heading" value="${escH(about.heading || 'OVERVIEW & Background:')}" oninput="markUnsaved();liveUpdateField('about_heading',this.value)">
+      <input class="form-input" ${dir} id="about-heading" value="${escH(about.heading || 'Our Story & Background:')}" oninput="markUnsaved();liveUpdateField('about_heading',this.value)">
     </div>
     <div class="form-group" style="margin-bottom:12px">
       <label class="form-label">Paragraph 1</label>
@@ -4647,7 +4742,7 @@
     <div class="form-row form-row-2">
       <div class="form-group">
         <label class="form-label">Button 1 Text</label>
-        <input class="form-input" ${dir} id="about-btn1-text" value="${escH(about.btn1_text || 'Read OVERVIEW')}" oninput="markUnsaved();liveUpdateField('about_btn1',this.value)">
+        <input class="form-input" ${dir} id="about-btn1-text" value="${escH(about.btn1_text || 'Read Our Story')}" oninput="markUnsaved();liveUpdateField('about_btn1',this.value)">
       </div>
       <div class="form-group">
         <label class="form-label">Button 1 Link</label>
@@ -6308,15 +6403,8 @@
         // Clean up corresponding _live key if present
         try {
           const liveKey = (window.CMS.KEYS.BLOG || 'sgcms_blog') + '_live';
-          const liveVal = localStorage.getItem(liveKey);
-          if (liveVal) {
-            let liveList = JSON.parse(liveVal);
-            if (Array.isArray(liveList)) {
-              liveList = liveList.filter(b => b && b.id !== id && b.slug !== id && b.en?.slug !== id && (target ? b.id !== target.id : true));
-              localStorage.setItem(liveKey, JSON.stringify(liveList));
-            }
-          }
-        } catch(e) {}
+          localStorage.setItem(liveKey, JSON.stringify(blogs));
+        } catch (e) { }
 
         // Clean up manifest entry
         try {
@@ -6325,11 +6413,11 @@
             const manifest = JSON.parse(manifestVal);
             const blogKey = window.CMS.KEYS.BLOG || 'sgcms_blog';
             if (manifest && manifest.data && Array.isArray(manifest.data[blogKey])) {
-              manifest.data[blogKey] = manifest.data[blogKey].filter(b => b && b.id !== id && b.slug !== id && b.en?.slug !== id && (target ? b.id !== target.id : true));
+              manifest.data[blogKey] = blogs;
               localStorage.setItem('sgcms_published_manifest', JSON.stringify(manifest));
             }
           }
-        } catch(e) {}
+        } catch (e) { }
 
         // Clean from client articlesDatabase
         try {
@@ -6338,7 +6426,47 @@
             if (target?.slug) delete window.articlesDatabase[target.slug];
             if (target?.en?.slug) delete window.articlesDatabase[target.en.slug];
           }
-        } catch(e) {}
+        } catch (e) { }
+
+        // Immediately synchronize deletion to backend PHP MySQL & published_content.json
+        try {
+          const token = sessionStorage.getItem('sgcms_token') || localStorage.getItem('sgcms_token') || '';
+          const headers = { 'Content-Type': 'application/json' };
+          if (token) {
+            headers['Authorization'] = 'Bearer ' + token;
+            headers['X-CMS-Token'] = token;
+          }
+          // Dual sync: save draft and publish updated blog list to server
+          fetch('api/save.php', {
+            method: 'POST',
+            credentials: 'include',
+            headers,
+            body: JSON.stringify({ key: 'sgcms_blog', data: blogs, token })
+          });
+          fetch('api/publish.php', {
+            method: 'POST',
+            credentials: 'include',
+            headers,
+            body: JSON.stringify({
+              publisher: 'Admin (Article Delete)',
+              data: { sgcms_blog: blogs },
+              token
+            })
+          });
+        } catch (e) { }
+
+        // Notify preview iframe to instantly drop the card
+        try {
+          const iframe = document.getElementById('live-iframe');
+          if (iframe && iframe.contentWindow) {
+            iframe.contentWindow.postMessage({
+              type: 'CMS_BLOG_DELETED',
+              id: id,
+              targetId: target ? target.id : null,
+              slug: target ? target.slug : null
+            }, '*');
+          }
+        } catch (e) { }
 
         // Refresh sidebar
         populateSidebar();
@@ -6350,7 +6478,7 @@
         } else {
           navigate('blog');
         }
-        refreshPreview();
+        setTimeout(() => { refreshPreview(); }, 150);
         showToast('Article deleted successfully', 'info');
       }
 
@@ -7537,7 +7665,7 @@
           markSaved();
           showToast('Draft changes saved successfully!', 'success');
           if (window.CMS && window.CMS.Backend) {
-            window.CMS.Backend.syncToDb('draft').then(function(ok) {
+            window.CMS.Backend.syncToDb('draft').then(function (ok) {
               if (ok) {
                 console.log('[CMS] Draft synced to database successfully.');
               } else {
@@ -7610,9 +7738,24 @@
                   d.stats[i]['label_' + lang] = await window.CMS.AI.translate(d.stats[i].label_en, lang);
                 }
               }
+
+              fill.style.width = '90%'; msg.textContent = `[${langNames[lang]}] Translating about section…`;
+              const enAbout = d.about?.en || {};
+              d.about = d.about || {};
+              d.about[lang] = d.about[lang] || {};
+              if (enAbout.badge) d.about[lang].badge = await window.CMS.AI.translate(enAbout.badge, lang);
+              if (enAbout.heading) d.about[lang].heading = await window.CMS.AI.translate(enAbout.heading, lang);
+              if (enAbout.subheading) d.about[lang].subheading = await window.CMS.AI.translate(enAbout.subheading, lang);
+              if (enAbout.p1) d.about[lang].p1 = await window.CMS.AI.translate(enAbout.p1, lang);
+              if (enAbout.p2) d.about[lang].p2 = await window.CMS.AI.translate(enAbout.p2, lang);
+              if (enAbout.btn1_text) d.about[lang].btn1_text = await window.CMS.AI.translate(enAbout.btn1_text, lang);
+              if (enAbout.btn2_text) d.about[lang].btn2_text = await window.CMS.AI.translate(enAbout.btn2_text, lang);
+              d.about[lang].btn1_link = enAbout.btn1_link || 'aboutus/index.html';
+              d.about[lang].btn2_link = enAbout.btn2_link || 'contact/index.html';
+
               window.CMS.saveData(window.CMS.KEYS.HOMEPAGE, d);
 
-            // 2. PROGRAM (Citizenship & Residency) TRANSLATION
+              // 2. PROGRAM (Citizenship & Residency) TRANSLATION
             } else if (section === 'program' && itemId) {
               const list = window.CMS.getData(window.CMS.KEYS[itemType.toUpperCase()]) || window.CMS.DEFAULTS[itemType];
               const idx = list.findIndex(p => p.id === itemId);
@@ -7642,7 +7785,7 @@
                 window.CMS.saveData(window.CMS.KEYS[itemType.toUpperCase()], list);
               }
 
-            // 3. BLOG ARTICLE TRANSLATION
+              // 3. BLOG ARTICLE TRANSLATION
             } else if (section === 'blog' || section === 'blog-edit') {
               const bSlug = state.activeBlogSlug || itemId;
               const blogs = window.CMS.getData(window.CMS.KEYS.BLOG) || [];
@@ -7672,7 +7815,7 @@
                 sendToIframe({ type: 'CMS_REHYDRATE' });
               }
 
-            // 4. ABOUT US PAGE TRANSLATION
+              // 4. ABOUT US PAGE TRANSLATION
             } else if (section === 'aboutus') {
               const about = window.CMS.getData(window.CMS.KEYS.ABOUTUS) || window.CMS.DEFAULTS.aboutus;
               fill.style.width = '30%'; msg.textContent = `[${langNames[lang]}] Translating About Us briefing…`;
@@ -7699,7 +7842,7 @@
               }
               window.CMS.saveData(window.CMS.KEYS.ABOUTUS, about);
 
-            // 5. COOKIE POLICY PAGE TRANSLATION
+              // 5. COOKIE POLICY PAGE TRANSLATION
             } else if (section === 'cookiepolicy') {
               const cp = window.CMS.getData('sgcms_cookiepolicy') || {};
               const en = cp.en || {};
@@ -7715,7 +7858,7 @@
               if (en.p2_desc) cp[lang].p2_desc = await window.CMS.AI.translate(en.p2_desc, lang);
               window.CMS.saveData('sgcms_cookiepolicy', cp);
 
-            // 6. CONTACT & SALES TRANSLATION
+              // 6. CONTACT & SALES TRANSLATION
             } else if (section === 'contact') {
               const c = window.CMS.getData(window.CMS.KEYS.CONTACT) || window.CMS.DEFAULTS.contact;
               if (c.thankyou_en) c['thankyou_' + lang] = await window.CMS.AI.translate(c.thankyou_en, lang);
@@ -7855,6 +7998,13 @@
           btn.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i> Publishing...';
         }
 
+        // Auto-commit any active form changes in the currently open editor
+        try {
+          if (typeof saveCurrentPage === 'function' && state.section && state.section !== 'overview') {
+            saveCurrentPage();
+          }
+        } catch (e) { }
+
         // 1. Gather all current draft CMS keys comprehensively
         const baseKeys = [
           window.CMS.KEYS.HOMEPAGE,
@@ -7915,7 +8065,7 @@
             }
             if (mod) localStorage.setItem(k, JSON.stringify(obj));
           });
-        } catch(e) {}
+        } catch (e) { }
 
         const keys = [...baseKeys];
         for (let i = 0; i < localStorage.length; i++) {
@@ -7936,12 +8086,25 @@
           try {
             const val = localStorage.getItem(k);
             if (val !== null) {
-              payload.data[k] = JSON.parse(val);
+              let parsed = JSON.parse(val);
+              if (typeof parsed === 'string') {
+                const trimmed = parsed.trim();
+                if (trimmed.startsWith('{') || trimmed.startsWith('[')) {
+                  try { parsed = JSON.parse(trimmed); } catch (e) { }
+                }
+              }
+              payload.data[k] = parsed;
               // Mirror to live published store
-              localStorage.setItem(k + '_live', val);
+              localStorage.setItem(k + '_live', JSON.stringify(parsed));
             }
-          } catch(e) {}
+          } catch (e) { }
         });
+
+        // ── DIAGNOSTIC: Warn if homepage data is missing from payload ──
+        const homepageKey = window.CMS.KEYS.HOMEPAGE || 'sgcms_homepage';
+        if (!payload.data[homepageKey]) {
+          console.warn('[CMS Publish] WARNING: sgcms_homepage is NOT in the publish payload. Homepage changes will not appear on the live site.');
+        }
 
         // Store live manifest
         localStorage.setItem('sgcms_published_manifest', JSON.stringify(payload));
@@ -7953,66 +8116,167 @@
           if (iframe && iframe.contentWindow) {
             iframe.contentWindow.postMessage({ type: 'CMS_REHYDRATE', publishedAt: payload.publishedAt }, '*');
           }
-        } catch(e) {}
+        } catch (e) { }
 
-        // 2. Future Backend API server hook
+        // 2. Publish to Server API Hook
+        let backendResult = null;
+        let backendError = null;
         try {
-          await dispatchPublishToBackend(payload);
+          backendResult = await dispatchPublishToBackend(payload);
+          if (backendResult && (backendResult._failed || backendResult.error)) {
+            backendError = backendResult;
+          }
         } catch (e) {
-          console.warn('[CMS Publish] Server offline, stored to live manifest:', e.message);
+          backendError = { error: e.message, _networkFail: true };
+          console.warn('[CMS Publish] Network error:', e.message);
         }
 
-        // 3. Mark state as LIVE
-        markLive(payload.publishedAt);
-        markSaved();
-
-        // 4. Update UI button
+        // 3. Restore button
         if (btn) {
           btn.disabled = false;
           btn.innerHTML = '<i class="fa-solid fa-cloud-arrow-up"></i> Publish';
         }
 
-        // 5. Open publish modal
-        const d = new Date(payload.publishedAt);
-        const timeFormatted = d.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }) + ', ' + d.toLocaleDateString([], { month: 'short', day: 'numeric', year: 'numeric' });
-        const tsEl = document.getElementById('publish-timestamp-lbl');
-        if (tsEl) tsEl.textContent = timeFormatted;
-        const modal = document.getElementById('modal-publish-success');
-        if (modal) modal.classList.add('open');
+        // 4. Show appropriate modal
+        if (backendError && !backendResult?.offline) {
+          // ── SHOW ERROR MODAL with full diagnostics ──
+          const errModal = document.getElementById('modal-publish-error');
+          const errSummary = document.getElementById('publish-error-summary');
+          const errDetail = document.getElementById('publish-error-detail');
+          const errKeys = document.getElementById('publish-error-keys');
+          const errStatus = document.getElementById('publish-error-status');
 
-        showToast('Successfully published to live website!', 'success');
+          if (errSummary) {
+            if (backendError._networkFail) {
+              errSummary.textContent = 'Could not reach the server. Check your internet connection or that the server is running.';
+            } else if (backendError._status === 401) {
+              errSummary.textContent = 'Authentication failed (401). Your session may have expired — please log out and log in again.';
+            } else if (backendError._status === 500) {
+              errSummary.textContent = 'Server error (500). The PHP script crashed — check file permissions on published_content.json or view diagnostics.';
+            } else {
+              errSummary.textContent = 'The server rejected the publish request. See details below.';
+            }
+          }
+
+          const detailLines = [];
+          if (backendError.error) detailLines.push('Error: ' + backendError.error);
+          if (backendError.hint) detailLines.push('Hint: ' + backendError.hint);
+          if (backendError._rawText) detailLines.push('\nServer response:\n' + backendError._rawText.slice(0, 800));
+          if (!payload.data[homepageKey]) {
+            detailLines.push('\n⚠ sgcms_homepage key is MISSING from the publish payload.\nThis means homepage text edits will not appear on the live site.\nPlease make a change in the Homepage editor and save before publishing.');
+          }
+          if (errDetail) errDetail.textContent = detailLines.join('\n') || 'Unknown server error.';
+          if (errKeys) errKeys.textContent = Object.keys(payload.data).length + ' keys';
+          if (errStatus) errStatus.textContent = backendError._status ? ('HTTP ' + backendError._status) : (backendError._networkFail ? 'Network fail' : 'Unknown');
+
+          if (errModal) errModal.classList.add('open');
+          showToast('Publish failed — check the error details', 'error');
+
+        } else {
+          // ── SUCCESS ──
+          markLive(payload.publishedAt);
+          markSaved();
+          const d = new Date(payload.publishedAt);
+          const timeFormatted = d.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }) + ', ' + d.toLocaleDateString([], { month: 'short', day: 'numeric', year: 'numeric' });
+          const tsEl = document.getElementById('publish-timestamp-lbl');
+          if (tsEl) tsEl.textContent = timeFormatted;
+          const descEl = document.getElementById('publish-modal-desc');
+          const keyCount = Object.keys(payload.data).length;
+          const hasHomepage = !!payload.data[homepageKey];
+          if (descEl) {
+            descEl.textContent = keyCount + ' content section' + (keyCount !== 1 ? 's' : '') + ' published to the live server.' +
+              (hasHomepage ? ' Homepage data included ✓' : ' ⚠ Homepage data was not in this publish — open the Homepage editor, make a change, save, then publish again.');
+          }
+          const modal = document.getElementById('modal-publish-success');
+          if (modal) modal.classList.add('open');
+          showToast('Successfully published to live website!', 'success');
+        }
       }
 
       async function dispatchPublishToBackend(payload) {
-        // Backend API hook for cPanel PHP / MySQL
-        const token = sessionStorage.getItem('sgcms_token');
+        // Backend API hook for cPanel PHP / MySQL & server JSON snapshots
+        const token = sessionStorage.getItem('sgcms_token') || localStorage.getItem('sgcms_token') || '';
         const headers = { 'Content-Type': 'application/json' };
-        if (token) headers['Authorization'] = 'Bearer ' + token;
+        if (token) {
+          headers['Authorization'] = 'Bearer ' + token;
+          headers['X-CMS-Token'] = token;
+          payload.token = token;
+        }
 
+        let res;
         try {
-          // 1. Try relative cPanel PHP endpoint
-          let res = await fetch('api/publish.php', {
+          res = await fetch('api/publish.php', {
             method: 'POST',
+            credentials: 'include',
             headers,
             body: JSON.stringify(payload)
           });
-          if (!res.ok) {
-            // 2. Fallback to rewrite URL
-            res = await fetch('/api/publish', {
-              method: 'POST',
-              headers,
-              body: JSON.stringify(payload)
-            });
+        } catch (networkErr) {
+          // True network failure (no internet, server down, CORS block)
+          return { _failed: true, _networkFail: true, error: networkErr.message };
+        }
+
+        // Attempt session refresh on 401 and retry once
+        if (res.status === 401) {
+          if (typeof _refreshSession === 'function') {
+            try {
+              const refreshed = await _refreshSession();
+              if (refreshed) {
+                const refreshedTok = sessionStorage.getItem('sgcms_token') || localStorage.getItem('sgcms_token');
+                if (refreshedTok) {
+                  headers['Authorization'] = 'Bearer ' + refreshedTok;
+                  headers['X-CMS-Token'] = refreshedTok;
+                  payload.token = refreshedTok;
+                }
+                try {
+                  res = await fetch('api/publish.php', {
+                    method: 'POST',
+                    credentials: 'include',
+                    headers,
+                    body: JSON.stringify(payload)
+                  });
+                } catch (e2) {
+                  return { _failed: true, _networkFail: true, error: e2.message };
+                }
+              }
+            } catch (refreshErr) { }
           }
-          if (res.ok) {
-            const data = await res.json();
-            console.log('[CMS Publish] Backend MySQL synced successfully:', data);
-            return data;
+        }
+
+        // Read the raw response text first so we can always show it on error
+        let rawText = '';
+        try { rawText = await res.clone().text(); } catch (e) { }
+
+        if (res.ok) {
+          let data = null;
+          try { data = JSON.parse(rawText); } catch (e) { data = { success: true }; }
+          console.log('[CMS Publish] Backend MySQL & JSON snapshot synced:', data);
+          // Even on HTTP 200, PHP may report fileWritten:false
+          if (data && data.fileWritten === false) {
+            console.warn('[CMS Publish] Server wrote HTTP 200 but fileWritten=false — check file permissions on published_content.json');
+            return {
+              _failed: true,
+              _status: 200,
+              error: 'Server returned success but could not write published_content.json (fileWritten=false). Check file permissions.',
+              hint: 'Run diagnostics at admin/api/diagnostics.php to check writability.',
+              _rawText: rawText
+            };
           }
-        } catch (e) {
-          // Client-side demo fallback
-          console.warn('[CMS Publish] Running in offline demo mode:', e.message);
-          return { ok: true, offline: true };
+          return data;
+        } else {
+          // Parse error response
+          let errData = null;
+          try { errData = JSON.parse(rawText); } catch (e) { }
+          const errMsg = (errData && errData.error) ? errData.error : ('HTTP ' + res.status + ' from server');
+          const hint = (errData && errData.hint) ? errData.hint : '';
+          console.error('[CMS Publish Error] HTTP', res.status, errMsg, rawText.slice(0, 300));
+          return {
+            _failed: true,
+            _status: res.status,
+            error: errMsg,
+            hint: hint,
+            _rawText: rawText
+          };
         }
       }
 
@@ -8031,7 +8295,7 @@
       });
 
       // Global delegated click listener for sidebar delete buttons
-      document.addEventListener('click', function(e) {
+      document.addEventListener('click', function (e) {
         const btn = e.target && e.target.closest ? e.target.closest('.sb-item-del') : null;
         if (btn) {
           e.preventDefault();
@@ -8062,7 +8326,7 @@
                 localStorage.setItem(k, JSON.stringify(filtered));
               }
             }
-          } catch(e) {}
+          } catch (e) { }
         });
 
         // Auto-prune b001 from published manifest
@@ -8074,7 +8338,7 @@
               manifest.data.sgcms_blog = manifest.data.sgcms_blog.filter(b => b && b.id !== 'b001' && b.slug !== 'about-sharif-group');
               localStorage.setItem('sgcms_published_manifest', JSON.stringify(manifest));
             }
-          } catch(e) {}
+          } catch (e) { }
         }
 
         ['sgcms_dom_overrides', 'sgcms_dom_overrides_live'].forEach(k => {
@@ -8117,7 +8381,7 @@
           }
           if (mod) localStorage.setItem(k, JSON.stringify(obj));
         });
-      } catch(e) {}
+      } catch (e) { }
 
       updatePublishStatusUI();
       populateSidebar();
@@ -8125,11 +8389,17 @@
       setCanvasMode(state.canvasMode, true);
 
       // Asynchronously fetch latest draft state from MySQL backend in background
-      if (window.CMS.Backend) {
+      if (window.CMS && window.CMS.Backend) {
         window.CMS.Backend.syncFromDb('draft').then(synced => {
           if (synced) {
             populateSidebar();
-            if (state.section) renderEditor();
+            if (state.section) renderSection();
+            try {
+              const iframe = document.getElementById('live-iframe');
+              if (iframe && iframe.contentWindow) {
+                iframe.contentWindow.postMessage({ type: 'CMS_REHYDRATE' }, '*');
+              }
+            } catch (e) { }
           }
         });
       }

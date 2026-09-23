@@ -15,9 +15,18 @@
   // ── Storage Helpers ─────────────────────────────────────
   function store(key) {
     try {
+      function safeParse(raw) {
+        if (raw === null || raw === undefined) return null;
+        let parsed = (typeof raw === 'string') ? JSON.parse(raw) : raw;
+        // Handle double-serialized values: if result is still a string, parse again
+        if (typeof parsed === 'string') {
+          try { parsed = JSON.parse(parsed); } catch (e) { }
+        }
+        return parsed;
+      }
       if (!isEditor) {
         const live = localStorage.getItem(key + '_live');
-        if (live !== null) return JSON.parse(live);
+        if (live !== null) return safeParse(live);
         const manifestStr = localStorage.getItem('sgcms_published_manifest');
         if (manifestStr) {
           const manifest = JSON.parse(manifestStr);
@@ -26,12 +35,12 @@
           }
         }
       }
-      return JSON.parse(localStorage.getItem(key));
+      return safeParse(localStorage.getItem(key));
     } catch { return null; }
   }
 
   function saveStore(key, data) {
-    try { localStorage.setItem(key, JSON.stringify(data)); } catch(e) {}
+    try { localStorage.setItem(key, JSON.stringify(data)); } catch (e) { }
   }
 
   function normalizeImageUrl(url) {
@@ -83,7 +92,7 @@
         localStorage.setItem('sgcms_published_manifest', JSON.stringify(manifest));
       }
     }
-  } catch(e) {}
+  } catch (e) { }
 
   async function syncLiveFromBackend() {
     // Vercel is a static host that does not run PHP - skip immediately to avoid network hanging
@@ -104,7 +113,7 @@
           runHydration();
         }
       }
-    } catch(e) {}
+    } catch (e) { }
   }
 
   let _isSyncingLang = false;
@@ -238,11 +247,11 @@
     const urlParams = new URLSearchParams(window.location.search);
     const progParam = urlParams.get('program_id') || urlParams.get('id') || urlParams.get('program');
     if (progParam) {
-      try { return decodeURIComponent(progParam).toLowerCase(); } catch(e) { return progParam.toLowerCase(); }
+      try { return decodeURIComponent(progParam).toLowerCase(); } catch (e) { return progParam.toLowerCase(); }
     }
 
     let clean = window.location.pathname.replace(/\/index\.html?$/i, '').replace(/\/$/, '');
-    try { clean = decodeURIComponent(clean); } catch(e) {}
+    try { clean = decodeURIComponent(clean); } catch (e) { }
     const segments = clean.split('/').filter(Boolean);
     const last = (segments[segments.length - 1] || '').toLowerCase();
     return last || 'homepage';
@@ -437,7 +446,7 @@
     _isSyncingLang = true;
 
     if (typeof window.switchLanguage === 'function') {
-      try { window.switchLanguage(lang); } catch(e) {}
+      try { window.switchLanguage(lang); } catch (e) { }
     } else {
       document.documentElement.lang = lang;
       document.documentElement.dir = (lang === 'ar' || lang === 'fa') ? 'rtl' : 'ltr';
@@ -583,7 +592,7 @@
           }
         }
       }
-    } catch(e) {}
+    } catch (e) { }
 
     // 3. Immediately restore DOM header divider pipes and purge rogue text
     try {
@@ -655,7 +664,7 @@
           }
         }
       }
-    } catch(e) {}
+    } catch (e) { }
   }
 
   // Run header sanitization immediately on script execution
@@ -684,7 +693,7 @@
 
         const item = pageOverrides[selector];
         const strVal = typeof item === 'string' ? item : (item?.text || '');
-        if (strVal.includes('naikhsn') || strVal.includes('Costs\nfor')) continue;
+        if (strVal.includes('naikhsn') || strVal.includes('Costs\nfor') || /[\u2500-\u259F\uFFFD]/.test(strVal)) continue;
 
         const el = document.querySelector(selector);
         if (el) {
@@ -719,7 +728,7 @@
             if (item.href !== undefined && el.tagName === 'A') el.setAttribute('href', item.href);
           }
         }
-      } catch(e) {}
+      } catch (e) { }
     }
   }
 
@@ -759,20 +768,26 @@
     if (!data) return;
     const l = lang || getLang();
 
+    const isEn = (l === 'en');
+
     // 1. Hero
-    const hero = data.hero?.[l] || data.hero?.en || {};
-    if (hero.headline) {
-      const h = document.querySelectorAll('[data-cms="hero-headline"], [data-i18n="hero.title"]');
-      h.forEach(el => { el.textContent = hero.headline; });
+    // For non-English languages, ONLY use localized CMS overrides if they exist.
+    // NEVER fall back to English (.en), because that would overwrite valid i18n translations!
+    const hero = isEn ? (data.hero?.[l] || data.hero?.en || {}) : (data.hero?.[l] || null);
+    if (hero) {
+      if (hero.headline) {
+        const h = document.querySelectorAll('[data-cms="hero-headline"], [data-i18n="hero.title"]');
+        h.forEach(el => { el.textContent = hero.headline; });
+      }
+      if (hero.tagline) {
+        const tag = document.querySelectorAll('[data-cms="hero-tagline"], [data-i18n="hero.tagline"]');
+        tag.forEach(el => { el.textContent = hero.tagline; });
+      }
+      if (hero.pathway_citizenship) setText('[data-i18n="hero.citizenship"]', hero.pathway_citizenship);
+      if (hero.pathway_residency) setText('[data-i18n="hero.residency"]', hero.pathway_residency);
+      if (hero.pathway_realestate) setText('[data-i18n="hero.realEstate"]', hero.pathway_realestate);
+      if (hero.pathway_education) setText('[data-i18n="hero.educationalAdvisory"]', hero.pathway_education);
     }
-    if (hero.tagline) {
-      const tag = document.querySelectorAll('[data-cms="hero-tagline"], [data-i18n="hero.tagline"]');
-      tag.forEach(el => { el.textContent = hero.tagline; });
-    }
-    if (hero.pathway_citizenship) setText('[data-i18n="hero.citizenship"]', hero.pathway_citizenship);
-    if (hero.pathway_residency) setText('[data-i18n="hero.residency"]', hero.pathway_residency);
-    if (hero.pathway_realestate) setText('[data-i18n="hero.realEstate"]', hero.pathway_realestate);
-    if (hero.pathway_education) setText('[data-i18n="hero.educationalAdvisory"]', hero.pathway_education);
 
     // 2. Stats
     if (data.stats && data.stats.length) {
@@ -786,101 +801,108 @@
             counter.textContent = stat.value;
           }
           const p = statBoxes[i].querySelector('p');
-          if (p) p.textContent = stat['label_' + l] || stat.label_en || p.textContent;
+          if (p) {
+            const lbl = stat['label_' + l] || (isEn ? stat.label_en : null);
+            if (lbl) p.textContent = lbl;
+          }
         }
       });
     }
 
     // 3. About Us Preview
-    const about = data.about?.[l] || data.about?.en || {};
-    if (about.badge) setText('[data-i18n="about.badge"]', about.badge);
-    if (about.heading) setText('[data-i18n="about.heading"]', about.heading);
-    if (about.subheading) setText('[data-i18n="about.subheading"]', about.subheading);
-    if (about.p1) setText('[data-i18n="about.p1"]', about.p1);
-    if (about.p2) setText('[data-i18n="about.p2"]', about.p2);
-    if (about.btn1_text) setText('[data-i18n="about.readStory"]', about.btn1_text);
-    if (about.btn2_text) setText('[data-i18n="about.bookConsultation"]', about.btn2_text);
+    const about = isEn ? (data.about?.[l] || data.about?.en || {}) : (data.about?.[l] || null);
+    if (about) {
+      if (about.badge) setText('[data-i18n="about.badge"]', about.badge);
+      if (about.heading) setText('[data-i18n="about.heading"]', about.heading);
+      if (about.subheading) setText('[data-i18n="about.subheading"]', about.subheading);
+      if (about.p1) setText('[data-i18n="about.p1"]', about.p1);
+      if (about.p2) setText('[data-i18n="about.p2"]', about.p2);
+      if (about.btn1_text) setText('[data-i18n="about.readStory"]', about.btn1_text);
+      if (about.btn2_text) setText('[data-i18n="about.bookConsultation"]', about.btn2_text);
+    }
 
-    // 4. Services & Pathways
-    const srv = data.services || {};
-    if (srv.badge) setText('[data-i18n="services.badge"]', srv.badge);
-    if (srv.heading) setText('[data-i18n="services.heading"]', srv.heading);
-    if (srv.heading_italic) setText('[data-i18n="services.headingItalic"]', srv.heading_italic);
-    if (srv.description) setText('[data-i18n="services.description"]', srv.description);
+    // 4. Services & Pathways (Only apply on English or if localized services object exists)
+    if (isEn && data.services) {
+      const srv = data.services;
+      if (srv.badge) setText('[data-i18n="services.badge"]', srv.badge);
+      if (srv.heading) setText('[data-i18n="services.heading"]', srv.heading);
+      if (srv.heading_italic) setText('[data-i18n="services.headingItalic"]', srv.heading_italic);
+      if (srv.description) setText('[data-i18n="services.description"]', srv.description);
 
-    // Pillar 1: CBI
-    if (srv.pillar_cbi) {
-      const p = srv.pillar_cbi;
-      if (p.pillar_badge) setText('[data-i18n="services.cbi.pillar"]', p.pillar_badge);
-      if (p.title) setText('[data-i18n="services.cbi.title"]', p.title);
-      if (p.p1) setText('[data-i18n="services.cbi.p1"]', p.p1);
-      if (p.p2) setText('[data-i18n="services.cbi.p2"]', p.p2);
-      if (p.items && p.items.length) {
-        const itemEls = document.querySelectorAll('#focus-accordion-container > div:nth-child(1) .program-neon-item');
-        p.items.forEach((it, idx) => {
-          if (itemEls[idx]) {
-            const h5 = itemEls[idx].querySelector('h5');
-            const desc = itemEls[idx].querySelector('p span');
-            if (h5 && it.title) h5.textContent = it.title;
-            if (desc && it.desc) desc.textContent = it.desc;
-          }
-        });
+      // Pillar 1: CBI
+      if (srv.pillar_cbi) {
+        const p = srv.pillar_cbi;
+        if (p.pillar_badge) setText('[data-i18n="services.cbi.pillar"]', p.pillar_badge);
+        if (p.title) setText('[data-i18n="services.cbi.title"]', p.title);
+        if (p.p1) setText('[data-i18n="services.cbi.p1"]', p.p1);
+        if (p.p2) setText('[data-i18n="services.cbi.p2"]', p.p2);
+        if (p.items && p.items.length) {
+          const itemEls = document.querySelectorAll('#focus-accordion-container > div:nth-child(1) .program-neon-item');
+          p.items.forEach((it, idx) => {
+            if (itemEls[idx]) {
+              const h5 = itemEls[idx].querySelector('h5');
+              const desc = itemEls[idx].querySelector('p span');
+              if (h5 && it.title) h5.textContent = it.title;
+              if (desc && it.desc) desc.textContent = it.desc;
+            }
+          });
+        }
       }
-    }
 
-    // Pillar 2: RBI
-    if (srv.pillar_rbi) {
-      const p = srv.pillar_rbi;
-      if (p.pillar_badge) setText('[data-i18n="services.rbi.pillar"]', p.pillar_badge);
-      if (p.title) setText('[data-i18n="services.rbi.title"]', p.title);
-      if (p.p1) setText('[data-i18n="services.rbi.p1"]', p.p1);
-      if (p.p2) setText('[data-i18n="services.rbi.p2"]', p.p2);
-      if (p.items && p.items.length) {
-        const itemEls = document.querySelectorAll('#focus-accordion-container > div:nth-child(2) .program-neon-item');
-        p.items.forEach((it, idx) => {
-          if (itemEls[idx]) {
-            const h5 = itemEls[idx].querySelector('h5');
-            const desc = itemEls[idx].querySelector('p span');
-            if (h5 && it.title) h5.textContent = it.title;
-            if (desc && it.desc) desc.textContent = it.desc;
-          }
-        });
+      // Pillar 2: RBI
+      if (srv.pillar_rbi) {
+        const p = srv.pillar_rbi;
+        if (p.pillar_badge) setText('[data-i18n="services.rbi.pillar"]', p.pillar_badge);
+        if (p.title) setText('[data-i18n="services.rbi.title"]', p.title);
+        if (p.p1) setText('[data-i18n="services.rbi.p1"]', p.p1);
+        if (p.p2) setText('[data-i18n="services.rbi.p2"]', p.p2);
+        if (p.items && p.items.length) {
+          const itemEls = document.querySelectorAll('#focus-accordion-container > div:nth-child(2) .program-neon-item');
+          p.items.forEach((it, idx) => {
+            if (itemEls[idx]) {
+              const h5 = itemEls[idx].querySelector('h5');
+              const desc = itemEls[idx].querySelector('p span');
+              if (h5 && it.title) h5.textContent = it.title;
+              if (desc && it.desc) desc.textContent = it.desc;
+            }
+          });
+        }
       }
-    }
 
-    // Pillar 3: UAE Golden Visa
-    if (srv.pillar_uae) {
-      const p = srv.pillar_uae;
-      if (p.pillar_badge) setText('[data-i18n="services.uaeGolden.pillar"]', p.pillar_badge);
-      if (p.title) setText('[data-i18n="services.uaeGolden.title"]', p.title);
-      if (p.p1) setText('[data-i18n="services.uaeGolden.p1"]', p.p1);
-      if (p.p2) setText('[data-i18n="services.uaeGolden.p2"]', p.p2);
-      if (p.btn_text) setText('[data-i18n="services.uaeGolden.viewProcess"]', p.btn_text);
-    }
+      // Pillar 3: UAE Golden Visa
+      if (srv.pillar_uae) {
+        const p = srv.pillar_uae;
+        if (p.pillar_badge) setText('[data-i18n="services.uaeGolden.pillar"]', p.pillar_badge);
+        if (p.title) setText('[data-i18n="services.uaeGolden.title"]', p.title);
+        if (p.p1) setText('[data-i18n="services.uaeGolden.p1"]', p.p1);
+        if (p.p2) setText('[data-i18n="services.uaeGolden.p2"]', p.p2);
+        if (p.btn_text) setText('[data-i18n="services.uaeGolden.viewProcess"]', p.btn_text);
+      }
 
-    // Pillar 4: Prime Real Estate
-    if (srv.pillar_realestate) {
-      const p = srv.pillar_realestate;
-      if (p.pillar_badge) setText('[data-i18n="services.realEstate.pillar"]', p.pillar_badge);
-      if (p.title) setText('[data-i18n="services.realEstate.title"]', p.title);
-      if (p.p1) setText('[data-i18n="services.realEstate.p1"]', p.p1);
-      if (p.p2) setText('[data-i18n="services.realEstate.p2"]', p.p2);
-      if (p.btn_text) setText('[data-i18n="services.realEstate.exploreProperties"]', p.btn_text);
-    }
+      // Pillar 4: Prime Real Estate
+      if (srv.pillar_realestate) {
+        const p = srv.pillar_realestate;
+        if (p.pillar_badge) setText('[data-i18n="services.realEstate.pillar"]', p.pillar_badge);
+        if (p.title) setText('[data-i18n="services.realEstate.title"]', p.title);
+        if (p.p1) setText('[data-i18n="services.realEstate.p1"]', p.p1);
+        if (p.p2) setText('[data-i18n="services.realEstate.p2"]', p.p2);
+        if (p.btn_text) setText('[data-i18n="services.realEstate.exploreProperties"]', p.btn_text);
+      }
 
-    // Pillar 5: Educational Advisory
-    if (srv.pillar_education) {
-      const p = srv.pillar_education;
-      if (p.pillar_badge) setText('[data-i18n="services.education.pillar"]', p.pillar_badge);
-      if (p.title) setText('[data-i18n="services.education.title"]', p.title);
-      if (p.p1) setText('[data-i18n="services.education.p1"]', p.p1);
-      if (p.p2) setText('[data-i18n="services.education.p2"]', p.p2);
-      if (p.btn_text) setText('[data-i18n="services.education.viewAdvisory"]', p.btn_text);
+      // Pillar 5: Educational Advisory
+      if (srv.pillar_education) {
+        const p = srv.pillar_education;
+        if (p.pillar_badge) setText('[data-i18n="services.education.pillar"]', p.pillar_badge);
+        if (p.title) setText('[data-i18n="services.education.title"]', p.title);
+        if (p.p1) setText('[data-i18n="services.education.p1"]', p.p1);
+        if (p.p2) setText('[data-i18n="services.education.p2"]', p.p2);
+        if (p.btn_text) setText('[data-i18n="services.education.viewAdvisory"]', p.btn_text);
+      }
     }
 
     // 5. Social Responsibility
-    const sr = data.social_responsibility;
-    if (sr) {
+    if (isEn && data.social_responsibility) {
+      const sr = data.social_responsibility;
       if (sr.badge) setText('[data-i18n="social.badge"]', sr.badge);
       if (sr.heading) setText('[data-i18n="social.heading"]', sr.heading);
       if (sr.description) setText('[data-i18n="social.description"]', sr.description);
@@ -938,8 +960,8 @@
     const TAB_I18N = PROGRAM_TAB_I18N;
 
     let defaultTab = isUae ? (TAB_I18N.goldenVisa[l] || 'Golden Visa')
-                   : isResidency ? (TAB_I18N.residency[l] || 'Residency By Investment')
-                   : (TAB_I18N.citizenship[l] || 'Citizenship By Investment');
+      : isResidency ? (TAB_I18N.residency[l] || 'Residency By Investment')
+        : (TAB_I18N.citizenship[l] || 'Citizenship By Investment');
 
     const i18nSlug = (prog.id && prog.id !== 'sao-tome-and-principe') ? prog.id : (slug === 'sao-tome-and-principe' ? 'saotome' : slug);
 
@@ -999,15 +1021,15 @@
       }
       try {
         saveStore(type === 'citizenship' ? 'sgcms_citizenship' : 'sgcms_residency', list);
-      } catch (e) {}
+      } catch (e) { }
     }
 
     // Set Hero Country Glow Title & Subtitle in DOM with automatic self-healing
     const h1 = document.querySelector('h1');
-    const h1Glow = document.querySelector('h1 [class*="-hero-glow"]') || 
-                   document.querySelector('h1 .dominica-hero-glow') || 
-                   document.querySelector('h1 .stlucia-hero-glow') || 
-                   document.querySelector('h1 span:first-child');
+    const h1Glow = document.querySelector('h1 [class*="-hero-glow"]') ||
+      document.querySelector('h1 .dominica-hero-glow') ||
+      document.querySelector('h1 .stlucia-hero-glow') ||
+      document.querySelector('h1 span:first-child');
     const sub = document.querySelector('h1 span.uppercase, [data-i18n*="heroSubtitle"], [data-cms="hero-subtitle"]');
 
     if (!h1Glow && h1) {
@@ -1138,7 +1160,7 @@
     if (ld.consult_subheading) setText('#program-consult-form-section p, [data-i18n*="consultDesc"]', ld.consult_subheading);
   }
 
-  
+
   function mapCategoryToDataCat(catName, subCat) {
     if (!catName) return 'sharif';
     const c = catName.trim().toLowerCase();
@@ -1195,7 +1217,7 @@
       card.className = 'space-y-4 text-left flex flex-col justify-between blog-item dynamic-cms-blog live-draft-active';
       grid.prepend(card);
       setTimeout(() => {
-        try { card.scrollIntoView({ behavior: 'smooth', block: 'center' }); } catch (e) {}
+        try { card.scrollIntoView({ behavior: 'smooth', block: 'center' }); } catch (e) { }
       }, 100);
     }
 
@@ -1217,7 +1239,6 @@
         <h4 class="font-serif font-bold text-base text-neutral-900 leading-snug">
           ${escH(title)}
         </h4>
-        ${excerpt ? `<p class="text-xs text-neutral-500 font-light line-clamp-2">${escH(excerpt)}</p>` : ''}
       </div>
       <a class="inline-block text-[11px] font-bold uppercase tracking-wider text-neutral-800 border-b border-neutral-800 hover:text-luxury-gold hover:border-luxury-gold transition-colors pb-0.5 self-start cursor-pointer" href="javascript:void(0)" onclick="openBlogDetailBySlug('${slug}')">
         READ MORE
@@ -1287,8 +1308,8 @@
       // Prioritize localized FAQs for current language:
       const localizedFaqs = (ld.faqs && Array.isArray(ld.faqs) && ld.faqs.length) ? ld.faqs
         : ((b[l]?.faqs && Array.isArray(b[l].faqs) && b[l].faqs.length) ? b[l].faqs
-        : ((b.en && Array.isArray(b.en.faqs) && b.en.faqs.length) ? b.en.faqs
-        : (b.faqs || [])));
+          : ((b.en && Array.isArray(b.en.faqs) && b.en.faqs.length) ? b.en.faqs
+            : (b.faqs || [])));
 
       // Register article data in the client-side database
       const articleData = {
@@ -1340,7 +1361,6 @@
             <h4 class="font-serif font-bold text-base text-neutral-900 leading-snug">
               ${escH(ld.title || 'Untitled Article')}
             </h4>
-            ${ld.excerpt ? `<p class="text-xs text-neutral-500 font-light line-clamp-2">${escH(ld.excerpt)}</p>` : ''}
           </div>
           <a class="inline-block text-[11px] font-bold uppercase tracking-wider text-neutral-800 border-b border-neutral-800 hover:text-luxury-gold hover:border-luxury-gold transition-colors pb-0.5 self-start cursor-pointer" href="javascript:void(0)" onclick="openBlogDetailBySlug('${slug}')">
             READ MORE
@@ -1828,26 +1848,32 @@
     if (!data) return;
     const l = lang || getLang();
 
+    const isEn = (l === 'en');
+
     // 1. Hero
-    const hero = data.hero?.[l] || data.hero?.en || {};
-    if (hero.badge) setText('[data-i18n="pages.aboutUs.heroBadge"]', hero.badge);
-    if (hero.title) setText('[data-i18n="pages.aboutUs.heroTitle"]', hero.title);
-    if (hero.subtitle) setText('.about-hero-subtitle, [data-i18n="pages.aboutUs.heroSubtitle"]', hero.subtitle);
-    if (hero.img) {
-      const heroSlide = document.querySelector('.contact-hero-slide');
-      if (heroSlide) heroSlide.style.backgroundImage = `linear-gradient(rgba(11,15,20,0.7), rgba(11,15,20,0.8)), url('${hero.img}')`;
+    const hero = isEn ? (data.hero?.[l] || data.hero?.en || {}) : (data.hero?.[l] || null);
+    if (hero) {
+      if (hero.badge) setText('[data-i18n="pages.aboutUs.heroBadge"]', hero.badge);
+      if (hero.title) setText('[data-i18n="pages.aboutUs.heroTitle"]', hero.title);
+      if (hero.subtitle) setText('.about-hero-subtitle, [data-i18n="pages.aboutUs.heroSubtitle"]', hero.subtitle);
+      if (hero.img) {
+        const heroSlide = document.querySelector('.contact-hero-slide');
+        if (heroSlide) heroSlide.style.backgroundImage = `linear-gradient(rgba(11,15,20,0.7), rgba(11,15,20,0.8)), url('${hero.img}')`;
+      }
     }
 
     // 2. Overview
-    const ov = data.overview?.[l] || data.overview?.en || {};
-    if (ov.badge) setText('[data-i18n="pages.aboutUs.about_overview_item1"]', ov.badge);
-    if (ov.heading) {
-      const el = document.querySelector('[data-i18n-html="pages.aboutUs.about_overview_item2"], [data-i18n="pages.aboutUs.about_overview_item2"]');
-      if (el) el.innerHTML = ov.heading.includes('<') ? ov.heading : `${ov.heading}:<br/><span class="italic text-[#C5A880] font-serif font-normal">Sharif Group</span>`;
+    const ov = isEn ? (data.overview?.[l] || data.overview?.en || {}) : (data.overview?.[l] || null);
+    if (ov) {
+      if (ov.badge) setText('[data-i18n="pages.aboutUs.about_overview_item1"]', ov.badge);
+      if (ov.heading) {
+        const el = document.querySelector('[data-i18n-html="pages.aboutUs.about_overview_item2"], [data-i18n="pages.aboutUs.about_overview_item2"]');
+        if (el) el.innerHTML = ov.heading.includes('<') ? ov.heading : `${ov.heading}:<br/><span class="italic text-[#C5A880] font-serif font-normal">Sharif Group</span>`;
+      }
+      if (ov.p1) setText('[data-i18n="pages.aboutUs.about_overview_item3"]', ov.p1);
+      if (ov.p2) setText('[data-i18n="pages.aboutUs.about_overview_item4"]', ov.p2);
+      if (ov.cta_text) setText('[data-i18n="pages.aboutUs.about_overview_item5"]', ov.cta_text);
     }
-    if (ov.p1) setText('[data-i18n="pages.aboutUs.about_overview_item3"]', ov.p1);
-    if (ov.p2) setText('[data-i18n="pages.aboutUs.about_overview_item4"]', ov.p2);
-    if (ov.cta_text) setText('[data-i18n="pages.aboutUs.about_overview_item5"]', ov.cta_text);
 
     // 3. Stats
     if (Array.isArray(data.stats) && data.stats.length) {
@@ -1860,47 +1886,53 @@
           counters[i].textContent = st.value;
         }
         if (labels[i]) {
-          labels[i].textContent = st['label_' + l] || st.label_en || labels[i].textContent;
+          labels[i].textContent = st['label_' + l] || (isEn ? st.label_en : labels[i].textContent);
         }
       });
     }
 
     // 4. Corporate Architecture
-    const arch = data.architecture?.[l] || data.architecture?.en || {};
-    if (arch.badge) setText('[data-i18n="pages.aboutUs.corporate_architecture_item1"]', arch.badge);
-    if (arch.title) {
-      const el = document.querySelector('[data-i18n-html="pages.aboutUs.corporate_architecture_item2"], [data-i18n="pages.aboutUs.corporate_architecture_item2"]');
-      if (el) el.innerHTML = arch.title.includes('<') ? arch.title : `Three Companies. <span class="italic text-[#C5A880] font-serif font-normal">One Commitment.</span>`;
+    const arch = isEn ? (data.architecture?.[l] || data.architecture?.en || {}) : (data.architecture?.[l] || null);
+    if (arch) {
+      if (arch.badge) setText('[data-i18n="pages.aboutUs.corporate_architecture_item1"]', arch.badge);
+      if (arch.title) {
+        const el = document.querySelector('[data-i18n-html="pages.aboutUs.corporate_architecture_item2"], [data-i18n="pages.aboutUs.corporate_architecture_item2"]');
+        if (el) el.innerHTML = arch.title.includes('<') ? arch.title : `Three Companies. <span class="italic text-[#C5A880] font-serif font-normal">One Commitment.</span>`;
+      }
+      if (arch.desc) setText('[data-i18n="pages.aboutUs.corporate_architecture_item3"]', arch.desc);
+
+      if (arch.c1_badge) setText('[data-i18n="pages.aboutUs.corporate_architecture_item4"]', arch.c1_badge);
+      if (arch.c1_p1) setText('[data-i18n="pages.aboutUs.corporate_architecture_item7"]', arch.c1_p1);
+      if (arch.c1_p2) setText('[data-i18n="pages.aboutUs.corporate_architecture_item8"]', arch.c1_p2);
+
+      if (arch.c2_badge) setText('[data-i18n="pages.aboutUs.corporate_architecture_item11"]', arch.c2_badge);
+      if (arch.c2_p1) setText('[data-i18n="pages.aboutUs.corporate_architecture_item14"]', arch.c2_p1);
+      if (arch.c2_p2) setText('[data-i18n="pages.aboutUs.corporate_architecture_item15"]', arch.c2_p2);
+
+      if (arch.c3_badge) setText('[data-i18n="pages.aboutUs.corporate_architecture_item18"]', arch.c3_badge);
+      if (arch.c3_p1) setText('[data-i18n="pages.aboutUs.corporate_architecture_item21"]', arch.c3_p1);
+      if (arch.c3_p2) setText('[data-i18n="pages.aboutUs.corporate_architecture_item22"]', arch.c3_p2);
     }
-    if (arch.desc) setText('[data-i18n="pages.aboutUs.corporate_architecture_item3"]', arch.desc);
-
-    if (arch.c1_badge) setText('[data-i18n="pages.aboutUs.corporate_architecture_item4"]', arch.c1_badge);
-    if (arch.c1_p1) setText('[data-i18n="pages.aboutUs.corporate_architecture_item7"]', arch.c1_p1);
-    if (arch.c1_p2) setText('[data-i18n="pages.aboutUs.corporate_architecture_item8"]', arch.c1_p2);
-
-    if (arch.c2_badge) setText('[data-i18n="pages.aboutUs.corporate_architecture_item11"]', arch.c2_badge);
-    if (arch.c2_p1) setText('[data-i18n="pages.aboutUs.corporate_architecture_item14"]', arch.c2_p1);
-    if (arch.c2_p2) setText('[data-i18n="pages.aboutUs.corporate_architecture_item15"]', arch.c2_p2);
-
-    if (arch.c3_badge) setText('[data-i18n="pages.aboutUs.corporate_architecture_item18"]', arch.c3_badge);
-    if (arch.c3_p1) setText('[data-i18n="pages.aboutUs.corporate_architecture_item21"]', arch.c3_p1);
-    if (arch.c3_p2) setText('[data-i18n="pages.aboutUs.corporate_architecture_item22"]', arch.c3_p2);
 
     // 5. Founder
-    const f = data.founder?.[l] || data.founder?.en || {};
-    if (f.name) setText('[data-i18n="pages.aboutUs.founder_message_item1"], [data-i18n="pages.aboutUs.founder_message_item7"]', f.name, { all: true });
-    if (f.title) setText('[data-i18n="pages.aboutUs.founder_message_item2"], [data-i18n="pages.aboutUs.founder_message_item8"]', f.title, { all: true });
-    if (f.badge) setText('[data-i18n="pages.aboutUs.founder_message_item3"]', f.badge);
-    if (f.quote) setText('[data-i18n-html="pages.aboutUs.founder_message_item4"], [data-i18n="pages.aboutUs.founder_message_item4"]', f.quote);
-    if (f.p1) setText('[data-i18n="pages.aboutUs.founder_message_item5"]', f.p1);
-    if (f.p2) setText('[data-i18n="pages.aboutUs.founder_message_item6"]', f.p2);
+    const f = isEn ? (data.founder?.[l] || data.founder?.en || {}) : (data.founder?.[l] || null);
+    if (f) {
+      if (f.name) setText('[data-i18n="pages.aboutUs.founder_message_item1"], [data-i18n="pages.aboutUs.founder_message_item7"]', f.name, { all: true });
+      if (f.title) setText('[data-i18n="pages.aboutUs.founder_message_item2"], [data-i18n="pages.aboutUs.founder_message_item8"]', f.title, { all: true });
+      if (f.badge) setText('[data-i18n="pages.aboutUs.founder_message_item3"]', f.badge);
+      if (f.quote) setText('[data-i18n-html="pages.aboutUs.founder_message_item4"], [data-i18n="pages.aboutUs.founder_message_item4"]', f.quote);
+      if (f.p1) setText('[data-i18n="pages.aboutUs.founder_message_item5"]', f.p1);
+      if (f.p2) setText('[data-i18n="pages.aboutUs.founder_message_item6"]', f.p2);
+    }
 
     // 6. Bottom CTA
-    const cta = data.cta?.[l] || data.cta?.en || {};
-    if (cta.badge) setText('[data-i18n="pages.aboutUs.about_cta_item1"]', cta.badge);
-    if (cta.heading) setText('[data-i18n-html="pages.aboutUs.about_cta_item2"], [data-i18n="pages.aboutUs.about_cta_item2"]', cta.heading);
-    if (cta.desc) setText('[data-i18n="pages.aboutUs.about_cta_item3"]', cta.desc);
-    if (cta.btn_text) setText('[data-i18n="pages.aboutUs.about_cta_item4"]', cta.btn_text);
+    const cta = isEn ? (data.cta?.[l] || data.cta?.en || {}) : (data.cta?.[l] || null);
+    if (cta) {
+      if (cta.badge) setText('[data-i18n="pages.aboutUs.about_cta_item1"]', cta.badge);
+      if (cta.heading) setText('[data-i18n-html="pages.aboutUs.about_cta_item2"], [data-i18n="pages.aboutUs.about_cta_item2"]', cta.heading);
+      if (cta.desc) setText('[data-i18n="pages.aboutUs.about_cta_item3"]', cta.desc);
+      if (cta.btn_text) setText('[data-i18n="pages.aboutUs.about_cta_item4"]', cta.btn_text);
+    }
   }
 
   function hydrateContact(lang) {
@@ -2000,18 +2032,18 @@
   }
 
   // Expose global rehydration function for language-switcher.js and custom components
-  window.reapplyCmsHydration = function(lang) {
+  window.reapplyCmsHydration = function (lang) {
     runHydration(lang || getLang());
   };
 
   // Listen to language switch events globally on live website and editor
-  window.addEventListener('languageChanged', function(e) {
+  window.addEventListener('languageChanged', function (e) {
     const l = e.detail?.lang || getLang();
     runHydration(l);
   });
 
   // Listen to multi-tab storage publish updates
-  window.addEventListener('storage', function(e) {
+  window.addEventListener('storage', function (e) {
     if (e.key && (e.key.startsWith('sgcms_') || e.key === 'sharif_lang')) {
       runHydration();
     }
@@ -2461,7 +2493,9 @@
       const isHomepage = !path.includes('/programs') && !path.includes('/citizenship') && !path.includes('/residency') && !path.includes('/about') && !path.includes('/contact') && !path.includes('/blog');
 
       if (isHomepage) {
-        const d = store('sgcms_homepage') || {};
+        // Ensure d is always a plain object, never a string (double-parse safety)
+        let d = store('sgcms_homepage') || {};
+        if (typeof d !== 'object' || Array.isArray(d)) d = {};
         if (cmsField === 'hero-headline' || i18nKey === 'hero.title' || activeEl.closest('#hero-section h1')) {
           if (!d.hero) d.hero = {};
           if (!d.hero[l]) d.hero[l] = {};
@@ -2570,13 +2604,13 @@
             if (!list[idx][l]) list[idx][l] = {};
             const progType = type.includes('residency') ? 'residency' : 'citizenship';
             const defaultTab = isUae ? (PROGRAM_TAB_I18N.goldenVisa[l] || 'Golden Visa')
-                             : progType === 'residency' ? (PROGRAM_TAB_I18N.residency[l] || 'Residency By Investment')
-                             : (PROGRAM_TAB_I18N.citizenship[l] || 'Citizenship By Investment');
+              : progType === 'residency' ? (PROGRAM_TAB_I18N.residency[l] || 'Residency By Investment')
+                : (PROGRAM_TAB_I18N.citizenship[l] || 'Citizenship By Investment');
 
             if (activeEl.closest('h1')) {
-              const isSubtitle = activeEl.classList.contains('uppercase') || 
-                                 (activeEl.getAttribute('data-i18n') && activeEl.getAttribute('data-i18n').includes('heroSubtitle')) ||
-                                 activeEl !== activeEl.closest('h1').firstElementChild;
+              const isSubtitle = activeEl.classList.contains('uppercase') ||
+                (activeEl.getAttribute('data-i18n') && activeEl.getAttribute('data-i18n').includes('heroSubtitle')) ||
+                activeEl !== activeEl.closest('h1').firstElementChild;
 
               let currentCountry = (list[idx][l].hero_title || (list[idx][l].title ? list[idx][l].title.replace(/\s+(citizenship|residency).*$/i, '').trim() : '') || list[idx].name || list[idx].id || 'Dominica').trim();
               if (/^(citizenship|residency)/i.test(currentCountry)) {
@@ -2629,7 +2663,7 @@
 
       try {
         localStorage.setItem('sgcms_publish_status', JSON.stringify({ status: 'draft', lastEdited: new Date().toISOString() }));
-      } catch(e) {}
+      } catch (e) { }
 
       flashToast('Saved: "' + (newText.length > 20 ? newText.slice(0, 20) + '…' : newText) + '"');
 
@@ -2692,7 +2726,7 @@
           if (isInsideIframe) {
             try {
               window.parent.postMessage({ type: 'CMS_NAVIGATE_PAGE', url: anchor.href, path: anchor.pathname }, '*');
-            } catch(err) {}
+            } catch (err) { }
           }
           window.location.href = anchor.href;
         }
@@ -2759,7 +2793,7 @@
                   url: anchor.href,
                   path: anchor.pathname
                 }, '*');
-              } catch(err) {}
+              } catch (err) { }
               window.location.href = anchor.href;
               return;
             }
@@ -2867,7 +2901,7 @@
               }
               saveStore('sgcms_blog', blogs);
             }
-          } catch(err) {}
+          } catch (err) { }
         }
       }
     }, true);
@@ -2880,7 +2914,7 @@
       } else if (e.key === 'Enter' && !e.shiftKey) {
         // Single line headings and buttons save on Enter
         const tag = activeEl.tagName;
-        if (['H1','H2','H3','H4','H5','H6','BUTTON','A','SPAN'].includes(tag)) {
+        if (['H1', 'H2', 'H3', 'H4', 'H5', 'H6', 'BUTTON', 'A', 'SPAN'].includes(tag)) {
           e.preventDefault();
           saveCurrentActive();
         }
@@ -2932,7 +2966,7 @@
           href: window.location.href,
           slug: extractSlug()
         }, '*');
-      } catch(e) {}
+      } catch (e) { }
     }
 
     // Intercept website's own language switcher events
@@ -2985,6 +3019,18 @@
       } else if (msg.type === 'CMS_BLOG_SAVED') {
         const dc = document.getElementById('cms-live-draft-card');
         if (dc) dc.remove();
+        hydrateBlog(getLang());
+      } else if (msg.type === 'CMS_BLOG_DELETED') {
+        const dc = document.getElementById('cms-live-draft-card');
+        if (dc) dc.remove();
+        if (msg.id) {
+          const card = document.querySelector(`[data-cms-blog-id="${msg.id}"]`);
+          if (card) card.remove();
+        }
+        if (msg.targetId) {
+          const card = document.querySelector(`[data-cms-blog-id="${msg.targetId}"]`);
+          if (card) card.remove();
+        }
         hydrateBlog(getLang());
       } else if (msg.type === 'CMS_UPDATE_FIELD') {
         const { field, value } = msg;
@@ -3293,7 +3339,7 @@
             path: window.location.pathname,
             href: window.location.href
           }, '*');
-        } catch(e) {}
+        } catch (e) { }
       }
     }
   }

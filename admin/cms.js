@@ -41,8 +41,29 @@ const Auth = {
 
 // ─── STORE ────────────────────────────────────────────────────
 const Store = {
-  get(key) { try { const v = localStorage.getItem(key); return v ? JSON.parse(v) : null; } catch { return null; } },
-  set(key, data) { localStorage.setItem(key, JSON.stringify(data)); },
+  get(key) {
+    try {
+      const v = localStorage.getItem(key);
+      if (!v) return null;
+      let parsed = JSON.parse(v);
+      if (typeof parsed === 'string') {
+        const trimmed = parsed.trim();
+        if (trimmed.startsWith('{') || trimmed.startsWith('[')) {
+          try { parsed = JSON.parse(trimmed); } catch(e) {}
+        }
+      }
+      return parsed;
+    } catch { return null; }
+  },
+  set(key, data) {
+    if (typeof data === 'string') {
+      const trimmed = data.trim();
+      if (trimmed.startsWith('{') || trimmed.startsWith('[')) {
+        try { data = JSON.parse(trimmed); } catch(e) {}
+      }
+    }
+    localStorage.setItem(key, JSON.stringify(data));
+  },
   getOrDefault(key, def) { const v = this.get(key); return v !== null ? v : (typeof def === 'function' ? def() : JSON.parse(JSON.stringify(def))); }
 };
 
@@ -449,11 +470,11 @@ const DEFAULTS = {
     about: {
       en: {
         badge: 'INTRODUCTION',
-        heading: 'OVERVIEW & Background:',
+        heading: 'Our Story & Background:',
         subheading: 'Sharif Group',
         p1: 'Sharif Group is a trusted private consulting company based in Business Bay, Dubai. We help international clients and families secure legal second passports, residency visas, premium property investments, and student placements in top international universities.',
         p2: 'Our experienced team takes care of document preparation, background legal checks, and government clearance from start to finish, ensuring a straightforward, secure, and completely stress-free experience.',
-        btn1_text: 'Read OVERVIEW',
+        btn1_text: 'Read Our Story',
         btn1_link: 'aboutus/index.html',
         btn2_text: 'Book Consultation',
         btn2_link: 'contact/index.html'
@@ -1107,16 +1128,18 @@ function _pushSaveToBackend(storeKey, data, retryCount) {
   retryCount = retryCount || 0;
   const token = _getAuthToken();
   const headers = { 'Content-Type': 'application/json' };
-  if (token) headers['Authorization'] = 'Bearer ' + token;
+  if (token) {
+    headers['Authorization'] = 'Bearer ' + token;
+    headers['X-CMS-Token'] = token;
+  }
 
   fetch('api/save.php', {
     method: 'POST',
     credentials: 'include',
     headers,
-    body: JSON.stringify({ key: storeKey, data })
+    body: JSON.stringify({ key: storeKey, data, token })
   }).then(function(res) {
     if (res.status === 401 && retryCount < 1) {
-      // Session expired — try re-authenticating with saved credentials then retry once
       _refreshSession().then(function(ok) {
         if (ok) _pushSaveToBackend(storeKey, data, 1);
       });
@@ -1128,7 +1151,7 @@ function _pushSaveToBackend(storeKey, data, retryCount) {
 
 function _refreshSession() {
   try {
-    const session = JSON.parse(sessionStorage.getItem('sgcms_auth') || '{}');
+    const session = JSON.parse(sessionStorage.getItem('sgcms_auth') || localStorage.getItem('sgcms_auth') || '{}');
     if (!session.email) return Promise.resolve(false);
     return fetch('api/auth.php', {
       method: 'POST',
@@ -1140,6 +1163,7 @@ function _refreshSession() {
     }).then(function(d) {
       if (d && d.success && d.token) {
         sessionStorage.setItem('sgcms_token', d.token);
+        localStorage.setItem('sgcms_token', d.token);
         return true;
       }
       return false;
@@ -1150,7 +1174,7 @@ function _refreshSession() {
 // ─── BACKEND SYNC ADAPTER ───────────────────────────────────────
 const Backend = {
   /**
-   * Push all current localStorage sgcms_* keys to MySQL as draft.
+   * Push all current localStorage sgcms_* keys to MySQL & server snapshot as draft.
    * Called by every save function in dashboard.html.
    */
   async syncToDb(mode) {
@@ -1158,7 +1182,10 @@ const Backend = {
     try {
       const token = _getAuthToken();
       const headers = { 'Content-Type': 'application/json' };
-      if (token) headers['Authorization'] = 'Bearer ' + token;
+      if (token) {
+        headers['Authorization'] = 'Bearer ' + token;
+        headers['X-CMS-Token'] = token;
+      }
 
       // Build a batch payload of everything currently in localStorage
       const batch = {};
@@ -1182,7 +1209,7 @@ const Backend = {
         method: 'POST',
         credentials: 'include',
         headers,
-        body: JSON.stringify({ batch })
+        body: JSON.stringify({ batch, token })
       });
 
       if (res.status === 401) {
@@ -1204,14 +1231,22 @@ const Backend = {
   async syncFromDb(mode) {
     mode = mode || 'draft';
     try {
-      const res = await fetch('api/content.php?mode=' + mode, {
-        credentials: 'include'
+      const res = await fetch('api/content.php?mode=' + mode + '&_t=' + Date.now(), {
+        credentials: 'include',
+        cache: 'no-cache'
       });
       if (res.ok) {
         const json = await res.json();
         if (json && json.success && json.data) {
           for (const k in json.data) {
-            const valStr = JSON.stringify(json.data[k]);
+            let itemVal = json.data[k];
+            if (typeof itemVal === 'string') {
+              const trimmed = itemVal.trim();
+              if (trimmed.startsWith('{') || trimmed.startsWith('[')) {
+                try { itemVal = JSON.parse(trimmed); } catch(e) {}
+              }
+            }
+            const valStr = JSON.stringify(itemVal);
             if (mode === 'live') {
               localStorage.setItem(k + '_live', valStr);
             } else {

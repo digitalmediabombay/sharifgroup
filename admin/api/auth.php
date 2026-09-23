@@ -72,6 +72,9 @@ if ($method === 'POST' && ($action === 'login' || empty($action))) {
         ];
         $_SESSION['sgcms_token'] = $token;
 
+        // Persist to server token cache so fastcgi / multi-process cPanel sessions never drop
+        saveCachedToken($token, $_SESSION['sgcms_user']);
+
         jsonResponse([
             'success' => true,
             'message' => 'Authentication successful.',

@@ -563,6 +563,7 @@ async function handleLogin(e) {
     // Attempt PHP backend authentication
     const res = await fetch('api/auth.php', {
       method: 'POST',
+      credentials: 'include',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({ email, password: pwd })
     });
@@ -576,8 +577,15 @@ async function handleLogin(e) {
 
     if (res.ok && data && data.success) {
       result = { success: true, user: data.user, token: data.token };
-      if (data.token) sessionStorage.setItem('sgcms_token', data.token);
-      if (data.user) sessionStorage.setItem('sgcms_auth', JSON.stringify(data.user));
+      if (data.token) {
+        sessionStorage.setItem('sgcms_token', data.token);
+        localStorage.setItem('sgcms_token', data.token);
+      }
+      if (data.user) {
+        const uStr = JSON.stringify(data.user);
+        sessionStorage.setItem('sgcms_auth', uStr);
+        localStorage.setItem('sgcms_auth', uStr);
+      }
     } else if (res.status === 401 && data && data.error) {
       // Backend database verified credentials and explicitly rejected them
       result = { success: false, error: data.error };
@@ -599,13 +607,19 @@ async function handleLogin(e) {
   }
 
   if (result.success) {
-    if (!sessionStorage.getItem('sgcms_auth')) {
-      sessionStorage.setItem('sgcms_auth', JSON.stringify({
-        email: email || 'admin@sharifgroup.ae',
-        name: (result.user && result.user.name) || 'Sharif Group Administrator',
-        role: (result.user && result.user.role) || 'Admin',
-        loginTime: new Date().toISOString()
-      }));
+    const authObj = {
+      email: email || 'admin@sharifgroup.ae',
+      name: (result.user && result.user.name) || 'Sharif Group Administrator',
+      role: (result.user && result.user.role) || 'Admin',
+      loginTime: new Date().toISOString()
+    };
+    const authStr = JSON.stringify(authObj);
+    sessionStorage.setItem('sgcms_auth', authStr);
+    localStorage.setItem('sgcms_auth', authStr);
+    if (!localStorage.getItem('sgcms_token')) {
+      const fallbackTok = 'sgcms_' + Date.now() + '_' + Math.random().toString(36).substring(2);
+      localStorage.setItem('sgcms_token', fallbackTok);
+      sessionStorage.setItem('sgcms_token', fallbackTok);
     }
 
     successBox.style.display = 'flex';

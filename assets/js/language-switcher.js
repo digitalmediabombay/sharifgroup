@@ -1498,34 +1498,24 @@
     }, true);
 
     function loadWhatsAppWidget() {
-        // Do not load on admin panel or editor iframes
         try {
             var path = (window.location && window.location.pathname) ? window.location.pathname.toLowerCase() : '';
             var href = (window.location && window.location.href) ? window.location.href.toLowerCase() : '';
             var search = (window.location && window.location.search) ? window.location.search.toLowerCase() : '';
-            if (path.includes('/admin/') || path.endsWith('/admin') || href.includes('dashboard.html') || href.includes('admin/index.html') || href.includes('/admin')) return;
+            if (path.indexOf('/admin/') !== -1 || path.indexOf('admin') !== -1 || href.indexOf('dashboard.html') !== -1) return;
             if (window.self !== window.top) return;
-            if (search.includes('cms_editor') || search.includes('cms_preview')) return;
+            if (search.indexOf('cms_editor') !== -1 || search.indexOf('cms_preview') !== -1) return;
         } catch (e) {}
 
         if (window.updateWhatsAppWidget) {
             window.updateWhatsAppWidget();
             return;
         }
-        if (document.getElementById('sg-whatsapp-script')) return;
-
-        var langScript = document.querySelector('script[src*="language-switcher.js"]');
-        var basePath = '';
-        if (langScript) {
-            var src = langScript.getAttribute('src');
-            basePath = src.substring(0, src.indexOf('language-switcher.js'));
-        } else {
-            basePath = '/assets/js/';
-        }
+        if (document.getElementById('sg-whatsapp-script') || document.querySelector('script[src*="whatsapp-widget.js"]')) return;
 
         var widgetScript = document.createElement('script');
         widgetScript.id = 'sg-whatsapp-script';
-        widgetScript.src = basePath + 'whatsapp-widget.js?v=' + Date.now();
+        widgetScript.src = '/assets/js/whatsapp-widget.js?v=' + Date.now();
         widgetScript.async = true;
         (document.body || document.head).appendChild(widgetScript);
     }
@@ -1536,47 +1526,37 @@
             if (path.indexOf('/blog/') === -1 && path.indexOf('/blog') === -1) return;
         } catch (e) { return; }
 
-        if (window.getLocalizedArticleData || document.getElementById('sg-blog-translator-script')) return;
-
-        var langScript = document.querySelector('script[src*="language-switcher.js"]');
-        var basePath = '';
-        if (langScript) {
-            var src = langScript.getAttribute('src');
-            basePath = src.substring(0, src.indexOf('language-switcher.js'));
-        } else {
-            basePath = '/assets/js/';
-        }
+        if (window.getLocalizedArticleData || document.getElementById('sg-blog-translator-script') || document.querySelector('script[src*="blog-translator.js"]')) return;
 
         var btScript = document.createElement('script');
         btScript.id = 'sg-blog-translator-script';
-        btScript.src = basePath + 'blog-translator.js?v=' + Date.now();
+        btScript.src = '/assets/js/blog-translator.js?v=' + Date.now();
         btScript.async = true;
         (document.body || document.head).appendChild(btScript);
     }
 
     function ensureMultilingualCSS() {
         if (document.querySelector('link[href*="multilingual.css"]')) return;
-        var langScript = document.querySelector('script[src*="language-switcher.js"]');
-        var basePath = '';
-        if (langScript) {
-            var src = langScript.getAttribute('src');
-            var idx = src.indexOf('js/');
-            if (idx !== -1) {
-                basePath = src.substring(0, idx);
-            }
-        }
-        if (!basePath) basePath = '/assets/';
         var link = document.createElement('link');
         link.rel = 'stylesheet';
-        link.href = basePath + 'css/multilingual.css?v=7';
+        link.href = '/assets/css/multilingual.css?v=7';
         document.head.appendChild(link);
     }
 
     // Dynamically inject cms-live.js (public CMS overlay, safe for all visitors)
     function loadCmsLive() {
+        try {
+            var path = (window.location && window.location.pathname) ? window.location.pathname.toLowerCase() : '';
+            var href = (window.location && window.location.href) ? window.location.href.toLowerCase() : '';
+            var search = (window.location && window.location.search) ? window.location.search.toLowerCase() : '';
+            if (path.indexOf('/admin/') !== -1 || path.indexOf('admin') !== -1 || href.indexOf('dashboard.html') !== -1) return;
+            if (window.self !== window.top) return;
+            if (search.indexOf('cms_editor') !== -1 || search.indexOf('cms_preview') !== -1) return;
+        } catch (e) {}
+
         if (document.querySelector('script[src*="cms-live.js"]')) return; // already loaded
         var s = document.createElement('script');
-        s.src = basePath + 'js/cms-live.js';
+        s.src = '/assets/js/cms-live.js?v=' + Date.now();
         s.async = true;
         document.head.appendChild(s);
     }
