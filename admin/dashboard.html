@@ -2168,31 +2168,33 @@
           <input type="hidden" id="qb-author" value="Sharif Group Legal Desk">
 
           <div class="form-group">
-            <label class="form-label" style="font-weight:600">Featured Image (Click to pick or paste custom URL)</label>
-            <div class="sg-preset-grid" id="qb-presets">
-              <div class="sg-preset-item selected" data-src="../assets/images/dubai-office-2.webp"
-                onclick="selectQuickBlogPreset(this)">
-                <img src="../assets/images/dubai-office-2.webp">
-                <span class="sg-preset-lbl">Dubai HQ</span>
-              </div>
-              <div class="sg-preset-item" data-src="../assets/images/Dominica-Americas-Hu_10e82c.webp"
-                onclick="selectQuickBlogPreset(this)">
-                <img src="../assets/images/Dominica-Americas-Hu_10e82c.webp">
-                <span class="sg-preset-lbl">Caribbean</span>
-              </div>
-              <div class="sg-preset-item" data-src="../assets/images/portugal-golden-vsa_47319a.webp"
-                onclick="selectQuickBlogPreset(this)">
-                <img src="../assets/images/portugal-golden-vsa_47319a.webp">
-                <span class="sg-preset-lbl">Europe</span>
-              </div>
-              <div class="sg-preset-item" data-src="../assets/images/isdubairealestateago_3194a5.webp"
-                onclick="selectQuickBlogPreset(this)">
-                <img src="../assets/images/isdubairealestateago_3194a5.webp">
-                <span class="sg-preset-lbl">Real Estate</span>
-              </div>
+            <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:6px">
+              <label class="form-label" style="font-weight:600;margin-bottom:0">Featured Cover Image</label>
+              <span id="qb-upload-status" style="font-size:11px;font-weight:500;color:var(--gold)"></span>
             </div>
-            <input type="text" id="qb-custom-img" class="form-input" placeholder="Or paste custom image URL..."
-              style="margin-top:8px">
+
+            <!-- Upload from Device Dropzone -->
+            <div style="border:2px dashed rgba(197,168,128,0.4);border-radius:10px;padding:18px 14px;text-align:center;background:rgba(0,0,0,0.25);cursor:pointer;transition:all .2s"
+                 id="qb-dropzone"
+                 onclick="document.getElementById('qb-file-input').click()">
+              <input type="file" id="qb-file-input" accept="image/*" style="display:none" onchange="handleBlogImageUpload(this, 'qb-custom-img', 'qb-img-preview', 'qb-upload-status')">
+              <i class="fa-solid fa-cloud-arrow-up" style="font-size:26px;color:var(--gold);margin-bottom:6px;display:block"></i>
+              <div style="font-size:13px;font-weight:600;color:var(--text);margin-bottom:2px">Upload Image from Device</div>
+              <div style="font-size:11px;color:var(--muted)">Click to select JPG, PNG, or WEBP from your computer/phone</div>
+            </div>
+
+            <!-- Image Preview Box -->
+            <div id="qb-preview-wrap" style="display:none;margin-top:10px;position:relative">
+              <img id="qb-img-preview" src="" style="width:100%;max-height:160px;object-fit:cover;border-radius:8px;border:1px solid var(--border)">
+              <button type="button" class="btn btn-ghost" style="position:absolute;top:8px;right:8px;padding:4px 8px;font-size:11px;background:rgba(0,0,0,0.75);color:#f87171;border-color:rgba(239,68,68,0.5)" onclick="clearBlogImageUpload('qb-custom-img', 'qb-img-preview', 'qb-preview-wrap')">
+                <i class="fa-solid fa-trash"></i> Remove
+              </button>
+            </div>
+
+            <div style="margin-top:10px">
+              <input type="text" id="qb-custom-img" class="form-input" placeholder="Or paste image URL (e.g. /assets/images/...)"
+                oninput="previewCustomImageUrl(this.value, 'qb-img-preview', 'qb-preview-wrap')">
+            </div>
           </div>
         </div>
         <div class="sg-modal-footer">
@@ -3091,6 +3093,9 @@
           m.classList.add('open');
           const inp = document.getElementById('qb-title');
           if (inp) { inp.value = ''; setTimeout(() => inp.focus(), 80); }
+          clearBlogImageUpload('qb-custom-img', 'qb-img-preview', 'qb-preview-wrap');
+          const status = document.getElementById('qb-upload-status');
+          if (status) status.innerHTML = '';
         }
       }
 
@@ -3099,13 +3104,83 @@
         if (m) m.classList.remove('open');
       }
 
-      let selectedBlogImg = '../assets/images/dubai-office-2.webp';
-      function selectQuickBlogPreset(el) {
-        document.querySelectorAll('#qb-presets .sg-preset-item').forEach(i => i.classList.remove('selected'));
-        el.classList.add('selected');
-        selectedBlogImg = el.getAttribute('data-src');
-        const custom = document.getElementById('qb-custom-img');
-        if (custom) custom.value = '';
+      function clearBlogImageUpload(inputId, previewImgId, wrapId) {
+        const inp = document.getElementById(inputId);
+        if (inp) inp.value = '';
+        const prev = document.getElementById(previewImgId);
+        if (prev) { prev.src = ''; prev.style.display = 'none'; }
+        const wrap = document.getElementById(wrapId);
+        if (wrap) wrap.style.display = 'none';
+        markUnsaved();
+      }
+
+      function previewCustomImageUrl(val, previewImgId, wrapId) {
+        const prev = document.getElementById(previewImgId);
+        const wrap = document.getElementById(wrapId);
+        if (!val || !val.trim()) {
+          if (prev) prev.style.display = 'none';
+          if (wrap) wrap.style.display = 'none';
+          return;
+        }
+        if (prev) {
+          prev.src = val.trim();
+          prev.style.display = 'block';
+        }
+        if (wrap) wrap.style.display = 'block';
+        markUnsaved();
+      }
+
+      async function handleBlogImageUpload(inputEl, targetInputId, previewImgId, statusId) {
+        if (!inputEl || !inputEl.files || !inputEl.files[0]) return;
+        const file = inputEl.files[0];
+        const statusEl = document.getElementById(statusId);
+        if (statusEl) statusEl.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i> Uploading...';
+
+        const reader = new FileReader();
+        reader.onload = function(e) {
+          const prev = document.getElementById(previewImgId);
+          if (prev) {
+            prev.src = e.target.result;
+            prev.style.display = 'block';
+            const wrap = prev.closest('#qb-preview-wrap');
+            if (wrap) wrap.style.display = 'block';
+          }
+        };
+        reader.readAsDataURL(file);
+
+        const formData = new FormData();
+        formData.append('file', file);
+
+        try {
+          const res = await fetch('api/upload.php', {
+            method: 'POST',
+            body: formData
+          });
+          const json = await res.json();
+          if (json && json.success && json.url) {
+            const inp = document.getElementById(targetInputId);
+            if (inp) {
+              inp.value = json.url;
+              markUnsaved();
+              if (typeof broadcastBlogDraft === 'function') broadcastBlogDraft();
+              if (typeof liveUpdateField === 'function') liveUpdateField('blog_img', json.url);
+            }
+            if (statusEl) statusEl.innerHTML = '<i class="fa-solid fa-check" style="color:#4ade80"></i> <span style="color:#4ade80">Uploaded!</span>';
+            setTimeout(() => { if (statusEl) statusEl.innerHTML = ''; }, 3000);
+            showToast('Image uploaded successfully from device!', 'success');
+          } else {
+            throw new Error(json?.error || 'Upload failed');
+          }
+        } catch (err) {
+          console.warn('[Image Upload fallback]:', err.message);
+          const inp = document.getElementById(targetInputId);
+          if (inp && reader.result) {
+            inp.value = reader.result;
+            markUnsaved();
+          }
+          if (statusEl) statusEl.innerHTML = '<span style="color:var(--gold)">Ready</span>';
+          showToast('Image loaded from device!', 'info');
+        }
       }
 
       function repairBlogFaqsAndTranslations(blogs) {
@@ -3199,7 +3274,8 @@
         const category = document.getElementById('qb-category')?.value || 'Golden Visa';
         const author = document.getElementById('qb-author')?.value || 'Sharif Group Legal Desk';
         const customImg = document.getElementById('qb-custom-img')?.value.trim();
-        const img = customImg || selectedBlogImg || '../assets/images/dubai-office-2.webp';
+        const previewImg = document.getElementById('qb-img-preview')?.getAttribute('src');
+        const img = customImg || previewImg || '/assets/images/dubai-office-2.webp';
 
         const slug = title.toLowerCase()
           .replace(/[^a-z0-9\s-]/g, '')
@@ -3351,15 +3427,26 @@
         window.CMS.saveData(window.CMS.KEYS.BLOG, existingBlogs);
         populateSidebar();
 
+        // Immediately sync to MySQL database so the article is never lost on refresh
+        if (window.CMS && window.CMS.Backend) {
+          window.CMS.Backend.syncToDb('draft').then(ok => {
+            console.log('[CMS] New blog article synced to database:', ok);
+          });
+        }
+        autoTranslateOnSave('blog', id);
+
         closeQuickBlogModal();
-        showToast('Article created with full 4-language support!', 'success');
+        showToast('Article created successfully!', 'success');
 
         state.section = 'blog-edit';
         state.itemId = id;
         state.activeBlogSlug = slug;
-        closeEditorDrawer();
         toggleGroup('blog', true);
         setActiveSidebarItem(id);
+
+        // Render full article form in the sidebar drawer so user can immediately edit text or image
+        renderBlogArticleForm(newArticle, false);
+        openEditorDrawer();
 
         const iframe = document.getElementById('live-iframe');
         const targetUrl = '../blog/index.html?cms_editor=1&article_slug=' + encodeURIComponent(slug);
@@ -3367,7 +3454,7 @@
 
         setTimeout(() => {
           sendToIframe({ type: 'CMS_OPEN_ARTICLE', slug });
-          showToast('Canvas Ready: Click any text to edit directly!', 'info');
+          showToast('Canvas & Form Ready: Click any text on canvas or edit in sidebar!', 'info');
         }, 600);
       }
 
@@ -4538,7 +4625,10 @@
             </div>
 
             <div style="display:flex;gap:8px;flex-direction:column">
-              <button type="button" class="btn btn-primary" style="width:100%;justify-content:center;font-size:12px" onclick="closeEditorDrawer()">
+              <button type="button" class="btn btn-primary" style="width:100%;justify-content:center;font-size:12px" onclick="const bls=window.CMS.getData(window.CMS.KEYS.BLOG)||[];const curB=bls.find(x=>x.id==='${b.id}')||{};renderBlogArticleForm(curB,false)">
+                <i class="fa-solid fa-pen-to-square"></i> Open Form &amp; Media Editor
+              </button>
+              <button type="button" class="btn btn-secondary" style="width:100%;justify-content:center;font-size:12px" onclick="closeEditorDrawer()">
                 <i class="fa-solid fa-expand"></i> Fullscreen Visual Canvas
               </button>
               <button type="button" class="btn btn-secondary" style="width:100%;justify-content:center;font-size:12px" onclick="refreshPreview()">
@@ -6244,14 +6334,23 @@
 
         const mediaBody = `
     <div class="form-group" style="margin-bottom:12px">
-      <label class="form-label">Featured Cover Image URL</label>
-      <input class="form-input" id="blog-img" value="${escH(b.featured_img || '')}" placeholder="https://images.unsplash.com/... or images/blog1.jpg" oninput="
-        markUnsaved();
-        broadcastBlogDraft();
-        liveUpdateField('blog_img', this.value);
-        const prev = document.getElementById('blog-img-prev');
-        if (prev) { prev.src = this.value; prev.style.display = this.value ? 'block' : 'none'; }
-      ">
+      <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:4px">
+        <label class="form-label" style="margin-bottom:0">Featured Cover Image</label>
+        <span id="blog-upload-status" style="font-size:11px;font-weight:500;color:var(--gold)"></span>
+      </div>
+      <div style="display:flex;gap:8px;margin-bottom:8px">
+        <input class="form-input" id="blog-img" value="${escH(b.featured_img || '')}" placeholder="Paste image URL or upload from device..." style="flex:1" oninput="
+          markUnsaved();
+          broadcastBlogDraft();
+          liveUpdateField('blog_img', this.value);
+          const prev = document.getElementById('blog-img-prev');
+          if (prev) { prev.src = this.value; prev.style.display = this.value ? 'block' : 'none'; }
+        ">
+        <button type="button" class="btn btn-ghost" style="white-space:nowrap;display:flex;align-items:center;gap:6px" onclick="document.getElementById('blog-file-input').click()">
+          <i class="fa-solid fa-cloud-arrow-up" style="color:var(--gold)"></i> Upload Device
+        </button>
+        <input type="file" id="blog-file-input" accept="image/*" style="display:none" onchange="handleBlogImageUpload(this, 'blog-img', 'blog-img-prev', 'blog-upload-status')">
+      </div>
       <div style="margin-top:8px">
         <img id="blog-img-prev" src="${escH(b.featured_img || '')}" style="max-height:140px;width:100%;object-fit:cover;border-radius:8px;border:1px solid var(--border);display:${b.featured_img ? 'block' : 'none'}" onerror="this.style.display='none'">
       </div>
@@ -6327,45 +6426,46 @@
 
         const item = isNew ? { id, en: {}, ar: {}, fa: {}, zh: {} } : { ...blogs[idx] };
 
-        item.author = document.getElementById('blog-author')?.value.trim() || item.author || 'Sharif Group Advisory';
-        item.author_title = document.getElementById('blog-author-title')?.value.trim() || 'Senior Immigration Partner';
-        item.category = document.getElementById('blog-category')?.value || 'Citizenship';
-        item.subcategory = document.getElementById('blog-subcategory')?.value || '';
-        item.publish_date = document.getElementById('blog-date')?.value || new Date().toISOString().split('T')[0];
-        item.read_time = document.getElementById('blog-read-time')?.value.trim() || '5 min read';
-        item.featured_img = document.getElementById('blog-img')?.value.trim() || '';
-        item.img_alt = document.getElementById('blog-img-alt')?.value.trim() || '';
-        item.featured = document.getElementById('blog-featured')?.value === 'true';
+        const formTitle = document.getElementById('blog-title');
+        // Only read from form inputs if form elements actually exist in DOM
+        if (formTitle) {
+          if (document.getElementById('blog-author')) item.author = document.getElementById('blog-author').value.trim() || item.author || 'Sharif Group Advisory';
+          if (document.getElementById('blog-author-title')) item.author_title = document.getElementById('blog-author-title').value.trim() || item.author_title || 'Senior Immigration Partner';
+          if (document.getElementById('blog-category')) item.category = document.getElementById('blog-category').value || item.category || 'Citizenship';
+          if (document.getElementById('blog-subcategory')) item.subcategory = document.getElementById('blog-subcategory').value || item.subcategory || '';
+          if (document.getElementById('blog-date')) item.publish_date = document.getElementById('blog-date').value || item.publish_date || new Date().toISOString().split('T')[0];
+          if (document.getElementById('blog-read-time')) item.read_time = document.getElementById('blog-read-time').value.trim() || item.read_time || '5 min read';
+          if (document.getElementById('blog-img')) item.featured_img = document.getElementById('blog-img').value.trim() || item.featured_img || '';
+          if (document.getElementById('blog-img-alt')) item.img_alt = document.getElementById('blog-img-alt').value.trim() || item.img_alt || '';
+          if (document.getElementById('blog-featured')) item.featured = document.getElementById('blog-featured').value === 'true';
 
-        const rawTags = document.getElementById('blog-tags')?.value || '';
-        item.tags = rawTags.split(',').map(t => t.trim()).filter(Boolean);
+          const rawTags = document.getElementById('blog-tags')?.value || '';
+          if (rawTags) item.tags = rawTags.split(',').map(t => t.trim()).filter(Boolean);
 
-        const status = document.getElementById('blog-status')?.value || 'published';
-        // Set status for all languages as published when user clicks Publish
-        item.status_en = status;
-        item.status_ar = status;
-        item.status_fa = status;
-        item.status_zh = status;
+          const status = document.getElementById('blog-status')?.value || item.status_en || 'published';
+          item.status_en = status;
+          item.status_ar = status;
+          item.status_fa = status;
+          item.status_zh = status;
 
-        if (!item[l]) item[l] = {};
-        item[l].title = document.getElementById('blog-title')?.value.trim() || '';
-        item[l].slug = document.getElementById('blog-slug')?.value.trim() || (item[l].title.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/(^-|-$)/g, '')) || id;
-        item[l].excerpt = document.getElementById('blog-excerpt')?.value.trim() || '';
-        item[l].body = document.getElementById('blog-body')?.value.trim() || '';
-        item[l].meta_title = document.getElementById('blog-meta-title')?.value.trim() || '';
-        item[l].meta_desc = document.getElementById('blog-meta-desc')?.value.trim() || '';
+          if (!item[l]) item[l] = {};
+          item[l].title = formTitle.value.trim() || item[l].title || '';
+          const slugInp = document.getElementById('blog-slug')?.value.trim();
+          item[l].slug = slugInp || item[l].slug || (item[l].title.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/(^-|-$)/g, '')) || id;
+          if (document.getElementById('blog-excerpt')) item[l].excerpt = document.getElementById('blog-excerpt').value.trim();
+          if (document.getElementById('blog-body')) item[l].body = document.getElementById('blog-body').value.trim();
+          if (document.getElementById('blog-meta-title')) item[l].meta_title = document.getElementById('blog-meta-title').value.trim();
+          if (document.getElementById('blog-meta-desc')) item[l].meta_desc = document.getElementById('blog-meta-desc').value.trim();
 
-        // Mirror title/slug/excerpt/body to en if en is still empty
-        if (!item.en) item.en = {};
-        if (!item.en.title) {
-          item.en.title = item[l].title;
-          item.en.slug = item[l].slug;
-          item.en.excerpt = item[l].excerpt;
-          item.en.body = item[l].body;
+          // Mirror title/slug/excerpt/body to en if en is still empty
+          if (!item.en) item.en = {};
+          if (!item.en.title && item[l].title) item.en.title = item[l].title;
+          if (!item.en.slug && item[l].slug) item.en.slug = item[l].slug;
+          if (!item.en.excerpt && item[l].excerpt) item.en.excerpt = item[l].excerpt;
+          if (!item.en.body && item[l].body) item.en.body = item[l].body;
         }
 
         if (isNew) {
-          // Remove any pre-saved draft stub first, then add finalized article
           const cleanedBlogs = blogs.filter(b => b.id !== id);
           cleanedBlogs.unshift(item);
           window.CMS.saveData(window.CMS.KEYS.BLOG, cleanedBlogs);
@@ -6380,13 +6480,23 @@
         // Update sidebar list immediately
         populateSidebar();
 
+        // Immediately sync to MySQL database
+        if (window.CMS && window.CMS.Backend) {
+          window.CMS.Backend.syncToDb('draft').then(function(ok) {
+            if (ok) console.log('[CMS] Blog synced to MySQL successfully.');
+            else console.warn('[CMS] Database sync pending.');
+          });
+        }
+
+        // Automatically translate modified fields to other languages
+        autoTranslateOnSave('blog', id);
+
         // Notify preview iframe: remove draft card and inject the saved article
         sendToIframe({ type: 'CMS_BLOG_SAVED', id, blog: item });
 
-        // Navigate to blog list (renders updated list immediately from localStorage)
+        // Navigate to blog list
         navigate('blog');
 
-        // Refresh preview after a short delay to ensure the iframe re-hydrates
         setTimeout(() => { refreshPreview(); }, 150);
       }
 
@@ -7637,6 +7747,10 @@
             const id = state.itemId || (document.getElementById('blog-title') ? 'b' + uid() : null);
             if (id) saveBlogItem(id);
             markDraft();
+            markSaved();
+            if (window.CMS && window.CMS.Backend) {
+              window.CMS.Backend.syncToDb('draft');
+            }
             autoTranslateOnSave('blog', id);
             return;
           } else if (section === 'aboutus') {

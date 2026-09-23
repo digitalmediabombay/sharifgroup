@@ -27,6 +27,19 @@
         })();
     </script>
 
+    <!-- CMS Live Studio Integration (Active inside dashboard editor) -->
+    <script>
+        (function() {
+            var inIframe = window.self !== window.top;
+            var isEditor = window.location.search.indexOf('cms_editor') !== -1;
+            if (inIframe || isEditor) {
+                var s = document.createElement('script');
+                s.src = (window.location.pathname.indexOf('/blog') !== -1 ? '../admin/cms-loader.js' : '/admin/cms-loader.js') + '?v=' + Date.now();
+                document.head.appendChild(s);
+            }
+        })();
+    </script>
+
     <title>Investment Migration Insights & Blog | Sharif Group</title>
     <meta name="title" content="Investment Migration Insights & Blog | Sharif Group"/>
     <meta name="description" content="Explore expert guides on second citizenship, European Golden Visas, Dubai real estate, and international tax planning. Read our latest articles today."/>

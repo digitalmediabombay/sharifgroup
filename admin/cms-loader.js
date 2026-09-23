@@ -2346,7 +2346,9 @@
     let originalText = '';
     let hoveredEl = null;
 
-    let editMode = localStorage.getItem('sgcms_canvas_mode') !== 'browse';
+    let editMode = (window.self !== window.top || window.location.search.indexOf('cms_editor') !== -1)
+      ? (localStorage.getItem('sgcms_canvas_mode') !== 'browse')
+      : false;
 
     function setEditMode(enabled, notifyParent, showMsg) {
       editMode = enabled;
@@ -2403,7 +2405,7 @@
       return path.join(' > ');
     }
 
-    const EDITABLE_SELECTOR = 'h1, h2, h3, h4, h5, h6, p, a, button, span, label, strong, em, b, i, u, s, li, blockquote, q, cite, figcaption, small, img, [data-i18n], [data-cms], .counter-value';
+    const EDITABLE_SELECTOR = 'h1, h2, h3, h4, h5, h6, p, a, button, span, label, strong, em, b, i, u, s, li, blockquote, q, cite, figcaption, small, img, [data-i18n], [data-cms], .counter-value, #detail-title, #detail-author, #detail-date, #detail-updated, #detail-category-badge, #detail-breadcrumb-title, #detail-content-body, #detail-content-body *';
 
     function getCleanBodyHtml(bodyEl) {
       if (!bodyEl) return '';
@@ -2427,7 +2429,17 @@
         return false;
       }
 
+      // Explicitly exempt detail back button
+      if (el.closest('[onclick*="closeBlogDetail"], [data-i18n="blog.backToArticles"]')) {
+        return false;
+      }
+
       if (tag === 'IMG') {
+        return true;
+      }
+
+      // Explicitly allow blog detail elements
+      if (el.id === 'detail-title' || el.id === 'detail-author' || el.id === 'detail-date' || el.id === 'detail-updated' || el.id === 'detail-category-badge' || el.id === 'detail-breadcrumb-title' || el.id === 'detail-content-body' || el.closest('#detail-content-body')) {
         return true;
       }
 
@@ -2808,6 +2820,23 @@
       // If clicking inside toolbar, allow toolbar interaction
       if (e.target.closest('#cms-inline-toolbar') || e.target.closest('#cms-hover-tooltip') || e.target.closest('#cms-image-popover')) return;
 
+      // Check if clicking Back to All Articles
+      if (e.target.closest('[onclick*="closeBlogDetail"], [data-i18n="blog.backToArticles"]')) {
+        return;
+      }
+
+      // Check if clicking inside blog card or READ MORE link to open article
+      const blogCardLink = e.target.closest('a[onclick*="openBlogDetailBySlug"], [onclick*="openBlogDetailBySlug"], .blog-item a, [data-cms-blog-id] a, .blog-item');
+      if (blogCardLink) {
+        const readMoreBtn = e.target.closest('a[onclick*="openBlogDetailBySlug"], [onclick*="openBlogDetailBySlug"]');
+        if (readMoreBtn) return; // Allow natural openBlogDetailBySlug!
+        const onclickEl = blogCardLink.querySelector('[onclick*="openBlogDetailBySlug"]') || blogCardLink.closest('[data-cms-blog-id]')?.querySelector('[onclick*="openBlogDetailBySlug"]');
+        if (onclickEl) {
+          onclickEl.click();
+          return;
+        }
+      }
+
       const clickedImg = e.target.closest('img');
       if (clickedImg) {
         e.preventDefault();
@@ -3005,9 +3034,15 @@
       } else if (msg.type === 'CMS_REHYDRATE') {
         runHydration();
       } else if (msg.type === 'CMS_OPEN_ARTICLE') {
-        if (typeof window.openBlogDetailBySlug === 'function') {
-          window.openBlogDetailBySlug(msg.slug);
-        }
+        setEditMode(true, false, false);
+        const openFn = () => {
+          if (typeof window.openBlogDetailBySlug === 'function') {
+            window.openBlogDetailBySlug(msg.slug);
+          } else {
+            setTimeout(openFn, 80);
+          }
+        };
+        openFn();
       } else if (msg.type === 'CMS_SET_MODE') {
         setEditMode(msg.mode === 'edit', false, false);
       } else if (msg.type === 'CMS_SAVE_ACTIVE') {
