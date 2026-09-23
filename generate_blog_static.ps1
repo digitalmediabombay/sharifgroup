@@ -188,6 +188,8 @@ $navHtml = $navHtml.Replace('src="../assets/', 'src="/assets/')
 $navHtml = $navHtml.Replace('src="../alirezasharif.svg"', 'src="/blog/alirezasharif.svg"')
 $navHtml = $navHtml.Replace('src="alirezasharif.svg"', 'src="/blog/alirezasharif.svg"')
 $navHtml = $navHtml.Replace('src="imclogo.webp"', 'src="/blog/imclogo.webp"')
+$navHtml = [regex]::Replace($navHtml, '(<a[^>]+data-i18n="nav\.blog"[^>]+href=)"[^"]*"', '$1"/blog/"')
+$navHtml = [regex]::Replace($navHtml, '(<a[^>]+href=)"[^"]*"([^>]+data-i18n="nav\.blog")', '$1"/blog/"$2')
 
 # Extract Footer
 $footerStart = $content.IndexOf("<footer")
@@ -206,6 +208,9 @@ $footerHtml = $footerHtml.Replace('href="../programs/citizenshipbyinvestment/stk
 $footerHtml = $footerHtml.Replace('href="../programs/citizenshipbyinvestment/greneda/index.html"', 'href="/programs/citizenshipbyinvestment/grenada/"')
 $footerHtml = $footerHtml.Replace('href="../programs/', 'href="/programs/')
 $footerHtml = $footerHtml.Replace('href="index.html"', 'href="/blog/"')
+$footerHtml = [regex]::Replace($footerHtml, '(<a[^>]+data-i18n="megaMenu\.insights"[^>]+href=)"[^"]*"', '$1"/blog/"')
+$footerHtml = [regex]::Replace($footerHtml, '(<a[^>]+href=)"[^"]*"([^>]+data-i18n="megaMenu\.insights")', '$1"/blog/"$2')
+
 $navHtml = $navHtml.Replace('../assets/', '../../assets/')
 $footerHtml = $footerHtml.Replace('../assets/', '../../assets/')
 $footerHtml = $footerHtml.Replace('href="../cookiepolicy/index.html"', 'href="/cookiepolicy/"')
@@ -220,6 +225,7 @@ $formHtml = $content.Substring($formStart, $sectionClose - $formStart)
 $formHtml = [regex]::Replace($formHtml, '^<div\s+class="py-24\s+px-6\s+bg-\[#FAF6EE\][^"]*"\s+id="detail-consultation-section">', '<section class="py-24 px-6 bg-[#FAF6EE] relative overflow-hidden border-t border-neutral-200/80" id="detail-consultation-section">')
 $formHtml = [regex]::Replace($formHtml, '</div>\s*$', '</section>')
 $formHtml = [regex]::Replace($formHtml, '<h3(\s+class="[^"]*font-serif[^"]*"(?:[^>]*)data-i18n-html="contact\.consultationHeading"[^>]*)>([\s\S]*?)</h3>', '<h2$1>$2</h2>')
+$formHtml = $formHtml.Replace('style="display: none !important;"', '')
 
 # Pre-collect all articles metadata
 $articlesList = @()
@@ -549,14 +555,20 @@ $faqSchemaJson
             position: absolute !important;
             top: 100% !important;
             left: 0 !important;
-            width: 260px !important;
-            max-height: 220px !important;
+            width: min(320px, 85vw) !important;
+            max-height: 250px !important;
             overflow-y: auto !important;
             z-index: 9999 !important;
             margin-top: 4px !important;
-            border-radius: 0.75rem !important;
+            background: white !important;
+            border: 1px solid #E5E5EA !important;
+            border-radius: 12px !important;
+            box-shadow: 0 4px 16px rgba(0, 0, 0, 0.15) !important;
         }
         .custom-select-dropdown.active { display: block !important; }
+        .country-list-container::-webkit-scrollbar { width: 5px; }
+        .country-list-container::-webkit-scrollbar-track { background: #FDFCFB; }
+        .country-list-container::-webkit-scrollbar-thumb { background: #C5A880; border-radius: 3px; }
     </style>
 </head>
 <body class="bg-[#FDFCFB] text-neutral-900 font-sans antialiased overflow-x-hidden selection:bg-luxury-gold selection:text-white">
@@ -568,7 +580,7 @@ $faqSchemaJson
 $navHtml
 
     <!-- MAIN ARTICLE LAYOUT -->
-    <main class="pt-28 pb-20 max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
+    <main class="blog-article-layout pt-28 sm:pt-32 pb-20 max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
         <div class="space-y-10">
             <!-- Breadcrumbs + Back Button -->
             <div class="flex items-center justify-between gap-4 pb-4 border-b border-neutral-200/80">

@@ -1,4 +1,4 @@
-﻿<!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="en" class="scroll-smooth">
 
 <head>
@@ -922,8 +922,8 @@
 
         <!-- ENGINE SCRIPT FOR ELIGIBILITY CHECKER -->
         <script>
-            // Lead Webhook Endpoint (Supports CRM webhooks like Payam Gostar, Zapier, Make, or custom API)
-            const LEAD_WEBHOOK_URL = "";
+            // Lead Webhook Endpoint (Connected to Website_Leads Google Sheet)
+            const LEAD_WEBHOOK_URL = "https://script.google.com/macros/s/AKfycbx1htojc2xrudJ3i9eRepORLmAXqh6vk2IoBy6bUrtPqlcpODqI5XVdgUpXWYbgpCXOvg/exec";
 
             let latestCalculation = {};
             let selectedTargetProgram = "General CBI Assessment";
@@ -1758,6 +1758,7 @@
                 if (LEAD_WEBHOOK_URL) {
                     fetch(LEAD_WEBHOOK_URL, {
                         method: "POST",
+                        mode: "no-cors",
                         headers: { "Content-Type": "application/json" },
                         body: JSON.stringify(leadData)
                     }).catch(err => console.error("Webhook error:", err));
@@ -2195,12 +2196,6 @@
                 }
             });
 
-            function handleContactSubmit(e) {
-                e.preventDefault();
-                const successText = document.getElementById('standalone-form-success');
-                if (successText) successText.classList.remove('hidden');
-                e.target.reset();
-            }
 
             // Sub-service Options Dynamic Populator
             const optionsMap = {

@@ -14,9 +14,15 @@
     php_flag log_errors on
 </IfModule>
 
-# Optional Pretty URL rewrites
+# Optional Pretty URL rewrites & Authorization Header Pass-through
 <IfModule mod_rewrite.c>
     RewriteEngine On
+
+    # Crucial for cPanel / FastCGI / PHP-FPM: Pass Authorization header to PHP $_SERVER
+    SetEnvIf Authorization "(.*)" HTTP_AUTHORIZATION=$1
+    RewriteCond %{HTTP:Authorization} ^(.*)
+    RewriteRule .* - [e=HTTP_AUTHORIZATION:%1]
+
     RewriteCond %{REQUEST_FILENAME} !-f
     RewriteCond %{REQUEST_FILENAME} !-d
     RewriteRule ^publish/?$ publish.php [L,QSA]

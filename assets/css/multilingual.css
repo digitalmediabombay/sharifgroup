@@ -1140,3 +1140,40 @@ body.lang-ar .sg-wa-status-dot,
     right: 2px !important;
     left: auto !important;
 }
+
+/* ==========================================================================
+   FIX: Prevent fixed header / navbar from overlapping blog content
+   ========================================================================== */
+main.blog-article-layout,
+main[class*="pt-28"],
+.blog-article-main,
+#blog-detail-view-container {
+    padding-top: 7rem !important; /* 112px on mobile: 80px navbar + 32px space */
+    scroll-margin-top: 90px !important;
+}
+
+@media (min-width: 640px) {
+    main.blog-article-layout,
+    main[class*="pt-28"],
+    .blog-article-main,
+    #blog-detail-view-container {
+        padding-top: 8rem !important; /* 128px on tablet/desktop: 80px navbar + 48px space */
+        scroll-margin-top: 100px !important;
+    }
+}
+
+/* ==========================================================================
+   FIX: Footer Background Video Canvas Decoding (Fix display:none compositor block)
+   ========================================================================== */
+#footer-hidden-video,
+#footer-hidden-video-2 {
+    display: block !important;
+    position: absolute !important;
+    top: 0 !important;
+    left: 0 !important;
+    width: 1px !important;
+    height: 1px !important;
+    opacity: 0.001 !important;
+    pointer-events: none !important;
+    z-index: -100 !important;
+}

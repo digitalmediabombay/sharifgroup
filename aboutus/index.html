@@ -47,9 +47,9 @@
 <meta name="twitter:description" content="Learn about Sharif Group Dubai: licensed leaders in citizenship by investment, Golden Visas, and luxury real estate. Contact our Business Bay team today."/>
 <meta content="/assets/images/dubai-office-2.webp" name="twitter:image"/>
 <!-- Favicon & App Icons -->
-<link href="https://shariftrip.com/wp-content/uploads/2024/06/Group-427321463.svg" rel="icon" type="image/svg+xml"/>
-<link href="https://shariftrip.com/wp-content/uploads/2024/06/Group-427321463.svg" rel="alternate icon" type="image/x-icon"/>
-<link href="https://shariftrip.com/wp-content/uploads/2024/06/Group-427321463.svg" rel="apple-touch-icon" sizes="180x180"/>
+<link href="/assets/images/Group-427321463.svg" rel="icon" type="image/svg+xml"/>
+<link href="/assets/images/Group-427321463.svg" rel="alternate icon" type="image/x-icon"/>
+<link href="/assets/images/Group-427321463.svg" rel="apple-touch-icon" sizes="180x180"/>
 <!-- Structured Data (JSON-LD) for Search Engines & Generative AEO/LLM Indexing -->
 <script type="application/ld+json">
     {
@@ -822,7 +822,7 @@
 <div class="space-y-5 max-w-5xl mx-auto" onmouseleave="resetCompanyAccordions()">
 <!-- Company 1: Sharif Global -->
 <div class="company-accordion-item relative rounded-3xl overflow-hidden border border-white/10 bg-[#091222] transition-all duration-500 cursor-pointer" id="company-card-1" onmouseenter="activateCompanyAccordion(1)">
-<div class="company-bg-img absolute inset-0 bg-cover bg-center opacity-30 transition-all duration-700 pointer-events-none" style="background-image: url('https://sharifgroup.ae/wp-content/uploads/2026/05/Screenshot-2026-05-09-223556.png');"></div>
+<div class="company-bg-img absolute inset-0 bg-cover bg-center opacity-30 transition-all duration-700 pointer-events-none" style="background-image: url('/assets/images/sharifglobal.webp');"></div>
 <div class="absolute inset-0 bg-gradient-to-r from-[#050B14]/95 via-[#091222]/85 to-[#050B14]/60 pointer-events-none"></div>
 <div class="relative z-10 p-6 md:p-8 flex flex-col justify-between">
 <div class="flex items-center justify-between gap-4">
@@ -858,7 +858,7 @@
 </div>
 <!-- Company 2: Sharif Star -->
 <div class="company-accordion-item relative rounded-3xl overflow-hidden border border-white/10 bg-[#091222] transition-all duration-500 cursor-pointer" id="company-card-2" onmouseenter="activateCompanyAccordion(2)">
-<div class="company-bg-img absolute inset-0 bg-cover bg-center opacity-30 transition-all duration-700 pointer-events-none" style="background-image: url('https://sharifgroup.ae/wp-content/uploads/2026/05/photo_2026-05-09_22-14-58.jpg.webp');"></div>
+<div class="company-bg-img absolute inset-0 bg-cover bg-center opacity-30 transition-all duration-700 pointer-events-none" style="background-image: url('/assets/images/sharifrealestate.webp');"></div>
 <div class="absolute inset-0 bg-gradient-to-r from-[#050B14]/95 via-[#091222]/85 to-[#050B14]/60 pointer-events-none"></div>
 <div class="relative z-10 p-6 md:p-8 flex flex-col justify-between">
 <div class="flex items-center justify-between gap-4">
@@ -894,7 +894,7 @@
 </div>
 <!-- Company 3: Sharif Capital -->
 <div class="company-accordion-item relative rounded-3xl overflow-hidden border border-white/10 bg-[#091222] transition-all duration-500 cursor-pointer" id="company-card-3" onmouseenter="activateCompanyAccordion(3)">
-<div class="company-bg-img absolute inset-0 bg-cover bg-center opacity-30 transition-all duration-700 pointer-events-none" style="background-image: url('https://sharifgroup.ae/wp-content/uploads/2026/05/photo_2026-05-09_22-19-46.jpg.webp');"></div>
+<div class="company-bg-img absolute inset-0 bg-cover bg-center opacity-30 transition-all duration-700 pointer-events-none" style="background-image: url('/assets/images/sharifcapital.webp');"></div>
 <div class="absolute inset-0 bg-gradient-to-r from-[#050B14]/95 via-[#091222]/85 to-[#050B14]/60 pointer-events-none"></div>
 <div class="relative z-10 p-6 md:p-8 flex flex-col justify-between">
 <div class="flex items-center justify-between gap-4">
@@ -1479,7 +1479,7 @@
 <p class="text-xs md:text-sm text-neutral-600 font-light leading-relaxed max-w-xl mx-auto" data-i18n="pages.aboutUs.delivery_milestone_item3">Here is a look at the special moment when a client receives their official second passport after completing their application process.</p>
 </div>
 <div class="rounded-3xl overflow-hidden shadow-2xl border border-neutral-200/80 bg-black neon-card-hover group max-w-6xl w-full mx-auto">
-<video id="passport-delivery-video" class="w-full h-auto aspect-video object-cover" loop="" muted="" playsinline="" preload="none" controls>
+<video id="passport-delivery-video" class="w-full h-auto aspect-video object-cover" autoplay="" loop="" muted="" playsinline="" preload="auto">
 <source src="SecondPassportGranted.mp4" type="video/mp4"/>
                 Your browser does not support the video tag.
             </video>
@@ -2335,12 +2335,32 @@
             milestoneVideo.muted = true;
             milestoneVideo.defaultMuted = true;
 
+            const tryPlay = () => {
+                const playPromise = milestoneVideo.play();
+                if (playPromise !== undefined) {
+                    playPromise.catch(() => {});
+                }
+            };
+
+            tryPlay();
+
+            // Unlock playback on first user touch/scroll if browser paused it
+            const unlockPlayback = () => {
+                tryPlay();
+                document.removeEventListener('touchstart', unlockPlayback);
+                document.removeEventListener('scroll', unlockPlayback);
+                document.removeEventListener('click', unlockPlayback);
+            };
+            document.addEventListener('touchstart', unlockPlayback, { passive: true });
+            document.addEventListener('scroll', unlockPlayback, { passive: true });
+            document.addEventListener('click', unlockPlayback, { passive: true });
+
             // IntersectionObserver: Only buffer and play when scrolled into view
             if ('IntersectionObserver' in window) {
                 const videoObserver = new IntersectionObserver((entries) => {
                     entries.forEach((entry) => {
                         if (entry.isIntersecting) {
-                            milestoneVideo.play().catch(() => {});
+                            tryPlay();
                         } else {
                             milestoneVideo.pause();
                         }

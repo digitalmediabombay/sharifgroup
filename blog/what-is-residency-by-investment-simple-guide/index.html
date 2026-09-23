@@ -30,10 +30,10 @@
     </script>
 
     <!-- Favicon & App Icons -->
-    <link href="https://shariftrip.com/wp-content/uploads/2024/06/Group-427321463.svg" rel="icon" type="image/svg+xml"/>
+    <link href="/assets/images/Group-427321463.svg" rel="icon" type="image/svg+xml"/>
     <link href="/assets/images/shariftrip-logo-1.svg" rel="alternate icon" type="image/svg+xml"/>
     <link href="../../assets/images/shariftrip-logo-1.svg" rel="alternate icon" type="image/svg+xml"/>
-    <link href="https://shariftrip.com/wp-content/uploads/2024/06/Group-427321463.svg" rel="apple-touch-icon" sizes="180x180"/>
+    <link href="/assets/images/Group-427321463.svg" rel="apple-touch-icon" sizes="180x180"/>
 
     <!-- Primary SEO & AEO Meta Tags -->
     <title>What is Residency by Investment? Simple Guide | Sharif</title>
@@ -281,14 +281,20 @@
             position: absolute !important;
             top: 100% !important;
             left: 0 !important;
-            width: 260px !important;
-            max-height: 220px !important;
+            width: min(320px, 85vw) !important;
+            max-height: 250px !important;
             overflow-y: auto !important;
             z-index: 9999 !important;
             margin-top: 4px !important;
-            border-radius: 0.75rem !important;
+            background: white !important;
+            border: 1px solid #E5E5EA !important;
+            border-radius: 12px !important;
+            box-shadow: 0 4px 16px rgba(0, 0, 0, 0.15) !important;
         }
         .custom-select-dropdown.active { display: block !important; }
+        .country-list-container::-webkit-scrollbar { width: 5px; }
+        .country-list-container::-webkit-scrollbar-track { background: #FDFCFB; }
+        .country-list-container::-webkit-scrollbar-thumb { background: #C5A880; border-radius: 3px; }
     </style>
 </head>
 <body class="bg-[#FDFCFB] text-neutral-900 font-sans antialiased overflow-x-hidden selection:bg-luxury-gold selection:text-white">
@@ -323,7 +329,7 @@
 <span class="text-neutral-300 font-light">|</span>
 <a class="hover:text-luxury-gold transition duration-200 py-2" data-i18n="nav.contact" href="/contact/" onmouseenter="closeAllMegaMenus()">Contact Us</a>
 <span class="text-neutral-300 font-light">|</span>
-<a class="hover:text-luxury-gold transition duration-200 py-2" data-i18n="nav.blog" href="/" onmouseenter="closeAllMegaMenus()">Blog</a>
+<a class="hover:text-luxury-gold transition duration-200 py-2" data-i18n="nav.blog" href="/blog/" onmouseenter="closeAllMegaMenus()">Blog</a>
 </nav>
 </div>
 <!-- Right Action Pill Buttons -->
@@ -436,7 +442,7 @@
 <a class="py-3 border-b border-neutral-200 hover:text-luxury-gold transition block" data-i18n="megaMenu.aboutTitle" href="/aboutus/" onclick="toggleMobileMenu()">ABOUT SHARIF GROUP</a>
 <a class="py-3 border-b border-neutral-200 hover:text-luxury-gold transition block" data-i18n="megaMenu.aboutFounder" href="/about-founder/" onclick="toggleMobileMenu()">ABOUT FOUNDER | ALI SHARIF</a>
 <a class="py-3 border-b border-neutral-200 hover:text-luxury-gold transition block" data-i18n="nav.socialResp" href="/socialresponsibility/" onclick="toggleMobileMenu()">SOCIAL RESPONSIBILITY</a>
-<a class="py-3 border-b border-neutral-200 hover:text-luxury-gold transition block" data-i18n="nav.blog" href="/" onclick="toggleMobileMenu()">INSIGHTS &amp; BLOG</a>
+<a class="py-3 border-b border-neutral-200 hover:text-luxury-gold transition block" data-i18n="nav.blog" href="/blog/" onclick="toggleMobileMenu()">INSIGHTS &amp; BLOG</a>
 <a class="py-3 border-b border-neutral-200 text-[#C5A880] transition block" data-i18n="nav.contact" href="/contact/" onclick="toggleMobileMenu()">CONTACT US</a>
 </nav>
 </div>
@@ -614,7 +620,7 @@
 </header>
 
     <!-- MAIN ARTICLE LAYOUT -->
-    <main class="pt-28 pb-20 max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
+    <main class="blog-article-layout pt-28 sm:pt-32 pb-20 max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
         <div class="space-y-10">
             <!-- Breadcrumbs + Back Button -->
             <div class="flex items-center justify-between gap-4 pb-4 border-b border-neutral-200/80">
@@ -951,7 +957,7 @@
 <span class="selected-country-span">🇦🇪 +971</span>
 <i class="fa-solid fa-chevron-down text-[8px] text-neutral-400 ms-1"></i>
 </button>
-<div class="custom-select-dropdown p-2 bg-white border border-neutral-200 shadow-xl" style="display: none !important;">
+<div class="custom-select-dropdown p-2 bg-white border border-neutral-200 shadow-xl">
 <input class="w-full p-2 mb-2 border border-neutral-200 rounded-lg text-xs focus:outline-none" oninput="filterCountryCode(this)" placeholder="Search code/country..." type="text"/>
 <div class="country-list-container max-h-40 overflow-y-auto"></div>
 </div>
@@ -1137,7 +1143,7 @@
 <li><a class="hover:text-luxury-gold transition" href="/realestate/" data-i18n="footer.realEstate">Real Estate</a></li>
 <li><a class="hover:text-luxury-gold transition" data-i18n="megaMenu.educationalAdvisory" href="/educationaladvisory/">Educational Advisory</a></li>
 <li><a class="hover:text-luxury-gold transition" data-i18n="nav.contact" href="/contact/">Contact Us</a></li>
-<li><a class="hover:text-luxury-gold transition" data-i18n="megaMenu.insights" href="/">Insights &amp; Blog</a></li>
+<li><a class="hover:text-luxury-gold transition" data-i18n="megaMenu.insights" href="/blog/">Insights &amp; Blog</a></li>
 <li><a class="hover:text-luxury-gold transition" data-i18n="nav.eligibilityChecker" href="/eligibilitychecker/">Eligibility Checker</a></li>
 </ul>
 </div>

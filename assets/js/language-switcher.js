@@ -209,7 +209,7 @@
         }
     }
 
-    var I18N_VERSION = '20260921_v16';
+    var I18N_VERSION = '20260921_v18';
 
     function loadTranslation(lang, callback) {
         var pathname = (window.location && window.location.pathname) ? window.location.pathname.toLowerCase() : '';
@@ -415,6 +415,561 @@
         localizeDomNumbers(lang);
     }
 
+    var PREFERRED_LANG_MAP = {
+        'english': { 'en': 'English', 'ar': 'الإنجليزية (English)', 'fa': 'انگلیسی (English)', 'zh': '英语 (English)' },
+        'arabic': { 'en': 'Arabic', 'ar': 'العربية', 'fa': 'عربی', 'zh': '阿拉伯语' },
+        'russian': { 'en': 'Russian', 'ar': 'الروسية', 'fa': 'روسی', 'zh': '俄语' },
+        'french': { 'en': 'French', 'ar': 'الفرنسية', 'fa': 'فرانسوی', 'zh': '法语' },
+        'hindi': { 'en': 'Hindi', 'ar': 'الهندية', 'fa': 'هندی', 'zh': '印地语' },
+        'urdu': { 'en': 'Urdu', 'ar': 'الأردية', 'fa': 'اردو', 'zh': '乌尔都语' },
+        'farsi': { 'en': 'Persian (Farsi)', 'ar': 'الفارسية (فارسی)', 'fa': 'فارسی', 'zh': '波斯语' },
+        'spanish': { 'en': 'Spanish', 'ar': 'الإسبانية', 'fa': 'اسپانیایی', 'zh': '西班牙语' }
+    };
+
+    var METHOD_OPTIONS_MAP = {
+        'phone': { 'en': 'Phone Call', 'ar': 'اتصال هاتفي', 'fa': 'تماس تلفنی', 'zh': '电话沟通' },
+        'whatsapp': { 'en': 'WhatsApp', 'ar': 'واتساب', 'fa': 'واتس‌اپ', 'zh': 'WhatsApp' },
+        'zoom': { 'en': 'Video Call', 'ar': 'مكالمة فيديو', 'fa': 'تماس تصویری', 'zh': '视频通话' }
+    };
+
+    var FORM_PLACEHOLDER_MAP = {
+        'firstName': {
+            'en': 'John',
+            'ar': 'الاسم الأول',
+            'fa': 'نام کوچک',
+            'zh': '名'
+        },
+        'lastName': {
+            'en': 'Doe',
+            'ar': 'اسم العائلة',
+            'fa': 'نام خانوادگی',
+            'zh': '姓'
+        },
+        'address': {
+            'en': 'Suite, Tower, City, Country',
+            'ar': 'الجناح، البرج، المدينة، الدولة',
+            'fa': 'ساختمان، شهر، کشور',
+            'zh': '套房、大厦、城市、国家'
+        },
+        'notes': {
+            'en': '...Detail any specific family parameters',
+            'ar': 'تفاصيل متطلبات العائلة أو أي استفسار خاص...',
+            'fa': 'جزئیات شرایط خانواده یا یادداشت‌های خاص...',
+            'zh': '填写您的具体家庭需求或咨询细节...'
+        }
+    };
+
+    var TIMEZONE_FIRST_OPTION = {
+        'en': 'Select Time Zone',
+        'ar': 'اختر المنطقة الزمنية',
+        'fa': 'انتخاب منطقه زمانی',
+        'zh': '请选择时区'
+    };
+
+    var SELECT_PROGRAM_FIRST_OPTION = {
+        'en': 'Select Option',
+        'ar': 'اختر البرنامج',
+        'fa': 'انتخاب برنامه',
+        'zh': '请选择项目'
+    };
+
+    var SELECT_SUBPROGRAM_FIRST_OPTION = {
+        'en': 'Select Sub-Program',
+        'ar': 'اختر المسار الفرعي',
+        'fa': 'انتخاب زیربرنامه',
+        'zh': '请选择子项目'
+    };
+
+    var TARGET_PROGRAM_OPTIONS_MAP = {
+        'citizenship': {
+            'en': 'Citizenship By Investment',
+            'ar': 'الجنسية عن طريق الاستثمار',
+            'fa': 'شهروندی از طریق سرمایه‌گذاری',
+            'zh': '投资入籍（第二护照）'
+        },
+        'residency': {
+            'en': 'Residency By Investment',
+            'ar': 'الإقامة عن طريق الاستثمار',
+            'fa': 'اقامت از طریق سرمایه‌گذاری',
+            'zh': '投资居留（黄金签证）'
+        },
+        'real-estate': {
+            'en': 'Real Estate',
+            'ar': 'الاستثمار العقاري',
+            'fa': 'سرمایه‌گذاری املاک',
+            'zh': '海外高端房产投资'
+        },
+        'education': {
+            'en': 'Educational Advisory',
+            'ar': 'الاستشارات التعليمية',
+            'fa': 'مشاوره تحصیلی',
+            'zh': '国际名校教育咨询'
+        }
+    };
+
+    var FORM_LABELS_MAP = {
+        'firstName': {
+            'en': 'First Name',
+            'ar': 'الاسم الأول',
+            'fa': 'نام کوچک',
+            'zh': '名',
+            required: true
+        },
+        'lastName': {
+            'en': 'Last Name',
+            'ar': 'اسم العائلة',
+            'fa': 'نام خانوادگی',
+            'zh': '姓',
+            required: true
+        },
+        'fullName': {
+            'en': 'Full Name',
+            'ar': 'الاسم الكامل',
+            'fa': 'نام و نام خانوادگی',
+            'zh': '姓名',
+            required: true
+        },
+        'name': {
+            'en': 'Full Name',
+            'ar': 'الاسم الكامل',
+            'fa': 'نام و نام خانوادگی',
+            'zh': '姓名',
+            required: true
+        },
+        'email': {
+            'en': 'Email Address',
+            'ar': 'البريد الإلكتروني',
+            'fa': 'آدرس ایمیل',
+            'zh': '电子邮箱',
+            required: true
+        },
+        'phone': {
+            'en': 'Phone Number',
+            'ar': 'رقم الهاتف',
+            'fa': 'شماره تماس',
+            'zh': '联系电话',
+            required: true
+        },
+        'targetProgram': {
+            'en': 'Program of Choice',
+            'ar': 'البرنامج المطلوب',
+            'fa': 'انتخاب برنامه',
+            'zh': '意向申请项目',
+            required: true
+        },
+        'subProgram': {
+            'en': 'Sub-Program Pathway',
+            'ar': 'المسار الفرعي',
+            'fa': 'انتخاب زیربرنامه',
+            'zh': '细分通道选项',
+            required: true
+        },
+        'preferredLanguage': {
+            'en': 'Preferred Language',
+            'ar': 'لغة التواصل المفضلة',
+            'fa': 'زبان مورد نظر',
+            'zh': '首选沟通语言',
+            required: true
+        },
+        'preferredDate': {
+            'en': 'Preferred Date',
+            'ar': 'التاريخ المفضل',
+            'fa': 'تاریخ پیشنهادی',
+            'zh': '期望沟通日期',
+            required: true
+        },
+        'preferredMethod': {
+            'en': 'Preferred Method',
+            'ar': 'طريقة التواصل المفضلة',
+            'fa': 'روش تماس ترجیحی',
+            'zh': '首选联系方式',
+            required: true
+        },
+        'timezone': {
+            'en': 'Time Zone',
+            'ar': 'المنطقة الزمنية',
+            'fa': 'منطقه زمانی',
+            'zh': '所在时区',
+            required: true
+        },
+        'address': {
+            'en': 'Corporate Physical Address (Optional)',
+            'ar': 'العنوان الفعلي للشركة (اختياري)',
+            'fa': 'نشانی فیزیکی شرکت (اختیاری)',
+            'zh': '公司办公地址（选填）',
+            required: false
+        },
+        'notes': {
+            'en': 'Confidential notes (Optional)',
+            'ar': 'ملاحظات وتفاصيل سرية (اختياري)',
+            'fa': 'یادداشت‌ها و توضیحات محرمانه (اختیاری)',
+            'zh': '保密咨询备注与需求（选填）',
+            required: false
+        }
+    };
+
+    var TIMEZONE_OPTIONS_MAP = {
+        'UTC-12:00': {
+            'en': 'UTC-12:00 (Baker Island)',
+            'ar': 'UTC-12:00 (جزيرة بيكر)',
+            'fa': 'UTC-12:00 (جزیره بیکر)',
+            'zh': 'UTC-12:00 (贝克岛)'
+        },
+        'UTC-11:00': {
+            'en': 'UTC-11:00 (American Samoa, Niue)',
+            'ar': 'UTC-11:00 (ساموا الأمريكية، نييوي)',
+            'fa': 'UTC-11:00 (ساموآی آمریکا، نیووی)',
+            'zh': 'UTC-11:00 (美属萨摩亚、纽埃)'
+        },
+        'UTC-10:00': {
+            'en': 'UTC-10:00 (Hawaii, Cook Islands)',
+            'ar': 'UTC-10:00 (هاواي، جزر كوك)',
+            'fa': 'UTC-10:00 (هاوایی، جزایر کوک)',
+            'zh': 'UTC-10:00 (夏威夷、库克群岛)'
+        },
+        'UTC-09:30': {
+            'en': 'UTC-09:30 (Marquesas Islands)',
+            'ar': 'UTC-09:30 (جزر ماركيساس)',
+            'fa': 'UTC-09:30 (جزایر مارکیز)',
+            'zh': 'UTC-09:30 (马克萨斯群岛)'
+        },
+        'UTC-09:00': {
+            'en': 'UTC-09:00 (Alaska)',
+            'ar': 'UTC-09:00 (ألاسكا)',
+            'fa': 'UTC-09:00 (آلاسکا)',
+            'zh': 'UTC-09:00 (阿拉斯加)'
+        },
+        'UTC-08:00': {
+            'en': 'UTC-08:00 (Pacific Time - US/Canada, Los Angeles)',
+            'ar': 'UTC-08:00 (توقيت المحيط الهادئ - لوس أنجلوس)',
+            'fa': 'UTC-08:00 (زمان اقیانوس آرام - لس آنجلس)',
+            'zh': 'UTC-08:00 (太平洋时间 - 洛杉矶)'
+        },
+        'UTC-07:00': {
+            'en': 'UTC-07:00 (Mountain Time - US/Canada, Denver)',
+            'ar': 'UTC-07:00 (التوقيت الجبلي - دنفر)',
+            'fa': 'UTC-07:00 (زمان کوهستانی - دنور)',
+            'zh': 'UTC-07:00 (山地时间 - 丹佛)'
+        },
+        'UTC-06:00': {
+            'en': 'UTC-06:00 (Central Time - US/Canada, Mexico City)',
+            'ar': 'UTC-06:00 (التوقيت المركزي - مكسيكو سيتي)',
+            'fa': 'UTC-06:00 (زمان مرکزی - مکزیکوسیتی)',
+            'zh': 'UTC-06:00 (中部时间 - 墨西哥城)'
+        },
+        'UTC-05:00': {
+            'en': 'UTC-05:00 (Eastern Time - US/Canada, New York)',
+            'ar': 'UTC-05:00 (التوقيت الشرقي - نيويورك)',
+            'fa': 'UTC-05:00 (زمان شرقی - نیویورک)',
+            'zh': 'UTC-05:00 (东部时间 - 纽约)'
+        },
+        'UTC-04:00': {
+            'en': 'UTC-04:00 (Atlantic Time - Canada, Santiago)',
+            'ar': 'UTC-04:00 (توقيت الأطلسي - سانتياغو)',
+            'fa': 'UTC-04:00 (زمان اقیانوس اطلس - سانتیاگو)',
+            'zh': 'UTC-04:00 (大西洋时间 - 圣地亚哥)'
+        },
+        'UTC-03:30': {
+            'en': 'UTC-03:30 (Newfoundland)',
+            'ar': 'UTC-03:30 (نيوفاوندلاند)',
+            'fa': 'UTC-03:30 (نیوفاندلند)',
+            'zh': 'UTC-03:30 (纽芬兰)'
+        },
+        'UTC-03:00': {
+            'en': 'UTC-03:00 (Buenos Aires, Brasilia)',
+            'ar': 'UTC-03:00 (بوينس آيرس، برازيليا)',
+            'fa': 'UTC-03:00 (بوئنوس آیرس، برازیلیا)',
+            'zh': 'UTC-03:00 (布宜诺斯艾利斯、巴西利亚)'
+        },
+        'UTC-02:00': {
+            'en': 'UTC-02:00 (South Georgia/Sandwich Islands)',
+            'ar': 'UTC-02:00 (جورجيا الجنوبية)',
+            'fa': 'UTC-02:00 (جورجیای جنوبی)',
+            'zh': 'UTC-02:00 (南乔治亚岛)'
+        },
+        'UTC-01:00': {
+            'en': 'UTC-01:00 (Azores, Cape Verde)',
+            'ar': 'UTC-01:00 (جزر الأزور، الرأس الأخضر)',
+            'fa': 'UTC-01:00 (آزور، کیپ ورد)',
+            'zh': 'UTC-01:00 (亚速尔群岛、佛得角)'
+        },
+        'UTC+00:00': {
+            'en': 'UTC+00:00 (GMT / London, Lisbon, Casablanca)',
+            'ar': 'UTC+00:00 (غرينتش / لندن، لشبونة، الدار البيضاء)',
+            'fa': 'UTC+00:00 (گرینویچ / لندن، لیسبون، کازابلانکا)',
+            'zh': 'UTC+00:00 (格林威治 / 伦敦、里斯本、卡萨布兰卡)'
+        },
+        'UTC+01:00': {
+            'en': 'UTC+01:00 (Central European Time - Paris, Berlin, Rome)',
+            'ar': 'UTC+01:00 (توقيت وسط أوروبا - باريس، برلين، روما)',
+            'fa': 'UTC+01:00 (زمان اروپای مرکزی - پاریس، برلین، رم)',
+            'zh': 'UTC+01:00 (欧洲中部时间 - 巴黎、柏林、罗马)'
+        },
+        'UTC+02:00': {
+            'en': 'UTC+02:00 (Eastern European Time - Cairo, Athens, Istanbul)',
+            'ar': 'UTC+02:00 (توقيت شرق أوروبا - القاهرة، أثينا، إسطنبول)',
+            'fa': 'UTC+02:00 (زمان اروپای شرقی - قاهره، آتن، استانبول)',
+            'zh': 'UTC+02:00 (欧洲东部时间 - 开罗、雅典、伊斯坦布尔)'
+        },
+        'UTC+03:00': {
+            'en': 'UTC+03:00 (Moscow, Riyadh, Nairobi)',
+            'ar': 'UTC+03:00 (موسكو، الرياض، نيروبي)',
+            'fa': 'UTC+03:00 (مسکو، ریاض، نایروبی)',
+            'zh': 'UTC+03:00 (莫斯科、利雅得、内罗毕)'
+        },
+        'UTC+03:30': {
+            'en': 'UTC+03:30 (Tehran)',
+            'ar': 'UTC+03:30 (طهران)',
+            'fa': 'UTC+03:30 (تهران)',
+            'zh': 'UTC+03:30 (德黑兰)'
+        },
+        'UTC+04:00': {
+            'en': 'UTC+04:00 (GST - Gulf Standard Time / Dubai, Abu Dhabi)',
+            'ar': 'UTC+04:00 (توقيت الخليج / دبي، أبوظبي)',
+            'fa': 'UTC+04:00 (زمان استاندارد خلیج / دبی، ابوظبی)',
+            'zh': 'UTC+04:00 (海湾标准时间 / 迪拜、阿布扎比)'
+        },
+        'UTC+04:30': {
+            'en': 'UTC+04:30 (Kabul)',
+            'ar': 'UTC+04:30 (كابول)',
+            'fa': 'UTC+04:30 (کابل)',
+            'zh': 'UTC+04:30 (喀布尔)'
+        },
+        'UTC+05:00': {
+            'en': 'UTC+05:00 (Karachi, Tashkent)',
+            'ar': 'UTC+05:00 (كراتشي، طشقند)',
+            'fa': 'UTC+05:00 (کراچی، تاشکند)',
+            'zh': 'UTC+05:00 (卡拉奇、塔什干)'
+        },
+        'UTC+05:30': {
+            'en': 'UTC+05:30 (IST - Indian Standard Time / Mumbai, New Delhi)',
+            'ar': 'UTC+05:30 (توقيت الهند القياسي / مومباي، نيودلهي)',
+            'fa': 'UTC+05:30 (زمان استاندارد هند / بمبئی، دهلی نو)',
+            'zh': 'UTC+05:30 (印度标准时间 / 孟买、新德里)'
+        },
+        'UTC+05:45': {
+            'en': 'UTC+05:45 (Kathmandu)',
+            'ar': 'UTC+05:45 (كاتماندو)',
+            'fa': 'UTC+05:45 (کاتماندو)',
+            'zh': 'UTC+05:45 (加德满都)'
+        },
+        'UTC+06:00': {
+            'en': 'UTC+06:00 (Dhaka, Almaty)',
+            'ar': 'UTC+06:00 (دكا، ألماتي)',
+            'fa': 'UTC+06:00 (داکا، آلماتی)',
+            'zh': 'UTC+06:00 (达卡、阿拉木图)'
+        },
+        'UTC+06:30': {
+            'en': 'UTC+06:30 (Yangon)',
+            'ar': 'UTC+06:30 (يانغون)',
+            'fa': 'UTC+06:30 (یانگون)',
+            'zh': 'UTC+06:30 (仰光)'
+        },
+        'UTC+07:00': {
+            'en': 'UTC+07:00 (Bangkok, Jakarta, Hanoi)',
+            'ar': 'UTC+07:00 (بانكوك، جاكرتا، هانوي)',
+            'fa': 'UTC+07:00 (بانکوک، جاکارتا، هانوی)',
+            'zh': 'UTC+07:00 (曼谷、雅加达、河内)'
+        },
+        'UTC+08:00': {
+            'en': 'UTC+08:00 (Singapore, Beijing, Hong Kong)',
+            'ar': 'UTC+08:00 (سنغافورة، بكين، هونغ كونغ)',
+            'fa': 'UTC+08:00 (سنگاپور، پکن، هنگ‌کنگ)',
+            'zh': 'UTC+08:00 (新加坡、北京、香港)'
+        },
+        'UTC+08:45': {
+            'en': 'UTC+08:45 (Eucla)',
+            'ar': 'UTC+08:45 (يوكلا)',
+            'fa': 'UTC+08:45 (یوکلا)',
+            'zh': 'UTC+08:45 (尤克拉)'
+        },
+        'UTC+09:00': {
+            'en': 'UTC+09:00 (Tokyo, Seoul)',
+            'ar': 'UTC+09:00 (طوكيو، سيول)',
+            'fa': 'UTC+09:00 (توکیو، سئول)',
+            'zh': 'UTC+09:00 (东京、首尔)'
+        },
+        'UTC+09:30': {
+            'en': 'UTC+09:30 (Adelaide, Darwin)',
+            'ar': 'UTC+09:30 (أديلايد، داروين)',
+            'fa': 'UTC+09:30 (آدلاید، داروین)',
+            'zh': 'UTC+09:30 (阿德莱德、达尔文)'
+        },
+        'UTC+10:00': {
+            'en': 'UTC+10:00 (Sydney, Melbourne, Guam)',
+            'ar': 'UTC+10:00 (سيدني، ملبورن، غوام)',
+            'fa': 'UTC+10:00 (سیدنی، ملبورن، گوام)',
+            'zh': 'UTC+10:00 (悉尼、墨尔本、关岛)'
+        },
+        'UTC+10:30': {
+            'en': 'UTC+10:30 (Lord Howe Island)',
+            'ar': 'UTC+10:30 (جزيرة لورد هاو)',
+            'fa': 'UTC+10:30 (جزیره لرد هاو)',
+            'zh': 'UTC+10:30 (豪勋爵岛)'
+        },
+        'UTC+11:00': {
+            'en': 'UTC+11:00 (Solomon Islands, Vanuatu)',
+            'ar': 'UTC+11:00 (جزر سليمان، فانواتو)',
+            'fa': 'UTC+11:00 (جزایر سلیمان، وانواتو)',
+            'zh': 'UTC+11:00 (所罗门群岛、瓦努阿图)'
+        },
+        'UTC+12:00': {
+            'en': 'UTC+12:00 (Auckland, Fiji)',
+            'ar': 'UTC+12:00 (أوكلاند، فيجي)',
+            'fa': 'UTC+12:00 (اوکلند، فیجی)',
+            'zh': 'UTC+12:00 (奥克兰、斐济)'
+        },
+        'UTC+12:45': {
+            'en': 'UTC+12:45 (Chatham Islands)',
+            'ar': 'UTC+12:45 (جزر تشاتام)',
+            'fa': 'UTC+12:45 (جزایر چاتام)',
+            'zh': 'UTC+12:45 (查塔姆群岛)'
+        },
+        'UTC+13:00': {
+            'en': 'UTC+13:00 (Samoa, Tonga)',
+            'ar': 'UTC+13:00 (ساموا، تونغا)',
+            'fa': 'UTC+13:00 (ساموآ، تونگا)',
+            'zh': 'UTC+13:00 (萨摩亚、汤加)'
+        },
+        'UTC+14:00': {
+            'en': 'UTC+14:00 (Line Islands, Kiribati)',
+            'ar': 'UTC+14:00 (جزر لاين، كيريباتي)',
+            'fa': 'UTC+14:00 (جزایر لاین، کیریباتی)',
+            'zh': 'UTC+14:00 (莱恩群岛、基里巴斯)'
+        }
+    };
+
+    var SUBMIT_BTN_MAP = {
+        'en': 'Register Inquiry',
+        'ar': 'تسجيل استفسار',
+        'fa': 'ثبت درخواست',
+        'zh': '提交咨询'
+    };
+
+    function findFieldLabel(el) {
+        if (!el) return null;
+        if (el.id) {
+            var lbl = document.querySelector('label[for="' + el.id + '"]');
+            if (lbl) return lbl;
+        }
+        var prev = el.previousElementSibling;
+        while (prev) {
+            if (prev.tagName && prev.tagName.toLowerCase() === 'label') return prev;
+            prev = prev.previousElementSibling;
+        }
+        var parent = el.parentElement;
+        if (parent) {
+            var pPrev = parent.previousElementSibling;
+            while (pPrev) {
+                if (pPrev.tagName && pPrev.tagName.toLowerCase() === 'label') return pPrev;
+                pPrev = pPrev.previousElementSibling;
+            }
+            var container = el.closest('div:not(.flex):not(.custom-select-wrapper)');
+            if (container) {
+                var cLbl = container.querySelector('label');
+                if (cLbl) return cLbl;
+            }
+        }
+        return null;
+    }
+
+    function translateConsultationForms(lang) {
+        var curLang = lang || 'en';
+
+        // 1. Form Labels
+        for (var fKey in FORM_LABELS_MAP) {
+            var cfg = FORM_LABELS_MAP[fKey];
+            var fInputs = document.querySelectorAll(
+                'input[name="' + fKey + '"], select[name="' + fKey + '"], textarea[name="' + fKey + '"]'
+            );
+            fInputs.forEach(function(inputEl) {
+                var label = findFieldLabel(inputEl);
+                if (label) {
+                    var text = cfg[curLang] || cfg['en'];
+                    if (cfg.required) {
+                        label.innerHTML = text + ' <span class="text-red-500">*</span>';
+                    } else {
+                        label.textContent = text;
+                    }
+                }
+            });
+        }
+
+        // 2. Preferred Language dropdown
+        document.querySelectorAll('select[name="preferredLanguage"]').forEach(function(sel) {
+            for (var i = 0; i < sel.options.length; i++) {
+                var opt = sel.options[i];
+                var val = (opt.value || '').toLowerCase().trim();
+                if (PREFERRED_LANG_MAP[val] && PREFERRED_LANG_MAP[val][curLang]) {
+                    opt.textContent = PREFERRED_LANG_MAP[val][curLang];
+                }
+            }
+        });
+
+        // 3. Preferred Method dropdown
+        document.querySelectorAll('select[name="preferredMethod"]').forEach(function(sel) {
+            for (var i = 0; i < sel.options.length; i++) {
+                var opt = sel.options[i];
+                var val = (opt.value || '').toLowerCase().trim();
+                if (METHOD_OPTIONS_MAP[val] && METHOD_OPTIONS_MAP[val][curLang]) {
+                    opt.textContent = METHOD_OPTIONS_MAP[val][curLang];
+                }
+            }
+        });
+
+        // 4. Timezone Select (Set dir="ltr" to prevent reversing UTC+04:00 into -UTC in RTL, and translate all options)
+        document.querySelectorAll('select[name="timezone"]').forEach(function(sel) {
+            sel.setAttribute('dir', 'ltr');
+            for (var i = 0; i < sel.options.length; i++) {
+                var opt = sel.options[i];
+                var val = (opt.value || '').trim();
+                if (!val) {
+                    opt.textContent = TIMEZONE_FIRST_OPTION[curLang] || 'Select Time Zone';
+                } else if (TIMEZONE_OPTIONS_MAP[val] && TIMEZONE_OPTIONS_MAP[val][curLang]) {
+                    opt.textContent = TIMEZONE_OPTIONS_MAP[val][curLang];
+                }
+            }
+        });
+
+        // 5. Target Program and Sub-program options
+        document.querySelectorAll('select[name="targetProgram"]').forEach(function(sel) {
+            for (var i = 0; i < sel.options.length; i++) {
+                var opt = sel.options[i];
+                var val = (opt.value || '').trim();
+                if (!val) {
+                    opt.textContent = SELECT_PROGRAM_FIRST_OPTION[curLang] || 'Select Option';
+                } else if (TARGET_PROGRAM_OPTIONS_MAP[val] && TARGET_PROGRAM_OPTIONS_MAP[val][curLang]) {
+                    opt.textContent = TARGET_PROGRAM_OPTIONS_MAP[val][curLang];
+                }
+            }
+        });
+
+        document.querySelectorAll('select[name="subProgram"], select#sub-service-choice, select#sub-service-choice-standalone').forEach(function(sel) {
+            if (sel.options && sel.options.length > 0 && (!sel.options[0].value || sel.options[0].value === '')) {
+                sel.options[0].textContent = SELECT_SUBPROGRAM_FIRST_OPTION[curLang] || 'Select Sub-Program';
+            }
+        });
+
+        // 6. Placeholders for common form fields
+        for (var fName in FORM_PLACEHOLDER_MAP) {
+            var fields = document.querySelectorAll('input[name="' + fName + '"], textarea[name="' + fName + '"]');
+            fields.forEach(function(fEl) {
+                if (FORM_PLACEHOLDER_MAP[fName][curLang]) {
+                    fEl.setAttribute('placeholder', FORM_PLACEHOLDER_MAP[fName][curLang]);
+                }
+            });
+        }
+
+        // 7. Submit Button inside consultation forms
+        document.querySelectorAll('form[onsubmit*="handleContactSubmit"] button[type="submit"], #standalone-contact-form button[type="submit"], #contact-portal-form button[type="submit"]').forEach(function(btn) {
+            if (!btn.disabled && !btn.getAttribute('data-i18n')) {
+                btn.textContent = SUBMIT_BTN_MAP[curLang] || SUBMIT_BTN_MAP['en'];
+            }
+        });
+    }
+
+    window.translateConsultationForms = translateConsultationForms;
+
     function applyTranslations(data, lang) {
         if (!data) return;
         var cfg = LANG_CONFIG[lang] || LANG_CONFIG['en'];
@@ -525,6 +1080,11 @@
                     // Parent has icon and inner span: update the span only
                     var targetSpan = el.querySelector('span');
                     if (targetSpan) targetSpan.textContent = localized;
+                } else if (el.querySelector('.text-red-500, span.text-red-500')) {
+                    // Form label has a required asterisk span: preserve it!
+                    var starEl = el.querySelector('.text-red-500, span.text-red-500');
+                    var starHtml = starEl ? starEl.outerHTML : ' <span class="text-red-500">*</span>';
+                    el.innerHTML = localized + ' ' + starHtml;
                 } else if (typeof localized === 'string' && localized.indexOf('<') !== -1 && localized.indexOf('>') !== -1) {
                     // If the translation contains HTML formatting (e.g. italic spans, line breaks), preserve it
                     el.innerHTML = localized;
@@ -590,6 +1150,9 @@
                 .replace(/[۰-۹]/g, function (d) { return PERSIAN_DIGITS.indexOf(d); });
         });
 
+        // 7c. Localize Consultation & Inquiry Form elements (Dropdowns, Placeholders, Timezone)
+        translateConsultationForms(lang);
+
         // 8. Update UI switcher states
         updateLanguageUI(lang);
 
@@ -635,6 +1198,10 @@
         }
         if (typeof window.updateWhatsAppWidget === 'function') {
             try { window.updateWhatsAppWidget(); } catch (e) {}
+        }
+        // Re-apply any CMS published overrides on top of the fresh translations
+        if (typeof window.reapplyCmsHydration === 'function') {
+            try { window.reapplyCmsHydration(lang); } catch (e) {}
         }
     }
 
@@ -931,34 +1498,24 @@
     }, true);
 
     function loadWhatsAppWidget() {
-        // Do not load on admin panel or editor iframes
         try {
             var path = (window.location && window.location.pathname) ? window.location.pathname.toLowerCase() : '';
             var href = (window.location && window.location.href) ? window.location.href.toLowerCase() : '';
             var search = (window.location && window.location.search) ? window.location.search.toLowerCase() : '';
-            if (path.includes('/admin/') || path.endsWith('/admin') || href.includes('dashboard.html') || href.includes('admin/index.html') || href.includes('/admin')) return;
+            if (path.indexOf('/admin/') !== -1 || path.indexOf('admin') !== -1 || href.indexOf('dashboard.html') !== -1) return;
             if (window.self !== window.top) return;
-            if (search.includes('cms_editor') || search.includes('cms_preview')) return;
+            if (search.indexOf('cms_editor') !== -1 || search.indexOf('cms_preview') !== -1) return;
         } catch (e) {}
 
         if (window.updateWhatsAppWidget) {
             window.updateWhatsAppWidget();
             return;
         }
-        if (document.getElementById('sg-whatsapp-script')) return;
-
-        var langScript = document.querySelector('script[src*="language-switcher.js"]');
-        var basePath = '';
-        if (langScript) {
-            var src = langScript.getAttribute('src');
-            basePath = src.substring(0, src.indexOf('language-switcher.js'));
-        } else {
-            basePath = '/assets/js/';
-        }
+        if (document.getElementById('sg-whatsapp-script') || document.querySelector('script[src*="whatsapp-widget.js"]')) return;
 
         var widgetScript = document.createElement('script');
         widgetScript.id = 'sg-whatsapp-script';
-        widgetScript.src = basePath + 'whatsapp-widget.js?v=' + Date.now();
+        widgetScript.src = '/assets/js/whatsapp-widget.js?v=' + Date.now();
         widgetScript.async = true;
         (document.body || document.head).appendChild(widgetScript);
     }
@@ -969,40 +1526,39 @@
             if (path.indexOf('/blog/') === -1 && path.indexOf('/blog') === -1) return;
         } catch (e) { return; }
 
-        if (window.getLocalizedArticleData || document.getElementById('sg-blog-translator-script')) return;
-
-        var langScript = document.querySelector('script[src*="language-switcher.js"]');
-        var basePath = '';
-        if (langScript) {
-            var src = langScript.getAttribute('src');
-            basePath = src.substring(0, src.indexOf('language-switcher.js'));
-        } else {
-            basePath = '/assets/js/';
-        }
+        if (window.getLocalizedArticleData || document.getElementById('sg-blog-translator-script') || document.querySelector('script[src*="blog-translator.js"]')) return;
 
         var btScript = document.createElement('script');
         btScript.id = 'sg-blog-translator-script';
-        btScript.src = basePath + 'blog-translator.js?v=' + Date.now();
+        btScript.src = '/assets/js/blog-translator.js?v=' + Date.now();
         btScript.async = true;
         (document.body || document.head).appendChild(btScript);
     }
 
     function ensureMultilingualCSS() {
         if (document.querySelector('link[href*="multilingual.css"]')) return;
-        var langScript = document.querySelector('script[src*="language-switcher.js"]');
-        var basePath = '';
-        if (langScript) {
-            var src = langScript.getAttribute('src');
-            var idx = src.indexOf('js/');
-            if (idx !== -1) {
-                basePath = src.substring(0, idx);
-            }
-        }
-        if (!basePath) basePath = '/assets/';
         var link = document.createElement('link');
         link.rel = 'stylesheet';
-        link.href = basePath + 'css/multilingual.css?v=7';
+        link.href = '/assets/css/multilingual.css?v=7';
         document.head.appendChild(link);
+    }
+
+    // Dynamically inject cms-live.js (public CMS overlay, safe for all visitors)
+    function loadCmsLive() {
+        try {
+            var path = (window.location && window.location.pathname) ? window.location.pathname.toLowerCase() : '';
+            var href = (window.location && window.location.href) ? window.location.href.toLowerCase() : '';
+            var search = (window.location && window.location.search) ? window.location.search.toLowerCase() : '';
+            if (path.indexOf('/admin/') !== -1 || path.indexOf('admin') !== -1 || href.indexOf('dashboard.html') !== -1) return;
+            if (window.self !== window.top) return;
+            if (search.indexOf('cms_editor') !== -1 || search.indexOf('cms_preview') !== -1) return;
+        } catch (e) {}
+
+        if (document.querySelector('script[src*="cms-live.js"]')) return; // already loaded
+        var s = document.createElement('script');
+        s.src = '/assets/js/cms-live.js?v=' + Date.now();
+        s.async = true;
+        document.head.appendChild(s);
     }
 
     function init() {
@@ -1018,16 +1574,172 @@
             applyTranslations(data, currentLang);
         });
 
+        // Load CMS live-content overlay on all public pages
+        loadCmsLive();
+
         // Initialize blog translation engine on blog pages
         loadBlogTranslator();
 
         // Initialize floating WhatsApp advisor widget site-wide
         loadWhatsAppWidget();
 
+        // Initialize footer canvas video site-wide
+        initFooterCanvasVideo();
+
+        // Ensure Blog navigation links site-wide always route to /blog/ (never root /)
+        function normalizeNavLinks() {
+            document.querySelectorAll('a[data-i18n="nav.blog"], a[data-i18n="megaMenu.insights"]').forEach(function(el) {
+                var href = el.getAttribute('href') || '';
+                if (href === '/' || href === 'index.html' || href === '../index.html' || href === '') {
+                    el.setAttribute('href', '/blog/');
+                }
+            });
+        }
+        normalizeNavLinks();
+
         // Safety fallback: if anything stalls, unmask the UI so user is never blocked
         setTimeout(function () {
             document.documentElement.classList.remove('i18n-pending');
         }, 1500);
+    }
+
+    // Global Robust Footer Canvas Video Controller
+    function initFooterCanvasVideo() {
+        const canvas = document.getElementById("footer-seamless-canvas");
+        if (!canvas || canvas._hasCanvasEngine) return;
+        canvas._hasCanvasEngine = true;
+
+        const v1 = document.getElementById("footer-hidden-video");
+        const v2 = document.getElementById("footer-hidden-video-2");
+        if (!v1) return;
+
+        // Ensure video elements are active in browser rendering pipeline (not display: none)
+        // while remaining invisible to the user
+        [v1, v2].forEach(function(v) {
+            if (!v) return;
+            v.classList.remove('hidden');
+            v.style.cssText = 'position:absolute;top:0;left:0;width:1px;height:1px;opacity:0.001;pointer-events:none;z-index:-100;';
+            v.muted = true;
+            v.playsInline = true;
+            v.setAttribute('muted', '');
+            v.setAttribute('playsinline', '');
+            v.setAttribute('webkit-playsinline', '');
+            v.preload = 'auto';
+
+            // Verify source
+            var srcEl = v.querySelector('source');
+            if (srcEl && srcEl.getAttribute('src')) {
+                var rawSrc = srcEl.getAttribute('src');
+                if (!rawSrc.startsWith('/') && !rawSrc.startsWith('http') && window.location.pathname.startsWith('/blog/')) {
+                    srcEl.src = '/assets/videos/footer_bg_e58bba71.mp4';
+                    v.src = '/assets/videos/footer_bg_e58bba71.mp4';
+                }
+            }
+        });
+
+        const ctx = canvas.getContext("2d", { alpha: false });
+        let activeVideo = v1;
+        let standbyVideo = v2;
+        let crossfadeAlpha = 0;
+        let isFading = false;
+        let animationFrameId = null;
+        let isFooterVisible = false;
+
+        function resizeCanvas() {
+            const dpr = Math.min(window.devicePixelRatio || 1, 1.5);
+            const parent = canvas.parentElement || canvas;
+            const w = Math.floor((parent.clientWidth || canvas.offsetWidth || window.innerWidth) * dpr);
+            const h = Math.floor((parent.clientHeight || canvas.offsetHeight || 500) * dpr);
+            if (w > 0 && h > 0 && (canvas.width !== w || canvas.height !== h)) {
+                canvas.width = w;
+                canvas.height = h;
+            }
+        }
+
+        if (window.ResizeObserver) {
+            try {
+                new ResizeObserver(resizeCanvas).observe(canvas.parentElement || canvas);
+            } catch(e) {}
+        }
+        window.addEventListener("resize", resizeCanvas, { passive: true });
+        resizeCanvas();
+
+        function renderFrame() {
+            if (!isFooterVisible) return;
+
+            if (activeVideo && activeVideo.duration && activeVideo.currentTime >= activeVideo.duration - 1.2 && !isFading && standbyVideo) {
+                isFading = true;
+                standbyVideo.currentTime = 0;
+                standbyVideo.play().catch(function() {});
+            }
+            if (isFading) {
+                crossfadeAlpha += 0.04;
+                if (crossfadeAlpha >= 1) {
+                    crossfadeAlpha = 1;
+                    if (activeVideo) activeVideo.pause();
+                    let temp = activeVideo;
+                    activeVideo = standbyVideo;
+                    standbyVideo = temp;
+                    isFading = false;
+                    crossfadeAlpha = 0;
+                }
+            }
+            ctx.globalAlpha = 1;
+            if (activeVideo && activeVideo.readyState >= 2) {
+                ctx.drawImage(activeVideo, 0, 0, canvas.width, canvas.height);
+            }
+            if (isFading && standbyVideo && standbyVideo.readyState >= 2) {
+                ctx.globalAlpha = crossfadeAlpha;
+                ctx.drawImage(standbyVideo, 0, 0, canvas.width, canvas.height);
+            }
+            animationFrameId = requestAnimationFrame(renderFrame);
+        }
+
+        function startPlayback() {
+            if (activeVideo && activeVideo.paused) {
+                activeVideo.play().catch(function() {});
+            }
+            if (!animationFrameId) {
+                renderFrame();
+            }
+        }
+
+        function pausePlayback() {
+            if (activeVideo) activeVideo.pause();
+            if (standbyVideo) standbyVideo.pause();
+            if (animationFrameId) {
+                cancelAnimationFrame(animationFrameId);
+                animationFrameId = null;
+            }
+        }
+
+        const target = canvas.closest('footer') || canvas.parentElement || canvas;
+        if ('IntersectionObserver' in window) {
+            const observer = new IntersectionObserver(function(entries) {
+                entries.forEach(function(entry) {
+                    isFooterVisible = entry.isIntersecting;
+                    if (isFooterVisible) {
+                        startPlayback();
+                    } else {
+                        pausePlayback();
+                    }
+                });
+            }, { rootMargin: '350px' });
+            observer.observe(target);
+        } else {
+            isFooterVisible = true;
+            startPlayback();
+        }
+
+        // Handle user interaction unlock for mobile browsers
+        function unlockAutoplay() {
+            if (activeVideo && activeVideo.paused && isFooterVisible) {
+                activeVideo.play().catch(function() {});
+            }
+        }
+        ['touchstart', 'click', 'scroll'].forEach(function(evt) {
+            window.addEventListener(evt, unlockAutoplay, { once: true, passive: true });
+        });
     }
 
     if (document.readyState === 'loading') {

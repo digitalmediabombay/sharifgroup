@@ -41,6 +41,26 @@ if (empty($apiKey)) {
     } catch (Exception $e) {}
 }
 
+require_once __DIR__ . '/translate_sync.php';
+
+// ── TRANSLATE ACTION (Uses AI if configured, otherwise zero-config Google Translate) ──
+if ($action === 'translate') {
+    $text = isset($body['text']) ? trim($body['text']) : '';
+    $targetLang = isset($body['targetLang']) ? trim(strtolower($body['targetLang'])) : 'ar';
+    $sourceLang = isset($body['sourceLang']) ? trim(strtolower($body['sourceLang'])) : 'en';
+
+    if (empty($text)) {
+        jsonResponse(['success' => true, 'translated' => '']);
+    }
+
+    $translated = translateTextServer($text, $targetLang, $sourceLang);
+    jsonResponse([
+        'success'    => true,
+        'translated' => $translated,
+        'targetLang' => $targetLang
+    ]);
+}
+
 if (empty($apiKey)) {
     jsonResponse([
         'success' => false,
