@@ -2235,6 +2235,193 @@
       body.cms-mode-browse .cms-section-tool {
         display: none !important;
       }
+
+      /* Blog Unified Body Editor Surface */
+      .cms-blog-body-editor {
+        min-height: 280px !important;
+        border: 1.5px dashed rgba(197, 168, 128, 0.45) !important;
+        border-radius: 14px !important;
+        padding: 20px 24px !important;
+        background: rgba(253, 252, 251, 0.75) !important;
+        transition: border-color 0.2s, box-shadow 0.2s, background-color 0.2s !important;
+        outline: none !important;
+        position: relative !important;
+      }
+      .cms-blog-body-editor:focus-within,
+      .cms-blog-body-editor:focus {
+        border-color: #C5A880 !important;
+        border-style: solid !important;
+        box-shadow: 0 0 25px rgba(197, 168, 128, 0.22) !important;
+        background: #ffffff !important;
+      }
+      body.cms-mode-browse .cms-blog-body-editor {
+        border: none !important;
+        padding: 0 !important;
+        background: transparent !important;
+        min-height: auto !important;
+      }
+
+      /* Docked Top Toolbar Above Body */
+      #cms-blog-body-docked-bar {
+        display: flex;
+        flex-wrap: wrap;
+        align-items: center;
+        justify-content: space-between;
+        gap: 8px;
+        background: #181818;
+        border: 1px solid #C5A880;
+        border-radius: 12px;
+        padding: 8px 12px;
+        margin-bottom: 16px;
+        box-shadow: 0 8px 24px rgba(0, 0, 0, 0.35);
+        font-family: 'Inter', -apple-system, sans-serif;
+        color: #ffffff;
+        user-select: none;
+        z-index: 100;
+        position: sticky;
+        top: 12px;
+      }
+      body.cms-mode-browse #cms-blog-body-docked-bar {
+        display: none !important;
+      }
+      .cdeb-tools-group {
+        display: flex;
+        align-items: center;
+        flex-wrap: wrap;
+        gap: 5px;
+      }
+      .cdeb-tag {
+        font-size: 10px;
+        font-weight: 800;
+        text-transform: uppercase;
+        letter-spacing: 0.08em;
+        color: #C5A880;
+        margin-right: 6px;
+        display: flex;
+        align-items: center;
+        gap: 5px;
+      }
+      .cdeb-btn {
+        background: rgba(255, 255, 255, 0.06);
+        border: 1px solid rgba(197, 168, 128, 0.3);
+        color: #f3f4f6;
+        border-radius: 6px;
+        padding: 5px 9px;
+        font-size: 11px;
+        font-weight: 600;
+        cursor: pointer;
+        transition: all 0.15s ease;
+        display: inline-flex;
+        align-items: center;
+        gap: 4px;
+      }
+      .cdeb-btn:hover {
+        background: rgba(197, 168, 128, 0.22);
+        border-color: #C5A880;
+        color: #ffffff;
+        transform: translateY(-1px);
+      }
+      .cdeb-btn:active {
+        transform: translateY(0);
+      }
+      .cdeb-btn-accent {
+        background: linear-gradient(135deg, #C5A880, #B3946B) !important;
+        border: none !important;
+        color: #0A0A0A !important;
+        font-weight: 700 !important;
+      }
+      .cdeb-btn-accent:hover {
+        box-shadow: 0 4px 14px rgba(197, 168, 128, 0.45) !important;
+        color: #000000 !important;
+      }
+      .cdeb-sep {
+        width: 1px;
+        height: 18px;
+        background: rgba(255, 255, 255, 0.15);
+        margin: 0 4px;
+      }
+      .cdeb-save-indicator {
+        font-size: 11px;
+        color: #9ca3af;
+        display: inline-flex;
+        align-items: center;
+        gap: 5px;
+        margin-right: 6px;
+      }
+      .cdeb-save-indicator.active {
+        color: #4ade80;
+      }
+
+      /* Floating Word / Canva Selection Bubble Toolbar */
+      #cms-selection-bubble {
+        position: fixed;
+        z-index: 1000002;
+        display: none;
+        align-items: center;
+        gap: 3px;
+        background: rgba(20, 20, 20, 0.96);
+        backdrop-filter: blur(12px);
+        border: 1px solid #C5A880;
+        border-radius: 10px;
+        padding: 5px 7px;
+        box-shadow: 0 16px 36px rgba(0, 0, 0, 0.65), 0 0 16px rgba(197, 168, 128, 0.25);
+        font-family: 'Inter', -apple-system, sans-serif;
+        font-size: 11px;
+        color: #fff;
+        user-select: none;
+        transform: translate(-50%, -100%);
+        transition: opacity 0.15s ease, transform 0.15s ease;
+        pointer-events: auto;
+      }
+      #cms-selection-bubble::after {
+        content: '';
+        position: absolute;
+        bottom: -6px;
+        left: 50%;
+        transform: translateX(-50%);
+        border-width: 6px 6px 0;
+        border-style: solid;
+        border-color: #C5A880 transparent transparent transparent;
+        display: block;
+        width: 0;
+      }
+      #cms-selection-bubble.flip-below::after {
+        bottom: auto;
+        top: -6px;
+        border-width: 0 6px 6px;
+        border-color: transparent transparent #C5A880 transparent;
+      }
+      .csb-btn {
+        background: transparent;
+        border: none;
+        color: #e5e7eb;
+        border-radius: 5px;
+        padding: 4px 7px;
+        font-size: 11px;
+        font-weight: 600;
+        cursor: pointer;
+        transition: all 0.12s ease;
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        min-width: 26px;
+        height: 26px;
+      }
+      .csb-btn:hover {
+        background: rgba(197, 168, 128, 0.25);
+        color: #C5A880;
+      }
+      .csb-btn.active {
+        background: #C5A880;
+        color: #0A0A0A;
+        font-weight: 700;
+      }
+      .csb-sep {
+        width: 1px;
+        height: 16px;
+        background: rgba(255, 255, 255, 0.15);
+        margin: 0 2px;
+      }
     `;
     document.head.appendChild(style);
 
@@ -2278,7 +2465,7 @@
     `;
     imagePopover.innerHTML = `
       <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:8px">
-        <span style="font-size:11px;font-weight:700;color:#C5A880;text-transform:uppercase;letter-spacing:.05em">Replace Image</span>
+        <span id="cip-header-title" style="font-size:11px;font-weight:700;color:#C5A880;text-transform:uppercase;letter-spacing:.05em">Replace Image</span>
         <button type="button" id="cip-close-btn" style="background:none;border:none;color:#94a3b8;cursor:pointer;font-size:16px">&times;</button>
       </div>
       <div style="font-size:10px;color:#94a3b8;margin-bottom:6px">Quick Luxury Presets:</div>
@@ -2297,13 +2484,24 @@
     document.body.appendChild(imagePopover);
 
     let activeImgEl = null;
+    let isInlineImageInsertion = false;
+    let savedInlineRange = null;
 
-    function openImagePickerPopover(imgEl) {
+    function openImagePickerPopover(imgEl, isInsert = false) {
+      isInlineImageInsertion = isInsert;
       activeImgEl = imgEl;
-      const rect = imgEl.getBoundingClientRect();
       const popW = 310;
-      let left = rect.left + window.scrollX + (rect.width / 2) - (popW / 2);
-      let top = rect.top + window.scrollY + 20;
+      let left = window.innerWidth / 2 - (popW / 2);
+      let top = window.scrollY + 100;
+
+      if (imgEl) {
+        const rect = imgEl.getBoundingClientRect();
+        left = rect.left + window.scrollX + (rect.width / 2) - (popW / 2);
+        top = rect.top + window.scrollY + 20;
+      } else {
+        left = Math.max(10, Math.min(window.innerWidth - popW - 10, (window.innerWidth - popW) / 2));
+        top = Math.max(30, window.innerHeight / 4);
+      }
 
       left = Math.max(10, Math.min(window.innerWidth - popW - 10, left));
       top = Math.max(10, top);
@@ -2312,18 +2510,53 @@
       imagePopover.style.top = top + 'px';
       imagePopover.style.display = 'block';
 
+      const titleEl = imagePopover.querySelector('#cip-header-title');
+      if (titleEl) {
+        titleEl.textContent = isInsert ? 'Insert Image Into Article' : 'Replace Image';
+      }
+
       const input = imagePopover.querySelector('#cip-url-input');
-      input.value = imgEl.src || '';
+      input.value = imgEl ? (imgEl.src || '') : '';
       input.focus();
     }
 
     imagePopover.querySelector('#cip-close-btn').addEventListener('click', () => {
       imagePopover.style.display = 'none';
       activeImgEl = null;
+      isInlineImageInsertion = false;
+      savedInlineRange = null;
     });
 
     function applyNewImage(newSrc) {
-      if (!activeImgEl || !newSrc) return;
+      if (!newSrc) return;
+
+      if (isInlineImageInsertion) {
+        const figure = document.createElement('figure');
+        figure.className = 'my-6';
+        figure.innerHTML = `<img src="${newSrc}" alt="Article Illustration" class="w-full rounded-xl shadow-lg max-h-[500px] object-cover" />`;
+        const pAfter = document.createElement('p');
+        pAfter.className = 'mb-4 text-base text-neutral-700 leading-relaxed font-light';
+        pAfter.innerHTML = '<br>';
+
+        const bodyEl = document.getElementById('detail-content-body');
+        if (savedInlineRange && bodyEl && bodyEl.contains(savedInlineRange.commonAncestorContainer)) {
+          savedInlineRange.deleteContents();
+          savedInlineRange.insertNode(pAfter);
+          savedInlineRange.insertNode(figure);
+        } else if (bodyEl) {
+          bodyEl.appendChild(figure);
+          bodyEl.appendChild(pAfter);
+        }
+
+        imagePopover.style.display = 'none';
+        isInlineImageInsertion = false;
+        savedInlineRange = null;
+        triggerBlogBodySave(true);
+        flashToast('Image added to article!');
+        return;
+      }
+
+      if (!activeImgEl) return;
       activeImgEl.src = newSrc;
       imagePopover.style.display = 'none';
       flashToast('Image updated!');
@@ -2356,6 +2589,395 @@
       if (val) applyNewImage(val);
     });
 
+    // =========================================================================
+    // CANVA / WORD BLOG ARTICLE BODY WYSIWYG EDITOR
+    // =========================================================================
+    function cleanPastedHtml(rawHtml) {
+      if (!rawHtml) return '';
+      let s = rawHtml.replace(/<!--[\s\S]*?-->/gi, '');
+      s = s.replace(/<style[\s\S]*?<\/style>/gi, '');
+      s = s.replace(/<script[\s\S]*?<\/script>/gi, '');
+      s = s.replace(/<\/?o:[^>]*>/gi, '');
+      s = s.replace(/<\/?w:[^>]*>/gi, '');
+      s = s.replace(/<\/?m:[^>]*>/gi, '');
+
+      const tempDiv = document.createElement('div');
+      tempDiv.innerHTML = s;
+
+      const all = tempDiv.querySelectorAll('*');
+      all.forEach(el => {
+        el.removeAttribute('class');
+        el.removeAttribute('id');
+        el.removeAttribute('style');
+        el.removeAttribute('lang');
+
+        const tag = el.tagName.toLowerCase();
+        if (tag === 'h1') {
+          const h2 = document.createElement('h2');
+          h2.innerHTML = el.innerHTML;
+          el.parentNode.replaceChild(h2, el);
+        } else if (tag === 'h4' || tag === 'h5' || tag === 'h6') {
+          const h3 = document.createElement('h3');
+          h3.innerHTML = el.innerHTML;
+          el.parentNode.replaceChild(h3, el);
+        } else if (['div', 'section', 'article'].includes(tag) && !el.querySelector('p, h1, h2, h3, h4, ul, ol')) {
+          const p = document.createElement('p');
+          p.innerHTML = el.innerHTML;
+          el.parentNode.replaceChild(p, el);
+        }
+      });
+
+      return tempDiv.innerHTML;
+    }
+
+    function escapeHtml(str) {
+      return str.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;');
+    }
+
+    function handleBodyPaste(e) {
+      e.preventDefault();
+      const clipboardData = e.clipboardData || window.clipboardData;
+      if (!clipboardData) return;
+
+      const html = clipboardData.getData('text/html');
+      const text = clipboardData.getData('text/plain');
+
+      if (html) {
+        const clean = cleanPastedHtml(html);
+        document.execCommand('insertHTML', false, clean);
+      } else if (text) {
+        const blocks = text.split(/\r?\n\r?\n+/).map(s => s.trim()).filter(Boolean);
+        if (blocks.length > 1) {
+          const pTags = blocks.map(b => `<p class="mb-4 text-base text-neutral-700 leading-relaxed font-light">${escapeHtml(b).replace(/\r?\n/g, '<br>')}</p>`).join('');
+          document.execCommand('insertHTML', false, pTags);
+        } else {
+          document.execCommand('insertText', false, text);
+        }
+      }
+      triggerBlogBodySave();
+    }
+
+    function triggerBlogBodySave(showFlash = false) {
+      const bodyEl = document.getElementById('detail-content-body');
+      if (!bodyEl) return;
+
+      const cleanHtml = getCleanBodyHtml(bodyEl);
+      const urlParams = new URLSearchParams(window.location.search);
+      const currentSlug = window.currentActiveArticleSlug || urlParams.get('article_slug') || urlParams.get('slug') || extractSlug();
+
+      if (currentSlug) {
+        try {
+          const blogs = store('sgcms_blog') || [];
+          const s = String(currentSlug).toLowerCase().trim();
+          let bIdx = blogs.findIndex(b => {
+            if (!b) return false;
+            const bId = String(b.id || '').toLowerCase().trim();
+            const bSlug = String(b.slug || b.en?.slug || '').toLowerCase().trim();
+            return (bId && (bId === s || s.includes(bId))) || (bSlug && (bSlug === s || s.includes(bSlug) || bSlug.includes(s)));
+          });
+
+          if (bIdx === -1 && blogs.length) {
+            const detailTitle = document.getElementById('detail-title')?.innerText?.trim().toLowerCase();
+            if (detailTitle) {
+              bIdx = blogs.findIndex(b => {
+                const bTitle = (b.en?.title || b.title || '').trim().toLowerCase();
+                return bTitle && (bTitle === detailTitle || bTitle.includes(detailTitle) || detailTitle.includes(bTitle));
+              });
+            }
+          }
+
+          if (bIdx === -1 && blogs.length === 1) {
+            bIdx = 0;
+          }
+
+          if (bIdx >= 0) {
+            const l = getLang();
+            if (!blogs[bIdx][l]) blogs[bIdx][l] = {};
+            blogs[bIdx][l].body = cleanHtml;
+            if (l === 'en' && blogs[bIdx].en) blogs[bIdx].en.body = cleanHtml;
+            saveStore('sgcms_blog', blogs);
+
+            if (window.articlesDatabase && window.articlesDatabase[currentSlug]) {
+              window.articlesDatabase[currentSlug].content = cleanHtml;
+            }
+
+            if (window.parent && window.parent !== window) {
+              try {
+                window.parent.postMessage({
+                  type: 'CMS_BLOG_BODY_UPDATED',
+                  slug: currentSlug,
+                  body: cleanHtml
+                }, '*');
+              } catch (e) {}
+            }
+          }
+        } catch (err) {}
+      }
+
+      const indicator = document.getElementById('cdeb-save-indicator');
+      if (indicator) {
+        indicator.innerHTML = '<i class="fa-solid fa-check text-green-400"></i> Auto-saved';
+        indicator.classList.add('active');
+        clearTimeout(window.__saveIndTimer);
+        window.__saveIndTimer = setTimeout(() => {
+          indicator.innerHTML = '<i class="fa-solid fa-check"></i> Changes saved';
+          indicator.classList.remove('active');
+        }, 2200);
+      }
+
+      if (showFlash) {
+        flashToast('Article content saved!');
+      }
+    }
+
+    function applyBlockTransform(targetTag) {
+      const bodyEl = document.getElementById('detail-content-body');
+      if (!bodyEl) return;
+      bodyEl.focus();
+
+      const sel = window.getSelection();
+      if (!sel || !sel.rangeCount) return;
+      const range = sel.getRangeAt(0);
+
+      const tagUpper = targetTag.toUpperCase();
+      let executed = false;
+      try {
+        executed = document.execCommand('formatBlock', false, `<${targetTag}>`);
+      } catch (err) {
+        try {
+          executed = document.execCommand('formatBlock', false, targetTag);
+        } catch (err2) {}
+      }
+
+      let node = sel.anchorNode;
+      if (node && node.nodeType === 3) node = node.parentElement;
+      let currentBlock = node ? node.closest('h1, h2, h3, h4, h5, h6, p, blockquote, div') : null;
+
+      if (currentBlock && currentBlock !== bodyEl && currentBlock.tagName.toUpperCase() !== tagUpper) {
+        const newEl = document.createElement(targetTag);
+        while (currentBlock.firstChild) {
+          newEl.appendChild(currentBlock.firstChild);
+        }
+        currentBlock.parentNode.replaceChild(newEl, currentBlock);
+
+        const newRange = document.createRange();
+        newRange.selectNodeContents(newEl);
+        sel.removeAllRanges();
+        sel.addRange(newRange);
+      } else if (!currentBlock || currentBlock === bodyEl) {
+        const newEl = document.createElement(targetTag);
+        try {
+          range.surroundContents(newEl);
+        } catch (e) {
+          newEl.appendChild(range.extractContents());
+          range.insertNode(newEl);
+        }
+        const newRange = document.createRange();
+        newRange.selectNodeContents(newEl);
+        sel.removeAllRanges();
+        sel.addRange(newRange);
+      }
+
+      triggerBlogBodySave();
+      setTimeout(updateBubblePosition, 50);
+    }
+
+    function handleEditorCommand(cmd) {
+      const bodyEl = document.getElementById('detail-content-body');
+      if (!bodyEl) return;
+      bodyEl.focus();
+
+      if (cmd === 'h2' || cmd === 'h3' || cmd === 'p' || cmd === 'quote') {
+        const tag = (cmd === 'quote') ? 'blockquote' : cmd;
+        applyBlockTransform(tag);
+      } else if (cmd === 'bold') {
+        document.execCommand('bold', false, null);
+        triggerBlogBodySave();
+      } else if (cmd === 'italic') {
+        document.execCommand('italic', false, null);
+        triggerBlogBodySave();
+      } else if (cmd === 'bullet') {
+        document.execCommand('insertUnorderedList', false, null);
+        triggerBlogBodySave();
+      } else if (cmd === 'number') {
+        document.execCommand('insertOrderedList', false, null);
+        triggerBlogBodySave();
+      } else if (cmd === 'add-image') {
+        const sel = window.getSelection();
+        if (sel && sel.rangeCount) {
+          savedInlineRange = sel.getRangeAt(0).cloneRange();
+        } else {
+          savedInlineRange = null;
+        }
+        openImagePickerPopover(null, true);
+      }
+    }
+
+    function createSelectionBubble() {
+      let bubble = document.getElementById('cms-selection-bubble');
+      if (bubble) return bubble;
+
+      bubble = document.createElement('div');
+      bubble.id = 'cms-selection-bubble';
+      bubble.innerHTML = `
+        <button type="button" class="csb-btn csb-h2" data-csb-cmd="h2" title="Turn into Heading 2 (Word/Canva style)"><b>H2</b> Heading</button>
+        <button type="button" class="csb-btn csb-h3" data-csb-cmd="h3" title="Turn into Subheading 3"><b>H3</b></button>
+        <button type="button" class="csb-btn csb-p" data-csb-cmd="p" title="Convert to Paragraph">¶</button>
+        <div class="csb-sep"></div>
+        <button type="button" class="csb-btn" data-csb-cmd="bold" title="Bold"><b>B</b></button>
+        <button type="button" class="csb-btn" data-csb-cmd="italic" title="Italic"><i>I</i></button>
+        <button type="button" class="csb-btn" data-csb-cmd="quote" title="Quote Block">❝</button>
+        <button type="button" class="csb-btn" data-csb-cmd="bullet" title="Bullet List">•</button>
+        <div class="csb-sep"></div>
+        <button type="button" class="csb-btn csb-btn-img" data-csb-cmd="add-image" title="Insert luxury image break">🖼️ Image</button>
+      `;
+      document.body.appendChild(bubble);
+
+      bubble.querySelectorAll('[data-csb-cmd]').forEach(btn => {
+        btn.addEventListener('mousedown', (e) => {
+          e.preventDefault();
+          const cmd = btn.getAttribute('data-csb-cmd');
+          handleEditorCommand(cmd);
+        });
+      });
+
+      return bubble;
+    }
+
+    function updateBubblePosition() {
+      const bubble = document.getElementById('cms-selection-bubble');
+      if (!bubble || !editMode) return;
+      const sel = window.getSelection();
+      if (!sel || sel.isCollapsed || !sel.rangeCount) {
+        bubble.style.display = 'none';
+        return;
+      }
+      const bodyEl = document.getElementById('detail-content-body');
+      if (!bodyEl) {
+        bubble.style.display = 'none';
+        return;
+      }
+      const anchorNode = sel.anchorNode;
+      if (!anchorNode || !bodyEl.contains(anchorNode)) {
+        bubble.style.display = 'none';
+        return;
+      }
+      const text = sel.toString().trim();
+      if (!text) {
+        bubble.style.display = 'none';
+        return;
+      }
+
+      const range = sel.getRangeAt(0);
+      const rect = range.getBoundingClientRect();
+      if (!rect || (rect.width === 0 && rect.height === 0)) {
+        bubble.style.display = 'none';
+        return;
+      }
+
+      let top = rect.top - 46;
+      let left = rect.left + (rect.width / 2);
+
+      if (top < 10) {
+        top = rect.bottom + 12;
+        bubble.classList.add('flip-below');
+      } else {
+        bubble.classList.remove('flip-below');
+      }
+
+      left = Math.max(160, Math.min(window.innerWidth - 160, left));
+
+      bubble.style.top = top + 'px';
+      bubble.style.left = left + 'px';
+      bubble.style.display = 'flex';
+    }
+
+    function initBlogBodyWysiwygEditor() {
+      const bodyEl = document.getElementById('detail-content-body');
+      if (!bodyEl) return;
+
+      createSelectionBubble();
+
+      if (editMode) {
+        bodyEl.setAttribute('contenteditable', 'true');
+        bodyEl.setAttribute('spellcheck', 'true');
+        bodyEl.classList.add('cms-blog-body-editor');
+
+        let dockedBar = document.getElementById('cms-blog-body-docked-bar');
+        if (!dockedBar) {
+          dockedBar = document.createElement('div');
+          dockedBar.id = 'cms-blog-body-docked-bar';
+          dockedBar.innerHTML = `
+            <div class="cdeb-tools-group">
+              <span class="cdeb-tag"><i class="fa-solid fa-pen-nib"></i> Content Tools</span>
+              <button type="button" class="cdeb-btn" data-cdeb-cmd="h2" title="Turn selected line into Heading 2 (Word/Canva style)"><b>H2</b> Heading</button>
+              <button type="button" class="cdeb-btn" data-cdeb-cmd="h3" title="Turn selected line into Subheading 3"><b>H3</b> Subheading</button>
+              <button type="button" class="cdeb-btn" data-cdeb-cmd="p" title="Normal Paragraph">¶ Paragraph</button>
+              <div class="cdeb-sep"></div>
+              <button type="button" class="cdeb-btn" data-cdeb-cmd="bold" title="Bold (Ctrl+B)"><b>B</b></button>
+              <button type="button" class="cdeb-btn" data-cdeb-cmd="italic" title="Italic (Ctrl+I)"><i>I</i></button>
+              <button type="button" class="cdeb-btn" data-cdeb-cmd="quote" title="Quote Block">❝ Quote</button>
+              <button type="button" class="cdeb-btn" data-cdeb-cmd="bullet" title="Bullet List">• List</button>
+              <button type="button" class="cdeb-btn" data-cdeb-cmd="number" title="Numbered List">1. List</button>
+              <div class="cdeb-sep"></div>
+              <button type="button" class="cdeb-btn cdeb-btn-accent" data-cdeb-cmd="add-image" title="Insert luxury image break"><i class="fa-regular fa-image"></i> + Add Image</button>
+            </div>
+            <div class="cdeb-tools-group">
+              <span id="cdeb-save-indicator" class="cdeb-save-indicator"><i class="fa-solid fa-check"></i> Changes saved</span>
+              <button type="button" class="cdeb-btn cdeb-btn-accent" id="cdeb-btn-save-now"><i class="fa-solid fa-floppy-disk"></i> Save Article</button>
+            </div>
+          `;
+          bodyEl.parentNode.insertBefore(dockedBar, bodyEl);
+
+          dockedBar.querySelectorAll('[data-cdeb-cmd]').forEach(btn => {
+            btn.addEventListener('mousedown', (e) => {
+              e.preventDefault();
+              const cmd = btn.getAttribute('data-cdeb-cmd');
+              handleEditorCommand(cmd);
+            });
+          });
+
+          const saveNowBtn = dockedBar.querySelector('#cdeb-btn-save-now');
+          if (saveNowBtn) {
+            saveNowBtn.addEventListener('click', (e) => {
+              e.preventDefault();
+              triggerBlogBodySave(true);
+            });
+          }
+        } else {
+          dockedBar.style.display = 'flex';
+        }
+
+        if (!bodyEl.__cmsPasteAttached) {
+          bodyEl.__cmsPasteAttached = true;
+          bodyEl.addEventListener('paste', handleBodyPaste);
+          bodyEl.addEventListener('input', () => {
+            clearTimeout(window.__bodyInputTimer);
+            window.__bodyInputTimer = setTimeout(triggerBlogBodySave, 300);
+          });
+        }
+      } else {
+        bodyEl.removeAttribute('contenteditable');
+        bodyEl.classList.remove('cms-blog-body-editor');
+        const dockedBar = document.getElementById('cms-blog-body-docked-bar');
+        if (dockedBar) dockedBar.style.display = 'none';
+        const bubble = document.getElementById('cms-selection-bubble');
+        if (bubble) bubble.style.display = 'none';
+      }
+    }
+
+    document.addEventListener('selectionchange', () => {
+      if (!editMode) return;
+      clearTimeout(window.__selBubbleTimer);
+      window.__selBubbleTimer = setTimeout(updateBubblePosition, 50);
+    });
+
+    document.addEventListener('mouseup', (e) => {
+      if (!editMode) return;
+      if (e.target.closest('#cms-selection-bubble') || e.target.closest('#cms-blog-body-docked-bar')) return;
+      setTimeout(updateBubblePosition, 40);
+    });
+
     let activeEl = null;
     let originalText = '';
     let hoveredEl = null;
@@ -2378,6 +3000,8 @@
         tooltip.style.display = 'none';
         toolbar.style.display = 'none';
       }
+
+      initBlogBodyWysiwygEditor();
 
       if (showMsg) {
         flashToast(enabled ? 'Edit Mode: Click any text to edit' : 'Live Browse: Click links & buttons freely');
@@ -2419,7 +3043,7 @@
       return path.join(' > ');
     }
 
-    const EDITABLE_SELECTOR = 'h1, h2, h3, h4, h5, h6, p, a, button, span, label, strong, em, b, i, u, s, li, blockquote, q, cite, figcaption, small, img, [data-i18n], [data-cms], .counter-value, #detail-title, #detail-author, #detail-date, #detail-updated, #detail-category-badge, #detail-breadcrumb-title, #detail-content-body, #detail-content-body *';
+    const EDITABLE_SELECTOR = 'h1, h2, h3, h4, h5, h6, p, a, button, span, label, strong, em, b, i, u, s, li, blockquote, q, cite, figcaption, small, img, [data-i18n], [data-cms], .counter-value, #detail-title, #detail-author, #detail-date, #detail-updated, #detail-category-badge, #detail-breadcrumb-title';
 
     function getCleanBodyHtml(bodyEl) {
       if (!bodyEl) return '';
@@ -2427,6 +3051,7 @@
       clone.querySelectorAll('[contenteditable]').forEach(el => el.removeAttribute('contenteditable'));
       clone.querySelectorAll('.cms-inline-active').forEach(el => el.classList.remove('cms-inline-active'));
       clone.querySelectorAll('.cms-target-hover').forEach(el => el.classList.remove('cms-target-hover'));
+      clone.classList.remove('cms-blog-body-editor');
       return clone.innerHTML;
     }
 
@@ -2436,10 +3061,15 @@
       const tag = (el.tagName || '').toUpperCase();
       const ignoreTags = ['SCRIPT', 'STYLE', 'SVG', 'PATH', 'IFRAME', 'INPUT', 'TEXTAREA', 'SELECT', 'VIDEO', 'CANVAS', 'G', 'RECT', 'CIRCLE', 'POLYGON', 'POLYLINE', 'LINE'];
       if (ignoreTags.includes(tag)) return false;
-      if (el.closest('#cms-inline-toolbar') || el.closest('#cms-hover-tooltip') || el.closest('#cms-save-toast') || el.closest('#cms-preview-badge') || el.closest('#cms-image-popover') || el.closest('.cms-section-tool')) return false;
+      if (el.closest('#cms-inline-toolbar') || el.closest('#cms-hover-tooltip') || el.closest('#cms-save-toast') || el.closest('#cms-preview-badge') || el.closest('#cms-image-popover') || el.closest('.cms-section-tool') || el.closest('#cms-blog-body-docked-bar') || el.closest('#cms-selection-bubble')) return false;
 
-      // Special priority: elements inside the blog article detail container are ALWAYS editable
-      if (el.closest('#detail-breadcrumb-title, #detail-title, #detail-author, #detail-date, #detail-updated, #detail-category-badge, #detail-content-body, #detail-faq-wrapper, #detail-image')) {
+      // Special isolation: Blog Article Content Body is handled exclusively by the Canva/Word unified editor
+      if (el.id === 'detail-content-body' || el.closest('#detail-content-body')) {
+        return false;
+      }
+
+      // Special priority: elements inside the blog article detail container (except body) are ALWAYS editable
+      if (el.closest('#detail-breadcrumb-title, #detail-title, #detail-author, #detail-date, #detail-updated, #detail-category-badge, #detail-faq-wrapper, #detail-image')) {
         if (tag === 'IMG') return true;
         return Boolean(el.innerText && el.innerText.trim().length > 0);
       }
@@ -2460,8 +3090,8 @@
         return true;
       }
 
-      // Explicitly allow blog detail elements
-      if (el.id === 'detail-title' || el.id === 'detail-author' || el.id === 'detail-date' || el.id === 'detail-updated' || el.id === 'detail-category-badge' || el.id === 'detail-breadcrumb-title' || el.id === 'detail-content-body' || el.closest('#detail-content-body')) {
+      // Explicitly allow blog detail header elements
+      if (el.id === 'detail-title' || el.id === 'detail-author' || el.id === 'detail-date' || el.id === 'detail-updated' || el.id === 'detail-category-badge' || el.id === 'detail-breadcrumb-title') {
         return true;
       }
 
@@ -2790,6 +3420,14 @@
     // Delegated Hover
     document.addEventListener('mouseover', (e) => {
       if (!editMode || activeEl) return;
+      if (e.target.closest('#detail-content-body, #cms-blog-body-docked-bar, #cms-selection-bubble')) {
+        if (hoveredEl) {
+          hoveredEl.classList.remove('cms-target-hover');
+          hoveredEl = null;
+          tooltip.style.display = 'none';
+        }
+        return;
+      }
       let targetEl = e.target;
       if (targetEl && targetEl.nodeType === 3) targetEl = targetEl.parentElement;
       if (!targetEl || targetEl === document.body || targetEl === document.documentElement || !targetEl.closest) return;
@@ -2860,8 +3498,15 @@
 
       if (!editMode) return; // Allow natural browsing, link clicking, and button interaction!
 
-      // If clicking inside toolbar, allow toolbar interaction
-      if (e.target.closest('#cms-inline-toolbar') || e.target.closest('#cms-hover-tooltip') || e.target.closest('#cms-image-popover')) return;
+      // If clicking inside toolbar or blog body editor, allow interaction
+      if (e.target.closest('#cms-inline-toolbar') || e.target.closest('#cms-hover-tooltip') || e.target.closest('#cms-image-popover') || e.target.closest('#cms-blog-body-docked-bar') || e.target.closest('#cms-selection-bubble')) return;
+
+      if (e.target.closest('#detail-content-body')) {
+        if (activeEl) {
+          saveCurrentActive();
+        }
+        return;
+      }
 
       // Check if clicking Back to All Articles
       if (e.target.closest('[onclick*="closeBlogDetail"], [data-i18n="blog.backToArticles"]')) {
@@ -3044,8 +3689,29 @@
         if (frameSlug && typeof window.openBlogDetailBySlug === 'function') {
           setEditMode(true, false, false);
           window.openBlogDetailBySlug(frameSlug);
+          setTimeout(initBlogBodyWysiwygEditor, 120);
         }
       } catch (e) { }
+    }
+
+    // Auto-hook into window.openBlogDetailBySlug to ensure the Canva/Word editor initializes seamlessly
+    if (typeof window.openBlogDetailBySlug === 'function') {
+      const origOpenBlogDetail = window.openBlogDetailBySlug;
+      window.openBlogDetailBySlug = function() {
+        const ret = origOpenBlogDetail.apply(this, arguments);
+        setTimeout(initBlogBodyWysiwygEditor, 120);
+        return ret;
+      };
+    }
+
+    const detailContainer = document.getElementById('blog-detail-view-container');
+    if (detailContainer && window.MutationObserver) {
+      const detailObserver = new MutationObserver(() => {
+        if (!detailContainer.classList.contains('hidden') && editMode) {
+          initBlogBodyWysiwygEditor();
+        }
+      });
+      detailObserver.observe(detailContainer, { attributes: true, attributeFilter: ['class', 'style'] });
     }
 
     // Intercept website's own language switcher events
@@ -3088,6 +3754,7 @@
         const openFn = () => {
           if (typeof window.openBlogDetailBySlug === 'function') {
             window.openBlogDetailBySlug(msg.slug);
+            setTimeout(initBlogBodyWysiwygEditor, 120);
             // Confirm to dashboard that article is open and editor is live
             if (window.parent && window.parent !== window) {
               try { window.parent.postMessage({ type: 'CMS_ARTICLE_OPENED', slug: msg.slug }, '*'); } catch (e) {}
