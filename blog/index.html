@@ -8126,7 +8126,12 @@
 
                 // Dynamically resolve CMS blogs fresh for the current language
                 try {
-                    const localBlogs = JSON.parse(localStorage.getItem('sgcms_blog') || '[]');
+                    const rawBlogs = localStorage.getItem('sgcms_blog') || localStorage.getItem('sgcms_blog_live') || '[]';
+                    let localBlogs = [];
+                    try { localBlogs = JSON.parse(rawBlogs); } catch(e) { localBlogs = []; }
+                    if ((!localBlogs || !localBlogs.length) && window._data && Array.isArray(window._data.sgcms_blog)) {
+                        localBlogs = window._data.sgcms_blog;
+                    }
                     const found = localBlogs.find(b => b.slug === slug || b.id === slug || (b.en && b.en.slug === slug));
                     if (found) {
                         const curLang = (window.getCurrentLanguage && window.getCurrentLanguage())
@@ -8472,6 +8477,10 @@
                 setMetaTag('meta[property="og:description"]', 'content', excerpt);
                 setMetaTag('meta[property="og:url"]', 'content', canonicalUrl);
                 setMetaTag('meta[property="og:image"]', 'content', fullImageUrl);
+                setMetaTag('meta[property="og:image:secure_url"]', 'content', fullImageUrl);
+                setMetaTag('meta[property="og:image:width"]', 'content', '1200');
+                setMetaTag('meta[property="og:image:height"]', 'content', '630');
+                setMetaTag('meta[property="og:image:alt"]', 'content', titleText);
                 setMetaTag('meta[property="article:published_time"]', 'content', pubDate);
                 setMetaTag('meta[property="article:modified_time"]', 'content', modDate);
                 setMetaTag('meta[property="article:section"]', 'content', categoryName);
@@ -8534,12 +8543,14 @@
                 // If article has FAQs, add FAQPage schema for Google Rich Search expandable dropdowns
                 if (Array.isArray(article.faqs) && article.faqs.length) {
                     var faqEntities = article.faqs.filter(function(f) { return f && f.q && f.a; }).map(function(f) {
+                        var cleanQ = String(f.q).replace(/<[^>]+>/g, ' ').replace(/\s+/g, ' ').trim();
+                        var cleanA = String(f.a).replace(/<[^>]+>/g, ' ').replace(/\s+/g, ' ').trim();
                         return {
                             "@type": "Question",
-                            "name": f.q,
+                            "name": cleanQ,
                             "acceptedAnswer": {
                                 "@type": "Answer",
-                                "text": f.a
+                                "text": cleanA
                             }
                         };
                     });
@@ -8653,8 +8664,8 @@
                 var isCmsEditor = urlParams.get('cms_editor') === '1' || isInsideIframe;
 
                 var path = window.location.pathname || '';
-                var match = path.match(/\/blog\/([a-zA-Z0-9_-]+)\/?$/);
-                var pathSlug = (match && match[1]) ? match[1] : null;
+                var match = path.match(/\/blog\/([^\/\?\#]+)\/?$/);
+                var pathSlug = (match && match[1]) ? decodeURIComponent(match[1]) : null;
                 if (pathSlug === 'index.html' || pathSlug === 'blog.html' || pathSlug === 'blog') {
                     pathSlug = null;
                 }

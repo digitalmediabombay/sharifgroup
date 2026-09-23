@@ -433,7 +433,12 @@
 
         // 0. Check dynamic CMS blog storage first
         try {
-            var localBlogs = JSON.parse(localStorage.getItem('sgcms_blog') || '[]');
+            var rawBlogs = localStorage.getItem('sgcms_blog') || localStorage.getItem('sgcms_blog_live') || '[]';
+            var localBlogs = [];
+            try { localBlogs = JSON.parse(rawBlogs); } catch(e) { localBlogs = []; }
+            if ((!localBlogs || !localBlogs.length) && window._data && Array.isArray(window._data.sgcms_blog)) {
+                localBlogs = window._data.sgcms_blog;
+            }
             var foundCms = localBlogs.find(function(b) {
                 return b.slug === slug || b.id === slug || (b.en && b.en.slug === slug);
             });
