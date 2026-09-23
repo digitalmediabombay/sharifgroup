@@ -2236,14 +2236,14 @@
         display: none !important;
       }
 
-      /* Blog Unified Body Editor Surface */
+      /* Blog Unified Body Editor Surface - Transparent background matching page */
       .cms-blog-body-editor {
         min-height: 280px !important;
         border: 1.5px dashed rgba(197, 168, 128, 0.45) !important;
         border-radius: 14px !important;
         padding: 20px 24px !important;
-        background: rgba(253, 252, 251, 0.75) !important;
-        transition: border-color 0.2s, box-shadow 0.2s, background-color 0.2s !important;
+        background: transparent !important;
+        transition: border-color 0.2s, box-shadow 0.2s !important;
         outline: none !important;
         position: relative !important;
       }
@@ -2251,14 +2251,21 @@
       .cms-blog-body-editor:focus {
         border-color: #C5A880 !important;
         border-style: solid !important;
-        box-shadow: 0 0 25px rgba(197, 168, 128, 0.22) !important;
-        background: #ffffff !important;
+        box-shadow: 0 0 20px rgba(197, 168, 128, 0.18) !important;
+        background: transparent !important;
       }
       body.cms-mode-browse .cms-blog-body-editor {
         border: none !important;
         padding: 0 !important;
         background: transparent !important;
         min-height: auto !important;
+      }
+      .cms-blog-body-editor:empty::before {
+        content: 'Click here and paste your article text (Ctrl+V)... Then highlight any line to convert it into Heading 2, Heading 3, Bold, or Quote!';
+        color: #9ca3af;
+        font-style: italic;
+        display: block;
+        pointer-events: none;
       }
 
       /* Docked Top Toolbar Above Body */
@@ -2730,82 +2737,154 @@
       }
     }
 
+    let lastActiveBodyRange = null;
+
+    function recordActiveBodySelection() {
+      const bodyEl = document.getElementById('detail-content-body');
+      if (!bodyEl) return;
+      const sel = window.getSelection();
+      if (sel && sel.rangeCount > 0) {
+        const range = sel.getRangeAt(0);
+        if (bodyEl.contains(range.commonAncestorContainer)) {
+          lastActiveBodyRange = range.cloneRange();
+        }
+      }
+    }
+
+    function applyBlockClasses(el, tag) {
+      if (!el) return;
+      if (tag === 'h2') {
+        el.className = 'font-serif text-2xl md:text-3xl text-neutral-900 font-bold mt-8 mb-4';
+      } else if (tag === 'h3') {
+        el.className = 'font-serif text-xl md:text-2xl text-neutral-900 font-bold mt-6 mb-3';
+      } else if (tag === 'blockquote') {
+        el.className = 'my-6 p-5 bg-[#FAF6EE] border-s-4 border-[#C5A880] rounded-r-xl italic font-serif text-lg text-neutral-900 leading-relaxed';
+      } else if (tag === 'p') {
+        el.className = 'text-base text-neutral-700 leading-relaxed font-light mb-5';
+      }
+    }
+
     function applyBlockTransform(targetTag) {
       const bodyEl = document.getElementById('detail-content-body');
       if (!bodyEl) return;
-      bodyEl.focus();
 
       const sel = window.getSelection();
-      if (!sel || !sel.rangeCount) return;
-      const range = sel.getRangeAt(0);
+      let range = null;
 
-      const tagUpper = targetTag.toUpperCase();
-      let executed = false;
-      try {
-        executed = document.execCommand('formatBlock', false, `<${targetTag}>`);
-      } catch (err) {
+      if (sel && sel.rangeCount > 0 && bodyEl.contains(sel.getRangeAt(0).commonAncestorContainer)) {
+        range = sel.getRangeAt(0);
+      } else if (lastActiveBodyRange && bodyEl.contains(lastActiveBodyRange.commonAncestorContainer)) {
+        range = lastActiveBodyRange;
         try {
-          executed = document.execCommand('formatBlock', false, targetTag);
-        } catch (err2) {}
+          sel.removeAllRanges();
+          sel.addRange(range);
+        } catch (e) {}
       }
 
-      let node = sel.anchorNode;
-      if (node && node.nodeType === 3) node = node.parentElement;
-      let currentBlock = node ? node.closest('h1, h2, h3, h4, h5, h6, p, blockquote, div') : null;
+      if (!range) {
+        bodyEl.focus();
+        return;
+      }
 
-      if (currentBlock && currentBlock !== bodyEl && currentBlock.tagName.toUpperCase() !== tagUpper) {
-        const newEl = document.createElement(targetTag);
-        while (currentBlock.firstChild) {
-          newEl.appendChild(currentBlock.firstChild);
-        }
-        currentBlock.parentNode.replaceChild(newEl, currentBlock);
+      const tag = targetTag.toLowerCase();
 
-        const newRange = document.createRange();
-        newRange.selectNodeContents(newEl);
-        sel.removeAllRanges();
-        sel.addRange(newRange);
-      } else if (!currentBlock || currentBlock === bodyEl) {
-        const newEl = document.createElement(targetTag);
+      // Find enclosing block element within bodyEl
+      let node = range.startContainer;
+      if (node.nodeType === 3) node = node.parentElement;
+      let block = node ? node.closest('h1, h2, h3, h4, h5, h6, p, blockquote, div, li') : null;
+
+      if (block && block !== bodyEl && bodyEl.contains(block)) {
+        // Swap entire block tag
+        const newBlock = document.createElement(tag);
+        newBlock.innerHTML = block.innerHTML;
+        applyBlockClasses(newBlock, tag);
+        block.parentNode.replaceChild(newBlock, block);
+
         try {
-          range.surroundContents(newEl);
+          const newRange = document.createRange();
+          newRange.selectNodeContents(newBlock);
+          sel.removeAllRanges();
+          sel.addRange(newRange);
+          lastActiveBodyRange = newRange.cloneRange();
+        } catch (e) {}
+      } else {
+        // Selection is directly inside bodyEl without block wrapper
+        const newBlock = document.createElement(tag);
+        applyBlockClasses(newBlock, tag);
+        try {
+          const frag = range.extractContents();
+          newBlock.appendChild(frag);
+          range.insertNode(newBlock);
         } catch (e) {
-          newEl.appendChild(range.extractContents());
-          range.insertNode(newEl);
+          newBlock.innerHTML = range.toString() || '<br>';
+          range.deleteContents();
+          range.insertNode(newBlock);
         }
-        const newRange = document.createRange();
-        newRange.selectNodeContents(newEl);
-        sel.removeAllRanges();
-        sel.addRange(newRange);
+
+        try {
+          const newRange = document.createRange();
+          newRange.selectNodeContents(newBlock);
+          sel.removeAllRanges();
+          sel.addRange(newRange);
+          lastActiveBodyRange = newRange.cloneRange();
+        } catch (e) {}
       }
 
       triggerBlogBodySave();
+      flashToast(`Converted to ${tag === 'blockquote' ? 'Quote Block' : tag.toUpperCase()}!`);
       setTimeout(updateBubblePosition, 50);
     }
 
     function handleEditorCommand(cmd) {
       const bodyEl = document.getElementById('detail-content-body');
       if (!bodyEl) return;
-      bodyEl.focus();
+
+      // Restore active range before executing
+      const sel = window.getSelection();
+      if ((!sel || !sel.rangeCount || !bodyEl.contains(sel.getRangeAt(0).commonAncestorContainer)) && lastActiveBodyRange) {
+        try {
+          sel.removeAllRanges();
+          sel.addRange(lastActiveBodyRange);
+        } catch (e) {}
+      }
 
       if (cmd === 'h2' || cmd === 'h3' || cmd === 'p' || cmd === 'quote') {
         const tag = (cmd === 'quote') ? 'blockquote' : cmd;
         applyBlockTransform(tag);
       } else if (cmd === 'bold') {
         document.execCommand('bold', false, null);
+        recordActiveBodySelection();
         triggerBlogBodySave();
+        flashToast('Bold toggled');
       } else if (cmd === 'italic') {
         document.execCommand('italic', false, null);
+        recordActiveBodySelection();
         triggerBlogBodySave();
+        flashToast('Italic toggled');
       } else if (cmd === 'bullet') {
         document.execCommand('insertUnorderedList', false, null);
+        recordActiveBodySelection();
         triggerBlogBodySave();
+        flashToast('Bullet list created');
       } else if (cmd === 'number') {
         document.execCommand('insertOrderedList', false, null);
+        recordActiveBodySelection();
         triggerBlogBodySave();
+        flashToast('Numbered list created');
+      } else if (cmd === 'clear') {
+        if (confirm('Clear all content to start with a blank article?')) {
+          bodyEl.innerHTML = '<p class="text-base text-neutral-700 leading-relaxed font-light mb-4"><br></p>';
+          lastActiveBodyRange = null;
+          triggerBlogBodySave(true);
+          flashToast('Content cleared! Ready to paste.');
+          bodyEl.focus();
+        }
       } else if (cmd === 'add-image') {
-        const sel = window.getSelection();
-        if (sel && sel.rangeCount) {
-          savedInlineRange = sel.getRangeAt(0).cloneRange();
+        const currentSel = window.getSelection();
+        if (currentSel && currentSel.rangeCount && bodyEl.contains(currentSel.getRangeAt(0).commonAncestorContainer)) {
+          savedInlineRange = currentSel.getRangeAt(0).cloneRange();
+        } else if (lastActiveBodyRange && bodyEl.contains(lastActiveBodyRange.commonAncestorContainer)) {
+          savedInlineRange = lastActiveBodyRange.cloneRange();
         } else {
           savedInlineRange = null;
         }
@@ -2834,11 +2913,14 @@
       document.body.appendChild(bubble);
 
       bubble.querySelectorAll('[data-csb-cmd]').forEach(btn => {
-        btn.addEventListener('mousedown', (e) => {
+        const run = (e) => {
           e.preventDefault();
+          e.stopPropagation();
           const cmd = btn.getAttribute('data-csb-cmd');
           handleEditorCommand(cmd);
-        });
+        };
+        btn.addEventListener('mousedown', run);
+        btn.addEventListener('click', run);
       });
 
       return bubble;
@@ -2921,6 +3003,7 @@
               <button type="button" class="cdeb-btn" data-cdeb-cmd="number" title="Numbered List">1. List</button>
               <div class="cdeb-sep"></div>
               <button type="button" class="cdeb-btn cdeb-btn-accent" data-cdeb-cmd="add-image" title="Insert luxury image break"><i class="fa-regular fa-image"></i> + Add Image</button>
+              <button type="button" class="cdeb-btn" data-cdeb-cmd="clear" title="Clear all text to paste fresh draft" style="color:#f87171;border-color:rgba(239,68,68,0.3)"><i class="fa-solid fa-trash-can"></i> Clear</button>
             </div>
             <div class="cdeb-tools-group">
               <span id="cdeb-save-indicator" class="cdeb-save-indicator"><i class="fa-solid fa-check"></i> Changes saved</span>
@@ -2930,11 +3013,14 @@
           bodyEl.parentNode.insertBefore(dockedBar, bodyEl);
 
           dockedBar.querySelectorAll('[data-cdeb-cmd]').forEach(btn => {
-            btn.addEventListener('mousedown', (e) => {
+            const run = (e) => {
               e.preventDefault();
+              e.stopPropagation();
               const cmd = btn.getAttribute('data-cdeb-cmd');
               handleEditorCommand(cmd);
-            });
+            };
+            btn.addEventListener('mousedown', run);
+            btn.addEventListener('click', run);
           });
 
           const saveNowBtn = dockedBar.querySelector('#cdeb-btn-save-now');
@@ -2968,14 +3054,21 @@
 
     document.addEventListener('selectionchange', () => {
       if (!editMode) return;
+      recordActiveBodySelection();
       clearTimeout(window.__selBubbleTimer);
       window.__selBubbleTimer = setTimeout(updateBubblePosition, 50);
     });
 
     document.addEventListener('mouseup', (e) => {
       if (!editMode) return;
+      recordActiveBodySelection();
       if (e.target.closest('#cms-selection-bubble') || e.target.closest('#cms-blog-body-docked-bar')) return;
       setTimeout(updateBubblePosition, 40);
+    });
+
+    document.addEventListener('keyup', (e) => {
+      if (!editMode) return;
+      recordActiveBodySelection();
     });
 
     let activeEl = null;
