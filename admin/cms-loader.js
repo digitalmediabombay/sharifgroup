@@ -2081,6 +2081,14 @@
         transition: outline 0.15s ease, background-color 0.15s ease !important;
       }
 
+      #detail-title:empty::before {
+        content: attr(data-placeholder);
+        color: #a3a3a3 !important;
+        opacity: 0.55 !important;
+        font-weight: 300 !important;
+        pointer-events: none !important;
+      }
+
       /* Active editing */
       .cms-inline-active {
         outline: 2.5px solid #C5A880 !important;
@@ -3191,6 +3199,7 @@
       // Special priority: elements inside the blog article detail container (except body) are ALWAYS editable
       if (el.closest('#detail-breadcrumb-title, #detail-title, #detail-author, #detail-date, #detail-updated, #detail-category-badge, #detail-faq-wrapper, #detail-image')) {
         if (tag === 'IMG') return true;
+        if (el.id === 'detail-title' || el.closest('#detail-title')) return true;
         return Boolean(el.innerText && el.innerText.trim().length > 0);
       }
 

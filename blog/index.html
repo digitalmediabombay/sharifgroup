@@ -251,6 +251,17 @@
             text-align: right !important;
         }
 
+        #detail-title {
+            min-height: 1.3em;
+        }
+        #detail-title:empty::before {
+            content: attr(data-placeholder);
+            color: #a3a3a3;
+            opacity: 0.55;
+            font-weight: 300;
+            pointer-events: none;
+        }
+
         /* ==========================================================================
            BLOG ARTICLE BODY LUXURY TYPOGRAPHY (LTR & RTL)
            ========================================================================== */
@@ -8249,20 +8260,18 @@
                 // Populate Content
                 const titleEl = document.getElementById('detail-title');
                 const breadcrumbTitleEl = document.getElementById('detail-breadcrumb-title');
-                const defaultTitlePlaceholder = isRtl
-                    ? (currentLang === 'fa' ? 'عنوان مقاله (کلیک برای ویرایش)' : 'عنوان المقال (انقر للتعديل)')
-                    : (currentLang === 'zh' ? '文章标题（点击编辑）' : 'Article Title (Click to edit)');
-                const resolvedTitle = (article.title && article.title.trim()) ? article.title : defaultTitlePlaceholder;
+                const rawTitle = (article.title && article.title.trim()) ? article.title.trim() : '';
                 if (titleEl) {
                     titleEl.setAttribute('data-i18n', `blog.articles.${slug}.title`);
-                    titleEl.innerText = resolvedTitle;
+                    titleEl.innerText = rawTitle;
                     titleEl.setAttribute('dir', isRtl ? 'rtl' : 'ltr');
                     titleEl.style.direction = isRtl ? 'rtl' : 'ltr';
                     titleEl.style.textAlign = isRtl ? 'right' : 'left';
+                    titleEl.setAttribute('data-placeholder', isRtl ? (currentLang === 'fa' ? 'عنوان مقاله...' : 'عنوان المقال...') : (currentLang === 'zh' ? '文章标题...' : 'Article title...'));
                 }
                 if (breadcrumbTitleEl) {
                     breadcrumbTitleEl.setAttribute('data-i18n', `blog.articles.${slug}.title`);
-                    breadcrumbTitleEl.innerText = (article.title && article.title.trim()) ? article.title : 'Article';
+                    breadcrumbTitleEl.innerText = rawTitle || (currentLang === 'en' ? 'Article' : '...');
                     breadcrumbTitleEl.setAttribute('dir', isRtl ? 'rtl' : 'ltr');
                 }
                 const catBadge = document.getElementById('detail-category-badge');
