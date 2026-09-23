@@ -3137,10 +3137,27 @@
       }
 
       // ==========================================================
-      // VISUAL STUDIO QUICK CREATION (ZERO FORMS)
+      // VISUAL STUDIO QUICK CREATION MODALS
       // ==========================================================
-      function openQuickBlogModal() {
-        createNewBlogArticleVisual();
+      function openQuickBlogModal(initialCat, initialSub) {
+        const m = document.getElementById('modal-quick-blog');
+        if (m) {
+          m.classList.add('open');
+          const inp = document.getElementById('qb-title');
+          if (inp) {
+            inp.value = '';
+            setTimeout(() => inp.focus(), 80);
+          }
+          clearBlogImageUpload('qb-custom-img', 'qb-img-preview', 'qb-preview-wrap');
+          const status = document.getElementById('qb-upload-status');
+          if (status) status.innerHTML = '';
+
+          const catSel = document.getElementById('qb-category');
+          if (catSel) {
+            catSel.value = initialCat || 'Golden Visa';
+            updateQuickBlogSubcatOptions(catSel.value, initialSub || '');
+          }
+        }
       }
 
       function updateQuickBlogSubcatOptions(category, selectedSub) {
@@ -3180,6 +3197,92 @@
       function closeQuickBlogModal() {
         const m = document.getElementById('modal-quick-blog');
         if (m) m.classList.remove('open');
+      }
+
+      function submitQuickBlog() {
+        const titleInput = document.getElementById('qb-title');
+        const title = (titleInput?.value || '').trim();
+        if (!title) {
+          titleInput?.focus();
+          showToast('Please enter an article title', 'error');
+          return;
+        }
+
+        const category = document.getElementById('qb-category')?.value || 'Golden Visa';
+        const subcategory = document.getElementById('qb-subcategory')?.value || '';
+        const author = document.getElementById('qb-author')?.value || 'Sharif Group Legal Desk';
+        const customImg = document.getElementById('qb-custom-img')?.value.trim();
+        const prevImg = document.getElementById('qb-img-preview')?.src;
+        const img = customImg || (prevImg && !prevImg.includes('data:image/svg') && (prevImg.startsWith('http') || prevImg.startsWith('data:') || prevImg.startsWith('/') || prevImg.startsWith('.')) ? prevImg : '') || selectedBlogImg || '../assets/images/dubai-office-2.webp';
+
+        const slug = title.toLowerCase()
+          .replace(/[^a-z0-9\s-]/g, '')
+          .replace(/\s+/g, '-')
+          .replace(/-+/g, '-')
+          .slice(0, 60) || ('article-' + Date.now());
+
+        const id = 'b' + uid();
+        const dateStr = new Date().toISOString().split('T')[0];
+
+        const sampleFaqs = (typeof SOVEREIGN_BLOG_FAQS_EN !== 'undefined' && SOVEREIGN_BLOG_FAQS_EN.length) ? SOVEREIGN_BLOG_FAQS_EN : [
+          { q: 'What are the sovereign eligibility criteria for this pathway?', a: 'Applicants must possess a pristine background, pass strict multi-tier AML compliance, and fulfill the designated capital allocation.' },
+          { q: 'Can immediate family and senior dependents be included?', a: 'Yes. The principal investor may include their spouse, dependent children under 30, and dependent parents or grandparents above 55.' },
+          { q: 'Is physical presence or relocation required in Dubai or the host state?', a: 'No mandatory residency requirements apply during processing. All government vetting and apostilles are finalized remotely through our Dubai headquarters.' },
+          { q: 'What are the processing timelines from submission to approval?', a: 'Official government clearance is expedited under our legal protocol, typically taking between 60 to 90 business days.' },
+          { q: 'How is confidential wealth and asset protection guaranteed?', a: 'Sharif Group operates under strict non-disclosure legal mandates and international private client confidentiality standards.' },
+          { q: 'What are the visa-free mobility advantages granted?', a: 'Successful holders gain visa-free or visa-on-arrival access across key international business hubs, Schengen states, and Commonwealth jurisdictions.' }
+        ];
+
+        const newArticle = {
+          id,
+          slug,
+          author,
+          category,
+          subcategory,
+          featured_img: img,
+          publish_date: dateStr,
+          status_en: 'published',
+          status_ar: 'published',
+          status_fa: 'draft',
+          status_zh: 'draft',
+          faqs: sampleFaqs,
+          en: {
+            title,
+            slug,
+            excerpt: 'Strategic legal insights and investment parameters prepared by Sharif Group advisory desk in Business Bay, Dubai.',
+            body: `<p class="text-base text-neutral-800 leading-relaxed font-light mb-6">In this strategic executive advisory, the Sharif Group team breaks down the critical parameters, official timelines, and legal requirements for global investors and sovereign wealth holders looking to secure their family's future.</p>
+  <h3 class="font-serif text-2xl text-neutral-900 font-bold mt-8 mb-4">1. Executive Overview &amp; Key Parameters</h3>
+  <p class="text-base text-neutral-700 leading-relaxed font-light mb-6">Securing sovereign status requires precision documentation and complete background verification. Our Dubai advisory office coordinates directly with authorized government units to ensure expedited clearance.</p>
+  <blockquote class="my-8 p-6 bg-[#FAF6EE] border-s-4 border-[#C5A880] rounded-r-xl italic font-serif text-lg text-neutral-900 leading-relaxed">
+    "Global mobility and multi-jurisdictional residency are no longer luxuries — they are essential hedges for family wealth and sovereign freedom in 2026."
+  </blockquote>
+  <h3 class="font-serif text-2xl text-neutral-900 font-bold mt-8 mb-4">2. Step-by-Step Pathway</h3>
+  <p class="text-base text-neutral-700 leading-relaxed font-light mb-4">The application process follows three structured stages designed for zero physical friction:</p>
+  <ul class="list-disc ps-6 space-y-3 text-neutral-700 font-light mb-8">
+    <li><strong>Confidential Eligibility Assessment:</strong> Initial government vetting through Dubai clearing.</li>
+    <li><strong>Document Legalization &amp; Submission:</strong> Full apostille preparation handled by our legal team.</li>
+    <li><strong>Grant of Approval &amp; Certificate Issuance:</strong> Final certificate delivery directly to your Dubai residence.</li>
+  </ul>`,
+            meta_title: title + ' | Sharif Group Dubai',
+            meta_desc: 'Strategic legal insights and investment parameters prepared by Sharif Group advisory desk.',
+            faqs: sampleFaqs
+          },
+          ar: { title: 'مقال تحليلي استراتيجي جديد', slug, excerpt: '', body: '<p class="text-base text-neutral-800 leading-relaxed font-light mb-6">انقر مباشرة على هذا النص لتعديل المحتوى في الوقت الفعلي.</p>', faqs: sampleFaqs },
+          fa: { title: 'مقاله راهبردی و حقوقی جدید', slug, excerpt: '', body: '<p class="text-base text-neutral-800 leading-relaxed font-light mb-6">برای ویرایش مستقیم متن روی این پاراگراف کلیک کنید.</p>', faqs: sampleFaqs },
+          zh: { title: '新战略执行顾问洞察', slug, excerpt: '', body: '<p class="text-base text-neutral-800 leading-relaxed font-light mb-6">点击此处的任何文本即可在实时页面上直接编辑文章内容。</p>', faqs: sampleFaqs }
+        };
+
+        let existingBlogs = window.CMS.getData(window.CMS.KEYS.BLOG) || window.CMS.DEFAULTS.blog || [];
+        existingBlogs.unshift(newArticle);
+        existingBlogs = repairBlogFaqsAndTranslations(existingBlogs);
+        window.CMS.saveData(window.CMS.KEYS.BLOG, existingBlogs);
+
+        populateSidebar();
+        toggleGroup('blog', true);
+        closeQuickBlogModal();
+        showToast('Article created! Loading on visual canvas...', 'success');
+
+        openBlogArticle(id);
       }
 
       function createNewBlogArticleVisual(customTitle) {
@@ -6341,8 +6444,8 @@
                 The live blog page is loaded in the preview canvas. <strong>Hover over any headline, text, card, or element on the page</strong> to see the edit outline, and click to edit directly inline in real time. Strictly zero forms!
               </p>
               <div style="display:flex;flex-direction:column;gap:8px">
-                <button type="button" class="btn btn-primary" style="width:100%;justify-content:center;font-size:12px" onclick="createNewBlogArticleVisual()">
-                  <i class="fa-solid fa-plus"></i> Add New Article (Live Canvas)
+                <button type="button" class="btn btn-primary" style="width:100%;justify-content:center;font-size:12px" onclick="openQuickBlogModal()">
+                  <i class="fa-solid fa-plus"></i> Add New Article
                 </button>
                 <button type="button" class="btn btn-secondary" style="width:100%;justify-content:center;font-size:12px" onclick="closeEditorDrawer()">
                   <i class="fa-solid fa-expand"></i> Fullscreen Live Canvas
@@ -6357,7 +6460,7 @@
       }
 
       function renderNewBlogView() {
-        createNewBlogArticleVisual();
+        openQuickBlogModal();
       }
 
       function editBlogItem(id) {
