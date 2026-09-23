@@ -1173,7 +1173,21 @@
     if (c.includes('corporate') || c.includes('tax') || c.includes('company')) tokens.push('company');
     if (c.includes('sharif') || c.includes('insight')) tokens.push('sharif');
     if (!tokens.length) tokens.push('sharif');
-    if (subCat) tokens.push(subCat.trim().toLowerCase().replace(/[^a-z0-9]+/g, '-'));
+    if (subCat) {
+      const sc = subCat.trim().toLowerCase().replace(/[^a-z0-9]+/g, '-');
+      tokens.push(sc);
+      if (sc === 'saint-lucia' || sc === 'st-lucia') {
+        tokens.push('saint-lucia');
+        tokens.push('st-lucia');
+      }
+      if (sc === 'st-kitts' || sc === 'saint-kitts') {
+        tokens.push('st-kitts');
+        tokens.push('saint-kitts');
+      }
+      if (sc === 'sao-tome' || sc === 'sao-tom') {
+        tokens.push('sao-tome');
+      }
+    }
     return tokens.join(' ');
   }
 

@@ -2163,8 +2163,32 @@
               placeholder="e.g. Dubai Golden Visa 2026: The Complete Guide for Global Families" autofocus
               onkeydown="if(event.key==='Enter')submitQuickBlog()">
           </div>
-          <!-- Hidden defaults for category and author -->
-          <input type="hidden" id="qb-category" value="Golden Visa">
+          <!-- Filter Category & Subcategory Selection -->
+          <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:12px;margin-bottom:14px">
+            <div class="form-group" style="margin-bottom:0">
+              <label class="form-label" style="font-weight:600">
+                <i class="fa-solid fa-filter" style="color:var(--gold);margin-right:4px"></i> Category Filter <span style="color:var(--red)">*</span>
+              </label>
+              <select class="form-select" id="qb-category" onchange="updateQuickBlogSubcatOptions(this.value)">
+                <option value="Citizenship">Citizenship</option>
+                <option value="Residency">Residency</option>
+                <option value="Golden Visa" selected>Golden Visa</option>
+                <option value="Real Estate">Real Estate</option>
+                <option value="Educational Advisory">Educational Advisory</option>
+                <option value="Corporate & Tax Strategy">Corporate &amp; Tax Strategy</option>
+                <option value="Sharif Group Insights">Sharif Group Insights</option>
+              </select>
+              <div style="font-size:11px;color:var(--muted);margin-top:4px">Select which filter tab this article will appear under.</div>
+            </div>
+            <div class="form-group" id="qb-subcat-wrap" style="display:none;margin-bottom:0">
+              <label class="form-label" style="font-weight:600">
+                <i class="fa-solid fa-layer-group" style="color:var(--gold);margin-right:4px"></i> Program Sub-Filter
+              </label>
+              <select class="form-select" id="qb-subcategory">
+              </select>
+              <div style="font-size:11px;color:var(--muted);margin-top:4px">Optional country/program filter.</div>
+            </div>
+          </div>
           <input type="hidden" id="qb-author" value="Sharif Group Legal Desk">
 
           <div class="form-group">
@@ -3087,7 +3111,41 @@
       // ==========================================================
       // VISUAL STUDIO QUICK CREATION MODALS
       // ==========================================================
-      function openQuickBlogModal() {
+      function updateQuickBlogSubcatOptions(category, selectedSub) {
+        const wrap = document.getElementById('qb-subcat-wrap');
+        const sel = document.getElementById('qb-subcategory');
+        if (!wrap || !sel) return;
+        const subcatMap = (typeof BLOG_SUBCATEGORIES !== 'undefined' ? BLOG_SUBCATEGORIES : {
+          'Citizenship': [
+            { val: '', text: 'VIEW ALL PROGRAMS' },
+            { val: 'dominica', text: 'Dominica' },
+            { val: 'st-kitts', text: 'St. Kitts & Nevis' },
+            { val: 'antigua', text: 'Antigua & Barbuda' },
+            { val: 'saint-lucia', text: 'Saint Lucia' },
+            { val: 'grenada', text: 'Grenada' },
+            { val: 'vanuatu', text: 'Vanuatu' },
+            { val: 'sao-tome', text: 'São Tomé and Príncipe' },
+            { val: 'nauru', text: 'Republic of Nauru' }
+          ],
+          'Residency': [
+            { val: '', text: 'All Residency Programs' },
+            { val: 'portugal', text: 'Portugal' },
+            { val: 'greece', text: 'Greece' },
+            { val: 'panama', text: 'Panama' },
+            { val: 'uae', text: 'United Arab Emirates' }
+          ]
+        });
+        const list = subcatMap[category];
+        if (list && list.length) {
+          wrap.style.display = 'block';
+          sel.innerHTML = list.map(opt => `<option value="${opt.val}" ${opt.val === selectedSub ? 'selected' : ''}>${opt.text}</option>`).join('');
+        } else {
+          wrap.style.display = 'none';
+          sel.innerHTML = '';
+        }
+      }
+
+      function openQuickBlogModal(initialCat, initialSub) {
         const m = document.getElementById('modal-quick-blog');
         if (m) {
           m.classList.add('open');
@@ -3096,6 +3154,12 @@
           clearBlogImageUpload('qb-custom-img', 'qb-img-preview', 'qb-preview-wrap');
           const status = document.getElementById('qb-upload-status');
           if (status) status.innerHTML = '';
+
+          const catSel = document.getElementById('qb-category');
+          if (catSel) {
+            catSel.value = initialCat || 'Golden Visa';
+            updateQuickBlogSubcatOptions(catSel.value, initialSub || '');
+          }
         }
       }
 
@@ -3272,6 +3336,7 @@
         }
 
         const category = document.getElementById('qb-category')?.value || 'Golden Visa';
+        const subcategory = document.getElementById('qb-subcategory')?.value || '';
         const author = document.getElementById('qb-author')?.value || 'Sharif Group Legal Desk';
         const customImg = document.getElementById('qb-custom-img')?.value.trim();
         const previewImg = document.getElementById('qb-img-preview')?.getAttribute('src');
@@ -3369,6 +3434,7 @@
           slug,
           author,
           category,
+          subcategory,
           featured_img: img,
           publish_date: dateStr,
           status_en: 'published',
@@ -3379,6 +3445,8 @@
           en: {
             title,
             slug,
+            category,
+            subcategory,
             excerpt: 'Strategic legal insights and investment parameters prepared by Sharif Group advisory desk in Business Bay, Dubai.',
             body: `<p class="text-base text-neutral-800 leading-relaxed font-light mb-6">In this strategic executive advisory, the Sharif Group team breaks down the critical parameters, official timelines, and legal requirements for global investors and sovereign wealth holders looking to secure their family's future.</p>
 <h3 class="font-serif text-2xl text-neutral-900 font-bold mt-8 mb-4">1. Executive Overview &amp; Key Parameters</h3>

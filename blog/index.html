@@ -7914,9 +7914,9 @@
         if (category === 'all') {
             shouldShow = true;
         } else if (category === 'golden-visa') {
-            shouldShow = itemCats.includes('golden-visa') || item.querySelector('h4').innerText.toLowerCase().includes('golden visa');
+            shouldShow = itemCats.includes('golden-visa') || (item.querySelector('h4')?.innerText?.toLowerCase() || '').includes('golden visa');
         } else if (category === 'educational') {
-            shouldShow = itemCats.includes('educational') || item.querySelector('h4').innerText.toLowerCase().includes('educational');
+            shouldShow = itemCats.includes('educational') || (item.querySelector('h4')?.innerText?.toLowerCase() || '').includes('educational');
         } else {
             shouldShow = itemCats.includes(category);
         }
