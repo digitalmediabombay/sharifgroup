@@ -8193,19 +8193,12 @@
                 window.currentActiveArticleSlug = null;
                 const listingSection = document.getElementById('blog-listing-main');
                 const detailSection = document.getElementById('blog-detail-view-container');
-
                 if (detailSection) detailSection.classList.add('hidden');
                 if (listingSection) listingSection.style.display = 'block';
-
                 if (window.location.protocol !== 'file:' && window.history && window.history.pushState) {
-                    window.history.pushState({}, "Sharif Group Blog", "/blog/");
+                    window.history.pushState({}, 'Blog', '/blog/');
                 }
-
-                listingSection.scrollIntoView({ behavior: 'smooth' });
             }
-
-            window.openBlogDetailBySlug = openBlogDetailBySlug;
-            window.closeBlogDetail = closeBlogDetail;
 
             // Re-render open article when language is changed without triggering recursive loops
             var isArticleLanguageSwitching = false;
@@ -8233,7 +8226,16 @@
                         querySlug = rawHash;
                     }
                 }
+                var isInsideIframe = (function () {
+                    try { return window.self !== window.top; } catch(e) { return true; }
+                })();
+                var isCmsEditor = urlParams.get('cms_editor') === '1' || isInsideIframe;
+
                 if (querySlug && querySlug !== 'index.html') {
+                    if (isCmsEditor) {
+                        openBlogDetailBySlug(querySlug);
+                        return;
+                    }
                     window.location.replace('/blog/' + encodeURIComponent(querySlug) + '/');
                     return;
                 }
@@ -8242,19 +8244,14 @@
                 if (match && match[1]) {
                     var slug = match[1];
                     if (slug !== 'index.html' && slug !== 'blog.html') {
+                        if (isCmsEditor) {
+                            openBlogDetailBySlug(slug);
+                            return;
+                        }
                         window.location.replace('/blog/' + encodeURIComponent(slug) + '/');
                     }
                 }
             }
-            
-            // Fallback for openBlogDetailBySlug
-            function openBlogDetailBySlug(slug, event) {
-                if (event && event.preventDefault) { event.preventDefault(); }
-                if (slug) {
-                    window.location.href = '/blog/' + encodeURIComponent(slug) + '/';
-                }
-            }
-            window.openBlogDetailBySlug = openBlogDetailBySlug;
 
             if (document.readyState === 'loading') {
                 window.addEventListener('DOMContentLoaded', handleDirectArticleRoute);
@@ -8660,5 +8657,6 @@
 <script src="../assets/js/language-switcher.js"></script>
 <script src="../assets/js/blog-translator.js"></script>
 	<script src="../assets/js/forms.js"></script>
+    <script src="../admin/cms-loader.js"></script>
 </body>
 </html>

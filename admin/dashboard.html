@@ -2807,21 +2807,27 @@
         const iframe = document.getElementById('live-iframe');
         if (!iframe) return;
         iframe.addEventListener('load', () => {
-          // Dynamically inject cms-loader.js into the iframe if not present (since removed from public templates)
+          // Dynamically inject cms-loader.js into the iframe if not present
           try {
             const doc = iframe.contentDocument || iframe.contentWindow.document;
             if (doc && !doc.querySelector('script[src*="cms-loader.js"]')) {
               const s = doc.createElement('script');
-              s.src = '/admin/cms-loader.js?v=' + Date.now();
+              const adminBase = new URL('./', window.location.href).href;
+              s.src = adminBase + 'cms-loader.js?v=' + Date.now();
               doc.body.appendChild(s);
             }
           } catch(e) {}
 
-          // Give cms-loader.js a moment to initialise, then push the current mode
-          setTimeout(() => {
-            sendToIframe({ type: 'CMS_SET_LANG', lang: state.lang });
-            sendToIframe({ type: 'CMS_SET_MODE', mode: state.canvasMode });
-          }, 350);
+          // Give cms-loader.js a moment to initialise, then push current mode & state
+          [100, 300, 600].forEach(delay => {
+            setTimeout(() => {
+              sendToIframe({ type: 'CMS_SET_LANG', lang: state.lang });
+              sendToIframe({ type: 'CMS_SET_MODE', mode: state.canvasMode });
+              if (state.section === 'blog-edit' && state.activeBlogSlug) {
+                sendToIframe({ type: 'CMS_OPEN_ARTICLE', slug: state.activeBlogSlug });
+              }
+            }, delay);
+          });
         });
       })();
 
@@ -2977,18 +2983,71 @@
       // ==========================================================
       // VISUAL STUDIO QUICK CREATION MODALS
       // ==========================================================
+      // VISUAL STUDIO QUICK CREATION (ZERO FORMS)
+      // ==========================================================
       function openQuickBlogModal() {
-        const m = document.getElementById('modal-quick-blog');
-        if (m) {
-          m.classList.add('open');
-          const inp = document.getElementById('qb-title');
-          if (inp) { inp.value = ''; setTimeout(() => inp.focus(), 80); }
-        }
+        createNewBlogArticleVisual();
       }
 
       function closeQuickBlogModal() {
         const m = document.getElementById('modal-quick-blog');
         if (m) m.classList.remove('open');
+      }
+
+      function createNewBlogArticleVisual(customTitle) {
+        const title = customTitle || 'New Strategic Insight Article';
+        const category = 'Citizenship';
+        const author = session?.name || 'Sharif Group Legal Desk';
+        const img = '../assets/images/dubai-office-2.webp';
+
+        const id = 'b' + uid();
+        const slug = 'strategic-insight-' + id;
+        const dateStr = new Date().toISOString().split('T')[0];
+
+        const sampleFaqsEn = [
+          { q: 'What are the sovereign eligibility criteria for this pathway?', a: 'Applicants must possess a pristine background, pass strict multi-tier AML compliance, and fulfill the designated capital allocation.' },
+          { q: 'Can immediate family and senior dependents be included?', a: 'Yes. The principal investor may include their spouse, dependent children under 30, and dependent parents or grandparents above 55.' },
+          { q: 'Is physical presence or relocation required in Dubai or the host state?', a: 'No mandatory residency requirements apply during processing. All government vetting and apostilles are finalized remotely through our Dubai headquarters.' },
+          { q: 'What are the processing timelines from submission to approval?', a: 'Official government clearance is expedited under our legal protocol, typically taking between 60 to 90 business days.' },
+          { q: 'How is confidential wealth and asset protection guaranteed?', a: 'Sharif Group operates under strict non-disclosure legal mandates and international private client confidentiality standards.' },
+          { q: 'What are the visa-free mobility advantages granted?', a: 'Successful holders gain visa-free or visa-on-arrival access across key international business hubs, Schengen states, and Commonwealth jurisdictions.' }
+        ];
+
+        const newArticle = {
+          id,
+          slug,
+          author,
+          category,
+          featured_img: img,
+          publish_date: dateStr,
+          status_en: 'published',
+          status_ar: 'published',
+          status_fa: 'published',
+          status_zh: 'published',
+          faqs: sampleFaqsEn,
+          en: {
+            title,
+            slug,
+            excerpt: 'Strategic legal insights and investment parameters prepared by Sharif Group advisory desk in Business Bay, Dubai.',
+            body: `<p class="text-base text-neutral-800 leading-relaxed font-light mb-6">International investors are increasingly diversifying their wealth and citizenship portfolios. In this comprehensive guide, our legal team outlines the critical changes in sovereign programs.</p><p class="text-base text-neutral-700 leading-relaxed font-light mb-6">Click directly on any text or headline on this page to edit your article in real-time.</p>`,
+            meta_title: title + ' | Sharif Group Dubai',
+            meta_desc: 'Strategic legal insights and investment parameters prepared by Sharif Group advisory desk.',
+            faqs: sampleFaqsEn
+          },
+          ar: { title: 'مقال تحليلي استراتيجي جديد', slug, excerpt: '', body: '<p class="text-base text-neutral-800 leading-relaxed font-light mb-6">انقر مباشرة على هذا النص لتعديل المحتوى في الوقت الفعلي.</p>', faqs: sampleFaqsEn },
+          fa: { title: 'مقاله راهبردی و حقوقی جدید', slug, excerpt: '', body: '<p class="text-base text-neutral-800 leading-relaxed font-light mb-6">برای ویرایش مستقیم متن روی این پاراگراف کلیک کنید.</p>', faqs: sampleFaqsEn },
+          zh: { title: '新战略执行顾问洞察', slug, excerpt: '', body: '<p class="text-base text-neutral-800 leading-relaxed font-light mb-6">点击此处的任何文本即可在实时页面上直接编辑文章内容。</p>', faqs: sampleFaqsEn }
+        };
+
+        let existingBlogs = window.CMS.getData(window.CMS.KEYS.BLOG) || [];
+        existingBlogs.unshift(newArticle);
+        existingBlogs = repairBlogFaqsAndTranslations(existingBlogs);
+        window.CMS.saveData(window.CMS.KEYS.BLOG, existingBlogs);
+        populateSidebar();
+        toggleGroup('blog', true);
+
+        openBlogArticle(id);
+        showToast('New article created! Hover and click any text to edit inline.', 'success');
       }
 
       let selectedBlogImg = '../assets/images/dubai-office-2.webp';
@@ -3893,8 +3952,8 @@
         setActiveSidebarItem(section === 'program' ? (itemId || '') : (section === 'blog-edit' ? (itemId || 'blog') : (section === 'category-hub' ? itemType : section.replace('-new', '').replace('-edit', ''))));
 
         // Form-only drawer sections vs. Visual Live Canvas sections
-        const formOnlySections = ['settings', 'blog-new', 'team-new', 'new-program'];
-        const isVisualPreviewSection = ['aboutus', 'team', 'contact', 'legal', 'cookiepolicy', 'cookies', 'homepage', 'category-hub', 'program', 'blog', 'blog-edit'].includes(section);
+        const formOnlySections = ['settings', 'team-new', 'new-program'];
+        const isVisualPreviewSection = ['aboutus', 'team', 'contact', 'legal', 'cookiepolicy', 'cookies', 'homepage', 'category-hub', 'program', 'blog', 'blog-edit', 'blog-new'].includes(section);
         if (formOnlySections.includes(section)) {
           openEditorDrawer();
         } else if (isVisualPreviewSection) {
@@ -5953,90 +6012,37 @@
       }
 
       function renderBlogEditor(l, rtl) {
-        setPageTitle('Blog & Articles', 'Manage published and draft blog articles');
-        const blogs = window.CMS.getData(window.CMS.KEYS.BLOG) || [];
-        const dir = rtl ? 'dir="rtl"' : '';
-
-        let html = `
-    <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:18px">
-      <div>
-        <h1 class="ed-page-title" style="margin-bottom:4px">Blog & Articles</h1>
-        <p class="ed-page-desc" style="margin-bottom:0">Click any article to edit in detail or create a new insight.</p>
-      </div>
-      <button class="btn btn-primary" onclick="openQuickBlogModal()"><i class="fa-solid fa-plus"></i> New Article</button>
-    </div>
-  `;
-
-        blogs.forEach((b, idx) => {
-          const ld = b[l] || b.en || {};
-          const status = b['status_' + l] || b.status_en || 'draft';
-          const isPub = status === 'published';
-          const safeId = escH(b.id).replace(/'/g, "\\'");
-          html += `
-      <div class="ec-block" style="margin-bottom:10px;display:flex;align-items:center;justify-content:space-between;padding:10px 14px;background:var(--surface);border:1px solid var(--border);border-radius:8px">
-        <div style="display:flex;align-items:center;gap:12px;flex:1;min-width:0;cursor:pointer" onclick="openBlogArticle('${safeId}')">
-          ${b.featured_img ? `<img src="${b.featured_img}" style="width:48px;height:36px;object-fit:cover;border-radius:6px;flex-shrink:0" onerror="this.style.display='none'">` : '<div style="width:48px;height:36px;border-radius:6px;background:rgba(255,255,255,.05);display:flex;align-items:center;justify-content:center;color:var(--muted);font-size:12px"><i class="fa-solid fa-newspaper"></i></div>'}
-          <div style="flex:1;min-width:0">
-            <div style="font-weight:600;font-size:12px;color:var(--text);white-space:nowrap;overflow:hidden;text-overflow:ellipsis">${escH(ld.title || 'Untitled Article')}</div>
-            <div style="font-size:10px;color:var(--muted);margin-top:2px">${escH(b.category || 'Citizenship')}${b.subcategory ? ' · ' + escH(b.subcategory) : ''} · ${b.publish_date || 'Recent'}</div>
+        setPageTitle('Blog & Strategic Insights', 'Live visual studio active');
+        const ed = document.getElementById('editor');
+        if (!ed) return;
+        ed.innerHTML = `
+          <div style="padding:16px 20px">
+            <div style="background:rgba(197,168,128,0.08);border:1px solid rgba(197,168,128,0.25);border-radius:12px;padding:18px;margin-bottom:16px">
+              <div style="display:flex;align-items:center;gap:10px;margin-bottom:8px">
+                <i class="fa-solid fa-wand-magic-sparkles" style="color:var(--gold);font-size:18px"></i>
+                <h3 style="font-size:14px;font-weight:700;color:var(--text);margin:0">Live Visual Studio Active</h3>
+              </div>
+              <p style="font-size:12px;color:var(--muted);line-height:1.6;margin:0 0 14px">
+                The live blog page is loaded in the preview canvas. <strong>Hover over any headline, text, card, or element on the page</strong> to see the edit outline, and click to edit directly inline in real time. Strictly zero forms!
+              </p>
+              <div style="display:flex;flex-direction:column;gap:8px">
+                <button type="button" class="btn btn-primary" style="width:100%;justify-content:center;font-size:12px" onclick="createNewBlogArticleVisual()">
+                  <i class="fa-solid fa-plus"></i> Add New Article (Live Canvas)
+                </button>
+                <button type="button" class="btn btn-secondary" style="width:100%;justify-content:center;font-size:12px" onclick="closeEditorDrawer()">
+                  <i class="fa-solid fa-expand"></i> Fullscreen Live Canvas
+                </button>
+                <button type="button" class="btn btn-secondary" style="width:100%;justify-content:center;font-size:12px" onclick="refreshPreview()">
+                  <i class="fa-solid fa-rotate"></i> Refresh Preview
+                </button>
+              </div>
+            </div>
           </div>
-          <span class="ec-block-badge" style="background:${isPub ? 'rgba(34,197,94,.15)' : 'rgba(245,158,11,.15)'};color:${isPub ? 'var(--green)' : 'var(--yellow)'}">${status}</span>
-        </div>
-        <div style="display:flex;align-items:center;gap:6px;margin-left:12px;flex-shrink:0">
-          <button type="button" class="btn btn-ghost" style="padding:5px 8px;font-size:11px" onclick="openBlogArticle('${safeId}')" title="Edit on Visual Canvas"><i class="fa-solid fa-wand-magic-sparkles"></i></button>
-          <button type="button" class="btn btn-ghost" style="padding:5px 8px;font-size:11px;color:#f87171;border-color:rgba(239,68,68,.3)" onclick="event.stopPropagation();deleteBlogItem('${safeId}')" title="Delete Article"><i class="fa-solid fa-trash-can"></i></button>
-        </div>
-      </div>
-    `;
-        });
-
-        html += `<button class="btn-add-row" style="margin-top:12px" onclick="openQuickBlogModal()"><i class="fa-solid fa-plus"></i> Add New Blog Article</button>`;
-        document.getElementById('editor').innerHTML = html;
+        `;
       }
 
       function renderNewBlogView() {
-        openEditorDrawer();
-        const id = 'b' + uid();
-        const newArticle = {
-          id,
-          author: session?.name || 'Sharif Group Advisory',
-          author_title: 'Senior Immigration Partner',
-          category: 'Citizenship',
-          subcategory: '',
-          tags: ['citizenship', 'investment', 'second passport'],
-          featured_img: 'https://images.unsplash.com/photo-1541872703-74c5e44368f9?auto=format&fit=crop&w=1200&q=80',
-          publish_date: new Date().toISOString().split('T')[0],
-          read_time: '5 min read',
-          status_en: 'draft',
-          status_ar: 'draft',
-          status_fa: 'draft',
-          status_zh: 'draft',
-          en: {
-            title: 'New Strategic Insight Article',
-            slug: 'new-strategic-insight-article',
-            excerpt: 'Key developments and strategic opportunities for global families seeking second citizenship or golden visa residency.',
-            body: '<p>International investors are increasingly diversifying their wealth and citizenship portfolios. In this comprehensive guide, our legal team outlines the critical changes in sovereign programs.</p>',
-            meta_title: 'New Strategic Insight Article | Sharif Group',
-            meta_desc: 'Key developments and strategic opportunities for global families.'
-          },
-          ar: { title: '', slug: '', excerpt: '', body: '' },
-          fa: { title: '', slug: '', excerpt: '', body: '' },
-          zh: { title: '', slug: '', excerpt: '', body: '' }
-        };
-        // Pre-save the draft immediately so it shows in the blog list
-        const existingBlogs = window.CMS.getData(window.CMS.KEYS.BLOG) || [];
-        existingBlogs.unshift(newArticle);
-        window.CMS.saveData(window.CMS.KEYS.BLOG, existingBlogs);
-        populateSidebar();
-
-        state.section = 'blog-new';
-        state.itemId = id;
-        state.activeBlogSlug = newArticle.slug;
-        toggleGroup('blog', true);
-        setActiveSidebarItem(id);
-        renderBlogArticleForm(newArticle, true);
-        // Broadcast draft after a delay to allow iframe to load first
-        setTimeout(() => { broadcastBlogDraft(); }, 800);
+        createNewBlogArticleVisual();
       }
 
       function editBlogItem(id) {

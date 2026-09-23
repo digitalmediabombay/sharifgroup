@@ -2385,10 +2385,16 @@
     // Determine if element is an editable text target
     function isEditableTarget(el) {
       if (!el || el === document.body || el === document.documentElement) return false;
-      const tag = el.tagName;
-      const ignoreTags = ['SCRIPT', 'STYLE', 'SVG', 'PATH', 'IFRAME', 'INPUT', 'TEXTAREA', 'SELECT', 'VIDEO', 'CANVAS'];
+      const tag = (el.tagName || '').toUpperCase();
+      const ignoreTags = ['SCRIPT', 'STYLE', 'SVG', 'PATH', 'IFRAME', 'INPUT', 'TEXTAREA', 'SELECT', 'VIDEO', 'CANVAS', 'G', 'RECT', 'CIRCLE', 'POLYGON', 'POLYLINE', 'LINE'];
       if (ignoreTags.includes(tag)) return false;
-      if (el.closest('#cms-inline-toolbar') || el.closest('#cms-hover-tooltip') || el.closest('#cms-save-toast') || el.closest('#cms-preview-badge') || el.closest('.cms-section-tool')) return false;
+      if (el.closest('#cms-inline-toolbar') || el.closest('#cms-hover-tooltip') || el.closest('#cms-save-toast') || el.closest('#cms-preview-badge') || el.closest('#cms-image-popover') || el.closest('.cms-section-tool')) return false;
+
+      // Special priority: elements inside the blog article detail container are ALWAYS editable
+      if (el.closest('#detail-breadcrumb-title, #detail-title, #detail-author, #detail-date, #detail-updated, #detail-category-badge, #detail-content-body, #detail-faq-wrapper, #detail-image')) {
+        if (tag === 'IMG') return true;
+        return Boolean(el.innerText && el.innerText.trim().length > 0);
+      }
 
       // Navigation header, navbar, mobile menu and mega-menus are site navigation, NOT editable body text
       if (el.closest('header, nav, #main-header, #mobile-menu, .mega-menu, [id*="mega"], [class*="navbar"]')) {
@@ -2396,11 +2402,12 @@
       }
 
       const textTags = ['H1', 'H2', 'H3', 'H4', 'H5', 'H6', 'P', 'A', 'BUTTON', 'SPAN', 'LABEL', 'STRONG', 'EM', 'B', 'I', 'U', 'S', 'LI', 'BLOCKQUOTE', 'Q', 'CITE', 'FIGCAPTION', 'SMALL'];
-      if (textTags.includes(tag) || el.className.includes('-hero-glow') || el.classList.contains('dominica-hero-glow') || el.classList.contains('stlucia-hero-glow') || el.classList.contains('counter-value')) {
+      const cls = typeof el.className === 'string' ? el.className : (el.getAttribute ? (el.getAttribute('class') || '') : '');
+      if (textTags.includes(tag) || cls.includes('-hero-glow') || el.classList?.contains?.('dominica-hero-glow') || el.classList?.contains?.('stlucia-hero-glow') || el.classList?.contains?.('counter-value')) {
         // Return true if it has text
         return Boolean(el.innerText && el.innerText.trim().length > 0);
       }
-      if (el.hasAttribute('data-i18n') || el.hasAttribute('data-cms')) return true;
+      if (el.hasAttribute && (el.hasAttribute('data-i18n') || el.hasAttribute('data-cms'))) return true;
       return false;
     }
 
@@ -2546,6 +2553,26 @@
               if (l === 'en' && blogs[bIdx].en) blogs[bIdx].en.faqs = updatedFaqs;
               if (window.articlesDatabase && window.articlesDatabase[currentSlug]) {
                 window.articlesDatabase[currentSlug].faqs = updatedFaqs;
+              }
+            }
+          } else if (activeEl.closest('#all-blogs-grid article.blog-item, article.dynamic-cms-blog')) {
+            const card = activeEl.closest('#all-blogs-grid article.blog-item, article.dynamic-cms-blog');
+            const cardBlogId = card?.getAttribute('data-cms-blog-id');
+            let cardIdx = bIdx;
+            if (cardBlogId) {
+              const foundIdx = blogs.findIndex(b => b && b.id === cardBlogId);
+              if (foundIdx >= 0) cardIdx = foundIdx;
+            }
+            if (cardIdx >= 0) {
+              if (activeEl.tagName === 'H4' || activeEl.closest('h4')) {
+                blogs[cardIdx][l].title = newText;
+                if (l === 'en') {
+                  blogs[cardIdx].title = newText;
+                  if (blogs[cardIdx].en) blogs[cardIdx].en.title = newText;
+                }
+              } else if (activeEl.tagName === 'P' || activeEl.closest('p')) {
+                blogs[cardIdx][l].excerpt = newText;
+                if (l === 'en' && blogs[cardIdx].en) blogs[cardIdx].en.excerpt = newText;
               }
             }
           }
@@ -2731,7 +2758,8 @@
       if (e.ctrlKey || e.metaKey) return;
 
       // 2. Check if clicked inside header/navbar
-      const navArea = e.target.closest('header, nav, #main-header, #mobile-menu, .mega-menu, [id*="mega"], [class*="navbar"]');
+      const isBlogDetailTarget = Boolean(e.target.closest('#detail-breadcrumb-title, #detail-title, #detail-author, #detail-date, #detail-updated, #detail-category-badge, #detail-content-body, #detail-faq-wrapper, #detail-image'));
+      const navArea = !isBlogDetailTarget && e.target.closest('header, #main-header, #mobile-menu, .mega-menu, [id*="mega"], [class*="navbar"]');
       if (navArea) {
         const anchor = e.target.closest('a');
         if (anchor && anchor.getAttribute('href')) {
