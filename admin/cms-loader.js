@@ -1306,11 +1306,7 @@
 
     // Process every blog created or edited in CMS
     blogs.forEach((b) => {
-      let ld = b[l];
-      if (!ld || (!ld.title && !ld.body)) {
-        ld = b.en || b;
-      }
-      if (!ld || (!ld.title && !b.title && (!b.en || !b.en.title))) return;
+      let ld = b[l] || {};
       const slug = b.slug || (b.en && b.en.slug) || ld.slug || b.id;
       const status = b['status_' + l] || b.status_en || 'published';
       if (status !== 'published') return;
@@ -1319,21 +1315,25 @@
       const catDisplay = (b.category || 'Sharif Group Insights') + subcat;
       const dataCat = mapCategoryToDataCat(b.category, b.subcategory);
 
-      // Prioritize localized FAQs for current language:
+      // Prioritize localized FAQs for current language (independent per language):
       const localizedFaqs = (ld.faqs && Array.isArray(ld.faqs) && ld.faqs.length) ? ld.faqs
         : ((b[l]?.faqs && Array.isArray(b[l].faqs) && b[l].faqs.length) ? b[l].faqs
-          : ((b.en && Array.isArray(b.en.faqs) && b.en.faqs.length) ? b.en.faqs
-            : (b.faqs || [])));
+          : (l === 'en' ? ((b.en && Array.isArray(b.en.faqs)) ? b.en.faqs : (b.faqs || [])) : []));
+
+      const emptyBodyHtml = '<p class="text-base text-neutral-700 leading-relaxed font-light mb-4"><br></p>';
+      const langBody = (ld.body !== undefined && ld.body !== null)
+        ? ld.body
+        : (l === 'en' ? (b.body || (b.en && b.en.body) || emptyBodyHtml) : emptyBodyHtml);
 
       // Register article data in the client-side database
       const articleData = {
-        title: ld.title || (b.en && b.en.title) || b.title || 'Untitled Article',
+        title: ld.title || (l === 'en' ? ((b.en && b.en.title) || b.title || 'Untitled Article') : ''),
         category: catDisplay,
         author: b.author || 'Sharif Group Advisory',
         date: b.publish_date || new Date().toLocaleDateString('en-US', { month: 'long', day: 'numeric', year: 'numeric' }),
         updated: b.publish_date || '',
         image: b.featured_img || 'https://sharifgroup.ae/wp-content/uploads/2026/05/dubai-office-2.jpg.webp',
-        content: ld.body || (b.en && b.en.body) || `<p>${ld.excerpt || ''}</p>`,
+        content: langBody,
         faqs: localizedFaqs
       };
       window.articlesDatabase[slug] = articleData;
@@ -3005,6 +3005,13 @@
               <button type="button" class="cdeb-btn cdeb-btn-accent" data-cdeb-cmd="add-image" title="Insert luxury image break"><i class="fa-regular fa-image"></i> + Add Image</button>
               <button type="button" class="cdeb-btn" data-cdeb-cmd="clear" title="Clear all text to paste fresh draft" style="color:#f87171;border-color:rgba(239,68,68,0.3)"><i class="fa-solid fa-trash-can"></i> Clear</button>
             </div>
+            <div class="cdeb-tools-group cdeb-lang-tools" style="display:inline-flex;align-items:center;gap:3px;background:rgba(23,23,23,0.85);padding:3px 6px;border-radius:24px;border:1px solid rgba(197,168,128,0.4)">
+              <span style="font-size:10px;text-transform:uppercase;color:#C5A880;font-weight:700;letter-spacing:0.06em;padding-right:3px;display:flex;align-items:center;gap:4px;"><i class="fa-solid fa-globe"></i> Lang:</span>
+              <button type="button" class="cdeb-btn cdeb-lang-pill" data-cdeb-lang="en" title="Switch to English Draft" style="min-width:32px;padding:2px 8px;font-size:11px;font-weight:700;border-radius:12px;cursor:pointer;">EN</button>
+              <button type="button" class="cdeb-btn cdeb-lang-pill" data-cdeb-lang="ar" title="Switch to Arabic Draft (العربية)" style="min-width:44px;padding:2px 8px;font-size:11px;font-weight:700;border-radius:12px;cursor:pointer;">العربية</button>
+              <button type="button" class="cdeb-btn cdeb-lang-pill" data-cdeb-lang="fa" title="Switch to Persian Draft (فارسی)" style="min-width:44px;padding:2px 8px;font-size:11px;font-weight:700;border-radius:12px;cursor:pointer;">فارسی</button>
+              <button type="button" class="cdeb-btn cdeb-lang-pill" data-cdeb-lang="zh" title="Switch to Chinese Draft (中文)" style="min-width:36px;padding:2px 8px;font-size:11px;font-weight:700;border-radius:12px;cursor:pointer;">中文</button>
+            </div>
             <div class="cdeb-tools-group">
               <span id="cdeb-save-indicator" class="cdeb-save-indicator"><i class="fa-solid fa-check"></i> Changes saved</span>
               <button type="button" class="cdeb-btn cdeb-btn-accent" id="cdeb-btn-save-now"><i class="fa-solid fa-floppy-disk"></i> Save Article</button>
@@ -3023,6 +3030,17 @@
             btn.addEventListener('click', run);
           });
 
+          dockedBar.querySelectorAll('.cdeb-lang-pill').forEach(btn => {
+            btn.addEventListener('click', (e) => {
+              e.preventDefault();
+              e.stopPropagation();
+              const targetLang = btn.getAttribute('data-cdeb-lang');
+              if (typeof window.switchLanguage === 'function') {
+                window.switchLanguage(targetLang);
+              }
+            });
+          });
+
           const saveNowBtn = dockedBar.querySelector('#cdeb-btn-save-now');
           if (saveNowBtn) {
             saveNowBtn.addEventListener('click', (e) => {
@@ -3033,6 +3051,15 @@
         } else {
           dockedBar.style.display = 'flex';
         }
+
+        // Highlight active language pill
+        const curL = getLang();
+        dockedBar.querySelectorAll('.cdeb-lang-pill').forEach(btn => {
+          const isAct = btn.getAttribute('data-cdeb-lang') === curL;
+          btn.style.background = isAct ? '#C5A880' : 'transparent';
+          btn.style.color = isAct ? '#171717' : '#d4d4d4';
+          btn.style.borderColor = isAct ? '#C5A880' : 'rgba(255,255,255,0.15)';
+        });
 
         if (!bodyEl.__cmsPasteAttached) {
           bodyEl.__cmsPasteAttached = true;
@@ -3338,9 +3365,11 @@
               if (qText) updatedFaqs.push({ q: qText, a: aText });
             });
             if (updatedFaqs.length) {
-              blogs[bIdx].faqs = updatedFaqs;
               blogs[bIdx][l].faqs = updatedFaqs;
-              if (l === 'en' && blogs[bIdx].en) blogs[bIdx].en.faqs = updatedFaqs;
+              if (l === 'en') {
+                blogs[bIdx].faqs = updatedFaqs;
+                if (blogs[bIdx].en) blogs[bIdx].en.faqs = updatedFaqs;
+              }
               if (window.articlesDatabase && window.articlesDatabase[currentSlug]) {
                 window.articlesDatabase[currentSlug].faqs = updatedFaqs;
               }
@@ -3815,6 +3844,9 @@
         if (window.parent && window.parent !== window) {
           window.parent.postMessage({ type: 'CMS_LANG_CHANGED', lang }, '*');
         }
+        setTimeout(() => {
+          if (editMode) initBlogBodyWysiwygEditor();
+        }, 150);
       }
     });
 

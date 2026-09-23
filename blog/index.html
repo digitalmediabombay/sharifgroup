@@ -8249,16 +8249,20 @@
                 // Populate Content
                 const titleEl = document.getElementById('detail-title');
                 const breadcrumbTitleEl = document.getElementById('detail-breadcrumb-title');
+                const defaultTitlePlaceholder = isRtl
+                    ? (currentLang === 'fa' ? 'عنوان مقاله (کلیک برای ویرایش)' : 'عنوان المقال (انقر للتعديل)')
+                    : (currentLang === 'zh' ? '文章标题（点击编辑）' : 'Article Title (Click to edit)');
+                const resolvedTitle = (article.title && article.title.trim()) ? article.title : defaultTitlePlaceholder;
                 if (titleEl) {
                     titleEl.setAttribute('data-i18n', `blog.articles.${slug}.title`);
-                    titleEl.innerText = article.title;
+                    titleEl.innerText = resolvedTitle;
                     titleEl.setAttribute('dir', isRtl ? 'rtl' : 'ltr');
                     titleEl.style.direction = isRtl ? 'rtl' : 'ltr';
                     titleEl.style.textAlign = isRtl ? 'right' : 'left';
                 }
                 if (breadcrumbTitleEl) {
                     breadcrumbTitleEl.setAttribute('data-i18n', `blog.articles.${slug}.title`);
-                    breadcrumbTitleEl.innerText = article.title;
+                    breadcrumbTitleEl.innerText = (article.title && article.title.trim()) ? article.title : 'Article';
                     breadcrumbTitleEl.setAttribute('dir', isRtl ? 'rtl' : 'ltr');
                 }
                 const catBadge = document.getElementById('detail-category-badge');
@@ -8288,7 +8292,8 @@
 
                 const bodyEl = document.getElementById('detail-content-body');
                 if (bodyEl) {
-                    bodyEl.innerHTML = article.content;
+                    const cleanCanvasFallback = '<p class="text-base text-neutral-700 leading-relaxed font-light mb-4"><br></p>';
+                    bodyEl.innerHTML = (article.content && article.content.trim()) ? article.content : cleanCanvasFallback;
                     bodyEl.setAttribute('dir', isRtl ? 'rtl' : 'ltr');
                     bodyEl.style.direction = isRtl ? 'rtl' : 'ltr';
                     bodyEl.style.textAlign = isRtl ? 'right' : 'left';
