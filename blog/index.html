@@ -256,6 +256,17 @@
             text-align: right !important;
         }
 
+        #detail-title {
+            min-height: 1.3em;
+        }
+        #detail-title:empty::before {
+            content: attr(data-placeholder);
+            color: #a3a3a3;
+            opacity: 0.55;
+            font-weight: 300;
+            pointer-events: none;
+        }
+
         /* ==========================================================================
            BLOG ARTICLE BODY LUXURY TYPOGRAPHY (LTR & RTL)
            ========================================================================== */
@@ -8120,7 +8131,12 @@
 
                 // Dynamically resolve CMS blogs fresh for the current language
                 try {
-                    const localBlogs = JSON.parse(localStorage.getItem('sgcms_blog') || '[]');
+                    const rawBlogs = localStorage.getItem('sgcms_blog') || localStorage.getItem('sgcms_blog_live') || '[]';
+                    let localBlogs = [];
+                    try { localBlogs = JSON.parse(rawBlogs); } catch(e) { localBlogs = []; }
+                    if ((!localBlogs || !localBlogs.length) && window._data && Array.isArray(window._data.sgcms_blog)) {
+                        localBlogs = window._data.sgcms_blog;
+                    }
                     const found = localBlogs.find(b => b.slug === slug || b.id === slug || (b.en && b.en.slug === slug));
                     if (found) {
                         const curLang = (window.getCurrentLanguage && window.getCurrentLanguage())
@@ -8254,16 +8270,18 @@
                 // Populate Content
                 const titleEl = document.getElementById('detail-title');
                 const breadcrumbTitleEl = document.getElementById('detail-breadcrumb-title');
+                const rawTitle = (article.title && article.title.trim()) ? article.title.trim() : '';
                 if (titleEl) {
                     titleEl.setAttribute('data-i18n', `blog.articles.${slug}.title`);
-                    titleEl.innerText = article.title;
+                    titleEl.innerText = rawTitle;
                     titleEl.setAttribute('dir', isRtl ? 'rtl' : 'ltr');
                     titleEl.style.direction = isRtl ? 'rtl' : 'ltr';
                     titleEl.style.textAlign = isRtl ? 'right' : 'left';
+                    titleEl.setAttribute('data-placeholder', isRtl ? (currentLang === 'fa' ? 'عنوان مقاله...' : 'عنوان المقال...') : (currentLang === 'zh' ? '文章标题...' : 'Article title...'));
                 }
                 if (breadcrumbTitleEl) {
                     breadcrumbTitleEl.setAttribute('data-i18n', `blog.articles.${slug}.title`);
-                    breadcrumbTitleEl.innerText = article.title;
+                    breadcrumbTitleEl.innerText = rawTitle || (currentLang === 'en' ? 'Article' : '...');
                     breadcrumbTitleEl.setAttribute('dir', isRtl ? 'rtl' : 'ltr');
                 }
                 const catBadge = document.getElementById('detail-category-badge');
@@ -8293,7 +8311,8 @@
 
                 const bodyEl = document.getElementById('detail-content-body');
                 if (bodyEl) {
-                    bodyEl.innerHTML = article.content;
+                    const cleanCanvasFallback = '<p class="text-base text-neutral-700 leading-relaxed font-light mb-4"><br></p>';
+                    bodyEl.innerHTML = (article.content && article.content.trim()) ? article.content : cleanCanvasFallback;
                     bodyEl.setAttribute('dir', isRtl ? 'rtl' : 'ltr');
                     bodyEl.style.direction = isRtl ? 'rtl' : 'ltr';
                     bodyEl.style.textAlign = isRtl ? 'right' : 'left';
@@ -8356,6 +8375,9 @@
                     }
                 }
 
+                // Dynamically update SEO, GEO, AEO, OpenGraph & Schema.org JSON-LD for new & existing articles
+                updateBlogArticleSeo(article, slug, currentLang);
+
                 // Switch Views
                 if (listingSection) listingSection.style.display = 'none';
                 if (detailSection) {
@@ -8389,6 +8411,215 @@
                     });
                 }
             }
+
+            function setMetaTag(selector, attr, value) {
+                if (!selector || !attr || typeof value === 'undefined') return;
+                var el = document.querySelector(selector);
+                if (!el) {
+                    el = document.createElement('meta');
+                    var m = selector.match(/\[([a-zA-Z:-]+)="([^"]+)"\]/);
+                    if (m) {
+                        el.setAttribute(m[1], m[2]);
+                        document.head.appendChild(el);
+                    }
+                }
+                if (el) el.setAttribute(attr, value);
+            }
+
+            function setCanonicalUrl(url) {
+                var canLink = document.querySelector('link[rel="canonical"]');
+                if (!canLink) {
+                    canLink = document.createElement('link');
+                    canLink.setAttribute('rel', 'canonical');
+                    document.head.appendChild(canLink);
+                }
+                canLink.setAttribute('href', url);
+            }
+
+            function updateBlogArticleSeo(article, slug, currentLang) {
+                if (!article) return;
+                var titleText = article.title ? (article.title + ' | Sharif Group Dubai') : 'Investment Migration Insights & Blog | Sharif Group';
+                document.title = titleText;
+
+                // Extract clean text snippet for description
+                var tmp = document.createElement('div');
+                tmp.innerHTML = article.content || '';
+                var rawDesc = (tmp.textContent || tmp.innerText || '').trim().replace(/\s+/g, ' ');
+                var excerpt = rawDesc ? rawDesc.slice(0, 160) : 'Explore strategic legal insights, investment migration parameters, and global residency solutions curated by Sharif Group Dubai.';
+
+                var cleanSlug = String(slug || '').replace(/^\/+|\/+$/g, '');
+                var canonicalUrl = `https://sharifgroup.ae/blog/${cleanSlug}/`;
+
+                var rawImg = article.image || 'https://sharifgroup.ae/assets/images/dubai-office-2.webp';
+                var fullImageUrl = (rawImg.indexOf('http') === 0) ? rawImg : ('https://sharifgroup.ae' + (rawImg.indexOf('/') === 0 ? '' : '/') + rawImg);
+
+                var localeMap = { en: 'en_US', ar: 'ar_AE', fa: 'fa_IR', zh: 'zh_CN' };
+                var curLocale = localeMap[currentLang] || 'en_US';
+
+                var pubDate = article.date ? (article.date.indexOf('T') !== -1 ? article.date : (article.date + 'T00:00:00+04:00')) : '2026-01-15T00:00:00+04:00';
+                var modDate = article.updated ? (article.updated.indexOf('T') !== -1 ? article.updated : (article.updated + 'T00:00:00+04:00')) : (article.date ? pubDate : '2026-08-20T00:00:00+04:00');
+                var authorName = article.author || 'Sharif Group Advisory Desk';
+                var categoryName = article.category || 'Citizenship by Investment';
+
+                // 1. Primary SEO & AEO Meta Tags (Matches static blog files 100%)
+                setMetaTag('meta[name="title"]', 'content', titleText);
+                setMetaTag('meta[name="description"]', 'content', excerpt);
+                setMetaTag('meta[name="author"]', 'content', authorName);
+                setCanonicalUrl(canonicalUrl);
+                setMetaTag('meta[name="robots"]', 'content', 'index, follow, max-image-preview:large, max-snippet:-1, max-video-preview:-1');
+
+                // 2. Geo Meta Tags (Dubai, UAE Headquarters)
+                setMetaTag('meta[name="geo.region"]', 'content', 'AE-DU');
+                setMetaTag('meta[name="geo.placename"]', 'content', 'Dubai');
+                setMetaTag('meta[name="geo.position"]', 'content', '25.1874464;55.2641931');
+                setMetaTag('meta[name="ICBM"]', 'content', '25.1874464, 55.2641931');
+
+                // 3. Open Graph / Social Media Cards (WhatsApp, Facebook, LinkedIn)
+                setMetaTag('meta[property="og:type"]', 'content', 'article');
+                setMetaTag('meta[property="og:locale"]', 'content', curLocale);
+                setMetaTag('meta[property="og:site_name"]', 'content', 'Sharif Group Dubai');
+                setMetaTag('meta[property="og:title"]', 'content', titleText);
+                setMetaTag('meta[property="og:description"]', 'content', excerpt);
+                setMetaTag('meta[property="og:url"]', 'content', canonicalUrl);
+                setMetaTag('meta[property="og:image"]', 'content', fullImageUrl);
+                setMetaTag('meta[property="og:image:secure_url"]', 'content', fullImageUrl);
+                setMetaTag('meta[property="og:image:width"]', 'content', '1200');
+                setMetaTag('meta[property="og:image:height"]', 'content', '630');
+                setMetaTag('meta[property="og:image:alt"]', 'content', titleText);
+                setMetaTag('meta[property="article:published_time"]', 'content', pubDate);
+                setMetaTag('meta[property="article:modified_time"]', 'content', modDate);
+                setMetaTag('meta[property="article:section"]', 'content', categoryName);
+
+                // 4. Twitter Card (Full-width card on X / Twitter)
+                setMetaTag('meta[name="twitter:card"]', 'content', 'summary_large_image');
+                setMetaTag('meta[name="twitter:title"]', 'content', titleText);
+                setMetaTag('meta[name="twitter:description"]', 'content', excerpt);
+                setMetaTag('meta[name="twitter:image"]', 'content', fullImageUrl);
+
+                // 5. AEO Tags (AI Engine Optimization - ChatGPT, Perplexity, Gemini, Claude)
+                setMetaTag('meta[name="ai-content-declaration"]', 'content', 'verified-editorial-blog');
+                setMetaTag('meta[name="topic"]', 'content', categoryName);
+                setMetaTag('meta[name="summary"]', 'content', excerpt);
+
+                // 6. Structured Data JSON-LD (Article + FAQPage + BreadcrumbList - 100% match with static code)
+                var oldScript = document.getElementById('sg-dynamic-article-schema');
+                if (oldScript) oldScript.remove();
+
+                var schemaScript = document.createElement('script');
+                schemaScript.type = 'application/ld+json';
+                schemaScript.id = 'sg-dynamic-article-schema';
+
+                var graph = [
+                    {
+                        "@type": "BlogPosting",
+                        "@id": `${canonicalUrl}#article`,
+                        "isPartOf": {
+                            "@type": "WebSite",
+                            "@id": "https://sharifgroup.ae/#website",
+                            "name": "Sharif Group Dubai",
+                            "url": "https://sharifgroup.ae/"
+                        },
+                        "headline": article.title || 'Investment Migration Insights',
+                        "description": excerpt,
+                        "image": fullImageUrl,
+                        "datePublished": pubDate,
+                        "dateModified": modDate,
+                        "author": {
+                            "@type": "Organization",
+                            "name": authorName,
+                            "url": "https://sharifgroup.ae/"
+                        },
+                        "publisher": {
+                            "@type": "Organization",
+                            "name": "Sharif Group",
+                            "url": "https://sharifgroup.ae/",
+                            "logo": {
+                                "@type": "ImageObject",
+                                "url": "https://sharifgroup.ae/assets/images/vector_2d09c4bb.svg"
+                            }
+                        },
+                        "mainEntityOfPage": {
+                            "@type": "WebPage",
+                            "@id": canonicalUrl
+                        }
+                    }
+                ];
+
+                // If article has FAQs, add FAQPage schema for Google Rich Search expandable dropdowns
+                if (Array.isArray(article.faqs) && article.faqs.length) {
+                    var faqEntities = article.faqs.filter(function(f) { return f && f.q && f.a; }).map(function(f) {
+                        var cleanQ = String(f.q).replace(/<[^>]+>/g, ' ').replace(/\s+/g, ' ').trim();
+                        var cleanA = String(f.a).replace(/<[^>]+>/g, ' ').replace(/\s+/g, ' ').trim();
+                        return {
+                            "@type": "Question",
+                            "name": cleanQ,
+                            "acceptedAnswer": {
+                                "@type": "Answer",
+                                "text": cleanA
+                            }
+                        };
+                    });
+                    if (faqEntities.length) {
+                        graph.push({
+                            "@type": "FAQPage",
+                            "@id": `${canonicalUrl}#faq`,
+                            "mainEntity": faqEntities
+                        });
+                    }
+                }
+
+                // BreadcrumbList matching static code
+                graph.push({
+                    "@type": "BreadcrumbList",
+                    "@id": `${canonicalUrl}#breadcrumb`,
+                    "itemListElement": [
+                        {
+                            "@type": "ListItem",
+                            "position": 1,
+                            "name": "Home",
+                            "item": "https://sharifgroup.ae/"
+                        },
+                        {
+                            "@type": "ListItem",
+                            "position": 2,
+                            "name": "Blog",
+                            "item": "https://sharifgroup.ae/blog/"
+                        },
+                        {
+                            "@type": "ListItem",
+                            "position": 3,
+                            "name": article.title || "Blog Article",
+                            "item": canonicalUrl
+                        }
+                    ]
+                });
+
+                schemaScript.textContent = JSON.stringify({
+                    "@context": "https://schema.org",
+                    "@graph": graph
+                }, null, 2);
+                document.head.appendChild(schemaScript);
+            }
+
+            function resetBlogListingSeo() {
+                document.title = 'Investment Migration Insights & Blog | Sharif Group';
+                setMetaTag('meta[name="title"]', 'content', 'Investment Migration Insights & Blog | Sharif Group');
+                setMetaTag('meta[name="description"]', 'content', 'Explore expert guides on second citizenship, European Golden Visas, Dubai real estate, and international tax planning. Read our latest articles today.');
+                setMetaTag('meta[name="author"]', 'content', 'Sharif Group Legal Desk');
+                setCanonicalUrl('https://sharifgroup.ae/blog/');
+                setMetaTag('meta[property="og:type"]', 'content', 'website');
+                setMetaTag('meta[property="og:title"]', 'content', 'Investment Migration Insights & Blog | Sharif Group');
+                setMetaTag('meta[property="og:description"]', 'content', 'Explore expert guides on second citizenship, European Golden Visas, Dubai real estate, and international tax planning. Read our latest articles today.');
+                setMetaTag('meta[property="og:url"]', 'content', 'https://sharifgroup.ae/blog/');
+                setMetaTag('meta[property="og:image"]', 'content', 'https://sharifgroup.ae/assets/images/dubai-office-2.webp');
+                setMetaTag('meta[name="twitter:card"]', 'content', 'summary_large_image');
+                setMetaTag('meta[name="twitter:title"]', 'content', 'Investment Migration Insights & Blog | Sharif Group');
+                setMetaTag('meta[name="twitter:description"]', 'content', 'Explore expert guides on second citizenship, European Golden Visas, Dubai real estate, and international tax planning. Read our latest articles today.');
+                setMetaTag('meta[name="twitter:image"]', 'content', 'https://sharifgroup.ae/assets/images/dubai-office-2.webp');
+
+                var dynSchema = document.getElementById('sg-dynamic-article-schema');
+                if (dynSchema) dynSchema.remove();
+            }
            
             function closeBlogDetail() {
                 window.currentActiveArticleSlug = null;
@@ -8403,6 +8634,7 @@
                         window.history.pushState({}, "Sharif Group Blog", "/blog/");
                     }
                 }
+                resetBlogListingSeo();
             }
 
             // Re-render open article when language is changed without triggering recursive loops
@@ -8437,8 +8669,8 @@
                 var isCmsEditor = urlParams.get('cms_editor') === '1' || isInsideIframe;
 
                 var path = window.location.pathname || '';
-                var match = path.match(/\/blog\/([a-zA-Z0-9_-]+)\/?$/);
-                var pathSlug = (match && match[1]) ? match[1] : null;
+                var match = path.match(/\/blog\/([^\/\?\#]+)\/?$/);
+                var pathSlug = (match && match[1]) ? decodeURIComponent(match[1]) : null;
                 if (pathSlug === 'index.html' || pathSlug === 'blog.html' || pathSlug === 'blog') {
                     pathSlug = null;
                 }

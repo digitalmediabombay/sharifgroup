@@ -3224,13 +3224,37 @@
         const id = 'b' + uid();
         const dateStr = new Date().toISOString().split('T')[0];
 
-        const sampleFaqs = (typeof SOVEREIGN_BLOG_FAQS_EN !== 'undefined' && SOVEREIGN_BLOG_FAQS_EN.length) ? SOVEREIGN_BLOG_FAQS_EN : [
-          { q: 'What are the sovereign eligibility criteria for this pathway?', a: 'Applicants must possess a pristine background, pass strict multi-tier AML compliance, and fulfill the designated capital allocation.' },
-          { q: 'Can immediate family and senior dependents be included?', a: 'Yes. The principal investor may include their spouse, dependent children under 30, and dependent parents or grandparents above 55.' },
-          { q: 'Is physical presence or relocation required in Dubai or the host state?', a: 'No mandatory residency requirements apply during processing. All government vetting and apostilles are finalized remotely through our Dubai headquarters.' },
-          { q: 'What are the processing timelines from submission to approval?', a: 'Official government clearance is expedited under our legal protocol, typically taking between 60 to 90 business days.' },
-          { q: 'How is confidential wealth and asset protection guaranteed?', a: 'Sharif Group operates under strict non-disclosure legal mandates and international private client confidentiality standards.' },
-          { q: 'What are the visa-free mobility advantages granted?', a: 'Successful holders gain visa-free or visa-on-arrival access across key international business hubs, Schengen states, and Commonwealth jurisdictions.' }
+        const initialFaqsEn = [
+          { q: 'Click to edit FAQ Question 1', a: 'Click to edit FAQ Answer 1' },
+          { q: 'Click to edit FAQ Question 2', a: 'Click to edit FAQ Answer 2' },
+          { q: 'Click to edit FAQ Question 3', a: 'Click to edit FAQ Answer 3' },
+          { q: 'Click to edit FAQ Question 4', a: 'Click to edit FAQ Answer 4' },
+          { q: 'Click to edit FAQ Question 5', a: 'Click to edit FAQ Answer 5' },
+          { q: 'Click to edit FAQ Question 6', a: 'Click to edit FAQ Answer 6' }
+        ];
+        const initialFaqsAr = [
+          { q: 'انقر لتعديل السؤال الأول', a: 'انقر لتعديل إجابة السؤال الأول' },
+          { q: 'انقر لتعديل السؤال الثاني', a: 'انقر لتعديل إجابة السؤال الثاني' },
+          { q: 'انقر لتعديل السؤال الثالث', a: 'انقر لتعديل إجابة السؤال الثالث' },
+          { q: 'انقر لتعديل السؤال الرابع', a: 'انقر لتعديل إجابة السؤال الرابع' },
+          { q: 'انقر لتعديل السؤال الخامس', a: 'انقر لتعديل إجابة السؤال الخامس' },
+          { q: 'انقر لتعديل السؤال السادس', a: 'انقر لتعديل إجابة السؤال السادس' }
+        ];
+        const initialFaqsFa = [
+          { q: 'برای ویرایش پرسش اول کلیک کنید', a: 'برای ویرایش پاسخ اول کلیک کنید' },
+          { q: 'برای ویرایش پرسش دوم کلیک کنید', a: 'برای ویرایش پاسخ دوم کلیک کنید' },
+          { q: 'برای ویرایش پرسش سوم کلیک کنید', a: 'برای ویرایش پاسخ سوم کلیک کنید' },
+          { q: 'برای ویرایش پرسش چهارم کلیک کنید', a: 'برای ویرایش پاسخ چهارم کلیک کنید' },
+          { q: 'برای ویرایش پرسش پنجم کلیک کنید', a: 'برای ویرایش پاسخ پنجم کلیک کنید' },
+          { q: 'برای ویرایش پرسش ششم کلیک کنید', a: 'برای ویرایش پاسخ ششم کلیک کنید' }
+        ];
+        const initialFaqsZh = [
+          { q: '点击编辑常见问题 1', a: '点击编辑问题解答 1' },
+          { q: '点击编辑常见问题 2', a: '点击编辑问题解答 2' },
+          { q: '点击编辑常见问题 3', a: '点击编辑问题解答 3' },
+          { q: '点击编辑常见问题 4', a: '点击编辑问题解答 4' },
+          { q: '点击编辑常见问题 5', a: '点击编辑问题解答 5' },
+          { q: '点击编辑常见问题 6', a: '点击编辑问题解答 6' }
         ];
 
         const newArticle = {
@@ -3245,31 +3269,19 @@
           status_ar: 'published',
           status_fa: 'draft',
           status_zh: 'draft',
-          faqs: sampleFaqs,
+          faqs: initialFaqsEn,
           en: {
             title,
             slug,
-            excerpt: 'Strategic legal insights and investment parameters prepared by Sharif Group advisory desk in Business Bay, Dubai.',
-            body: `<p class="text-base text-neutral-800 leading-relaxed font-light mb-6">In this strategic executive advisory, the Sharif Group team breaks down the critical parameters, official timelines, and legal requirements for global investors and sovereign wealth holders looking to secure their family's future.</p>
-  <h3 class="font-serif text-2xl text-neutral-900 font-bold mt-8 mb-4">1. Executive Overview &amp; Key Parameters</h3>
-  <p class="text-base text-neutral-700 leading-relaxed font-light mb-6">Securing sovereign status requires precision documentation and complete background verification. Our Dubai advisory office coordinates directly with authorized government units to ensure expedited clearance.</p>
-  <blockquote class="my-8 p-6 bg-[#FAF6EE] border-s-4 border-[#C5A880] rounded-r-xl italic font-serif text-lg text-neutral-900 leading-relaxed">
-    "Global mobility and multi-jurisdictional residency are no longer luxuries — they are essential hedges for family wealth and sovereign freedom in 2026."
-  </blockquote>
-  <h3 class="font-serif text-2xl text-neutral-900 font-bold mt-8 mb-4">2. Step-by-Step Pathway</h3>
-  <p class="text-base text-neutral-700 leading-relaxed font-light mb-4">The application process follows three structured stages designed for zero physical friction:</p>
-  <ul class="list-disc ps-6 space-y-3 text-neutral-700 font-light mb-8">
-    <li><strong>Confidential Eligibility Assessment:</strong> Initial government vetting through Dubai clearing.</li>
-    <li><strong>Document Legalization &amp; Submission:</strong> Full apostille preparation handled by our legal team.</li>
-    <li><strong>Grant of Approval &amp; Certificate Issuance:</strong> Final certificate delivery directly to your Dubai residence.</li>
-  </ul>`,
+            excerpt: '',
+            body: '<p class="text-base text-neutral-700 leading-relaxed font-light mb-4"><br></p>',
             meta_title: title + ' | Sharif Group Dubai',
             meta_desc: 'Strategic legal insights and investment parameters prepared by Sharif Group advisory desk.',
-            faqs: sampleFaqs
+            faqs: initialFaqsEn
           },
-          ar: { title: 'مقال تحليلي استراتيجي جديد', slug, excerpt: '', body: '<p class="text-base text-neutral-800 leading-relaxed font-light mb-6">انقر مباشرة على هذا النص لتعديل المحتوى في الوقت الفعلي.</p>', faqs: sampleFaqs },
-          fa: { title: 'مقاله راهبردی و حقوقی جدید', slug, excerpt: '', body: '<p class="text-base text-neutral-800 leading-relaxed font-light mb-6">برای ویرایش مستقیم متن روی این پاراگراف کلیک کنید.</p>', faqs: sampleFaqs },
-          zh: { title: '新战略执行顾问洞察', slug, excerpt: '', body: '<p class="text-base text-neutral-800 leading-relaxed font-light mb-6">点击此处的任何文本即可在实时页面上直接编辑文章内容。</p>', faqs: sampleFaqs }
+          ar: { title: '', slug, excerpt: '', body: '<p class="text-base text-neutral-700 leading-relaxed font-light mb-4"><br></p>', faqs: initialFaqsAr },
+          fa: { title: '', slug, excerpt: '', body: '<p class="text-base text-neutral-700 leading-relaxed font-light mb-4"><br></p>', faqs: initialFaqsFa },
+          zh: { title: '', slug, excerpt: '', body: '<p class="text-base text-neutral-700 leading-relaxed font-light mb-4"><br></p>', faqs: initialFaqsZh }
         };
 
         let existingBlogs = window.CMS.getData(window.CMS.KEYS.BLOG) || window.CMS.DEFAULTS.blog || [];
@@ -3535,68 +3547,17 @@
         if (!Array.isArray(blogs)) return blogs;
         let modified = false;
         blogs.forEach(b => {
-          if (!Array.isArray(b.faqs) || b.faqs.length < 12) {
-            if (!Array.isArray(b.faqs) || !b.faqs.length) {
-              b.faqs = [...SOVEREIGN_BLOG_FAQS_EN];
-            } else {
-              const merged = [...b.faqs];
-              for (let i = merged.length; i < 12; i++) {
-                merged.push(SOVEREIGN_BLOG_FAQS_EN[i]);
-              }
-              b.faqs = merged;
-            }
-            modified = true;
-          }
-
+          if (!b) return;
           b.en = b.en || {};
-          if (!Array.isArray(b.en.faqs) || b.en.faqs.length < 12) {
-            b.en.faqs = [...b.faqs];
+          if (!Array.isArray(b.en.faqs)) {
+            b.en.faqs = Array.isArray(b.faqs) ? [...b.faqs] : [];
             modified = true;
           }
-
           ['ar', 'fa', 'zh'].forEach(lang => {
             b[lang] = b[lang] || {};
-            const langFaqs = lang === 'ar' ? SOVEREIGN_BLOG_FAQS_AR : (lang === 'fa' ? SOVEREIGN_BLOG_FAQS_FA : SOVEREIGN_BLOG_FAQS_ZH);
-            if (!Array.isArray(b[lang].faqs) || b[lang].faqs.length < 12) {
-              if (!Array.isArray(b[lang].faqs) || !b[lang].faqs.length) {
-                b[lang].faqs = [...langFaqs];
-              } else {
-                const mergedLang = [...b[lang].faqs];
-                for (let i = mergedLang.length; i < 12; i++) {
-                  mergedLang.push(langFaqs[i]);
-                }
-                b[lang].faqs = mergedLang;
-              }
+            if (!Array.isArray(b[lang].faqs)) {
+              b[lang].faqs = [];
               modified = true;
-            }
-            if (lang === 'zh') {
-              const bodyZh = b.zh.body || '';
-              if (!bodyZh || bodyZh.includes('في هذه الاستشارة') || bodyZh.includes('در این گزارش') || bodyZh.includes('مجموعة الشريف') || bodyZh.includes('شریف گروپ')) {
-                b.zh.title = (b.zh.title && !/[\u0600-\u06FF]/.test(b.zh.title)) ? b.zh.title : '战略执行顾问洞察';
-                b.zh.excerpt = (b.zh.excerpt && !/[\u0600-\u06FF]/.test(b.zh.excerpt)) ? b.zh.excerpt : '谢里夫集团迪拜商业湾咨询中心撰写的全球高净值投资与法律身份规划报告。';
-                b.zh.body = sampleBodyZh;
-                modified = true;
-              }
-            }
-            if (lang === 'ar') {
-              if (!b.ar.body) {
-                b.ar.body = sampleBodyAr;
-                modified = true;
-              }
-              if (!b.ar.title) {
-                b.ar.title = b.title || 'استشارة استراتيجية تنفيذية';
-                modified = true;
-              }
-            }
-            if (lang === 'fa') {
-              if (!b.fa.body) {
-                b.fa.body = sampleBodyFa;
-                modified = true;
-              }
-              if (!b.fa.title) {
-                b.fa.title = b.title || 'مشاوره راهبردی و اجرایی';
-                modified = true;
-              }
             }
           });
         });
@@ -3634,6 +3595,39 @@
         const id = 'b' + uid();
         const dateStr = new Date().toISOString().split('T')[0];
 
+        const initialFaqsEn = [
+          { q: 'Click to edit FAQ Question 1', a: 'Click to edit FAQ Answer 1' },
+          { q: 'Click to edit FAQ Question 2', a: 'Click to edit FAQ Answer 2' },
+          { q: 'Click to edit FAQ Question 3', a: 'Click to edit FAQ Answer 3' },
+          { q: 'Click to edit FAQ Question 4', a: 'Click to edit FAQ Answer 4' },
+          { q: 'Click to edit FAQ Question 5', a: 'Click to edit FAQ Answer 5' },
+          { q: 'Click to edit FAQ Question 6', a: 'Click to edit FAQ Answer 6' }
+        ];
+        const initialFaqsAr = [
+          { q: 'انقر لتعديل السؤال الأول', a: 'انقر لتعديل إجابة السؤال الأول' },
+          { q: 'انقر لتعديل السؤال الثاني', a: 'انقر لتعديل إجابة السؤال الثاني' },
+          { q: 'انقر لتعديل السؤال الثالث', a: 'انقر لتعديل إجابة السؤال الثالث' },
+          { q: 'انقر لتعديل السؤال الرابع', a: 'انقر لتعديل إجابة السؤال الرابع' },
+          { q: 'انقر لتعديل السؤال الخامس', a: 'انقر لتعديل إجابة السؤال الخامس' },
+          { q: 'انقر لتعديل السؤال السادس', a: 'انقر لتعديل إجابة السؤال السادس' }
+        ];
+        const initialFaqsFa = [
+          { q: 'برای ویرایش پرسش اول کلیک کنید', a: 'برای ویرایش پاسخ اول کلیک کنید' },
+          { q: 'برای ویرایش پرسش دوم کلیک کنید', a: 'برای ویرایش پاسخ دوم کلیک کنید' },
+          { q: 'برای ویرایش پرسش سوم کلیک کنید', a: 'برای ویرایش پاسخ سوم کلیک کنید' },
+          { q: 'برای ویرایش پرسش چهارم کلیک کنید', a: 'برای ویرایش پاسخ چهارم کلیک کنید' },
+          { q: 'برای ویرایش پرسش پنجم کلیک کنید', a: 'برای ویرایش پاسخ پنجم کلیک کنید' },
+          { q: 'برای ویرایش پرسش ششم کلیک کنید', a: 'برای ویرایش پاسخ ششم کلیک کنید' }
+        ];
+        const initialFaqsZh = [
+          { q: '点击编辑常见问题 1', a: '点击编辑问题解答 1' },
+          { q: '点击编辑常见问题 2', a: '点击编辑问题解答 2' },
+          { q: '点击编辑常见问题 3', a: '点击编辑问题解答 3' },
+          { q: '点击编辑常见问题 4', a: '点击编辑问题解答 4' },
+          { q: '点击编辑常见问题 5', a: '点击编辑问题解答 5' },
+          { q: '点击编辑常见问题 6', a: '点击编辑问题解答 6' }
+        ];
+
         const newArticle = {
           id,
           slug,
@@ -3646,50 +3640,38 @@
           status_ar: 'published',
           status_fa: 'published',
           status_zh: 'published',
-          faqs: SOVEREIGN_BLOG_FAQS_EN,
+          faqs: initialFaqsEn,
           en: {
             title,
             slug,
             category,
             subcategory,
-            excerpt: 'Strategic legal insights and investment parameters prepared by Sharif Group advisory desk in Business Bay, Dubai.',
-            body: `<p class="text-base text-neutral-800 leading-relaxed font-light mb-6">In this strategic executive advisory, the Sharif Group team breaks down the critical parameters, official timelines, and legal requirements for global investors and sovereign wealth holders looking to secure their family's future.</p>
-<h3 class="font-serif text-2xl text-neutral-900 font-bold mt-8 mb-4">1. Executive Overview &amp; Key Parameters</h3>
-<p class="text-base text-neutral-700 leading-relaxed font-light mb-6">Securing sovereign status requires precision documentation and complete background verification. Our Dubai advisory office coordinates directly with authorized government units to ensure expedited clearance.</p>
-<blockquote class="my-8 p-6 bg-[#FAF6EE] border-s-4 border-[#C5A880] rounded-r-xl italic font-serif text-lg text-neutral-900 leading-relaxed">
-  "Global mobility and multi-jurisdictional residency are no longer luxuries — they are essential hedges for family wealth and sovereign freedom in 2026."
-</blockquote>
-<h3 class="font-serif text-2xl text-neutral-900 font-bold mt-8 mb-4">2. Step-by-Step Pathway</h3>
-<p class="text-base text-neutral-700 leading-relaxed font-light mb-4">The application process follows three structured stages designed for zero physical friction:</p>
-<ul class="list-disc ps-6 space-y-3 text-neutral-700 font-light mb-8">
-  <li><strong>Confidential Eligibility Assessment:</strong> Initial government vetting through Dubai clearing.</li>
-  <li><strong>Document Legalization &amp; Submission:</strong> Full apostille preparation handled by our legal team.</li>
-  <li><strong>Grant of Approval &amp; Certificate Issuance:</strong> Final certificate delivery directly to your Dubai residence.</li>
-</ul>`,
+            excerpt: '',
+            body: '<p class="text-base text-neutral-700 leading-relaxed font-light mb-4"><br></p>',
             meta_title: title + ' | Sharif Group Dubai',
             meta_desc: 'Strategic legal insights and investment parameters prepared by Sharif Group advisory desk.',
-            faqs: SOVEREIGN_BLOG_FAQS_EN
+            faqs: initialFaqsEn
           },
           ar: {
-            title: title || 'استشارة استراتيجية تنفيذية',
+            title: '',
             slug: slug,
-            excerpt: 'رؤى قانونية ومعايير استثمارية أعدها مكتب استشارات مجموعة الشريف في الخليج التجاري، دبي.',
-            body: sampleBodyAr,
-            faqs: SOVEREIGN_BLOG_FAQS_AR
+            excerpt: '',
+            body: '<p class="text-base text-neutral-700 leading-relaxed font-light mb-4"><br></p>',
+            faqs: initialFaqsAr
           },
           fa: {
-            title: title || 'مشاوره راهبردی و اجرایی',
+            title: '',
             slug: slug,
-            excerpt: 'دیدگاه‌های حقوقی و استانداردهای سرمایه‌گذاری تهیه‌شده توسط شریف گروپ در دبی.',
-            body: sampleBodyFa,
-            faqs: SOVEREIGN_BLOG_FAQS_FA
+            excerpt: '',
+            body: '<p class="text-base text-neutral-700 leading-relaxed font-light mb-4"><br></p>',
+            faqs: initialFaqsFa
           },
           zh: {
-            title: title || '战略执行顾问洞察',
+            title: '',
             slug: slug,
-            excerpt: '谢里夫集团迪拜商业湾咨询中心撰写的全球高净值投资与法律身份规划报告。',
-            body: sampleBodyZh,
-            faqs: SOVEREIGN_BLOG_FAQS_ZH
+            excerpt: '',
+            body: '<p class="text-base text-neutral-700 leading-relaxed font-light mb-4"><br></p>',
+            faqs: initialFaqsZh
           }
         };
 
@@ -3706,7 +3688,6 @@
             console.log('[CMS] New blog article synced to database:', ok);
           });
         }
-        autoTranslateOnSave('blog', id);
 
         closeQuickBlogModal();
         showToast('Article created successfully!', 'success');
@@ -8308,51 +8289,8 @@
             }
 
           } else if (section === 'blog' || section === 'blog-edit') {
-            const blogs = window.CMS.getData(window.CMS.KEYS.BLOG) || [];
-            const b = blogs.find(x => (itemId && (x.id === itemId || x.slug === itemId)) || (state.activeBlogSlug && (x.slug === state.activeBlogSlug || x.id === state.activeBlogSlug || (x.en && x.en.slug === state.activeBlogSlug))));
-            if (b) {
-              const srcLang = (state.lang && b[state.lang] && (b[state.lang].body || b[state.lang].title)) ? state.lang : 'en';
-              const srcData = (b[srcLang] && (b[srcLang].body || b[srcLang].title)) ? b[srcLang] : (b.en || b);
-              b._last_en = b._last_en || {};
-              for (const lang of targetLangs) {
-                b[lang] = b[lang] || {};
-                if (srcData.title && (!b[lang].title || srcData.title !== b._last_en.title)) {
-                  b[lang].title = await window.CMS.AI.translate(srcData.title, lang, srcLang);
-                }
-                if (srcData.excerpt && (!b[lang].excerpt || srcData.excerpt !== b._last_en.excerpt)) {
-                  b[lang].excerpt = await window.CMS.AI.translate(srcData.excerpt, lang, srcLang);
-                }
-                if (srcData.body && (!b[lang].body || srcData.body !== b._last_en.body)) {
-                  b[lang].body = await window.CMS.AI.translate(srcData.body, lang, srcLang);
-                }
-                const srcFaqs = (Array.isArray(srcData.faqs) && srcData.faqs.length) ? srcData.faqs
-                  : ((b.en && Array.isArray(b.en.faqs) && b.en.faqs.length) ? b.en.faqs : (b.faqs || []));
-                if (Array.isArray(srcFaqs) && srcFaqs.length) {
-                  b[lang].faqs = b[lang].faqs || [];
-                  const translatedFaqs = [];
-                  for (let fi = 0; fi < srcFaqs.length; fi++) {
-                    const sf = srcFaqs[fi];
-                    const existingFaq = b[lang].faqs[fi];
-                    let q = existingFaq?.q;
-                    let a = existingFaq?.a;
-                    if (!q || q === sf.q) {
-                      q = await window.CMS.AI.translate(sf.q, lang, srcLang);
-                    }
-                    if (!a || a === sf.a) {
-                      a = await window.CMS.AI.translate(sf.a, lang, srcLang);
-                    }
-                    translatedFaqs.push({ q: q || sf.q, a: a || sf.a });
-                  }
-                  b[lang].faqs = translatedFaqs;
-                }
-              }
-              b._last_en = { title: srcData.title, excerpt: srcData.excerpt, body: srcData.body };
-              window.CMS.saveData(window.CMS.KEYS.BLOG, blogs);
-              if (window.CMS && window.CMS.Backend && window.CMS.Backend.syncToDb) {
-                window.CMS.Backend.syncToDb('draft');
-              }
-              sendToIframe({ type: 'CMS_REHYDRATE' });
-            }
+            // Blogs use 100% manual translation: user pastes drafts directly per language
+            return;
 
           } else if (section === 'aboutus') {
             const about = window.CMS.getData(window.CMS.KEYS.ABOUTUS) || window.CMS.DEFAULTS.aboutus;
