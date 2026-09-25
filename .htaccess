@@ -182,3 +182,5 @@ AddDefaultCharset UTF-8
 # XML & XSL Stylesheet MIME Types
 AddType application/xml .xml .xsl
 AddType text/xml .xsl
+AddType image/x-icon .ico
+AddType image/svg+xml .svg

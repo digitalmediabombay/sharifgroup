@@ -9,9 +9,10 @@
         <html xmlns="http://www.w3.org/1999/xhtml" lang="en">
             <head>
                 <title>XML Sitemap | Sharif Group Dubai</title>
-                <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
                 <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-                <link rel="icon" type="image/x-icon" href="/favicon.ico" />
+                <link rel="icon" type="image/svg+xml" href="/assets/images/Group-427321463.svg" />
+                <link rel="alternate icon" type="image/x-icon" href="/favicon.ico" />
+                <link rel="apple-touch-icon" sizes="180x180" href="/assets/images/Group-427321463.svg" />
                 <style type="text/css">
                     * {
                         box-sizing: border-box;
@@ -335,6 +336,7 @@
                     <div class="header">
                         <div class="brand-row">
                             <div class="brand-title">
+                                <img src="/assets/images/Group-427321463.svg" alt="Sharif Group Logo" style="width: 28px; height: 32px; object-fit: contain;" />
                                 <span>SHARIF GROUP <span class="brand-gold">DUBAI</span></span>
                             </div>
                             <span class="badge-sitemap">Standard XML Protocol 0.9</span>
