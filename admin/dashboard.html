@@ -4154,7 +4154,11 @@
 
         function makeProgItem(p, type) {
           const ld = p[state.lang] || p.en || {};
-          let title = ld.nav_label || ld.title || (p.en && (p.en.nav_label || p.en.title)) || p.name || '';
+          let rawTitle = ld.nav_label || ld.title || '';
+          if (typeof rawTitle === 'string' && (/[\u2500-\u259F\uFFFD]/.test(rawTitle))) {
+            rawTitle = (p.en && (p.en.nav_label || p.en.title)) || p.name || '';
+          }
+          let title = (rawTitle || (p.en && (p.en.nav_label || p.en.title)) || p.name || '').replace(/\\u0026amp;/gi, '&').replace(/&amp;/gi, '&').replace(/ΓÇô/g, '–');
           if (!title || title.startsWith('id-')) {
             if (p.hero_title) {
               title = p.hero_title + (type === 'citizenship' ? ' | Passport' : ' | Golden Visa');
@@ -8225,6 +8229,7 @@
             const en = d.hero?.en || {};
             d.hero = d.hero || {};
             d.hero._last_en = d.hero._last_en || {};
+            const isMoji = (s) => typeof s === 'string' && (/[\u2500-\u259F\uFFFD]|ΓÇ[ôöòóõ]|[\u0390-\u03C9]{2,}|\\u0026amp;/i.test(s));
 
             for (const lang of targetLangs) {
               d.hero[lang] = d.hero[lang] || {};
@@ -8233,7 +8238,7 @@
                 if (en[f]) {
                   const curr = d.hero[lang][f];
                   const lastEn = d.hero._last_en[f];
-                  if (!curr || (lastEn && en[f] !== lastEn) || curr === en[f]) {
+                  if (!curr || (lastEn && en[f] !== lastEn) || curr === en[f] || isMoji(curr)) {
                     d.hero[lang][f] = await window.CMS.AI.translate(en[f], lang);
                   }
                 }
@@ -8251,7 +8256,7 @@
                 if (enAbout[af]) {
                   const curr = d.about[lang][af];
                   const lastEn = d.about._last_en[af];
-                  if (!curr || (lastEn && enAbout[af] !== lastEn) || curr === enAbout[af]) {
+                  if (!curr || (lastEn && enAbout[af] !== lastEn) || curr === enAbout[af] || isMoji(curr)) {
                     d.about[lang][af] = await window.CMS.AI.translate(enAbout[af], lang);
                   }
                 }
@@ -8278,7 +8283,7 @@
                   if (en[pf]) {
                     const curr = list[idx][lang][pf];
                     const lastEn = list[idx]._last_en[pf];
-                    if (!curr || (lastEn && en[pf] !== lastEn) || curr === en[pf]) {
+                    if (!curr || (lastEn && en[pf] !== lastEn) || curr === en[pf] || isMoji(curr)) {
                       list[idx][lang][pf] = await window.CMS.AI.translate(en[pf], lang);
                     }
                   }

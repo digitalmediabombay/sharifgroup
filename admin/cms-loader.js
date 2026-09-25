@@ -12,7 +12,30 @@
 (function () {
   'use strict';
 
-  // ── Storage Helpers ─────────────────────────────────────
+  // ── Storage Helpers & Mojibake Shield ─────────────────────────────────────
+  function isMojibakeString(str) {
+    if (typeof str !== 'string' || !str) return false;
+    return /[\u2500-\u259F\uFFFD]|ΓÇ[ôöòóõ]|[\u0390-\u03C9]{2,}|\\u0026amp;/i.test(str);
+  }
+
+  function cleanMojibakeDeep(val) {
+    if (typeof val === 'string') {
+      if (isMojibakeString(val)) return '';
+      return val.replace(/\\u0026amp;/gi, '&').replace(/&amp;/gi, '&').replace(/ΓÇô/g, '–');
+    }
+    if (Array.isArray(val)) {
+      return val.map(cleanMojibakeDeep);
+    }
+    if (val && typeof val === 'object') {
+      const cleaned = {};
+      for (const k of Object.keys(val)) {
+        cleaned[k] = cleanMojibakeDeep(val[k]);
+      }
+      return cleaned;
+    }
+    return val;
+  }
+
   function store(key) {
     try {
       function safeParse(raw) {
@@ -24,18 +47,24 @@
         }
         return parsed;
       }
+      let result = null;
       if (!isEditor) {
         const live = localStorage.getItem(key + '_live');
-        if (live !== null) return safeParse(live);
-        const manifestStr = localStorage.getItem('sgcms_published_manifest');
-        if (manifestStr) {
-          const manifest = JSON.parse(manifestStr);
-          if (manifest && manifest.data && manifest.data[key] !== undefined) {
-            return manifest.data[key];
+        if (live !== null) result = safeParse(live);
+        else {
+          const manifestStr = localStorage.getItem('sgcms_published_manifest');
+          if (manifestStr) {
+            const manifest = JSON.parse(manifestStr);
+            if (manifest && manifest.data && manifest.data[key] !== undefined) {
+              result = manifest.data[key];
+            }
           }
         }
       }
-      return safeParse(localStorage.getItem(key));
+      if (result === null) {
+        result = safeParse(localStorage.getItem(key));
+      }
+      return cleanMojibakeDeep(result);
     } catch { return null; }
   }
 
@@ -1070,26 +1099,27 @@
     }
 
     // 3. Specs / Fast Facts
-    if (ld.investment_from) setText('[data-i18n*="specInvestmentCostDesc"]', ld.investment_from);
-    if (ld.processing_time) setText('[data-i18n*="specProcessingDesc"]', ld.processing_time);
-    if (ld.visa_free) setText('[data-i18n*="specVisaFreeDesc"]', ld.visa_free);
+    if (ld.investment_from && !isMojibakeString(ld.investment_from)) setText('[data-i18n*="specInvestmentCostDesc"]', ld.investment_from);
+    if (ld.processing_time && !isMojibakeString(ld.processing_time)) setText('[data-i18n*="specProcessingDesc"]', ld.processing_time);
+    if (ld.visa_free && !isMojibakeString(ld.visa_free)) setText('[data-i18n*="specVisaFreeDesc"]', ld.visa_free);
 
     if (Array.isArray(ld.specs)) {
-      if (ld.specs[0]?.desc) setText('[data-i18n*="specProcessingDesc"]', ld.specs[0].desc);
-      if (ld.specs[1]?.desc) setText('[data-i18n*="specVisaFreeDesc"]', ld.specs[1].desc);
-      if (ld.specs[2]?.desc) setText('[data-i18n*="specInvestmentTypeDesc"]', ld.specs[2].desc);
-      if (ld.specs[3]?.desc) setText('[data-i18n*="specInvestmentCostDesc"]', ld.specs[3].desc);
-      if (ld.specs[4]?.desc) setText('[data-i18n*="specFamilyDesc"]', ld.specs[4].desc);
+      if (ld.specs[0]?.desc && !isMojibakeString(ld.specs[0].desc)) setText('[data-i18n*="specProcessingDesc"]', ld.specs[0].desc);
+      if (ld.specs[1]?.desc && !isMojibakeString(ld.specs[1].desc)) setText('[data-i18n*="specVisaFreeDesc"]', ld.specs[1].desc);
+      if (ld.specs[2]?.desc && !isMojibakeString(ld.specs[2].desc)) setText('[data-i18n*="specInvestmentTypeDesc"]', ld.specs[2].desc);
+      if (ld.specs[3]?.desc && !isMojibakeString(ld.specs[3].desc)) setText('[data-i18n*="specInvestmentCostDesc"]', ld.specs[3].desc);
+      if (ld.specs[4]?.desc && !isMojibakeString(ld.specs[4].desc)) setText('[data-i18n*="specFamilyDesc"]', ld.specs[4].desc);
     }
 
     // 4. Executive Overview
-    if (ld.overview_title) {
+    if (ld.overview_title && !isMojibakeString(ld.overview_title)) {
       const ovHeading = document.querySelector('[data-i18n-html*="overviewTitle"], [data-i18n*="overviewTitle"], #sec-overview h3');
       if (ovHeading) {
         ovHeading.innerHTML = formatOverviewTitleHtml(ld.overview_title);
       }
     }
-    if (ld.overview || ld.overview_p1) setText('[data-i18n*="overviewDesc"]', ld.overview_p1 || ld.overview);
+    const ovBody = ld.overview_p1 || ld.overview;
+    if (ovBody && !isMojibakeString(ovBody)) setText('[data-i18n*="overviewDesc"]', ovBody);
 
     // 5. Benefits Cards
     if (Array.isArray(ld.benefits) && ld.benefits.length) {
@@ -3235,6 +3265,59 @@
       return false;
     }
 
+    // Cohesive Target Resolver: resolves target to unified block element to eliminate hover jitter
+    function resolveEditableTarget(el) {
+      if (!el || el === document.body || el === document.documentElement || el.nodeType !== 1) return null;
+
+      // Ignore CMS toolbar, popovers, tooltip, blog body editor
+      if (el.closest('#cms-inline-toolbar, #cms-hover-tooltip, #cms-save-toast, #cms-preview-badge, #cms-image-popover, .cms-section-tool, #cms-blog-body-docked-bar, #cms-selection-bubble, #detail-content-body')) {
+        return null;
+      }
+
+      // Navigation header, navbar, mobile menu and mega-menus are site navigation
+      const navArea = el.closest('header, nav, #main-header, #mobile-menu, .mega-menu, [id*="mega"], [class*="navbar"]');
+      if (navArea && !navArea.closest('#blog-detail-view-container')) {
+        return null;
+      }
+
+      // Exempt back button
+      if (el.closest('[onclick*="closeBlogDetail"], [data-i18n="blog.backToArticles"]')) {
+        return null;
+      }
+
+      // If clicked/hovered directly on an image or inside image
+      if (el.tagName === 'IMG') return el;
+      const imgChild = el.closest('img');
+      if (imgChild) return imgChild;
+
+      // Don't treat standalone icon tags as standalone text targets
+      if (el.tagName === 'I' || el.tagName === 'SVG' || el.tagName === 'PATH') {
+        const parentContainer = el.closest('button, a, p, h1, h2, h3, h4, h5, h6, li, [data-i18n], [data-cms]');
+        if (parentContainer && isEditableTarget(parentContainer)) return resolveEditableTarget(parentContainer);
+        return null;
+      }
+
+      // Blog detail header fields
+      const detailField = el.closest('#detail-title, #detail-author, #detail-date, #detail-updated, #detail-category-badge, #detail-breadcrumb-title');
+      if (detailField) return detailField;
+
+      // Explicit data-i18n or data-cms unit
+      const explicitCms = el.closest('[data-i18n], [data-cms]');
+      if (explicitCms && isEditableTarget(explicitCms)) {
+        return explicitCms;
+      }
+
+      // Parent text container block (h1..h6, p, button, a, blockquote, li)
+      // This groups inner span/strong/em/b tags into the natural container and prevents jumping/flickering
+      const blockContainer = el.closest('h1, h2, h3, h4, h5, h6, p, button, a, blockquote, q, figcaption, li');
+      if (blockContainer && isEditableTarget(blockContainer)) {
+        return blockContainer;
+      }
+
+      if (isEditableTarget(el)) return el;
+      return null;
+    }
+
     // Position floating toolbar above active element
     function positionToolbar(el) {
       if (!el) return;
@@ -3548,10 +3631,13 @@
       });
     }
 
-    // Delegated Hover
-    document.addEventListener('mouseover', (e) => {
+    // Delegated Hover with requestAnimationFrame throttling to eliminate jitter
+    let hoverRaf = null;
+    let pendingHoverTarget = null;
+
+    function applyHoverState(targetEl) {
       if (!editMode || activeEl) return;
-      if (e.target.closest('#detail-content-body, #cms-blog-body-docked-bar, #cms-selection-bubble')) {
+      if (!targetEl || targetEl === document.body || targetEl === document.documentElement) {
         if (hoveredEl) {
           hoveredEl.classList.remove('cms-target-hover');
           hoveredEl = null;
@@ -3559,26 +3645,26 @@
         }
         return;
       }
-      let targetEl = e.target;
-      if (targetEl && targetEl.nodeType === 3) targetEl = targetEl.parentElement;
-      if (!targetEl || targetEl === document.body || targetEl === document.documentElement || !targetEl.closest) return;
-      const target = targetEl.closest(EDITABLE_SELECTOR);
-      if (target && isEditableTarget(target)) {
-        if (hoveredEl && hoveredEl !== target) hoveredEl.classList.remove('cms-target-hover');
+
+      const target = resolveEditableTarget(targetEl);
+      if (target) {
+        if (hoveredEl && hoveredEl !== target) {
+          hoveredEl.classList.remove('cms-target-hover');
+        }
         hoveredEl = target;
         target.classList.add('cms-target-hover');
 
         const rect = target.getBoundingClientRect();
         tooltip.style.display = 'block';
         if (target.tagName === 'IMG') {
-          tooltip.textContent = 'Click to change image';
+          tooltip.innerHTML = '<svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="display:inline-block;vertical-align:middle;margin-right:4px"><rect width="18" height="18" x="3" y="3" rx="2"/><circle cx="9" cy="9" r="2"/><path d="m21 15-3.086-3.086a2 2 0 0 0-2.828 0L6 21"/></svg>Click to change image';
         } else {
-          tooltip.textContent = 'Click to edit text';
+          tooltip.innerHTML = '<svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="display:inline-block;vertical-align:middle;margin-right:4px"><path d="M17 3a2.85 2.83 0 1 1 4 4L7.5 20.5 2 22l1.5-5.5Z"/><path d="m15 5 4 4"/></svg>Click to edit';
         }
         let top = rect.top - 24;
         if (top < 5) top = rect.bottom + 6;
         tooltip.style.top = `${Math.max(5, top)}px`;
-        tooltip.style.left = `${Math.max(5, Math.min(window.innerWidth - 150, rect.left))}px`;
+        tooltip.style.left = `${Math.max(5, Math.min(window.innerWidth - 160, rect.left))}px`;
       } else {
         if (hoveredEl) {
           hoveredEl.classList.remove('cms-target-hover');
@@ -3586,15 +3672,26 @@
           tooltip.style.display = 'none';
         }
       }
-    }, true);
+    }
+
+    document.addEventListener('mouseover', (e) => {
+      if (!editMode || activeEl) return;
+      pendingHoverTarget = e.target;
+      if (!hoverRaf) {
+        hoverRaf = requestAnimationFrame(() => {
+          hoverRaf = null;
+          applyHoverState(pendingHoverTarget);
+        });
+      }
+    });
 
     document.addEventListener('mouseout', (e) => {
-      if (hoveredEl && e.relatedTarget && !hoveredEl.contains(e.relatedTarget)) {
+      if (hoveredEl && (!e.relatedTarget || !hoveredEl.contains(e.relatedTarget))) {
         hoveredEl.classList.remove('cms-target-hover');
         hoveredEl = null;
         tooltip.style.display = 'none';
       }
-    }, true);
+    });
 
     // Delegated Click to Edit & Navbar Navigation
     document.addEventListener('click', (e) => {
@@ -3664,12 +3761,12 @@
         return;
       }
 
-      const target = e.target.closest(EDITABLE_SELECTOR);
+      const target = resolveEditableTarget(e.target);
 
-      if (target && isEditableTarget(target)) {
+      if (target) {
         // If clicking within the element already being edited, do NOT re-initialize or call preventDefault!
         // Allow natural caret positioning, double-click word selection, and typing!
-        if (activeEl === target) {
+        if (activeEl === target || (activeEl && activeEl.contains(e.target))) {
           return;
         }
 

@@ -28,17 +28,49 @@ if ($mode === 'draft') {
 }
 
 /**
+ * Check if a string contains CP437 mojibake or entity corruptions
+ */
+function isMojibakeString($raw) {
+    if (!is_string($raw) || trim($raw) === '') return false;
+    return preg_match('/[\x{2500}-\x{259F}\x{FFFD}]|ΓÇô|ΓÇó|u0026amp;/u', $raw) === 1;
+}
+
+/**
+ * Deeply sanitize entities and dashes across arrays and strings
+ */
+function deepSanitizeData(&$val) {
+    if (is_string($val)) {
+        $val = str_replace(
+            ['\\u0026amp;', '&amp;', 'ΓÇô', 'ΓÇó', '\\u0027', '\\\"'],
+            ['&', '&', '–', '•', "'", '"'],
+            $val
+        );
+    } elseif (is_array($val)) {
+        foreach ($val as &$sub) {
+            deepSanitizeData($sub);
+        }
+    }
+}
+
+/**
  * Unwrap any nested/double-encoded JSON and shield against mojibake
  */
-function cleanJsonValue($raw, $fallback = null) {
+function cleanJsonValue($raw, $fallback = null, $contentKey = '', $db = null) {
     if ($raw === null || $raw === '') {
         return $fallback;
     }
-    // If MySQL contains box-drawing mojibake characters, immediately prefer clean file snapshot
-    if (is_string($raw) && preg_match('/[\x{2500}-\x{259F}\x{FFFD}]/u', $raw)) {
-        if ($fallback !== null) {
-            return $fallback;
+
+    $isCorrupt = is_string($raw) && isMojibakeString($raw);
+    if ($isCorrupt && $fallback !== null) {
+        // Auto-heal MySQL row in the background if database is writable
+        if ($db !== null && !empty($contentKey)) {
+            try {
+                $cleanJson = json_encode($fallback, JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES);
+                $stmt = $db->prepare("UPDATE cms_content SET draft_data = :c, live_data = :c, updated_at = NOW() WHERE content_key = :k");
+                $stmt->execute([':c' => $cleanJson, ':k' => $contentKey]);
+            } catch (Exception $e) {}
         }
+        return $fallback;
     }
 
     $val = $raw;
@@ -55,6 +87,8 @@ function cleanJsonValue($raw, $fallback = null) {
             break;
         }
     }
+
+    deepSanitizeData($val);
     return $val;
 }
 
@@ -74,7 +108,7 @@ if ($db !== null) {
                     }
                 }
                 $fallback = isset($snapshot[$key]) ? $snapshot[$key] : null;
-                $cleanData = cleanJsonValue($raw, $fallback);
+                $cleanData = cleanJsonValue($raw, $fallback, $key, $db);
 
                 if ($cleanData !== null) {
                     jsonResponse([
@@ -106,7 +140,7 @@ if ($db !== null) {
                     }
                     $k = $r['content_key'];
                     $fallback = isset($snapshot[$k]) ? $snapshot[$k] : null;
-                    $cleanData = cleanJsonValue($raw, $fallback);
+                    $cleanData = cleanJsonValue($raw, $fallback, $k, $db);
 
                     $contentBundle[$k] = $cleanData !== null ? $cleanData : $raw;
                     $timestamps[$k] = [
