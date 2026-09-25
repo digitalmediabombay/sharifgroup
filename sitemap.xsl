@@ -200,15 +200,14 @@
                         font-size: 12px;
                         font-weight: 500;
                         width: 48px;
+                        text-align: center;
                     }
                     .url-link {
                         color: #0284c7;
                         text-decoration: none;
                         font-weight: 500;
-                        word-break: break-all;
-                        display: inline-flex;
-                        align-items: center;
-                        gap: 6px;
+                        white-space: nowrap;
+                        display: inline-block;
                     }
                     .url-link:hover {
                         color: #0369a1;
@@ -285,28 +284,31 @@
                         color: #0b192c;
                     }
                 </style>
-                <script type="text/javascript"><![CDATA[
-                    let currentLang = 'all';
-                    let currentQuery = '';
+                <script type="text/javascript">
+                <xsl:text disable-output-escaping="yes"><![CDATA[
+                    var currentLang = 'all';
+                    var currentQuery = '';
 
                     function filterRows() {
-                        const rows = document.querySelectorAll('tbody tr');
-                        let visibleCount = 0;
-                        rows.forEach(r => {
-                            const url = (r.getAttribute('data-url') || '').toLowerCase();
-                            const lang = r.getAttribute('data-lang') || 'en';
+                        var rows = document.querySelectorAll('tbody tr');
+                        var visibleCount = 0;
+                        rows.forEach(function(r) {
+                            var url = (r.getAttribute('data-url') || '').toLowerCase();
+                            var lang = r.getAttribute('data-lang') || 'en';
 
-                            const matchesQuery = !currentQuery || url.includes(currentQuery);
-                            const matchesLang = (currentLang === 'all') || (lang === currentLang);
+                            var matchQuery = !currentQuery || (url.indexOf(currentQuery) !== -1);
+                            var matchLang = (currentLang === 'all') || (lang === currentLang);
 
-                            if (matchesQuery && matchesLang) {
-                                r.style.display = '';
-                                visibleCount++;
-                            } else {
-                                r.style.display = 'none';
+                            if (matchQuery) {
+                                if (matchLang) {
+                                    r.style.display = '';
+                                    visibleCount++;
+                                    return;
+                                }
                             }
+                            r.style.display = 'none';
                         });
-                        const countEl = document.getElementById('visibleCount');
+                        var countEl = document.getElementById('visibleCount');
                         if (countEl) countEl.textContent = visibleCount;
                     }
 
@@ -317,19 +319,22 @@
 
                     function setLang(lang, btn) {
                         currentLang = lang;
-                        document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+                        document.querySelectorAll('.tab-btn').forEach(function(b) {
+                            b.classList.remove('active');
+                        });
                         if (btn) btn.classList.add('active');
                         filterRows();
                     }
 
-                    document.addEventListener('DOMContentLoaded', () => {
-                        const countEl = document.getElementById('visibleCount');
-                        const totalEl = document.getElementById('totalCount');
-                        const rows = document.querySelectorAll('tbody tr');
+                    document.addEventListener('DOMContentLoaded', function() {
+                        var countEl = document.getElementById('visibleCount');
+                        var totalEl = document.getElementById('totalCount');
+                        var rows = document.querySelectorAll('tbody tr');
                         if (countEl) countEl.textContent = rows.length;
                         if (totalEl) totalEl.textContent = rows.length;
                     });
-                ]]></script>
+                ]]></xsl:text>
+                </script>
             </head>
             <body>
                 <div class="container">
