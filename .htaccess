@@ -178,3 +178,7 @@
 
 # UTF-8 Charset Encoding
 AddDefaultCharset UTF-8
+
+# XML & XSL Stylesheet MIME Types
+AddType application/xml .xml .xsl
+AddType text/xml .xsl
