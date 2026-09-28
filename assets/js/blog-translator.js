@@ -440,7 +440,7 @@
                 localBlogs = window._data.sgcms_blog;
             }
             var foundCms = localBlogs.find(function(b) {
-                return b.slug === slug || b.id === slug || (b.en && b.en.slug === slug);
+                return b.slug === slug || b.id === slug || (b.en && b.en.slug === slug) || (b.ar && b.ar.slug === slug) || (b.fa && b.fa.slug === slug) || (b.zh && b.zh.slug === slug);
             });
             if (foundCms) {
                 var langObj = foundCms[curLang];

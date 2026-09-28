@@ -54,17 +54,26 @@ foreach ($incomingData as $k => $v) {
     }
 }
 
-// Automatically detect changes in English and auto-translate into Arabic, Farsi, Chinese
-require_once __DIR__ . '/translate_sync.php';
-try {
-    $existingDraft = readDraftSnapshot();
-    foreach ($incomingData as $k => &$v) {
-        $oldVal = isset($existingDraft[$k]) ? $existingDraft[$k] : null;
-        autoTranslateChangedData($k, $v, $oldVal);
+// Deduplicate blog entries if sgcms_blog is present
+if (!empty($incomingData['sgcms_blog']) && is_array($incomingData['sgcms_blog'])) {
+    $dedupedBlogs = [];
+    $seenIds = [];
+    $seenTitles = [];
+    foreach ($incomingData['sgcms_blog'] as $blogItem) {
+        if (!is_array($blogItem)) continue;
+        $id = $blogItem['id'] ?? '';
+        $titleEn = trim($blogItem['en']['title'] ?? ($blogItem['title'] ?? ''));
+        $titleAr = trim($blogItem['ar']['title'] ?? '');
+        $titleKey = mb_strtolower($titleEn ?: $titleAr);
+        
+        if ($id && isset($seenIds[$id])) continue;
+        if ($titleKey && isset($seenTitles[$titleKey])) continue;
+        
+        if ($id) $seenIds[$id] = true;
+        if ($titleKey) $seenTitles[$titleKey] = true;
+        $dedupedBlogs[] = $blogItem;
     }
-    unset($v);
-} catch (Exception $e) {
-    error_log('[SharifCMS AutoTranslate Save Error] ' . $e->getMessage());
+    $incomingData['sgcms_blog'] = $dedupedBlogs;
 }
 
 // 1. Dual-Write: Update server-side draft snapshot file immediately

@@ -298,8 +298,40 @@
   }
 
   function hydrateBlog(l) {
-    var blogs = _data.sgcms_blog;
+    var blogs = (_data && _data.sgcms_blog) || [];
+    if (!Array.isArray(blogs) || !blogs.length) {
+      try {
+        var rawLocal = localStorage.getItem('sgcms_blog_live') || localStorage.getItem('sgcms_blog');
+        if (rawLocal) {
+          var parsedLocal = JSON.parse(rawLocal);
+          if (Array.isArray(parsedLocal) && parsedLocal.length) {
+            blogs = parsedLocal;
+          }
+        }
+      } catch (e) {}
+    }
     if (!Array.isArray(blogs) || !blogs.length) return;
+
+    // Deduplicate blogs to avoid duplicate cards on the public website
+    var seen = {};
+    var deduped = [];
+    blogs.forEach(function (b) {
+      if (!b) return;
+      var id = b.id || '';
+      var tEn = ((b.en && b.en.title) || b.title || '').trim().toLowerCase();
+      var tAr = ((b.ar && b.ar.title) || '').trim().toLowerCase();
+      var tFa = ((b.fa && b.fa.title) || '').trim().toLowerCase();
+      var tZh = ((b.zh && b.zh.title) || '').trim().toLowerCase();
+      var titleKey = tEn || tAr || tFa || tZh;
+
+      if (id && seen['id:' + id]) return;
+      if (titleKey && seen['t:' + titleKey]) return;
+
+      if (id) seen['id:' + id] = true;
+      if (titleKey) seen['t:' + titleKey] = true;
+      deduped.push(b);
+    });
+    blogs = deduped;
 
     window.articlesDatabase = window.articlesDatabase || {};
 
@@ -338,7 +370,13 @@
       window.articlesDatabase[slug] = articleData;
       window.articlesDatabase[b.id] = articleData;
 
-      var existingCard = grid.querySelector('[data-cms-blog-id="' + b.id + '"]');
+      // Find any existing dynamic cards matching id or slug
+      var matchingCards = grid.querySelectorAll('[data-cms-blog-id="' + b.id + '"], [data-cms-slug="' + slug + '"]');
+      var existingCard = matchingCards.length ? matchingCards[0] : null;
+      for (var m = 1; m < matchingCards.length; m++) {
+        matchingCards[m].remove();
+      }
+
       if (!existingCard) {
         var staticCards = grid.querySelectorAll('article.blog-item:not(.dynamic-cms-blog)');
         for (var i = 0; i < staticCards.length; i++) {
@@ -351,20 +389,28 @@
           if (onclickAttr.indexOf(slug) !== -1 || (cardTitle && cardTitle === blogTitle)) {
             existingCard = sc;
             existingCard.setAttribute('data-cms-blog-id', b.id);
+            existingCard.setAttribute('data-cms-slug', slug);
             break;
           }
         }
       }
 
+      var readMoreLabel = (l === 'ar') ? 'اقرأ المزيد' : ((l === 'fa') ? 'ادامه مطلب' : ((l === 'zh') ? '阅读更多' : 'READ MORE'));
+
       if (existingCard) {
+        existingCard.setAttribute('data-cat', dataCat);
+        existingCard.setAttribute('data-cms-slug', slug);
         var h4El = existingCard.querySelector('h4');
         if (h4El) h4El.textContent = title;
         var pEl = existingCard.querySelector('p');
         if (pEl && ld.excerpt) pEl.textContent = ld.excerpt;
+        var rm = existingCard.querySelector('a[onclick*="openBlogDetailBySlug"]');
+        if (rm) rm.textContent = readMoreLabel;
       } else {
         var articleEl = document.createElement('article');
         articleEl.className = 'space-y-4 text-left flex flex-col justify-between blog-item dynamic-cms-blog';
         articleEl.setAttribute('data-cms-blog-id', b.id);
+        articleEl.setAttribute('data-cms-slug', slug);
         articleEl.setAttribute('data-cat', dataCat);
         articleEl.style.display = 'flex';
         articleEl.setAttribute('data-paginated', 'true');
@@ -382,7 +428,7 @@
           '</h4>' +
           '</div>' +
           '<a class="inline-block text-[11px] font-bold uppercase tracking-wider text-neutral-800 border-b border-neutral-800 hover:text-luxury-gold hover:border-luxury-gold transition-colors pb-0.5 self-start cursor-pointer" href="javascript:void(0)" onclick="openBlogDetailBySlug(\'' + slug + '\', event)">' +
-          'READ MORE' +
+          readMoreLabel +
           '</a>';
 
         grid.prepend(articleEl);

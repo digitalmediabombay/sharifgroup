@@ -8125,6 +8125,7 @@
                 const detailSection = document.getElementById('blog-detail-view-container');
 
                 // Dynamically resolve CMS blogs fresh for the current language
+                var found = null;
                 try {
                     const rawBlogs = localStorage.getItem('sgcms_blog') || localStorage.getItem('sgcms_blog_live') || '[]';
                     let localBlogs = [];
@@ -8132,7 +8133,7 @@
                     if ((!localBlogs || !localBlogs.length) && window._data && Array.isArray(window._data.sgcms_blog)) {
                         localBlogs = window._data.sgcms_blog;
                     }
-                    const found = localBlogs.find(b => b.slug === slug || b.id === slug || (b.en && b.en.slug === slug));
+                    found = localBlogs.find(b => b && (b.slug === slug || b.id === slug || (b.en && b.en.slug === slug) || (b.ar && b.ar.slug === slug) || (b.fa && b.fa.slug === slug) || (b.zh && b.zh.slug === slug)));
                     if (found) {
                         const curLang = (window.getCurrentLanguage && window.getCurrentLanguage())
                             || localStorage.getItem('sharif_lang')
@@ -8247,7 +8248,10 @@
                 }
                 window.__blogRetryCount = 0;
 
-                window.currentActiveArticleSlug = slug;
+                window.currentActiveArticleSlug = (found && (found.slug || found.id)) || slug;
+                if (window.parent && window.parent !== window) {
+                    try { window.parent.postMessage({ type: 'CMS_ARTICLE_OPENED', slug: window.currentActiveArticleSlug }, '*'); } catch(e) {}
+                }
                 const currentLang = (window.getCurrentLanguage && window.getCurrentLanguage())
                     || localStorage.getItem('sharif_lang')
                     || localStorage.getItem('sharif_preferred_lang')
@@ -8362,16 +8366,18 @@
                 });
 
                 // Update URL history seamlessly without page reload
+                var activeSlug = (found && found[currentLang] && found[currentLang].slug) ? found[currentLang].slug : slug;
                 if (window.location.protocol !== 'file:' && window.history && window.history.pushState) {
                     var isInsideIframe = (window.self !== window.top);
                     var isCmsMode = (window.location.search.indexOf('cms_editor') !== -1 || window.location.search.indexOf('cms_preview') !== -1);
                     if (!isInsideIframe && !isCmsMode) {
-                        window.history.pushState({ articleSlug: slug }, article.title, `/blog/${slug}/`);
+                        var langPrefix = (currentLang && currentLang !== 'en') ? `/${currentLang}` : '';
+                        window.history.pushState({ articleSlug: activeSlug, lang: currentLang }, article.title, `${langPrefix}/blog/${activeSlug}/`);
                     }
                 }
 
                 // Dynamically update SEO, GEO, AEO, OpenGraph & Schema.org JSON-LD for new & existing articles
-                updateBlogArticleSeo(article, slug, currentLang);
+                updateBlogArticleSeo(article, activeSlug, currentLang);
 
                 // Switch Views
                 if (listingSection) listingSection.style.display = 'none';
@@ -8443,7 +8449,8 @@
                 var excerpt = rawDesc ? rawDesc.slice(0, 160) : 'Explore strategic legal insights, investment migration parameters, and global residency solutions curated by Sharif Group Dubai.';
 
                 var cleanSlug = String(slug || '').replace(/^\/+|\/+$/g, '');
-                var canonicalUrl = `https://sharifgroup.ae/blog/${cleanSlug}/`;
+                var langPrefix = (currentLang && currentLang !== 'en') ? `/${currentLang}` : '';
+                var canonicalUrl = `https://sharifgroup.ae${langPrefix}/blog/${cleanSlug}/`;
 
                 var rawImg = article.image || 'https://sharifgroup.ae/assets/images/dubai-office-2.webp';
                 var fullImageUrl = (rawImg.indexOf('http') === 0) ? rawImg : ('https://sharifgroup.ae' + (rawImg.indexOf('/') === 0 ? '' : '/') + rawImg);
@@ -8455,6 +8462,30 @@
                 var modDate = article.updated ? (article.updated.indexOf('T') !== -1 ? article.updated : (article.updated + 'T00:00:00+04:00')) : (article.date ? pubDate : '2026-08-20T00:00:00+04:00');
                 var authorName = article.author || 'Sharif Group Advisory Desk';
                 var categoryName = article.category || 'Citizenship by Investment';
+
+                // Helper for hreflang tags
+                function setHreflangTag(langCode, hrefUrl) {
+                    var el = document.querySelector(`link[rel="alternate"][hreflang="${langCode}"]`);
+                    if (!el) {
+                        el = document.createElement('link');
+                        el.setAttribute('rel', 'alternate');
+                        el.setAttribute('hreflang', langCode);
+                        document.head.appendChild(el);
+                    }
+                    el.setAttribute('href', hrefUrl);
+                }
+
+                // Dynamic hreflang alternates for SEO, GEO & AEO
+                var enSlug = (article.en && article.en.slug) || article.slug || cleanSlug;
+                var arSlug = (article.ar && article.ar.slug) || cleanSlug;
+                var faSlug = (article.fa && article.fa.slug) || cleanSlug;
+                var zhSlug = (article.zh && article.zh.slug) || cleanSlug;
+
+                setHreflangTag('x-default', `https://sharifgroup.ae/blog/${enSlug}/`);
+                setHreflangTag('en', `https://sharifgroup.ae/blog/${enSlug}/`);
+                setHreflangTag('ar', `https://sharifgroup.ae/ar/blog/${arSlug}/`);
+                setHreflangTag('fa', `https://sharifgroup.ae/fa/blog/${faSlug}/`);
+                setHreflangTag('zh', `https://sharifgroup.ae/zh/blog/${zhSlug}/`);
 
                 // 1. Primary SEO & AEO Meta Tags (Matches static blog files 100%)
                 setMetaTag('meta[name="title"]', 'content', titleText);
@@ -8597,15 +8628,21 @@
             }
 
             function resetBlogListingSeo() {
+                var curLang = (window.getCurrentLanguage && window.getCurrentLanguage())
+                    || localStorage.getItem('sharif_lang')
+                    || localStorage.getItem('sharif_preferred_lang')
+                    || document.documentElement.lang
+                    || 'en';
+                var langPrefix = (curLang && curLang !== 'en') ? `/${curLang}` : '';
                 document.title = 'Investment Migration Insights & Blog | Sharif Group';
                 setMetaTag('meta[name="title"]', 'content', 'Investment Migration Insights & Blog | Sharif Group');
                 setMetaTag('meta[name="description"]', 'content', 'Explore expert guides on second citizenship, European Golden Visas, Dubai real estate, and international tax planning. Read our latest articles today.');
                 setMetaTag('meta[name="author"]', 'content', 'Sharif Group Legal Desk');
-                setCanonicalUrl('https://sharifgroup.ae/blog/');
+                setCanonicalUrl(`https://sharifgroup.ae${langPrefix}/blog/`);
                 setMetaTag('meta[property="og:type"]', 'content', 'website');
                 setMetaTag('meta[property="og:title"]', 'content', 'Investment Migration Insights & Blog | Sharif Group');
                 setMetaTag('meta[property="og:description"]', 'content', 'Explore expert guides on second citizenship, European Golden Visas, Dubai real estate, and international tax planning. Read our latest articles today.');
-                setMetaTag('meta[property="og:url"]', 'content', 'https://sharifgroup.ae/blog/');
+                setMetaTag('meta[property="og:url"]', 'content', `https://sharifgroup.ae${langPrefix}/blog/`);
                 setMetaTag('meta[property="og:image"]', 'content', 'https://sharifgroup.ae/assets/images/dubai-office-2.webp');
                 setMetaTag('meta[name="twitter:card"]', 'content', 'summary_large_image');
                 setMetaTag('meta[name="twitter:title"]', 'content', 'Investment Migration Insights & Blog | Sharif Group');
@@ -8618,6 +8655,9 @@
            
             function closeBlogDetail() {
                 window.currentActiveArticleSlug = null;
+                if (window.parent && window.parent !== window) {
+                    try { window.parent.postMessage({ type: 'CMS_ARTICLE_CLOSED' }, '*'); } catch(e) {}
+                }
                 const listingSection = document.getElementById('blog-listing-main');
                 const detailSection = document.getElementById('blog-detail-view-container');
                 if (detailSection) detailSection.classList.add('hidden');
@@ -8626,7 +8666,11 @@
                     var isInsideIframe = (window.self !== window.top);
                     var isCmsMode = (window.location.search.indexOf('cms_editor') !== -1 || window.location.search.indexOf('cms_preview') !== -1);
                     if (!isInsideIframe && !isCmsMode) {
-                        window.history.pushState({}, "Sharif Group Blog", "/blog/");
+                        var curLang = (window.getCurrentLanguage && window.getCurrentLanguage())
+                            || localStorage.getItem('sharif_lang')
+                            || 'en';
+                        var langPrefix = (curLang && curLang !== 'en') ? `/${curLang}` : '';
+                        window.history.pushState({}, "Sharif Group Blog", `${langPrefix}/blog/`);
                     }
                 }
                 resetBlogListingSeo();
@@ -8648,7 +8692,7 @@
                 }
             });
 
-            // Route to specific article if URL contains /blog/<slug>, ?article_slug=<slug>, ?slug=<slug>, or #<slug>
+            // Route to specific article if URL contains /(ar|fa|zh)/blog/<slug>, /blog/<slug>, ?article_slug=<slug>, ?slug=<slug>, or #<slug>
             function handleDirectArticleRoute() {
                 var urlParams = new URLSearchParams(window.location.search);
                 var querySlug = urlParams.get('article_slug') || urlParams.get('slug');
@@ -8664,10 +8708,19 @@
                 var isCmsEditor = urlParams.get('cms_editor') === '1' || isInsideIframe;
 
                 var path = window.location.pathname || '';
-                var match = path.match(/\/blog\/([^\/\?\#]+)\/?$/);
-                var pathSlug = (match && match[1]) ? decodeURIComponent(match[1]) : null;
+                var match = path.match(/(?:\/(ar|fa|zh))?\/blog\/([^\/\?\#]+)\/?$/i);
+                var pathLang = (match && match[1]) ? match[1].toLowerCase() : null;
+                var pathSlug = (match && match[2]) ? decodeURIComponent(match[2]) : null;
                 if (pathSlug === 'index.html' || pathSlug === 'blog.html' || pathSlug === 'blog') {
                     pathSlug = null;
+                }
+
+                // If language was in URL path (/ar/, /fa/, /zh/), ensure language switcher synchronizes
+                if (pathLang && window.switchLanguage && typeof window.switchLanguage === 'function') {
+                    var curL = (window.getCurrentLanguage && window.getCurrentLanguage()) || 'en';
+                    if (curL !== pathLang) {
+                        window.switchLanguage(pathLang);
+                    }
                 }
 
                 var targetSlug = querySlug || pathSlug;

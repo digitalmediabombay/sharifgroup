@@ -2531,6 +2531,64 @@
         uae: '/assets/images/uae-residence-visa_df80b3.webp'
       };
 
+      // Canonical 12 sovereign FAQs for all blog articles across EN, AR, FA, ZH
+      const initialFaqsEn = [
+        { q: 'What are the sovereign eligibility criteria for this pathway?', a: 'Applicants must possess a pristine background, pass strict multi-tier AML compliance, and fulfill the designated capital allocation.' },
+        { q: 'Can immediate family and senior dependents be included?', a: 'Yes. The principal investor may include their spouse, dependent children under 30, and dependent parents or grandparents above 55.' },
+        { q: 'Is physical presence or relocation required in Dubai or the host state?', a: 'No mandatory residency requirements apply during processing. All government vetting and apostilles are finalized remotely through our Dubai headquarters.' },
+        { q: 'What are the processing timelines from submission to approval?', a: 'Official government clearance is expedited under our legal protocol, typically taking between 60 to 90 business days.' },
+        { q: 'How is confidential wealth and asset protection guaranteed?', a: 'Sharif Group operates under strict non-disclosure legal mandates and international private client confidentiality standards.' },
+        { q: 'What are the visa-free mobility advantages granted?', a: 'Successful holders gain visa-free or visa-on-arrival access across key international business hubs, Schengen states, and Commonwealth jurisdictions.' },
+        { q: 'Are taxes levied on worldwide income or capital gains?', a: 'Most sovereign pathways feature territorial or zero tax regimes, shielding offshore income, dividends, and inherited assets from local taxation.' },
+        { q: 'What official compliance and police clearances are needed?', a: 'Applicants must supply certified police clearance certificates from their country of citizenship and any jurisdiction where they resided for over six months.' },
+        { q: 'Is dual citizenship or multiple legal residency permitted?', a: 'Yes. Most host jurisdictions legally recognize dual or multiple citizenships without requiring you to renounce your original passport.' },
+        { q: 'How are government fees and investment funds held securely?', a: 'All capital allocations are deposited into regulated sovereign escrow accounts or authorized central bank facilities under institutional oversight.' },
+        { q: 'Can investment properties or capital assets be liquidated later?', a: 'Depending on the statutory holding period (typically 3 to 5 years), qualifying real estate or bonds can be liquidated while retaining acquired sovereign rights.' },
+        { q: 'How does Sharif Group represent investors through official channels?', a: 'Sharif Group acts as an accredited advisory firm in Business Bay, Dubai, managing direct liaison, government apostilles, and expedited legal filing.' }
+      ];
+      const initialFaqsAr = [
+        { q: 'ما هي معايير الأهلية السيادية لهذا المسار؟', a: 'يجب أن يتمتع المتقدمون بسجل أمني وقانوني نظيف، واجتياز تدقيق مكافحة غسل الأموال، واستيفاء متطلبات التخصيص المالي المحددة.' },
+        { q: 'هل يمكن تضمين أفراد الأسرة المباشرين والمعالين الأكبر سناً؟', a: 'نعم، يمكن للمستثمر الرئيسي تضمين الزوج/الزوجة، والأبناء المعالين حتى سن 30 عاماً، والوالدين أو الأجداد المعالين فوق سن 55 عاماً.' },
+        { q: 'هل يلزم التواجد الفعلي أو الانتقال للإقامة في دبي أو الدولة المضيفة؟', a: 'لا توجد متطلبات إقامة إلزامية أثناء الإجراءات. يتم استكمال كافة الموافقات والتوثيقات الحكومية عن بُعد عبر مقرنا الرئيسي في دبي.' },
+        { q: 'ما هي الجداول الزمنية المتوقعة من تقديم الطلب حتى الموافقة النهائية؟', a: 'يتم تسريع استخراج الموافقات الرسمية بموجب بروتوكولنا القانوني المعتمد، وعادةً ما يستغرق ذلك ما بين 60 إلى 90 يوم عمل.' },
+        { q: 'كيف يتم ضمان سرية وحماية الأصول والثروات العائلية؟', a: 'تعمل مجموعة الشريف بموجب تفويضات قانونية صارمة لعدم الإفصاح ومعايير السرية الدولية المعتمدة لعملاء إدارة الثروات الخاصة.' },
+        { q: 'ما هي مزايا حرية التنقل والسفر بدون تأشيرة الممنوحة؟', a: 'يحصل حاملو الوثائق المعتمدة على إمكانية السفر بدون تأشيرة أو بتأشيرة عند الوصول إلى أبرز مراكز الأعمال الدولية، ودول الشنغن، ودول الكومنولث.' },
+        { q: 'هل تُفرض ضرائب على الدخل العالمي أو الأرباح الرأسمالية؟', a: 'تتميز معظم المسارات السيادية بأنظمة ضريبية إقليمية أو صفرية، مما يحمي الدخل الخارجي وتوزيعات الأرباح والأصول الموروثة من الضرائب المحلية.' },
+        { q: 'ما هي الوثائق الأمنية والشهادات الجنائية المطلوبة للتقديم؟', a: 'يجب على المتقدمين تقديم شهادات بحث الحالة الجنائية مصدقة وموثقة من بلد الجنسية ومن أي دولة أقاموا فيها لأكثر من ستة أشهر.' },
+        { q: 'هل يُسمح بازدواج الجنسية أو الاحتفاظ بإقامات متعددة؟', a: 'نعم، تعترف معظم الدول المضيفة قانوناً بازدواج أو تعدد الجنسيات دون اشتراط التخلي عن جواز السفر أو الجنسية الأصلية.' },
+        { q: 'كيف يتم ضمان أمان الودائع وصناديق الاستثمار الحكومية؟', a: 'يتم إيداع كافة الأموال في حسابات ضمان بنكية رسمية (Escrow) خاضعة لرقابة البنوك المركزية والجهات التنظيمية الحكومية المعتمدة.' },
+        { q: 'هل يمكن إعادة بيع العقار الاستثماري أو تسييل الأصول لاحقاً؟', a: 'وفقاً لمدة الاحتفاظ القانونية (عادة من 3 إلى 5 سنوات)، يمكن تسييل العقار أو استرداد السندات مع الاحتفاظ الكامل بالحقوق السيادية المكتسبة.' },
+        { q: 'كيف تمثل مجموعة الشريف المستثمرين عبر القنوات الرسمية؟', a: 'تعمل مجموعة الشريف كجهة استشارية معتمدة من الخليج التجاري بدبي، وتتولى التنسيق المباشر والتصديقات الحكومية والتقديم القانوني السريع.' }
+      ];
+      const initialFaqsFa = [
+        { q: 'معیارهای صلاحیت قانونی و حاکمیتی برای این مسیر چیست؟', a: 'متقاضیان باید دارای پیشینه کاملاً پاک، موفقیت در بررسی‌های چندمرحله‌ای ضدپولشویی و تأمین سرمایه‌گذاری مصوب باشند.' },
+        { q: 'آیا امکان اضافه کردن اعضای درجه یک خانواده و وابستگان وجود دارد؟', a: 'بله. سرمایه‌گذار اصلی می‌تواند همسر، فرزندان وابسته تا ۳۰ سال و والدین یا پدربزرگ و مادربزرگ وابسته بالای ۵۵ سال را اضافه نماید.' },
+        { q: 'آیا حضور فیزیکی یا تغییر محل سکونت در دبی یا کشور مقصد الزامی است؟', a: 'خیر، هیچ شرط اقامت اجباری در طول مراحل پرونده وجود ندارد. تمامی تأییدیه‌ها و آپوستیل‌ها به صورت غیرحضوری از طریق دفتر مرکزی ما در دبی انجام می‌شود.' },
+        { q: 'جدول زمانی پردازش پرونده از ثبت تا تأیید نهایی چقدر است؟', a: 'مراحل تأییدیه رسمی دولتی بر اساس پروتکل حقوقی ما تسریع شده و معمولاً بین ۶۰ تا ۹۰ روز کاری به طول می‌انجامد.' },
+        { q: 'محرمانگی اطلاعات و حفاظت از ثروت و دارایی‌ها چگونه تضمین می‌شود؟', a: 'شریف گروپ تحت تعهدنامه‌های حقوقی عدم افشای اطلاعات و استانداردهای بین‌المللی حفظ حریم خصوصی مشتریان ویژه فعالیت می‌کند.' },
+        { q: 'مزایای تحرک جهانی و سفر بدون ویزا چیست؟', a: 'دارندگان این وضعیت به سفر بدون ویزا یا با ویزای فرودگاهی به مراکز تجاری بین‌المللی، کشورهای حوزه شنگن و اتحادیه کشورهای مشترک‌المنافع دسترسی خواهند داشت.' },
+        { q: 'آیا مالیاتی بر درآمدهای جهانی یا سود سرمایه اعمال می‌شود؟', a: 'اکثر مسیرهای حاکمیتی از رژیم‌های مالیاتی منطقه‌ای یا صفر درصد بهره می‌برند و درآمد برون‌مرزی و سود سهام را از مالیات محلی معاف می‌دارند.' },
+        { q: 'چه مدارک عدم سوءپیشینه و بررسی‌های امنیتی مورد نیاز است؟', a: 'متقاضیان باید گواهی رسمی عدم سوءپیشینه از کشور تابعیت و هر حوزه‌ای که بیش از شش ماه در آن سکونت داشته‌اند با ترجمه رسمی و تأییدات لازم ارائه دهند.' },
+        { q: 'آیا تابعیت مضاعف یا داشتن اقامت‌های قانونی متعدد مجاز است؟', a: 'بله، قوانین اکثر کشورهای مقصد تابعیت دوگانه یا چندگانه را کاملاً به رسمیت شناخته و نیازی به ترک تابعیت اصلی سرمایه‌گذار نیست.' },
+        { q: 'وجوه سرمایه‌گذاری و هزینه‌های دولتی چگونه به طور امن نگهداری می‌شوند؟', a: 'کلیه مبالغ در حساب‌های امانی دولتی (Escrow) یا بانک‌های مرکزی معتبر با نظارت نهادهای قانونی بین‌المللی تودیع می‌گردد.' },
+        { q: 'آیا امکان فروش ملک یا نقد کردن دارایی‌های سرمایه‌گذاری پس از مدتی وجود دارد؟', a: 'با پایان یافتن دوره نگهداری قانونی (معمولاً ۳ تا ۵ سال)، می‌توان ملک یا اوراق قرضه را به فروش رساند در حالی که وضعیت حاکمیتی محفوظ می‌ماند.' },
+        { q: 'شریف گروپ چگونه پرونده سرمایه‌گذاران را از مراجع رسمی پیگیری می‌کند؟', a: 'شریف گروپ به عنوان شرکت مشاوره‌ای معتبر در بیزنس بی دبی، هماهنگی مستقیم با مراجع دولتی، آپوستیل اسناد و ثبت فوری حقوقی را مدیریت می‌کند.' }
+      ];
+      const initialFaqsZh = [
+        { q: '申请该项目的核心资格条件是什么？', a: '申请人须具备良好的无犯罪背景记录，通过严格的多层级反洗钱合规审查，并完成指定的官方投资额度。' },
+        { q: '直系亲属及年长受抚养人可以一并随行申请吗？', a: '可以。主申请人可随同申请配偶、30周岁以下的经济依附子女，以及55周岁以上的受抚养父母或祖父母。' },
+        { q: '申请期间是否要求在迪拜或目标国实际居住或登陆？', a: '办理过程中无强制居住要求。所有政府背景背调及公证海牙认证均由我们迪拜总部合规团队远程协助办理完毕。' },
+        { q: '从正式递交到获得政府批准通常需要多长时间？', a: '在我们的优先法律通道协助下，官方审批流程高效推进，通常仅需60至90个工作日。' },
+        { q: '如何确保家族财富及隐私信息的绝对保密安全？', a: '谢里夫集团严格恪守国际顶级保密协议与全球私人客户专属合规标准，确保客户资产与身份信息滴水不漏。' },
+        { q: '获得身份后享有哪些免签及全球通行便利？', a: '成功持有者可享有免签或落地签前往全球重要金融中心、欧洲申根区以及英联邦等多个国家和地区的通行便利。' },
+        { q: '是否对全球收入或资本利得征收所得税？', a: '绝大多数主权项目实行属地税制或零税率政策，海外经营所得、分红派息以及家族传承资产均免除本土税负。' },
+        { q: '申请过程中需要提供哪些官方无犯罪记录及合规证明？', a: '申请人须提供国籍国以及过去居住满六个月以上国家所开具的正规无犯罪记录公证书及官方海牙认证文件。' },
+        { q: '是否承认双重国籍或允许多重合法居留身份？', a: '完全允许。绝大多数主权法案在法律层面上充分认可双重或多重国籍，无需申请人放弃原有的国籍或护照。' },
+        { q: '官方投资款项及政府规费如何确保资金安全监管？', a: '所有指定投资资金均直接存入官方指定的政府监管信托托管账户（Escrow）或受中央银行监管的专属资金池中。' },
+        { q: '所投资的合规房产或金融资产后续是否可以转让退出？', a: '在满足法定的持有年限要求后（通常为3至5年），投资者可自由转让变现房产或债券，且已获得的合法主权权益继续保留。' },
+        { q: '谢里夫集团如何通过官方通道代表投资者跟进审批？', a: '谢里夫集团总部设立于迪拜商业湾，作为官方认可的专业咨询机构，直接对接审批部门并提供全流程法务公证与加急递交服务。' }
+      ];
+
       // Page URL map for preview
       const PAGE_URLS = {
         homepage: '../index.html',
@@ -2850,13 +2908,23 @@
       function resolveRouteFromUrl(urlOrPath) {
         if (!urlOrPath) return null;
         let p = String(urlOrPath).toLowerCase();
+        let search = '';
         try {
           if (p.startsWith('http://') || p.startsWith('https://')) {
             const parsed = new URL(p);
             p = parsed.pathname;
+            search = parsed.search;
+          } else if (p.includes('?')) {
+            const parts = p.split('?');
+            p = parts[0];
+            search = '?' + parts[1];
           }
         } catch (e) { }
         p = p.replace(/\\/g, '/');
+
+        // Check for blog article query params
+        const qParams = new URLSearchParams(search);
+        const artSlug = qParams.get('article_slug') || qParams.get('slug');
 
         // Check programs
         for (const progId in PROGRAM_URLS) {
@@ -2871,7 +2939,27 @@
         if (p.includes('residencybyinvestment')) return { section: 'category-hub', itemType: 'residency' };
         if (p.includes('/contact')) return { section: 'contact' };
         if (p.includes('/aboutus') || p.includes('/aboutfounder') || p.includes('/about')) return { section: 'aboutus' };
-        if (p.includes('/blog')) return { section: 'blog' };
+
+        // Check if blog article subpath: /(ar|fa|zh)?/blog/<slug>/
+        const blogSubMatch = p.match(/(?:\/(ar|fa|zh))?\/blog\/([^\/\?\#]+)\/?$/i);
+        const subSlug = (blogSubMatch && blogSubMatch[2] && !['index.html', 'blog.html', 'blog', ''].includes(blogSubMatch[2])) ? blogSubMatch[2] : null;
+
+        const effectiveSlug = artSlug || subSlug;
+        if (effectiveSlug && effectiveSlug !== 'blog' && effectiveSlug !== 'homepage' && effectiveSlug !== 'index.html') {
+          const blogs = window.CMS?.getData(window.CMS.KEYS.BLOG) || [];
+          const b = blogs.find(x => x && (x.id === effectiveSlug || x.slug === effectiveSlug || x.en?.slug === effectiveSlug || x.ar?.slug === effectiveSlug || x.fa?.slug === effectiveSlug || x.zh?.slug === effectiveSlug));
+          const artId = b ? b.id : effectiveSlug;
+          return { section: 'blog-edit', itemId: artId, activeBlogSlug: (b && (b.slug || b.en?.slug)) || effectiveSlug };
+        }
+
+        if (p.includes('/blog')) {
+          // If we are currently editing an article, preserve blog-edit!
+          if (state.section === 'blog-edit' && state.itemId) {
+            return { section: 'blog-edit', itemId: state.itemId, activeBlogSlug: state.activeBlogSlug };
+          }
+          return { section: 'blog' };
+        }
+
         if (p.includes('/cookie')) return { section: 'cookiepolicy' };
         if (p.includes('/privacy') || p.includes('/termsofuse') || p.includes('/legal')) return { section: 'legal' };
         if (p.endsWith('/index.html') || p.endsWith('/') || p === '' || p === '/') return { section: 'homepage' };
@@ -2887,30 +2975,51 @@
           sendToIframe({ type: 'CMS_SET_MODE', mode: state.canvasMode });
           syncActiveFormToLivePreview();
 
-          // If the iframe is reporting that it loaded with a blog article slug, re-send CMS_OPEN_ARTICLE
-          // This ensures the article is opened even if the initial dispatch was too early.
+          // If the iframe reports an article slug, open article in studio
           const frameSlug = msg.slug;
-          if (frameSlug && state.activeBlogSlug && frameSlug === state.activeBlogSlug) {
-            setTimeout(() => sendToIframe({ type: 'CMS_OPEN_ARTICLE', slug: frameSlug }), 200);
-          } else if (frameSlug && state.section === 'blog-edit' && !state.activeBlogSlug) {
+          if (frameSlug && frameSlug !== 'blog' && frameSlug !== 'homepage' && frameSlug !== 'index.html') {
             state.activeBlogSlug = frameSlug;
             setTimeout(() => sendToIframe({ type: 'CMS_OPEN_ARTICLE', slug: frameSlug }), 200);
+          } else if (state.section === 'blog-edit' && state.activeBlogSlug) {
+            setTimeout(() => sendToIframe({ type: 'CMS_OPEN_ARTICLE', slug: state.activeBlogSlug }), 200);
           }
 
           if (msg.path || msg.href) {
-            const route = resolveRouteFromUrl(msg.path || msg.href);
-            if (route && (route.section !== state.section || route.itemId !== state.itemId)) {
-              state.section = route.section;
-              state.itemType = route.itemType || null;
-              state.itemId = route.itemId || null;
-              setActiveSidebarItem(route.section === 'program' ? route.itemId : (route.section === 'category-hub' ? route.itemType : route.section));
-              renderSection();
+            const route = resolveRouteFromUrl(msg.href || msg.path);
+            if (route) {
+              if (route.section === 'blog' && state.section === 'blog-edit') {
+                // Do NOT downgrade blog-edit to blog while user is editing an article!
+              } else if (route.section !== state.section || (route.itemId && route.itemId !== state.itemId)) {
+                state.section = route.section;
+                state.itemType = route.itemType || null;
+                state.itemId = route.itemId || null;
+                if (route.activeBlogSlug) state.activeBlogSlug = route.activeBlogSlug;
+                setActiveSidebarItem(route.section === 'program' ? route.itemId : (route.section === 'category-hub' ? route.itemType : (route.section === 'blog-edit' ? route.itemId : route.section)));
+                renderSection();
+              }
             }
           }
         } else if (msg.type === 'CMS_ARTICLE_OPENED') {
-          // iframe confirmed article is open – stop the retry loop
+          // iframe confirmed article is open – sync state, highlight sidebar, and render guide
           state._articleOpenConfirmed = msg.slug;
+          const openedSlug = msg.slug;
+          if (openedSlug && openedSlug !== 'blog' && openedSlug !== 'homepage') {
+            const blogs = window.CMS?.getData(window.CMS.KEYS.BLOG) || [];
+            const b = blogs.find(x => x && (x.id === openedSlug || x.slug === openedSlug || x.en?.slug === openedSlug || x.ar?.slug === openedSlug || x.fa?.slug === openedSlug || x.zh?.slug === openedSlug));
+            const artId = b ? b.id : openedSlug;
+            state.section = 'blog-edit';
+            state.itemId = artId;
+            state.activeBlogSlug = (b && (b.slug || b.en?.slug)) || openedSlug;
+            setActiveSidebarItem(artId);
+            renderVisualBlogGuide(artId);
+          }
           showToast('Live Visual Editor Ready: Click any text on canvas to edit!', 'info');
+        } else if (msg.type === 'CMS_ARTICLE_CLOSED') {
+          state.section = 'blog';
+          state.itemId = null;
+          state.activeBlogSlug = null;
+          setActiveSidebarItem('blog');
+          renderBlogEditor(state.lang, isRtl(state.lang));
         } else if (msg.type === 'CMS_NAVIGATE_PAGE') {
           const route = resolveRouteFromUrl(msg.url || msg.path);
           if (route) {
@@ -3224,39 +3333,6 @@
         const id = 'b' + uid();
         const dateStr = new Date().toISOString().split('T')[0];
 
-        const initialFaqsEn = [
-          { q: 'Click to edit FAQ Question 1', a: 'Click to edit FAQ Answer 1' },
-          { q: 'Click to edit FAQ Question 2', a: 'Click to edit FAQ Answer 2' },
-          { q: 'Click to edit FAQ Question 3', a: 'Click to edit FAQ Answer 3' },
-          { q: 'Click to edit FAQ Question 4', a: 'Click to edit FAQ Answer 4' },
-          { q: 'Click to edit FAQ Question 5', a: 'Click to edit FAQ Answer 5' },
-          { q: 'Click to edit FAQ Question 6', a: 'Click to edit FAQ Answer 6' }
-        ];
-        const initialFaqsAr = [
-          { q: 'انقر لتعديل السؤال الأول', a: 'انقر لتعديل إجابة السؤال الأول' },
-          { q: 'انقر لتعديل السؤال الثاني', a: 'انقر لتعديل إجابة السؤال الثاني' },
-          { q: 'انقر لتعديل السؤال الثالث', a: 'انقر لتعديل إجابة السؤال الثالث' },
-          { q: 'انقر لتعديل السؤال الرابع', a: 'انقر لتعديل إجابة السؤال الرابع' },
-          { q: 'انقر لتعديل السؤال الخامس', a: 'انقر لتعديل إجابة السؤال الخامس' },
-          { q: 'انقر لتعديل السؤال السادس', a: 'انقر لتعديل إجابة السؤال السادس' }
-        ];
-        const initialFaqsFa = [
-          { q: 'برای ویرایش پرسش اول کلیک کنید', a: 'برای ویرایش پاسخ اول کلیک کنید' },
-          { q: 'برای ویرایش پرسش دوم کلیک کنید', a: 'برای ویرایش پاسخ دوم کلیک کنید' },
-          { q: 'برای ویرایش پرسش سوم کلیک کنید', a: 'برای ویرایش پاسخ سوم کلیک کنید' },
-          { q: 'برای ویرایش پرسش چهارم کلیک کنید', a: 'برای ویرایش پاسخ چهارم کلیک کنید' },
-          { q: 'برای ویرایش پرسش پنجم کلیک کنید', a: 'برای ویرایش پاسخ پنجم کلیک کنید' },
-          { q: 'برای ویرایش پرسش ششم کلیک کنید', a: 'برای ویرایش پاسخ ششم کلیک کنید' }
-        ];
-        const initialFaqsZh = [
-          { q: '点击编辑常见问题 1', a: '点击编辑问题解答 1' },
-          { q: '点击编辑常见问题 2', a: '点击编辑问题解答 2' },
-          { q: '点击编辑常见问题 3', a: '点击编辑问题解答 3' },
-          { q: '点击编辑常见问题 4', a: '点击编辑问题解答 4' },
-          { q: '点击编辑常见问题 5', a: '点击编辑问题解答 5' },
-          { q: '点击编辑常见问题 6', a: '点击编辑问题解答 6' }
-        ];
-
         const newArticle = {
           id,
           slug,
@@ -3313,7 +3389,58 @@
           { q: 'Is physical presence or relocation required in Dubai or the host state?', a: 'No mandatory residency requirements apply during processing. All government vetting and apostilles are finalized remotely through our Dubai headquarters.' },
           { q: 'What are the processing timelines from submission to approval?', a: 'Official government clearance is expedited under our legal protocol, typically taking between 60 to 90 business days.' },
           { q: 'How is confidential wealth and asset protection guaranteed?', a: 'Sharif Group operates under strict non-disclosure legal mandates and international private client confidentiality standards.' },
-          { q: 'What are the visa-free mobility advantages granted?', a: 'Successful holders gain visa-free or visa-on-arrival access across key international business hubs, Schengen states, and Commonwealth jurisdictions.' }
+          { q: 'What are the visa-free mobility advantages granted?', a: 'Successful holders gain visa-free or visa-on-arrival access across key international business hubs, Schengen states, and Commonwealth jurisdictions.' },
+          { q: 'Are taxes levied on worldwide income or capital gains?', a: 'Most sovereign pathways feature territorial or zero tax regimes, shielding offshore income, dividends, and inherited assets from local taxation.' },
+          { q: 'What official compliance and police clearances are needed?', a: 'Applicants must supply certified police clearance certificates from their country of citizenship and any jurisdiction where they resided for over six months.' },
+          { q: 'Is dual citizenship or multiple legal residency permitted?', a: 'Yes. Most host jurisdictions legally recognize dual or multiple citizenships without requiring you to renounce your original passport.' },
+          { q: 'How are government fees and investment funds held securely?', a: 'All capital allocations are deposited into regulated sovereign escrow accounts or authorized central bank facilities under institutional oversight.' },
+          { q: 'Can investment properties or capital assets be liquidated later?', a: 'Depending on the statutory holding period (typically 3 to 5 years), qualifying real estate or bonds can be liquidated while retaining acquired sovereign rights.' },
+          { q: 'How does Sharif Group represent investors through official channels?', a: 'Sharif Group acts as an accredited advisory firm in Business Bay, Dubai, managing direct liaison, government apostilles, and expedited legal filing.' }
+        ];
+
+        const sampleFaqsAr = [
+          { q: 'ما هي معايير الأهلية السيادية لهذا المسار؟', a: 'يجب أن يتمتع المتقدمون بسجل أمني وقانوني نظيف، واجتياز تدقيق مكافحة غسل الأموال، واستيفاء متطلبات التخصيص المالي المحددة.' },
+          { q: 'هل يمكن تضمين أفراد الأسرة المباشرين والمعالين الأكبر سناً؟', a: 'نعم، يمكن للمستثمر الرئيسي تضمين الزوج/الزوجة، والأبناء المعالين حتى سن 30 عاماً، والوالدين أو الأجداد المعالين فوق سن 55 عاماً.' },
+          { q: 'هل يلزم التواجد الفعلي أو الانتقال للإقامة في دبي أو الدولة المضيفة؟', a: 'لا توجد متطلبات إقامة إلزامية أثناء الإجراءات. يتم استكمال كافة الموافقات والتوثيقات الحكومية عن بُعد عبر مقرنا الرئيسي في دبي.' },
+          { q: 'ما هي الجداول الزمنية المتوقعة من تقديم الطلب حتى الموافقة النهائية؟', a: 'يتم تسريع استخراج الموافقات الرسمية بموجب بروتوكولنا القانوني المعتمد، وعادةً ما يستغرق ذلك ما بين 60 إلى 90 يوم عمل.' },
+          { q: 'كيف يتم ضمان سرية وحماية الأصول والثروات العائلية؟', a: 'تعمل مجموعة الشريف بموجب تفويضات قانونية صارمة لعدم الإفصاح ومعايير السرية الدولية المعتمدة لعملاء إدارة الثروات الخاصة.' },
+          { q: 'ما هي مزايا حرية التنقل والسفر بدون تأشيرة الممنوحة؟', a: 'يحصل حاملو الوثائق المعتمدة على إمكانية السفر بدون تأشيرة أو بتأشيرة عند الوصول إلى أبرز مراكز الأعمال الدولية، ودول الشنغن، ودول الكومنولث.' },
+          { q: 'هل تُفرض ضرائب على الدخل العالمي أو الأرباح الرأسمالية؟', a: 'تتميز معظم المسارات السيادية بأنظمة ضريبية إقليمية أو صفرية، مما يحمي الدخل الخارجي وتوزيعات الأرباح والأصول الموروثة من الضرائب المحلية.' },
+          { q: 'ما هي الوثائق الأمنية والشهادات الجنائية المطلوبة للتقديم؟', a: 'يجب على المتقدمين تقديم شهادات بحث الحالة الجنائية مصدقة وموثقة من بلد الجنسية ومن أي دولة أقاموا فيها لأكثر من ستة أشهر.' },
+          { q: 'هل يُسمح بازدواج الجنسية أو الاحتفاظ بإقامات متعددة؟', a: 'نعم، تعترف معظم الدول المضيفة قانوناً بازدواج أو تعدد الجنسيات دون اشتراط التخلي عن جواز السفر أو الجنسية الأصلية.' },
+          { q: 'كيف يتم ضمان أمان الودائع وصناديق الاستثمار الحكومية؟', a: 'يتم إيداع كافة الأموال في حسابات ضمان بنكية رسمية (Escrow) خاضعة لرقابة البنوك المركزية والجهات التنظيمية الحكومية المعتمدة.' },
+          { q: 'هل يمكن إعادة بيع العقار الاستثماري أو تسييل الأصول لاحقاً؟', a: 'وفقاً لمدة الاحتفاظ القانونية (عادة من 3 إلى 5 سنوات)، يمكن تسييل العقار أو استرداد السندات مع الاحتفاظ الكامل بالحقوق السيادية المكتسبة.' },
+          { q: 'كيف تمثل مجموعة الشريف المستثمرين عبر القنوات الرسمية؟', a: 'تعمل مجموعة الشريف كجهة استشارية معتمدة من الخليج التجاري بدبي، وتتولى التنسيق المباشر والتصديقات الحكومية والتقديم القانوني السريع.' }
+        ];
+
+        const sampleFaqsFa = [
+          { q: 'معیارهای صلاحیت قانونی و حاکمیتی برای این مسیر چیست؟', a: 'متقاضیان باید دارای پیشینه کاملاً پاک، موفقیت در بررسی‌های چندمرحله‌ای ضدپولشویی و تأمین سرمایه‌گذاری مصوب باشند.' },
+          { q: 'آیا امکان اضافه کردن اعضای درجه یک خانواده و وابستگان وجود دارد؟', a: 'بله. سرمایه‌گذار اصلی می‌تواند همسر، فرزندان وابسته تا ۳۰ سال و والدین یا پدربزرگ و مادربزرگ وابسته بالای ۵۵ سال را اضافه نماید.' },
+          { q: 'آیا حضور فیزیکی یا تغییر محل سکونت در دبی یا کشور مقصد الزامی است؟', a: 'خیر، هیچ شرط اقامت اجباری در طول مراحل پرونده وجود ندارد. تمامی تأییدیه‌ها و آپوستیل‌ها به صورت غیرحضوری از طریق دفتر مرکزی ما در دبی انجام می‌شود.' },
+          { q: 'جدول زمانی پردازش پرونده از ثبت تا تأیید نهایی چقدر است؟', a: 'مراحل تأییدیه رسمی دولتی بر اساس پروتکل حقوقی ما تسریع شده و معمولاً بین ۶۰ تا ۹۰ روز کاری به طول می‌انجامد.' },
+          { q: 'محرمانگی اطلاعات و حفاظت از ثروت و دارایی‌ها چگونه تضمین می‌شود؟', a: 'شریف گروپ تحت تعهدنامه‌های حقوقی عدم افشای اطلاعات و استانداردهای بین‌المللی حفظ حریم خصوصی مشتریان ویژه فعالیت می‌کند.' },
+          { q: 'مزایای تحرک جهانی و سفر بدون ویزا چیست؟', a: 'دارندگان این وضعیت به سفر بدون ویزا یا با ویزای فرودگاهی به مراکز تجاری بین‌المللی، کشورهای حوزه شنگن و اتحادیه کشورهای مشترک‌المنافع دسترسی خواهند داشت.' },
+          { q: 'آیا مالیاتی بر درآمدهای جهانی یا سود سرمایه اعمال می‌شود؟', a: 'اکثر مسیرهای حاکمیتی از رژیم‌های مالیاتی منطقه‌ای یا صفر درصد بهره می‌برند و درآمد برون‌مرزی و سود سهام را از مالیات محلی معاف می‌دارند.' },
+          { q: 'چه مدارک عدم سوءپیشینه و بررسی‌های امنیتی مورد نیاز است؟', a: 'متقاضیان باید گواهی رسمی عدم سوءپیشینه از کشور تابعیت و هر حوزه‌ای که بیش از شش ماه در آن سکونت داشته‌اند با ترجمه رسمی و تأییدات لازم ارائه دهند.' },
+          { q: 'آیا تابعیت مضاعف یا داشتن اقامت‌های قانونی متعدد مجاز است؟', a: 'بله، قوانین اکثر کشورهای مقصد تابعیت دوگانه یا چندگانه را کاملاً به رسمیت شناخته و نیازی به ترک تابعیت اصلی سرمایه‌گذار نیست.' },
+          { q: 'وجوه سرمایه‌گذاری و هزینه‌های دولتی چگونه به طور امن نگهداری می‌شوند؟', a: 'کلیه مبالغ در حساب‌های امانی دولتی (Escrow) یا بانک‌های مرکزی معتبر با نظارت نهادهای قانونی بین‌المللی تودیع می‌گردد.' },
+          { q: 'آیا امکان فروش ملک یا نقد کردن دارایی‌های سرمایه‌گذاری پس از مدتی وجود دارد؟', a: 'با پایان یافتن دوره نگهداری قانونی (معمولاً ۳ تا ۵ سال)، می‌توان ملک یا اوراق قرضه را به فروش رساند در حالی که وضعیت حاکمیتی محفوظ می‌ماند.' },
+          { q: 'شریف گروپ چگونه پرونده سرمایه‌گذاران را از مراجع رسمی پیگیری می‌کند؟', a: 'شریف گروپ به عنوان شرکت مشاوره‌ای معتبر در بیزنس بی دبی، هماهنگی مستقیم با مراجع دولتی، آپوستیل اسناد و ثبت فوری حقوقی را مدیریت می‌کند.' }
+        ];
+
+        const sampleFaqsZh = [
+          { q: '申请该项目的核心资格条件是什么？', a: '申请人须具备良好的无犯罪背景记录，通过严格的多层级反洗钱合规审查，并完成指定的官方投资额度。' },
+          { q: '直系亲属及年长受抚养人可以一并随行申请吗？', a: '可以。主申请人可随同申请配偶、30周岁以下的经济依附子女，以及55周岁以上的受抚养父母或祖父母。' },
+          { q: '申请期间是否要求在迪拜或目标国实际居住或登陆？', a: '办理过程中无强制居住要求。所有政府背景背调及公证海牙认证均由我们迪拜总部合规团队远程协助办理完毕。' },
+          { q: '从正式递交到获得政府批准通常需要多长时间？', a: '在我们的优先法律通道协助下，官方审批流程高效推进，通常仅需60至90个工作日。' },
+          { q: '如何确保家族财富及隐私信息的绝对保密安全？', a: '谢里夫集团严格恪守国际顶级保密协议与全球私人客户专属合规标准，确保客户资产与身份信息滴水不漏。' },
+          { q: '获得身份后享有哪些免签及全球通行便利？', a: '成功持有者可享有免签或落地签前往全球重要金融中心、欧洲申根区以及英联邦等多个国家和地区的通行便利。' },
+          { q: '是否对全球收入或资本利得征收所得税？', a: '绝大多数主权项目实行属地税制或零税率政策，海外经营所得、分红派息以及家族传承资产均免除本土税负。' },
+          { q: '申请过程中需要提供哪些官方无犯罪记录及合规证明？', a: '申请人须提供国籍国以及过去居住满六个月以上国家所开具的正规无犯罪记录公证书及官方海牙认证文件。' },
+          { q: '是否承认双重国籍或允许多重合法居留身份？', a: '完全允许。绝大多数主权法案在法律层面上充分认可双重或多重国籍，无需申请人放弃原有的国籍或护照。' },
+          { q: '官方投资款项及政府规费如何确保资金安全监管？', a: '所有指定投资资金均直接存入官方指定的政府监管信托托管账户（Escrow）或受中央银行监管的专属资金池中。' },
+          { q: '所投资的合规房产或金融资产后续是否可以转让退出？', a: '在满足法定的持有年限要求后（通常为3至5年），投资者可自由转让变现房产或债券，且已获得的合法主权权益继续保留。' },
+          { q: '谢里夫集团如何通过官方通道代表投资者跟进审批？', a: '谢里夫集团总部设立于迪拜商业湾，作为官方认可的专业咨询机构，直接对接审批部门并提供全流程法务公证与加急递交服务。' }
         ];
 
         const newArticle = {
@@ -3337,9 +3464,9 @@
             meta_desc: 'Strategic legal insights and investment parameters prepared by Sharif Group advisory desk.',
             faqs: sampleFaqsEn
           },
-          ar: { title: 'مقال تحليلي استراتيجي جديد', slug, excerpt: '', body: '<p class="text-base text-neutral-800 leading-relaxed font-light mb-6">انقر مباشرة على هذا النص لتعديل المحتوى في الوقت الفعلي.</p>', faqs: sampleFaqsEn },
-          fa: { title: 'مقاله راهبردی و حقوقی جدید', slug, excerpt: '', body: '<p class="text-base text-neutral-800 leading-relaxed font-light mb-6">برای ویرایش مستقیم متن روی این پاراگراف کلیک کنید.</p>', faqs: sampleFaqsEn },
-          zh: { title: '新战略执行顾问洞察', slug, excerpt: '', body: '<p class="text-base text-neutral-800 leading-relaxed font-light mb-6">点击此处的任何文本即可在实时页面上直接编辑文章内容。</p>', faqs: sampleFaqsEn }
+          ar: { title: 'مقال تحليلي استراتيجي جديد', slug, excerpt: '', body: '<p class="text-base text-neutral-800 leading-relaxed font-light mb-6">انقر مباشرة على هذا النص لتعديل المحتوى في الوقت الفعلي.</p>', faqs: sampleFaqsAr },
+          fa: { title: 'مقاله راهبردی و حقوقی جدید', slug, excerpt: '', body: '<p class="text-base text-neutral-800 leading-relaxed font-light mb-6">برای ویرایش مستقیم متن روی این پاراگراف کلیک کنید.</p>', faqs: sampleFaqsFa },
+          zh: { title: '新战略执行顾问洞察', slug, excerpt: '', body: '<p class="text-base text-neutral-800 leading-relaxed font-light mb-6">点击此处的任何文本即可在实时页面上直接编辑文章内容。</p>', faqs: sampleFaqsZh }
         };
 
         let existingBlogs = window.CMS.getData(window.CMS.KEYS.BLOG) || [];
@@ -3543,20 +3670,57 @@
   <li><strong>صدور گواهی و تأییدیه نهایی:</strong> تحویل مستقیم مدارک اصلی در اقامتگاه شما در دبی.</li>
 </ul>`;
 
+      function deduplicateBlogs(blogs) {
+        if (!Array.isArray(blogs)) return [];
+        const seen = new Set();
+        const deduped = [];
+        blogs.forEach(b => {
+          if (!b) return;
+          const id = b.id || '';
+          const tEn = ((b.en && b.en.title) || b.title || '').trim().toLowerCase();
+          const tAr = ((b.ar && b.ar.title) || '').trim().toLowerCase();
+          const tFa = ((b.fa && b.fa.title) || '').trim().toLowerCase();
+          const tZh = ((b.zh && b.zh.title) || '').trim().toLowerCase();
+          const titleKey = tEn || tAr || tFa || tZh;
+
+          if (id && seen.has('id:' + id)) return;
+          if (titleKey && seen.has('title:' + titleKey)) return;
+
+          if (id) seen.add('id:' + id);
+          if (titleKey) seen.add('title:' + titleKey);
+          deduped.push(b);
+        });
+        return deduped;
+      }
+
       function repairBlogFaqsAndTranslations(blogs) {
         if (!Array.isArray(blogs)) return blogs;
+        blogs = deduplicateBlogs(blogs);
         let modified = false;
+        const langMap = { en: initialFaqsEn, ar: initialFaqsAr, fa: initialFaqsFa, zh: initialFaqsZh };
         blogs.forEach(b => {
           if (!b) return;
           b.en = b.en || {};
-          if (!Array.isArray(b.en.faqs)) {
-            b.en.faqs = Array.isArray(b.faqs) ? [...b.faqs] : [];
+          // Ensure en has 12 complete FAQs
+          if (!Array.isArray(b.en.faqs) || b.en.faqs.length < 12) {
+            const currentFaqs = Array.isArray(b.en.faqs) && b.en.faqs.length ? [...b.en.faqs] : (Array.isArray(b.faqs) && b.faqs.length ? [...b.faqs] : []);
+            for (let i = currentFaqs.length; i < 12; i++) {
+              currentFaqs.push(initialFaqsEn[i]);
+            }
+            b.en.faqs = currentFaqs;
+            b.faqs = currentFaqs;
             modified = true;
           }
+          // Ensure localized faqs have 12 items for ar, fa, zh
           ['ar', 'fa', 'zh'].forEach(lang => {
             b[lang] = b[lang] || {};
-            if (!Array.isArray(b[lang].faqs)) {
-              b[lang].faqs = [];
+            const defLang = langMap[lang] || initialFaqsEn;
+            if (!Array.isArray(b[lang].faqs) || b[lang].faqs.length < 12) {
+              const curLangFaqs = Array.isArray(b[lang].faqs) && b[lang].faqs.length ? [...b[lang].faqs] : [];
+              for (let i = curLangFaqs.length; i < 12; i++) {
+                curLangFaqs.push(defLang[i]);
+              }
+              b[lang].faqs = curLangFaqs;
               modified = true;
             }
           });
@@ -3571,11 +3735,16 @@
       }
 
       function submitQuickBlog() {
+        if (window._isSubmittingBlog) return;
+        window._isSubmittingBlog = true;
+        setTimeout(() => { window._isSubmittingBlog = false; }, 1500);
+
         const titleInput = document.getElementById('qb-title');
         const title = (titleInput?.value || '').trim();
         if (!title) {
           titleInput?.focus();
           showToast('Please enter an article title', 'error');
+          window._isSubmittingBlog = false;
           return;
         }
 
@@ -3586,47 +3755,11 @@
         const previewImg = document.getElementById('qb-img-preview')?.getAttribute('src');
         const img = customImg || previewImg || '/assets/images/dubai-office-2.webp';
 
-        const slug = title.toLowerCase()
-          .replace(/[^a-z0-9\s-]/g, '')
-          .replace(/\s+/g, '-')
-          .replace(/-+/g, '-')
-          .slice(0, 60) || ('article-' + Date.now());
+        const cleanAscii = title.toLowerCase().replace(/[^a-z0-9\s-]/g, '').trim().replace(/\s+/g, '-').replace(/-+/g, '-');
+        const slug = (cleanAscii.length >= 3 ? cleanAscii.slice(0, 60) : ('article-' + Date.now()));
 
         const id = 'b' + uid();
         const dateStr = new Date().toISOString().split('T')[0];
-
-        const initialFaqsEn = [
-          { q: 'Click to edit FAQ Question 1', a: 'Click to edit FAQ Answer 1' },
-          { q: 'Click to edit FAQ Question 2', a: 'Click to edit FAQ Answer 2' },
-          { q: 'Click to edit FAQ Question 3', a: 'Click to edit FAQ Answer 3' },
-          { q: 'Click to edit FAQ Question 4', a: 'Click to edit FAQ Answer 4' },
-          { q: 'Click to edit FAQ Question 5', a: 'Click to edit FAQ Answer 5' },
-          { q: 'Click to edit FAQ Question 6', a: 'Click to edit FAQ Answer 6' }
-        ];
-        const initialFaqsAr = [
-          { q: 'انقر لتعديل السؤال الأول', a: 'انقر لتعديل إجابة السؤال الأول' },
-          { q: 'انقر لتعديل السؤال الثاني', a: 'انقر لتعديل إجابة السؤال الثاني' },
-          { q: 'انقر لتعديل السؤال الثالث', a: 'انقر لتعديل إجابة السؤال الثالث' },
-          { q: 'انقر لتعديل السؤال الرابع', a: 'انقر لتعديل إجابة السؤال الرابع' },
-          { q: 'انقر لتعديل السؤال الخامس', a: 'انقر لتعديل إجابة السؤال الخامس' },
-          { q: 'انقر لتعديل السؤال السادس', a: 'انقر لتعديل إجابة السؤال السادس' }
-        ];
-        const initialFaqsFa = [
-          { q: 'برای ویرایش پرسش اول کلیک کنید', a: 'برای ویرایش پاسخ اول کلیک کنید' },
-          { q: 'برای ویرایش پرسش دوم کلیک کنید', a: 'برای ویرایش پاسخ دوم کلیک کنید' },
-          { q: 'برای ویرایش پرسش سوم کلیک کنید', a: 'برای ویرایش پاسخ سوم کلیک کنید' },
-          { q: 'برای ویرایش پرسش چهارم کلیک کنید', a: 'برای ویرایش پاسخ چهارم کلیک کنید' },
-          { q: 'برای ویرایش پرسش پنجم کلیک کنید', a: 'برای ویرایش پاسخ پنجم کلیک کنید' },
-          { q: 'برای ویرایش پرسش ششم کلیک کنید', a: 'برای ویرایش پاسخ ششم کلیک کنید' }
-        ];
-        const initialFaqsZh = [
-          { q: '点击编辑常见问题 1', a: '点击编辑问题解答 1' },
-          { q: '点击编辑常见问题 2', a: '点击编辑问题解答 2' },
-          { q: '点击编辑常见问题 3', a: '点击编辑问题解答 3' },
-          { q: '点击编辑常见问题 4', a: '点击编辑问题解答 4' },
-          { q: '点击编辑常见问题 5', a: '点击编辑问题解答 5' },
-          { q: '点击编辑常见问题 6', a: '点击编辑问题解答 6' }
-        ];
 
         const newArticle = {
           id,
@@ -3653,21 +3786,21 @@
             faqs: initialFaqsEn
           },
           ar: {
-            title: '',
+            title: (state.lang === 'ar' || !cleanAscii) ? title : '',
             slug: slug,
             excerpt: '',
             body: '<p class="text-base text-neutral-700 leading-relaxed font-light mb-4"><br></p>',
             faqs: initialFaqsAr
           },
           fa: {
-            title: '',
+            title: state.lang === 'fa' ? title : '',
             slug: slug,
             excerpt: '',
             body: '<p class="text-base text-neutral-700 leading-relaxed font-light mb-4"><br></p>',
             faqs: initialFaqsFa
           },
           zh: {
-            title: '',
+            title: state.lang === 'zh' ? title : '',
             slug: slug,
             excerpt: '',
             body: '<p class="text-base text-neutral-700 leading-relaxed font-light mb-4"><br></p>',
@@ -3677,7 +3810,25 @@
 
         let existingBlogs = window.CMS.getData(window.CMS.KEYS.BLOG);
         if (!Array.isArray(existingBlogs)) existingBlogs = [];
-        existingBlogs.unshift(newArticle);
+        existingBlogs = deduplicateBlogs(existingBlogs);
+
+        // Check if an article with identical title or slug already exists
+        const existing = existingBlogs.find(b => {
+          if (!b) return false;
+          const bTitleEn = (b.en && b.en.title) || b.title || '';
+          const bTitleAr = (b.ar && b.ar.title) || '';
+          return (bTitleEn && bTitleEn.toLowerCase() === title.toLowerCase()) ||
+                 (bTitleAr && bTitleAr.toLowerCase() === title.toLowerCase()) ||
+                 (b.slug && b.slug === slug);
+        });
+
+        let targetArticle = newArticle;
+        if (existing) {
+          targetArticle = existing;
+        } else {
+          existingBlogs.unshift(newArticle);
+        }
+        existingBlogs = deduplicateBlogs(existingBlogs);
         existingBlogs = repairBlogFaqsAndTranslations(existingBlogs);
         window.CMS.saveData(window.CMS.KEYS.BLOG, existingBlogs);
         populateSidebar();
@@ -3693,23 +3844,23 @@
         showToast('Article created successfully!', 'success');
 
         state.section = 'blog-edit';
-        state.itemId = id;
-        state.activeBlogSlug = slug;
+        state.itemId = targetArticle.id;
+        state.activeBlogSlug = targetArticle.slug;
         toggleGroup('blog', true);
-        setActiveSidebarItem(id);
+        setActiveSidebarItem(targetArticle.id);
 
-        // Render full article form in the sidebar drawer so user can immediately edit text or image
-        renderBlogArticleForm(newArticle, false);
-        openEditorDrawer();
+        // Strictly zero forms: close drawer and keep 100% focus on the visual live studio canvas
+        renderVisualBlogGuide(targetArticle.id);
+        closeEditorDrawer();
 
         const iframe = document.getElementById('live-iframe');
-        const targetUrl = '../blog/index.html?cms_editor=1&article_slug=' + encodeURIComponent(slug);
+        const targetUrl = '../blog/index.html?cms_editor=1&article_slug=' + encodeURIComponent(targetArticle.slug);
         iframe.src = targetUrl;
 
         setTimeout(() => {
-          sendToIframe({ type: 'CMS_OPEN_ARTICLE', slug });
-          showToast('Canvas & Form Ready: Click any text on canvas or edit in sidebar!', 'info');
-        }, 600);
+          sendToIframe({ type: 'CMS_OPEN_ARTICLE', slug: targetArticle.slug });
+          showToast('Live Visual Studio Ready: Click any headline, text, image, or FAQ to edit!', 'info');
+        }, 500);
       }
 
       // Country Flag ISO Mapping & Helpers
@@ -4274,23 +4425,32 @@
         if (!b) return;
         const slug = b.slug || b.en?.slug || b.id;
         state.activeBlogSlug = slug;
-        navigate('blog-edit', null, id);
-        // navigate() already calls loadPreviewPage() which sets iframe.src with the correct slug.
-        // We do NOT set iframe.src again here to avoid a double reload.
-        // Instead, we send CMS_OPEN_ARTICLE with a retry loop until the iframe confirms receipt.
+        state.section = 'blog-edit';
+        state.itemId = id;
+
+        const children = document.getElementById('sbc-blog');
+        if (children && !children.classList.contains('open')) toggleGroup('blog', true);
+
+        setActiveSidebarItem(id);
+        renderVisualBlogGuide(id);
+        closeEditorDrawer();
+        setCanvasMode('edit', true);
+
+        loadPreviewPage();
+
         state._articleOpenConfirmed = null;
         let articleOpenAttempts = 0;
         const tryOpenArticle = () => {
           if (state._articleOpenConfirmed === slug) return; // iframe confirmed — stop
           articleOpenAttempts++;
           sendToIframe({ type: 'CMS_OPEN_ARTICLE', slug });
-          if (articleOpenAttempts < 10) {
-            setTimeout(tryOpenArticle, 700);
+          if (articleOpenAttempts < 12) {
+            setTimeout(tryOpenArticle, 500);
           } else {
             showToast('Live Visual Editor Ready: Click any text on canvas to edit!', 'info');
           }
         };
-        setTimeout(tryOpenArticle, 800);
+        setTimeout(tryOpenArticle, 300);
       }
 
       function toggleGroup(group, forceOpen) {
@@ -4884,9 +5044,6 @@
             </div>
 
             <div style="display:flex;gap:8px;flex-direction:column">
-              <button type="button" class="btn btn-primary" style="width:100%;justify-content:center;font-size:12px" onclick="const bls=window.CMS.getData(window.CMS.KEYS.BLOG)||[];const curB=bls.find(x=>x.id==='${b.id}')||{};renderBlogArticleForm(curB,false)">
-                <i class="fa-solid fa-pen-to-square"></i> Open Form &amp; Media Editor
-              </button>
               <button type="button" class="btn btn-secondary" style="width:100%;justify-content:center;font-size:12px" onclick="closeEditorDrawer()">
                 <i class="fa-solid fa-expand"></i> Fullscreen Visual Canvas
               </button>
@@ -6414,6 +6571,7 @@
         setPageTitle('Blog & Strategic Insights', 'Live visual studio active');
         const ed = document.getElementById('editor');
         if (!ed) return;
+        const blogs = window.CMS.getData(window.CMS.KEYS.BLOG) || [];
         ed.innerHTML = `
           <div style="padding:16px 20px">
             <div style="background:rgba(197,168,128,0.08);border:1px solid rgba(197,168,128,0.25);border-radius:12px;padding:18px;margin-bottom:16px">
@@ -6422,7 +6580,7 @@
                 <h3 style="font-size:14px;font-weight:700;color:var(--text);margin:0">Live Visual Studio Active</h3>
               </div>
               <p style="font-size:12px;color:var(--muted);line-height:1.6;margin:0 0 14px">
-                The live blog page is loaded in the preview canvas. <strong>Hover over any headline, text, card, or element on the page</strong> to see the edit outline, and click to edit directly inline in real time. Strictly zero forms!
+                The live blog page is loaded in the preview canvas. <strong>Click any article card on the canvas or select an article below</strong> to open it directly in the visual editor.
               </p>
               <div style="display:flex;flex-direction:column;gap:8px">
                 <button type="button" class="btn btn-primary" style="width:100%;justify-content:center;font-size:12px" onclick="openQuickBlogModal()">
@@ -6434,6 +6592,41 @@
                 <button type="button" class="btn btn-secondary" style="width:100%;justify-content:center;font-size:12px" onclick="refreshPreview()">
                   <i class="fa-solid fa-rotate"></i> Refresh Preview
                 </button>
+              </div>
+            </div>
+
+            <div style="margin-top:20px;border-top:1px solid var(--border);padding-top:16px">
+              <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:12px">
+                <span style="font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.08em;color:var(--muted)">Articles in Studio (${blogs.length})</span>
+              </div>
+              <div style="display:flex;flex-direction:column;gap:8px">
+                ${blogs.length === 0 ? `
+                  <div style="padding:14px;text-align:center;color:var(--muted);font-size:12px;border:1px dashed var(--border);border-radius:8px">
+                    No custom articles added yet. Click &quot;Add New Article&quot; or click any card on the canvas to open it.
+                  </div>
+                ` : blogs.map(b => {
+                  const ld = b[state.lang] || b.en || {};
+                  const title = ld.title || b.title || (b.en && b.en.title) || 'Untitled Article';
+                  const status = (b['status_' + state.lang] || b.status_en || 'draft').toLowerCase();
+                  const isPub = status === 'published';
+                  const safeId = escH(b.id).replace(/'/g, "\\'");
+                  return `
+                    <div style="display:flex;align-items:center;justify-content:space-between;gap:10px;padding:10px 12px;background:var(--bg2);border:1px solid var(--border);border-radius:8px">
+                      <div style="display:flex;align-items:center;gap:8px;overflow:hidden">
+                        <span class="sb-item-dot ${isPub ? 'published' : 'draft'}" style="flex-shrink:0"></span>
+                        <span style="font-size:12px;font-weight:600;color:var(--text);white-space:nowrap;overflow:hidden;text-overflow:ellipsis" title="${escH(title)}">${escH(title)}</span>
+                      </div>
+                      <div style="display:flex;align-items:center;gap:6px;flex-shrink:0">
+                        <button type="button" class="btn btn-primary" style="padding:4px 10px;font-size:11px" onclick="openBlogArticle('${safeId}')" title="Open and edit this article in Live Studio">
+                          <i class="fa-solid fa-pen-to-square"></i> Edit
+                        </button>
+                        <button type="button" class="btn btn-ghost" style="padding:4px 8px;font-size:11px;color:#f87171" onclick="deleteBlogItem('${safeId}')" title="Delete article">
+                          <i class="fa-solid fa-trash-can"></i>
+                        </button>
+                      </div>
+                    </div>
+                  `;
+                }).join('')}
               </div>
             </div>
           </div>
@@ -6448,14 +6641,40 @@
         openBlogArticle(id);
       }
 
+      function updateBlogUrlPreview() {
+        const inp = document.getElementById('blog-slug');
+        const preview = document.getElementById('blog-url-preview-text');
+        if (!inp || !preview) return;
+        const l = state.lang || 'en';
+        const slugVal = inp.value.trim() || 'article-slug';
+        const langPrefix = l !== 'en' ? (l + '/') : '';
+        preview.textContent = `https://sharifgroup.ae/${langPrefix}blog/${slugVal}/`;
+      }
+
+      function autoFillBlogSlug(titleVal) {
+        const slugInp = document.getElementById('blog-slug');
+        if (!slugInp) return;
+        if (!slugInp.value || slugInp.dataset.autogen === 'true') {
+          const clean = (titleVal || '').toLowerCase()
+            .replace(/[^a-z0-9\u0600-\u06FF\u4e00-\u9fa5\s-]/g, '')
+            .replace(/[\s_]+/g, '-')
+            .replace(/-+/g, '-')
+            .replace(/(^-|-$)/g, '')
+            .slice(0, 80);
+          slugInp.value = clean;
+          slugInp.dataset.autogen = 'true';
+          updateBlogUrlPreview();
+        }
+      }
+
       function renderBlogArticleForm(b, isNew) {
         const l = state.lang;
         const rtl = isRtl(l);
         const dir = rtl ? 'dir="rtl"' : '';
-        const ld = b[l] || b.en || {};
+        const ld = b[l] || (l === 'en' ? (b.en || {}) : {});
         const id = b.id;
 
-        setPageTitle(isNew ? 'New Blog Article' : (ld.title || 'Edit Article'), 'Blog & Articles');
+        setPageTitle(isNew ? 'New Blog Article' : (ld.title || b.title || 'Edit Article'), 'Blog & Articles');
 
         // Normalize category to match the 7 tabs on the live blog page
         let catVal = b.category || 'Citizenship';
@@ -6469,15 +6688,21 @@
 
         const subcatVal = b.subcategory || '';
 
+        const rootSlug = b.slug || b.en?.slug || '';
+        const currentSlug = ld.slug || rootSlug || (ld.title ? ld.title.toLowerCase().replace(/[^a-z0-9\u0600-\u06FF\u4e00-\u9fa5\s-]/g, '').replace(/[\s_]+/g, '-').replace(/-+/g, '-').replace(/(^-|-$)/g, '') : '') || '';
+
         const identityBody = `
     <div class="form-group" style="margin-bottom:12px">
       <label class="form-label">Article Headline / Title <span class="form-lang-tag">${l.toUpperCase()}</span></label>
-      <input class="form-input form-input-headline" ${dir} id="blog-title" value="${escH(ld.title || '')}" placeholder="e.g. 5 European Golden Visas for Global Families in 2026" oninput="markUnsaved();broadcastBlogDraft();liveUpdateField('blog_title',this.value)">
+      <input class="form-input form-input-headline" ${dir} id="blog-title" value="${escH(ld.title || '')}" placeholder="e.g. 5 European Golden Visas for Global Families in 2026" oninput="markUnsaved();broadcastBlogDraft();liveUpdateField('blog_title',this.value);autoFillBlogSlug(this.value)">
     </div>
     <div class="form-row form-row-2">
       <div class="form-group">
-        <label class="form-label">URL Slug</label>
-        <input class="form-input" id="blog-slug" value="${escH(ld.slug || (ld.title ? ld.title.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/(^-|-$)/g, '') : ''))}" placeholder="article-url-slug" oninput="markUnsaved();broadcastBlogDraft()">
+        <label class="form-label">URL Slug <span class="form-lang-tag">${l.toUpperCase()}</span></label>
+        <input class="form-input" id="blog-slug" value="${escH(currentSlug)}" placeholder="article-url-slug" data-autogen="${!currentSlug ? 'true' : 'false'}" oninput="this.dataset.autogen='false';markUnsaved();updateBlogUrlPreview();broadcastBlogDraft()">
+        <div id="blog-url-preview" style="font-size:11px;color:var(--gold);margin-top:6px;word-break:break-all">
+          <i class="fa-solid fa-link" style="margin-right:4px"></i> <span id="blog-url-preview-text">https://sharifgroup.ae/${l !== 'en' ? l + '/' : ''}blog/${currentSlug || 'article-slug'}/</span>
+        </div>
       </div>
       <div class="form-group">
         <label class="form-label">Category</label>
@@ -6596,6 +6821,18 @@
       <input class="form-input" id="blog-tags" value="${escH((b.tags || []).join(', '))}" placeholder="golden visa, citizenship, investment, europe" oninput="markUnsaved()">
     </div>`;
 
+        const langMap = { en: initialFaqsEn, ar: initialFaqsAr, fa: initialFaqsFa, zh: initialFaqsZh };
+        let defaultBlogFaqs = (ld.faqs && Array.isArray(ld.faqs) && ld.faqs.length) ? ld.faqs : (langMap[l] || initialFaqsEn);
+        if (defaultBlogFaqs.length < 12) {
+          const merged = [...defaultBlogFaqs];
+          const defArr = langMap[l] || initialFaqsEn;
+          for (let fi = merged.length; fi < 12; fi++) {
+            merged.push(defArr[fi]);
+          }
+          defaultBlogFaqs = merged;
+        }
+        const faqBody = renderFaqBuilder('blog-faq-builder', defaultBlogFaqs);
+
         document.getElementById('editor').innerHTML = `
     <div style="display:flex;align-items:center;justify-content:space-between;gap:12px;margin-bottom:18px">
       <div style="display:flex;align-items:center;gap:12px">
@@ -6612,6 +6849,7 @@
           block('blog-media', 'rgba(34,197,94,.15)', 'var(--green)', '<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect width="18" height="18" x="3" y="3" rx="2" ry="2"/><circle cx="9" cy="9" r="2"/><path d="m21 15-3.086-3.086a2 2 0 0 0-2.828 0L6 21"/></svg>', '3. Cover Image & Media', null, mediaBody) +
           block('blog-body-blk', 'rgba(197,168,128,.15)', 'var(--gold)', '<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14.5 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V7.5L14.5 2z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/></svg>', '4. Content & Synopsis', l.toUpperCase(), contentBody) +
           block('blog-seo-blk', 'rgba(245,158,11,.15)', 'var(--yellow)', '<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>', '5. Search Engine Optimization (SEO)', null, seoBody, true) +
+          block('blog-faqs-blk', 'rgba(96,165,250,.15)', '#60a5fa', '<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><path d="M9.09 9a3 3 0 0 1 5.83 1c0 2-3 3-3 3"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg>', '6. Frequently Asked Questions (12 Questions)', l.toUpperCase(), faqBody, false) +
           `<div style="display:flex;align-items:center;justify-content:space-between;margin-top:20px;padding-top:16px;border-top:1px solid var(--border)">
       <button class="btn btn-ghost" onclick="navigate('blog')">Cancel</button>
       <div style="display:flex;gap:8px">
@@ -6654,21 +6892,38 @@
           item.status_fa = status;
           item.status_zh = status;
 
+          const rawSlugInp = document.getElementById('blog-slug')?.value.trim();
+          let cleanSlug = rawSlugInp ? rawSlugInp.toLowerCase().replace(/[^a-z0-9\u0600-\u06FF\u4e00-\u9fa5\s-]/g, '').replace(/[\s_]+/g, '-').replace(/-+/g, '-').replace(/(^-|-$)/g, '') : '';
+          if (!cleanSlug) {
+            cleanSlug = item[l]?.slug || item.slug || item.en?.slug || (item.en?.title ? item.en.title.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/(^-|-$)/g, '') : '') || id;
+          }
+
           if (!item[l]) item[l] = {};
-          item[l].title = formTitle.value.trim() || item[l].title || '';
-          const slugInp = document.getElementById('blog-slug')?.value.trim();
-          item[l].slug = slugInp || item[l].slug || (item[l].title.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/(^-|-$)/g, '')) || id;
+          item[l].title = formTitle.value.trim();
+          item[l].slug = cleanSlug;
           if (document.getElementById('blog-excerpt')) item[l].excerpt = document.getElementById('blog-excerpt').value.trim();
           if (document.getElementById('blog-body')) item[l].body = document.getElementById('blog-body').value.trim();
           if (document.getElementById('blog-meta-title')) item[l].meta_title = document.getElementById('blog-meta-title').value.trim();
           if (document.getElementById('blog-meta-desc')) item[l].meta_desc = document.getElementById('blog-meta-desc').value.trim();
 
-          // Mirror title/slug/excerpt/body to en if en is still empty
+          // Save FAQs from form builder if present
+          if (document.getElementById('blog-faq-builder')) {
+            const f = getFaqs('blog-faq-builder');
+            if (f.length > 0) {
+              item[l].faqs = f;
+              if (l === 'en') {
+                item.faqs = f;
+                if (item.en) item.en.faqs = f;
+              }
+            }
+          }
+
+          // Maintain primary root slug
+          if (!item.slug || isNew || l === 'en') {
+            item.slug = cleanSlug;
+          }
           if (!item.en) item.en = {};
-          if (!item.en.title && item[l].title) item.en.title = item[l].title;
-          if (!item.en.slug && item[l].slug) item.en.slug = item[l].slug;
-          if (!item.en.excerpt && item[l].excerpt) item.en.excerpt = item[l].excerpt;
-          if (!item.en.body && item[l].body) item.en.body = item[l].body;
+          if (!item.en.slug) item.en.slug = cleanSlug;
         }
 
         if (isNew) {
@@ -6694,9 +6949,7 @@
           });
         }
 
-        // Automatically translate modified fields to other languages
-        autoTranslateOnSave('blog', id);
-
+        // Blog saved - manual translations per language tab (no AI overwrite)
         // Notify preview iframe: remove draft card and inject the saved article
         sendToIframe({ type: 'CMS_BLOG_SAVED', id, blog: item });
 
@@ -7364,9 +7617,6 @@
         markSaved();
         sendToIframe({ type: 'CMS_SET_LANG', lang: l });
         showToast('Cookie policy saved!');
-        if (window.CMS.Settings.getGeminiKey()) {
-          autoTranslateOnSave('cookiepolicy', null);
-        }
       }
 
       // ──────────────────────────────────────────────────────────
@@ -7957,12 +8207,10 @@
             if (window.CMS && window.CMS.Backend) {
               window.CMS.Backend.syncToDb('draft');
             }
-            autoTranslateOnSave('blog', id);
             return;
           } else if (section === 'aboutus') {
             saveAboutUs();
             markDraft();
-            autoTranslateOnSave('aboutus', null);
             return;
           } else if (section === 'contact') {
             saveContactSales();
@@ -7971,7 +8219,6 @@
           } else if (section === 'cookiepolicy' || section === 'cookies') {
             saveCookiePolicy();
             markDraft();
-            autoTranslateOnSave('cookiepolicy', null);
             return;
           } else if (section === 'legal') {
             saveLegal();
@@ -7995,8 +8242,6 @@
               }
             });
           }
-          // Automatically detect changes and translate to AR, FA, ZH
-          autoTranslateOnSave(section, itemId);
         } catch (err) {
           console.error('Error saving current page:', err);
           showToast('Error saving: ' + (err.message || 'Unknown error'), 'error');
@@ -8204,136 +8449,13 @@
       }
 
       // ══════════════════════════════════════════════════════════
-      // AUTOMATIC TRANSLATION ON SAVE (OpenRouter & Gemini AI Engine)
+      // AUTOMATIC TRANSLATION ON SAVE (DISABLED)
+      // Per requirements, automatic AI translations are disabled.
+      // Users manually populate/translate pages per language tab (AR, FA, ZH).
       // ══════════════════════════════════════════════════════════
       let isAutoTranslating = false;
       async function autoTranslateOnSave(section, itemId) {
-        if (isAutoTranslating) return;
-
-        const statusEl = document.getElementById('ai-auto-status');
-        if (statusEl) {
-          statusEl.style.display = 'flex';
-          statusEl.innerHTML = '<i class="fa-solid fa-wand-magic-sparkles fa-spin" style="color:var(--gold)"></i> <span>Auto-syncing translations (AR, FA, ZH)...</span>';
-        }
-
-        isAutoTranslating = true;
-        try {
-          const targetLangs = ['ar', 'fa', 'zh'];
-
-          if (section === 'homepage') {
-            const d = window.CMS.getData(window.CMS.KEYS.HOMEPAGE) || window.CMS.DEFAULTS.homepage;
-            const en = d.hero?.en || {};
-            d.hero = d.hero || {};
-            d.hero._last_en = d.hero._last_en || {};
-
-            for (const lang of targetLangs) {
-              d.hero[lang] = d.hero[lang] || {};
-              const heroFields = ['tagline', 'headline', 'subheadline', 'cta_primary', 'cta_secondary', 'pathway_citizenship', 'pathway_residency', 'pathway_realestate', 'pathway_education'];
-              for (const f of heroFields) {
-                if (en[f]) {
-                  const curr = d.hero[lang][f];
-                  const lastEn = d.hero._last_en[f];
-                  if (!curr || (lastEn && en[f] !== lastEn) || curr === en[f]) {
-                    d.hero[lang][f] = await window.CMS.AI.translate(en[f], lang);
-                  }
-                }
-              }
-              d.hero[lang].cta_primary_link = en.cta_primary_link;
-              d.hero[lang].cta_secondary_link = en.cta_secondary_link;
-
-              // About section
-              const enAbout = d.about?.en || {};
-              d.about = d.about || {};
-              d.about._last_en = d.about._last_en || {};
-              d.about[lang] = d.about[lang] || {};
-              const aboutFields = ['badge', 'heading', 'subheading', 'p1', 'p2', 'btn1_text', 'btn2_text'];
-              for (const af of aboutFields) {
-                if (enAbout[af]) {
-                  const curr = d.about[lang][af];
-                  const lastEn = d.about._last_en[af];
-                  if (!curr || (lastEn && enAbout[af] !== lastEn) || curr === enAbout[af]) {
-                    d.about[lang][af] = await window.CMS.AI.translate(enAbout[af], lang);
-                  }
-                }
-              }
-              d.about[lang].btn1_link = enAbout.btn1_link || 'aboutus/index.html';
-              d.about[lang].btn2_link = enAbout.btn2_link || 'contact/index.html';
-            }
-
-            d.hero._last_en = { ...en };
-            if (d.about?.en) d.about._last_en = { ...d.about.en };
-            window.CMS.saveData(window.CMS.KEYS.HOMEPAGE, d);
-
-          } else if (section === 'program' && itemId) {
-            const itemType = state.itemType || 'citizenship';
-            const list = window.CMS.getData(window.CMS.KEYS[itemType.toUpperCase()]) || window.CMS.DEFAULTS[itemType];
-            const idx = list.findIndex(p => p.id === itemId);
-            if (idx >= 0) {
-              const en = list[idx].en || {};
-              list[idx]._last_en = list[idx]._last_en || {};
-              for (const lang of targetLangs) {
-                list[idx][lang] = list[idx][lang] || {};
-                const progFields = ['title', 'hero_title', 'hero_subtitle', 'hero_tagline', 'nav_label', 'overview_title', 'overview', 'investment_title', 'investment_desc', 'who_can_apply_title', 'who_can_apply_desc', 'docs_title', 'docs_desc', 'timeline_title', 'timeline_desc', 'faq_title', 'faq_desc', 'consult_heading', 'consult_subheading', 'consult_btn_text'];
-                for (const pf of progFields) {
-                  if (en[pf]) {
-                    const curr = list[idx][lang][pf];
-                    const lastEn = list[idx]._last_en[pf];
-                    if (!curr || (lastEn && en[pf] !== lastEn) || curr === en[pf]) {
-                      list[idx][lang][pf] = await window.CMS.AI.translate(en[pf], lang);
-                    }
-                  }
-                }
-              }
-              list[idx]._last_en = { ...en };
-              window.CMS.saveData(window.CMS.KEYS[itemType.toUpperCase()], list);
-            }
-
-          } else if (section === 'blog' || section === 'blog-edit') {
-            // Blogs use 100% manual translation: user pastes drafts directly per language
-            return;
-
-          } else if (section === 'aboutus') {
-            const about = window.CMS.getData(window.CMS.KEYS.ABOUTUS) || window.CMS.DEFAULTS.aboutus;
-            for (const lang of targetLangs) {
-              if (about.hero?.en) {
-                about.hero[lang] = about.hero[lang] || {};
-                if (about.hero.en.title) about.hero[lang].title = await window.CMS.AI.translate(about.hero.en.title, lang);
-                if (about.hero.en.subtitle) about.hero[lang].subtitle = await window.CMS.AI.translate(about.hero.en.subtitle, lang);
-              }
-              if (about.overview?.en) {
-                about.overview[lang] = about.overview[lang] || {};
-                if (about.overview.en.heading) about.overview[lang].heading = await window.CMS.AI.translate(about.overview.en.heading, lang);
-                if (about.overview.en.p1) about.overview[lang].p1 = await window.CMS.AI.translate(about.overview.en.p1, lang);
-              }
-            }
-            window.CMS.saveData(window.CMS.KEYS.ABOUTUS, about);
-
-          } else if (section === 'cookiepolicy') {
-            const cp = window.CMS.getData('sgcms_cookiepolicy') || {};
-            const en = cp.en || {};
-            for (const lang of targetLangs) {
-              cp[lang] = cp[lang] || {};
-              if (en.hero_badge) cp[lang].hero_badge = await window.CMS.AI.translate(en.hero_badge, lang);
-              if (en.hero_title) cp[lang].hero_title = await window.CMS.AI.translate(en.hero_title, lang);
-              if (en.hero_desc) cp[lang].hero_desc = await window.CMS.AI.translate(en.hero_desc, lang);
-              if (en.p1_title) cp[lang].p1_title = await window.CMS.AI.translate(en.p1_title, lang);
-              if (en.p1_desc) cp[lang].p1_desc = await window.CMS.AI.translate(en.p1_desc, lang);
-            }
-            window.CMS.saveData('sgcms_cookiepolicy', cp);
-          }
-
-          if (statusEl) {
-            statusEl.innerHTML = '<i class="fa-solid fa-check" style="color:#4ade80"></i> <span style="color:#4ade80">Auto-synced in AR, FA, ZH!</span>';
-            setTimeout(() => { statusEl.style.display = 'none'; }, 3500);
-          }
-        } catch (err) {
-          console.warn('[Auto-Translate error]:', err.message);
-          if (statusEl) {
-            statusEl.style.display = 'none';
-          }
-        } finally {
-          isAutoTranslating = false;
-        }
+        return;
       }
 
       // ══════════════════════════════════════════════════════════
@@ -8351,11 +8473,6 @@
           if (typeof saveCurrentPage === 'function' && state.section && state.section !== 'overview') {
             saveCurrentPage();
           }
-        } catch (e) { }
-
-        // Automatically sync all translations before publishing live
-        try {
-          await autoTranslateOnSave(state.section, state.itemId);
         } catch (e) { }
 
         // 1. Gather all current draft CMS keys comprehensively
@@ -8482,12 +8599,12 @@
         } catch (e) {
           backendError = { error: e.message, _networkFail: true };
           console.warn('[CMS Publish] Network error:', e.message);
-        }
-
-        // 3. Restore button
-        if (btn) {
-          btn.disabled = false;
-          btn.innerHTML = '<i class="fa-solid fa-cloud-arrow-up"></i> Publish';
+        } finally {
+          // 3. Restore button GUARANTEED in all cases
+          if (btn) {
+            btn.disabled = false;
+            btn.innerHTML = '<i class="fa-solid fa-cloud-arrow-up"></i> Publish';
+          }
         }
 
         // 4. Show appropriate modal
@@ -8556,18 +8673,27 @@
           payload.token = token;
         }
 
+        const controller = new AbortController();
+        const timeoutId = setTimeout(() => controller.abort(), 15000);
         let res;
         try {
           res = await fetch('api/publish.php', {
             method: 'POST',
             credentials: 'include',
             headers,
-            body: JSON.stringify(payload)
+            body: JSON.stringify(payload),
+            signal: controller.signal
           });
         } catch (networkErr) {
-          // True network failure (no internet, server down, CORS block)
-          return { _failed: true, _networkFail: true, error: networkErr.message };
+          clearTimeout(timeoutId);
+          const isTimeout = networkErr.name === 'AbortError';
+          return {
+            _failed: true,
+            _networkFail: true,
+            error: isTimeout ? 'Server publish timed out (15s). Please check server connection.' : networkErr.message
+          };
         }
+        clearTimeout(timeoutId);
 
         // Attempt session refresh on 401 and retry once
         if (res.status === 401) {
@@ -8633,17 +8759,10 @@
         }
       }
 
-      // Listen for iframe content edits with safe debounce
-      let _autoTranslateDebounceTimer = null;
+      // Listen for iframe content edits
       window.addEventListener('message', e => {
         if (e.data && e.data.type === 'CMS_CONTENT_CHANGED') {
           markDraft();
-          if (window.CMS.Settings.getAiKey && window.CMS.Settings.getAiKey()) {
-            clearTimeout(_autoTranslateDebounceTimer);
-            _autoTranslateDebounceTimer = setTimeout(() => {
-              autoTranslateOnSave(e.data.section || state.section, state.itemId);
-            }, 4000);
-          }
         }
       });
 

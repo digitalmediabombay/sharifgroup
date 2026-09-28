@@ -39,17 +39,26 @@ foreach ($payload['data'] as $k => $v) {
     }
 }
 
-// Automatically detect changes in English and auto-translate into Arabic, Farsi, Chinese
-require_once __DIR__ . '/translate_sync.php';
-try {
-    $existingPublished = readPublishedSnapshot();
-    foreach ($payload['data'] as $k => &$v) {
-        $oldVal = isset($existingPublished[$k]) ? $existingPublished[$k] : null;
-        autoTranslateChangedData($k, $v, $oldVal);
+// Deduplicate blog entries if sgcms_blog is present
+if (!empty($payload['data']['sgcms_blog']) && is_array($payload['data']['sgcms_blog'])) {
+    $dedupedBlogs = [];
+    $seenIds = [];
+    $seenTitles = [];
+    foreach ($payload['data']['sgcms_blog'] as $blogItem) {
+        if (!is_array($blogItem)) continue;
+        $id = $blogItem['id'] ?? '';
+        $titleEn = trim($blogItem['en']['title'] ?? ($blogItem['title'] ?? ''));
+        $titleAr = trim($blogItem['ar']['title'] ?? '');
+        $titleKey = mb_strtolower($titleEn ?: $titleAr);
+        
+        if ($id && isset($seenIds[$id])) continue;
+        if ($titleKey && isset($seenTitles[$titleKey])) continue;
+        
+        if ($id) $seenIds[$id] = true;
+        if ($titleKey) $seenTitles[$titleKey] = true;
+        $dedupedBlogs[] = $blogItem;
     }
-    unset($v);
-} catch (Exception $e) {
-    error_log('[SharifCMS AutoTranslate Publish Error] ' . $e->getMessage());
+    $payload['data']['sgcms_blog'] = $dedupedBlogs;
 }
 
 // 1. GUARANTEED LIVE UPDATE: Merge and write published snapshot directly to published_content.json

@@ -1217,7 +1217,7 @@
       updated: date,
       image: img,
       content: draft.body || (excerpt ? `<p>${excerpt}</p>` : '<p>Article content preview will appear here...</p>'),
-      faqs: []
+      faqs: (draft.faqs && Array.isArray(draft.faqs) && draft.faqs.length) ? draft.faqs : []
     };
     window.articlesDatabase[slug] = draftArticleObj;
     window.articlesDatabase['live-draft-preview'] = draftArticleObj;
@@ -1275,9 +1275,25 @@
     let blogs = store('sgcms_blog') || [];
     const l = lang || getLang();
 
-    // Auto-prune legacy dummy b001 if present in blogs
+    // Auto-prune legacy dummy b001 and deduplicate blogs array
     if (Array.isArray(blogs)) {
-      blogs = blogs.filter(b => b && b.id !== 'b001' && b.slug !== 'about-sharif-group');
+      const seen = new Set();
+      blogs = blogs.filter(b => {
+        if (!b || b.id === 'b001' || b.slug === 'about-sharif-group') return false;
+        const id = b.id || '';
+        const tEn = ((b.en && b.en.title) || b.title || '').trim().toLowerCase();
+        const tAr = ((b.ar && b.ar.title) || '').trim().toLowerCase();
+        const tFa = ((b.fa && b.fa.title) || '').trim().toLowerCase();
+        const tZh = ((b.zh && b.zh.title) || '').trim().toLowerCase();
+        const titleKey = tEn || tAr || tFa || tZh;
+
+        if (id && seen.has('id:' + id)) return false;
+        if (titleKey && seen.has('title:' + titleKey)) return false;
+
+        if (id) seen.add('id:' + id);
+        if (titleKey) seen.add('title:' + titleKey);
+        return true;
+      });
     }
 
     // Ensure articlesDatabase exists so dynamically added articles can open in detail reader
@@ -1327,7 +1343,7 @@
 
       // Register article data in the client-side database
       const articleData = {
-        title: ld.title || (l === 'en' ? ((b.en && b.en.title) || b.title || 'Untitled Article') : ''),
+        title: ld.title || (l === 'en' ? ((b.en && b.en.title) || b.title || 'Untitled Article') : (b.en?.title || b.title || 'Article')),
         category: catDisplay,
         author: b.author || 'Sharif Group Advisory',
         date: b.publish_date || new Date().toLocaleDateString('en-US', { month: 'long', day: 'numeric', year: 'numeric' }),
@@ -1339,7 +1355,14 @@
       window.articlesDatabase[slug] = articleData;
       window.articlesDatabase[b.id] = articleData;
 
-      let existingCard = document.querySelector(`[data-cms-blog-id="${b.id}"]`);
+      // Find any existing dynamic cards matching id or slug
+      const matchingCards = grid.querySelectorAll(`[data-cms-blog-id="${b.id}"], [data-cms-slug="${slug}"]`);
+      let existingCard = matchingCards.length ? matchingCards[0] : null;
+      // Remove any duplicate matching cards beyond the first
+      for (let i = 1; i < matchingCards.length; i++) {
+        matchingCards[i].remove();
+      }
+
       if (!existingCard) {
         // Prevent duplication if this matches an existing static article in the grid
         const staticCards = grid.querySelectorAll('article.blog-item:not(.dynamic-cms-blog)');
@@ -1352,15 +1375,19 @@
           if (matchSlug || matchTitle) {
             existingCard = sc;
             existingCard.setAttribute('data-cms-blog-id', b.id);
+            existingCard.setAttribute('data-cms-slug', slug);
             break;
           }
         }
       }
 
+      const readMoreLabel = l === 'ar' ? 'اقرأ المزيد' : (l === 'fa' ? 'ادامه مطلب' : (l === 'zh' ? '阅读更多' : 'READ MORE'));
+
       if (!existingCard) {
         const articleEl = document.createElement('article');
         articleEl.className = 'space-y-4 text-left flex flex-col justify-between blog-item dynamic-cms-blog';
         articleEl.setAttribute('data-cms-blog-id', b.id);
+        articleEl.setAttribute('data-cms-slug', slug);
         articleEl.setAttribute('data-cat', dataCat);
         articleEl.style.display = 'flex';
         articleEl.setAttribute('data-paginated', 'true');
@@ -1373,11 +1400,11 @@
               <img alt="${escH(ld.title || 'Article')}" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" src="${cleanImg}" onerror="this.onerror=null;this.src='/assets/images/dubai-office-2.webp'">
             </div>
             <h4 class="font-serif font-bold text-base text-neutral-900 leading-snug">
-              ${escH(ld.title || 'Untitled Article')}
+              ${escH(ld.title || (b.en && b.en.title) || b.title || 'Untitled Article')}
             </h4>
           </div>
           <a class="inline-block text-[11px] font-bold uppercase tracking-wider text-neutral-800 border-b border-neutral-800 hover:text-luxury-gold hover:border-luxury-gold transition-colors pb-0.5 self-start cursor-pointer" href="javascript:void(0)" onclick="openBlogDetailBySlug('${slug}')">
-            READ MORE
+            ${readMoreLabel}
           </a>
         `;
         const draftCard = document.getElementById('cms-live-draft-card');
@@ -1389,14 +1416,17 @@
       } else {
         // Update existing card
         existingCard.setAttribute('data-cat', dataCat);
+        existingCard.setAttribute('data-cms-slug', slug);
         existingCard.style.display = 'flex';
         existingCard.setAttribute('data-paginated', 'true');
         const img = existingCard.querySelector('img');
         if (img && b.featured_img) img.src = normalizeImageUrl(b.featured_img);
         const h4 = existingCard.querySelector('h4');
-        if (h4 && ld.title) h4.textContent = ld.title;
+        if (h4 && (ld.title || b.en?.title || b.title)) h4.textContent = ld.title || b.en?.title || b.title;
         const p = existingCard.querySelector('p');
         if (p && ld.excerpt) p.textContent = ld.excerpt;
+        const rm = existingCard.querySelector('a[onclick*="openBlogDetailBySlug"]');
+        if (rm) rm.textContent = readMoreLabel;
       }
     });
 
@@ -3601,35 +3631,131 @@
       // 1. Allow Ctrl+Click or Cmd+Click on ANY link to follow it directly
       if (e.ctrlKey || e.metaKey) return;
 
-      // 2. Check if clicked inside header/navbar
-      const isBlogDetailTarget = Boolean(e.target.closest('#detail-breadcrumb-title, #detail-title, #detail-author, #detail-date, #detail-updated, #detail-category-badge, #detail-content-body, #detail-faq-wrapper, #detail-image'));
-      const navArea = !isBlogDetailTarget && e.target.closest('header, #main-header, #mobile-menu, .mega-menu, [id*="mega"], [class*="navbar"]');
-      if (navArea) {
-        const anchor = e.target.closest('a');
-        if (anchor && anchor.getAttribute('href')) {
-          const href = anchor.getAttribute('href').trim();
-          if (href && !href.startsWith('#') && !href.startsWith('javascript:')) {
-            if (isInsideIframe) {
-              e.preventDefault();
-              try {
-                window.parent.postMessage({
-                  type: 'CMS_NAVIGATE_PAGE',
-                  url: anchor.href,
-                  path: anchor.pathname
-                }, '*');
-              } catch (err) { }
-              window.location.href = anchor.href;
-              return;
+      // 2. Check if we are on the blog listing view and user clicked an article card (image, title, card box, or READ MORE)
+      const detailView = document.getElementById('blog-detail-view-container');
+      const isDetailOpen = detailView && !detailView.classList.contains('hidden');
+      if (!isDetailOpen) {
+        const blogCard = e.target.closest('.blog-item, [data-cms-blog-id], #all-blogs-grid article');
+        if (blogCard) {
+          let targetSlug = null;
+          // A. Try data-cms-blog-id
+          const blogId = blogCard.getAttribute('data-cms-blog-id');
+          if (blogId) {
+            const blogs = store('sgcms_blog') || [];
+            const b = blogs.find(x => x && (x.id === blogId || x.slug === blogId));
+            if (b) targetSlug = b.slug || b.en?.slug || b.id;
+            else targetSlug = blogId;
+          }
+          // B. Try onclick attribute on any descendant or self
+          if (!targetSlug) {
+            const onclickEl = blogCard.querySelector('[onclick*="openBlogDetailBySlug"]') || (blogCard.getAttribute('onclick')?.includes('openBlogDetailBySlug') ? blogCard : null);
+            if (onclickEl) {
+              const m = onclickEl.getAttribute('onclick').match(/openBlogDetailBySlug\(['"]([^'"]+)['"]\)/);
+              if (m && m[1]) targetSlug = m[1];
             }
           }
+          // C. Try link href /blog/<slug>/
+          if (!targetSlug) {
+            const link = blogCard.querySelector('a[href*="/blog/"]') || (blogCard.tagName === 'A' ? blogCard : null);
+            if (link) {
+              const href = link.getAttribute('href') || '';
+              const m = href.match(/\/blog\/([^\/\?\#]+)\/?/);
+              if (m && m[1] && !['index.html', 'blog.html', 'blog'].includes(m[1])) targetSlug = decodeURIComponent(m[1]);
+            }
+          }
+          // D. Try card title match against articlesDatabase or sgcms_blog
+          if (!targetSlug) {
+            const titleText = blogCard.querySelector('h4')?.textContent?.trim().toLowerCase();
+            if (titleText) {
+              const blogs = store('sgcms_blog') || [];
+              const b = blogs.find(x => {
+                const bt = (x.title || x.en?.title || '').trim().toLowerCase();
+                return bt && (bt === titleText || bt.includes(titleText) || titleText.includes(bt));
+              });
+              if (b) targetSlug = b.slug || b.en?.slug || b.id;
+              else if (window.articlesDatabase) {
+                for (const s in window.articlesDatabase) {
+                  const art = window.articlesDatabase[s];
+                  if (art && art.title && art.title.trim().toLowerCase() === titleText) {
+                    targetSlug = s;
+                    break;
+                  }
+                }
+              }
+            }
+          }
+
+          if (targetSlug) {
+            e.preventDefault();
+            e.stopPropagation();
+            if (typeof window.openBlogDetailBySlug === 'function') {
+              window.openBlogDetailBySlug(targetSlug);
+            }
+            if (isInsideIframe && window.parent && window.parent !== window) {
+              try {
+                window.parent.postMessage({
+                  type: 'CMS_ARTICLE_OPENED',
+                  slug: targetSlug
+                }, '*');
+              } catch (err) { }
+            }
+            if (editMode) {
+              setTimeout(initBlogBodyWysiwygEditor, 120);
+            }
+            return;
+          }
         }
-        // Allow menu toggles, dropdown buttons, etc. to run naturally without interruption
+      }
+
+      // 3. Check if clicking Back to All Articles
+      if (e.target.closest('[onclick*="closeBlogDetail"], [data-i18n="blog.backToArticles"]')) {
+        if (typeof window.closeBlogDetail === 'function') {
+          window.closeBlogDetail();
+        }
+        if (isInsideIframe && window.parent && window.parent !== window) {
+          try {
+            window.parent.postMessage({
+              type: 'CMS_ARTICLE_CLOSED'
+            }, '*');
+          } catch (err) { }
+        }
         return;
       }
 
-      if (!editMode) return; // Allow natural browsing, link clicking, and button interaction!
+      // 4. Live Browse Mode: Allow natural interactive exploration, preserving cms_editor=1 on all links
+      if (!editMode) {
+        const anchor = e.target.closest('a');
+        if (anchor && anchor.getAttribute('href')) {
+          const rawHref = anchor.getAttribute('href').trim();
+          if (rawHref && !rawHref.startsWith('#') && !rawHref.startsWith('javascript:') && !rawHref.startsWith('tel:') && !rawHref.startsWith('mailto:')) {
+            try {
+              const targetUrl = new URL(anchor.href, window.location.href);
+              const isSameHost = targetUrl.hostname === window.location.hostname || targetUrl.hostname.includes('sharifgroup');
+              if (isSameHost) {
+                e.preventDefault();
+                if (!targetUrl.searchParams.has('cms_editor')) {
+                  targetUrl.searchParams.set('cms_editor', '1');
+                }
+                if (isInsideIframe && window.parent && window.parent !== window) {
+                  try {
+                    window.parent.postMessage({
+                      type: 'CMS_NAVIGATE_PAGE',
+                      url: targetUrl.href,
+                      path: targetUrl.pathname
+                    }, '*');
+                  } catch (err) { }
+                }
+                window.location.href = targetUrl.href;
+                return;
+              }
+            } catch (err) { }
+          }
+        }
+        // Allow menus, dropdowns, accordions, and buttons to run naturally
+        return;
+      }
 
-      // If clicking inside toolbar or blog body editor, allow interaction
+      // 5. In Edit Mode: If clicking inside toolbar or blog body editor, allow interaction
       if (e.target.closest('#cms-inline-toolbar') || e.target.closest('#cms-hover-tooltip') || e.target.closest('#cms-image-popover') || e.target.closest('#cms-blog-body-docked-bar') || e.target.closest('#cms-selection-bubble')) return;
 
       if (e.target.closest('#detail-content-body')) {
@@ -3637,23 +3763,6 @@
           saveCurrentActive();
         }
         return;
-      }
-
-      // Check if clicking Back to All Articles
-      if (e.target.closest('[onclick*="closeBlogDetail"], [data-i18n="blog.backToArticles"]')) {
-        return;
-      }
-
-      // Check if clicking inside blog card or READ MORE link to open article
-      const blogCardLink = e.target.closest('a[onclick*="openBlogDetailBySlug"], [onclick*="openBlogDetailBySlug"], .blog-item a, [data-cms-blog-id] a, .blog-item');
-      if (blogCardLink) {
-        const readMoreBtn = e.target.closest('a[onclick*="openBlogDetailBySlug"], [onclick*="openBlogDetailBySlug"]');
-        if (readMoreBtn) return; // Allow natural openBlogDetailBySlug!
-        const onclickEl = blogCardLink.querySelector('[onclick*="openBlogDetailBySlug"]') || blogCardLink.closest('[data-cms-blog-id]')?.querySelector('[onclick*="openBlogDetailBySlug"]');
-        if (onclickEl) {
-          onclickEl.click();
-          return;
-        }
       }
 
       const clickedImg = e.target.closest('img');
@@ -3808,19 +3917,40 @@
     if (isInsideIframe) {
       try {
         const urlParams = new URLSearchParams(window.location.search);
-        const frameSlug = urlParams.get('article_slug') || urlParams.get('slug') || extractSlug();
+        let frameSlug = urlParams.get('article_slug') || urlParams.get('slug') || '';
+        if (!frameSlug) {
+          const match = window.location.pathname.match(/(?:\/(ar|fa|zh))?\/blog\/([^\/\?\#]+)\/?$/i);
+          if (match && match[2] && !['index.html', 'blog.html', 'blog', ''].includes(match[2])) {
+            frameSlug = decodeURIComponent(match[2]);
+          }
+        }
+        if (['blog', 'homepage', 'index.html', 'index', 'admin'].includes(frameSlug)) {
+          frameSlug = '';
+        }
+
         window.parent.postMessage({
           type: 'CMS_FRAME_READY',
           path: window.location.pathname,
           search: window.location.search,
           href: window.location.href,
-          slug: frameSlug
+          slug: frameSlug || null
         }, '*');
-        // If a slug is in the URL, auto-open the article now that the visual editor is ready
-        if (frameSlug && typeof window.openBlogDetailBySlug === 'function') {
-          setEditMode(true, false, false);
-          window.openBlogDetailBySlug(frameSlug);
-          setTimeout(initBlogBodyWysiwygEditor, 120);
+
+        // If an article slug is in the URL, auto-open the article
+        if (frameSlug) {
+          const tryOpen = (attempts) => {
+            if (typeof window.openBlogDetailBySlug === 'function') {
+              setEditMode(true, false, false);
+              window.openBlogDetailBySlug(frameSlug);
+              if (window.parent && window.parent !== window) {
+                try { window.parent.postMessage({ type: 'CMS_ARTICLE_OPENED', slug: frameSlug }, '*'); } catch (e) { }
+              }
+              setTimeout(initBlogBodyWysiwygEditor, 120);
+            } else if (attempts < 10) {
+              setTimeout(() => tryOpen(attempts + 1), 100);
+            }
+          };
+          tryOpen(0);
         }
       } catch (e) { }
     }
@@ -3828,9 +3958,33 @@
     // Auto-hook into window.openBlogDetailBySlug to ensure the Canva/Word editor initializes seamlessly
     if (typeof window.openBlogDetailBySlug === 'function') {
       const origOpenBlogDetail = window.openBlogDetailBySlug;
-      window.openBlogDetailBySlug = function() {
+      window.openBlogDetailBySlug = function(slug) {
         const ret = origOpenBlogDetail.apply(this, arguments);
+        const effectiveSlug = slug || window.currentActiveArticleSlug;
+        if (effectiveSlug && window.parent && window.parent !== window) {
+          try {
+            window.parent.postMessage({
+              type: 'CMS_ARTICLE_OPENED',
+              slug: effectiveSlug
+            }, '*');
+          } catch (e) { }
+        }
         setTimeout(initBlogBodyWysiwygEditor, 120);
+        return ret;
+      };
+    }
+
+    if (typeof window.closeBlogDetail === 'function') {
+      const origCloseBlogDetail = window.closeBlogDetail;
+      window.closeBlogDetail = function() {
+        const ret = origCloseBlogDetail.apply(this, arguments);
+        if (window.parent && window.parent !== window) {
+          try {
+            window.parent.postMessage({
+              type: 'CMS_ARTICLE_CLOSED'
+            }, '*');
+          } catch (e) { }
+        }
         return ret;
       };
     }

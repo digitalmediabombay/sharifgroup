@@ -57,11 +57,15 @@
     RewriteCond %{REQUEST_URI} !(.*)/$
     RewriteRule ^(.*)$ /$1/ [R=301,L]
 
-    # 9. Clean Language Path Rewrites (/ar/, /fa/, /zh/)
+    # 9. Clean Language Path Rewrites for Blog (/ar/blog/..., /fa/blog/..., /zh/blog/...)
+    RewriteRule ^(ar|fa|zh)/blog/([^/]+)/?$ /blog/index.html [L,QSA]
+    RewriteRule ^(ar|fa|zh)/blog/?$ /blog/index.html [L,QSA]
+
+    # 10. Clean Language Path Rewrites (/ar/, /fa/, /zh/)
     RewriteRule ^(ar|fa|zh)/?$ /index.html [L,QSA]
     RewriteRule ^(ar|fa|zh)/(.*)$ /$2 [L,QSA]
 
-    # 10. Blog slug fallback
+    # 11. Blog slug fallback
     RewriteCond %{REQUEST_FILENAME} !-f
     RewriteCond %{REQUEST_FILENAME} !-d
     RewriteRule ^blog/([^/]+)/?$ /blog/index.html [L,QSA]
