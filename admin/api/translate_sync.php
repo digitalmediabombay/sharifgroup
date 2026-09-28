@@ -57,14 +57,23 @@ if (!function_exists('translateTextServer')) {
             }
         }
 
+        // Sanitize incoming text before translation
+        $cleanSource = str_replace(['\\u0026amp;', '&amp;', 'ΓÇô', 'ΓÇó', '\\u0027', '\\\"'], ['&', '&', '–', '•', "'", '"'], $text);
+
         // Fallback: Free Google Translate GTX service (always available, ultra-fast, no key required)
         if (empty($translated)) {
-            $translated = callGoogleGtxTranslate($text, $targetLang, $sourceLang);
+            $translated = callGoogleGtxTranslate($cleanSource, $targetLang, $sourceLang);
         }
 
         // Final safety fallback: return original text if translation failed
         if (empty($translated)) {
-            $translated = $text;
+            $translated = $cleanSource;
+        }
+
+        if (!empty($translated) && is_string($translated)) {
+            $translated = str_replace(['\\u0026amp;', '&amp;', 'ΓÇô', 'ΓÇó', '\\u0027', '\\\"'], ['&', '&', '–', '•', "'", '"'], $translated);
+            $translated = html_entity_decode($translated, ENT_QUOTES | ENT_HTML5, 'UTF-8');
+            $translated = trim($translated);
         }
 
         $GLOBALS['_cms_translation_cache'][$cacheKey] = $translated;
@@ -214,6 +223,11 @@ if (!function_exists('translateTextServer')) {
         return null;
     }
 
+    function isMojibake($str) {
+        if (!is_string($str) || trim($str) === '') return false;
+        return preg_match('/[\x{2500}-\x{259F}\x{FFFD}]|ΓÇô|ΓÇó|u0026amp;/u', $str) === 1;
+    }
+
     /**
      * Checks if a string has actual Arabic/Persian/Chinese characters
      */
@@ -266,9 +280,11 @@ if (!function_exists('translateTextServer')) {
                     // Trigger translation if:
                     // 1. English text changed vs old database text, OR
                     // 2. Target language text is empty/missing, OR
-                    // 3. Target language text is identical to English (untranslated) AND it's not a proper name
+                    // 3. Target language contains mojibake box drawing chars, OR
+                    // 4. Target language text is identical to English (untranslated) AND it's not a proper name
                     $needsTranslate = ($oldVal !== '' && $newVal !== $oldVal)
                         || ($currTargetVal === '')
+                        || isMojibake($currTargetVal)
                         || ($currTargetVal === $newVal && strlen($newVal) > 4 && !hasNonLatinChars($currTargetVal));
 
                     if ($needsTranslate) {
@@ -303,6 +319,7 @@ if (!function_exists('translateTextServer')) {
 
                     $needsTranslate = ($oldVal !== '' && $newVal !== $oldVal)
                         || ($currTargetVal === '')
+                        || isMojibake($currTargetVal)
                         || ($currTargetVal === $newVal && strlen($newVal) > 4 && !hasNonLatinChars($currTargetVal));
 
                     if ($needsTranslate) {
@@ -332,6 +349,7 @@ if (!function_exists('translateTextServer')) {
 
                         $needsTranslate = ($oldLabelEn !== '' && $labelEn !== $oldLabelEn)
                             || ($currVal === '')
+                            || isMojibake($currVal)
                             || ($currVal === $labelEn && !hasNonLatinChars($currVal));
 
                         if ($needsTranslate) {
@@ -387,6 +405,7 @@ if (!function_exists('translateTextServer')) {
 
                         $needsTranslate = ($oldVal !== '' && $newVal !== $oldVal)
                             || ($currVal === '')
+                            || isMojibake($currVal)
                             || ($currVal === $newVal && strlen($newVal) > 4 && !hasNonLatinChars($currVal));
 
                         if ($needsTranslate) {
@@ -442,7 +461,7 @@ if (!function_exists('translateTextServer')) {
                     if ($newVal === '') continue;
                     $oldVal = trim((string)($oldHeroEn[$f] ?? ''));
                     $currVal = trim((string)($newData['hero'][$lang][$f] ?? ''));
-                    if (($oldVal !== '' && $newVal !== $oldVal) || $currVal === '' || ($currVal === $newVal && !hasNonLatinChars($currVal))) {
+                    if (($oldVal !== '' && $newVal !== $oldVal) || $currVal === '' || isMojibake($currVal) || ($currVal === $newVal && !hasNonLatinChars($currVal))) {
                         $newData['hero'][$lang][$f] = translateTextServer($newVal, $lang, 'en');
                     }
                 }
@@ -452,7 +471,7 @@ if (!function_exists('translateTextServer')) {
                     if ($newVal === '') continue;
                     $oldVal = trim((string)($oldOverviewEn[$f] ?? ''));
                     $currVal = trim((string)($newData['overview'][$lang][$f] ?? ''));
-                    if (($oldVal !== '' && $newVal !== $oldVal) || $currVal === '' || ($currVal === $newVal && !hasNonLatinChars($currVal))) {
+                    if (($oldVal !== '' && $newVal !== $oldVal) || $currVal === '' || isMojibake($currVal) || ($currVal === $newVal && !hasNonLatinChars($currVal))) {
                         $newData['overview'][$lang][$f] = translateTextServer($newVal, $lang, 'en');
                     }
                 }

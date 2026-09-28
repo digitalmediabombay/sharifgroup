@@ -4305,7 +4305,11 @@
 
         function makeProgItem(p, type) {
           const ld = p[state.lang] || p.en || {};
-          let title = ld.nav_label || ld.title || (p.en && (p.en.nav_label || p.en.title)) || p.name || '';
+          let rawTitle = ld.nav_label || ld.title || '';
+          if (typeof rawTitle === 'string' && (/[\u2500-\u259F\uFFFD]/.test(rawTitle))) {
+            rawTitle = (p.en && (p.en.nav_label || p.en.title)) || p.name || '';
+          }
+          let title = (rawTitle || (p.en && (p.en.nav_label || p.en.title)) || p.name || '').replace(/\\u0026amp;/gi, '&').replace(/&amp;/gi, '&').replace(/ΓÇô/g, '–');
           if (!title || title.startsWith('id-')) {
             if (p.hero_title) {
               title = p.hero_title + (type === 'citizenship' ? ' | Passport' : ' | Golden Visa');
@@ -8455,7 +8459,137 @@
       // ══════════════════════════════════════════════════════════
       let isAutoTranslating = false;
       async function autoTranslateOnSave(section, itemId) {
+<<<<<<< HEAD
         return;
+=======
+        if (isAutoTranslating) return;
+
+        const statusEl = document.getElementById('ai-auto-status');
+        if (statusEl) {
+          statusEl.style.display = 'flex';
+          statusEl.innerHTML = '<i class="fa-solid fa-wand-magic-sparkles fa-spin" style="color:var(--gold)"></i> <span>Auto-syncing translations (AR, FA, ZH)...</span>';
+        }
+
+        isAutoTranslating = true;
+        try {
+          const targetLangs = ['ar', 'fa', 'zh'];
+
+          if (section === 'homepage') {
+            const d = window.CMS.getData(window.CMS.KEYS.HOMEPAGE) || window.CMS.DEFAULTS.homepage;
+            const en = d.hero?.en || {};
+            d.hero = d.hero || {};
+            d.hero._last_en = d.hero._last_en || {};
+            const isMoji = (s) => typeof s === 'string' && (/[\u2500-\u259F\uFFFD]|ΓÇ[ôöòóõ]|[\u0390-\u03C9]{2,}|\\u0026amp;/i.test(s));
+
+            for (const lang of targetLangs) {
+              d.hero[lang] = d.hero[lang] || {};
+              const heroFields = ['tagline', 'headline', 'subheadline', 'cta_primary', 'cta_secondary', 'pathway_citizenship', 'pathway_residency', 'pathway_realestate', 'pathway_education'];
+              for (const f of heroFields) {
+                if (en[f]) {
+                  const curr = d.hero[lang][f];
+                  const lastEn = d.hero._last_en[f];
+                  if (!curr || (lastEn && en[f] !== lastEn) || curr === en[f] || isMoji(curr)) {
+                    d.hero[lang][f] = await window.CMS.AI.translate(en[f], lang);
+                  }
+                }
+              }
+              d.hero[lang].cta_primary_link = en.cta_primary_link;
+              d.hero[lang].cta_secondary_link = en.cta_secondary_link;
+
+              // About section
+              const enAbout = d.about?.en || {};
+              d.about = d.about || {};
+              d.about._last_en = d.about._last_en || {};
+              d.about[lang] = d.about[lang] || {};
+              const aboutFields = ['badge', 'heading', 'subheading', 'p1', 'p2', 'btn1_text', 'btn2_text'];
+              for (const af of aboutFields) {
+                if (enAbout[af]) {
+                  const curr = d.about[lang][af];
+                  const lastEn = d.about._last_en[af];
+                  if (!curr || (lastEn && enAbout[af] !== lastEn) || curr === enAbout[af] || isMoji(curr)) {
+                    d.about[lang][af] = await window.CMS.AI.translate(enAbout[af], lang);
+                  }
+                }
+              }
+              d.about[lang].btn1_link = enAbout.btn1_link || 'aboutus/index.html';
+              d.about[lang].btn2_link = enAbout.btn2_link || 'contact/index.html';
+            }
+
+            d.hero._last_en = { ...en };
+            if (d.about?.en) d.about._last_en = { ...d.about.en };
+            window.CMS.saveData(window.CMS.KEYS.HOMEPAGE, d);
+
+          } else if (section === 'program' && itemId) {
+            const itemType = state.itemType || 'citizenship';
+            const list = window.CMS.getData(window.CMS.KEYS[itemType.toUpperCase()]) || window.CMS.DEFAULTS[itemType];
+            const idx = list.findIndex(p => p.id === itemId);
+            if (idx >= 0) {
+              const en = list[idx].en || {};
+              list[idx]._last_en = list[idx]._last_en || {};
+              for (const lang of targetLangs) {
+                list[idx][lang] = list[idx][lang] || {};
+                const progFields = ['title', 'hero_title', 'hero_subtitle', 'hero_tagline', 'nav_label', 'overview_title', 'overview', 'investment_title', 'investment_desc', 'who_can_apply_title', 'who_can_apply_desc', 'docs_title', 'docs_desc', 'timeline_title', 'timeline_desc', 'faq_title', 'faq_desc', 'consult_heading', 'consult_subheading', 'consult_btn_text'];
+                for (const pf of progFields) {
+                  if (en[pf]) {
+                    const curr = list[idx][lang][pf];
+                    const lastEn = list[idx]._last_en[pf];
+                    if (!curr || (lastEn && en[pf] !== lastEn) || curr === en[pf] || isMoji(curr)) {
+                      list[idx][lang][pf] = await window.CMS.AI.translate(en[pf], lang);
+                    }
+                  }
+                }
+              }
+              list[idx]._last_en = { ...en };
+              window.CMS.saveData(window.CMS.KEYS[itemType.toUpperCase()], list);
+            }
+
+          } else if (section === 'blog' || section === 'blog-edit') {
+            // Blogs use 100% manual translation: user pastes drafts directly per language
+            return;
+
+          } else if (section === 'aboutus') {
+            const about = window.CMS.getData(window.CMS.KEYS.ABOUTUS) || window.CMS.DEFAULTS.aboutus;
+            for (const lang of targetLangs) {
+              if (about.hero?.en) {
+                about.hero[lang] = about.hero[lang] || {};
+                if (about.hero.en.title) about.hero[lang].title = await window.CMS.AI.translate(about.hero.en.title, lang);
+                if (about.hero.en.subtitle) about.hero[lang].subtitle = await window.CMS.AI.translate(about.hero.en.subtitle, lang);
+              }
+              if (about.overview?.en) {
+                about.overview[lang] = about.overview[lang] || {};
+                if (about.overview.en.heading) about.overview[lang].heading = await window.CMS.AI.translate(about.overview.en.heading, lang);
+                if (about.overview.en.p1) about.overview[lang].p1 = await window.CMS.AI.translate(about.overview.en.p1, lang);
+              }
+            }
+            window.CMS.saveData(window.CMS.KEYS.ABOUTUS, about);
+
+          } else if (section === 'cookiepolicy') {
+            const cp = window.CMS.getData('sgcms_cookiepolicy') || {};
+            const en = cp.en || {};
+            for (const lang of targetLangs) {
+              cp[lang] = cp[lang] || {};
+              if (en.hero_badge) cp[lang].hero_badge = await window.CMS.AI.translate(en.hero_badge, lang);
+              if (en.hero_title) cp[lang].hero_title = await window.CMS.AI.translate(en.hero_title, lang);
+              if (en.hero_desc) cp[lang].hero_desc = await window.CMS.AI.translate(en.hero_desc, lang);
+              if (en.p1_title) cp[lang].p1_title = await window.CMS.AI.translate(en.p1_title, lang);
+              if (en.p1_desc) cp[lang].p1_desc = await window.CMS.AI.translate(en.p1_desc, lang);
+            }
+            window.CMS.saveData('sgcms_cookiepolicy', cp);
+          }
+
+          if (statusEl) {
+            statusEl.innerHTML = '<i class="fa-solid fa-check" style="color:#4ade80"></i> <span style="color:#4ade80">Auto-synced in AR, FA, ZH!</span>';
+            setTimeout(() => { statusEl.style.display = 'none'; }, 3500);
+          }
+        } catch (err) {
+          console.warn('[Auto-Translate error]:', err.message);
+          if (statusEl) {
+            statusEl.style.display = 'none';
+          }
+        } finally {
+          isAutoTranslating = false;
+        }
+>>>>>>> a08f1b35657a30c3870abd60f6f697c36339fcbd
       }
 
       // ══════════════════════════════════════════════════════════

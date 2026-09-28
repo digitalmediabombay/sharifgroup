@@ -323,6 +323,51 @@
         tryNext();
     }
 
+    function getCleanCurrentPath() {
+        var pathname = (window.location && window.location.pathname) ? window.location.pathname : '/';
+        var segments = pathname.split('/').filter(Boolean);
+        if (segments.length > 0 && ['ar', 'fa', 'zh', 'en'].indexOf(segments[0].toLowerCase()) !== -1) {
+            segments.shift();
+        }
+        return segments.length > 0 ? '/' + segments.join('/') + '/' : '/';
+    }
+
+    function updateLanguageSwitcherHrefs() {
+        var cleanPath = getCleanCurrentPath();
+        var links = document.querySelectorAll('.lang-option, .mobile-lang-option');
+        links.forEach(function (el) {
+            var l = normalizeLang(el.getAttribute('data-lang'));
+            var targetUrl = (l === 'en') ? cleanPath : ('/' + l + (cleanPath === '/' ? '/' : cleanPath));
+            if (el.tagName && el.tagName.toLowerCase() === 'a') {
+                el.setAttribute('href', targetUrl);
+            }
+        });
+    }
+
+    function localizeInternalLinks(lang) {
+        var isLang = (lang === 'ar' || lang === 'fa' || lang === 'zh');
+        var links = document.querySelectorAll('a[href^="/"]');
+        links.forEach(function (a) {
+            var href = a.getAttribute('href');
+            if (!href || href.startsWith('//')) return;
+            // Exclude static assets, admin, api, anchor hashes, files with extensions
+            if (href.startsWith('/assets/') || href.startsWith('/admin/') || href.startsWith('/api/')) return;
+            if (/\.(webp|jpg|jpeg|png|gif|svg|ico|css|js|json|xml|pdf|mp4|bat|ps1)$/i.test(href)) return;
+            if (href.startsWith('/#')) return;
+
+            // Strip existing language prefix if any
+            var clean = href.replace(/^\/(ar|fa|zh|en)(\/|$)/, '/');
+            if (!clean.startsWith('/')) clean = '/' + clean;
+
+            if (isLang) {
+                var localizedHref = '/' + lang + (clean === '/' ? '/' : clean);
+                a.setAttribute('href', localizedHref);
+            } else {
+                a.setAttribute('href', clean);
+            }
+        });
+    }
+
     function updateLanguageUI(lang) {
         var cfg = LANG_CONFIG[lang] || LANG_CONFIG['en'];
 
@@ -332,7 +377,7 @@
             labelEl.textContent = cfg.label;
         }
 
-        // Update desktop dropdown menu active classes
+        // Update desktop dropdown menu active classes & links
         document.querySelectorAll('.lang-option').forEach(function (opt) {
             var optLang = normalizeLang(opt.getAttribute('data-lang'));
             if (optLang === lang) {
@@ -342,7 +387,7 @@
             }
         });
 
-        // Update mobile menu buttons active classes
+        // Update mobile menu buttons active classes & links
         document.querySelectorAll('.mobile-lang-option').forEach(function (btn) {
             var btnLang = normalizeLang(btn.getAttribute('data-lang'));
             if (btnLang === lang) {
@@ -351,6 +396,8 @@
                 btn.classList.remove('active-lang');
             }
         });
+
+        updateLanguageSwitcherHrefs();
     }
 
     // Safe full DOM text node digit localization
@@ -1185,6 +1232,10 @@
             });
         });
 
+        // Localize internal navigation links and switcher hrefs
+        localizeInternalLinks(lang);
+        updateLanguageSwitcherHrefs();
+
         // 9. Reveal translated content instantly without any English flicker
         document.documentElement.classList.remove('i18n-pending');
 
@@ -1271,7 +1322,10 @@
         }
     }
 
-    window.switchLanguage = function (targetLang) {
+    window.switchLanguage = function (targetLang, event) {
+        if (event && event.preventDefault) {
+            event.preventDefault();
+        }
         var lang = normalizeLang(targetLang);
         currentLang = lang;
 
@@ -1570,6 +1624,8 @@
             document.documentElement.classList.remove('i18n-pending');
         }
         setupCounterInterceptor();
+        updateLanguageSwitcherHrefs();
+        localizeInternalLinks(currentLang);
         loadTranslation(currentLang, function (data) {
             applyTranslations(data, currentLang);
         });

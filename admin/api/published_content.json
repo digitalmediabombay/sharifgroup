@@ -1,4 +1,328 @@
 {
+  "sgcms_homepage": {
+    "hero": {
+      "en": {
+        "tagline": "UPGRADE YOUR LIFE",
+        "headline": "Welcome to Sharif Group",
+        "pathway_citizenship": "Citizenship",
+        "pathway_residency": "Residency",
+        "pathway_realestate": "Real Estate",
+        "pathway_education": "Educational Advisory",
+        "subheadline": "Expert citizenship and residency by investment advisory. 100% government-approved. Business Bay, Dubai.",
+        "cta_primary": "Book Free Consultation",
+        "cta_primary_link": "contact/index.html",
+        "cta_secondary": "Explore Programs",
+        "cta_secondary_link": "citizenshipbyinvestment/index.html"
+      },
+      "ar": {
+        "tagline": "ارتقِ بحياتك",
+        "headline": "مرحباً بكم في مجموعة شريف",
+        "pathway_citizenship": "الجنسية",
+        "pathway_residency": "الإقامة",
+        "pathway_realestate": "العقارات",
+        "pathway_education": "الاستشارات التعليمية",
+        "subheadline": "استشارات متخصصة في الجنسية والإقامة عبر الاستثمار. معتمدة حكومياً. الخليج التجاري، دبي.",
+        "cta_primary": "احجز استشارة مجانية",
+        "cta_primary_link": "contact/index.html",
+        "cta_secondary": "استكشف البرامج",
+        "cta_secondary_link": "citizenshipbyinvestment/index.html"
+      },
+      "fa": {
+        "tagline": "زندگی خود را ارتقا دهید",
+        "headline": "به شریف گروپ خوش آمدید",
+        "pathway_citizenship": "شهروندی",
+        "pathway_residency": "اقامت",
+        "pathway_realestate": "املاک و مستغلات",
+        "pathway_education": "مشاوره تحصیلی",
+        "subheadline": "مشاوره تخصصی اخذ شهروندی و اقامت از طریق سرمایه‌گذاری. تأیید رسمی دولتی. بیزینس بی، دبی.",
+        "cta_primary": "رزرو مشاوره رایگان",
+        "cta_primary_link": "contact/index.html",
+        "cta_secondary": "مشاهده برنامه‌ها",
+        "cta_secondary_link": "citizenshipbyinvestment/index.html"
+      },
+      "zh": {
+        "tagline": "升级您的生活",
+        "headline": "欢迎来到谢里夫集团",
+        "pathway_citizenship": "公民身份",
+        "pathway_residency": "居留权",
+        "pathway_realestate": "房地产投资",
+        "pathway_education": "教育咨询",
+        "subheadline": "专业公民身份及居留权投资咨询。100%政府认证。迪拜商业湾。",
+        "cta_primary": "预约免费咨询",
+        "cta_primary_link": "contact/index.html",
+        "cta_secondary": "探索项目",
+        "cta_secondary_link": "citizenshipbyinvestment/index.html"
+      }
+    },
+    "stats": [
+      {
+        "value": "10+",
+        "label_en": "Years of Experience",
+        "label_ar": "سنوات من الخبرة",
+        "label_fa": "سال تجربه",
+        "label_zh": "年行业经验"
+      },
+      {
+        "value": "1000+",
+        "label_en": "Successful CBI Cases",
+        "label_ar": "حالات جنسية ناجحة",
+        "label_fa": "پرونده موفق شهروندی",
+        "label_zh": "成功入籍案例"
+      },
+      {
+        "value": "100+",
+        "label_en": "Residency & Education Cases",
+        "label_ar": "حالات إقامة وتعليم",
+        "label_fa": "پرونده اقامت و تحصیلی",
+        "label_zh": "居留及教育案例"
+      },
+      {
+        "value": "450+",
+        "label_en": "Families Relocated",
+        "label_ar": "عائلة تم نقلها",
+        "label_fa": "خانواده مستقر شده",
+        "label_zh": "已安居家庭"
+      }
+    ],
+    "about": {
+      "en": {
+        "badge": "INTRODUCTION",
+        "heading": "Our Story & Background:",
+        "subheading": "Sharif Group",
+        "p1": "Sharif Group is a trusted private consulting company based in Business Bay, Dubai. We help international clients and families secure legal second passports, residency visas, premium property investments, and student placements in top international universities.",
+        "p2": "Our experienced team takes care of document preparation, background legal checks, and government clearance from start to finish, ensuring a straightforward, secure, and completely stress-free experience.",
+        "btn1_text": "Read Our Story",
+        "btn1_link": "aboutus/index.html",
+        "btn2_text": "Book Consultation",
+        "btn2_link": "contact/index.html"
+      },
+      "ar": {
+        "badge": "مقدمة",
+        "heading": "قصتنا وخبراتنا:",
+        "subheading": "مجموعة شريف",
+        "p1": "مجموعة شريف هي شركة استشارات خاصة موثوقة مقرها في الخليج التجاري، دبي. نساعد العملاء والعائلات الدولية في الحصول على جواز سفر ثانٍ قانوني وتأشيرات الإقامة والاستثمارات العقارية الفاخرة.",
+        "p2": "يتولى فريقنا ذو الخبرة إعداد المستندات والفحوصات القانونية والتخليص الحكومي من البداية إلى النهاية لضمان تجربة آمنة وسلسة تماماً.",
+        "btn1_text": "اقرأ قصتنا",
+        "btn1_link": "aboutus/index.html",
+        "btn2_text": "احجز استشارة",
+        "btn2_link": "contact/index.html"
+      },
+      "fa": {
+        "badge": "معرفی",
+        "heading": "داستان و پیشینه ما:",
+        "subheading": "شریف گروپ",
+        "p1": "شریف گروپ یک شرکت مشاوره خصوصی معتبر مستقر در بیزینس بی دبی است. ما به مشتریان و خانواده‌های بین‌المللی در دریافت پاسپورت دوم قانونی، ویزای اقامت، سرمایه‌گذاری املاک لوکس و پذیرش دانشگاه‌های برتر کمک می‌کنیم.",
+        "p2": "تیم مجرب ما تمامی مراحل آماده‌سازی مدارک، بررسی‌های حقوقی و مجوزهای دولتی را از صفر تا صد با اطمینان کامل و بدون دغدغه به انجام می‌رساند.",
+        "btn1_text": "خواندن داستان ما",
+        "btn1_link": "aboutus/index.html",
+        "btn2_text": "رزرو مشاوره",
+        "btn2_link": "contact/index.html"
+      },
+      "zh": {
+        "badge": "关于我们",
+        "heading": "我们的故事与背景：",
+        "subheading": "谢里夫集团",
+        "p1": "谢里夫集团是一家总部位于迪拜商业湾的知名专业咨询公司。我们协助全球客户及家庭合法获取第二本护照、居留签证、优质房产投资及世界顶级大学留学名额。",
+        "p2": "我们经验丰富的团队全程负责文件整理、背景合规审查以及政府审批流程，确保全程透明、安全、省心。",
+        "btn1_text": "了解我们的故事",
+        "btn1_link": "aboutus/index.html",
+        "btn2_text": "预约咨询",
+        "btn2_link": "contact/index.html"
+      }
+    },
+    "services": {
+      "badge": "FEATURED PATHWAYS",
+      "heading": "Our Services &",
+      "heading_italic": "Pathways",
+      "description": "Sovereign dual citizenship, European golden visas, Dubai luxury property portfolios, and Ivy League academic guidance.",
+      "pillar_cbi": {
+        "pillar_badge": "Pillar 01 • Passports",
+        "title": "Citizenship by Investment",
+        "p1": "Getting a second citizenship gives you and your family the legal right to hold an extra passport. This opens up doors for easy global travel without needing visas ahead of time.",
+        "p2": "Our team handles all paperwork, background checks, and official submissions so you do not have to worry about complicated rules.",
+        "items": [
+          {
+            "id": "dominica",
+            "title": "Dominica | Passport",
+            "desc": "Safe and peaceful Caribbean island offering straightforward legal passport processing without travel or language tests.",
+            "link": "programs/citizenshipbyinvestment/dominica/index.html"
+          },
+          {
+            "id": "stkitts",
+            "title": "St. Kitts & Nevis | Passport",
+            "desc": "The oldest and most trusted citizenship by investment program in the world, active since 1984 with dependable asset security.",
+            "link": "programs/citizenshipbyinvestment/stkitts/"
+          },
+          {
+            "id": "antigua",
+            "title": "Antigua & Barbuda | Passport",
+            "desc": "The best and most cost-effective passport solution for large families, covering up to four members under one baseline fee.",
+            "link": "programs/citizenshipbyinvestment/antiguaandbarbuda/"
+          },
+          {
+            "id": "lucia",
+            "title": "Saint Lucia | Passport",
+            "desc": "Flexible financial options with government-guaranteed bond investments that are 100% refundable after 5 years.",
+            "link": "programs/citizenshipbyinvestment/stlucia/"
+          },
+          {
+            "id": "grenada",
+            "title": "Grenada | Passport",
+            "desc": "Powerful second passport providing direct qualification to apply for the USA E-2 Investor Visa to live and conduct business in America.",
+            "link": "programs/citizenshipbyinvestment/grenada/"
+          },
+          {
+            "id": "vanuatu",
+            "title": "Vanuatu | Passport",
+            "desc": "The fastest legal citizenship pathway worldwide, delivered in 45 days with 100% remote processing.",
+            "link": "programs/citizenshipbyinvestment/vanuatu/index.html"
+          },
+          {
+            "id": "saotome",
+            "title": "São Tomé and Príncipe | Passport",
+            "desc": "Exclusive African island destination offering complete privacy, tax efficiency, and quiet citizenship by investment routes.",
+            "link": "programs/citizenshipbyinvestment/sao-tome-and-principe/index.html"
+          },
+          {
+            "id": "nauru",
+            "title": "Republic of Nauru | Passport",
+            "desc": "Peaceful Pacific island citizenship offering zero residency requirements and straightforward remote management from Dubai.",
+            "link": "programs/citizenshipbyinvestment/nauru/index.html"
+          }
+        ]
+      },
+      "pillar_rbi": {
+        "pillar_badge": "Pillar 02 • Residency",
+        "title": "Residency by Investment",
+        "p1": "Residency and Golden Visa programs allow you to live, work, and study in amazing countries like Portugal, Greece, Panama, and the UAE.",
+        "p2": "We help you choose the best residency option based on your lifestyle and business goals. Our experts prepare all legal documents.",
+        "items": [
+          {
+            "id": "portugal",
+            "title": "Portugal | Golden Visa",
+            "desc": "European residency through regulated fund investments with a minimal 7 days per year stay requirement leading to EU citizenship.",
+            "link": "programs/residencybyinvestment/portugal/index.html"
+          },
+          {
+            "id": "greece",
+            "title": "Greece | Golden Visa",
+            "desc": "Permanent European residence cards and Schengen zone access granted through vetted real estate acquisitions.",
+            "link": "programs/residencybyinvestment/greece/index.html"
+          },
+          {
+            "id": "panama",
+            "title": "Panama | Golden Visa",
+            "desc": "International banking hub offering rapid permanent residency and complete offshore corporate tax exemptions.",
+            "link": "programs/residencybyinvestment/panama/index.html"
+          },
+          {
+            "id": "uae",
+            "title": "United Arab Emirates | Golden Visa",
+            "desc": "Secure 10-year residency for you and your family with zero personal income tax, world-class infrastructure, and direct Dubai clearing lanes.",
+            "link": "programs/residencybyinvestment/uae/index.html"
+          }
+        ]
+      },
+      "pillar_uae": {
+        "pillar_badge": "Pillar 03 • Dubai Direct",
+        "title": "UAE 10-Year Golden Visa",
+        "p1": "The UAE Golden Visa gives investors, entrepreneurs, and skilled professionals the right to live in Dubai for 10 long years without needing a local sponsor.",
+        "p2": "Our office in Business Bay, Dubai works directly with government authorities and the Dubai Land Department.",
+        "btn_text": "View UAE Process",
+        "btn_link": "programs/residencybyinvestment/uae/index.html"
+      },
+      "pillar_realestate": {
+        "pillar_badge": "Pillar 04 • Property Desk",
+        "title": "Prime Real Estate Advisory",
+        "p1": "Investing in real estate is one of the smartest ways to grow your wealth while securing a path to residency.",
+        "p2": "Before you buy any property, our legal team checks all land titles, builder histories, and payment plans.",
+        "btn_text": "Explore Properties",
+        "btn_link": "realestate/index.html"
+      },
+      "pillar_education": {
+        "pillar_badge": "Pillar 05 • Academic Board",
+        "title": "Educational Advisory",
+        "p1": "Giving your children the best education opens up a bright future for them. We help families secure student placements in top boarding schools and famous universities.",
+        "p2": "By pairing your university applications with a second citizenship or global residency, your children can qualify for domestic tuition rates.",
+        "btn_text": "View Academic Advisory",
+        "btn_link": "educationaladvisory/index.html"
+      }
+    },
+    "social_responsibility": {
+      "badge": "COMMUNITY IMPACT & CHARITY",
+      "heading": "Our Commitment to",
+      "heading_italic": "Social Responsibility",
+      "description": "Beyond global advisory, Sharif Group actively supports educational initiatives, vulnerable family assistance, and sustainable community developments.",
+      "btn_text": "Explore Our Initiatives",
+      "btn_link": "socialresponsibility/index.html"
+    },
+    "reviews": {
+      "badge": "CLIENT REVIEWS",
+      "heading": "Success Stories",
+      "slides": [
+        {
+          "id": "r1",
+          "quote": "\"Fast follow-up and straightforward documentation.\"",
+          "btn_text": "Start Your Journey Now",
+          "btn_link": "contact/index.html",
+          "img": "clients/client1.png"
+        },
+        {
+          "id": "r2",
+          "quote": "\"Reliable advice based on real experience.\"",
+          "btn_text": "Start Your Journey Now",
+          "btn_link": "contact/index.html",
+          "img": "clients/client2.jpg"
+        },
+        {
+          "id": "r3",
+          "quote": "\"Professional, structured, and transparent throughout.\"",
+          "btn_text": "Start Your Journey Now",
+          "btn_link": "contact/index.html",
+          "img": "clients/client3.jpg"
+        },
+        {
+          "id": "r4",
+          "quote": "\"Great communication and support until approval.\"",
+          "btn_text": "Start Your Journey Now",
+          "btn_link": "contact/index.html",
+          "img": "clients/client4.png"
+        },
+        {
+          "id": "r5",
+          "quote": "\"Extremely efficient process from start to finish.\"",
+          "btn_text": "Start Your Journey Now",
+          "btn_link": "contact/index.html",
+          "img": "clients/client5.jpeg"
+        },
+        {
+          "id": "r6",
+          "quote": "\"Clear expectations and seamless delivery.\"",
+          "btn_text": "Start Your Journey Now",
+          "btn_link": "contact/index.html",
+          "img": "clients/client6.jpeg"
+        },
+        {
+          "id": "r7",
+          "quote": "\"Exceptional guidance and advisory every step of the way.\"",
+          "btn_text": "Start Your Journey Now",
+          "btn_link": "contact/index.html",
+          "img": "clients/client7.jpeg"
+        }
+      ]
+    },
+    "contact_block": {
+      "badge": "GET IN TOUCH",
+      "heading": "Book a Free Consultation",
+      "subheading": "Speak directly with our expert team in Dubai",
+      "office_label": "Our Office",
+      "office_address": "116, The Binary Tower, Business Bay, Dubai, UAE",
+      "phone_label": "Phone Number",
+      "phone": "+971 4 357 8737",
+      "email_label": "Email Address",
+      "email": "contact@sharifgroup.ae"
+    }
+  },
   "sgcms_citizenship": [
     {
       "id": "dominica",
@@ -13,9 +337,9 @@
         "nav_label": "Dominica | Passport",
         "hero_subtitle": "Citizenship By Investment",
         "investment_from": "$200,000 USD",
-        "processing_time": "6ΓÇô9 Months",
+        "processing_time": "6–9 Months",
         "visa_free": "140+",
-        "overview_title": "Program Overview: Sharif Group\\u0027s Guide",
+        "overview_title": "Program Overview: Sharif Group's Guide",
         "overview": "Dominica, known as the beautiful Nature Isle of the Caribbean, offers one of the most reliable and efficient second passport programs in the world. With quick processing speeds and a secure legal foundation, this program grants high-net-worth investors and their families instant global mobility. Our Business Bay firm guides your family securely from start to finish.",
         "badges": [
           "Fully Remote, No Presence Requirements",
@@ -102,25 +426,60 @@
         ]
       },
       "ar": {
+        "title": "الجنسية الدومينيكية عن طريق الاستثمار",
+        "nav_label": "دومينيكا | جواز سفر",
+        "hero_subtitle": "الجنسية عن طريق الاستثمار",
         "investment_from": "$200,000 USD",
+        "processing_time": "6-9 أشهر",
         "visa_free": "+140",
-        "badges": [],
+        "overview_title": "نظرة عامة على البرنامج: دليل مجموعة شريف",
+        "overview": "تقدم دومينيكا، المعروفة بجزيرة الطبيعة في البحر الكاريبي، أحد أكثر برامج جوازات السفر الثانية موثوقية وكفاءة في العالم.",
+        "badges": [
+          "عن بعد بالكامل، دون متطلبات حضور",
+          "6-9 أشهر للحصول على الجواز",
+          "مساهمة تبدأ من 200,000 دولار",
+          "مساران استثماريان"
+        ],
         "specs": [],
         "benefits": [],
         "investment_options": [],
         "faqs": []
       },
       "fa": {
+        "title": "شهروندی دومینیکا از طریق سرمایه‌گذاری",
+        "nav_label": "دومینیکا | پاسپورت",
+        "hero_subtitle": "شهروندی از طریق سرمایه‌گذاری",
         "investment_from": "$200,000 USD",
-        "badges": [],
+        "processing_time": "۶ تا ۹ ماه",
+        "visa_free": "+۱۴۰",
+        "overview_title": "بررسی جامع برنامه: راهنمای شریف گروپ",
+        "overview": "دومینیکا یکی از پایدارترین و معتبرترین برنامه‌های شهروندی از طریق سرمایه‌گذاری را ارائه می‌دهد.",
+        "badges": [
+          "کاملاً غیرحضوری، بدون نیاز به اقامت",
+          "۶ تا ۹ ماه تا صدور پاسپورت",
+          "شروع از ۲۰۰ هزار دلار",
+          "۲ روش سرمایه‌گذاری"
+        ],
         "specs": [],
         "benefits": [],
         "investment_options": [],
         "faqs": []
       },
       "zh": {
+        "title": "多米尼克投资入籍项目",
+        "nav_label": "多米尼克 | 护照",
+        "hero_subtitle": "投资入籍项目",
+        "investment_from": "$200,000美元",
+        "processing_time": "6-9个月",
         "visa_free": "140+",
-        "badges": [],
+        "overview_title": "项目概览：谢里夫集团指南",
+        "overview": "多米尼克被誉为加勒比海的“自然之岛”，提供全球最成熟且高效的第二护照投资入籍项目之一。",
+        "badges": [
+          "全程远程办理，无居住要求",
+          "6-9个月获发护照",
+          "投资起价20万美元",
+          "2种投资途径"
+        ],
         "specs": [],
         "benefits": [],
         "investment_options": [],
@@ -136,11 +495,11 @@
       "nav_sort": 2,
       "status": "published",
       "en": {
-        "title": "St. Kitts \\u0026amp; Nevis Citizenship by Investment",
-        "nav_label": "St. Kitts \\u0026amp; Nevis | Passport",
+        "title": "St. Kitts & Nevis Citizenship by Investment",
+        "nav_label": "St. Kitts & Nevis | Passport",
         "hero_subtitle": "Citizenship By Investment",
         "investment_from": "$250,000 USD",
-        "processing_time": "3ΓÇô6 Months",
+        "processing_time": "3–6 Months",
         "visa_free": "155+",
         "overview": "The oldest citizenship by investment program in the world, offering a prestigious passport and tax-free living since 1984.",
         "benefits": [
@@ -156,20 +515,33 @@
         "faqs": []
       },
       "ar": {
+        "title": "جنسية سانت كيتس ونيفيس",
+        "hero_subtitle": "الجنسية عن طريق الاستثمار",
+        "nav_label": "سانت كيتس | جواز سفر",
         "investment_from": "$250,000",
+        "processing_time": "3-6 أشهر",
         "visa_free": "+155",
         "overview": "",
         "benefits": [],
         "faqs": []
       },
       "fa": {
+        "title": "شهروندی سنت کیتس و نویس",
+        "hero_subtitle": "شهروندی از طریق سرمایه‌گذاری",
+        "nav_label": "سنت کیتس | پاسپورت",
         "investment_from": "$250,000",
+        "processing_time": "۳ تا ۶ ماه",
+        "visa_free": "+۱۵۵",
         "overview": "",
         "benefits": [],
         "faqs": []
       },
       "zh": {
+        "title": "圣基茨和尼维斯投资入籍",
+        "hero_subtitle": "投资入籍",
+        "nav_label": "圣基茨 | 护照",
         "investment_from": "$250,000",
+        "processing_time": "3-6个月",
         "visa_free": "155+",
         "overview": "",
         "benefits": [],
@@ -185,11 +557,11 @@
       "nav_sort": 3,
       "status": "published",
       "en": {
-        "title": "Antigua \\u0026amp; Barbuda Citizenship by Investment",
-        "nav_label": "Antigua \\u0026amp; Barbuda | Passport",
+        "title": "Antigua & Barbuda Citizenship by Investment",
+        "nav_label": "Antigua & Barbuda | Passport",
         "hero_subtitle": "Citizenship By Investment",
         "investment_from": "$100,000 USD",
-        "processing_time": "3ΓÇô5 Months",
+        "processing_time": "3–5 Months",
         "visa_free": "150+",
         "overview": "Affordable Caribbean citizenship with excellent global mobility and family inclusion.",
         "benefits": [
@@ -201,21 +573,33 @@
         "faqs": []
       },
       "ar": {
+        "title": "جنسية أنتيغوا وبربودا",
+        "hero_subtitle": "الجنسية عن طريق الاستثمار",
+        "nav_label": "أنتيغوا | جواز سفر",
         "investment_from": "$100,000",
+        "processing_time": "3-5 أشهر",
         "visa_free": "+150",
         "overview": "",
         "benefits": [],
         "faqs": []
       },
       "fa": {
+        "title": "شهروندی آنتیگوا و باربودا",
+        "hero_subtitle": "شهروندی از طریق سرمایه‌گذاری",
+        "nav_label": "آنتیگوا | پاسپورت",
         "investment_from": "$100,000",
+        "processing_time": "۳ تا ۵ ماه",
+        "visa_free": "+۱۵۰",
         "overview": "",
         "benefits": [],
         "faqs": []
       },
       "zh": {
-        "nav_label": "σ«ëµÅÉτô£ | µèñτàº",
+        "title": "安提瓜和巴布达投资入籍",
+        "hero_subtitle": "投资入籍",
+        "nav_label": "安提瓜 | 护照",
         "investment_from": "$100,000",
+        "processing_time": "3-5个月",
         "visa_free": "150+",
         "overview": "",
         "benefits": [],
@@ -235,7 +619,7 @@
         "nav_label": "Saint Lucia | Passport",
         "hero_subtitle": "Citizenship By Investment",
         "investment_from": "$240,000 USD",
-        "processing_time": "3ΓÇô4 Months",
+        "processing_time": "3–4 Months",
         "visa_free": "140+",
         "overview": "Saint Lucia offers a modern, prestigious Caribbean citizenship program with rapid processing through the National Economic Fund, real estate, or government bonds.",
         "benefits": [
@@ -251,20 +635,33 @@
         "faqs": []
       },
       "ar": {
+        "title": "جنسية سانت لوسيا عبر الاستثمار",
+        "hero_subtitle": "الجنسية عن طريق الاستثمار",
+        "nav_label": "سانت لوسيا | جواز سفر",
         "investment_from": "$240,000",
+        "processing_time": "3-4 أشهر",
         "visa_free": "+140",
         "overview": "",
         "benefits": [],
         "faqs": []
       },
       "fa": {
+        "title": "شهروندی سنت لوسیا از طریق سرمایه‌گذاری",
+        "hero_subtitle": "شهروندی از طریق سرمایه‌گذاری",
+        "nav_label": "سنت لوسیا | پاسپورت",
         "investment_from": "$240,000",
+        "processing_time": "۳ تا ۴ ماه",
+        "visa_free": "+۱۴۰",
         "overview": "",
         "benefits": [],
         "faqs": []
       },
       "zh": {
+        "title": "圣卢西亚投资入籍",
+        "hero_subtitle": "投资入籍",
+        "nav_label": "圣卢西亚 | 护照",
         "investment_from": "$240,000",
+        "processing_time": "3-4个月",
         "visa_free": "140+",
         "overview": "",
         "benefits": [],
@@ -284,7 +681,7 @@
         "nav_label": "Grenada | Passport",
         "hero_subtitle": "Citizenship By Investment",
         "investment_from": "$150,000 USD",
-        "processing_time": "4ΓÇô6 Months",
+        "processing_time": "4–6 Months",
         "visa_free": "140+",
         "overview": "Grenada is the only Caribbean CBI program with a US E-2 Investor Visa treaty, enabling holders to reside and run a business in the United States.",
         "benefits": [
@@ -296,20 +693,33 @@
         "faqs": []
       },
       "ar": {
+        "title": "جنسية غرينادا",
+        "hero_subtitle": "الجنسية عن طريق الاستثمار",
+        "nav_label": "غرينادا | جواز سفر",
         "investment_from": "$150,000",
+        "processing_time": "4-6 أشهر",
         "visa_free": "+140",
         "overview": "",
         "benefits": [],
         "faqs": []
       },
       "fa": {
+        "title": "شهروندی گرنادا",
+        "hero_subtitle": "شهروندی از طریق سرمایه‌گذاری",
+        "nav_label": "گرنادا | پاسپورت",
         "investment_from": "$150,000",
+        "processing_time": "۴ تا ۶ ماه",
+        "visa_free": "+۱۴۰",
         "overview": "",
         "benefits": [],
         "faqs": []
       },
       "zh": {
+        "title": "格林纳达投资入籍",
+        "hero_subtitle": "投资入籍",
+        "nav_label": "格林纳达 | 护照",
         "investment_from": "$150,000",
+        "processing_time": "4-6个月",
         "visa_free": "140+",
         "overview": "",
         "benefits": [],
@@ -329,9 +739,9 @@
         "nav_label": "Vanuatu | Passport",
         "hero_subtitle": "Citizenship By Investment",
         "investment_from": "$130,000 USD",
-        "processing_time": "30ΓÇô60 Days",
+        "processing_time": "30–60 Days",
         "visa_free": "130+",
-        "overview": "World\\u0027s fastest citizenship by investment program ΓÇö complete remote approval in as little as 30 to 45 days.",
+        "overview": "World's fastest citizenship by investment program — complete remote approval in as little as 30 to 45 days.",
         "benefits": [
           {
             "title": "Fastest in World",
@@ -341,21 +751,33 @@
         "faqs": []
       },
       "ar": {
+        "title": "جنسية فانواتو",
+        "hero_subtitle": "الجنسية عن طريق الاستثمار",
+        "nav_label": "فانواتو | جواز سفر",
         "investment_from": "$130,000",
+        "processing_time": "30-60 يوماً",
         "visa_free": "+130",
         "overview": "",
         "benefits": [],
         "faqs": []
       },
       "fa": {
+        "title": "شهروندی وانواتو",
+        "hero_subtitle": "شهروندی از طریق سرمایه‌گذاری",
+        "nav_label": "وانواتو | پاسپورت",
         "investment_from": "$130,000",
+        "processing_time": "۳۰ تا ۶۰ روز",
+        "visa_free": "+۱۳۰",
         "overview": "",
         "benefits": [],
         "faqs": []
       },
       "zh": {
+        "title": "瓦努阿图投资入籍",
+        "hero_subtitle": "投资入籍",
+        "nav_label": "瓦努阿图 | 护照",
         "investment_from": "$130,000",
-        "processing_time": "30-60σñ⌐",
+        "processing_time": "30-60天",
         "visa_free": "130+",
         "overview": "",
         "benefits": [],
@@ -364,15 +786,18 @@
     },
     {
       "id": "saotome",
+      "slug": "sao-tome-and-principe",
       "flag": "https://flagcdn.com/st.svg",
       "portfolio": "global",
       "nav_visible": true,
       "nav_sort": 2,
       "status": "published",
       "en": {
+        "title": "São Tomé & Príncipe Citizenship by Investment",
+        "nav_label": "São Tomé and Príncipe | Passport",
         "hero_subtitle": "Citizenship By Investment",
         "investment_from": "$100,000 USD",
-        "processing_time": "2ΓÇô3 Months",
+        "processing_time": "2–3 Months",
         "visa_free": "90+",
         "overview": "Official African island nation CBI offering fast-track dual citizenship, attractive tax neutrality, and emerging global mobility for forward-looking investors.",
         "benefits": [
@@ -388,20 +813,33 @@
         "faqs": []
       },
       "ar": {
+        "title": "جنسية ساو تومي وبرينسيبي",
+        "hero_subtitle": "الجنسية عن طريق الاستثمار",
+        "nav_label": "ساو تومي | جواز سفر",
         "investment_from": "$100,000",
+        "processing_time": "2-3 أشهر",
         "visa_free": "+90",
         "overview": "",
         "benefits": [],
         "faqs": []
       },
       "fa": {
+        "title": "شهروندی سائوتومه و پرنسیپ",
+        "hero_subtitle": "شهروندی از طریق سرمایه‌گذاری",
+        "nav_label": "سائوتومه | پاسپورت",
         "investment_from": "$100,000",
+        "processing_time": "۲ تا ۳ ماه",
+        "visa_free": "+۹۰",
         "overview": "",
         "benefits": [],
         "faqs": []
       },
       "zh": {
+        "title": "圣多美和普林西比投资入籍",
+        "hero_subtitle": "投资入籍",
+        "nav_label": "圣多美 | 护照",
         "investment_from": "$100,000",
+        "processing_time": "2-3个月",
         "visa_free": "90+",
         "overview": "",
         "benefits": [],
@@ -421,7 +859,7 @@
         "nav_label": "Republic of Nauru | Passport",
         "hero_subtitle": "Citizenship By Investment",
         "investment_from": "$105,000 USD",
-        "processing_time": "3ΓÇô4 Months",
+        "processing_time": "3–4 Months",
         "visa_free": "89+",
         "overview": "Official Pacific Climate Resilience citizenship by investment program granting rapid global mobility, remote filing from Dubai, and Commonwealth heritage privileges.",
         "benefits": [
@@ -437,20 +875,33 @@
         "faqs": []
       },
       "ar": {
+        "title": "جنسية جمهورية ناورو",
+        "hero_subtitle": "الجنسية عن طريق الاستثمار",
+        "nav_label": "جمهورية ناورو | جواز سفر",
         "investment_from": "$105,000",
+        "processing_time": "3-4 أشهر",
         "visa_free": "+89",
         "overview": "",
         "benefits": [],
         "faqs": []
       },
       "fa": {
+        "title": "شهروندی جمهوری نائورو",
+        "hero_subtitle": "شهروندی از طریق سرمایه‌گذاری",
+        "nav_label": "جمهوری نائورو | پاسپورت",
         "investment_from": "$105,000",
+        "processing_time": "۳ تا ۴ ماه",
+        "visa_free": "+۸۹",
         "overview": "",
         "benefits": [],
         "faqs": []
       },
       "zh": {
+        "title": "瑙鲁共和国投资入籍",
+        "hero_subtitle": "投资入籍",
+        "nav_label": "瑙鲁共和国 | 护照",
         "investment_from": "$105,000",
+        "processing_time": "3-4个月",
         "visa_free": "89+",
         "overview": "",
         "benefits": [],
@@ -471,8 +922,8 @@
         "title": "Portugal Golden Visa",
         "nav_label": "Portugal | Golden Visa",
         "hero_subtitle": "Residency By Investment",
-        "investment_from": "Γé¼500,000 EUR",
-        "processing_time": "6ΓÇô12 Months",
+        "investment_from": "€500,000 EUR",
+        "processing_time": "6–12 Months",
         "overview": "Portugal Golden Visa offers European residency with a pathway to citizenship in 5 years and only 7 days per year stay requirement.",
         "benefits": [
           {
@@ -483,19 +934,31 @@
         "faqs": []
       },
       "ar": {
-        "investment_from": "Γé¼500,000",
+        "title": "التأشيرة الذهبية البرتغالية",
+        "hero_subtitle": "الإقامة عن طريق الاستثمار",
+        "nav_label": "البرتغال | الذهبية",
+        "investment_from": "€500,000",
+        "processing_time": "6-12 شهراً",
         "overview": "",
         "benefits": [],
         "faqs": []
       },
       "fa": {
-        "investment_from": "Γé¼500,000",
+        "title": "ویزای طلایی پرتغال",
+        "hero_subtitle": "اقامت از طریق سرمایه‌گذاری",
+        "nav_label": "پرتغال | ویزای طلایی",
+        "investment_from": "€500,000",
+        "processing_time": "۶ تا ۱۲ ماه",
         "overview": "",
         "benefits": [],
         "faqs": []
       },
       "zh": {
-        "investment_from": "Γé¼500,000",
+        "title": "葡萄牙黄金签证",
+        "hero_subtitle": "投资居留",
+        "nav_label": "葡萄牙 | 黄金签证",
+        "investment_from": "€500,000",
+        "processing_time": "6-12个月",
         "overview": "",
         "benefits": [],
         "faqs": []
@@ -513,31 +976,43 @@
         "title": "Greece Golden Visa",
         "nav_label": "Greece | Golden Visa",
         "hero_subtitle": "Residency By Investment",
-        "investment_from": "Γé¼250,000 EUR",
-        "processing_time": "3ΓÇô6 Months",
+        "investment_from": "€250,000 EUR",
+        "processing_time": "3–6 Months",
         "overview": "Greece Golden Visa is among the most affordable EU residency programs granting permanent residence cards and Schengen zone access.",
         "benefits": [
           {
             "title": "Affordable EU Residency",
-            "desc": "Real estate investment from Γé¼250,000 with Schengen access."
+            "desc": "Real estate investment from €250,000 with Schengen access."
           }
         ],
         "faqs": []
       },
       "ar": {
-        "investment_from": "Γé¼250,000",
+        "title": "التأشيرة الذهبية اليونانية",
+        "hero_subtitle": "الإقامة عن طريق الاستثمار",
+        "nav_label": "اليونان | الذهبية",
+        "investment_from": "€250,000",
+        "processing_time": "3-6 أشهر",
         "overview": "",
         "benefits": [],
         "faqs": []
       },
       "fa": {
-        "investment_from": "Γé¼250,000",
+        "title": "ویزای طلایی یونان",
+        "hero_subtitle": "اقامت از طریق سرمایه‌گذاری",
+        "nav_label": "یونان | ویزای طلایی",
+        "investment_from": "€250,000",
+        "processing_time": "۳ تا ۶ ماه",
         "overview": "",
         "benefits": [],
         "faqs": []
       },
       "zh": {
-        "investment_from": "Γé¼250,000",
+        "title": "希腊黄金签证",
+        "hero_subtitle": "投资居留",
+        "nav_label": "希腊 | 黄金签证",
+        "investment_from": "€250,000",
+        "processing_time": "3-6个月",
         "overview": "",
         "benefits": [],
         "faqs": []
@@ -547,16 +1022,16 @@
       "id": "panama",
       "slug": "panama",
       "flag": "https://flagcdn.com/pa.svg",
-      "portfolio": "americas",
+      "portfolio": "uae",
       "nav_visible": true,
       "nav_sort": 3,
       "status": "published",
       "en": {
-        "title": "Panama Golden Visa \\u0026amp; Permanent Residency",
+        "title": "Panama Golden Visa & Permanent Residency",
         "nav_label": "Panama | Golden Visa",
         "hero_subtitle": "Residency By Investment",
         "investment_from": "$200,000 USD",
-        "processing_time": "30ΓÇô60 Days",
+        "processing_time": "30–60 Days",
         "overview": "Panama Qualified Investor Visa provides permanent residency in 30 days via real estate or bank deposits, complete territorial tax freedom, and a direct citizenship pathway.",
         "benefits": [
           {
@@ -571,20 +1046,31 @@
         "faqs": []
       },
       "ar": {
+        "title": "التأشيرة الذهبية لبنما",
+        "hero_subtitle": "الإقامة عن طريق الاستثمار",
+        "nav_label": "بنما | الذهبية",
         "investment_from": "$200,000",
+        "processing_time": "30-60 يوماً",
         "overview": "",
         "benefits": [],
         "faqs": []
       },
       "fa": {
+        "title": "ویزای طلایی پاناما",
+        "hero_subtitle": "اقامت از طریق سرمایه‌گذاری",
+        "nav_label": "پاناما | ویزای طلایی",
         "investment_from": "$200,000",
+        "processing_time": "۳۰ تا ۶۰ روز",
         "overview": "",
         "benefits": [],
         "faqs": []
       },
       "zh": {
+        "title": "巴拿马黄金签证",
+        "hero_subtitle": "投资居留",
+        "nav_label": "巴拿马 | 黄金签证",
         "investment_from": "$200,000",
-        "processing_time": "30-60σñ⌐",
+        "processing_time": "30-60天",
         "overview": "",
         "benefits": [],
         "faqs": []
@@ -599,11 +1085,12 @@
       "nav_sort": 4,
       "status": "published",
       "en": {
-        "title": "UAE 10-Year Golden Visa",
-        "nav_label": "UAE | 10-Year Golden Visa",
-        "hero_subtitle": "Residency By Investment",
+        "title": "United Arab Emirates Golden Visa",
+        "nav_label": "United Arab Emirates | Golden Visa",
+        "hero_title": "United Arab Emirates",
+        "hero_subtitle": "Golden Visa",
         "investment_from": "AED 2,000,000",
-        "processing_time": "2ΓÇô4 Weeks",
+        "processing_time": "2–4 Weeks",
         "overview": "The UAE Golden Visa grants 10-year renewable residency to investors, property owners, and entrepreneurs with zero personal income tax.",
         "benefits": [
           {
@@ -614,19 +1101,31 @@
         "faqs": []
       },
       "ar": {
+        "title": "الإقامة الذهبية الإماراتية 10 سنوات",
+        "hero_subtitle": "التأشيرة الذهبية",
+        "nav_label": "الإمارات | الذهبية",
         "investment_from": "AED 2,000,000",
+        "processing_time": "2-4 أسابيع",
         "overview": "",
         "benefits": [],
         "faqs": []
       },
       "fa": {
+        "title": "ویزای طلایی ۱۰ ساله امارات",
+        "hero_subtitle": "ویزای طلایی",
+        "nav_label": "امارات | ویزای طلایی",
         "investment_from": "AED 2,000,000",
+        "processing_time": "۲ تا ۴ هفته",
         "overview": "",
         "benefits": [],
         "faqs": []
       },
       "zh": {
-        "processing_time": "2-4σæ¿",
+        "title": "阿联酋10年黄金签证",
+        "hero_subtitle": "黄金签证",
+        "nav_label": "阿联酋 | 黄金签证",
+        "investment_from": "AED 200万",
+        "processing_time": "2-4周",
         "overview": "",
         "benefits": [],
         "faqs": []
@@ -638,7 +1137,7 @@
     {
       "id": "t001",
       "name": "Alireza Sharif",
-      "title": "Founder \\u0026amp; Chairman",
+      "title": "Founder & Chairman",
       "dept": "Executive Leadership",
       "bio": "Founder of Sharif Group with over 15 years in global mobility and investment migration advisory.",
       "photo": "alirezasharif.svg",
@@ -658,21 +1157,29 @@
       "visible": true
     }
   ],
-  "sgcms_offices": {
-    "id": "o001",
-    "name": "Dubai Head Office",
-    "address": "116, The Binary Tower, Business Bay, Dubai, UAE",
-    "phone": "+971 4 357 8737",
-    "whatsapp": "+971 4 357 8737",
-    "email": "contact@sharifgroup.ae",
-    "hours": "Monday ΓÇô Saturday: 9:00 AM ΓÇô 7:00 PM",
-    "maps_url": "https://maps.google.com/?q=25.187446,55.264193",
-    "visible": true
-  },
+  "sgcms_offices": [
+    {
+      "id": "o001",
+      "name": "Dubai Head Office",
+      "address": "116, The Binary Tower, Business Bay, Dubai, UAE",
+      "phone": "+971 4 357 8737",
+      "whatsapp": "+971 4 357 8737",
+      "email": "contact@sharifgroup.ae",
+      "hours": "Monday – Saturday: 9:00 AM – 7:00 PM",
+      "maps_url": "https://maps.google.com/?q=25.187446,55.264193",
+      "visible": true
+    }
+  ],
   "sgcms_contact": {
     "form_recipient": "contact@sharifgroup.ae",
     "thankyou_en": "Thank you for your inquiry. Our team will be in touch within 24 hours.",
-    "consent_en": "I agree to the Privacy Policy."
+    "thankyou_ar": "شكراً على استفسارك. سيتواصل معك فريقنا خلال 24 ساعة.",
+    "thankyou_fa": "ممنون از استعلام شما. تیم ما ظرف ۲۴ ساعت با شما تماس خواهد گرفت.",
+    "thankyou_zh": "感谢您的咨询。我们的团队将在24小时内与您联系。",
+    "consent_en": "I agree to the Privacy Policy.",
+    "consent_ar": "أوافق على سياسة الخصوصية.",
+    "consent_fa": "با سیاست حریم خصوصی موافقم.",
+    "consent_zh": "我同意隐私政策。"
   },
   "sgcms_aboutus": {
     "hero": {
@@ -704,7 +1211,7 @@
       },
       {
         "value": "100+",
-        "label_en": "Residency \\u0026amp; Education Cases"
+        "label_en": "Residency & Education Cases"
       },
       {
         "value": "450+",
@@ -717,7 +1224,7 @@
         "title": "Three Companies. One Commitment.",
         "desc": "We structure our specialized operations under three dedicated corporate brands to deliver clean, transparent, and expert execution across every discipline.",
         "c1_name": "SHARIF GLOBAL DOCUMENTS CLEARING SERVICES L.L.C",
-        "c1_badge": "Citizenship \\u0026amp; Residency",
+        "c1_badge": "Citizenship & Residency",
         "c1_p1": "Sharif Global helps families and investors get legal second passports and European residency cards. We handle all paperwork smoothly, check your documents carefully, and deal directly with government authorities.",
         "c1_p2": "We also guide your children with student admissions to top international schools and world-renowned universities abroad. Our team manages the legal attestation, translation, and complete file submissions.",
         "c2_name": "SHARIF STAR REAL ESTATE BROKER L.L.C",
@@ -725,7 +1232,7 @@
         "c2_p1": "Sharif Star is our official licensed real estate agency helping local and foreign buyers find premium homes across Dubai. We find luxury villas, high-floor apartments, and profitable off-plan projects in top neighborhoods.",
         "c2_p2": "We also structure high-value property purchases that qualify you directly for the 10-Year UAE Golden Visa. Our real estate brokers assist you through contract signing, title deed registration, and ongoing leasing.",
         "c3_name": "SHARIF CAPITAL COMMERCIAL BROKERS L.L.C",
-        "c3_badge": "Capital \\u0026amp; Brokerage",
+        "c3_badge": "Capital & Brokerage",
         "c3_p1": "Sharif Capital is our specialized business brokerage branch connecting entrepreneurs and serious investors with solid commercial opportunities in Dubai and the GCC region.",
         "c3_p2": "We also help global business owners set up new companies, open corporate bank accounts, and structure joint business ventures with complete confidentiality."
       }
@@ -733,7 +1240,7 @@
     "founder": {
       "en": {
         "name": "Ali Sharif",
-        "title": "CEO \\u0026amp; Founder, Sharif Group",
+        "title": "CEO & Founder, Sharif Group",
         "badge": "A MESSAGE FROM OUR FOUNDER",
         "quote": "A future where happy clients, positive community impact, and continuous progress guide everything we do.",
         "p1": "As the founder of Sharif Group, I, Ali Sharif, started this journey with a clear goal: to build real value for our clients and trusted partners. Today, with our hard-working team, we are proud to set high standards in second citizenship and global investment advisory.",
@@ -754,8 +1261,8 @@
   },
   "sgcms_cookiepolicy": {
     "en": {
-      "hero_badge": "DIGITAL GOVERNANCE \\u0026amp; TRACKING",
-      "hero_title": "Cookie Policy \\u0026amp; Privacy Controls",
+      "hero_badge": "DIGITAL GOVERNANCE & TRACKING",
+      "hero_title": "Cookie Policy & Privacy Controls",
       "hero_desc": "Transparency, sovereignty, and data integrity regarding how Sharif Group uses cookies and similar technologies across our advisory platforms.",
       "p1_title": "1. What Are Cookies?",
       "p1_desc": "Cookies are small data files placed on your device to ensure security, maintain session integrity, and personalize your digital advisory experience.",

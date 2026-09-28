@@ -57,12 +57,30 @@
     RewriteCond %{REQUEST_URI} !(.*)/$
     RewriteRule ^(.*)$ /$1/ [R=301,L]
 
+<<<<<<< HEAD
     # 9. Clean Language Path Rewrites for Blog (/ar/blog/..., /fa/blog/..., /zh/blog/...)
     RewriteRule ^(ar|fa|zh)/blog/([^/]+)/?$ /blog/index.html [L,QSA]
     RewriteRule ^(ar|fa|zh)/blog/?$ /blog/index.html [L,QSA]
 
     # 10. Clean Language Path Rewrites (/ar/, /fa/, /zh/)
+=======
+    # 8b. Automated Multilingual XML Sitemap Engine
+    RewriteRule ^sitemap\.xml$ sitemap.php [L]
+
+    # 9. Clean Language Paths (/ar/, /fa/, /zh/)
+    # Serve physical localized directories and files directly (zero redirection)
+    RewriteCond %{REQUEST_FILENAME} -f [OR]
+    RewriteCond %{REQUEST_FILENAME} -d
+    RewriteRule ^(ar|fa|zh)(?:/.*)?$ - [L]
+
+    # Fallback only if physical file/folder does not exist on disk
+    RewriteCond %{REQUEST_FILENAME} !-f
+    RewriteCond %{REQUEST_FILENAME} !-d
+>>>>>>> a08f1b35657a30c3870abd60f6f697c36339fcbd
     RewriteRule ^(ar|fa|zh)/?$ /index.html [L,QSA]
+
+    RewriteCond %{REQUEST_FILENAME} !-f
+    RewriteCond %{REQUEST_FILENAME} !-d
     RewriteRule ^(ar|fa|zh)/(.*)$ /$2 [L,QSA]
 
     # 11. Blog slug fallback
@@ -168,3 +186,9 @@
 
 # UTF-8 Charset Encoding
 AddDefaultCharset UTF-8
+
+# XML & XSL Stylesheet MIME Types
+AddType application/xml .xml .xsl
+AddType text/xml .xsl
+AddType image/x-icon .ico
+AddType image/svg+xml .svg
