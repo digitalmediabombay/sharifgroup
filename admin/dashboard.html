@@ -1891,18 +1891,15 @@
           </div>
           <div class="sb-children" id="sbc-citizenship">
             <div class="sb-sub-group">
-              <div class="sb-sub-lbl">Caribbean <button class="sb-add-btn" style="width:16px;height:16px;font-size:8px"
-                  onclick="addProgram('citizenship','caribbean')"><i class="fa-solid fa-plus"></i></button></div>
+              <div class="sb-sub-lbl">Caribbean <!-- Program addition (+) button removed per request --></div>
               <div id="sb-ci-caribbean"></div>
             </div>
             <div class="sb-sub-group">
-              <div class="sb-sub-lbl">Global <button class="sb-add-btn" style="width:16px;height:16px;font-size:8px"
-                  onclick="addProgram('citizenship','global')"><i class="fa-solid fa-plus"></i></button></div>
+              <div class="sb-sub-lbl">Global <!-- Program addition (+) button removed per request --></div>
               <div id="sb-ci-global"></div>
             </div>
             <div class="sb-sub-group">
-              <div class="sb-sub-lbl">European <button class="sb-add-btn" style="width:16px;height:16px;font-size:8px"
-                  onclick="addProgram('citizenship','european')"><i class="fa-solid fa-plus"></i></button></div>
+              <div class="sb-sub-lbl">European <!-- Program addition (+) button removed per request --></div>
               <div id="sb-ci-european"></div>
             </div>
           </div>
@@ -1919,14 +1916,11 @@
           </div>
           <div class="sb-children" id="sbc-residency">
             <div class="sb-sub-group">
-              <div class="sb-sub-lbl">European <button class="sb-add-btn" style="width:16px;height:16px;font-size:8px"
-                  onclick="addProgram('residency','european')"><i class="fa-solid fa-plus"></i></button></div>
+              <div class="sb-sub-lbl">European <!-- Program addition (+) button removed per request --></div>
               <div id="sb-ri-european"></div>
             </div>
             <div class="sb-sub-group">
-              <div class="sb-sub-lbl">Americas & UAE <button class="sb-add-btn"
-                  style="width:16px;height:16px;font-size:8px" onclick="addProgram('residency','uae')"><i
-                    class="fa-solid fa-plus"></i></button></div>
+              <div class="sb-sub-lbl">Americas & UAE <!-- Program addition (+) button removed per request --></div>
               <div id="sb-ri-uae"></div>
             </div>
           </div>
@@ -2229,7 +2223,8 @@
       </div>
     </div>
 
-    <!-- ═══ MODAL: QUICK NEW PAGE ═════════════════════════════════════════ -->
+    <!-- ═══ MODAL: QUICK NEW PAGE (COMMENTED OUT PER REQUEST) ═════════════════════════════════════════ -->
+    <!--
     <div class="sg-modal-overlay" id="modal-quick-program">
       <div class="sg-modal-card">
         <div class="sg-modal-header">
@@ -2237,7 +2232,6 @@
           <button type="button" class="sg-modal-close" onclick="closeQuickProgramModal()">&times;</button>
         </div>
         <div class="sg-modal-body">
-          <!-- Context Banner -->
           <div id="qp-context-banner"
             style="display:flex;background:rgba(197,168,128,0.12);border:1px solid rgba(197,168,128,0.3);border-radius:8px;padding:8px 12px;margin-bottom:14px;align-items:center;justify-content:space-between">
             <div style="font-size:12px;color:var(--text);display:flex;align-items:center;gap:6px">
@@ -2262,7 +2256,6 @@
               oninput="handleQuickProgramNameInput(this.value)" onkeydown="if(event.key==='Enter')submitQuickProgram()">
           </div>
 
-          <!-- Country Flag Selector -->
           <div class="form-group" style="margin-bottom:14px">
             <label class="form-label"
               style="font-weight:600;display:flex;align-items:center;justify-content:space-between">
@@ -2281,7 +2274,6 @@
               <input type="text" id="qp-flag-url" class="form-input" placeholder="Flag image/SVG URL or select below..."
                 style="flex:1" oninput="updateQuickProgramFlagPreview(this.value)">
             </div>
-            <!-- Quick Flag Preset Chips -->
             <div style="display:flex;gap:5px;flex-wrap:wrap" id="qp-flag-presets">
               <button type="button" class="qp-flag-chip"
                 onclick="setQuickProgramFlag('mt','https://flagcdn.com/mt.svg','Malta')">🇲🇹 Malta</button>
@@ -2304,7 +2296,6 @@
             </div>
           </div>
 
-          <!-- Hidden inputs for type and portfolio -->
           <input type="hidden" id="qp-type" value="citizenship">
           <input type="hidden" id="qp-portfolio" value="caribbean">
           <input type="hidden" id="qp-flag-code" value="">
@@ -2316,6 +2307,7 @@
         </div>
       </div>
     </div>
+    -->
 
     <!-- â•â•â• MODAL: VISUAL SECTION PICKER â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â• -->
     <div class="sg-modal-overlay" id="modal-add-section">
@@ -3235,6 +3227,7 @@
         showToast('Section removed');
       }
 
+      /* Program addition / section addition commented out per request
       function promptAddSection(type) {
         const typeName = type === 'citizenship' ? 'Citizenship' : 'Residency';
         const name = prompt(`Enter new section/category name for ${typeName} (e.g. Asia Pacific, Middle East, Americas):`);
@@ -3244,6 +3237,7 @@
         showToast(`Section "${name.trim()}" added!`);
         addProgram(type, key);
       }
+      */
 
       // ==========================================================
       // VISUAL STUDIO QUICK CREATION MODALS
@@ -3833,7 +3827,32 @@
         window.CMS.saveData(window.CMS.KEYS.BLOG, existingBlogs);
         populateSidebar();
 
-        // Immediately sync to MySQL database so the article is never lost on refresh
+        // Immediately sync to MySQL database and published_content.json so article is live across all browsers
+        try {
+          const token = sessionStorage.getItem('sgcms_token') || localStorage.getItem('sgcms_token');
+          const headers = { 'Content-Type': 'application/json' };
+          if (token) {
+            headers['Authorization'] = 'Bearer ' + token;
+            headers['X-CMS-Token'] = token;
+          }
+          fetch('api/save.php', {
+            method: 'POST',
+            credentials: 'include',
+            headers,
+            body: JSON.stringify({ key: 'sgcms_blog', data: existingBlogs, token })
+          });
+          fetch('api/publish.php', {
+            method: 'POST',
+            credentials: 'include',
+            headers,
+            body: JSON.stringify({
+              publisher: 'Admin (Article Create)',
+              data: { sgcms_blog: existingBlogs },
+              token
+            })
+          });
+        } catch (e) { }
+
         if (window.CMS && window.CMS.Backend) {
           window.CMS.Backend.syncToDb('draft').then(ok => {
             console.log('[CMS] New blog article synced to database:', ok);
@@ -3863,6 +3882,7 @@
         }, 500);
       }
 
+      /* Quick Program addition logic commented out per request
       // Country Flag ISO Mapping & Helpers
       const COUNTRY_ISO_MAP = {
         'malta': 'mt', 'cyprus': 'cy', 'bahamas': 'bs', 'turkey': 'tr', 'turkiye': 'tr', 'türkiye': 'tr',
@@ -4047,6 +4067,7 @@
 
         navigate('program', type, id);
       }
+      */
 
       function openAddSectionModal() {
         const m = document.getElementById('modal-add-section');
@@ -4347,22 +4368,13 @@
           <div class="sb-sub-lbl">
             <span>${escH(sec.label)}</span>
             <div style="display:flex;align-items:center;gap:4px">
-              <button class="sb-add-btn" style="width:16px;height:16px;font-size:8px" title="Add program to ${escH(sec.label)}" onclick="addProgram('citizenship','${sec.key}')">
-                <i class="fa-solid fa-plus"></i>
-              </button>
               ${sec.isCustom ? `<button class="sb-del-btn" style="width:16px;height:16px;font-size:9px;background:none;border:none;color:var(--muted);cursor:pointer;padding:0" title="Delete section" onclick="event.stopPropagation();deleteSection('citizenship','${sec.key}')"><i class="fa-solid fa-trash-can"></i></button>` : ''}
             </div>
           </div>
           <div id="sb-ci-${sec.key}">${progs.map(p => makeProgItem(p, 'citizenship')).join('')}</div>
         </div>
       `;
-          }).join('') + `
-      <div style="padding:4px 4px 6px">
-        <button type="button" class="btn-add-section-sb" onclick="promptAddSection('citizenship')">
-          <i class="fa-solid fa-folder-plus"></i> Add New Section
-        </button>
-      </div>
-    `;
+          }).join('');
         }
 
         // Render Dynamic Sections for Residency
@@ -4381,22 +4393,13 @@
           <div class="sb-sub-lbl">
             <span>${escH(sec.label)}</span>
             <div style="display:flex;align-items:center;gap:4px">
-              <button class="sb-add-btn" style="width:16px;height:16px;font-size:8px" title="Add program to ${escH(sec.label)}" onclick="addProgram('residency','${sec.key}')">
-                <i class="fa-solid fa-plus"></i>
-              </button>
               ${sec.isCustom ? `<button class="sb-del-btn" style="width:16px;height:16px;font-size:9px;background:none;border:none;color:var(--muted);cursor:pointer;padding:0" title="Delete section" onclick="event.stopPropagation();deleteSection('residency','${sec.key}')"><i class="fa-solid fa-trash-can"></i></button>` : ''}
             </div>
           </div>
           <div id="sb-ri-${sec.key}">${progs.map(p => makeProgItem(p, 'residency')).join('')}</div>
         </div>
       `;
-          }).join('') + `
-      <div style="padding:4px 4px 6px">
-        <button type="button" class="btn-add-section-sb" onclick="promptAddSection('residency')">
-          <i class="fa-solid fa-folder-plus"></i> Add New Section
-        </button>
-      </div>
-    `;
+          }).join('');
         }
 
         // Render Dynamic Articles for Blog in Sidebar
@@ -5077,11 +5080,13 @@
                 The visual category blueprint is loaded in the canvas. You can click on any heading, hero text, or program card to edit directly.
               </p>
             </div>
+            <!-- Add New Section commented out per request
             <div style="display:flex;flex-direction:column;gap:12px">
               <button type="button" class="btn btn-primary" style="width:100%;justify-content:center" onclick="promptAddSection('${type}')">
                 <i class="fa-solid fa-folder-plus"></i> Add New Section under ${isRes ? 'Residency' : 'Citizenship'}
               </button>
             </div>
+            -->
           </div>
         `;
       }
@@ -6432,9 +6437,11 @@
         showToast(`${name} created successfully!`);
       }
 
+      /* Program addition commented out per request
       function addProgram(type, portfolio) {
         openQuickProgramModal(type, portfolio);
       }
+      */
 
       // Live-send field updates to iframe
       function liveUpdateField(field, value, extra) {
@@ -6945,7 +6952,32 @@
         // Update sidebar list immediately
         populateSidebar();
 
-        // Immediately sync to MySQL database
+        // Immediately sync to MySQL database and published_content.json so article is live across all browsers
+        try {
+          const token = sessionStorage.getItem('sgcms_token') || localStorage.getItem('sgcms_token');
+          const headers = { 'Content-Type': 'application/json' };
+          if (token) {
+            headers['Authorization'] = 'Bearer ' + token;
+            headers['X-CMS-Token'] = token;
+          }
+          fetch('api/save.php', {
+            method: 'POST',
+            credentials: 'include',
+            headers,
+            body: JSON.stringify({ key: 'sgcms_blog', data: blogs, token })
+          });
+          fetch('api/publish.php', {
+            method: 'POST',
+            credentials: 'include',
+            headers,
+            body: JSON.stringify({
+              publisher: 'Admin (Article Save)',
+              data: { sgcms_blog: blogs },
+              token
+            })
+          });
+        } catch (e) { }
+
         if (window.CMS && window.CMS.Backend) {
           window.CMS.Backend.syncToDb('draft').then(function(ok) {
             if (ok) console.log('[CMS] Blog synced to MySQL successfully.');
@@ -8459,137 +8491,7 @@
       // ══════════════════════════════════════════════════════════
       let isAutoTranslating = false;
       async function autoTranslateOnSave(section, itemId) {
-<<<<<<< HEAD
         return;
-=======
-        if (isAutoTranslating) return;
-
-        const statusEl = document.getElementById('ai-auto-status');
-        if (statusEl) {
-          statusEl.style.display = 'flex';
-          statusEl.innerHTML = '<i class="fa-solid fa-wand-magic-sparkles fa-spin" style="color:var(--gold)"></i> <span>Auto-syncing translations (AR, FA, ZH)...</span>';
-        }
-
-        isAutoTranslating = true;
-        try {
-          const targetLangs = ['ar', 'fa', 'zh'];
-
-          if (section === 'homepage') {
-            const d = window.CMS.getData(window.CMS.KEYS.HOMEPAGE) || window.CMS.DEFAULTS.homepage;
-            const en = d.hero?.en || {};
-            d.hero = d.hero || {};
-            d.hero._last_en = d.hero._last_en || {};
-            const isMoji = (s) => typeof s === 'string' && (/[\u2500-\u259F\uFFFD]|ΓÇ[ôöòóõ]|[\u0390-\u03C9]{2,}|\\u0026amp;/i.test(s));
-
-            for (const lang of targetLangs) {
-              d.hero[lang] = d.hero[lang] || {};
-              const heroFields = ['tagline', 'headline', 'subheadline', 'cta_primary', 'cta_secondary', 'pathway_citizenship', 'pathway_residency', 'pathway_realestate', 'pathway_education'];
-              for (const f of heroFields) {
-                if (en[f]) {
-                  const curr = d.hero[lang][f];
-                  const lastEn = d.hero._last_en[f];
-                  if (!curr || (lastEn && en[f] !== lastEn) || curr === en[f] || isMoji(curr)) {
-                    d.hero[lang][f] = await window.CMS.AI.translate(en[f], lang);
-                  }
-                }
-              }
-              d.hero[lang].cta_primary_link = en.cta_primary_link;
-              d.hero[lang].cta_secondary_link = en.cta_secondary_link;
-
-              // About section
-              const enAbout = d.about?.en || {};
-              d.about = d.about || {};
-              d.about._last_en = d.about._last_en || {};
-              d.about[lang] = d.about[lang] || {};
-              const aboutFields = ['badge', 'heading', 'subheading', 'p1', 'p2', 'btn1_text', 'btn2_text'];
-              for (const af of aboutFields) {
-                if (enAbout[af]) {
-                  const curr = d.about[lang][af];
-                  const lastEn = d.about._last_en[af];
-                  if (!curr || (lastEn && enAbout[af] !== lastEn) || curr === enAbout[af] || isMoji(curr)) {
-                    d.about[lang][af] = await window.CMS.AI.translate(enAbout[af], lang);
-                  }
-                }
-              }
-              d.about[lang].btn1_link = enAbout.btn1_link || 'aboutus/index.html';
-              d.about[lang].btn2_link = enAbout.btn2_link || 'contact/index.html';
-            }
-
-            d.hero._last_en = { ...en };
-            if (d.about?.en) d.about._last_en = { ...d.about.en };
-            window.CMS.saveData(window.CMS.KEYS.HOMEPAGE, d);
-
-          } else if (section === 'program' && itemId) {
-            const itemType = state.itemType || 'citizenship';
-            const list = window.CMS.getData(window.CMS.KEYS[itemType.toUpperCase()]) || window.CMS.DEFAULTS[itemType];
-            const idx = list.findIndex(p => p.id === itemId);
-            if (idx >= 0) {
-              const en = list[idx].en || {};
-              list[idx]._last_en = list[idx]._last_en || {};
-              for (const lang of targetLangs) {
-                list[idx][lang] = list[idx][lang] || {};
-                const progFields = ['title', 'hero_title', 'hero_subtitle', 'hero_tagline', 'nav_label', 'overview_title', 'overview', 'investment_title', 'investment_desc', 'who_can_apply_title', 'who_can_apply_desc', 'docs_title', 'docs_desc', 'timeline_title', 'timeline_desc', 'faq_title', 'faq_desc', 'consult_heading', 'consult_subheading', 'consult_btn_text'];
-                for (const pf of progFields) {
-                  if (en[pf]) {
-                    const curr = list[idx][lang][pf];
-                    const lastEn = list[idx]._last_en[pf];
-                    if (!curr || (lastEn && en[pf] !== lastEn) || curr === en[pf] || isMoji(curr)) {
-                      list[idx][lang][pf] = await window.CMS.AI.translate(en[pf], lang);
-                    }
-                  }
-                }
-              }
-              list[idx]._last_en = { ...en };
-              window.CMS.saveData(window.CMS.KEYS[itemType.toUpperCase()], list);
-            }
-
-          } else if (section === 'blog' || section === 'blog-edit') {
-            // Blogs use 100% manual translation: user pastes drafts directly per language
-            return;
-
-          } else if (section === 'aboutus') {
-            const about = window.CMS.getData(window.CMS.KEYS.ABOUTUS) || window.CMS.DEFAULTS.aboutus;
-            for (const lang of targetLangs) {
-              if (about.hero?.en) {
-                about.hero[lang] = about.hero[lang] || {};
-                if (about.hero.en.title) about.hero[lang].title = await window.CMS.AI.translate(about.hero.en.title, lang);
-                if (about.hero.en.subtitle) about.hero[lang].subtitle = await window.CMS.AI.translate(about.hero.en.subtitle, lang);
-              }
-              if (about.overview?.en) {
-                about.overview[lang] = about.overview[lang] || {};
-                if (about.overview.en.heading) about.overview[lang].heading = await window.CMS.AI.translate(about.overview.en.heading, lang);
-                if (about.overview.en.p1) about.overview[lang].p1 = await window.CMS.AI.translate(about.overview.en.p1, lang);
-              }
-            }
-            window.CMS.saveData(window.CMS.KEYS.ABOUTUS, about);
-
-          } else if (section === 'cookiepolicy') {
-            const cp = window.CMS.getData('sgcms_cookiepolicy') || {};
-            const en = cp.en || {};
-            for (const lang of targetLangs) {
-              cp[lang] = cp[lang] || {};
-              if (en.hero_badge) cp[lang].hero_badge = await window.CMS.AI.translate(en.hero_badge, lang);
-              if (en.hero_title) cp[lang].hero_title = await window.CMS.AI.translate(en.hero_title, lang);
-              if (en.hero_desc) cp[lang].hero_desc = await window.CMS.AI.translate(en.hero_desc, lang);
-              if (en.p1_title) cp[lang].p1_title = await window.CMS.AI.translate(en.p1_title, lang);
-              if (en.p1_desc) cp[lang].p1_desc = await window.CMS.AI.translate(en.p1_desc, lang);
-            }
-            window.CMS.saveData('sgcms_cookiepolicy', cp);
-          }
-
-          if (statusEl) {
-            statusEl.innerHTML = '<i class="fa-solid fa-check" style="color:#4ade80"></i> <span style="color:#4ade80">Auto-synced in AR, FA, ZH!</span>';
-            setTimeout(() => { statusEl.style.display = 'none'; }, 3500);
-          }
-        } catch (err) {
-          console.warn('[Auto-Translate error]:', err.message);
-          if (statusEl) {
-            statusEl.style.display = 'none';
-          }
-        } finally {
-          isAutoTranslating = false;
-        }
->>>>>>> a08f1b35657a30c3870abd60f6f697c36339fcbd
       }
 
       // ══════════════════════════════════════════════════════════

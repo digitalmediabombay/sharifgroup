@@ -29,7 +29,7 @@
   try {
     if (window.self !== window.top) return;
     var search = (window.location && window.location.search) ? window.location.search.toLowerCase() : '';
-    if (search.indexOf('cms_editor') !== -1 || search.indexOf('cms_preview') !== -1) return;
+    if (search.indexOf('cms_editor') !== -1) return;
     if (window.location.pathname.toLowerCase().indexOf('/admin') !== -1) return;
   } catch (e) { }
 
@@ -530,6 +530,9 @@
                 setTimeout(function () {
                   hydrateBlog(lang);
                   if (typeof window.paginateBlogs === 'function') window.paginateBlogs();
+                  if (typeof window.handleDirectArticleRoute === 'function') {
+                    window.handleDirectArticleRoute();
+                  }
                 }, 50);
               }
             }

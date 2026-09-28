@@ -25,6 +25,12 @@ if ($mode === 'draft') {
     }
 } else {
     $snapshot = readPublishedSnapshot();
+    if (empty($snapshot['sgcms_blog'])) {
+        $draftSnap = readDraftSnapshot();
+        if (!empty($draftSnap['sgcms_blog'])) {
+            $snapshot['sgcms_blog'] = $draftSnap['sgcms_blog'];
+        }
+    }
 }
 
 /**

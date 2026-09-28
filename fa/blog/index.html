@@ -7646,21 +7646,51 @@
 
             // Single-Page Dynamic Article View Function
             function openBlogDetailBySlug(slug, event) {
-    if (event && event.preventDefault) { event.preventDefault(); }
-                let baseArticle = (window.articlesDatabase && window.articlesDatabase[slug]) || (typeof articlesDatabase !== 'undefined' && articlesDatabase[slug]);
+                if (event && event.preventDefault) { event.preventDefault(); }
+                if (!slug) return;
+                var rawSlug = String(slug || '').trim();
+                var cleanTarget = rawSlug.replace(/^\/+|\/+$/g, '').toLowerCase();
+                try { cleanTarget = decodeURIComponent(cleanTarget); } catch(e) {}
+
+                let baseArticle = (window.articlesDatabase && (window.articlesDatabase[cleanTarget] || window.articlesDatabase[slug] || window.articlesDatabase[rawSlug])) ||
+                                  (typeof articlesDatabase !== 'undefined' && (articlesDatabase[cleanTarget] || articlesDatabase[slug] || articlesDatabase[rawSlug]));
                 const listingSection = document.getElementById('blog-listing-main');
                 const detailSection = document.getElementById('blog-detail-view-container');
 
                 // Dynamically resolve CMS blogs fresh for the current language
+                var found = null;
                 try {
-                    const localBlogs = JSON.parse(localStorage.getItem('sgcms_blog') || '[]');
-                    const found = localBlogs.find(b => b.slug === slug || b.id === slug || (b.en && b.en.slug === slug));
+                    const rawBlogs = localStorage.getItem('sgcms_blog') || localStorage.getItem('sgcms_blog_live') || '[]';
+                    let localBlogs = [];
+                    try { localBlogs = JSON.parse(rawBlogs); } catch(e) { localBlogs = []; }
+                    if ((!localBlogs || !localBlogs.length) && window._data && Array.isArray(window._data.sgcms_blog)) {
+                        localBlogs = window._data.sgcms_blog;
+                    }
+                    if (Array.isArray(localBlogs) && localBlogs.length) {
+                        found = localBlogs.find(function(b) {
+                            if (!b) return false;
+                            var bId = String(b.id || '').toLowerCase();
+                            var bSlug = String(b.slug || '').toLowerCase();
+                            var enSlug = String((b.en && b.en.slug) || '').toLowerCase();
+                            var arSlug = String((b.ar && b.ar.slug) || '').toLowerCase();
+                            var faSlug = String((b.fa && b.fa.slug) || '').toLowerCase();
+                            var zhSlug = String((b.zh && b.zh.slug) || '').toLowerCase();
+                            var enTitle = String((b.en && b.en.title) || b.title || '').toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/(^-|-$)/g, '');
+                            return bSlug === cleanTarget ||
+                                   bId === cleanTarget ||
+                                   enSlug === cleanTarget ||
+                                   arSlug === cleanTarget ||
+                                   faSlug === cleanTarget ||
+                                   zhSlug === cleanTarget ||
+                                   enTitle === cleanTarget;
+                        });
+                    }
                     if (found) {
                         const curLang = (window.getCurrentLanguage && window.getCurrentLanguage())
                             || localStorage.getItem('sharif_lang')
                             || localStorage.getItem('sharif_preferred_lang')
                             || document.documentElement.lang
-                            || 'en';
+                            || 'fa';
                         let ld = found[curLang];
                         if (!ld || (!ld.title && !ld.body)) {
                             ld = found.en || found;
@@ -7729,7 +7759,7 @@
                             ]
                         };
 
-                        const dFaqs = defaultFaqsMap[curLang] || defaultFaqsMap.en;
+                        const dFaqs = defaultFaqsMap[curLang] || defaultFaqsMap.fa;
                         if (!Array.isArray(curFaqs) || !curFaqs.length) {
                             curFaqs = [...dFaqs];
                         } else if (curFaqs.length < 12) {
@@ -7751,25 +7781,94 @@
                             faqs: curFaqs
                         };
                         if (!window.articlesDatabase) window.articlesDatabase = {};
+                        window.articlesDatabase[cleanTarget] = baseArticle;
                         window.articlesDatabase[slug] = baseArticle;
+                        window.articlesDatabase[rawSlug] = baseArticle;
                     }
                 } catch(e) {}
 
                 if (!baseArticle) {
+                    // Show immediate transition feedback in detail container so user doesn't see listing flash
+                    if (listingSection && detailSection) {
+                        listingSection.style.display = 'none';
+                        detailSection.classList.remove('hidden');
+                        var loadingTitleEl = document.getElementById('detail-title');
+                        if (loadingTitleEl && !loadingTitleEl.textContent.trim()) {
+                            loadingTitleEl.innerHTML = '<span class="inline-flex items-center gap-2 text-neutral-500 font-normal"><i class="fa-solid fa-spinner fa-spin text-luxury-gold text-lg"></i> Loading Article...</span>';
+                        }
+                    }
+
+                    // Proactively fetch from server APIs
+                    if (!window.__fetchingCmsBlogs) {
+                        window.__fetchingCmsBlogs = true;
+                        var apiCandidates = [
+                            '/admin/api/published_content.json?v=' + Date.now(),
+                            '/admin/api/content.php?mode=live&v=' + Date.now(),
+                            '/admin/api/draft_content.json?v=' + Date.now(),
+                            '/admin/api/content.php?mode=draft&v=' + Date.now(),
+                            '../admin/api/published_content.json?v=' + Date.now(),
+                            '../admin/api/content.php?mode=live&v=' + Date.now(),
+                            '../../admin/api/published_content.json?v=' + Date.now()
+                        ];
+                        var cIdx = 0;
+                        function fetchNextCandidate() {
+                            if (cIdx >= apiCandidates.length) {
+                                window.__fetchingCmsBlogs = false;
+                                return;
+                            }
+                            fetch(apiCandidates[cIdx++], { cache: 'no-cache' })
+                                .then(function(res) {
+                                    if (!res.ok) throw new Error('status ' + res.status);
+                                    return res.json();
+                                })
+                                .then(function(resJson) {
+                                    if (!resJson) throw new Error('empty');
+                                    var data = (resJson.data && typeof resJson.data === 'object' && resJson.success) ? resJson.data : resJson;
+                                    var blogs = data.sgcms_blog;
+                                    if (typeof blogs === 'string') {
+                                        try { blogs = JSON.parse(blogs); } catch(e) {}
+                                    }
+                                    if (Array.isArray(blogs) && blogs.length) {
+                                        try {
+                                            localStorage.setItem('sgcms_blog_live', JSON.stringify(blogs));
+                                            if (!localStorage.getItem('sgcms_blog')) {
+                                                localStorage.setItem('sgcms_blog', JSON.stringify(blogs));
+                                            }
+                                        } catch(e) {}
+                                        if (!window._data) window._data = {};
+                                        window._data.sgcms_blog = blogs;
+                                        window.__fetchingCmsBlogs = false;
+                                        window.__blogRetryCount = 0;
+                                        openBlogDetailBySlug(slug, event);
+                                    } else {
+                                        fetchNextCandidate();
+                                    }
+                                })
+                                .catch(function() {
+                                    fetchNextCandidate();
+                                });
+                        }
+                        fetchNextCandidate();
+                    }
+
                     window.__blogRetryCount = (window.__blogRetryCount || 0) + 1;
-                    if (window.__blogRetryCount <= 4) {
+                    if (window.__blogRetryCount <= 15) {
                         setTimeout(function() {
                             openBlogDetailBySlug(slug, event);
                         }, 350);
                         return;
                     }
                     window.__blogRetryCount = 0;
+                    if (listingSection && detailSection) {
+                        listingSection.style.display = '';
+                        detailSection.classList.add('hidden');
+                    }
                     console.warn("[Blog] Article content not found for slug:", slug);
                     return;
                 }
                 window.__blogRetryCount = 0;
 
-                window.currentActiveArticleSlug = slug;
+                window.currentActiveArticleSlug = (found && (found.slug || found.id)) || slug;
                 const currentLang = (window.getCurrentLanguage && window.getCurrentLanguage())
                     || localStorage.getItem('sharif_lang')
                     || localStorage.getItem('sharif_preferred_lang')
@@ -7954,14 +8053,17 @@
                 }
             });
 
-            // Route to specific article if URL contains /blog/<slug>, ?article_slug=<slug>, ?slug=<slug>, or #<slug>
+            // Route to specific article if URL contains /(ar|fa|zh)/blog/<slug>, /blog/<slug>, ?article_slug=<slug>, ?slug=<slug>, ?article=<slug>, or #<slug>
             function handleDirectArticleRoute() {
                 var urlParams = new URLSearchParams(window.location.search);
-                var querySlug = urlParams.get('article_slug') || urlParams.get('slug');
+                var querySlug = urlParams.get('article_slug') || urlParams.get('slug') || urlParams.get('article');
+                if (querySlug) {
+                    try { querySlug = decodeURIComponent(querySlug).trim().replace(/^\/+|\/+$/g, ''); } catch(e) {}
+                }
                 if (!querySlug && window.location.hash) {
                     var rawHash = window.location.hash.replace(/^#/, '');
                     if (rawHash && rawHash.length > 2 && rawHash !== 'blog-listing-main') {
-                        querySlug = rawHash;
+                        querySlug = rawHash.trim().replace(/^\/+|\/+$/g, '');
                     }
                 }
                 var isInsideIframe = (function () {
@@ -7970,9 +8072,10 @@
                 var isCmsEditor = urlParams.get('cms_editor') === '1' || isInsideIframe;
 
                 var path = window.location.pathname || '';
-                var match = path.match(/\/blog\/([a-zA-Z0-9_-]+)\/?$/);
-                var pathSlug = (match && match[1]) ? match[1] : null;
-                if (pathSlug === 'index.html' || pathSlug === 'blog.html' || pathSlug === 'blog') {
+                var match = path.match(/(?:\/(ar|fa|zh))?\/blog\/([^\/\?\#]+)\/?$/i);
+                var pathLang = (match && match[1]) ? match[1].toLowerCase() : null;
+                var pathSlug = (match && match[2]) ? decodeURIComponent(match[2]).trim().replace(/^\/+|\/+$/g, '') : null;
+                if (pathSlug === 'index.html' || pathSlug === 'blog.html' || pathSlug === 'blog' || pathSlug === '') {
                     pathSlug = null;
                 }
 
@@ -7981,6 +8084,10 @@
                     openBlogDetailBySlug(targetSlug);
                 }
             }
+
+            window.handleDirectArticleRoute = handleDirectArticleRoute;
+            window.openBlogDetailBySlug = openBlogDetailBySlug;
+            window.closeBlogDetail = closeBlogDetail;
 
             if (document.readyState === 'loading') {
                 window.addEventListener('DOMContentLoaded', handleDirectArticleRoute);
