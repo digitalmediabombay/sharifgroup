@@ -217,6 +217,42 @@
   }
 
   /* ── About-Us Page Hydration ────────────────────── */
+  function isEnglishFallback(str, currentLang) {
+    if (!str || typeof str !== 'string') return true;
+    if (isCorrupted(str)) return true;
+    if (currentLang === 'en') return false;
+    var trimmed = str.trim();
+    var enPhrases = [
+      'About Sharif Group',
+      'EXECUTIVE BRIEFING',
+      'A premier migration, citizenship, and luxury investment advisory platform rooted in Business Bay, Dubai.',
+      'WHO WE ARE',
+      'Company Overview: Sharif Group',
+      'Company Overview:',
+      'Sharif Group is a dedicated private consulting company based in Business Bay, Dubai.',
+      'Book Consultation',
+      'Three Companies. One Commitment.',
+      'CORPORATE ARCHITECTURE',
+      'A MESSAGE FROM OUR FOUNDER',
+      'Ali Sharif',
+      'CEO & Founder, Sharif Group',
+      'Schedule Your Expert Consultation Today',
+      'Request Executive Briefing'
+    ];
+    if (enPhrases.indexOf(trimmed) !== -1) return true;
+    if (currentLang === 'ar' || currentLang === 'fa') {
+      var hasArabic = /[\u0600-\u06FF\u0750-\u077F\u08A0-\u08FF\uFB50-\uFDFF\uFE70-\uFEFF]/.test(trimmed);
+      var isAscii = /^[A-Za-z0-9\s.,:;!?'"()&/\-]+$/.test(trimmed);
+      if (!hasArabic && isAscii && trimmed.length > 3) return true;
+    }
+    if (currentLang === 'zh') {
+      var hasChinese = /[\u4E00-\u9FFF]/.test(trimmed);
+      var isAsciiZh = /^[A-Za-z0-9\s.,:;!?'"()&/\-]+$/.test(trimmed);
+      if (!hasChinese && isAsciiZh && trimmed.length > 3) return true;
+    }
+    return false;
+  }
+
   function hydrateAboutUs(l) {
     var au = _data.sgcms_aboutus;
     if (!au) return;
@@ -224,17 +260,31 @@
 
     var hero = isEn ? ((au.hero && (au.hero.en || au.hero[l])) || {}) : ((au.hero && au.hero[l]) || null);
     if (hero) {
-      if (hero.badge && !isCorrupted(hero.badge)) setEl('[data-i18n="pages.aboutUs.heroBadge"]', hero.badge, true);
-      if (hero.title && !isCorrupted(hero.title)) setEl('[data-i18n="pages.aboutUs.heroTitle"]', hero.title, true);
-      if (hero.subtitle && !isCorrupted(hero.subtitle)) setEl('[data-i18n="pages.aboutUs.heroSubtitle"]', hero.subtitle, true);
+      if (hero.badge && !isEnglishFallback(hero.badge, l)) setEl('[data-i18n="pages.aboutUs.heroBadge"]', hero.badge, true);
+      if (hero.title && !isEnglishFallback(hero.title, l)) setEl('[data-i18n="pages.aboutUs.heroTitle"]', hero.title, true);
+      if (hero.subtitle && !isEnglishFallback(hero.subtitle, l)) setEl('[data-i18n="pages.aboutUs.heroSubtitle"]', hero.subtitle, true);
     }
 
     var ov = isEn ? ((au.overview && (au.overview.en || au.overview[l])) || {}) : ((au.overview && au.overview[l]) || null);
     if (ov) {
-      if (ov.badge && !isCorrupted(ov.badge)) setEl('[data-i18n="pages.aboutUs.about_overview_item1"]', ov.badge, true);
-      if (ov.heading && !isCorrupted(ov.heading)) setEl('[data-i18n="pages.aboutUs.about_overview_item2"]', ov.heading, true);
-      if (ov.p1 && !isCorrupted(ov.p1)) setEl('[data-i18n="pages.aboutUs.about_overview_item3"]', ov.p1, true);
-      if (ov.p2 && !isCorrupted(ov.p2)) setEl('[data-i18n="pages.aboutUs.about_overview_item4"]', ov.p2, true);
+      if (ov.badge && !isEnglishFallback(ov.badge, l)) setEl('[data-i18n="pages.aboutUs.about_overview_item1"]', ov.badge, true);
+      if (ov.heading && !isEnglishFallback(ov.heading, l)) {
+        var el = document.querySelector('[data-i18n-html="pages.aboutUs.about_overview_item2"], [data-i18n="pages.aboutUs.about_overview_item2"]');
+        if (el) {
+          if (ov.heading.indexOf('<') !== -1) {
+            el.innerHTML = ov.heading;
+          } else {
+            var brandMap = { ar: 'مجموعة شريف', fa: 'شریف گروپ', zh: '谢里夫集团', en: 'Sharif Group' };
+            var brand = brandMap[l] || 'Sharif Group';
+            var cleanHead = ov.heading.replace(new RegExp(brand + '$', 'i'), '').trim();
+            cleanHead = cleanHead.replace(/[:：\s]+$/, '').trim();
+            var colon = l === 'zh' ? '：' : ':';
+            el.innerHTML = cleanHead + colon + '<br/><span class="italic text-[#C5A880] font-serif font-normal">' + brand + '</span>';
+          }
+        }
+      }
+      if (ov.p1 && !isEnglishFallback(ov.p1, l)) setEl('[data-i18n="pages.aboutUs.about_overview_item3"]', ov.p1, true);
+      if (ov.p2 && !isEnglishFallback(ov.p2, l)) setEl('[data-i18n="pages.aboutUs.about_overview_item4"]', ov.p2, true);
     }
   }
 

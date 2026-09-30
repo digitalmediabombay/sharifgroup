@@ -1974,6 +1974,42 @@
     renderMobileSubmenu(document.getElementById('mob-rbi'), 'residency', riList, prefix, l);
   }
 
+  function isEnglishFallback(str, currentLang) {
+    if (!str || typeof str !== 'string') return true;
+    if (/[\u2500-\u259F\uFFFD]/.test(str)) return true;
+    if (currentLang === 'en') return false;
+    const trimmed = str.trim();
+    const enPhrases = [
+      'About Sharif Group',
+      'EXECUTIVE BRIEFING',
+      'A premier migration, citizenship, and luxury investment advisory platform rooted in Business Bay, Dubai.',
+      'WHO WE ARE',
+      'Company Overview: Sharif Group',
+      'Company Overview:',
+      'Sharif Group is a dedicated private consulting company based in Business Bay, Dubai.',
+      'Book Consultation',
+      'Three Companies. One Commitment.',
+      'CORPORATE ARCHITECTURE',
+      'A MESSAGE FROM OUR FOUNDER',
+      'Ali Sharif',
+      'CEO & Founder, Sharif Group',
+      'Schedule Your Expert Consultation Today',
+      'Request Executive Briefing'
+    ];
+    if (enPhrases.includes(trimmed)) return true;
+    if (currentLang === 'ar' || currentLang === 'fa') {
+      const hasArabic = /[\u0600-\u06FF\u0750-\u077F\u08A0-\u08FF\uFB50-\uFDFF\uFE70-\uFEFF]/.test(trimmed);
+      const isAscii = /^[A-Za-z0-9\s.,:;!?'"()&/\-]+$/.test(trimmed);
+      if (!hasArabic && isAscii && trimmed.length > 3) return true;
+    }
+    if (currentLang === 'zh') {
+      const hasChinese = /[\u4E00-\u9FFF]/.test(trimmed);
+      const isAscii = /^[A-Za-z0-9\s.,:;!?'"()&/\-]+$/.test(trimmed);
+      if (!hasChinese && isAscii && trimmed.length > 3) return true;
+    }
+    return false;
+  }
+
   function hydrateAboutUs(lang) {
     const data = store('sgcms_aboutus');
     if (!data) return;
@@ -1984,9 +2020,9 @@
     // 1. Hero
     const hero = isEn ? (data.hero?.[l] || data.hero?.en || {}) : (data.hero?.[l] || null);
     if (hero) {
-      if (hero.badge) setText('[data-i18n="pages.aboutUs.heroBadge"]', hero.badge);
-      if (hero.title) setText('[data-i18n="pages.aboutUs.heroTitle"]', hero.title);
-      if (hero.subtitle) setText('.about-hero-subtitle, [data-i18n="pages.aboutUs.heroSubtitle"]', hero.subtitle);
+      if (hero.badge && !isEnglishFallback(hero.badge, l)) setText('[data-i18n="pages.aboutUs.heroBadge"]', hero.badge);
+      if (hero.title && !isEnglishFallback(hero.title, l)) setText('[data-i18n="pages.aboutUs.heroTitle"]', hero.title);
+      if (hero.subtitle && !isEnglishFallback(hero.subtitle, l)) setText('.about-hero-subtitle, [data-i18n="pages.aboutUs.heroSubtitle"]', hero.subtitle);
       if (hero.img) {
         const heroSlide = document.querySelector('.contact-hero-slide');
         if (heroSlide) heroSlide.style.backgroundImage = `linear-gradient(rgba(11,15,20,0.7), rgba(11,15,20,0.8)), url('${hero.img}')`;
@@ -1996,14 +2032,25 @@
     // 2. Overview
     const ov = isEn ? (data.overview?.[l] || data.overview?.en || {}) : (data.overview?.[l] || null);
     if (ov) {
-      if (ov.badge) setText('[data-i18n="pages.aboutUs.about_overview_item1"]', ov.badge);
-      if (ov.heading) {
+      if (ov.badge && !isEnglishFallback(ov.badge, l)) setText('[data-i18n="pages.aboutUs.about_overview_item1"]', ov.badge);
+      if (ov.heading && !isEnglishFallback(ov.heading, l)) {
         const el = document.querySelector('[data-i18n-html="pages.aboutUs.about_overview_item2"], [data-i18n="pages.aboutUs.about_overview_item2"]');
-        if (el) el.innerHTML = ov.heading.includes('<') ? ov.heading : `${ov.heading}:<br/><span class="italic text-[#C5A880] font-serif font-normal">Sharif Group</span>`;
+        if (el) {
+          if (ov.heading.includes('<')) {
+            el.innerHTML = ov.heading;
+          } else {
+            const brandMap = { ar: 'مجموعة شريف', fa: 'شریف گروپ', zh: '谢里夫集团', en: 'Sharif Group' };
+            const brand = brandMap[l] || 'Sharif Group';
+            let cleanHead = ov.heading.replace(new RegExp(brand + '$', 'i'), '').trim();
+            cleanHead = cleanHead.replace(/[:：\s]+$/, '').trim();
+            const colon = l === 'zh' ? '：' : ':';
+            el.innerHTML = `${cleanHead}${colon}<br/><span class="italic text-[#C5A880] font-serif font-normal">${brand}</span>`;
+          }
+        }
       }
-      if (ov.p1) setText('[data-i18n="pages.aboutUs.about_overview_item3"]', ov.p1);
-      if (ov.p2) setText('[data-i18n="pages.aboutUs.about_overview_item4"]', ov.p2);
-      if (ov.cta_text) setText('[data-i18n="pages.aboutUs.about_overview_item5"]', ov.cta_text);
+      if (ov.p1 && !isEnglishFallback(ov.p1, l)) setText('[data-i18n="pages.aboutUs.about_overview_item3"]', ov.p1);
+      if (ov.p2 && !isEnglishFallback(ov.p2, l)) setText('[data-i18n="pages.aboutUs.about_overview_item4"]', ov.p2);
+      if (ov.cta_text && !isEnglishFallback(ov.cta_text, l)) setText('[data-i18n="pages.aboutUs.about_overview_item5"]', ov.cta_text);
     }
 
     // 3. Stats
@@ -2017,7 +2064,12 @@
           counters[i].textContent = st.value;
         }
         if (labels[i]) {
-          labels[i].textContent = st['label_' + l] || (isEn ? st.label_en : labels[i].textContent);
+          const lVal = st['label_' + l];
+          if (lVal && !isEnglishFallback(lVal, l)) {
+            labels[i].textContent = lVal;
+          } else if (isEn) {
+            labels[i].textContent = st.label_en || labels[i].textContent;
+          }
         }
       });
     }
@@ -2025,44 +2077,56 @@
     // 4. Corporate Architecture
     const arch = isEn ? (data.architecture?.[l] || data.architecture?.en || {}) : (data.architecture?.[l] || null);
     if (arch) {
-      if (arch.badge) setText('[data-i18n="pages.aboutUs.corporate_architecture_item1"]', arch.badge);
-      if (arch.title) {
+      if (arch.badge && !isEnglishFallback(arch.badge, l)) setText('[data-i18n="pages.aboutUs.corporate_architecture_item1"]', arch.badge);
+      if (arch.title && !isEnglishFallback(arch.title, l)) {
         const el = document.querySelector('[data-i18n-html="pages.aboutUs.corporate_architecture_item2"], [data-i18n="pages.aboutUs.corporate_architecture_item2"]');
-        if (el) el.innerHTML = arch.title.includes('<') ? arch.title : `Three Companies. <span class="italic text-[#C5A880] font-serif font-normal">One Commitment.</span>`;
+        if (el) {
+          if (arch.title.includes('<')) {
+            el.innerHTML = arch.title;
+          } else {
+            const archMap = {
+              ar: 'ثلاث شركات. <span class="italic text-[#C5A880] font-serif font-normal">التزام واحد.</span>',
+              fa: 'سه شرکت. <span class="italic text-[#C5A880] font-serif font-normal">یک تعهد.</span>',
+              zh: '三家公司。<span class="italic text-[#C5A880] font-serif font-normal">一份承诺。</span>',
+              en: 'Three Companies. <span class="italic text-[#C5A880] font-serif font-normal">One Commitment.</span>'
+            };
+            el.innerHTML = archMap[l] || arch.title;
+          }
+        }
       }
-      if (arch.desc) setText('[data-i18n="pages.aboutUs.corporate_architecture_item3"]', arch.desc);
+      if (arch.desc && !isEnglishFallback(arch.desc, l)) setText('[data-i18n="pages.aboutUs.corporate_architecture_item3"]', arch.desc);
 
-      if (arch.c1_badge) setText('[data-i18n="pages.aboutUs.corporate_architecture_item4"]', arch.c1_badge);
-      if (arch.c1_p1) setText('[data-i18n="pages.aboutUs.corporate_architecture_item7"]', arch.c1_p1);
-      if (arch.c1_p2) setText('[data-i18n="pages.aboutUs.corporate_architecture_item8"]', arch.c1_p2);
+      if (arch.c1_badge && !isEnglishFallback(arch.c1_badge, l)) setText('[data-i18n="pages.aboutUs.corporate_architecture_item4"]', arch.c1_badge);
+      if (arch.c1_p1 && !isEnglishFallback(arch.c1_p1, l)) setText('[data-i18n="pages.aboutUs.corporate_architecture_item7"]', arch.c1_p1);
+      if (arch.c1_p2 && !isEnglishFallback(arch.c1_p2, l)) setText('[data-i18n="pages.aboutUs.corporate_architecture_item8"]', arch.c1_p2);
 
-      if (arch.c2_badge) setText('[data-i18n="pages.aboutUs.corporate_architecture_item11"]', arch.c2_badge);
-      if (arch.c2_p1) setText('[data-i18n="pages.aboutUs.corporate_architecture_item14"]', arch.c2_p1);
-      if (arch.c2_p2) setText('[data-i18n="pages.aboutUs.corporate_architecture_item15"]', arch.c2_p2);
+      if (arch.c2_badge && !isEnglishFallback(arch.c2_badge, l)) setText('[data-i18n="pages.aboutUs.corporate_architecture_item11"]', arch.c2_badge);
+      if (arch.c2_p1 && !isEnglishFallback(arch.c2_p1, l)) setText('[data-i18n="pages.aboutUs.corporate_architecture_item14"]', arch.c2_p1);
+      if (arch.c2_p2 && !isEnglishFallback(arch.c2_p2, l)) setText('[data-i18n="pages.aboutUs.corporate_architecture_item15"]', arch.c2_p2);
 
-      if (arch.c3_badge) setText('[data-i18n="pages.aboutUs.corporate_architecture_item18"]', arch.c3_badge);
-      if (arch.c3_p1) setText('[data-i18n="pages.aboutUs.corporate_architecture_item21"]', arch.c3_p1);
-      if (arch.c3_p2) setText('[data-i18n="pages.aboutUs.corporate_architecture_item22"]', arch.c3_p2);
+      if (arch.c3_badge && !isEnglishFallback(arch.c3_badge, l)) setText('[data-i18n="pages.aboutUs.corporate_architecture_item18"]', arch.c3_badge);
+      if (arch.c3_p1 && !isEnglishFallback(arch.c3_p1, l)) setText('[data-i18n="pages.aboutUs.corporate_architecture_item21"]', arch.c3_p1);
+      if (arch.c3_p2 && !isEnglishFallback(arch.c3_p2, l)) setText('[data-i18n="pages.aboutUs.corporate_architecture_item22"]', arch.c3_p2);
     }
 
     // 5. Founder
     const f = isEn ? (data.founder?.[l] || data.founder?.en || {}) : (data.founder?.[l] || null);
     if (f) {
-      if (f.name) setText('[data-i18n="pages.aboutUs.founder_message_item1"], [data-i18n="pages.aboutUs.founder_message_item7"]', f.name, { all: true });
-      if (f.title) setText('[data-i18n="pages.aboutUs.founder_message_item2"], [data-i18n="pages.aboutUs.founder_message_item8"]', f.title, { all: true });
-      if (f.badge) setText('[data-i18n="pages.aboutUs.founder_message_item3"]', f.badge);
-      if (f.quote) setText('[data-i18n-html="pages.aboutUs.founder_message_item4"], [data-i18n="pages.aboutUs.founder_message_item4"]', f.quote);
-      if (f.p1) setText('[data-i18n="pages.aboutUs.founder_message_item5"]', f.p1);
-      if (f.p2) setText('[data-i18n="pages.aboutUs.founder_message_item6"]', f.p2);
+      if (f.name && !isEnglishFallback(f.name, l)) setText('[data-i18n="pages.aboutUs.founder_message_item1"], [data-i18n="pages.aboutUs.founder_message_item7"]', f.name, { all: true });
+      if (f.title && !isEnglishFallback(f.title, l)) setText('[data-i18n="pages.aboutUs.founder_message_item2"], [data-i18n="pages.aboutUs.founder_message_item8"]', f.title, { all: true });
+      if (f.badge && !isEnglishFallback(f.badge, l)) setText('[data-i18n="pages.aboutUs.founder_message_item3"]', f.badge);
+      if (f.quote && !isEnglishFallback(f.quote, l)) setText('[data-i18n-html="pages.aboutUs.founder_message_item4"], [data-i18n="pages.aboutUs.founder_message_item4"]', f.quote);
+      if (f.p1 && !isEnglishFallback(f.p1, l)) setText('[data-i18n="pages.aboutUs.founder_message_item5"]', f.p1);
+      if (f.p2 && !isEnglishFallback(f.p2, l)) setText('[data-i18n="pages.aboutUs.founder_message_item6"]', f.p2);
     }
 
     // 6. Bottom CTA
     const cta = isEn ? (data.cta?.[l] || data.cta?.en || {}) : (data.cta?.[l] || null);
     if (cta) {
-      if (cta.badge) setText('[data-i18n="pages.aboutUs.about_cta_item1"]', cta.badge);
-      if (cta.heading) setText('[data-i18n-html="pages.aboutUs.about_cta_item2"], [data-i18n="pages.aboutUs.about_cta_item2"]', cta.heading);
-      if (cta.desc) setText('[data-i18n="pages.aboutUs.about_cta_item3"]', cta.desc);
-      if (cta.btn_text) setText('[data-i18n="pages.aboutUs.about_cta_item4"]', cta.btn_text);
+      if (cta.badge && !isEnglishFallback(cta.badge, l)) setText('[data-i18n="pages.aboutUs.about_cta_item1"]', cta.badge);
+      if (cta.heading && !isEnglishFallback(cta.heading, l)) setText('[data-i18n-html="pages.aboutUs.about_cta_item2"], [data-i18n="pages.aboutUs.about_cta_item2"]', cta.heading);
+      if (cta.desc && !isEnglishFallback(cta.desc, l)) setText('[data-i18n="pages.aboutUs.about_cta_item3"]', cta.desc);
+      if (cta.btn_text && !isEnglishFallback(cta.btn_text, l)) setText('[data-i18n="pages.aboutUs.about_cta_item4"]', cta.btn_text);
     }
   }
 
@@ -2117,17 +2181,19 @@
     const data = store('sgcms_cookiepolicy');
     if (!data) return;
     const l = lang || getLang();
-    const d = data[l] || data.en || data;
+    const isEn = (l === 'en');
+    const d = isEn ? (data[l] || data.en || data) : (data[l] || null);
+    if (!d) return;
 
-    if (d.hero_badge) setText('[data-i18n="pages.cookiePolicy.heroBadge"]', d.hero_badge);
-    if (d.hero_title) setText('[data-i18n="pages.cookiePolicy.heroTitle"], [data-i18n="footer.cookiePolicy"]', d.hero_title);
-    if (d.hero_desc) setText('[data-i18n="pages.cookiePolicy.heroDesc"]', d.hero_desc);
+    if (d.hero_badge && !isEnglishFallback(d.hero_badge, l)) setText('[data-i18n="pages.cookiePolicy.heroBadge"]', d.hero_badge);
+    if (d.hero_title && !isEnglishFallback(d.hero_title, l)) setText('[data-i18n="pages.cookiePolicy.heroTitle"], [data-i18n="footer.cookiePolicy"]', d.hero_title);
+    if (d.hero_desc && !isEnglishFallback(d.hero_desc, l)) setText('[data-i18n="pages.cookiePolicy.heroDesc"]', d.hero_desc);
 
-    if (d.p1_title) {
+    if (d.p1_title && !isEnglishFallback(d.p1_title, l)) {
       const el = document.querySelector('#sec-cookie-content h4, .cookie-p1-title');
       if (el) el.textContent = d.p1_title;
     }
-    if (d.p1_desc) {
+    if (d.p1_desc && !isEnglishFallback(d.p1_desc, l)) {
       const el = document.querySelector('#sec-cookie-content p, .cookie-p1-desc');
       if (el) el.textContent = d.p1_desc;
     }
@@ -4492,7 +4558,18 @@
           else if (field === 'about_ov_badge') setText('[data-i18n="pages.aboutUs.about_overview_item1"]', value);
           else if (field === 'about_ov_heading') {
             const el = document.querySelector('[data-i18n-html="pages.aboutUs.about_overview_item2"], [data-i18n="pages.aboutUs.about_overview_item2"]');
-            if (el) el.innerHTML = value.includes('<') ? value : `${value}:<br/><span class="italic text-[#C5A880] font-serif font-normal">Sharif Group</span>`;
+            if (el) {
+              if (value.includes('<')) {
+                el.innerHTML = value;
+              } else {
+                const brandMap = { ar: 'مجموعة شريف', fa: 'شریف گروپ', zh: '谢里夫集团', en: 'Sharif Group' };
+                const brand = brandMap[l] || 'Sharif Group';
+                let cleanHead = value.replace(new RegExp(brand + '$', 'i'), '').trim();
+                cleanHead = cleanHead.replace(/[:：\s]+$/, '').trim();
+                const colon = l === 'zh' ? '：' : ':';
+                el.innerHTML = `${cleanHead}${colon}<br/><span class="italic text-[#C5A880] font-serif font-normal">${brand}</span>`;
+              }
+            }
           }
           else if (field === 'about_ov_p1') setText('[data-i18n="pages.aboutUs.about_overview_item3"]', value);
           else if (field === 'about_ov_p2') setText('[data-i18n="pages.aboutUs.about_overview_item4"]', value);
@@ -4500,7 +4577,19 @@
           else if (field === 'about_arch_badge') setText('[data-i18n="pages.aboutUs.corporate_architecture_item1"]', value);
           else if (field === 'about_arch_title') {
             const el = document.querySelector('[data-i18n-html="pages.aboutUs.corporate_architecture_item2"], [data-i18n="pages.aboutUs.corporate_architecture_item2"]');
-            if (el) el.innerHTML = value.includes('<') ? value : `Three Companies. <span class="italic text-[#C5A880] font-serif font-normal">One Commitment.</span>`;
+            if (el) {
+              if (value.includes('<')) {
+                el.innerHTML = value;
+              } else {
+                const archMap = {
+                  ar: 'ثلاث شركات. <span class="italic text-[#C5A880] font-serif font-normal">التزام واحد.</span>',
+                  fa: 'سه شرکت. <span class="italic text-[#C5A880] font-serif font-normal">یک تعهد.</span>',
+                  zh: '三家公司。<span class="italic text-[#C5A880] font-serif font-normal">一份承诺。</span>',
+                  en: 'Three Companies. <span class="italic text-[#C5A880] font-serif font-normal">One Commitment.</span>'
+                };
+                el.innerHTML = archMap[l] || value;
+              }
+            }
           }
           else if (field === 'about_arch_desc') setText('[data-i18n="pages.aboutUs.corporate_architecture_item3"]', value);
           else if (field === 'about_c1_badge') setText('[data-i18n="pages.aboutUs.corporate_architecture_item4"]', value);
