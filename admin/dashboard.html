@@ -8,10 +8,13 @@
   <link rel="icon" href="/assets/images/shariftrip-logo-1.svg" type="image/svg+xml">
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link
-    href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Playfair+Display:ital,wght@0,400;0,600;0,700;1,400&display=swap"
-    rel="stylesheet">
-  <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+  <link rel="preconnect" href="https://cdnjs.cloudflare.com" crossorigin>
+  <link rel="preload" as="style" href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Playfair+Display:ital,wght@0,400;0,600;0,700;1,400&display=swap">
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Playfair+Display:ital,wght@0,400;0,600;0,700;1,400&display=swap" media="print" onload="this.media='all'">
+  <noscript><link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Playfair+Display:ital,wght@0,400;0,600;0,700;1,400&display=swap"></noscript>
+  <link rel="preload" as="style" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" media="print" onload="this.media='all'">
+  <noscript><link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"></noscript>
   <style>
     * {
       box-sizing: border-box;
@@ -48,7 +51,7 @@
     body {
       height: 100%;
       overflow: hidden;
-      font-family: 'Inter', sans-serif;
+      font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
       background: var(--bg);
       color: var(--text);
       font-size: 13px
@@ -4349,7 +4352,7 @@
           const dot = `<span class="sb-item-dot ${p.status === 'published' ? 'published' : 'draft'}"></span>`;
           const fallback = FLAG_CODES[p.id] ? `https://flagcdn.com/${FLAG_CODES[p.id]}.svg` : '';
           const flagSrc = (p.flag && !p.flag.includes('/assets/images/')) ? p.flag : (fallback || p.flag);
-          const flag = flagSrc ? `<img class="sb-item-flag" src="${flagSrc}" onerror="this.style.display='none'">` : `<span class="sb-item-flag-icon"><i class="fa-solid fa-passport"></i></span>`;
+          const flag = flagSrc ? `<img class="sb-item-flag" src="${flagSrc}" loading="lazy" decoding="async" onerror="this.style.display='none'">` : `<span class="sb-item-flag-icon"><i class="fa-solid fa-passport"></i></span>`;
 
           // Allow deleting any custom-created programs easily
           const isBuiltin = ['dominica', 'stkitts', 'antigua', 'grenada', 'stlucia', 'vanuatu', 'saotome', 'nauru', 'portugal', 'greece', 'panama', 'uae'].includes(p.id);
@@ -4501,7 +4504,7 @@
       // ══════════════════════════════════════════════════════════
       // NAVIGATION
       // ══════════════════════════════════════════════════════════
-      function navigate(section, itemType, itemId) {
+      function navigate(section, itemType, itemId, deferIframe) {
         state.section = section;
         state.itemType = itemType || null;
         state.itemId = itemId || null;
@@ -4529,7 +4532,9 @@
           closeEditorDrawer();
         }
 
-        loadPreviewPage();
+        if (!deferIframe) {
+          loadPreviewPage();
+        }
       }
 
       // ══════════════════════════════════════════════════════════
@@ -9172,8 +9177,13 @@
 
       updatePublishStatusUI();
       populateSidebar();
-      navigate('homepage');
+      navigate('homepage', null, null, true);
       setCanvasMode(state.canvasMode, true);
+
+      // Instant paint: yield main thread so dashboard chrome paints immediately, then boot live preview iframe
+      requestAnimationFrame(() => {
+        setTimeout(loadPreviewPage, 40);
+      });
 
       // Asynchronously fetch latest draft state from MySQL backend in background
       if (window.CMS && window.CMS.Backend) {
