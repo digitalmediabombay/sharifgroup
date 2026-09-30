@@ -8138,17 +8138,17 @@
                 // Dynamically resolve CMS blogs fresh for the current language
                 var found = null;
                 try {
-                    const rawBlogs = localStorage.getItem('sgcms_blog_live') || '[]';
-                    let localBlogs = [];
-                    try { localBlogs = JSON.parse(rawBlogs); } catch(e) { localBlogs = []; }
-                    if ((!localBlogs || !localBlogs.length) && window._data && Array.isArray(window._data.sgcms_blog)) {
-                        localBlogs = window._data.sgcms_blog;
-                    }
                     var isInsideEditor = (function() {
                         try {
                             return window.self !== window.top || window.location.search.indexOf('cms_editor') !== -1 || window.location.search.indexOf('cms_preview') !== -1;
                         } catch(e) { return false; }
                     })();
+                    const rawBlogs = (isInsideEditor ? (localStorage.getItem('sgcms_blog') || localStorage.getItem('sgcms_blog_live')) : localStorage.getItem('sgcms_blog_live')) || '[]';
+                    let localBlogs = [];
+                    try { localBlogs = JSON.parse(rawBlogs); } catch(e) { localBlogs = []; }
+                    if ((!localBlogs || !localBlogs.length) && window._data && Array.isArray(window._data.sgcms_blog)) {
+                        localBlogs = window._data.sgcms_blog;
+                    }
                     if (Array.isArray(localBlogs) && localBlogs.length) {
                         found = localBlogs.find(function(b) {
                             if (!b) return false;
@@ -8263,7 +8263,7 @@
                         }
 
                         baseArticle = {
-                            title: ld.title || (found.en && found.en.title) || found.title || found.hero_title || 'Article',
+                            title: (found[curLang] && found[curLang].title) || ld.title || (found.en && found.en.title) || found.title || found.hero_title || (curLang === 'ar' ? '\u0639\u0646\u0648\u0627\u0646 \u0627\u0644\u0645\u0642\u0627\u0644' : (curLang === 'fa' ? '\u0639\u0646\u0648\u0627\u0646 \u0645\u0642\u0627\u0644\u0647' : (curLang === 'zh' ? '\u6587\u7ae0\u6807\u9898' : 'Article'))),
                             category: found.category || 'Citizenship',
                             author: found.author || 'Sharif Group Advisory',
                             date: found.publish_date || '2026-09-01',
@@ -8376,9 +8376,14 @@
                 // Populate Content
                 const titleEl = document.getElementById('detail-title');
                 const breadcrumbTitleEl = document.getElementById('detail-breadcrumb-title');
-                const rawTitle = (article.title && article.title.trim()) ? article.title.trim() : '';
+                const rawTitle = (article.title && article.title.trim())
+                    ? article.title.trim()
+                    : ((baseArticle && baseArticle.title && baseArticle.title.trim())
+                        ? baseArticle.title.trim()
+                        : (found && ((found[currentLang] && found[currentLang].title) || (found.en && found.en.title) || found.title || found.hero_title))
+                        || (currentLang === 'ar' ? '\u0639\u0646\u0648\u0627\u0646 \u0627\u0644\u0645\u0642\u0627\u0644' : (currentLang === 'fa' ? '\u0639\u0646\u0648\u0627\u0646 \u0645\u0642\u0627\u0644\u0647' : (currentLang === 'zh' ? '\u6587\u7ae0\u6807\u9898' : 'Article Title'))));
                 if (titleEl) {
-                    titleEl.setAttribute('data-i18n', `blog.articles.${slug}.title`);
+                    titleEl.removeAttribute('data-i18n');
                     titleEl.innerText = rawTitle;
                     titleEl.setAttribute('dir', isRtl ? 'rtl' : 'ltr');
                     titleEl.style.direction = isRtl ? 'rtl' : 'ltr';
@@ -8386,7 +8391,7 @@
                     titleEl.setAttribute('data-placeholder', isRtl ? (currentLang === 'fa' ? 'عنوان مقاله...' : 'عنوان المقال...') : (currentLang === 'zh' ? '文章标题...' : 'Article title...'));
                 }
                 if (breadcrumbTitleEl) {
-                    breadcrumbTitleEl.setAttribute('data-i18n', `blog.articles.${slug}.title`);
+                    breadcrumbTitleEl.removeAttribute('data-i18n');
                     breadcrumbTitleEl.innerText = rawTitle || (currentLang === 'en' ? 'Article' : '...');
                     breadcrumbTitleEl.setAttribute('dir', isRtl ? 'rtl' : 'ltr');
                 }

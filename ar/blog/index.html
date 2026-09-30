@@ -249,6 +249,19 @@
             text-align: right !important;
         }
 
+        #detail-title {
+            min-height: 1.35em !important;
+            display: block !important;
+        }
+        #detail-title:empty::before {
+            content: attr(data-placeholder);
+            color: #9ca3af !important;
+            opacity: 0.65 !important;
+            font-weight: 400 !important;
+            pointer-events: none !important;
+            display: inline-block !important;
+        }
+
         /* ==========================================================================
            BLOG ARTICLE BODY LUXURY TYPOGRAPHY (LTR & RTL)
            ========================================================================== */
@@ -7660,17 +7673,17 @@
                 // Dynamically resolve CMS blogs fresh for the current language
                 var found = null;
                 try {
-                    const rawBlogs = localStorage.getItem('sgcms_blog_live') || '[]';
-                    let localBlogs = [];
-                    try { localBlogs = JSON.parse(rawBlogs); } catch(e) { localBlogs = []; }
-                    if ((!localBlogs || !localBlogs.length) && window._data && Array.isArray(window._data.sgcms_blog)) {
-                        localBlogs = window._data.sgcms_blog;
-                    }
                     var isInsideEditor = (function() {
                         try {
                             return window.self !== window.top || window.location.search.indexOf('cms_editor') !== -1 || window.location.search.indexOf('cms_preview') !== -1;
                         } catch(e) { return false; }
                     })();
+                    const rawBlogs = (isInsideEditor ? (localStorage.getItem('sgcms_blog') || localStorage.getItem('sgcms_blog_live')) : localStorage.getItem('sgcms_blog_live')) || '[]';
+                    let localBlogs = [];
+                    try { localBlogs = JSON.parse(rawBlogs); } catch(e) { localBlogs = []; }
+                    if ((!localBlogs || !localBlogs.length) && window._data && Array.isArray(window._data.sgcms_blog)) {
+                        localBlogs = window._data.sgcms_blog;
+                    }
                     if (Array.isArray(localBlogs) && localBlogs.length) {
                         found = localBlogs.find(function(b) {
                             if (!b) return false;
@@ -7785,7 +7798,7 @@
                         }
 
                         baseArticle = {
-                            title: ld.title || (found.en && found.en.title) || found.title || found.hero_title || 'Article',
+                            title: (found[curLang] && found[curLang].title) || ld.title || (found.en && found.en.title) || found.title || found.hero_title || (curLang === 'ar' ? '\u0639\u0646\u0648\u0627\u0646 \u0627\u0644\u0645\u0642\u0627\u0644' : (curLang === 'fa' ? '\u0639\u0646\u0648\u0627\u0646 \u0645\u0642\u0627\u0644\u0647' : (curLang === 'zh' ? '\u6587\u7ae0\u6807\u9898' : 'Article'))),
                             category: found.category || 'Citizenship',
                             author: found.author || 'Sharif Group Advisory',
                             date: found.publish_date || '2026-09-01',
@@ -7895,16 +7908,29 @@
                 // Populate Content
                 const titleEl = document.getElementById('detail-title');
                 const breadcrumbTitleEl = document.getElementById('detail-breadcrumb-title');
+                let rawTitle = (article && article.title && article.title.trim()) ? article.title.trim() : '';
+                if (!rawTitle && baseArticle && baseArticle.title && baseArticle.title.trim()) {
+                    rawTitle = baseArticle.title.trim();
+                }
+                if (!rawTitle) {
+                    rawTitle = (found && ((found[currentLang] && found[currentLang].title) || (found.en && found.en.title) || found.title || found.hero_title))
+                        || ((currentLang === 'ar') ? 'عنوان المقال' : (currentLang === 'fa' ? 'عنوان مقاله' : (currentLang === 'zh' ? '文章标题' : 'Article Title')));
+                }
+                const placeholderText = isRtl
+                    ? (currentLang === 'fa' ? 'عنوان مقاله...' : 'عنوان المقال...')
+                    : (currentLang === 'zh' ? '文章标题...' : 'Article title...');
+
                 if (titleEl) {
-                    titleEl.setAttribute('data-i18n', `blog.articles.${slug}.title`);
-                    titleEl.innerText = article.title;
+                    titleEl.removeAttribute('data-i18n');
+                    titleEl.innerText = rawTitle;
                     titleEl.setAttribute('dir', isRtl ? 'rtl' : 'ltr');
                     titleEl.style.direction = isRtl ? 'rtl' : 'ltr';
                     titleEl.style.textAlign = isRtl ? 'right' : 'left';
+                    titleEl.setAttribute('data-placeholder', placeholderText);
                 }
                 if (breadcrumbTitleEl) {
-                    breadcrumbTitleEl.setAttribute('data-i18n', `blog.articles.${slug}.title`);
-                    breadcrumbTitleEl.innerText = article.title;
+                    breadcrumbTitleEl.removeAttribute('data-i18n');
+                    breadcrumbTitleEl.innerText = rawTitle;
                     breadcrumbTitleEl.setAttribute('dir', isRtl ? 'rtl' : 'ltr');
                 }
                 const catBadge = document.getElementById('detail-category-badge');

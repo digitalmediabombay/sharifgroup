@@ -212,7 +212,7 @@
         }
     }
 
-    var I18N_VERSION = '20260930_v25';
+    var I18N_VERSION = '20261001_v26';
 
     function loadTranslation(lang, callback) {
         var pathname = (window.location && window.location.pathname) ? window.location.pathname.toLowerCase() : '';
@@ -340,9 +340,14 @@
 
     function getCleanCurrentPath() {
         var pathname = (window.location && window.location.pathname) ? window.location.pathname : '/';
+        // Strip trailing index.html / index.htm from pathname
+        pathname = pathname.replace(/\/index\.html?$/i, '/');
         var segments = pathname.split('/').filter(Boolean);
         if (segments.length > 0 && ['ar', 'fa', 'zh', 'en'].indexOf(segments[0].toLowerCase()) !== -1) {
             segments.shift();
+        }
+        if (segments.length > 0 && /^index\.html?$/i.test(segments[segments.length - 1])) {
+            segments.pop();
         }
         return segments.length > 0 ? '/' + segments.join('/') + '/' : '/';
     }
@@ -363,6 +368,12 @@
         var isLang = (lang === 'ar' || lang === 'fa' || lang === 'zh');
         var links = document.querySelectorAll('a[href^="/"]');
         links.forEach(function (a) {
+            // Guard: NEVER rewrite language switcher buttons or dropdown items!
+            if (a.classList.contains('lang-option') || a.classList.contains('mobile-lang-option') ||
+                a.closest('.lang-switcher-wrapper, #lang-dropdown-menu, .mobile-lang-grid')) {
+                return;
+            }
+
             var href = a.getAttribute('href');
             if (!href || href.startsWith('//')) return;
             // Exclude static assets, admin, api, anchor hashes, files with extensions
@@ -1338,30 +1349,49 @@
     }
 
     window.switchLanguage = function (targetLang, event) {
-        if (event && event.preventDefault) {
-            event.preventDefault();
-        }
         var lang = normalizeLang(targetLang);
-        currentLang = lang;
 
         try {
             localStorage.setItem('sharif_lang', lang);
             localStorage.setItem('sharif_preferred_lang', lang);
         } catch (e) {}
 
-        // Update clean URL path in browser address bar (e.g. /ar/, /zh/, /fa/)
-        updateUrlPathForLang(lang);
+        var inIframe = false;
+        try { inIframe = (window.self !== window.top); } catch (e) { inIframe = true; }
+        var isEditor = inIframe || (window.location.search && (window.location.search.indexOf('cms_editor') !== -1 || window.location.search.indexOf('cms_preview') !== -1));
 
-        // Hide dropdown
-        var dropdown = document.getElementById('lang-dropdown-menu');
-        var arrow = document.getElementById('lang-arrow-icon');
-        if (dropdown) dropdown.classList.add('hidden');
-        if (arrow) arrow.style.transform = 'rotate(0deg)';
+        // When testing offline on file:/// or inside CMS editor iframe: stay in-place without page reload
+        if (isEditor || (window.location && window.location.protocol === 'file:')) {
+            if (event && event.preventDefault) event.preventDefault();
+            currentLang = lang;
+            updateUrlPathForLang(lang);
+            var dropdown = document.getElementById('lang-dropdown-menu');
+            var arrow = document.getElementById('lang-arrow-icon');
+            if (dropdown) dropdown.classList.add('hidden');
+            if (arrow) arrow.style.transform = 'rotate(0deg)';
+            loadTranslation(lang, function (data) {
+                applyTranslations(data, lang);
+            });
+            return;
+        }
 
-        // Load & apply
-        loadTranslation(lang, function (data) {
-            applyTranslations(data, lang);
-        });
+        // On live public website:
+        // Compute clean target URL to the dedicated physical pre-rendered localized page
+        var cleanPath = getCleanCurrentPath();
+        var targetUrl = (lang === 'en') ? cleanPath : ('/' + lang + (cleanPath === '/' ? '/' : cleanPath));
+
+        // If user clicked the language they are ALREADY on, just close the dropdown
+        var currentClean = (window.location.pathname || '/').replace(/\/index\.html?$/i, '/');
+        if (currentClean === targetUrl && currentLang === lang) {
+            if (event && event.preventDefault) event.preventDefault();
+            var dd = document.getElementById('lang-dropdown-menu');
+            if (dd) dd.classList.add('hidden');
+            return;
+        }
+
+        // Navigate cleanly to the dedicated localized page!
+        if (event && event.preventDefault) event.preventDefault();
+        window.location.href = targetUrl;
     };
 
     window.addEventListener('popstate', function () {
@@ -1639,8 +1669,8 @@
             document.documentElement.classList.remove('i18n-pending');
         }
         setupCounterInterceptor();
-        updateLanguageSwitcherHrefs();
         localizeInternalLinks(currentLang);
+        updateLanguageSwitcherHrefs();
         loadTranslation(currentLang, function (data) {
             applyTranslations(data, currentLang);
         });

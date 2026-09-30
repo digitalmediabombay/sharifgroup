@@ -258,12 +258,19 @@
     if (!au) return;
     var isEn = (l === 'en');
 
+    var defAboutHero = {
+      ar: { badge: 'إحاطة تنفيذية', title: 'نبذة عن مجموعة شريف', subtitle: 'منصة رائدة للاستشارات في مجال الهجرة والمواطنة والاستثمارات الفاخرة، تتخذ من الخليج التجاري في دبي مقرًا لها.' },
+      fa: { badge: 'جلسه توجیهی اجرایی', title: 'درباره شریف گروپ', subtitle: 'یک پلتفرم برتر مشاوره در زمینه مهاجرت، شهروندی و سرمایه‌گذاری‌های لوکس، مستقر در بیزنس‌بی دبی.' },
+      zh: { badge: '执行简报', title: '关于 谢里夫集团', subtitle: '一个立足于迪拜商业湾的高端移民、公民身份及奢华投资咨询平台。' }
+    };
+
     var hero = isEn ? ((au.hero && (au.hero.en || au.hero[l])) || {}) : ((au.hero && au.hero[l]) || null);
-    if (hero) {
-      if (hero.badge && !isEnglishFallback(hero.badge, l)) setEl('[data-i18n="pages.aboutUs.heroBadge"]', hero.badge, true);
-      if (hero.title && !isEnglishFallback(hero.title, l)) setEl('[data-i18n="pages.aboutUs.heroTitle"]', hero.title, true);
-      if (hero.subtitle && !isEnglishFallback(hero.subtitle, l)) setEl('[data-i18n="pages.aboutUs.heroSubtitle"]', hero.subtitle, true);
-    }
+    var badge = (hero && hero.badge && !isEnglishFallback(hero.badge, l)) ? hero.badge : (defAboutHero[l] ? defAboutHero[l].badge : null);
+    var title = (hero && hero.title && !isEnglishFallback(hero.title, l)) ? hero.title : (defAboutHero[l] ? defAboutHero[l].title : null);
+    var subtitle = (hero && hero.subtitle && !isEnglishFallback(hero.subtitle, l)) ? hero.subtitle : (defAboutHero[l] ? defAboutHero[l].subtitle : null);
+    if (badge) setEl('[data-i18n="pages.aboutUs.heroBadge"]', badge, true);
+    if (title) setEl('[data-i18n="pages.aboutUs.heroTitle"]', title, true);
+    if (subtitle) setEl('[data-i18n="pages.aboutUs.heroSubtitle"]', subtitle, true);
 
     var ov = isEn ? ((au.overview && (au.overview.en || au.overview[l])) || {}) : ((au.overview && au.overview[l]) || null);
     if (ov) {

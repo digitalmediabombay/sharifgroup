@@ -3368,11 +3368,11 @@
           subcategory,
           featured_img: img,
           publish_date: dateStr,
-          status: 'draft',
-          status_en: 'draft',
-          status_ar: 'draft',
-          status_fa: 'draft',
-          status_zh: 'draft',
+          status: 'published',
+          status_en: 'published',
+          status_ar: 'published',
+          status_fa: 'published',
+          status_zh: 'published',
           faqs: [],
           en: {
             title,
@@ -3421,11 +3421,11 @@
           category,
           featured_img: img,
           publish_date: dateStr,
-          status: 'draft',
-          status_en: 'draft',
-          status_ar: 'draft',
-          status_fa: 'draft',
-          status_zh: 'draft',
+          status: 'published',
+          status_en: 'published',
+          status_ar: 'published',
+          status_fa: 'published',
+          status_zh: 'published',
           faqs: [],
           en: {
             title,
@@ -8801,6 +8801,20 @@
               }
             } catch (e) { }
           });
+
+          // Ensure active blog articles are marked published on live publish
+          if (Array.isArray(payload.data.sgcms_blog)) {
+            payload.data.sgcms_blog.forEach(b => {
+              if (b && !b.deleted && b.status !== 'deleted') {
+                b.status = 'published';
+                b.status_en = 'published';
+                b.status_ar = 'published';
+                b.status_fa = 'published';
+                b.status_zh = 'published';
+              }
+            });
+            try { localStorage.setItem('sgcms_blog', JSON.stringify(payload.data.sgcms_blog)); } catch(e){}
+          }
 
           // ── Always mirror to local live published store so preview & live website update immediately ──
           keys.forEach(k => {

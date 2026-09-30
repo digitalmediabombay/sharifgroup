@@ -1,4 +1,4 @@
-'use strict';
+﻿'use strict';
 
 // ─── CREDENTIALS (Demo) ───────────────────────────────────────
 const CMS_CREDENTIALS = {
@@ -462,6 +462,23 @@ const AI = {
 };
 
 // ─── DEFAULT DATA ─────────────────────────────────────────────
+function isEnglishFallback(str, currentLang) {
+  if (!str || typeof str !== 'string') return true;
+  if (/[\u2500-\u259F\uFFFD]/.test(str)) return true;
+  if (currentLang === 'en') return false;
+  const trimmed = str.trim();
+  if (currentLang === 'ar' || currentLang === 'fa') {
+    const hasArabic = /[\u0600-\u06FF\u0750-\u077F\u08A0-\u08FF\uFB50-\uFDFF\uFE70-\uFEFF]/.test(trimmed);
+    const isAscii = /^[A-Za-z0-9\s.,:;!?'"()&/\-]+$/.test(trimmed);
+    if (!hasArabic && isAscii && trimmed.length > 2) return true;
+  }
+  if (currentLang === 'zh') {
+    const hasChinese = /[\u4E00-\u9FFF]/.test(trimmed);
+    const isAscii = /^[A-Za-z0-9\s.,:;!?'"()&/\-]+$/.test(trimmed);
+    if (!hasChinese && isAscii && trimmed.length > 2) return true;
+  }
+  return false;
+}
 const DEFAULTS = {
   homepage: {
     hero: {
@@ -661,6 +678,68 @@ const DEFAULTS = {
       email: 'contact@sharifgroup.ae'
     }
   },
+  aboutus: {
+    hero: {
+      en: {
+        badge: 'EXECUTIVE BRIEFING',
+        title: 'About Sharif Group',
+        subtitle: 'A premier migration, citizenship, and luxury investment advisory platform rooted in Business Bay, Dubai.',
+        img: '/assets/images/dubai-office-2.webp'
+      },
+      ar: {
+        badge: 'إحاطة تنفيذية',
+        title: 'نبذة عن مجموعة شريف',
+        subtitle: 'منصة رائدة للاستشارات في مجال الهجرة والمواطنة والاستثمارات الفاخرة، تتخذ من الخليج التجاري في دبي مقرًا لها.',
+        img: '/assets/images/dubai-office-2.webp'
+      },
+      fa: {
+        badge: 'جلسه توجیهی اجرایی',
+        title: 'درباره شریف گروپ',
+        subtitle: 'یک پلتفرم برتر مشاوره در زمینه مهاجرت، شهروندی و سرمایه‌گذاری‌های لوکس، مستقر در بیزنس‌بی دبی.',
+        img: '/assets/images/dubai-office-2.webp'
+      },
+      zh: {
+        badge: '执行简报',
+        title: '关于 谢里夫集团',
+        subtitle: '一个立足于迪拜商业湾的高端移民、公民身份及奢华投资咨询平台。',
+        img: '/assets/images/dubai-office-2.webp'
+      }
+    },
+    overview: {
+      en: {
+        badge: 'WHO WE ARE',
+        heading: 'Company Overview: Sharif Group',
+        p1: 'Sharif Group is a dedicated private consulting company based in Business Bay, Dubai. We assist international clients and families with legal second passports, residency visas, premium property investments, and student placements in top international universities.',
+        p2: 'Our team handles document preparation, background legal checks, and government clearance from start to finish, ensuring a straightforward and secure experience.',
+        cta_text: 'Book Consultation',
+        cta_link: '../contact/index.html'
+      },
+      ar: {
+        badge: 'من نحن',
+        heading: 'نبذة عن الشركة: مجموعة شريف',
+        p1: 'مجموعة شريف هي شركة استشارات خاصة متخصصة تتخذ من الخليج التجاري في دبي مقرًا لها. نساعد العملاء والعائلات الدوليين في الحصول على جوازات سفر ثانية قانونية، وتأشيرات الإقامة، والاستثمارات العقارية الفاخرة، والقبول الطلابي في أفضل الجامعات الدولية.',
+        p2: 'يتولى فريقنا إعداد المستندات، وإجراء الفحوصات القانونية للخلفية، والحصول على الموافقات الحكومية من البداية إلى النهاية، بما يضمن تجربة واضحة وآمنة.',
+        cta_text: 'احجز استشارة',
+        cta_link: '../contact/index.html'
+      },
+      fa: {
+        badge: 'درباره ما',
+        heading: 'بررسی اجمالی شرکت: شریف گروپ',
+        p1: 'شریف گروپ یک شرکت مشاوره خصوصی معتبر مستقر در بیزینس بی دبی است. ما به مشتریان و خانواده‌های بین‌المللی در دریافت پاسپورت دوم قانونی، ویزای اقامت، سرمایه‌گذاری املاک لوکس و پذیرش دانشگاه‌های برتر کمک می‌کنیم.',
+        p2: 'تیم ما تمامی مراحل آماده‌سازی اسناد، بررسی‌های حقوقی و تأییدیه‌های دولتی را از ابتدا تا انتها با اطمینان کامل انجام می‌دهد.',
+        cta_text: 'رزرو مشاوره',
+        cta_link: '../contact/index.html'
+      },
+      zh: {
+        badge: '我们是谁',
+        heading: '公司概览：谢里夫集团',
+        p1: '谢里夫集团是一家总部位于迪拜商业湾的专业私人咨询公司。我们协助全球客户及高净值家庭合法获得第二本护照、居留签证、高端房产投资以及世界顶尖名校录取。',
+        p2: '我们的专业团队全程统筹文件准备、合规背调及主权政府审批，确保流程高效、透明、完全安全合规。',
+        cta_text: '预约咨询',
+        cta_link: '../contact/index.html'
+      }
+    }
+  },
   citizenship: [
     {
       id: 'dominica',
@@ -671,6 +750,7 @@ const DEFAULTS = {
       nav_sort: 1,
       status: 'published',
       en: {
+        hero_title: 'Dominica',
         title: 'Dominica Citizenship by Investment',
         nav_label: 'Dominica | Passport',
         hero_subtitle: 'Citizenship By Investment',
@@ -713,6 +793,7 @@ const DEFAULTS = {
         ]
       },
       ar: {
+        hero_title: 'دومينيكا',
         title: 'الجنسية الدومينيكية عن طريق الاستثمار',
         nav_label: 'دومينيكا | جواز سفر',
         hero_subtitle: 'الجنسية عن طريق الاستثمار',
@@ -728,6 +809,7 @@ const DEFAULTS = {
         faqs: []
       },
       fa: {
+        hero_title: 'دومینیکا',
         title: 'شهروندی دومینیکا از طریق سرمایه‌گذاری',
         nav_label: 'دومینیکا | پاسپورت',
         hero_subtitle: 'شهروندی از طریق سرمایه‌گذاری',
@@ -743,6 +825,7 @@ const DEFAULTS = {
         faqs: []
       },
       zh: {
+        hero_title: '多米尼克',
         title: '多米尼克投资入籍项目',
         nav_label: '多米尼克 | 护照',
         hero_subtitle: '投资入籍项目',
@@ -767,6 +850,7 @@ const DEFAULTS = {
       nav_sort: 2,
       status: 'published',
       en: {
+        hero_title: 'St. Kitts & Nevis',
         title: 'St. Kitts & Nevis Citizenship by Investment',
         nav_label: 'St. Kitts & Nevis | Passport',
         hero_subtitle: 'Citizenship By Investment',
@@ -780,9 +864,9 @@ const DEFAULTS = {
         ],
         faqs: []
       },
-      ar: { title: 'جنسية سانت كيتس ونيفيس', hero_subtitle: 'الجنسية عن طريق الاستثمار', nav_label: 'سانت كيتس | جواز سفر', investment_from: '$250,000', processing_time: '3-6 أشهر', visa_free: '+155', overview: '', benefits: [], faqs: [] },
-      fa: { title: 'شهروندی سنت کیتس و نویس', hero_subtitle: 'شهروندی از طریق سرمایه‌گذاری', nav_label: 'سنت کیتس | پاسپورت', investment_from: '$250,000', processing_time: '۳ تا ۶ ماه', visa_free: '+۱۵۵', overview: '', benefits: [], faqs: [] },
-      zh: { title: '圣基茨和尼维斯投资入籍', hero_subtitle: '投资入籍', nav_label: '圣基茨 | 护照', investment_from: '$250,000', processing_time: '3-6个月', visa_free: '155+', overview: '', benefits: [], faqs: [] }
+      ar: { hero_title: 'سانت كيتس ونيفيس', title: 'جنسية سانت كيتس ونيفيس', hero_subtitle: 'الجنسية عن طريق الاستثمار', nav_label: 'سانت كيتس | جواز سفر', investment_from: '$250,000', processing_time: '3-6 أشهر', visa_free: '+155', overview: '', benefits: [], faqs: [] },
+      fa: { hero_title: 'سنت کیتس و نویس', title: 'شهروندی سنت کیتس و نویس', hero_subtitle: 'شهروندی از طریق سرمایه‌گذاری', nav_label: 'سنت کیتس | پاسپورت', investment_from: '$250,000', processing_time: '۳ تا ۶ ماه', visa_free: '+۱۵۵', overview: '', benefits: [], faqs: [] },
+      zh: { hero_title: '圣基茨和尼维斯', title: '圣基茨和尼维斯投资入籍', hero_subtitle: '投资入籍', nav_label: '圣基茨 | 护照', investment_from: '$250,000', processing_time: '3-6个月', visa_free: '155+', overview: '', benefits: [], faqs: [] }
     },
     {
       id: 'antigua',
@@ -793,6 +877,7 @@ const DEFAULTS = {
       nav_sort: 3,
       status: 'published',
       en: {
+        hero_title: 'Antigua & Barbuda',
         title: 'Antigua & Barbuda Citizenship by Investment',
         nav_label: 'Antigua & Barbuda | Passport',
         hero_subtitle: 'Citizenship By Investment',
@@ -805,9 +890,9 @@ const DEFAULTS = {
         ],
         faqs: []
       },
-      ar: { title: 'جنسية أنتيغوا وبربودا', hero_subtitle: 'الجنسية عن طريق الاستثمار', nav_label: 'أنتيغوا | جواز سفر', investment_from: '$100,000', processing_time: '3-5 أشهر', visa_free: '+150', overview: '', benefits: [], faqs: [] },
-      fa: { title: 'شهروندی آنتیگوا و باربودا', hero_subtitle: 'شهروندی از طریق سرمایه‌گذاری', nav_label: 'آنتیگوا | پاسپورت', investment_from: '$100,000', processing_time: '۳ تا ۵ ماه', visa_free: '+۱۵۰', overview: '', benefits: [], faqs: [] },
-      zh: { title: '安提瓜和巴布达投资入籍', hero_subtitle: '投资入籍', nav_label: '安提瓜 | 护照', investment_from: '$100,000', processing_time: '3-5个月', visa_free: '150+', overview: '', benefits: [], faqs: [] }
+      ar: { hero_title: 'أنتيغوا وبربودا', title: 'جنسية أنتيغوا وبربودا', hero_subtitle: 'الجنسية عن طريق الاستثمار', nav_label: 'أنتيغوا | جواز سفر', investment_from: '$100,000', processing_time: '3-5 أشهر', visa_free: '+150', overview: '', benefits: [], faqs: [] },
+      fa: { hero_title: 'آنتیگوا و باربودا', title: 'شهروندی آنتیگوا و باربودا', hero_subtitle: 'شهروندی از طریق سرمایه‌گذاری', nav_label: 'آنتیگوا | پاسپورت', investment_from: '$100,000', processing_time: '۳ تا ۵ ماه', visa_free: '+۱۵۰', overview: '', benefits: [], faqs: [] },
+      zh: { hero_title: '安提瓜和巴布达', title: '安提瓜和巴布达投资入籍', hero_subtitle: '投资入籍', nav_label: '安提瓜 | 护照', investment_from: '$100,000', processing_time: '3-5个月', visa_free: '150+', overview: '', benefits: [], faqs: [] }
     },
     {
       id: 'stlucia',
@@ -818,6 +903,7 @@ const DEFAULTS = {
       nav_sort: 4,
       status: 'published',
       en: {
+        hero_title: 'Saint Lucia',
         title: 'Saint Lucia Citizenship by Investment',
         nav_label: 'Saint Lucia | Passport',
         hero_subtitle: 'Citizenship By Investment',
@@ -831,9 +917,9 @@ const DEFAULTS = {
         ],
         faqs: []
       },
-      ar: { title: 'جنسية سانت لوسيا عبر الاستثمار', hero_subtitle: 'الجنسية عن طريق الاستثمار', nav_label: 'سانت لوسيا | جواز سفر', investment_from: '$240,000', processing_time: '3-4 أشهر', visa_free: '+140', overview: '', benefits: [], faqs: [] },
-      fa: { title: 'شهروندی سنت لوسیا از طریق سرمایه‌گذاری', hero_subtitle: 'شهروندی از طریق سرمایه‌گذاری', nav_label: 'سنت لوسیا | پاسپورت', investment_from: '$240,000', processing_time: '۳ تا ۴ ماه', visa_free: '+۱۴۰', overview: '', benefits: [], faqs: [] },
-      zh: { title: '圣卢西亚投资入籍', hero_subtitle: '投资入籍', nav_label: '圣卢西亚 | 护照', investment_from: '$240,000', processing_time: '3-4个月', visa_free: '140+', overview: '', benefits: [], faqs: [] }
+      ar: { hero_title: 'سانت لوسيا', title: 'جنسية سانت لوسيا عبر الاستثمار', hero_subtitle: 'الجنسية عن طريق الاستثمار', nav_label: 'سانت لوسيا | جواز سفر', investment_from: '$240,000', processing_time: '3-4 أشهر', visa_free: '+140', overview: '', benefits: [], faqs: [] },
+      fa: { hero_title: 'سنت لوسیا', title: 'شهروندی سنت لوسیا از طریق سرمایه‌گذاری', hero_subtitle: 'شهروندی از طریق سرمایه‌گذاری', nav_label: 'سنت لوسیا | پاسپورت', investment_from: '$240,000', processing_time: '۳ تا ۴ ماه', visa_free: '+۱۴۰', overview: '', benefits: [], faqs: [] },
+      zh: { hero_title: '圣卢西亚', title: '圣卢西亚投资入籍', hero_subtitle: '投资入籍', nav_label: '圣卢西亚 | 护照', investment_from: '$240,000', processing_time: '3-4个月', visa_free: '140+', overview: '', benefits: [], faqs: [] }
     },
     {
       id: 'grenada',
@@ -844,6 +930,7 @@ const DEFAULTS = {
       nav_sort: 5,
       status: 'published',
       en: {
+        hero_title: 'Grenada',
         title: 'Grenada Citizenship by Investment',
         nav_label: 'Grenada | Passport',
         hero_subtitle: 'Citizenship By Investment',
@@ -856,9 +943,9 @@ const DEFAULTS = {
         ],
         faqs: []
       },
-      ar: { title: 'جنسية غرينادا', hero_subtitle: 'الجنسية عن طريق الاستثمار', nav_label: 'غرينادا | جواز سفر', investment_from: '$150,000', processing_time: '4-6 أشهر', visa_free: '+140', overview: '', benefits: [], faqs: [] },
-      fa: { title: 'شهروندی گرنادا', hero_subtitle: 'شهروندی از طریق سرمایه‌گذاری', nav_label: 'گرنادا | پاسپورت', investment_from: '$150,000', processing_time: '۴ تا ۶ ماه', visa_free: '+۱۴۰', overview: '', benefits: [], faqs: [] },
-      zh: { title: '格林纳达投资入籍', hero_subtitle: '投资入籍', nav_label: '格林纳达 | 护照', investment_from: '$150,000', processing_time: '4-6个月', visa_free: '140+', overview: '', benefits: [], faqs: [] }
+      ar: { hero_title: 'غرينادا', title: 'جنسية غرينادا', hero_subtitle: 'الجنسية عن طريق الاستثمار', nav_label: 'غرينادا | جواز سفر', investment_from: '$150,000', processing_time: '4-6 أشهر', visa_free: '+140', overview: '', benefits: [], faqs: [] },
+      fa: { hero_title: 'گرنادا', title: 'شهروندی گرنادا', hero_subtitle: 'شهروندی از طریق سرمایه‌گذاری', nav_label: 'گرنادا | پاسپورت', investment_from: '$150,000', processing_time: '۴ تا ۶ ماه', visa_free: '+۱۴۰', overview: '', benefits: [], faqs: [] },
+      zh: { hero_title: '格林纳达', title: '格林纳达投资入籍', hero_subtitle: '投资入籍', nav_label: '格林纳达 | 护照', investment_from: '$150,000', processing_time: '4-6个月', visa_free: '140+', overview: '', benefits: [], faqs: [] }
     },
     {
       id: 'vanuatu',
@@ -869,6 +956,7 @@ const DEFAULTS = {
       nav_sort: 1,
       status: 'published',
       en: {
+        hero_title: 'Vanuatu',
         title: 'Vanuatu Citizenship by Investment',
         nav_label: 'Vanuatu | Passport',
         hero_subtitle: 'Citizenship By Investment',
@@ -881,9 +969,9 @@ const DEFAULTS = {
         ],
         faqs: []
       },
-      ar: { title: 'جنسية فانواتو', hero_subtitle: 'الجنسية عن طريق الاستثمار', nav_label: 'فانواتو | جواز سفر', investment_from: '$130,000', processing_time: '30-60 يوماً', visa_free: '+130', overview: '', benefits: [], faqs: [] },
-      fa: { title: 'شهروندی وانواتو', hero_subtitle: 'شهروندی از طریق سرمایه‌گذاری', nav_label: 'وانواتو | پاسپورت', investment_from: '$130,000', processing_time: '۳۰ تا ۶۰ روز', visa_free: '+۱۳۰', overview: '', benefits: [], faqs: [] },
-      zh: { title: '瓦努阿图投资入籍', hero_subtitle: '投资入籍', nav_label: '瓦努阿图 | 护照', investment_from: '$130,000', processing_time: '30-60天', visa_free: '130+', overview: '', benefits: [], faqs: [] }
+      ar: { hero_title: 'فانواتو', title: 'جنسية فانواتو', hero_subtitle: 'الجنسية عن طريق الاستثمار', nav_label: 'فانواتو | جواز سفر', investment_from: '$130,000', processing_time: '30-60 يوماً', visa_free: '+130', overview: '', benefits: [], faqs: [] },
+      fa: { hero_title: 'وانواتو', title: 'شهروندی وانواتو', hero_subtitle: 'شهروندی از طریق سرمایه‌گذاری', nav_label: 'وانواتو | پاسپورت', investment_from: '$130,000', processing_time: '۳۰ تا ۶۰ روز', visa_free: '+۱۳۰', overview: '', benefits: [], faqs: [] },
+      zh: { hero_title: '瓦努阿图', title: '瓦努阿图投资入籍', hero_subtitle: '投资入籍', nav_label: '瓦努阿图 | 护照', investment_from: '$130,000', processing_time: '30-60天', visa_free: '130+', overview: '', benefits: [], faqs: [] }
     },
     {
       id: 'saotome',
@@ -894,6 +982,7 @@ const DEFAULTS = {
       nav_sort: 2,
       status: 'published',
       en: {
+        hero_title: 'São Tomé & Príncipe',
         title: 'São Tomé & Príncipe Citizenship by Investment',
         nav_label: 'São Tomé and Príncipe | Passport',
         hero_subtitle: 'Citizenship By Investment',
@@ -907,9 +996,9 @@ const DEFAULTS = {
         ],
         faqs: []
       },
-      ar: { title: 'جنسية ساو تومي وبرينسيبي', hero_subtitle: 'الجنسية عن طريق الاستثمار', nav_label: 'ساو تومي | جواز سفر', investment_from: '$100,000', processing_time: '2-3 أشهر', visa_free: '+90', overview: '', benefits: [], faqs: [] },
-      fa: { title: 'شهروندی سائوتومه و پرنسیپ', hero_subtitle: 'شهروندی از طریق سرمایه‌گذاری', nav_label: 'سائوتومه | پاسپورت', investment_from: '$100,000', processing_time: '۲ تا ۳ ماه', visa_free: '+۹۰', overview: '', benefits: [], faqs: [] },
-      zh: { title: '圣多美和普林西比投资入籍', hero_subtitle: '投资入籍', nav_label: '圣多美 | 护照', investment_from: '$100,000', processing_time: '2-3个月', visa_free: '90+', overview: '', benefits: [], faqs: [] }
+      ar: { hero_title: 'ساو تومي وبرينسيبي', title: 'جنسية ساو تومي وبرينسيبي', hero_subtitle: 'الجنسية عن طريق الاستثمار', nav_label: 'ساو تومي | جواز سفر', investment_from: '$100,000', processing_time: '2-3 أشهر', visa_free: '+90', overview: '', benefits: [], faqs: [] },
+      fa: { hero_title: 'سائوتومه و پرنسیپ', title: 'شهروندی سائوتومه و پرنسیپ', hero_subtitle: 'شهروندی از طریق سرمایه‌گذاری', nav_label: 'سائوتومه | پاسپورت', investment_from: '$100,000', processing_time: '۲ تا ۳ ماه', visa_free: '+۹۰', overview: '', benefits: [], faqs: [] },
+      zh: { hero_title: '圣多美和普林西比', title: '圣多美和普林西比投资入籍', hero_subtitle: '投资入籍', nav_label: '圣多美 | 护照', investment_from: '$100,000', processing_time: '2-3个月', visa_free: '90+', overview: '', benefits: [], faqs: [] }
     },
     {
       id: 'nauru',
@@ -920,6 +1009,7 @@ const DEFAULTS = {
       nav_sort: 3,
       status: 'published',
       en: {
+        hero_title: 'Republic of Nauru',
         title: 'Republic of Nauru Citizenship by Investment',
         nav_label: 'Republic of Nauru | Passport',
         hero_subtitle: 'Citizenship By Investment',
@@ -933,9 +1023,9 @@ const DEFAULTS = {
         ],
         faqs: []
       },
-      ar: { title: 'جنسية جمهورية ناورو', hero_subtitle: 'الجنسية عن طريق الاستثمار', nav_label: 'جمهورية ناورو | جواز سفر', investment_from: '$105,000', processing_time: '3-4 أشهر', visa_free: '+89', overview: '', benefits: [], faqs: [] },
-      fa: { title: 'شهروندی جمهوری نائورو', hero_subtitle: 'شهروندی از طریق سرمایه‌گذاری', nav_label: 'جمهوری نائورو | پاسپورت', investment_from: '$105,000', processing_time: '۳ تا ۴ ماه', visa_free: '+۸۹', overview: '', benefits: [], faqs: [] },
-      zh: { title: '瑙鲁共和国投资入籍', hero_subtitle: '投资入籍', nav_label: '瑙鲁共和国 | 护照', investment_from: '$105,000', processing_time: '3-4个月', visa_free: '89+', overview: '', benefits: [], faqs: [] }
+      ar: { hero_title: 'جمهورية ناورو', title: 'جنسية جمهورية ناورو', hero_subtitle: 'الجنسية عن طريق الاستثمار', nav_label: 'جمهورية ناورو | جواز سفر', investment_from: '$105,000', processing_time: '3-4 أشهر', visa_free: '+89', overview: '', benefits: [], faqs: [] },
+      fa: { hero_title: 'جمهوری نائورو', title: 'شهروندی جمهوری نائورو', hero_subtitle: 'شهروندی از طریق سرمایه‌گذاری', nav_label: 'جمهوری نائورو | پاسپورت', investment_from: '$105,000', processing_time: '۳ تا ۴ ماه', visa_free: '+۸۹', overview: '', benefits: [], faqs: [] },
+      zh: { hero_title: '瑙鲁共和国', title: '瑙鲁共和国投资入籍', hero_subtitle: '投资入籍', nav_label: '瑙鲁共和国 | 护照', investment_from: '$105,000', processing_time: '3-4个月', visa_free: '89+', overview: '', benefits: [], faqs: [] }
     }
   ],
   residency: [
@@ -948,6 +1038,7 @@ const DEFAULTS = {
       nav_sort: 1,
       status: 'published',
       en: {
+        hero_title: 'Portugal',
         title: 'Portugal Golden Visa',
         nav_label: 'Portugal | Golden Visa',
         hero_subtitle: 'Residency By Investment',
@@ -959,9 +1050,9 @@ const DEFAULTS = {
         ],
         faqs: []
       },
-      ar: { title: 'التأشيرة الذهبية البرتغالية', hero_subtitle: 'الإقامة عن طريق الاستثمار', nav_label: 'البرتغال | الذهبية', investment_from: '€500,000', processing_time: '6-12 شهراً', overview: '', benefits: [], faqs: [] },
-      fa: { title: 'ویزای طلایی پرتغال', hero_subtitle: 'اقامت از طریق سرمایه‌گذاری', nav_label: 'پرتغال | ویزای طلایی', investment_from: '€500,000', processing_time: '۶ تا ۱۲ ماه', overview: '', benefits: [], faqs: [] },
-      zh: { title: '葡萄牙黄金签证', hero_subtitle: '投资居留', nav_label: '葡萄牙 | 黄金签证', investment_from: '€500,000', processing_time: '6-12个月', overview: '', benefits: [], faqs: [] }
+      ar: { hero_title: 'البرتغال', title: 'التأشيرة الذهبية البرتغالية', hero_subtitle: 'الإقامة عن طريق الاستثمار', nav_label: 'البرتغال | الذهبية', investment_from: '€500,000', processing_time: '6-12 شهراً', overview: '', benefits: [], faqs: [] },
+      fa: { hero_title: 'پرتغال', title: 'ویزای طلایی پرتغال', hero_subtitle: 'اقامت از طریق سرمایه‌گذاری', nav_label: 'پرتغال | ویزای طلایی', investment_from: '€500,000', processing_time: '۶ تا ۱۲ ماه', overview: '', benefits: [], faqs: [] },
+      zh: { hero_title: '葡萄牙', title: '葡萄牙黄金签证', hero_subtitle: '投资居留', nav_label: '葡萄牙 | 黄金签证', investment_from: '€500,000', processing_time: '6-12个月', overview: '', benefits: [], faqs: [] }
     },
     {
       id: 'greece',
@@ -972,6 +1063,7 @@ const DEFAULTS = {
       nav_sort: 2,
       status: 'published',
       en: {
+        hero_title: 'Greece',
         title: 'Greece Golden Visa',
         nav_label: 'Greece | Golden Visa',
         hero_subtitle: 'Residency By Investment',
@@ -983,9 +1075,9 @@ const DEFAULTS = {
         ],
         faqs: []
       },
-      ar: { title: 'التأشيرة الذهبية اليونانية', hero_subtitle: 'الإقامة عن طريق الاستثمار', nav_label: 'اليونان | الذهبية', investment_from: '€250,000', processing_time: '3-6 أشهر', overview: '', benefits: [], faqs: [] },
-      fa: { title: 'ویزای طلایی یونان', hero_subtitle: 'اقامت از طریق سرمایه‌گذاری', nav_label: 'یونان | ویزای طلایی', investment_from: '€250,000', processing_time: '۳ تا ۶ ماه', overview: '', benefits: [], faqs: [] },
-      zh: { title: '希腊黄金签证', hero_subtitle: '投资居留', nav_label: '希腊 | 黄金签证', investment_from: '€250,000', processing_time: '3-6个月', overview: '', benefits: [], faqs: [] }
+      ar: { hero_title: 'اليونان', title: 'التأشيرة الذهبية اليونانية', hero_subtitle: 'الإقامة عن طريق الاستثمار', nav_label: 'اليونان | الذهبية', investment_from: '€250,000', processing_time: '3-6 أشهر', overview: '', benefits: [], faqs: [] },
+      fa: { hero_title: 'یونان', title: 'ویزای طلایی یونان', hero_subtitle: 'اقامت از طریق سرمایه‌گذاری', nav_label: 'یونان | ویزای طلایی', investment_from: '€250,000', processing_time: '۳ تا ۶ ماه', overview: '', benefits: [], faqs: [] },
+      zh: { hero_title: '希腊', title: '希腊黄金签证', hero_subtitle: '投资居留', nav_label: '希腊 | 黄金签证', investment_from: '€250,000', processing_time: '3-6个月', overview: '', benefits: [], faqs: [] }
     },
     {
       id: 'panama',
@@ -996,6 +1088,7 @@ const DEFAULTS = {
       nav_sort: 3,
       status: 'published',
       en: {
+        hero_title: 'Panama',
         title: 'Panama Golden Visa & Permanent Residency',
         nav_label: 'Panama | Golden Visa',
         hero_subtitle: 'Residency By Investment',
@@ -1008,9 +1101,9 @@ const DEFAULTS = {
         ],
         faqs: []
       },
-      ar: { title: 'التأشيرة الذهبية لبنما', hero_subtitle: 'الإقامة عن طريق الاستثمار', nav_label: 'بنما | الذهبية', investment_from: '$200,000', processing_time: '30-60 يوماً', overview: '', benefits: [], faqs: [] },
-      fa: { title: 'ویزای طلایی پاناما', hero_subtitle: 'اقامت از طریق سرمایه‌گذاری', nav_label: 'پاناما | ویزای طلایی', investment_from: '$200,000', processing_time: '۳۰ تا ۶۰ روز', overview: '', benefits: [], faqs: [] },
-      zh: { title: '巴拿马黄金签证', hero_subtitle: '投资居留', nav_label: '巴拿马 | 黄金签证', investment_from: '$200,000', processing_time: '30-60天', overview: '', benefits: [], faqs: [] }
+      ar: { hero_title: 'بنما', title: 'التأشيرة الذهبية لبنما', hero_subtitle: 'الإقامة عن طريق الاستثمار', nav_label: 'بنما | الذهبية', investment_from: '$200,000', processing_time: '30-60 يوماً', overview: '', benefits: [], faqs: [] },
+      fa: { hero_title: 'پاناما', title: 'ویزای طلایی پاناما', hero_subtitle: 'اقامت از طریق سرمایه‌گذاری', nav_label: 'پاناما | ویزای طلایی', investment_from: '$200,000', processing_time: '۳۰ تا ۶۰ روز', overview: '', benefits: [], faqs: [] },
+      zh: { hero_title: '巴拿马', title: '巴拿马黄金签证', hero_subtitle: '投资居留', nav_label: '巴拿马 | 黄金签证', investment_from: '$200,000', processing_time: '30-60天', overview: '', benefits: [], faqs: [] }
     },
     {
       id: 'uae',
@@ -1033,9 +1126,9 @@ const DEFAULTS = {
         ],
         faqs: []
       },
-      ar: { title: 'الإقامة الذهبية الإماراتية 10 سنوات', hero_subtitle: 'التأشيرة الذهبية', nav_label: 'الإمارات | الذهبية', investment_from: 'AED 2,000,000', processing_time: '2-4 أسابيع', overview: '', benefits: [], faqs: [] },
-      fa: { title: 'ویزای طلایی ۱۰ ساله امارات', hero_subtitle: 'ویزای طلایی', nav_label: 'امارات | ویزای طلایی', investment_from: 'AED 2,000,000', processing_time: '۲ تا ۴ هفته', overview: '', benefits: [], faqs: [] },
-      zh: { title: '阿联酋10年黄金签证', hero_subtitle: '黄金签证', nav_label: '阿联酋 | 黄金签证', investment_from: 'AED 200万', processing_time: '2-4周', overview: '', benefits: [], faqs: [] }
+      ar: { hero_title: 'الإمارات العربية المتحدة', title: 'الإقامة الذهبية الإماراتية 10 سنوات', hero_subtitle: 'التأشيرة الذهبية', nav_label: 'الإمارات | الذهبية', investment_from: 'AED 2,000,000', processing_time: '2-4 أسابيع', overview: '', benefits: [], faqs: [] },
+      fa: { hero_title: 'امارات متحده عربی', title: 'ویزای طلایی ۱۰ ساله امارات', hero_subtitle: 'ویزای طلایی', nav_label: 'امارات | ویزای طلایی', investment_from: 'AED 2,000,000', processing_time: '۲ تا ۴ هفته', overview: '', benefits: [], faqs: [] },
+      zh: { hero_title: '阿拉伯联合酋长国', title: '阿联酋10年黄金签证', hero_subtitle: '黄金签证', nav_label: '阿联酋 | 黄金签证', investment_from: 'AED 200万', processing_time: '2-4周', overview: '', benefits: [], faqs: [] }
     }
   ],
   blog: [],
@@ -1354,15 +1447,24 @@ function getData(key) {
         updated = true;
       }
     });
-    // Auto-heal flags to ensure reliable display
+    // Auto-heal flags and localized hero_title to ensure reliable display
     stored.forEach(item => {
       if (item && item.id) {
         const defMatch = DEFAULTS[defKey].find(d => d.id === item.id);
-        if (defMatch && defMatch.flag) {
-          if (!item.flag || item.flag.includes('Flag_of_Sao_Tome_and_Principe.svg') || item.flag.includes('wikimedia.org')) {
+        if (defMatch) {
+          if (defMatch.flag && (!item.flag || item.flag.includes('Flag_of_Sao_Tome_and_Principe.svg') || item.flag.includes('wikimedia.org'))) {
             item.flag = defMatch.flag;
             updated = true;
           }
+          ['en', 'ar', 'fa', 'zh'].forEach(lang => {
+            if (defMatch[lang] && defMatch[lang].hero_title) {
+              if (!item[lang]) item[lang] = {};
+              if (!item[lang].hero_title || (lang !== 'en' && isEnglishFallback(item[lang].hero_title, lang))) {
+                item[lang].hero_title = defMatch[lang].hero_title;
+                updated = true;
+              }
+            }
+          });
         }
       }
     });

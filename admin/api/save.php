@@ -123,6 +123,21 @@ if ($db !== null) {
     }
 }
 
+// 3. Atomically update sitemap.xml on disk if blogs were modified
+if (in_array('sgcms_blog', $savedKeys)) {
+    try {
+        $rootDir = realpath(dirname(__DIR__, 2));
+        if ($rootDir && file_exists($rootDir . '/sitemap.php')) {
+            require_once $rootDir . '/sitemap.php';
+            if (function_exists('buildSitemapXml')) {
+                buildSitemapXml($rootDir, true);
+            }
+        }
+    } catch (Throwable $se) {
+        error_log('[SharifCMS Save Sitemap Warning] ' . $se->getMessage());
+    }
+}
+
 jsonResponse([
     'success'   => true,
     'message'   => 'Draft saved successfully' . ($dbSaved ? ' to MySQL & server snapshot.' : ' to server snapshot.'),

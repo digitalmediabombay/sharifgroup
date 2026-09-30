@@ -57,6 +57,23 @@ foreach ($deletedSlugs as $ds) {
     if ($c !== '') $delMap[$c] = true;
 }
 
+// Un-blacklist any slug or ID actively present in incoming sgcms_blog payload
+if (isset($payload['data']['sgcms_blog']) && is_array($payload['data']['sgcms_blog'])) {
+    foreach ($payload['data']['sgcms_blog'] as $blogItem) {
+        if (!is_array($blogItem) || !empty($blogItem['deleted']) || ($blogItem['status'] ?? '') === 'deleted') continue;
+        $id = strtolower(trim($blogItem['id'] ?? ''));
+        $slug = strtolower(trim($blogItem['slug'] ?? ($blogItem['en']['slug'] ?? '')));
+        $enSlug = strtolower(trim($blogItem['en']['slug'] ?? ''));
+        if ($id !== '') unset($delMap[$id]);
+        if ($slug !== '') unset($delMap[$slug]);
+        if ($enSlug !== '') unset($delMap[$enSlug]);
+    }
+    $deletedSlugs = array_values(array_filter($deletedSlugs, function($ds) use ($delMap) {
+        return isset($delMap[strtolower(trim((string)$ds))]);
+    }));
+    $payload['data']['sgcms_deleted_slugs'] = $deletedSlugs;
+}
+
 // Deduplicate blog entries and filter deleted items if sgcms_blog is present
 if (isset($payload['data']['sgcms_blog']) && is_array($payload['data']['sgcms_blog'])) {
     $dedupedBlogs = [];
