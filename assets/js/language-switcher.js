@@ -83,6 +83,9 @@
         container.querySelectorAll('[data-i18n]').forEach(function (el) {
             var key = el.getAttribute('data-i18n');
             var val = getNestedValue(data, key);
+            if (l === 'fa' && key === 'nav.blog') {
+                val = 'بلاگ';
+            }
             if (val !== null && val !== undefined) {
                 var localized = (l === 'ar' || l === 'fa') ? localizeNumbers(val, l) : val;
                 el.textContent = decodeHtmlEntities(localized);
@@ -209,12 +212,17 @@
         }
     }
 
-    var I18N_VERSION = '20260921_v18';
+    var I18N_VERSION = '20260930_v25';
 
     function loadTranslation(lang, callback) {
         var pathname = (window.location && window.location.pathname) ? window.location.pathname.toLowerCase() : '';
         var href = (window.location && window.location.href) ? window.location.href.toLowerCase() : '';
         var isEligibilityChecker = pathname.includes('/eligibilitychecker') || href.includes('/eligibilitychecker');
+
+        // Ensure memory cache has correct Persian blog wording
+        if (translationsCache && translationsCache.fa && translationsCache.fa.nav && translationsCache.fa.nav.blog === 'وبلاگ') {
+            translationsCache.fa.nav.blog = 'بلاگ';
+        }
 
         // 1. If already loaded in memory and has deep content
         if (translationsCache[lang] && (translationsCache[lang].pages || translationsCache[lang].nav)) {
@@ -229,27 +237,34 @@
             translationsCache[lang] = deepMerge(translationsCache[lang] || {}, JSON.parse(JSON.stringify(window.LEGAL_TRANSLATIONS[lang])));
         }
 
-        // Proactively clean any outdated cache that lacks eligibilityChecker translations
+        var storageKey = 'sharif_i18n_' + lang + '_' + I18N_VERSION;
+
+        // Proactively clean any outdated cache or stale blog entries
         try {
             for (var i = localStorage.length - 1; i >= 0; i--) {
                 var k = localStorage.key(i);
                 if (k && k.indexOf('sharif_i18n_') === 0) {
                     try {
-                        var d = JSON.parse(localStorage.getItem(k));
-                        if (d && (!d.pages || !d.pages.eligibilityChecker)) {
+                        var raw = localStorage.getItem(k);
+                        var d = JSON.parse(raw);
+                        if (!d || !d.pages || !d.pages.eligibilityChecker || (d.nav && d.nav.blog === 'وبلاگ') || k !== storageKey) {
                             localStorage.removeItem(k);
                         }
-                    } catch (e) {}
+                    } catch (e) {
+                        localStorage.removeItem(k);
+                    }
                 }
             }
         } catch (e) {}
 
         // 3. Check persistent localStorage cache for instant 0ms zero-network retrieval
-        var storageKey = 'sharif_i18n_' + lang + '_' + I18N_VERSION;
         try {
             var cachedJson = localStorage.getItem(storageKey);
             if (cachedJson) {
                 var parsedData = JSON.parse(cachedJson);
+                if (parsedData && parsedData.nav && parsedData.nav.blog === 'وبلاگ') {
+                    parsedData.nav.blog = 'بلاگ';
+                }
                 if (isEligibilityChecker && (!parsedData.pages || !parsedData.pages.eligibilityChecker)) {
                     // Stale cache missing eligibility checker translations: discard and re-fetch fresh!
                 } else if (parsedData && (parsedData.pages || parsedData.nav || parsedData.services || parsedData.footer)) {

@@ -308,7 +308,7 @@
 
         pendingFetches[lang] = callback ? [callback] : [];
 
-        var BLOG_I18N_VERSION = '20260921_v17';
+        var BLOG_I18N_VERSION = '20260930_v25';
         var candidates = getArticleCandidateUrls(lang);
         var index = 0;
 

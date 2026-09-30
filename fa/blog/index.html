@@ -12,7 +12,15 @@
 <script>
         (function() {
             try {
-                var l = localStorage.getItem('sharif_lang') || localStorage.getItem('sharif_preferred_lang') || 'en';
+                for (var i = localStorage.length - 1; i >= 0; i--) {
+                    var k = localStorage.key(i);
+                    if (k && k.indexOf('sharif_i18n_') === 0 && k.indexOf('20260930_v25') === -1) {
+                        localStorage.removeItem(k);
+                    }
+                }
+            } catch(e) {}
+            try {
+                var l = localStorage.getItem('sharif_lang') || localStorage.getItem('sharif_preferred_lang') || 'fa';
                 if (l === 'ar' || l === 'fa') {
                     document.documentElement.dir = 'rtl';
                     document.documentElement.lang = l;
@@ -8510,8 +8518,8 @@
     // Flag that the user is coming from an internal page of Sharif Group website
     sessionStorage.setItem('sharif_preloader_shown', 'true');
 </script>
-<script src="/assets/js/language-switcher.js"></script>
-<script src="/assets/js/blog-translator.js"></script>
+<script src="/assets/js/language-switcher.js?v=20260930_v25"></script>
+<script src="/assets/js/blog-translator.js?v=20260930_v25"></script>
 <script src="/assets/js/forms.js"></script>
 <script src="/admin/cms-loader.js"></script>
 </body>
