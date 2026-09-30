@@ -58,6 +58,16 @@
     return /[\u2500-\u259F\uFFFD]/.test(text);
   }
 
+  function normalizeImageUrl(url) {
+    if (!url || typeof url !== 'string') return '/assets/images/dubai-office-2.webp';
+    url = url.trim();
+    if (!url) return '/assets/images/dubai-office-2.webp';
+    if (url.startsWith('http://') || url.startsWith('https://') || url.startsWith('data:') || url.startsWith('blob:')) return url;
+    if (url.startsWith('/')) return url;
+    if (url.startsWith('../')) return url.replace(/^(\.\.\/)+/, '/');
+    return '/' + url;
+  }
+
   function setEl(selector, text, all) {
     if (text == null || text === '' || isCorrupted(text)) return;
     var list = all
@@ -301,7 +311,7 @@
     var blogs = (_data && _data.sgcms_blog) || [];
     if (!Array.isArray(blogs) || !blogs.length) {
       try {
-        var rawLocal = localStorage.getItem('sgcms_blog_live') || localStorage.getItem('sgcms_blog');
+        var rawLocal = localStorage.getItem('sgcms_blog_live');
         if (rawLocal) {
           var parsedLocal = JSON.parse(rawLocal);
           if (Array.isArray(parsedLocal) && parsedLocal.length) {
@@ -344,8 +354,8 @@
       var title = ld.title || (b.en && b.en.title) || b.title;
       if (!title || isCorrupted(title)) return;
       var slug = b.slug || (b.en && b.en.slug) || ld.slug || b.id;
-      var status = b['status_' + l] || b.status_en || 'published';
-      if (status !== 'published') return;
+      var status = (b['status_' + l] || b.status_en || b.status || (b.en && b.en.status) || 'published').toLowerCase();
+      if (status === 'draft' || status === 'hidden' || status !== 'published') return;
 
       var subcat = b.subcategory ? ' · ' + b.subcategory : '';
       var catDisplay = (b.category || 'Sharif Group Insights') + subcat;
@@ -356,19 +366,22 @@
           : ((b.en && Array.isArray(b.en.faqs) && b.en.faqs.length) ? b.en.faqs
             : (b.faqs || [])));
 
-      var articleData = {
-        title: title,
+      var enLd = b.en || b;
+      var enTitle = (b.en && b.en.title) || b.title;
+      var enBody = (b.en && b.en.body) || b.body || ('<p>' + (enLd.excerpt || '') + '</p>');
+      var enArticleData = {
+        title: enTitle,
         category: catDisplay,
         author: b.author || 'Sharif Group Advisory',
         date: b.publish_date || '2026-09-01',
         updated: b.publish_date || '2026-09-01',
-        image: b.featured_img || '/assets/images/dubai-office-2.webp',
-        content: ld.body || (b.en && b.en.body) || ('<p>' + (ld.excerpt || '') + '</p>'),
-        faqs: localizedFaqs
+        image: normalizeImageUrl(b.featured_img),
+        content: enBody,
+        faqs: (b.en && Array.isArray(b.en.faqs) && b.en.faqs.length) ? b.en.faqs : (b.faqs || [])
       };
 
-      window.articlesDatabase[slug] = articleData;
-      window.articlesDatabase[b.id] = articleData;
+      window.articlesDatabase[slug] = enArticleData;
+      window.articlesDatabase[b.id] = enArticleData;
 
       // Find any existing dynamic cards matching id or slug
       var matchingCards = grid.querySelectorAll('[data-cms-blog-id="' + b.id + '"], [data-cms-slug="' + slug + '"]');
@@ -404,6 +417,8 @@
         if (h4El) h4El.textContent = title;
         var pEl = existingCard.querySelector('p');
         if (pEl && ld.excerpt) pEl.textContent = ld.excerpt;
+        var existingImgEl = existingCard.querySelector('img');
+        if (existingImgEl && b.featured_img) existingImgEl.src = normalizeImageUrl(b.featured_img);
         var rm = existingCard.querySelector('a[onclick*="openBlogDetailBySlug"]');
         if (rm) rm.textContent = readMoreLabel;
       } else {
@@ -415,8 +430,7 @@
         articleEl.style.display = 'flex';
         articleEl.setAttribute('data-paginated', 'true');
 
-        var cleanImg = b.featured_img || '/assets/images/dubai-office-2.webp';
-        if (cleanImg.indexOf('http') !== 0 && cleanImg.indexOf('/') !== 0) cleanImg = '/' + cleanImg;
+        var cleanImg = normalizeImageUrl(b.featured_img);
 
         articleEl.innerHTML =
           '<div class="space-y-3">' +
@@ -518,13 +532,10 @@
           }
           _data = json;
 
-          // Seed blog data into localStorage without overwriting active draft
+          // Cache published blog data into localStorage live cache
           try {
             if (Array.isArray(json.sgcms_blog) && json.sgcms_blog.length) {
               localStorage.setItem('sgcms_blog_live', JSON.stringify(json.sgcms_blog));
-              if (!localStorage.getItem('sgcms_blog')) {
-                localStorage.setItem('sgcms_blog', JSON.stringify(json.sgcms_blog));
-              }
               if (window.location.pathname.toLowerCase().indexOf('/blog') !== -1) {
                 var lang = getLang();
                 setTimeout(function () {

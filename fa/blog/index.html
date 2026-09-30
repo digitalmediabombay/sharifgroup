@@ -7660,15 +7660,24 @@
                 // Dynamically resolve CMS blogs fresh for the current language
                 var found = null;
                 try {
-                    const rawBlogs = localStorage.getItem('sgcms_blog') || localStorage.getItem('sgcms_blog_live') || '[]';
+                    const rawBlogs = localStorage.getItem('sgcms_blog_live') || '[]';
                     let localBlogs = [];
                     try { localBlogs = JSON.parse(rawBlogs); } catch(e) { localBlogs = []; }
                     if ((!localBlogs || !localBlogs.length) && window._data && Array.isArray(window._data.sgcms_blog)) {
                         localBlogs = window._data.sgcms_blog;
                     }
+                    var isInsideEditor = (function() {
+                        try {
+                            return window.self !== window.top || window.location.search.indexOf('cms_editor') !== -1 || window.location.search.indexOf('cms_preview') !== -1;
+                        } catch(e) { return false; }
+                    })();
                     if (Array.isArray(localBlogs) && localBlogs.length) {
                         found = localBlogs.find(function(b) {
                             if (!b) return false;
+                            if (!isInsideEditor) {
+                                var bStatus = (b.status_fa || b.status_en || b.status || (b.en && b.en.status) || 'published').toLowerCase();
+                                if (bStatus === 'draft' || bStatus === 'hidden') return false;
+                            }
                             var bId = String(b.id || '').toLowerCase();
                             var bSlug = String(b.slug || '').toLowerCase();
                             var enSlug = String((b.en && b.en.slug) || '').toLowerCase();
@@ -7762,12 +7771,17 @@
                         const dFaqs = defaultFaqsMap[curLang] || defaultFaqsMap.fa;
                         if (!Array.isArray(curFaqs) || !curFaqs.length) {
                             curFaqs = [...dFaqs];
-                        } else if (curFaqs.length < 12) {
-                            const merged = [...curFaqs];
-                            for (let fi = merged.length; fi < 12; fi++) {
-                                merged.push(dFaqs[fi]);
+                        } else if (curFaqs.length < 12 || curFaqs.some(function(f) { return f && f.q && (f.q.indexOf('点击编辑常见问题') !== -1 || f.q.indexOf('Click to edit FAQ') !== -1 || f.q.indexOf('انقر لتعديل السؤال') !== -1 || f.q.indexOf('برای ویرایش پرسش') !== -1); })) {
+                            var isDummy = curFaqs.length <= 6 && curFaqs.some(function(f) { return f && f.q && (f.q.indexOf('点击编辑常见问题') !== -1 || f.q.indexOf('Click to edit FAQ') !== -1 || f.q.indexOf('انقر لتعديل السؤال') !== -1 || f.q.indexOf('برای ویرایش پرسش') !== -1); });
+                            if (isDummy) {
+                                curFaqs = [...dFaqs];
+                            } else {
+                                var merged = [...curFaqs];
+                                for (var fi = merged.length; fi < 12; fi++) {
+                                    merged.push(dFaqs[fi]);
+                                }
+                                curFaqs = merged;
                             }
-                            curFaqs = merged;
                         }
 
                         baseArticle = {
@@ -7804,8 +7818,6 @@
                         var apiCandidates = [
                             '/admin/api/published_content.json?v=' + Date.now(),
                             '/admin/api/content.php?mode=live&v=' + Date.now(),
-                            '/admin/api/draft_content.json?v=' + Date.now(),
-                            '/admin/api/content.php?mode=draft&v=' + Date.now(),
                             '../admin/api/published_content.json?v=' + Date.now(),
                             '../admin/api/content.php?mode=live&v=' + Date.now(),
                             '../../admin/api/published_content.json?v=' + Date.now()
@@ -7831,9 +7843,6 @@
                                     if (Array.isArray(blogs) && blogs.length) {
                                         try {
                                             localStorage.setItem('sgcms_blog_live', JSON.stringify(blogs));
-                                            if (!localStorage.getItem('sgcms_blog')) {
-                                                localStorage.setItem('sgcms_blog', JSON.stringify(blogs));
-                                            }
                                         } catch(e) {}
                                         if (!window._data) window._data = {};
                                         window._data.sgcms_blog = blogs;
@@ -7915,10 +7924,21 @@
                     if (!imgSrc || imgSrc.startsWith('[') || imgSrc.indexOf('(') !== -1) {
                         imgSrc = (baseArticle && baseArticle.image) || '';
                     }
-                    imgEl.src = imgSrc;
+                    var normImg = function(u) {
+                        if (!u || typeof u !== 'string') return '/assets/images/dubai-office-2.webp';
+                        u = u.trim();
+                        if (!u) return '/assets/images/dubai-office-2.webp';
+                        if (u.startsWith('http://') || u.startsWith('https://') || u.startsWith('data:') || u.startsWith('blob:')) return u;
+                        if (u.startsWith('/')) return u;
+                        if (u.startsWith('../')) return u.replace(/^(\.\.\/)+/, '/');
+                        return '/' + u;
+                    };
+                    imgEl.src = normImg(imgSrc);
                     imgEl.onerror = function() {
-                        if (baseArticle && baseArticle.image && this.src !== baseArticle.image) {
-                            this.src = baseArticle.image;
+                        if (baseArticle && baseArticle.image && this.src !== normImg(baseArticle.image)) {
+                            this.src = normImg(baseArticle.image);
+                        } else {
+                            this.src = '/assets/images/dubai-office-2.webp';
                         }
                     };
                 }

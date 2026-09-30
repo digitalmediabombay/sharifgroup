@@ -93,6 +93,15 @@
   const isEditor = params.get('cms_editor') === '1' || isInsideIframe;
   const isPreview = params.get('cms_preview') === '1' || isEditor;
 
+  // Module-level editMode and WYSIWYG editor state accessible across all functions
+  let editMode = (window.self !== window.top || window.location.search.indexOf('cms_editor') !== -1)
+    ? (localStorage.getItem('sgcms_canvas_mode') !== 'browse')
+    : false;
+  let initBlogBodyWysiwygEditor = function () {};
+  let setEditMode = function () {};
+  window.__cmsEditMode = function () { return editMode; };
+  window.__cmsInitBlogBodyEditor = function () { if (typeof initBlogBodyWysiwygEditor === 'function') initBlogBodyWysiwygEditor(); };
+
   // Strict Safety Guard: Exit immediately if not in CMS editor session or explicit preview
   // Public visitors must never run cms-loader.js, never call the CMS API, and never enter Preview Mode
   if (!isEditor && !isPreview) {
@@ -485,6 +494,34 @@
 
     runHydration(lang);
     updateWebsiteLangButtonsUI(lang);
+
+    // Re-render blog detail view if currently open so language changes take effect immediately
+    const detailView = document.getElementById('blog-detail-view-container');
+    const isDetailOpen = detailView && !detailView.classList.contains('hidden') && detailView.style.display !== 'none';
+    const activeSlug = window.currentActiveArticleSlug || extractSlug();
+    if (isDetailOpen && activeSlug && typeof window.openBlogDetailBySlug === 'function') {
+      try {
+        window.openBlogDetailBySlug(activeSlug, true);
+        setTimeout(() => {
+          try {
+            if (typeof editMode !== 'undefined' && editMode && typeof initBlogBodyWysiwygEditor === 'function') {
+              initBlogBodyWysiwygEditor();
+            }
+          } catch (err) {}
+        }, 120);
+      } catch (e) {}
+    }
+
+    // Highlight docked bar lang pills if present
+    const dockedBar = document.getElementById('cms-blog-body-docked-bar');
+    if (dockedBar) {
+      dockedBar.querySelectorAll('.cdeb-lang-pill').forEach(btn => {
+        const isAct = btn.getAttribute('data-cdeb-lang') === lang;
+        btn.style.background = isAct ? '#C5A880' : 'transparent';
+        btn.style.color = isAct ? '#171717' : '#d4d4d4';
+        btn.style.borderColor = isAct ? '#C5A880' : 'rgba(255,255,255,0.15)';
+      });
+    }
 
     if (source !== 'parent' && window.parent && window.parent !== window) {
       window.parent.postMessage({ type: 'CMS_LANG_CHANGED', lang }, '*');
@@ -1228,13 +1265,25 @@
 
     window.articlesDatabase = window.articlesDatabase || {};
 
-    const title = draft.title || 'New Strategic Insight Article';
+    let title = (draft.title && draft.title.trim()) || '';
+    let img = draft.featured_img || '';
+    if ((!title || !img) && (draft.slug || draft.id)) {
+      try {
+        const blogs = store('sgcms_blog') || [];
+        const match = blogs.find(b => (draft.id && b.id === draft.id) || (draft.slug && b.slug === draft.slug));
+        if (match) {
+          if (!title) title = (match.en && match.en.title) || match.title || '';
+          if (!img) img = match.featured_img || '';
+        }
+      } catch (e) {}
+    }
+    if (!title) title = 'Untitled Article';
+    if (!img) img = '/assets/images/dubai-office-2.webp';
     const excerpt = draft.excerpt || '';
     const category = draft.category || 'Citizenship';
     const subcat = draft.subcategory ? ' · ' + draft.subcategory : '';
     const author = draft.author || 'Sharif Group Advisory';
     const date = draft.publish_date || draft.date || new Date().toISOString().split('T')[0];
-    const img = draft.featured_img || 'https://images.unsplash.com/photo-1541872703-74c5e44368f9?auto=format&fit=crop&w=1200&q=80';
     const slug = draft.slug || 'live-draft-preview';
     const dataCat = mapCategoryToDataCat(category, draft.subcategory);
 
@@ -1245,13 +1294,15 @@
       author: author,
       date: date,
       updated: date,
-      image: img,
+      image: normalizeImageUrl(img),
       content: draft.body || (excerpt ? `<p>${excerpt}</p>` : '<p>Article content preview will appear here...</p>'),
       faqs: (draft.faqs && Array.isArray(draft.faqs) && draft.faqs.length) ? draft.faqs : []
     };
-    window.articlesDatabase[slug] = draftArticleObj;
-    window.articlesDatabase['live-draft-preview'] = draftArticleObj;
-    if (draft.id) window.articlesDatabase[draft.id] = draftArticleObj;
+    if (getLang() === 'en') {
+      window.articlesDatabase[slug] = draftArticleObj;
+      window.articlesDatabase['live-draft-preview'] = draftArticleObj;
+      if (draft.id) window.articlesDatabase[draft.id] = draftArticleObj;
+    }
 
     let card = document.getElementById('cms-live-draft-card');
     const isNewCard = !card;
@@ -1289,15 +1340,21 @@
       </a>
     `;
 
-    // Also update detail drawer if it's currently open
+    // Only update detail drawer fields if non-empty values are explicitly provided
     const detailView = document.getElementById('blog-detail-view-container');
     if (detailView && !detailView.classList.contains('hidden')) {
-      const dt = document.getElementById('detail-title'); if (dt) dt.innerText = title;
-      const dc = document.getElementById('detail-category-badge'); if (dc) dc.innerText = category + subcat;
-      const da = document.getElementById('detail-author'); if (da) da.innerText = author;
-      const dd = document.getElementById('detail-date'); if (dd) dd.innerText = date;
-      const di = document.getElementById('detail-image'); if (di) di.src = img;
-      const db = document.getElementById('detail-content-body'); if (db && draft.body) db.innerHTML = draft.body;
+      const dt = document.getElementById('detail-title');
+      if (dt && draft.title && draft.title.trim()) dt.innerText = draft.title.trim();
+      const dc = document.getElementById('detail-category-badge');
+      if (dc && (draft.category || draft.subcategory)) dc.innerText = category + subcat;
+      const da = document.getElementById('detail-author');
+      if (da && draft.author) da.innerText = draft.author;
+      const dd = document.getElementById('detail-date');
+      if (dd && (draft.publish_date || draft.date)) dd.innerText = draft.publish_date || draft.date;
+      const di = document.getElementById('detail-image');
+      if (di && draft.featured_img && draft.featured_img.trim()) di.src = normalizeImageUrl(draft.featured_img.trim());
+      const db = document.getElementById('detail-content-body');
+      if (db && draft.body && draft.body.trim()) db.innerHTML = draft.body;
     }
   }
 
@@ -2538,6 +2595,7 @@
       box-shadow: 0 16px 40px rgba(0,0,0,0.85); font-family: 'Inter', sans-serif;
       width: 310px; color: #fff; user-select: none;
     `;
+    const assetPfx = getPathPrefix() + 'assets/images/';
     imagePopover.innerHTML = `
       <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:8px">
         <span id="cip-header-title" style="font-size:11px;font-weight:700;color:#C5A880;text-transform:uppercase;letter-spacing:.05em">Replace Image</span>
@@ -2545,10 +2603,10 @@
       </div>
       <div style="font-size:10px;color:#94a3b8;margin-bottom:6px">Quick Luxury Presets:</div>
       <div style="display:grid;grid-template-columns:repeat(4,1fr);gap:6px;margin-bottom:10px" id="cip-presets">
-        <img class="cip-preset-img" data-src="../assets/images/dubai-office-2.webp" src="../assets/images/dubai-office-2.webp" title="Dubai HQ" style="width:100%;height:46px;object-fit:cover;border-radius:6px;cursor:pointer;border:1px solid #333">
-        <img class="cip-preset-img" data-src="../assets/images/Dominica-Americas-Hu_10e82c.webp" src="../assets/images/Dominica-Americas-Hu_10e82c.webp" title="Caribbean" style="width:100%;height:46px;object-fit:cover;border-radius:6px;cursor:pointer;border:1px solid #333">
-        <img class="cip-preset-img" data-src="../assets/images/portugal-golden-vsa_47319a.webp" src="../assets/images/portugal-golden-vsa_47319a.webp" title="Europe" style="width:100%;height:46px;object-fit:cover;border-radius:6px;cursor:pointer;border:1px solid #333">
-        <img class="cip-preset-img" data-src="../assets/images/isdubairealestateago_3194a5.webp" src="../assets/images/isdubairealestateago_3194a5.webp" title="Real Estate" style="width:100%;height:46px;object-fit:cover;border-radius:6px;cursor:pointer;border:1px solid #333">
+        <img class="cip-preset-img" data-src="${assetPfx}dubai-office-2.webp" src="${assetPfx}dubai-office-2.webp" onerror="this.style.opacity='0.2'" title="Dubai HQ" style="width:100%;height:46px;object-fit:cover;border-radius:6px;cursor:pointer;border:1px solid #333">
+        <img class="cip-preset-img" data-src="${assetPfx}Dominica-Americas-Hu_10e82c.webp" src="${assetPfx}Dominica-Americas-Hu_10e82c.webp" onerror="this.style.opacity='0.2'" title="Caribbean" style="width:100%;height:46px;object-fit:cover;border-radius:6px;cursor:pointer;border:1px solid #333">
+        <img class="cip-preset-img" data-src="${assetPfx}portugal-golden-vsa_47319a.webp" src="${assetPfx}portugal-golden-vsa_47319a.webp" onerror="this.style.opacity='0.2'" title="Europe" style="width:100%;height:46px;object-fit:cover;border-radius:6px;cursor:pointer;border:1px solid #333">
+        <img class="cip-preset-img" data-src="${assetPfx}isdubairealestateago_3194a5.webp" src="${assetPfx}isdubairealestateago_3194a5.webp" onerror="this.style.opacity='0.2'" title="Real Estate" style="width:100%;height:46px;object-fit:cover;border-radius:6px;cursor:pointer;border:1px solid #333">
       </div>
       <div style="font-size:10px;color:#94a3b8;margin-bottom:4px">Or Paste Custom Image URL:</div>
       <div style="display:flex;gap:6px">
@@ -2769,18 +2827,21 @@
             const l = getLang();
             if (!blogs[bIdx][l]) blogs[bIdx][l] = {};
             blogs[bIdx][l].body = cleanHtml;
-            if (l === 'en' && blogs[bIdx].en) blogs[bIdx].en.body = cleanHtml;
-            saveStore('sgcms_blog', blogs);
-
-            if (window.articlesDatabase && window.articlesDatabase[currentSlug]) {
-              window.articlesDatabase[currentSlug].content = cleanHtml;
+            if (l === 'en') {
+              if (blogs[bIdx].en) blogs[bIdx].en.body = cleanHtml;
+              blogs[bIdx].body = cleanHtml;
+              if (window.articlesDatabase && window.articlesDatabase[currentSlug]) {
+                window.articlesDatabase[currentSlug].content = cleanHtml;
+              }
             }
+            saveStore('sgcms_blog', blogs);
 
             if (window.parent && window.parent !== window) {
               try {
                 window.parent.postMessage({
                   type: 'CMS_BLOG_BODY_UPDATED',
                   slug: currentSlug,
+                  lang: l,
                   body: cleanHtml
                 }, '*');
               } catch (e) {}
@@ -3103,9 +3164,7 @@
               e.preventDefault();
               e.stopPropagation();
               const targetLang = btn.getAttribute('data-cdeb-lang');
-              if (typeof window.switchLanguage === 'function') {
-                window.switchLanguage(targetLang);
-              }
+              applyLanguage(targetLang, 'docked-bar');
             });
           });
 
@@ -3170,11 +3229,11 @@
     let originalText = '';
     let hoveredEl = null;
 
-    let editMode = (window.self !== window.top || window.location.search.indexOf('cms_editor') !== -1)
+    editMode = (window.self !== window.top || window.location.search.indexOf('cms_editor') !== -1)
       ? (localStorage.getItem('sgcms_canvas_mode') !== 'browse')
       : false;
 
-    function setEditMode(enabled, notifyParent, showMsg) {
+    setEditMode = function(enabled, notifyParent, showMsg) {
       editMode = enabled;
       localStorage.setItem('sgcms_canvas_mode', enabled ? 'edit' : 'browse');
       document.body.classList.toggle('cms-mode-browse', !enabled);
@@ -3455,8 +3514,8 @@
             if (l === 'en') {
               blogs[bIdx].title = newText;
               if (blogs[bIdx].en) blogs[bIdx].en.title = newText;
+              if (window.articlesDatabase && window.articlesDatabase[currentSlug]) window.articlesDatabase[currentSlug].title = newText;
             }
-            if (window.articlesDatabase && window.articlesDatabase[currentSlug]) window.articlesDatabase[currentSlug].title = newText;
             const tEl = document.getElementById('detail-title');
             if (tEl) tEl.innerText = newText;
             const bEl = document.getElementById('detail-breadcrumb-title');
@@ -3475,8 +3534,11 @@
             if (bodyEl) {
               const cleanHtml = getCleanBodyHtml(bodyEl);
               blogs[bIdx][l].body = cleanHtml;
-              if (l === 'en' && blogs[bIdx].en) blogs[bIdx].en.body = cleanHtml;
-              if (window.articlesDatabase && window.articlesDatabase[currentSlug]) window.articlesDatabase[currentSlug].content = cleanHtml;
+              if (l === 'en') {
+                if (blogs[bIdx].en) blogs[bIdx].en.body = cleanHtml;
+                blogs[bIdx].body = cleanHtml;
+                if (window.articlesDatabase && window.articlesDatabase[currentSlug]) window.articlesDatabase[currentSlug].content = cleanHtml;
+              }
             }
           } else if (activeEl.closest('#detail-faq-wrapper, [id^="faq-dyn-"], [id^="content-faq-dyn-"]')) {
             const allFaqItems = document.querySelectorAll('#detail-faq-col-1 .border-b, #detail-faq-col-2 .border-b');
@@ -4105,7 +4167,11 @@
           window.parent.postMessage({ type: 'CMS_LANG_CHANGED', lang }, '*');
         }
         setTimeout(() => {
-          if (editMode) initBlogBodyWysiwygEditor();
+          try {
+            if (typeof editMode !== 'undefined' && editMode && typeof initBlogBodyWysiwygEditor === 'function') {
+              initBlogBodyWysiwygEditor();
+            }
+          } catch (err) {}
         }, 150);
       }
     });

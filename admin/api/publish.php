@@ -1,7 +1,8 @@
 <?php
 /**
  * Sharif Group CMS - Publish Live API
- * Promotes all draft content keys to live production status in MySQL and published_content.json
+ * Promotes all draft content keys to live production status in MySQL and published_content.json.
+ * NOTE: Sitemap regeneration is handled separately via api/sitemap-regen.php (called async from JS).
  */
 
 require_once __DIR__ . '/db.php';
@@ -50,10 +51,10 @@ if (!empty($payload['data']['sgcms_blog']) && is_array($payload['data']['sgcms_b
         $titleEn = trim($blogItem['en']['title'] ?? ($blogItem['title'] ?? ''));
         $titleAr = trim($blogItem['ar']['title'] ?? '');
         $titleKey = mb_strtolower($titleEn ?: $titleAr);
-        
+
         if ($id && isset($seenIds[$id])) continue;
         if ($titleKey && isset($seenTitles[$titleKey])) continue;
-        
+
         if ($id) $seenIds[$id] = true;
         if ($titleKey) $seenTitles[$titleKey] = true;
         $dedupedBlogs[] = $blogItem;
@@ -128,14 +129,34 @@ if ($db !== null) {
     }
 }
 
+// 3. Atomically update sitemap.xml on disk (takes ~25ms)
+$sitemapUpdated = false;
+$sitemapUrlCount = 0;
+try {
+    $rootDir = realpath(dirname(__DIR__, 2));
+    if ($rootDir && file_exists($rootDir . '/sitemap.php')) {
+        require_once $rootDir . '/sitemap.php';
+        if (function_exists('buildSitemapXml')) {
+            $sResult = buildSitemapXml($rootDir, true);
+            $sitemapUpdated = $sResult['fileWritten'] ?? false;
+            $sitemapUrlCount = $sResult['urlCount'] ?? 0;
+        }
+    }
+} catch (Throwable $se) {
+    error_log('[SharifCMS Publish Sitemap Warning] ' . $se->getMessage());
+}
+
+// 4. Respond with complete status
 jsonResponse([
-    'success'       => true,
-    'message'       => 'Content successfully published to live website' . ($dbPublished ? ' & MySQL database.' : '.'),
-    'publishedAt'   => $publishedAt,
-    'publisher'     => $publisher,
-    'publishedKeys' => $updatedKeys,
-    'count'         => count($updatedKeys),
-    'fileWritten'   => $fileWritten,
-    'dbSynced'      => $dbPublished,
-    'dbError'       => $dbError
+    'success'        => true,
+    'message'        => 'Content successfully published to live website' . ($dbPublished ? ' & MySQL database.' : '.'),
+    'publishedAt'    => $publishedAt,
+    'publisher'      => $publisher,
+    'publishedKeys'  => $updatedKeys,
+    'count'          => count($updatedKeys),
+    'fileWritten'    => $fileWritten,
+    'dbSynced'       => $dbPublished,
+    'dbError'        => $dbError,
+    'sitemapUpdated' => $sitemapUpdated,
+    'sitemapUrlCount'=> $sitemapUrlCount
 ]);

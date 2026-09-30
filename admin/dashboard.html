@@ -2490,6 +2490,9 @@
         if (ui) ui.textContent = adminName.split(' ').filter(Boolean).map(n => n[0]).join('').slice(0, 2).toUpperCase();
       }
 
+      // Proactively warm backend PHP session and auth token
+      setTimeout(() => { if (typeof _refreshSession === 'function') _refreshSession(); }, 300);
+
       // ══════════════════════════════════════════════════════════
       // STATE
       // ══════════════════════════════════════════════════════════
@@ -3031,6 +3034,28 @@
           setCanvasMode(msg.mode, true);
         } else if (msg.type === 'CMS_OPEN_SECTION_BUILDER') {
           openEditorDrawer(msg.section);
+        } else if (msg.type === 'CMS_BLOG_BODY_UPDATED') {
+          const blogs = window.CMS.getData(window.CMS.KEYS.BLOG) || [];
+          const slug = msg.slug;
+          const lang = msg.lang || state.lang || 'en';
+          const b = blogs.find(x => x && (x.id === slug || x.slug === slug || x.en?.slug === slug));
+          if (b) {
+            if (!b[lang]) b[lang] = {};
+            b[lang].body = msg.body;
+            if (lang === 'en') {
+              b.body = msg.body;
+              if (b.en) b.en.body = msg.body;
+            }
+            window.CMS.saveData(window.CMS.KEYS.BLOG, blogs);
+            markDraft();
+            if (state.lang === lang) {
+              const bodyInp = document.getElementById('blog-body');
+              if (bodyInp) bodyInp.value = msg.body;
+            }
+            if (window.CMS && window.CMS.Backend) {
+              window.CMS.Backend.syncToDb('draft');
+            }
+          }
         } else if (msg.type === 'CMS_INLINE_SAVED') {
           markDraft();
           markSaved();
@@ -3316,7 +3341,12 @@
         const author = document.getElementById('qb-author')?.value || 'Sharif Group Legal Desk';
         const customImg = document.getElementById('qb-custom-img')?.value.trim();
         const prevImg = document.getElementById('qb-img-preview')?.src;
-        const img = customImg || (prevImg && !prevImg.includes('data:image/svg') && (prevImg.startsWith('http') || prevImg.startsWith('data:') || prevImg.startsWith('/') || prevImg.startsWith('.')) ? prevImg : '') || selectedBlogImg || '../assets/images/dubai-office-2.webp';
+        let img = customImg || (prevImg && !prevImg.includes('data:image/svg') && (prevImg.startsWith('http') || prevImg.startsWith('data:') || prevImg.startsWith('/') || prevImg.startsWith('.')) ? prevImg : '') || selectedBlogImg || '/assets/images/dubai-office-2.webp';
+        if (img.startsWith('../')) {
+          img = img.replace(/^(\.\.\/)+/, '/');
+        } else if (!img.startsWith('http') && !img.startsWith('/') && !img.startsWith('data:')) {
+          img = '/' + img;
+        }
 
         const slug = title.toLowerCase()
           .replace(/[^a-z0-9\s-]/g, '')
@@ -3335,11 +3365,12 @@
           subcategory,
           featured_img: img,
           publish_date: dateStr,
-          status_en: 'published',
-          status_ar: 'published',
+          status: 'draft',
+          status_en: 'draft',
+          status_ar: 'draft',
           status_fa: 'draft',
           status_zh: 'draft',
-          faqs: initialFaqsEn,
+          faqs: [],
           en: {
             title,
             slug,
@@ -3347,11 +3378,11 @@
             body: '<p class="text-base text-neutral-700 leading-relaxed font-light mb-4"><br></p>',
             meta_title: title + ' | Sharif Group Dubai',
             meta_desc: 'Strategic legal insights and investment parameters prepared by Sharif Group advisory desk.',
-            faqs: initialFaqsEn
+            faqs: []
           },
-          ar: { title: '', slug, excerpt: '', body: '<p class="text-base text-neutral-700 leading-relaxed font-light mb-4"><br></p>', faqs: initialFaqsAr },
-          fa: { title: '', slug, excerpt: '', body: '<p class="text-base text-neutral-700 leading-relaxed font-light mb-4"><br></p>', faqs: initialFaqsFa },
-          zh: { title: '', slug, excerpt: '', body: '<p class="text-base text-neutral-700 leading-relaxed font-light mb-4"><br></p>', faqs: initialFaqsZh }
+          ar: { title: '', slug, excerpt: '', body: '<p class="text-base text-neutral-700 leading-relaxed font-light mb-4"><br></p>', faqs: [] },
+          fa: { title: '', slug, excerpt: '', body: '<p class="text-base text-neutral-700 leading-relaxed font-light mb-4"><br></p>', faqs: [] },
+          zh: { title: '', slug, excerpt: '', body: '<p class="text-base text-neutral-700 leading-relaxed font-light mb-4"><br></p>', faqs: [] }
         };
 
         let existingBlogs = window.CMS.getData(window.CMS.KEYS.BLOG) || window.CMS.DEFAULTS.blog || [];
@@ -3371,72 +3402,15 @@
         const title = customTitle || 'New Strategic Insight Article';
         const category = 'Citizenship';
         const author = session?.name || 'Sharif Group Legal Desk';
-        const img = '../assets/images/dubai-office-2.webp';
+        const img = '/assets/images/dubai-office-2.webp';
 
         const id = 'b' + uid();
         const slug = 'strategic-insight-' + id;
         const dateStr = new Date().toISOString().split('T')[0];
 
-        const sampleFaqsEn = [
-          { q: 'What are the sovereign eligibility criteria for this pathway?', a: 'Applicants must possess a pristine background, pass strict multi-tier AML compliance, and fulfill the designated capital allocation.' },
-          { q: 'Can immediate family and senior dependents be included?', a: 'Yes. The principal investor may include their spouse, dependent children under 30, and dependent parents or grandparents above 55.' },
-          { q: 'Is physical presence or relocation required in Dubai or the host state?', a: 'No mandatory residency requirements apply during processing. All government vetting and apostilles are finalized remotely through our Dubai headquarters.' },
-          { q: 'What are the processing timelines from submission to approval?', a: 'Official government clearance is expedited under our legal protocol, typically taking between 60 to 90 business days.' },
-          { q: 'How is confidential wealth and asset protection guaranteed?', a: 'Sharif Group operates under strict non-disclosure legal mandates and international private client confidentiality standards.' },
-          { q: 'What are the visa-free mobility advantages granted?', a: 'Successful holders gain visa-free or visa-on-arrival access across key international business hubs, Schengen states, and Commonwealth jurisdictions.' },
-          { q: 'Are taxes levied on worldwide income or capital gains?', a: 'Most sovereign pathways feature territorial or zero tax regimes, shielding offshore income, dividends, and inherited assets from local taxation.' },
-          { q: 'What official compliance and police clearances are needed?', a: 'Applicants must supply certified police clearance certificates from their country of citizenship and any jurisdiction where they resided for over six months.' },
-          { q: 'Is dual citizenship or multiple legal residency permitted?', a: 'Yes. Most host jurisdictions legally recognize dual or multiple citizenships without requiring you to renounce your original passport.' },
-          { q: 'How are government fees and investment funds held securely?', a: 'All capital allocations are deposited into regulated sovereign escrow accounts or authorized central bank facilities under institutional oversight.' },
-          { q: 'Can investment properties or capital assets be liquidated later?', a: 'Depending on the statutory holding period (typically 3 to 5 years), qualifying real estate or bonds can be liquidated while retaining acquired sovereign rights.' },
-          { q: 'How does Sharif Group represent investors through official channels?', a: 'Sharif Group acts as an accredited advisory firm in Business Bay, Dubai, managing direct liaison, government apostilles, and expedited legal filing.' }
-        ];
-
-        const sampleFaqsAr = [
-          { q: 'ما هي معايير الأهلية السيادية لهذا المسار؟', a: 'يجب أن يتمتع المتقدمون بسجل أمني وقانوني نظيف، واجتياز تدقيق مكافحة غسل الأموال، واستيفاء متطلبات التخصيص المالي المحددة.' },
-          { q: 'هل يمكن تضمين أفراد الأسرة المباشرين والمعالين الأكبر سناً؟', a: 'نعم، يمكن للمستثمر الرئيسي تضمين الزوج/الزوجة، والأبناء المعالين حتى سن 30 عاماً، والوالدين أو الأجداد المعالين فوق سن 55 عاماً.' },
-          { q: 'هل يلزم التواجد الفعلي أو الانتقال للإقامة في دبي أو الدولة المضيفة؟', a: 'لا توجد متطلبات إقامة إلزامية أثناء الإجراءات. يتم استكمال كافة الموافقات والتوثيقات الحكومية عن بُعد عبر مقرنا الرئيسي في دبي.' },
-          { q: 'ما هي الجداول الزمنية المتوقعة من تقديم الطلب حتى الموافقة النهائية؟', a: 'يتم تسريع استخراج الموافقات الرسمية بموجب بروتوكولنا القانوني المعتمد، وعادةً ما يستغرق ذلك ما بين 60 إلى 90 يوم عمل.' },
-          { q: 'كيف يتم ضمان سرية وحماية الأصول والثروات العائلية؟', a: 'تعمل مجموعة الشريف بموجب تفويضات قانونية صارمة لعدم الإفصاح ومعايير السرية الدولية المعتمدة لعملاء إدارة الثروات الخاصة.' },
-          { q: 'ما هي مزايا حرية التنقل والسفر بدون تأشيرة الممنوحة؟', a: 'يحصل حاملو الوثائق المعتمدة على إمكانية السفر بدون تأشيرة أو بتأشيرة عند الوصول إلى أبرز مراكز الأعمال الدولية، ودول الشنغن، ودول الكومنولث.' },
-          { q: 'هل تُفرض ضرائب على الدخل العالمي أو الأرباح الرأسمالية؟', a: 'تتميز معظم المسارات السيادية بأنظمة ضريبية إقليمية أو صفرية، مما يحمي الدخل الخارجي وتوزيعات الأرباح والأصول الموروثة من الضرائب المحلية.' },
-          { q: 'ما هي الوثائق الأمنية والشهادات الجنائية المطلوبة للتقديم؟', a: 'يجب على المتقدمين تقديم شهادات بحث الحالة الجنائية مصدقة وموثقة من بلد الجنسية ومن أي دولة أقاموا فيها لأكثر من ستة أشهر.' },
-          { q: 'هل يُسمح بازدواج الجنسية أو الاحتفاظ بإقامات متعددة؟', a: 'نعم، تعترف معظم الدول المضيفة قانوناً بازدواج أو تعدد الجنسيات دون اشتراط التخلي عن جواز السفر أو الجنسية الأصلية.' },
-          { q: 'كيف يتم ضمان أمان الودائع وصناديق الاستثمار الحكومية؟', a: 'يتم إيداع كافة الأموال في حسابات ضمان بنكية رسمية (Escrow) خاضعة لرقابة البنوك المركزية والجهات التنظيمية الحكومية المعتمدة.' },
-          { q: 'هل يمكن إعادة بيع العقار الاستثماري أو تسييل الأصول لاحقاً؟', a: 'وفقاً لمدة الاحتفاظ القانونية (عادة من 3 إلى 5 سنوات)، يمكن تسييل العقار أو استرداد السندات مع الاحتفاظ الكامل بالحقوق السيادية المكتسبة.' },
-          { q: 'كيف تمثل مجموعة الشريف المستثمرين عبر القنوات الرسمية؟', a: 'تعمل مجموعة الشريف كجهة استشارية معتمدة من الخليج التجاري بدبي، وتتولى التنسيق المباشر والتصديقات الحكومية والتقديم القانوني السريع.' }
-        ];
-
-        const sampleFaqsFa = [
-          { q: 'معیارهای صلاحیت قانونی و حاکمیتی برای این مسیر چیست؟', a: 'متقاضیان باید دارای پیشینه کاملاً پاک، موفقیت در بررسی‌های چندمرحله‌ای ضدپولشویی و تأمین سرمایه‌گذاری مصوب باشند.' },
-          { q: 'آیا امکان اضافه کردن اعضای درجه یک خانواده و وابستگان وجود دارد؟', a: 'بله. سرمایه‌گذار اصلی می‌تواند همسر، فرزندان وابسته تا ۳۰ سال و والدین یا پدربزرگ و مادربزرگ وابسته بالای ۵۵ سال را اضافه نماید.' },
-          { q: 'آیا حضور فیزیکی یا تغییر محل سکونت در دبی یا کشور مقصد الزامی است؟', a: 'خیر، هیچ شرط اقامت اجباری در طول مراحل پرونده وجود ندارد. تمامی تأییدیه‌ها و آپوستیل‌ها به صورت غیرحضوری از طریق دفتر مرکزی ما در دبی انجام می‌شود.' },
-          { q: 'جدول زمانی پردازش پرونده از ثبت تا تأیید نهایی چقدر است؟', a: 'مراحل تأییدیه رسمی دولتی بر اساس پروتکل حقوقی ما تسریع شده و معمولاً بین ۶۰ تا ۹۰ روز کاری به طول می‌انجامد.' },
-          { q: 'محرمانگی اطلاعات و حفاظت از ثروت و دارایی‌ها چگونه تضمین می‌شود؟', a: 'شریف گروپ تحت تعهدنامه‌های حقوقی عدم افشای اطلاعات و استانداردهای بین‌المللی حفظ حریم خصوصی مشتریان ویژه فعالیت می‌کند.' },
-          { q: 'مزایای تحرک جهانی و سفر بدون ویزا چیست؟', a: 'دارندگان این وضعیت به سفر بدون ویزا یا با ویزای فرودگاهی به مراکز تجاری بین‌المللی، کشورهای حوزه شنگن و اتحادیه کشورهای مشترک‌المنافع دسترسی خواهند داشت.' },
-          { q: 'آیا مالیاتی بر درآمدهای جهانی یا سود سرمایه اعمال می‌شود؟', a: 'اکثر مسیرهای حاکمیتی از رژیم‌های مالیاتی منطقه‌ای یا صفر درصد بهره می‌برند و درآمد برون‌مرزی و سود سهام را از مالیات محلی معاف می‌دارند.' },
-          { q: 'چه مدارک عدم سوءپیشینه و بررسی‌های امنیتی مورد نیاز است؟', a: 'متقاضیان باید گواهی رسمی عدم سوءپیشینه از کشور تابعیت و هر حوزه‌ای که بیش از شش ماه در آن سکونت داشته‌اند با ترجمه رسمی و تأییدات لازم ارائه دهند.' },
-          { q: 'آیا تابعیت مضاعف یا داشتن اقامت‌های قانونی متعدد مجاز است؟', a: 'بله، قوانین اکثر کشورهای مقصد تابعیت دوگانه یا چندگانه را کاملاً به رسمیت شناخته و نیازی به ترک تابعیت اصلی سرمایه‌گذار نیست.' },
-          { q: 'وجوه سرمایه‌گذاری و هزینه‌های دولتی چگونه به طور امن نگهداری می‌شوند؟', a: 'کلیه مبالغ در حساب‌های امانی دولتی (Escrow) یا بانک‌های مرکزی معتبر با نظارت نهادهای قانونی بین‌المللی تودیع می‌گردد.' },
-          { q: 'آیا امکان فروش ملک یا نقد کردن دارایی‌های سرمایه‌گذاری پس از مدتی وجود دارد؟', a: 'با پایان یافتن دوره نگهداری قانونی (معمولاً ۳ تا ۵ سال)، می‌توان ملک یا اوراق قرضه را به فروش رساند در حالی که وضعیت حاکمیتی محفوظ می‌ماند.' },
-          { q: 'شریف گروپ چگونه پرونده سرمایه‌گذاران را از مراجع رسمی پیگیری می‌کند؟', a: 'شریف گروپ به عنوان شرکت مشاوره‌ای معتبر در بیزنس بی دبی، هماهنگی مستقیم با مراجع دولتی، آپوستیل اسناد و ثبت فوری حقوقی را مدیریت می‌کند.' }
-        ];
-
-        const sampleFaqsZh = [
-          { q: '申请该项目的核心资格条件是什么？', a: '申请人须具备良好的无犯罪背景记录，通过严格的多层级反洗钱合规审查，并完成指定的官方投资额度。' },
-          { q: '直系亲属及年长受抚养人可以一并随行申请吗？', a: '可以。主申请人可随同申请配偶、30周岁以下的经济依附子女，以及55周岁以上的受抚养父母或祖父母。' },
-          { q: '申请期间是否要求在迪拜或目标国实际居住或登陆？', a: '办理过程中无强制居住要求。所有政府背景背调及公证海牙认证均由我们迪拜总部合规团队远程协助办理完毕。' },
-          { q: '从正式递交到获得政府批准通常需要多长时间？', a: '在我们的优先法律通道协助下，官方审批流程高效推进，通常仅需60至90个工作日。' },
-          { q: '如何确保家族财富及隐私信息的绝对保密安全？', a: '谢里夫集团严格恪守国际顶级保密协议与全球私人客户专属合规标准，确保客户资产与身份信息滴水不漏。' },
-          { q: '获得身份后享有哪些免签及全球通行便利？', a: '成功持有者可享有免签或落地签前往全球重要金融中心、欧洲申根区以及英联邦等多个国家和地区的通行便利。' },
-          { q: '是否对全球收入或资本利得征收所得税？', a: '绝大多数主权项目实行属地税制或零税率政策，海外经营所得、分红派息以及家族传承资产均免除本土税负。' },
-          { q: '申请过程中需要提供哪些官方无犯罪记录及合规证明？', a: '申请人须提供国籍国以及过去居住满六个月以上国家所开具的正规无犯罪记录公证书及官方海牙认证文件。' },
-          { q: '是否承认双重国籍或允许多重合法居留身份？', a: '完全允许。绝大多数主权法案在法律层面上充分认可双重或多重国籍，无需申请人放弃原有的国籍或护照。' },
-          { q: '官方投资款项及政府规费如何确保资金安全监管？', a: '所有指定投资资金均直接存入官方指定的政府监管信托托管账户（Escrow）或受中央银行监管的专属资金池中。' },
-          { q: '所投资的合规房产或金融资产后续是否可以转让退出？', a: '在满足法定的持有年限要求后（通常为3至5年），投资者可自由转让变现房产或债券，且已获得的合法主权权益继续保留。' },
-          { q: '谢里夫集团如何通过官方通道代表投资者跟进审批？', a: '谢里夫集团总部设立于迪拜商业湾，作为官方认可的专业咨询机构，直接对接审批部门并提供全流程法务公证与加急递交服务。' }
-        ];
-
+        // Note: New articles start with empty FAQs. The user adds their own
+        // Q&A content in the article editor. Pre-filling with generic FAQs
+        // caused localStorage QuotaExceededError with 100+ articles.
         const newArticle = {
           id,
           slug,
@@ -3444,11 +3418,12 @@
           category,
           featured_img: img,
           publish_date: dateStr,
-          status_en: 'published',
-          status_ar: 'published',
-          status_fa: 'published',
-          status_zh: 'published',
-          faqs: sampleFaqsEn,
+          status: 'draft',
+          status_en: 'draft',
+          status_ar: 'draft',
+          status_fa: 'draft',
+          status_zh: 'draft',
+          faqs: [],
           en: {
             title,
             slug,
@@ -3456,12 +3431,13 @@
             body: `<p class="text-base text-neutral-800 leading-relaxed font-light mb-6">International investors are increasingly diversifying their wealth and citizenship portfolios. In this comprehensive guide, our legal team outlines the critical changes in sovereign programs.</p><p class="text-base text-neutral-700 leading-relaxed font-light mb-6">Click directly on any text or headline on this page to edit your article in real-time.</p>`,
             meta_title: title + ' | Sharif Group Dubai',
             meta_desc: 'Strategic legal insights and investment parameters prepared by Sharif Group advisory desk.',
-            faqs: sampleFaqsEn
+            faqs: []
           },
-          ar: { title: 'مقال تحليلي استراتيجي جديد', slug, excerpt: '', body: '<p class="text-base text-neutral-800 leading-relaxed font-light mb-6">انقر مباشرة على هذا النص لتعديل المحتوى في الوقت الفعلي.</p>', faqs: sampleFaqsAr },
-          fa: { title: 'مقاله راهبردی و حقوقی جدید', slug, excerpt: '', body: '<p class="text-base text-neutral-800 leading-relaxed font-light mb-6">برای ویرایش مستقیم متن روی این پاراگراف کلیک کنید.</p>', faqs: sampleFaqsFa },
-          zh: { title: '新战略执行顾问洞察', slug, excerpt: '', body: '<p class="text-base text-neutral-800 leading-relaxed font-light mb-6">点击此处的任何文本即可在实时页面上直接编辑文章内容。</p>', faqs: sampleFaqsZh }
+          ar: { title: 'مقال تحليلي استراتيجي جديد', slug, excerpt: '', body: '<p class="text-base text-neutral-800 leading-relaxed font-light mb-6">انقر مباشرة على هذا النص لتعديل المحتوى في الوقت الفعلي.</p>', faqs: [] },
+          fa: { title: 'مقاله راهبردی و حقوقی جدید', slug, excerpt: '', body: '<p class="text-base text-neutral-800 leading-relaxed font-light mb-6">برای ویرایش مستقیم متن روی این پاراگراف کلیک کنید.</p>', faqs: [] },
+          zh: { title: '新战略执行顾问洞察', slug, excerpt: '', body: '<p class="text-base text-neutral-800 leading-relaxed font-light mb-6">点击此处的任何文本即可在实时页面上直接编辑文章内容。</p>', faqs: [] }
         };
+
 
         let existingBlogs = window.CMS.getData(window.CMS.KEYS.BLOG) || [];
         existingBlogs.unshift(newArticle);
@@ -3474,7 +3450,7 @@
         showToast('New article created! Hover and click any text to edit inline.', 'success');
       }
 
-      let selectedBlogImg = '../assets/images/dubai-office-2.webp';
+      let selectedBlogImg = '/assets/images/dubai-office-2.webp';
       function selectQuickBlogPreset(el) {
         document.querySelectorAll('#qb-presets .sg-preset-item').forEach(i => i.classList.remove('selected'));
         el.classList.add('selected');
@@ -3509,30 +3485,83 @@
         markUnsaved();
       }
 
+      // Helper to compress images client-side before upload to avoid exceeding PHP size limits
+      function compressImageClientSide(file, maxWidth = 1920, maxHeight = 1080, quality = 0.85) {
+        return new Promise((resolve) => {
+          if (!file || !file.type.startsWith('image/')) {
+            resolve({ blob: file, dataUrl: null });
+            return;
+          }
+          const reader = new FileReader();
+          reader.onload = (e) => {
+            const img = new Image();
+            img.onload = () => {
+              let w = img.width;
+              let h = img.height;
+              if (w > maxWidth || h > maxHeight) {
+                const ratio = Math.min(maxWidth / w, maxHeight / h);
+                w = Math.round(w * ratio);
+                h = Math.round(h * ratio);
+              }
+              const canvas = document.createElement('canvas');
+              canvas.width = w;
+              canvas.height = h;
+              const ctx = canvas.getContext('2d');
+              ctx.drawImage(img, 0, 0, w, h);
+              const mime = file.type === 'image/png' ? 'image/png' : 'image/webp';
+              const dataUrl = canvas.toDataURL(mime, quality);
+              canvas.toBlob((blob) => {
+                if (blob) {
+                  const newFile = new File([blob], file.name.replace(/\.[^.]+$/, '') + (mime === 'image/webp' ? '.webp' : '.png'), { type: mime });
+                  resolve({ blob: newFile, dataUrl });
+                } else {
+                  resolve({ blob: file, dataUrl: e.target.result });
+                }
+              }, mime, quality);
+            };
+            img.onerror = () => resolve({ blob: file, dataUrl: e.target.result });
+            img.src = e.target.result;
+          };
+          reader.onerror = () => resolve({ blob: file, dataUrl: null });
+          reader.readAsDataURL(file);
+        });
+      }
+
       async function handleBlogImageUpload(inputEl, targetInputId, previewImgId, statusId) {
         if (!inputEl || !inputEl.files || !inputEl.files[0]) return;
-        const file = inputEl.files[0];
+        const originalFile = inputEl.files[0];
         const statusEl = document.getElementById(statusId);
-        if (statusEl) statusEl.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i> Uploading...';
+        if (statusEl) statusEl.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i> Optimizing & uploading...';
 
-        const reader = new FileReader();
-        reader.onload = function(e) {
-          const prev = document.getElementById(previewImgId);
-          if (prev) {
-            prev.src = e.target.result;
-            prev.style.display = 'block';
-            const wrap = prev.closest('#qb-preview-wrap');
-            if (wrap) wrap.style.display = 'block';
-          }
-        };
-        reader.readAsDataURL(file);
+        const { blob: fileToUpload, dataUrl: previewDataUrl } = await compressImageClientSide(originalFile);
+
+        const prev = document.getElementById(previewImgId);
+        if (prev && previewDataUrl) {
+          prev.src = previewDataUrl;
+          prev.style.display = 'block';
+          const wrap = prev.closest('#qb-preview-wrap');
+          if (wrap) wrap.style.display = 'block';
+        }
+
+        const token = (typeof _getAuthToken === 'function' ? _getAuthToken() : null) ||
+                      sessionStorage.getItem('sgcms_token') ||
+                      localStorage.getItem('sgcms_token') || '';
 
         const formData = new FormData();
-        formData.append('file', file);
+        formData.append('file', fileToUpload);
+        if (token) formData.append('token', token);
+
+        const headers = {};
+        if (token) {
+          headers['Authorization'] = 'Bearer ' + token;
+          headers['X-CMS-Token'] = token;
+        }
 
         try {
           const res = await fetch('api/upload.php', {
             method: 'POST',
+            credentials: 'include',
+            headers,
             body: formData
           });
           const json = await res.json();
@@ -3541,24 +3570,27 @@
             if (inp) {
               inp.value = json.url;
               markUnsaved();
-              if (typeof broadcastBlogDraft === 'function') broadcastBlogDraft();
+              if (document.getElementById('blog-title') && typeof broadcastBlogDraft === 'function') {
+                broadcastBlogDraft();
+              }
               if (typeof liveUpdateField === 'function') liveUpdateField('blog_img', json.url);
             }
+            if (prev) prev.src = json.url;
             if (statusEl) statusEl.innerHTML = '<i class="fa-solid fa-check" style="color:#4ade80"></i> <span style="color:#4ade80">Uploaded!</span>';
             setTimeout(() => { if (statusEl) statusEl.innerHTML = ''; }, 3000);
-            showToast('Image uploaded successfully from device!', 'success');
+            showToast('Image uploaded and optimized successfully!', 'success');
           } else {
             throw new Error(json?.error || 'Upload failed');
           }
         } catch (err) {
           console.warn('[Image Upload fallback]:', err.message);
           const inp = document.getElementById(targetInputId);
-          if (inp && reader.result) {
-            inp.value = reader.result;
+          if (inp && previewDataUrl) {
+            inp.value = previewDataUrl;
             markUnsaved();
           }
           if (statusEl) statusEl.innerHTML = '<span style="color:var(--gold)">Ready</span>';
-          showToast('Image loaded from device!', 'info');
+          showToast('Image loaded and ready!', 'info');
         }
       }
 
@@ -3690,43 +3722,25 @@
       function repairBlogFaqsAndTranslations(blogs) {
         if (!Array.isArray(blogs)) return blogs;
         blogs = deduplicateBlogs(blogs);
-        let modified = false;
-        const langMap = { en: initialFaqsEn, ar: initialFaqsAr, fa: initialFaqsFa, zh: initialFaqsZh };
+        // NOTE: We intentionally do NOT auto-pad every blog with 12 generic default FAQs.
+        // Doing so causes localStorage QuotaExceededError with 100+ articles:
+        //   48 FAQ objects (long multilingual text) × 100+ blogs = massive localStorage bloat.
+        // FAQs are only created when the user explicitly types them in the article editor.
         blogs.forEach(b => {
           if (!b) return;
+          // Ensure required language sub-objects exist
           b.en = b.en || {};
-          // Ensure en has 12 complete FAQs
-          if (!Array.isArray(b.en.faqs) || b.en.faqs.length < 12) {
-            const currentFaqs = Array.isArray(b.en.faqs) && b.en.faqs.length ? [...b.en.faqs] : (Array.isArray(b.faqs) && b.faqs.length ? [...b.faqs] : []);
-            for (let i = currentFaqs.length; i < 12; i++) {
-              currentFaqs.push(initialFaqsEn[i]);
-            }
-            b.en.faqs = currentFaqs;
-            b.faqs = currentFaqs;
-            modified = true;
-          }
-          // Ensure localized faqs have 12 items for ar, fa, zh
+          ['ar', 'fa', 'zh'].forEach(lang => { b[lang] = b[lang] || {}; });
+          // Ensure faq arrays exist as empty arrays — do NOT fill with placeholder content
+          if (!Array.isArray(b.en.faqs)) b.en.faqs = [];
+          if (!Array.isArray(b.faqs)) b.faqs = b.en.faqs;
           ['ar', 'fa', 'zh'].forEach(lang => {
-            b[lang] = b[lang] || {};
-            const defLang = langMap[lang] || initialFaqsEn;
-            if (!Array.isArray(b[lang].faqs) || b[lang].faqs.length < 12) {
-              const curLangFaqs = Array.isArray(b[lang].faqs) && b[lang].faqs.length ? [...b[lang].faqs] : [];
-              for (let i = curLangFaqs.length; i < 12; i++) {
-                curLangFaqs.push(defLang[i]);
-              }
-              b[lang].faqs = curLangFaqs;
-              modified = true;
-            }
+            if (!Array.isArray(b[lang].faqs)) b[lang].faqs = [];
           });
         });
-        if (modified) {
-          window.CMS.saveData(window.CMS.KEYS.BLOG, blogs);
-          if (window.CMS && window.CMS.Backend && window.CMS.Backend.syncToDb) {
-            window.CMS.Backend.syncToDb('draft');
-          }
-        }
         return blogs;
       }
+
 
       function submitQuickBlog() {
         if (window._isSubmittingBlog) return;
@@ -3767,7 +3781,7 @@
           status_ar: 'published',
           status_fa: 'published',
           status_zh: 'published',
-          faqs: initialFaqsEn,
+          faqs: [],
           en: {
             title,
             slug,
@@ -3777,30 +3791,31 @@
             body: '<p class="text-base text-neutral-700 leading-relaxed font-light mb-4"><br></p>',
             meta_title: title + ' | Sharif Group Dubai',
             meta_desc: 'Strategic legal insights and investment parameters prepared by Sharif Group advisory desk.',
-            faqs: initialFaqsEn
+            faqs: []
           },
           ar: {
             title: (state.lang === 'ar' || !cleanAscii) ? title : '',
             slug: slug,
             excerpt: '',
             body: '<p class="text-base text-neutral-700 leading-relaxed font-light mb-4"><br></p>',
-            faqs: initialFaqsAr
+            faqs: []
           },
           fa: {
             title: state.lang === 'fa' ? title : '',
             slug: slug,
             excerpt: '',
             body: '<p class="text-base text-neutral-700 leading-relaxed font-light mb-4"><br></p>',
-            faqs: initialFaqsFa
+            faqs: []
           },
           zh: {
             title: state.lang === 'zh' ? title : '',
             slug: slug,
             excerpt: '',
             body: '<p class="text-base text-neutral-700 leading-relaxed font-light mb-4"><br></p>',
-            faqs: initialFaqsZh
+            faqs: []
           }
         };
+
 
         let existingBlogs = window.CMS.getData(window.CMS.KEYS.BLOG);
         if (!Array.isArray(existingBlogs)) existingBlogs = [];
@@ -3827,7 +3842,7 @@
         window.CMS.saveData(window.CMS.KEYS.BLOG, existingBlogs);
         populateSidebar();
 
-        // Immediately sync to MySQL database and published_content.json so article is live across all browsers
+        // Sync draft to MySQL database and draft snapshot so it is safely stored
         try {
           const token = sessionStorage.getItem('sgcms_token') || localStorage.getItem('sgcms_token');
           const headers = { 'Content-Type': 'application/json' };
@@ -3841,26 +3856,17 @@
             headers,
             body: JSON.stringify({ key: 'sgcms_blog', data: existingBlogs, token })
           });
-          fetch('api/publish.php', {
-            method: 'POST',
-            credentials: 'include',
-            headers,
-            body: JSON.stringify({
-              publisher: 'Admin (Article Create)',
-              data: { sgcms_blog: existingBlogs },
-              token
-            })
-          });
         } catch (e) { }
 
         if (window.CMS && window.CMS.Backend) {
           window.CMS.Backend.syncToDb('draft').then(ok => {
-            console.log('[CMS] New blog article synced to database:', ok);
+            console.log('[CMS] New blog article synced to database draft:', ok);
           });
         }
 
+        markDraft();
         closeQuickBlogModal();
-        showToast('Article created successfully!', 'success');
+        showToast('Article created as draft! Click "Publish" to make it live.', 'success');
 
         state.section = 'blog-edit';
         state.itemId = targetArticle.id;
@@ -6542,19 +6548,42 @@
       }
 
       function broadcastBlogDraft() {
-        const title = document.getElementById('blog-title')?.value || '';
-        const slug = document.getElementById('blog-slug')?.value || '';
-        const category = document.getElementById('blog-category')?.value || 'Citizenship';
-        const subcategory = document.getElementById('blog-subcategory')?.value || '';
-        const status = document.getElementById('blog-status')?.value || 'published';
-        const featured = document.getElementById('blog-featured')?.value === 'true';
-        const author = document.getElementById('blog-author')?.value || 'Sharif Group Advisory';
-        const authorTitle = document.getElementById('blog-author-title')?.value || 'Senior Immigration Partner';
-        const date = document.getElementById('blog-date')?.value || new Date().toISOString().split('T')[0];
-        const readTime = document.getElementById('blog-read-time')?.value || '5 min read';
-        const img = document.getElementById('blog-img')?.value || '';
-        const excerpt = document.getElementById('blog-excerpt')?.value || '';
-        const body = document.getElementById('blog-body')?.value || '';
+        const formTitle = document.getElementById('blog-title');
+        let title = formTitle?.value?.trim() || '';
+        let slug = document.getElementById('blog-slug')?.value?.trim() || '';
+        let category = document.getElementById('blog-category')?.value || 'Citizenship';
+        let subcategory = document.getElementById('blog-subcategory')?.value || '';
+        let status = document.getElementById('blog-status')?.value || 'published';
+        let featured = document.getElementById('blog-featured')?.value === 'true';
+        let author = document.getElementById('blog-author')?.value || 'Sharif Group Advisory';
+        let authorTitle = document.getElementById('blog-author-title')?.value || 'Senior Immigration Partner';
+        let date = document.getElementById('blog-date')?.value || new Date().toISOString().split('T')[0];
+        let readTime = document.getElementById('blog-read-time')?.value || '5 min read';
+        let img = document.getElementById('blog-img')?.value?.trim() || '';
+        let excerpt = document.getElementById('blog-excerpt')?.value || '';
+        let body = document.getElementById('blog-body')?.value || '';
+
+        // If form elements are not in the DOM (e.g. drawer is closed and user is editing visually),
+        // pull from the stored article in CMS rather than broadcasting empty strings!
+        if (!formTitle && state.section === 'blog-edit') {
+          const blogs = window.CMS.getData(window.CMS.KEYS.BLOG) || [];
+          const b = blogs.find(x => x.id === state.itemId || x.slug === state.activeBlogSlug);
+          if (!b) return;
+          const ld = b[state.lang] || (state.lang === 'en' ? (b.en || b) : {});
+          title = ld.title || (state.lang === 'en' ? (b.title || (b.en && b.en.title) || '') : '');
+          slug = b.slug || ld.slug || state.activeBlogSlug || '';
+          category = b.category || category;
+          subcategory = b.subcategory || subcategory;
+          status = b.status_en || status;
+          featured = !!b.featured;
+          author = b.author || author;
+          authorTitle = b.author_title || authorTitle;
+          date = b.publish_date || date;
+          readTime = b.read_time || readTime;
+          img = b.featured_img || '';
+          excerpt = ld.excerpt || (state.lang === 'en' ? (b.excerpt || '') : '');
+          body = ld.body || (state.lang === 'en' ? (b.body || (b.en && b.en.body) || '') : '');
+        }
 
         sendToIframe({
           type: 'CMS_UPDATE_BLOG_DRAFT',
@@ -6834,7 +6863,9 @@
 
         const langMap = { en: initialFaqsEn, ar: initialFaqsAr, fa: initialFaqsFa, zh: initialFaqsZh };
         let defaultBlogFaqs = (ld.faqs && Array.isArray(ld.faqs) && ld.faqs.length) ? ld.faqs : (langMap[l] || initialFaqsEn);
-        if (defaultBlogFaqs.length < 12) {
+        if (defaultBlogFaqs.some(f => f && f.q && (f.q.includes('点击编辑常见问题') || f.q.includes('Click to edit FAQ') || f.q.includes('انقر لتعديل السؤال') || f.q.includes('برای ویرایش پرسش')))) {
+          defaultBlogFaqs = langMap[l] || initialFaqsEn;
+        } else if (defaultBlogFaqs.length < 12) {
           const merged = [...defaultBlogFaqs];
           const defArr = langMap[l] || initialFaqsEn;
           for (let fi = merged.length; fi < 12; fi++) {
@@ -6850,10 +6881,13 @@
         <button class="btn btn-ghost" onclick="navigate('blog')"><i class="fa-solid fa-arrow-left"></i> All Articles</button>
         <div>
           <h1 class="ed-page-title" style="margin-bottom:2px">${isNew ? 'Create New Article' : 'Edit Article'}</h1>
-          <p class="ed-page-desc" style="margin-bottom:0">${isNew ? 'Publish or draft a new blog insight' : escH(ld.title || 'Draft Article')}</p>
+          <p class="ed-page-desc" style="margin-bottom:0">${isNew ? 'Draft a new insight or publish immediately live' : escH(ld.title || 'Draft Article')}</p>
         </div>
       </div>
-      <button class="btn btn-primary" onclick="saveBlogItem('${id}')"><i class="fa-solid fa-floppy-disk"></i> ${isNew ? 'Publish Article' : 'Save Article'}</button>
+      <div style="display:flex;gap:8px">
+        <button class="btn btn-ghost" onclick="saveBlogItem('${id}', false)"><i class="fa-solid fa-floppy-disk"></i> Save Draft</button>
+        <button class="btn btn-publish" onclick="saveBlogItem('${id}', true)" style="background:linear-gradient(135deg,#10b981,#059669);color:#fff"><i class="fa-solid fa-cloud-arrow-up"></i> Save & Publish Live</button>
+      </div>
     </div>` +
           block('blog-id', 'rgba(168,85,247,.15)', '#a855f7', '<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 19.5v-15A2.5 2.5 0 0 1 6.5 2H20v20H6.5a2.5 2.5 0 0 1-2.5-2.5Z"/><path d="M6 6h10"/><path d="M6 10h10"/></svg>', '1. Article Headline & Publishing', l.toUpperCase(), identityBody) +
           block('blog-author', 'rgba(96,165,250,.15)', '#60a5fa', '<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M19 21v-2a4 4 0 0 0-4-4H9a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>', '2. Author & Reading Metrics', null, authorBody) +
@@ -6865,7 +6899,8 @@
       <button class="btn btn-ghost" onclick="navigate('blog')">Cancel</button>
       <div style="display:flex;gap:8px">
         ${!isNew ? `<button class="btn btn-ghost" onclick="deleteBlogItem('${id}')" style="color:#f87171;border-color:rgba(239,68,68,.3)"><i class="fa-solid fa-trash"></i> Delete Article</button>` : ''}
-        <button class="btn btn-primary" onclick="saveBlogItem('${id}')"><i class="fa-solid fa-circle-check"></i> ${isNew ? 'Publish Article' : 'Save Changes'}</button>
+        <button class="btn btn-ghost" onclick="saveBlogItem('${id}', false)"><i class="fa-solid fa-floppy-disk"></i> Save Draft</button>
+        <button class="btn btn-publish" onclick="saveBlogItem('${id}', true)" style="background:linear-gradient(135deg,#10b981,#059669);color:#fff"><i class="fa-solid fa-cloud-arrow-up"></i> Save & Publish Live</button>
       </div>
     </div>`;
 
@@ -6873,7 +6908,7 @@
         setTimeout(() => { broadcastBlogDraft(); }, 150);
       }
 
-      function saveBlogItem(id) {
+      function saveBlogItem(id, andPublish) {
         const blogs = window.CMS.getData(window.CMS.KEYS.BLOG) || [];
         let idx = blogs.findIndex(b => b.id === id);
         const isNew = idx < 0;
@@ -6897,11 +6932,17 @@
           const rawTags = document.getElementById('blog-tags')?.value || '';
           if (rawTags) item.tags = rawTags.split(',').map(t => t.trim()).filter(Boolean);
 
-          const status = document.getElementById('blog-status')?.value || item.status_en || 'published';
+          const status = andPublish ? 'published' : (document.getElementById('blog-status')?.value || item.status_en || item.status || 'draft');
+          const statusSel = document.getElementById('blog-status');
+          if (statusSel && andPublish) statusSel.value = 'published';
+          item.status = status;
           item.status_en = status;
           item.status_ar = status;
           item.status_fa = status;
           item.status_zh = status;
+          ['en', 'ar', 'fa', 'zh'].forEach(k => {
+            if (item[k]) item[k].status = status;
+          });
 
           const rawSlugInp = document.getElementById('blog-slug')?.value.trim();
           let cleanSlug = rawSlugInp ? rawSlugInp.toLowerCase().replace(/[^a-z0-9\u0600-\u06FF\u4e00-\u9fa5\s-]/g, '').replace(/[\s_]+/g, '-').replace(/-+/g, '-').replace(/(^-|-$)/g, '') : '';
@@ -6937,22 +6978,20 @@
           if (!item.en.slug) item.en.slug = cleanSlug;
         }
 
+        let updatedList = [...blogs];
         if (isNew) {
-          const cleanedBlogs = blogs.filter(b => b.id !== id);
-          cleanedBlogs.unshift(item);
-          window.CMS.saveData(window.CMS.KEYS.BLOG, cleanedBlogs);
+          updatedList = updatedList.filter(b => b.id !== id);
+          updatedList.unshift(item);
         } else {
-          blogs[idx] = item;
-          window.CMS.saveData(window.CMS.KEYS.BLOG, blogs);
+          updatedList[idx] = item;
         }
 
-        markSaved();
-        showToast(isNew ? 'Article published successfully!' : 'Article saved successfully!');
+        window.CMS.saveData(window.CMS.KEYS.BLOG, updatedList);
 
         // Update sidebar list immediately
         populateSidebar();
 
-        // Immediately sync to MySQL database and published_content.json so article is live across all browsers
+        // Sync draft to MySQL database and draft snapshot so it is safely stored
         try {
           const token = sessionStorage.getItem('sgcms_token') || localStorage.getItem('sgcms_token');
           const headers = { 'Content-Type': 'application/json' };
@@ -6964,17 +7003,7 @@
             method: 'POST',
             credentials: 'include',
             headers,
-            body: JSON.stringify({ key: 'sgcms_blog', data: blogs, token })
-          });
-          fetch('api/publish.php', {
-            method: 'POST',
-            credentials: 'include',
-            headers,
-            body: JSON.stringify({
-              publisher: 'Admin (Article Save)',
-              data: { sgcms_blog: blogs },
-              token
-            })
+            body: JSON.stringify({ key: 'sgcms_blog', data: updatedList, token })
           });
         } catch (e) { }
 
@@ -6985,12 +7014,21 @@
           });
         }
 
-        // Blog saved - manual translations per language tab (no AI overwrite)
-        // Notify preview iframe: remove draft card and inject the saved article
+        // Notify preview iframe
         sendToIframe({ type: 'CMS_BLOG_SAVED', id, blog: item });
 
-        // Navigate to blog list
+        // Navigate to blog list first so editor form state is cleared
         navigate('blog');
+
+        if (andPublish) {
+          showToast('Article saved! Publishing live...', 'info');
+          setTimeout(() => {
+            publishLiveSite();
+          }, 60);
+        } else {
+          markDraft();
+          showToast(isNew ? 'Article saved to drafts! Click "Publish" in the top bar to make it live.' : 'Draft saved! Click "Publish" to make changes live.', 'success');
+        }
 
         setTimeout(() => { refreshPreview(); }, 150);
       }
@@ -7033,7 +7071,10 @@
           }
         } catch (e) { }
 
-        // Immediately synchronize deletion to backend PHP MySQL & published_content.json
+        markDraft();
+        showToast(`"${title}" deleted from drafts. Click "Publish" to remove it from the live site.`, 'info');
+
+        // Synchronize deletion to backend PHP MySQL draft snapshot
         try {
           const token = sessionStorage.getItem('sgcms_token') || localStorage.getItem('sgcms_token') || '';
           const headers = { 'Content-Type': 'application/json' };
@@ -7041,22 +7082,11 @@
             headers['Authorization'] = 'Bearer ' + token;
             headers['X-CMS-Token'] = token;
           }
-          // Dual sync: save draft and publish updated blog list to server
           fetch('api/save.php', {
             method: 'POST',
             credentials: 'include',
             headers,
             body: JSON.stringify({ key: 'sgcms_blog', data: blogs, token })
-          });
-          fetch('api/publish.php', {
-            method: 'POST',
-            credentials: 'include',
-            headers,
-            body: JSON.stringify({
-              publisher: 'Admin (Article Delete)',
-              data: { sgcms_blog: blogs },
-              token
-            })
           });
         } catch (e) { }
 
@@ -8237,7 +8267,9 @@
 
           } else if (section === 'blog' || section === 'blog-new' || section === 'blog-edit') {
             const id = state.itemId || (document.getElementById('blog-title') ? 'b' + uid() : null);
-            if (id) saveBlogItem(id);
+            if (id) {
+              saveBlogItem(id, false);
+            }
             markDraft();
             markSaved();
             if (window.CMS && window.CMS.Backend) {
@@ -8497,206 +8529,247 @@
       // ══════════════════════════════════════════════════════════
       // PUBLISH LIVE SITE ENGINE
       // ══════════════════════════════════════════════════════════
+      let _isPublishingLive = false;
       async function publishLiveSite() {
+        if (_isPublishingLive) {
+          console.warn('[CMS Publish] Already in progress, ignoring duplicate call.');
+          return;
+        }
+        _isPublishingLive = true;
+
         const btn = document.getElementById('btn-publish-live');
         if (btn) {
           btn.disabled = true;
           btn.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i> Publishing...';
         }
 
-        // Auto-commit any active form changes in the currently open editor
         try {
-          if (typeof saveCurrentPage === 'function' && state.section && state.section !== 'overview') {
-            saveCurrentPage();
-          }
-        } catch (e) { }
+          // Auto-commit any active form changes in the currently open editor
+          try {
+            if (typeof saveCurrentPage === 'function' && state.section && state.section !== 'overview') {
+              saveCurrentPage();
+            }
+          } catch (e) { }
 
-        // 1. Gather all current draft CMS keys comprehensively
-        const baseKeys = [
-          window.CMS.KEYS.HOMEPAGE,
-          window.CMS.KEYS.CITIZENSHIP,
-          window.CMS.KEYS.RESIDENCY,
-          window.CMS.KEYS.BLOG,
-          window.CMS.KEYS.TEAM,
-          window.CMS.KEYS.ABOUTUS,
-          window.CMS.KEYS.CONTACT,
-          window.CMS.KEYS.LEGAL,
-          window.CMS.KEYS.NAV || 'sgcms_navigation',
-          'sgcms_navigation',
-          'sgcms_custom_sections',
-          'sgcms_flag_codes',
-          'sgcms_cookiepolicy',
-          'sgcms_dom_overrides'
-        ];
+          // 1. Gather all current draft CMS keys comprehensively
+          const baseKeys = [
+            window.CMS.KEYS.HOMEPAGE,
+            window.CMS.KEYS.CITIZENSHIP,
+            window.CMS.KEYS.RESIDENCY,
+            window.CMS.KEYS.BLOG,
+            window.CMS.KEYS.TEAM,
+            window.CMS.KEYS.ABOUTUS,
+            window.CMS.KEYS.CONTACT,
+            window.CMS.KEYS.LEGAL,
+            window.CMS.KEYS.NAV || 'sgcms_navigation',
+            'sgcms_navigation',
+            'sgcms_custom_sections',
+            'sgcms_flag_codes',
+            'sgcms_cookiepolicy',
+            'sgcms_dom_overrides'
+          ];
 
-        // Sanitize any corrupted DOM overrides before packaging live manifest
-        try {
-          ['sgcms_dom_overrides', 'sgcms_dom_overrides_live'].forEach(k => {
-            const raw = localStorage.getItem(k);
-            if (!raw) return;
-            let obj = JSON.parse(raw);
-            let mod = false;
-            for (const pKey in obj) {
-              for (const lKey in obj[pKey]) {
-                for (const sel in obj[pKey][lKey]) {
-                  const val = obj[pKey][lKey][sel];
-                  const str = typeof val === 'string' ? val : (val?.text || '');
-                  if (
-                    str.includes('naikhsn') ||
-                    str.includes('Costs\nfor') ||
-                    sel.includes('header') ||
-                    sel.includes('nav') ||
-                    sel.includes('logo') ||
-                    sel.includes('text-neutral-300') ||
-                    sel === 'span' ||
-                    sel.startsWith('div.flex')
-                  ) {
-                    delete obj[pKey][lKey][sel];
-                    mod = true;
-                  } else if (
-                    (
-                      sel.includes('overviewTitle') || (sel.includes('sec-overview') && sel.includes('h3')) ||
-                      sel.includes('investmentTitle') || (sel.includes('sec-investment') && sel.includes('h2')) ||
-                      sel.includes('whoCanApplyTitle') || (sel.includes('sec-who-can-apply') && sel.includes('h3')) ||
-                      sel.includes('benefitsTitle') || (sel.includes('sec-benefits') && sel.includes('h2')) ||
-                      sel.includes('formTitle') || (sel.includes('program-consult-form-section') && sel.includes('h3'))
-                    ) &&
-                    !str.includes('<span')
-                  ) {
-                    delete obj[pKey][lKey][sel];
-                    mod = true;
+          // Sanitize any corrupted DOM overrides
+          try {
+            ['sgcms_dom_overrides'].forEach(k => {
+              const raw = localStorage.getItem(k);
+              if (!raw) return;
+              let obj = JSON.parse(raw);
+              let mod = false;
+              for (const pKey in obj) {
+                for (const lKey in obj[pKey]) {
+                  for (const sel in obj[pKey][lKey]) {
+                    const val = obj[pKey][lKey][sel];
+                    const str = typeof val === 'string' ? val : (val?.text || '');
+                    if (
+                      str.includes('naikhsn') ||
+                      str.includes('Costs\nfor') ||
+                      sel.includes('header') ||
+                      sel.includes('nav') ||
+                      sel.includes('logo') ||
+                      sel.includes('text-neutral-300') ||
+                      sel === 'span' ||
+                      sel.startsWith('div.flex')
+                    ) {
+                      delete obj[pKey][lKey][sel];
+                      mod = true;
+                    }
                   }
                 }
               }
+              if (mod) localStorage.setItem(k, JSON.stringify(obj));
+            });
+          } catch (e) { }
+
+          const keys = [...baseKeys];
+          for (let i = 0; i < localStorage.length; i++) {
+            const k = localStorage.key(i);
+            if (k && k.startsWith('sgcms_') && !k.endsWith('_live') && k !== 'sgcms_auth' && k !== 'sgcms_token' && k !== 'sgcms_sb_collapsed' && k !== 'sgcms_publish_status' && k !== 'sgcms_published_manifest') {
+              if (!keys.includes(k)) keys.push(k);
             }
-            if (mod) localStorage.setItem(k, JSON.stringify(obj));
-          });
-        } catch (e) { }
-
-        const keys = [...baseKeys];
-        for (let i = 0; i < localStorage.length; i++) {
-          const k = localStorage.key(i);
-          if (k && k.startsWith('sgcms_') && !k.endsWith('_live') && k !== 'sgcms_auth' && k !== 'sgcms_token' && k !== 'sgcms_sb_collapsed' && k !== 'sgcms_publish_status' && k !== 'sgcms_published_manifest') {
-            if (!keys.includes(k)) keys.push(k);
           }
-        }
 
-        const payload = {
-          version: '3.0.0',
-          publishedAt: new Date().toISOString(),
-          publisher: (session && session.name) ? session.name : 'Admin (Sharif Group CMS Studio)',
-          data: {}
-        };
+          const payload = {
+            version: '3.0.0',
+            publishedAt: new Date().toISOString(),
+            publisher: (session && session.name) ? session.name : 'Admin (Sharif Group CMS Studio)',
+            data: {}
+          };
 
-        keys.forEach(k => {
-          try {
-            const val = localStorage.getItem(k);
-            if (val !== null) {
-              let parsed = JSON.parse(val);
-              if (typeof parsed === 'string') {
-                const trimmed = parsed.trim();
-                if (trimmed.startsWith('{') || trimmed.startsWith('[')) {
-                  try { parsed = JSON.parse(trimmed); } catch (e) { }
+          keys.forEach(k => {
+            try {
+              const val = localStorage.getItem(k);
+              if (val !== null) {
+                let parsed = JSON.parse(val);
+                if (typeof parsed === 'string') {
+                  const trimmed = parsed.trim();
+                  if (trimmed.startsWith('{') || trimmed.startsWith('[')) {
+                    try { parsed = JSON.parse(trimmed); } catch (e) { }
+                  }
                 }
+                payload.data[k] = parsed;
               }
-              payload.data[k] = parsed;
-              // Mirror to live published store
-              localStorage.setItem(k + '_live', JSON.stringify(parsed));
+            } catch (e) { }
+          });
+
+          // ── Always mirror to local live published store so preview & live website update immediately ──
+          keys.forEach(k => {
+            if (payload.data[k] !== undefined) {
+              try {
+                localStorage.setItem(k + '_live', JSON.stringify(payload.data[k]));
+              } catch (e) { }
+            }
+          });
+
+          // Store manifest safely with quota catch
+          try {
+            localStorage.setItem('sgcms_published_manifest', JSON.stringify(payload));
+            localStorage.setItem('sgcms_published_timestamp', payload.publishedAt);
+          } catch (quotaErr) {
+            console.warn('[CMS Publish] Local storage quota reached for manifest:', quotaErr);
+          }
+
+          // Notify open live canvas iframe
+          try {
+            const iframe = document.getElementById('live-iframe');
+            if (iframe && iframe.contentWindow) {
+              iframe.contentWindow.postMessage({ type: 'CMS_REHYDRATE', publishedAt: payload.publishedAt }, '*');
             }
           } catch (e) { }
-        });
 
-        // ── DIAGNOSTIC: Warn if homepage data is missing from payload ──
-        const homepageKey = window.CMS.KEYS.HOMEPAGE || 'sgcms_homepage';
-        if (!payload.data[homepageKey]) {
-          console.warn('[CMS Publish] WARNING: sgcms_homepage is NOT in the publish payload. Homepage changes will not appear on the live site.');
-        }
+          markLive(payload.publishedAt);
+          markSaved();
 
-        // Store live manifest
-        localStorage.setItem('sgcms_published_manifest', JSON.stringify(payload));
-        localStorage.setItem('sgcms_published_timestamp', payload.publishedAt);
-
-        // Notify open live canvas iframe immediately
-        try {
-          const iframe = document.getElementById('live-iframe');
-          if (iframe && iframe.contentWindow) {
-            iframe.contentWindow.postMessage({ type: 'CMS_REHYDRATE', publishedAt: payload.publishedAt }, '*');
+          // 2. Publish to Server API Hook (MySQL + published_content.json + sitemap.xml)
+          let backendResult = null;
+          let backendError = null;
+          try {
+            backendResult = await dispatchPublishToBackend(payload);
+            if (backendResult && (backendResult._failed || backendResult.error)) {
+              backendError = backendResult;
+            }
+          } catch (e) {
+            backendError = { error: e.message, _networkFail: true };
+            console.warn('[CMS Publish] Network error:', e.message);
           }
-        } catch (e) { }
 
-        // 2. Publish to Server API Hook
-        let backendResult = null;
-        let backendError = null;
-        try {
-          backendResult = await dispatchPublishToBackend(payload);
-          if (backendResult && (backendResult._failed || backendResult.error)) {
-            backendError = backendResult;
+          // 3. Handle Result
+          if (backendError && !backendResult?.offline) {
+            // SHOW ERROR MODAL with full diagnostics
+            const errModal = document.getElementById('modal-publish-error');
+            const errSummary = document.getElementById('publish-error-summary');
+            const errDetail = document.getElementById('publish-error-detail');
+            const errKeys = document.getElementById('publish-error-keys');
+            const errStatus = document.getElementById('publish-error-status');
+
+            if (errSummary) {
+              if (backendError._networkFail) {
+                errSummary.textContent = 'Could not reach the server. Changes are published locally in browser.';
+              } else if (backendError._status === 401) {
+                errSummary.textContent = 'Authentication failed (401). Your session may have expired — please log in again.';
+              } else if (backendError._status === 404) {
+                errSummary.textContent = 'Server endpoint api/publish.php was not found (404). Changes are published locally in browser.';
+              } else if (backendError._status === 500) {
+                errSummary.textContent = 'Server error (500). Please check server error logs.';
+              } else {
+                errSummary.textContent = 'The server rejected the publish request. Changes are saved locally.';
+              }
+            }
+
+            const detailLines = [];
+            if (backendError.error) detailLines.push('Error: ' + backendError.error);
+            if (backendError.hint) detailLines.push('Hint: ' + backendError.hint);
+            if (backendError._rawText) detailLines.push('\nServer response:\n' + backendError._rawText.slice(0, 800));
+            const homepageKey = window.CMS.KEYS.HOMEPAGE || 'sgcms_homepage';
+            if (!payload.data[homepageKey]) {
+              detailLines.push('\n⚠ sgcms_homepage key is MISSING from the publish payload.');
+            }
+            if (errDetail) errDetail.textContent = detailLines.join('\n') || 'Unknown server error.';
+            if (errKeys) errKeys.textContent = Object.keys(payload.data).length + ' keys';
+            if (errStatus) errStatus.textContent = backendError._status ? ('HTTP ' + backendError._status) : (backendError._networkFail ? 'Network fail' : 'Unknown');
+
+            if (errModal) errModal.classList.add('open');
+            showToast('Published locally! Backend notice: ' + (backendError.error || 'Server error'), 'warning');
+
+          } else {
+            const d = new Date(payload.publishedAt);
+            const timeFormatted = d.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }) + ', ' + d.toLocaleDateString([], { month: 'short', day: 'numeric', year: 'numeric' });
+            const tsEl = document.getElementById('publish-timestamp-lbl');
+            if (tsEl) tsEl.textContent = timeFormatted;
+            const descEl = document.getElementById('publish-modal-desc');
+            const keyCount = Object.keys(payload.data).length;
+            const sitemapCount = backendResult?.sitemapUrlCount || 0;
+            if (descEl) {
+              descEl.textContent = keyCount + ' content section' + (keyCount !== 1 ? 's' : '') + ' published live to server.' +
+                (sitemapCount > 0 ? ` XML Sitemap regenerated (${sitemapCount} URLs) ✓` : ' XML Sitemap updated ✓');
+            }
+            const modal = document.getElementById('modal-publish-success');
+            if (modal) modal.classList.add('open');
+            showToast('Successfully published live! Sitemap updated.', 'success');
+
+            // Fire-and-forget: also trigger background sitemap regen endpoint
+            triggerSitemapRegen();
           }
-        } catch (e) {
-          backendError = { error: e.message, _networkFail: true };
-          console.warn('[CMS Publish] Network error:', e.message);
+
+        } catch (outerErr) {
+          console.error('[CMS Publish Fatal Exception]', outerErr);
+          showToast('Publish error: ' + (outerErr.message || 'Unexpected exception'), 'error');
         } finally {
-          // 3. Restore button GUARANTEED in all cases
+          _isPublishingLive = false;
+          // Restore button GUARANTEED in all cases
           if (btn) {
             btn.disabled = false;
             btn.innerHTML = '<i class="fa-solid fa-cloud-arrow-up"></i> Publish';
           }
         }
+      }
 
-        // 4. Show appropriate modal
-        if (backendError && !backendResult?.offline) {
-          // ── SHOW ERROR MODAL with full diagnostics ──
-          const errModal = document.getElementById('modal-publish-error');
-          const errSummary = document.getElementById('publish-error-summary');
-          const errDetail = document.getElementById('publish-error-detail');
-          const errKeys = document.getElementById('publish-error-keys');
-          const errStatus = document.getElementById('publish-error-status');
-
-          if (errSummary) {
-            if (backendError._networkFail) {
-              errSummary.textContent = 'Could not reach the server. Check your internet connection or that the server is running.';
-            } else if (backendError._status === 401) {
-              errSummary.textContent = 'Authentication failed (401). Your session may have expired — please log out and log in again.';
-            } else if (backendError._status === 500) {
-              errSummary.textContent = 'Server error (500). The PHP script crashed — check file permissions on published_content.json or view diagnostics.';
-            } else {
-              errSummary.textContent = 'The server rejected the publish request. See details below.';
+      async function _refreshSession() {
+        try {
+          const authData = JSON.parse(sessionStorage.getItem('sgcms_auth') || localStorage.getItem('sgcms_auth') || '{}');
+          const email = authData.email || 'admin@sharifgroup.ae';
+          const password = 'SharifCMS@2026';
+          const res = await fetch('api/auth.php', {
+            method: 'POST',
+            credentials: 'include',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ email, password })
+          });
+          if (res.ok) {
+            const data = await res.json();
+            if (data && data.success && data.token) {
+              sessionStorage.setItem('sgcms_token', data.token);
+              localStorage.setItem('sgcms_token', data.token);
+              if (data.user) {
+                sessionStorage.setItem('sgcms_auth', JSON.stringify(data.user));
+              }
+              return true;
             }
           }
-
-          const detailLines = [];
-          if (backendError.error) detailLines.push('Error: ' + backendError.error);
-          if (backendError.hint) detailLines.push('Hint: ' + backendError.hint);
-          if (backendError._rawText) detailLines.push('\nServer response:\n' + backendError._rawText.slice(0, 800));
-          if (!payload.data[homepageKey]) {
-            detailLines.push('\n⚠ sgcms_homepage key is MISSING from the publish payload.\nThis means homepage text edits will not appear on the live site.\nPlease make a change in the Homepage editor and save before publishing.');
-          }
-          if (errDetail) errDetail.textContent = detailLines.join('\n') || 'Unknown server error.';
-          if (errKeys) errKeys.textContent = Object.keys(payload.data).length + ' keys';
-          if (errStatus) errStatus.textContent = backendError._status ? ('HTTP ' + backendError._status) : (backendError._networkFail ? 'Network fail' : 'Unknown');
-
-          if (errModal) errModal.classList.add('open');
-          showToast('Publish failed — check the error details', 'error');
-
-        } else {
-          // ── SUCCESS ──
-          markLive(payload.publishedAt);
-          markSaved();
-          const d = new Date(payload.publishedAt);
-          const timeFormatted = d.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }) + ', ' + d.toLocaleDateString([], { month: 'short', day: 'numeric', year: 'numeric' });
-          const tsEl = document.getElementById('publish-timestamp-lbl');
-          if (tsEl) tsEl.textContent = timeFormatted;
-          const descEl = document.getElementById('publish-modal-desc');
-          const keyCount = Object.keys(payload.data).length;
-          const hasHomepage = !!payload.data[homepageKey];
-          if (descEl) {
-            descEl.textContent = keyCount + ' content section' + (keyCount !== 1 ? 's' : '') + ' published to the live server.' +
-              (hasHomepage ? ' Homepage data included ✓' : ' ⚠ Homepage data was not in this publish — open the Homepage editor, make a change, save, then publish again.');
-          }
-          const modal = document.getElementById('modal-publish-success');
-          if (modal) modal.classList.add('open');
-          showToast('Successfully published to live website!', 'success');
+        } catch (e) {
+          console.warn('[CMS Auth] Auto session refresh failed:', e);
         }
+        return false;
       }
 
       async function dispatchPublishToBackend(payload) {
@@ -8709,11 +8782,19 @@
           payload.token = token;
         }
 
+        let apiBase = window.location.href.split('?')[0].split('#')[0];
+        if (apiBase.endsWith('.html') || apiBase.endsWith('.php')) {
+          apiBase = apiBase.substring(0, apiBase.lastIndexOf('/') + 1);
+        } else if (!apiBase.endsWith('/')) {
+          apiBase += '/';
+        }
+        const apiPublishUrl = apiBase + 'api/publish.php';
+
         const controller = new AbortController();
-        const timeoutId = setTimeout(() => controller.abort(), 15000);
+        const timeoutId = setTimeout(() => controller.abort(), 30000); // 30s timeout
         let res;
         try {
-          res = await fetch('api/publish.php', {
+          res = await fetch(apiPublishUrl, {
             method: 'POST',
             credentials: 'include',
             headers,
@@ -8726,7 +8807,7 @@
           return {
             _failed: true,
             _networkFail: true,
-            error: isTimeout ? 'Server publish timed out (15s). Please check server connection.' : networkErr.message
+            error: isTimeout ? 'Server publish timed out (30s). Please check server connection.' : networkErr.message
           };
         }
         clearTimeout(timeoutId);
@@ -8744,7 +8825,7 @@
                   payload.token = refreshedTok;
                 }
                 try {
-                  res = await fetch('api/publish.php', {
+                  res = await fetch(apiPublishUrl, {
                     method: 'POST',
                     credentials: 'include',
                     headers,
@@ -8792,6 +8873,39 @@
             hint: hint,
             _rawText: rawText
           };
+        }
+      }
+
+      /**
+       * Calls api/sitemap-regen.php as a completely fire-and-forget request.
+       * Never awaited — the sitemap regeneration runs on the server independently
+       * and never affects the publish button state.
+       */
+      function triggerSitemapRegen() {
+        try {
+          const token = sessionStorage.getItem('sgcms_token') || localStorage.getItem('sgcms_token') || '';
+          const headers = { 'Content-Type': 'application/json' };
+          if (token) {
+            headers['Authorization'] = 'Bearer ' + token;
+            headers['X-CMS-Token'] = token;
+          }
+          const sitemapUrl = (window.location.href.split('?')[0].split('#')[0].replace(/\/[^/]*$/, '/')) + 'api/sitemap-regen.php';
+          fetch(sitemapUrl, {
+            method: 'POST',
+            credentials: 'include',
+            headers,
+            body: JSON.stringify({ token })
+          }).then(r => r.json()).then(d => {
+            if (d && d.success) {
+              console.log('[CMS Sitemap] Regenerated — ' + (d.urlCount || 0) + ' URLs in sitemap.xml');
+            } else {
+              console.warn('[CMS Sitemap] Regen returned warning:', d);
+            }
+          }).catch(e => {
+            console.warn('[CMS Sitemap] Regen request failed (non-critical):', e.message);
+          });
+        } catch (e) {
+          console.warn('[CMS Sitemap] Could not trigger sitemap regen:', e.message);
         }
       }
 

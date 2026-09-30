@@ -17,7 +17,7 @@ header('Access-Control-Allow-Methods: GET, POST, PUT, DELETE, OPTIONS');
 header('Access-Control-Allow-Headers: Content-Type, Authorization, X-Requested-With, X-CMS-Token');
 
 // Respond to preflight OPTIONS requests immediately
-if ($_SERVER['REQUEST_METHOD'] === 'OPTIONS') {
+if (isset($_SERVER['REQUEST_METHOD']) && $_SERVER['REQUEST_METHOD'] === 'OPTIONS') {
     http_response_code(200);
     exit();
 }
@@ -36,6 +36,10 @@ function getDb($silentFail = false) {
     }
 
     try {
+        if (!class_exists('PDO') || !in_array('mysql', PDO::getAvailableDrivers())) {
+            throw new Exception('PDO MySQL driver is not installed or enabled in this PHP environment.');
+        }
+
         $dsn = sprintf(
             'mysql:host=%s;dbname=%s;charset=%s',
             DB_HOST,
@@ -47,8 +51,11 @@ function getDb($silentFail = false) {
             PDO::ATTR_ERRMODE            => PDO::ERRMODE_EXCEPTION,
             PDO::ATTR_DEFAULT_FETCH_MODE => PDO::FETCH_ASSOC,
             PDO::ATTR_EMULATE_PREPARES   => false,
-            PDO::MYSQL_ATTR_INIT_COMMAND => "SET NAMES utf8mb4 COLLATE utf8mb4_unicode_ci"
+            PDO::ATTR_TIMEOUT            => 3
         ];
+        if (defined('PDO::MYSQL_ATTR_INIT_COMMAND')) {
+            $options[PDO::MYSQL_ATTR_INIT_COMMAND] = "SET NAMES utf8mb4 COLLATE utf8mb4_unicode_ci";
+        }
 
         $pdo = new PDO($dsn, DB_USER, DB_PASS, $options);
 
@@ -59,7 +66,7 @@ function getDb($silentFail = false) {
         }
 
         return $pdo;
-    } catch (PDOException $e) {
+    } catch (Throwable $e) {
         error_log('[SharifCMS DB Error] ' . $e->getMessage());
         if ($silentFail) {
             return null;

@@ -62,7 +62,59 @@ const Store = {
         try { data = JSON.parse(trimmed); } catch(e) {}
       }
     }
-    localStorage.setItem(key, JSON.stringify(data));
+    const serialized = JSON.stringify(data);
+    try {
+      localStorage.setItem(key, serialized);
+    } catch (e) {
+      if (e.name !== 'QuotaExceededError' && e.name !== 'NS_ERROR_DOM_QUOTA_REACHED') throw e;
+
+      // ── QUOTA RECOVERY PASS 1: Purge stale _live mirror keys ──
+      const liveKeys = [];
+      for (let i = 0; i < localStorage.length; i++) {
+        const k = localStorage.key(i);
+        if (k && k.endsWith('_live')) liveKeys.push(k);
+      }
+      liveKeys.forEach(k => { try { localStorage.removeItem(k); } catch(_) {} });
+
+      try {
+        localStorage.setItem(key, serialized);
+        return;
+      } catch (e2) { /* continue recovery */ }
+
+      // ── QUOTA RECOVERY PASS 2: If saving blog, strip default/empty FAQs ──
+      if (key === 'sgcms_blog' && Array.isArray(data)) {
+        const EMPTY_FAQ = { q: '', a: '' };
+        const stripped = data.map(b => {
+          if (!b) return b;
+          const out = { ...b };
+          // Remove FAQs that are default placeholders (empty q/a or match known defaults)
+          ['en', 'ar', 'fa', 'zh'].forEach(lang => {
+            if (out[lang] && Array.isArray(out[lang].faqs)) {
+              out[lang] = { ...out[lang], faqs: out[lang].faqs.filter(f => f && f.q && f.q.trim() && f.a && f.a.trim()) };
+            }
+          });
+          if (Array.isArray(out.faqs)) {
+            out.faqs = out.faqs.filter(f => f && f.q && f.q.trim() && f.a && f.a.trim());
+          }
+          return out;
+        });
+        try {
+          localStorage.setItem(key, JSON.stringify(stripped));
+          console.warn('[CMS Storage] QuotaExceededError: saved blog with FAQs stripped to fit localStorage.');
+          return;
+        } catch (e3) { /* continue recovery */ }
+      }
+
+      // ── QUOTA RECOVERY PASS 3: Clear old sgcms_published_manifest ──
+      try { localStorage.removeItem('sgcms_published_manifest'); } catch(_) {}
+      try {
+        localStorage.setItem(key, serialized);
+        return;
+      } catch (e4) { /* continue recovery */ }
+
+      // ── FINAL FALLBACK: Log and skip (don't crash the UI) ──
+      console.error('[CMS Storage] QuotaExceededError: localStorage is full and recovery failed. Data for key "' + key + '" was NOT saved locally. Please publish to sync to server.', e);
+    }
   },
   getOrDefault(key, def) { const v = this.get(key); return v !== null ? v : (typeof def === 'function' ? def() : JSON.parse(JSON.stringify(def))); }
 };

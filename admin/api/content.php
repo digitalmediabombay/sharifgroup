@@ -25,12 +25,6 @@ if ($mode === 'draft') {
     }
 } else {
     $snapshot = readPublishedSnapshot();
-    if (empty($snapshot['sgcms_blog'])) {
-        $draftSnap = readDraftSnapshot();
-        if (!empty($draftSnap['sgcms_blog'])) {
-            $snapshot['sgcms_blog'] = $draftSnap['sgcms_blog'];
-        }
-    }
 }
 
 /**
@@ -108,11 +102,6 @@ if ($db !== null) {
 
             if ($row) {
                 $raw = $mode === 'draft' ? $row['draft_data'] : $row['live_data'];
-                if ($raw === null || $raw === '') {
-                    if ($mode === 'live' && !empty($row['draft_data'])) {
-                        $raw = $row['draft_data'];
-                    }
-                }
                 $fallback = isset($snapshot[$key]) ? $snapshot[$key] : null;
                 $cleanData = cleanJsonValue($raw, $fallback, $key, $db);
 
@@ -138,12 +127,6 @@ if ($db !== null) {
 
                 foreach ($rows as $r) {
                     $raw = $mode === 'draft' ? $r['draft_data'] : $r['live_data'];
-                    if ($raw === null || $raw === '') {
-                        if ($mode === 'live' && !empty($r['draft_data'])) {
-                            // If live_data is empty, fallback to draft
-                            $raw = $r['draft_data'];
-                        }
-                    }
                     $k = $r['content_key'];
                     $fallback = isset($snapshot[$k]) ? $snapshot[$k] : null;
                     $cleanData = cleanJsonValue($raw, $fallback, $k, $db);

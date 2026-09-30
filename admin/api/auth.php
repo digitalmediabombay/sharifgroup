@@ -20,10 +20,17 @@ if ($method === 'POST' && ($action === 'login' || empty($action))) {
         jsonResponse(['success' => false, 'error' => 'Email and password are required.'], 400);
     }
 
-    $db = getDb();
-    $stmt = $db->prepare("SELECT id, email, password_hash, name, role FROM cms_users WHERE LOWER(email) = ? LIMIT 1");
-    $stmt->execute([$email]);
-    $user = $stmt->fetch();
+    $db = getDb(true);
+    $user = null;
+    if ($db !== null) {
+        try {
+            $stmt = $db->prepare("SELECT id, email, password_hash, name, role FROM cms_users WHERE LOWER(email) = ? LIMIT 1");
+            $stmt->execute([$email]);
+            $user = $stmt->fetch();
+        } catch (Throwable $e) {
+            $user = null;
+        }
+    }
 
     $authenticated = false;
 
@@ -34,12 +41,16 @@ if ($method === 'POST' && ($action === 'login' || empty($action))) {
         } elseif ($password === 'SharifCMS@2026' && !str_starts_with($user['password_hash'], '$2y$')) {
             // Auto-heal: only allow default password if the stored hash is NOT yet a bcrypt hash
             $authenticated = true;
-            $newHash = password_hash($password, PASSWORD_BCRYPT);
-            $upd = $db->prepare("UPDATE cms_users SET password_hash = ? WHERE id = ?");
-            $upd->execute([$newHash, $user['id']]);
+            if ($db !== null) {
+                try {
+                    $newHash = password_hash($password, PASSWORD_BCRYPT);
+                    $upd = $db->prepare("UPDATE cms_users SET password_hash = ? WHERE id = ?");
+                    $upd->execute([$newHash, $user['id']]);
+                } catch (Throwable $e) {}
+            }
         }
     } else {
-        // Fallback for initial default admin before SQL import or if user deleted
+        // Fallback for initial default admin before SQL import or if user deleted / DB offline
         if ($email === 'admin@sharifgroup.ae' && $password === 'SharifCMS@2026') {
             $authenticated = true;
             $user = [
@@ -48,17 +59,19 @@ if ($method === 'POST' && ($action === 'login' || empty($action))) {
                 'name'  => 'Sharif Group Administrator',
                 'role'  => 'Admin'
             ];
-            // Insert admin into database if missing
-            try {
-                $ins = $db->prepare("INSERT INTO cms_users (email, password_hash, name, role) VALUES (?, ?, ?, ?) ON DUPLICATE KEY UPDATE name = VALUES(name)");
-                $ins->execute([$email, password_hash($password, PASSWORD_BCRYPT), $user['name'], $user['role']]);
-                $chk = $db->prepare("SELECT id FROM cms_users WHERE LOWER(email) = ? LIMIT 1");
-                $chk->execute([$email]);
-                $r = $chk->fetch();
-                if ($r && !empty($r['id'])) {
-                    $user['id'] = (int)$r['id'];
-                }
-            } catch (Exception $e) {}
+            // Insert admin into database if connected
+            if ($db !== null) {
+                try {
+                    $ins = $db->prepare("INSERT INTO cms_users (email, password_hash, name, role) VALUES (?, ?, ?, ?) ON DUPLICATE KEY UPDATE name = VALUES(name)");
+                    $ins->execute([$email, password_hash($password, PASSWORD_BCRYPT), $user['name'], $user['role']]);
+                    $chk = $db->prepare("SELECT id FROM cms_users WHERE LOWER(email) = ? LIMIT 1");
+                    $chk->execute([$email]);
+                    $r = $chk->fetch();
+                    if ($r && !empty($r['id'])) {
+                        $user['id'] = (int)$r['id'];
+                    }
+                } catch (Throwable $e) {}
+            }
         }
     }
 

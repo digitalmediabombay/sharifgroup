@@ -87,18 +87,7 @@ try {
     error_log('[SharifCMS Draft File Warning] ' . $e->getMessage());
 }
 
-// Ensure published_content.json is also updated with blog data so it is immediately visible in other browsers
-if (!empty($incomingData['sgcms_blog']) && is_array($incomingData['sgcms_blog'])) {
-    try {
-        $currentPub = readPublishedSnapshot();
-        $currentPub['sgcms_blog'] = $incomingData['sgcms_blog'];
-        writePublishedSnapshot($currentPub);
-    } catch (Exception $e) {
-        error_log('[SharifCMS Pub File Warning] ' . $e->getMessage());
-    }
-}
-
-// 2. Dual-Write: Synchronize into MySQL database cms_content
+// 2. Dual-Write: Synchronize into MySQL database cms_content draft_data only
 $db = getDb(true);
 $dbSaved = false;
 $dbError = null;
@@ -109,7 +98,7 @@ if ($db !== null) {
 
         $stmt = $db->prepare("
             INSERT INTO cms_content (content_key, draft_data, live_data, updated_at)
-            VALUES (:key, :draft, :draft, NOW())
+            VALUES (:key, :draft, '', NOW())
             ON DUPLICATE KEY UPDATE
                 draft_data = VALUES(draft_data),
                 updated_at = NOW()
