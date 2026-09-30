@@ -654,7 +654,7 @@ window.LEGAL_TRANSLATIONS = {
       "contact": "تماس با ما",
       "bookConsultation": "رزرو مشاوره",
       "eligibilityChecker": "بررسی شرایط واجد بودن",
-      "blog": "وبلاگ",
+      "blog": "بلاگ",
       "dualCitizenship": "تابعیت مضاعف",
       "globalResidency": "اقامت جهانی",
       "realEstate": "املاک و مستغلات",
@@ -684,7 +684,7 @@ window.LEGAL_TRANSLATIONS = {
       "aboutTitle": "درباره شریف گروپ",
       "ourStory": "داستان و پیشینه ما",
       "aboutFounder": "درباره بنیان‌گذار | علی شریف",
-      "insights": "مطالب و وبلاگ",
+      "insights": "مطالب و بلاگ",
       "contactUs": "تماس با ما",
       "corporateIdentity": "هویت سازمانی",
       "otherServices": "سایر خدمات"
@@ -701,7 +701,7 @@ window.LEGAL_TRANSLATIONS = {
       "aboutSharifGroup": "درباره شریف گروپ",
       "aboutFounder": "درباره بنیان‌گذار | علی شریف",
       "socialResponsibility": "مسئولیت اجتماعی",
-      "insightsBlog": "مقالات و وبلاگ",
+      "insightsBlog": "مقالات و بلاگ",
       "contactUs": "تماس با ما",
       "bookConsultation": "رزرو مشاوره"
     },

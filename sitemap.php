@@ -82,6 +82,68 @@ function buildSitemapXml($rootDir, $writeToDisk = false) {
         $seenPaths[$path] = true;
     }
 
+    // Load deleted slugs blacklist from published_content.json if present
+    $deletedSlugs = [];
+    $cmsBlogs = null; // null indicates not yet loaded from any store
+    $publishedJsonFile = $rootDir . '/admin/api/published_content.json';
+    if (file_exists($publishedJsonFile)) {
+        $jsonStr = @file_get_contents($publishedJsonFile);
+        if ($jsonStr) {
+            $parsed = @json_decode($jsonStr, true);
+            if (is_array($parsed)) {
+                if (isset($parsed['sgcms_blog']) && is_array($parsed['sgcms_blog'])) {
+                    $cmsBlogs = $parsed['sgcms_blog'];
+                }
+                if (!empty($parsed['sgcms_deleted_slugs']) && is_array($parsed['sgcms_deleted_slugs'])) {
+                    $deletedSlugs = array_merge($deletedSlugs, $parsed['sgcms_deleted_slugs']);
+                }
+            }
+        }
+    }
+
+    // Fallback: ONLY query MySQL if published_content.json was missing or did not define sgcms_blog
+    if ($cmsBlogs === null && file_exists($rootDir . '/admin/api/db.php')) {
+        try {
+            require_once $rootDir . '/admin/api/db.php';
+            if (function_exists('getDb')) {
+                $db = getDb(true);
+                if ($db !== null) {
+                    $stmt = $db->prepare("SELECT live_data FROM cms_content WHERE content_key = 'sgcms_blog' LIMIT 1");
+                    $stmt->execute();
+                    $row = $stmt->fetch();
+                    if (!empty($row['live_data'])) {
+                        $dbBlogs = json_decode($row['live_data'], true);
+                        if (is_array($dbBlogs)) {
+                            $cmsBlogs = $dbBlogs;
+                        }
+                    }
+                    $dStmt = $db->prepare("SELECT live_data FROM cms_content WHERE content_key = 'sgcms_deleted_slugs' LIMIT 1");
+                    $dStmt->execute();
+                    $dRow = $dStmt->fetch();
+                    if (!empty($dRow['live_data'])) {
+                        $dbDel = json_decode($dRow['live_data'], true);
+                        if (is_array($dbDel)) {
+                            $deletedSlugs = array_merge($deletedSlugs, $dbDel);
+                        }
+                    }
+                }
+            }
+        } catch (Throwable $e) {}
+    }
+
+    if ($cmsBlogs === null) {
+        $cmsBlogs = [];
+    }
+
+    // Build hash map of deleted slugs / IDs for fast exclusion
+    $deletedMap = [];
+    foreach ($deletedSlugs as $ds) {
+        $clean = strtolower(trim((string)$ds));
+        if ($clean !== '') {
+            $deletedMap[$clean] = true;
+        }
+    }
+
     // 2. Discover static blog articles from filesystem directories
     $blogDir = $rootDir . '/blog';
     if (is_dir($blogDir)) {
@@ -90,6 +152,11 @@ function buildSitemapXml($rootDir, $writeToDisk = false) {
             if ($item === '.' || $item === '..' || !is_dir($blogDir . '/' . $item)) {
                 continue;
             }
+            $cleanItem = strtolower(trim((string)$item));
+            if (isset($deletedMap[$cleanItem])) {
+                continue;
+            }
+
             $articleIndex = $blogDir . '/' . $item . '/index.html';
             if (file_exists($articleIndex)) {
                 $mtime = filemtime($articleIndex);
@@ -120,48 +187,14 @@ function buildSitemapXml($rootDir, $writeToDisk = false) {
         }
     }
 
-    // 3. Discover dynamic CMS dashboard blog articles from published_content.json & MySQL
-    $cmsBlogs = [];
-    $publishedJsonFile = $rootDir . '/admin/api/published_content.json';
-    if (file_exists($publishedJsonFile)) {
-        $jsonStr = @file_get_contents($publishedJsonFile);
-        if ($jsonStr) {
-            $parsed = @json_decode($jsonStr, true);
-            if (isset($parsed['sgcms_blog']) && is_array($parsed['sgcms_blog'])) {
-                $cmsBlogs = $parsed['sgcms_blog'];
-            }
-        }
-    }
-
-    // Fallback: If empty, check MySQL database if configured
-    if (empty($cmsBlogs) && file_exists($rootDir . '/admin/api/db.php')) {
-        try {
-            require_once $rootDir . '/admin/api/db.php';
-            if (function_exists('getDb')) {
-                $db = getDb(true);
-                if ($db !== null) {
-                    $stmt = $db->prepare("SELECT live_data FROM cms_content WHERE content_key = 'sgcms_blog' LIMIT 1");
-                    $stmt->execute();
-                    $row = $stmt->fetch();
-                    if (!empty($row['live_data'])) {
-                        $dbBlogs = json_decode($row['live_data'], true);
-                        if (is_array($dbBlogs)) {
-                            $cmsBlogs = $dbBlogs;
-                        }
-                    }
-                }
-            }
-        } catch (Throwable $e) {}
-    }
-
-    // Process published CMS blogs into sitemap
+    // 3. Process published CMS blogs into sitemap
     if (!empty($cmsBlogs) && is_array($cmsBlogs)) {
         foreach ($cmsBlogs as $b) {
             if (!is_array($b)) continue;
 
-            // Only include published articles (exclude explicit drafts)
+            // Only include published articles (exclude explicit drafts and deleted items)
             $statusEn = strtolower($b['status_en'] ?? ($b['status'] ?? ($b['en']['status'] ?? 'published')));
-            if ($statusEn === 'draft') {
+            if ($statusEn === 'draft' || $statusEn === 'deleted' || !empty($b['deleted'])) {
                 continue;
             }
 
@@ -179,6 +212,13 @@ function buildSitemapXml($rootDir, $writeToDisk = false) {
                 $slug = trim($b['id']);
             }
             if (!$slug) continue;
+
+            // Exclude if slug or ID matches deleted blacklist
+            $slugClean = strtolower(trim($slug));
+            $idClean = strtolower(trim($b['id'] ?? ''));
+            if (isset($deletedMap[$slugClean]) || ($idClean !== '' && isset($deletedMap[$idClean]))) {
+                continue;
+            }
 
             $entryPath = '/blog/' . $slug . '/';
             if (!isset($seenPaths[$entryPath])) {

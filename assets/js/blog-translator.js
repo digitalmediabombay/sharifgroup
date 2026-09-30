@@ -936,7 +936,7 @@
                         bHome.textContent = homeMap[curLang] || 'Home';
                     }
                     if (bBlog) {
-                        var blogMap = { 'ar': 'المدونة', 'fa': 'وبلاگ', 'zh': '博客' };
+                        var blogMap = { 'ar': 'المدونة', 'fa': 'بلاگ', 'zh': '博客' };
                         bBlog.textContent = blogMap[curLang] || 'Blog';
                     }
                     if (bTitle) bTitle.textContent = transTitle;

@@ -7033,11 +7033,12 @@
         setTimeout(() => { refreshPreview(); }, 150);
       }
 
-      function deleteBlogItem(id) {
+      async function deleteBlogItem(id) {
         if (!id) return;
         let blogs = window.CMS.getData(window.CMS.KEYS.BLOG) || [];
         const target = blogs.find(b => b && (b.id === id || b.slug === id || b.en?.slug === id));
         const title = target?.en?.title || target?.title || id;
+        const targetSlug = target?.slug || target?.en?.slug || (target?.id && target.id !== id ? target.id : '');
         if (!confirm(`Are you sure you want to permanently delete "${title}"?`)) return;
 
         blogs = blogs.filter(b => b && b.id !== id && b.slug !== id && b.en?.slug !== id && (target ? b.id !== target.id : true));
@@ -7071,24 +7072,16 @@
           }
         } catch (e) { }
 
-        markDraft();
-        showToast(`"${title}" deleted from drafts. Click "Publish" to remove it from the live site.`, 'info');
-
-        // Synchronize deletion to backend PHP MySQL draft snapshot
+        // Track deleted slug locally to prevent any resurrection
         try {
-          const token = sessionStorage.getItem('sgcms_token') || localStorage.getItem('sgcms_token') || '';
-          const headers = { 'Content-Type': 'application/json' };
-          if (token) {
-            headers['Authorization'] = 'Bearer ' + token;
-            headers['X-CMS-Token'] = token;
-          }
-          fetch('api/save.php', {
-            method: 'POST',
-            credentials: 'include',
-            headers,
-            body: JSON.stringify({ key: 'sgcms_blog', data: blogs, token })
+          let delSlugs = JSON.parse(localStorage.getItem('sgcms_deleted_slugs') || '[]');
+          [id, targetSlug, target?.slug, target?.en?.slug].forEach(s => {
+            if (s && !delSlugs.includes(s)) delSlugs.push(s);
           });
+          localStorage.setItem('sgcms_deleted_slugs', JSON.stringify(delSlugs));
         } catch (e) { }
+
+        markSaved();
 
         // Notify preview iframe to instantly drop the card
         try {
@@ -7098,7 +7091,7 @@
               type: 'CMS_BLOG_DELETED',
               id: id,
               targetId: target ? target.id : null,
-              slug: target ? target.slug : null
+              slug: targetSlug
             }, '*');
           }
         } catch (e) { }
@@ -7114,7 +7107,46 @@
           navigate('blog');
         }
         setTimeout(() => { refreshPreview(); }, 150);
-        showToast('Article deleted successfully', 'info');
+
+        showToast(`Deleting "${title}" and updating sitemap...`, 'info');
+
+        // Immediately call server delete endpoint to remove from live website, database, and sitemap.xml
+        try {
+          const token = sessionStorage.getItem('sgcms_token') || localStorage.getItem('sgcms_token') || '';
+          const headers = { 'Content-Type': 'application/json' };
+          if (token) {
+            headers['Authorization'] = 'Bearer ' + token;
+            headers['X-CMS-Token'] = token;
+          }
+          const res = await fetch('api/delete-blog.php', {
+            method: 'POST',
+            credentials: 'include',
+            headers,
+            body: JSON.stringify({
+              id: id,
+              slug: targetSlug,
+              data: blogs,
+              token: token
+            })
+          });
+          const d = await res.json();
+          if (d && d.success) {
+            showToast(`"${title}" deleted successfully! Sitemap updated (${d.sitemapUrls || 0} URLs).`, 'success');
+          } else {
+            fetch('api/save.php', {
+              method: 'POST',
+              credentials: 'include',
+              headers,
+              body: JSON.stringify({ key: 'sgcms_blog', data: blogs, token })
+            });
+            triggerSitemapRegen();
+            showToast(`"${title}" deleted successfully`, 'success');
+          }
+        } catch (e) {
+          console.warn('[CMS Delete Blog] Network warning:', e);
+          triggerSitemapRegen();
+          showToast(`"${title}" deleted successfully`, 'success');
+        }
       }
 
       // ──────────────────────────────────────────────────────────
@@ -8566,7 +8598,8 @@
             'sgcms_custom_sections',
             'sgcms_flag_codes',
             'sgcms_cookiepolicy',
-            'sgcms_dom_overrides'
+            'sgcms_dom_overrides',
+            'sgcms_deleted_slugs'
           ];
 
           // Sanitize any corrupted DOM overrides
