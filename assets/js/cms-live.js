@@ -454,8 +454,190 @@
     }
   }
 
+  /* ── Program / Service Pages Blog Carousel Hydration ── */
+  function hydrateProgramPageBlogs(l) {
+    var slider = document.getElementById('dominica-blog-slider-inner') || document.querySelector('[id*="blog-slider-inner"]');
+    if (!slider) return;
+
+    var path = window.location.pathname.toLowerCase();
+    var pageKey = '';
+    var isCitizenship = false;
+    var isResidency = false;
+
+    if (path.indexOf('dominica') !== -1) { pageKey = 'dominica'; isCitizenship = true; }
+    else if (path.indexOf('stkitts') !== -1 || path.indexOf('st-kitts') !== -1) { pageKey = 'stkitts'; isCitizenship = true; }
+    else if (path.indexOf('grenada') !== -1) { pageKey = 'grenada'; isCitizenship = true; }
+    else if (path.indexOf('stlucia') !== -1 || path.indexOf('saint-lucia') !== -1) { pageKey = 'stlucia'; isCitizenship = true; }
+    else if (path.indexOf('antigua') !== -1) { pageKey = 'antiguaandbarbuda'; isCitizenship = true; }
+    else if (path.indexOf('vanuatu') !== -1) { pageKey = 'vanuatu'; isCitizenship = true; }
+    else if (path.indexOf('sao-tome') !== -1) { pageKey = 'sao-tome-and-principe'; isCitizenship = true; }
+    else if (path.indexOf('nauru') !== -1) { pageKey = 'nauru'; isCitizenship = true; }
+    else if (path.indexOf('/uae') !== -1) { pageKey = 'uae'; isResidency = true; }
+    else if (path.indexOf('portugal') !== -1) { pageKey = 'portugal'; isResidency = true; }
+    else if (path.indexOf('greece') !== -1) { pageKey = 'greece'; isResidency = true; }
+    else if (path.indexOf('panama') !== -1) { pageKey = 'panama'; isResidency = true; }
+    else if (path.indexOf('realestate') !== -1 || path.indexOf('real-estate') !== -1) { pageKey = 'realestate'; }
+    else if (path.indexOf('educationaladvisory') !== -1 || path.indexOf('educational') !== -1) { pageKey = 'educationaladvisory'; }
+
+    if (!pageKey) return;
+
+    var blogs = (_data && _data.sgcms_blog) || [];
+    if (!Array.isArray(blogs) || !blogs.length) {
+      try {
+        var rawLocal = localStorage.getItem('sgcms_blog_live');
+        if (rawLocal) {
+          var parsedLocal = JSON.parse(rawLocal);
+          if (Array.isArray(parsedLocal) && parsedLocal.length) blogs = parsedLocal;
+        }
+      } catch (e) {}
+    }
+    if (!Array.isArray(blogs) || !blogs.length) return;
+
+    var readMoreLabel = (l === 'ar') ? 'اقرأ الدليل الكامل' : ((l === 'fa') ? 'مشاهده راهنمای کامل' : ((l === 'zh') ? '阅读完整指南' : 'Read Full Guide'));
+
+    // Filter matching blogs
+    var matchedBlogs = blogs.filter(function(b) {
+      if (!b) return false;
+      var status = (b['status_' + l] || b.status_en || b.status || (b.en && b.en.status) || 'published').toLowerCase();
+      if (status === 'draft' || status === 'hidden' || status !== 'published') return false;
+
+      // 1. Check target_programs array (explicit targets selected in CMS)
+      if (Array.isArray(b.target_programs) && b.target_programs.length) {
+        for (var i = 0; i < b.target_programs.length; i++) {
+          var tp = (b.target_programs[i] || '').toLowerCase().replace(/[^a-z0-9]/g, '');
+          var pk = pageKey.replace(/[^a-z0-9]/g, '');
+          if (tp === pk || (pk && tp.indexOf(pk) !== -1) || (tp && pk.indexOf(tp) !== -1)) return true;
+          if (tp === 'citizenship' || tp === 'allcitizenship') {
+            if (isCitizenship) return true;
+          }
+          if (tp === 'residency' || tp === 'allresidency') {
+            if (isResidency) return true;
+          }
+        }
+      }
+
+      // 2. Check subcategory
+      if (b.subcategory) {
+        var sc = (b.subcategory || '').toLowerCase().replace(/[^a-z0-9]/g, '');
+        var pk = pageKey.replace(/[^a-z0-9]/g, '');
+        if (sc === pk || (pk && sc.indexOf(pk) !== -1) || (sc && pk.indexOf(sc) !== -1)) return true;
+      }
+
+      // 3. Check tags
+      if (Array.isArray(b.tags)) {
+        for (var t = 0; t < b.tags.length; t++) {
+          var tag = (b.tags[t] || '').toLowerCase().replace(/[^a-z0-9]/g, '');
+          var pk = pageKey.replace(/[^a-z0-9]/g, '');
+          if (tag === pk) return true;
+        }
+      }
+
+      // 4. Fallback: Category match for standalone pages (Real Estate, Educational Advisory)
+      if (pageKey === 'realestate' && (b.category || '').toLowerCase().indexOf('estate') !== -1) return true;
+      if (pageKey === 'educationaladvisory' && (b.category || '').toLowerCase().indexOf('educat') !== -1) return true;
+
+      return false;
+    });
+
+    if (!matchedBlogs.length) return;
+
+    // Prepend matched blogs to the slider (newest first)
+    matchedBlogs.forEach(function(b) {
+      var ld = b[l] || b.en || b;
+      var title = ld.title || (b.en && b.en.title) || b.title;
+      if (!title || isCorrupted(title)) return;
+      var slug = b.slug || (b.en && b.en.slug) || ld.slug || b.id;
+      var excerpt = ld.excerpt || (b.en && b.en.excerpt) || '';
+      var cleanImg = normalizeImageUrl(b.featured_img);
+      var catBadge = b.subcategory ? b.subcategory.toUpperCase().replace(/-/g, ' ') : (b.category || 'INSIGHTS');
+      var blogUrl = '/' + (l !== 'en' ? l + '/' : '') + 'blog/' + slug + '/';
+      var dateStr = b.publish_date || '2026-09-01';
+
+      // Check if dynamic card already exists
+      var existing = slider.querySelector('[data-cms-blog-id="' + b.id + '"], [data-cms-slug="' + slug + '"]');
+      if (existing) {
+        var h4 = existing.querySelector('h4 a');
+        if (h4) {
+          h4.textContent = title;
+          h4.setAttribute('href', blogUrl);
+        }
+        var p = existing.querySelector('p');
+        if (p && excerpt) p.textContent = excerpt;
+        var img = existing.querySelector('img');
+        if (img && cleanImg) img.src = cleanImg;
+        var rm = existing.querySelector('a[href*="/blog/"]');
+        if (rm) {
+          rm.setAttribute('href', blogUrl);
+          rm.textContent = readMoreLabel + ' →';
+        }
+        return;
+      }
+
+      // Check if static card with this slug exists
+      var staticCards = slider.querySelectorAll('h4 a');
+      var foundStatic = null;
+      for (var scIdx = 0; scIdx < staticCards.length; scIdx++) {
+        var scLink = staticCards[scIdx];
+        if (scLink.getAttribute('href') && scLink.getAttribute('href').indexOf(slug) !== -1) {
+          foundStatic = scLink.closest('.bg-white') || scLink.parentElement.parentElement.parentElement;
+          break;
+        }
+      }
+      if (foundStatic) {
+        foundStatic.setAttribute('data-cms-blog-id', b.id);
+        foundStatic.setAttribute('data-cms-slug', slug);
+        var h4 = foundStatic.querySelector('h4 a');
+        if (h4) {
+          h4.textContent = title;
+          h4.setAttribute('href', blogUrl);
+        }
+        var p = foundStatic.querySelector('p');
+        if (p && excerpt) p.textContent = excerpt;
+        var img = foundStatic.querySelector('img');
+        if (img && cleanImg) img.src = cleanImg;
+        return;
+      }
+
+      // Create new dynamic card matching the exact luxury styling of program pages
+      var card = document.createElement('div');
+      card.className = 'bg-white rounded-3xl border border-neutral-200/80 overflow-hidden shadow-md hover:shadow-2xl transition-all duration-300 flex flex-col justify-between w-full md:w-[calc(50%-12px)] lg:w-[calc(33.333%-16px)] shrink-0 premium-hover dynamic-program-blog';
+      card.setAttribute('data-cms-blog-id', b.id);
+      card.setAttribute('data-cms-slug', slug);
+
+      card.innerHTML =
+        '<div>' +
+          '<div class="relative h-48 overflow-hidden bg-neutral-900">' +
+            '<img alt="' + title.replace(/"/g, '&quot;') + '" class="w-full h-full object-cover transition-transform duration-500 hover:scale-105" src="' + cleanImg + '" onerror="this.onerror=null;this.src=\'/assets/images/dubai-office-2.webp\'" />' +
+            '<span class="absolute top-4 left-4 px-3 py-1 bg-neutral-900/90 backdrop-blur text-[9px] font-bold uppercase tracking-widest text-luxury-gold rounded-full border border-luxury-gold/30">' + catBadge + '</span>' +
+          '</div>' +
+          '<div class="p-6 space-y-2 text-left">' +
+            '<span class="text-[10px] text-neutral-400 font-bold block">' + dateStr + '</span>' +
+            '<h4 class="font-serif font-bold text-lg text-neutral-900 hover:text-luxury-gold transition-colors leading-snug">' +
+              '<a href="' + blogUrl + '">' + title + '</a>' +
+            '</h4>' +
+            '<p class="text-xs text-neutral-600 font-light leading-relaxed">' + excerpt + '</p>' +
+          '</div>' +
+        '</div>' +
+        '<div class="px-6 pb-6 pt-2 text-left">' +
+          '<a class="text-xs font-bold uppercase tracking-wider text-[#786142] border-b border-[#786142] hover:text-luxury-gold hover:border-luxury-gold transition-colors pb-0.5 inline-block" href="' + blogUrl + '">' +
+            readMoreLabel + ' →' +
+          '</a>' +
+        '</div>';
+
+      slider.prepend(card);
+    });
+  }
+
   /* ── Main Hydration Router ──────────────────────── */
   function runHydration(lang) {
+    if (!_data) {
+      try {
+        var rawLocal = localStorage.getItem('sgcms_blog_live');
+        if (rawLocal) {
+          _data = { sgcms_blog: JSON.parse(rawLocal) };
+        }
+      } catch (e) {}
+    }
     if (!_data) return;
     var l = lang || getLang();
     var path = window.location.pathname.toLowerCase();
@@ -476,6 +658,9 @@
     } else if (path.indexOf('/blog') !== -1) {
       hydrateBlog(l);
     }
+
+    // Program pages or any page containing an insights/blog carousel
+    hydrateProgramPageBlogs(l);
 
     // DOM overrides apply to every page (programme pages etc.)
     applyDomOverrides(l);
@@ -507,7 +692,10 @@
     var idx = 0;
 
     function tryNext() {
-      if (idx >= candidates.length) return;
+      if (idx >= candidates.length) {
+        runHydration();
+        return;
+      }
       var url = candidates[idx++];
       fetch(url, { cache: 'no-cache' })
         .then(function (res) {
@@ -544,6 +732,11 @@
                   if (typeof window.handleDirectArticleRoute === 'function') {
                     window.handleDirectArticleRoute();
                   }
+                }, 50);
+              } else if (document.getElementById('dominica-blog-slider-inner') || document.querySelector('[id*="blog-slider-inner"]')) {
+                var lang = getLang();
+                setTimeout(function () {
+                  hydrateProgramPageBlogs(lang);
                 }, 50);
               }
             }

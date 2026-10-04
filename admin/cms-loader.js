@@ -2591,22 +2591,36 @@
     imagePopover.id = 'cms-image-popover';
     imagePopover.style.cssText = `
       position: fixed; z-index: 1000001; display: none; background: #181818;
-      border: 1px solid #C5A880; border-radius: 12px; padding: 12px;
+      border: 1px solid #C5A880; border-radius: 12px; padding: 14px;
       box-shadow: 0 16px 40px rgba(0,0,0,0.85); font-family: 'Inter', sans-serif;
-      width: 310px; color: #fff; user-select: none;
+      width: 325px; color: #fff; user-select: none;
     `;
     const assetPfx = getPathPrefix() + 'assets/images/';
     imagePopover.innerHTML = `
-      <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:8px">
+      <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:10px">
         <span id="cip-header-title" style="font-size:11px;font-weight:700;color:#C5A880;text-transform:uppercase;letter-spacing:.05em">Replace Image</span>
-        <button type="button" id="cip-close-btn" style="background:none;border:none;color:#94a3b8;cursor:pointer;font-size:16px">&times;</button>
+        <button type="button" id="cip-close-btn" style="background:none;border:none;color:#94a3b8;cursor:pointer;font-size:18px;line-height:1">&times;</button>
       </div>
+
+      <!-- Direct Upload from Device / Computer -->
+      <div id="cip-upload-box" style="border:1px dashed rgba(197,168,128,0.55);border-radius:8px;padding:12px 10px;text-align:center;background:rgba(197,168,128,0.06);cursor:pointer;margin-bottom:12px;transition:all .2s">
+        <input type="file" id="cip-file-input" accept="image/png,image/jpeg,image/webp,image/svg+xml" style="display:none">
+        <div id="cip-upload-idle">
+          <i class="fa-solid fa-cloud-arrow-up" style="font-size:22px;color:#C5A880;margin-bottom:4px;display:block"></i>
+          <div style="font-size:11px;font-weight:700;color:#fff">Upload from Computer</div>
+          <div style="font-size:9px;color:#94a3b8;margin-top:2px">Click to browse or drag & drop (JPG, PNG, WEBP)</div>
+        </div>
+        <div id="cip-upload-busy" style="display:none;font-size:11px;color:#C5A880;padding:4px 0">
+          <i class="fa-solid fa-circle-notch fa-spin" style="margin-right:6px"></i> Uploading to server...
+        </div>
+      </div>
+
       <div style="font-size:10px;color:#94a3b8;margin-bottom:6px">Quick Luxury Presets:</div>
-      <div style="display:grid;grid-template-columns:repeat(4,1fr);gap:6px;margin-bottom:10px" id="cip-presets">
-        <img class="cip-preset-img" data-src="${assetPfx}dubai-office-2.webp" src="${assetPfx}dubai-office-2.webp" onerror="this.style.opacity='0.2'" title="Dubai HQ" style="width:100%;height:46px;object-fit:cover;border-radius:6px;cursor:pointer;border:1px solid #333">
-        <img class="cip-preset-img" data-src="${assetPfx}Dominica-Americas-Hu_10e82c.webp" src="${assetPfx}Dominica-Americas-Hu_10e82c.webp" onerror="this.style.opacity='0.2'" title="Caribbean" style="width:100%;height:46px;object-fit:cover;border-radius:6px;cursor:pointer;border:1px solid #333">
-        <img class="cip-preset-img" data-src="${assetPfx}portugal-golden-vsa_47319a.webp" src="${assetPfx}portugal-golden-vsa_47319a.webp" onerror="this.style.opacity='0.2'" title="Europe" style="width:100%;height:46px;object-fit:cover;border-radius:6px;cursor:pointer;border:1px solid #333">
-        <img class="cip-preset-img" data-src="${assetPfx}isdubairealestateago_3194a5.webp" src="${assetPfx}isdubairealestateago_3194a5.webp" onerror="this.style.opacity='0.2'" title="Real Estate" style="width:100%;height:46px;object-fit:cover;border-radius:6px;cursor:pointer;border:1px solid #333">
+      <div style="display:grid;grid-template-columns:repeat(4,1fr);gap:6px;margin-bottom:12px" id="cip-presets">
+        <img class="cip-preset-img" data-src="${assetPfx}dubai-office-2.webp" src="${assetPfx}dubai-office-2.webp" onerror="this.style.opacity='0.2'" title="Dubai HQ" style="width:100%;height:44px;object-fit:cover;border-radius:6px;cursor:pointer;border:1px solid #333">
+        <img class="cip-preset-img" data-src="${assetPfx}Dominica-Americas-Hu_10e82c.webp" src="${assetPfx}Dominica-Americas-Hu_10e82c.webp" onerror="this.style.opacity='0.2'" title="Caribbean" style="width:100%;height:44px;object-fit:cover;border-radius:6px;cursor:pointer;border:1px solid #333">
+        <img class="cip-preset-img" data-src="${assetPfx}portugal-golden-vsa_47319a.webp" src="${assetPfx}portugal-golden-vsa_47319a.webp" onerror="this.style.opacity='0.2'" title="Europe" style="width:100%;height:44px;object-fit:cover;border-radius:6px;cursor:pointer;border:1px solid #333">
+        <img class="cip-preset-img" data-src="${assetPfx}isdubairealestateago_3194a5.webp" src="${assetPfx}isdubairealestateago_3194a5.webp" onerror="this.style.opacity='0.2'" title="Real Estate" style="width:100%;height:44px;object-fit:cover;border-radius:6px;cursor:pointer;border:1px solid #333">
       </div>
       <div style="font-size:10px;color:#94a3b8;margin-bottom:4px">Or Paste Custom Image URL:</div>
       <div style="display:flex;gap:6px">
@@ -2721,6 +2735,95 @@
       const val = imagePopover.querySelector('#cip-url-input').value.trim();
       if (val) applyNewImage(val);
     });
+
+    // File input & Drag-and-Drop upload from PC
+    const cipUploadBox = imagePopover.querySelector('#cip-upload-box');
+    const cipFileInp = imagePopover.querySelector('#cip-file-input');
+    const cipIdleEl = imagePopover.querySelector('#cip-upload-idle');
+    const cipBusyEl = imagePopover.querySelector('#cip-upload-busy');
+
+    if (cipUploadBox && cipFileInp) {
+      cipUploadBox.addEventListener('click', (e) => {
+        if (e.target !== cipFileInp) cipFileInp.click();
+      });
+
+      cipUploadBox.addEventListener('dragover', (e) => {
+        e.preventDefault();
+        e.stopPropagation();
+        cipUploadBox.style.borderColor = 'var(--gold, #C5A880)';
+        cipUploadBox.style.background = 'rgba(197,168,128,0.12)';
+      });
+
+      cipUploadBox.addEventListener('dragleave', (e) => {
+        e.preventDefault();
+        e.stopPropagation();
+        cipUploadBox.style.borderColor = 'rgba(197,168,128,0.55)';
+        cipUploadBox.style.background = 'rgba(197,168,128,0.06)';
+      });
+
+      cipUploadBox.addEventListener('drop', (e) => {
+        e.preventDefault();
+        e.stopPropagation();
+        cipUploadBox.style.borderColor = 'rgba(197,168,128,0.55)';
+        cipUploadBox.style.background = 'rgba(197,168,128,0.06)';
+        if (e.dataTransfer && e.dataTransfer.files && e.dataTransfer.files.length) {
+          uploadLocalPcImage(e.dataTransfer.files[0]);
+        }
+      });
+
+      cipFileInp.addEventListener('change', () => {
+        if (cipFileInp.files && cipFileInp.files.length) {
+          uploadLocalPcImage(cipFileInp.files[0]);
+          cipFileInp.value = '';
+        }
+      });
+    }
+
+    async function uploadLocalPcImage(file) {
+      if (!file) return;
+      if (cipIdleEl) cipIdleEl.style.display = 'none';
+      if (cipBusyEl) cipBusyEl.style.display = 'block';
+
+      const formData = new FormData();
+      formData.append('file', file);
+      const token = localStorage.getItem('sg_cms_token') || sessionStorage.getItem('sg_cms_token') || '';
+      if (token) formData.append('token', token);
+
+      const headers = {};
+      if (token) {
+        headers['Authorization'] = 'Bearer ' + token;
+        headers['X-CMS-Token'] = token;
+      }
+
+      const uploadUrl = getPathPrefix() + 'admin/api/upload.php';
+
+      try {
+        const res = await fetch(uploadUrl, {
+          method: 'POST',
+          credentials: 'include',
+          headers,
+          body: formData
+        });
+        const json = await res.json();
+        if (json && json.success && json.url) {
+          flashToast('Image uploaded successfully!');
+          applyNewImage(json.url);
+        } else {
+          throw new Error(json?.error || 'Upload error');
+        }
+      } catch (err) {
+        console.warn('[CMS Image upload fallback to DataURL]:', err);
+        const reader = new FileReader();
+        reader.onload = (e) => {
+          flashToast('Local image attached!');
+          applyNewImage(e.target.result);
+        };
+        reader.readAsDataURL(file);
+      } finally {
+        if (cipIdleEl) cipIdleEl.style.display = 'block';
+        if (cipBusyEl) cipBusyEl.style.display = 'none';
+      }
+    }
 
     // =========================================================================
     // CANVA / WORD BLOG ARTICLE BODY WYSIWYG EDITOR

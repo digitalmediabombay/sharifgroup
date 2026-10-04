@@ -6533,6 +6533,26 @@
         ]
       };
 
+      window.toggleAllTargetPrograms = function(group) {
+        const cbs = document.querySelectorAll('.blog-target-prog-cb');
+        cbs.forEach(cb => {
+          if (group === 'clear') {
+            cb.checked = false;
+          } else if (group === 'citizenship' && cb.getAttribute('data-group') === 'citizenship') {
+            cb.checked = true;
+          } else if (group === 'residency' && cb.getAttribute('data-group') === 'residency') {
+            cb.checked = true;
+          }
+          const parent = cb.parentElement;
+          if (parent) {
+            parent.style.borderColor = cb.checked ? 'var(--gold)' : 'rgba(255,255,255,0.1)';
+            parent.style.color = cb.checked ? '#fff' : '#ccc';
+          }
+        });
+        markUnsaved();
+        broadcastBlogDraft();
+      };
+
       function updateBlogSubcatOptions(category, selectedSub) {
         const wrap = document.getElementById('blog-subcat-wrap');
         const sel = document.getElementById('blog-subcategory');
@@ -6547,12 +6567,29 @@
         }
       }
 
+      function syncSubcategoryToTargets(subcatVal) {
+        if (!subcatVal) return;
+        const norm = subcatVal.toLowerCase().replace(/[^a-z0-9]/g, '');
+        const cbs = document.querySelectorAll('.blog-target-prog-cb');
+        cbs.forEach(cb => {
+          const cbNorm = cb.value.toLowerCase().replace(/[^a-z0-9]/g, '');
+          if (cbNorm === norm || (norm && cbNorm.indexOf(norm) !== -1) || (cbNorm && norm.indexOf(cbNorm) !== -1)) {
+            cb.checked = true;
+            if (cb.parentElement) {
+              cb.parentElement.style.borderColor = 'var(--gold)';
+              cb.parentElement.style.color = '#fff';
+            }
+          }
+        });
+      }
+
       function broadcastBlogDraft() {
         const formTitle = document.getElementById('blog-title');
         let title = formTitle?.value?.trim() || '';
         let slug = document.getElementById('blog-slug')?.value?.trim() || '';
         let category = document.getElementById('blog-category')?.value || 'Citizenship';
         let subcategory = document.getElementById('blog-subcategory')?.value || '';
+        let target_programs = Array.from(document.querySelectorAll('.blog-target-prog-cb:checked')).map(cb => cb.value);
         let status = document.getElementById('blog-status')?.value || 'published';
         let featured = document.getElementById('blog-featured')?.value === 'true';
         let author = document.getElementById('blog-author')?.value || 'Sharif Group Advisory';
@@ -6574,6 +6611,7 @@
           slug = b.slug || ld.slug || state.activeBlogSlug || '';
           category = b.category || category;
           subcategory = b.subcategory || subcategory;
+          target_programs = b.target_programs || target_programs;
           status = b.status_en || status;
           featured = !!b.featured;
           author = b.author || author;
@@ -6593,6 +6631,7 @@
             slug,
             category,
             subcategory,
+            target_programs,
             status,
             featured,
             author,
@@ -6707,6 +6746,21 @@
         }
       }
 
+      function renderTargetProgCheck(val, label, group, currentTargets) {
+        const isChecked = Array.isArray(currentTargets) && (
+          currentTargets.includes(val) ||
+          (val === 'stkitts' && currentTargets.includes('st-kitts')) ||
+          (val === 'stlucia' && currentTargets.includes('saint-lucia')) ||
+          (val === 'antiguaandbarbuda' && (currentTargets.includes('antigua') || currentTargets.includes('antigua-and-barbuda')))
+        );
+        return `
+          <label style="display:flex;align-items:center;gap:6px;background:rgba(255,255,255,0.03);border:1px solid ${isChecked ? 'var(--gold)' : 'rgba(255,255,255,0.1)'};border-radius:6px;padding:5px 8px;cursor:pointer;font-size:11px;color:${isChecked ? '#fff' : '#ccc'};user-select:none;transition:all .15s">
+            <input type="checkbox" class="blog-target-prog-cb" data-group="${group}" value="${val}" ${isChecked ? 'checked' : ''} onchange="this.parentElement.style.borderColor = this.checked ? 'var(--gold)' : 'rgba(255,255,255,0.1)'; this.parentElement.style.color = this.checked ? '#fff' : '#ccc'; markUnsaved(); broadcastBlogDraft();" style="accent-color:var(--gold);cursor:pointer">
+            <span style="white-space:nowrap;overflow:hidden;text-overflow:ellipsis">${label}</span>
+          </label>
+        `;
+      }
+
       function renderBlogArticleForm(b, isNew) {
         const l = state.lang;
         const rtl = isRtl(l);
@@ -6727,6 +6781,7 @@
         else if (catVal.includes('Sharif') || catVal.includes('Insight')) catVal = 'Sharif Group Insights';
 
         const subcatVal = b.subcategory || '';
+        const targetProgs = Array.isArray(b.target_programs) ? b.target_programs : (b.subcategory ? [b.subcategory] : []);
 
         const rootSlug = b.slug || b.en?.slug || '';
         const currentSlug = ld.slug || rootSlug || (ld.title ? ld.title.toLowerCase().replace(/[^a-z0-9\u0600-\u06FF\u4e00-\u9fa5\s-]/g, '').replace(/[\s_]+/g, '-').replace(/-+/g, '-').replace(/(^-|-$)/g, '') : '') || '';
@@ -6745,7 +6800,7 @@
         </div>
       </div>
       <div class="form-group">
-        <label class="form-label">Category</label>
+        <label class="form-label">Primary Category</label>
         <select class="form-select" id="blog-category" onchange="markUnsaved();updateBlogSubcatOptions(this.value);broadcastBlogDraft();liveUpdateField('blog_category',this.value)">
           <option value="Citizenship" ${catVal === 'Citizenship' ? 'selected' : ''}>Citizenship</option>
           <option value="Residency" ${catVal === 'Residency' ? 'selected' : ''}>Residency</option>
@@ -6759,11 +6814,61 @@
     </div>
     <div class="form-row form-row-2" id="blog-subcat-wrap" style="${(catVal === 'Citizenship' || catVal === 'Residency') ? '' : 'display:none'}">
       <div class="form-group" style="grid-column:1/-1">
-        <label class="form-label">Program / Country Subcategory</label>
-        <select class="form-select" id="blog-subcategory" onchange="markUnsaved();broadcastBlogDraft()">
+        <label class="form-label">Primary Program / Country Focus</label>
+        <select class="form-select" id="blog-subcategory" onchange="markUnsaved();syncSubcategoryToTargets(this.value);broadcastBlogDraft()">
         </select>
       </div>
     </div>
+
+    <!-- TARGET PROGRAM PAGES (BOTTOM INSIGHTS CAROUSEL) -->
+    <div class="form-group" style="margin-top:14px;background:rgba(197,168,128,0.04);border:1px solid rgba(197,168,128,0.25);border-radius:10px;padding:12px 14px">
+      <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:6px;flex-wrap:wrap;gap:8px">
+        <label class="form-label" style="margin-bottom:0;color:var(--gold);font-weight:700;display:flex;align-items:center;gap:6px">
+          <i class="fa-solid fa-map-pin"></i> Show Also on Specific Program Pages (Bottom Slider)
+        </label>
+        <div style="display:flex;gap:4px">
+          <button type="button" class="btn btn-secondary" style="font-size:10px;padding:2px 8px;height:auto" onclick="toggleAllTargetPrograms('citizenship')">+ All Citizenship</button>
+          <button type="button" class="btn btn-secondary" style="font-size:10px;padding:2px 8px;height:auto" onclick="toggleAllTargetPrograms('residency')">+ All Residency</button>
+          <button type="button" class="btn btn-secondary" style="font-size:10px;padding:2px 8px;height:auto;color:#ef4444" onclick="toggleAllTargetPrograms('clear')">Clear</button>
+        </div>
+      </div>
+      <div style="font-size:11px;color:#a3a3a3;margin-bottom:10px;line-height:1.4">
+        Select which destination page(s) should feature this article at the bottom in their <i>"Essential Guides & Insights"</i> carousel (this article will <b>always</b> appear in the main <code>/blog/</code> archive):
+      </div>
+
+      <div style="margin-bottom:8px">
+        <span style="font-size:10px;text-transform:uppercase;letter-spacing:0.05em;color:var(--gold);font-weight:700;display:block;margin-bottom:4px">Citizenship by Investment Pages:</span>
+        <div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(140px,1fr));gap:6px">
+          ${renderTargetProgCheck('dominica', 'Dominica', 'citizenship', targetProgs)}
+          ${renderTargetProgCheck('stkitts', 'St. Kitts & Nevis', 'citizenship', targetProgs)}
+          ${renderTargetProgCheck('grenada', 'Grenada', 'citizenship', targetProgs)}
+          ${renderTargetProgCheck('stlucia', 'Saint Lucia', 'citizenship', targetProgs)}
+          ${renderTargetProgCheck('antiguaandbarbuda', 'Antigua & Barbuda', 'citizenship', targetProgs)}
+          ${renderTargetProgCheck('vanuatu', 'Vanuatu', 'citizenship', targetProgs)}
+          ${renderTargetProgCheck('sao-tome-and-principe', 'São Tomé & Príncipe', 'citizenship', targetProgs)}
+          ${renderTargetProgCheck('nauru', 'Republic of Nauru', 'citizenship', targetProgs)}
+        </div>
+      </div>
+
+      <div style="margin-bottom:8px">
+        <span style="font-size:10px;text-transform:uppercase;letter-spacing:0.05em;color:var(--gold);font-weight:700;display:block;margin-bottom:4px">Residency by Investment Pages:</span>
+        <div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(140px,1fr));gap:6px">
+          ${renderTargetProgCheck('uae', 'UAE Golden Visa', 'residency', targetProgs)}
+          ${renderTargetProgCheck('portugal', 'Portugal Golden Visa', 'residency', targetProgs)}
+          ${renderTargetProgCheck('greece', 'Greece Golden Visa', 'residency', targetProgs)}
+          ${renderTargetProgCheck('panama', 'Panama Golden Visa', 'residency', targetProgs)}
+        </div>
+      </div>
+
+      <div>
+        <span style="font-size:10px;text-transform:uppercase;letter-spacing:0.05em;color:var(--gold);font-weight:700;display:block;margin-bottom:4px">Other Key Service Pages:</span>
+        <div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(140px,1fr));gap:6px">
+          ${renderTargetProgCheck('realestate', 'Dubai Real Estate', 'other', targetProgs)}
+          ${renderTargetProgCheck('educationaladvisory', 'Educational Advisory', 'other', targetProgs)}
+        </div>
+      </div>
+    </div>
+
     <div class="form-row form-row-2">
       <div class="form-group">
         <label class="form-label">Publish Status</label>
@@ -6923,6 +7028,13 @@
           if (document.getElementById('blog-author-title')) item.author_title = document.getElementById('blog-author-title').value.trim() || item.author_title || 'Senior Immigration Partner';
           if (document.getElementById('blog-category')) item.category = document.getElementById('blog-category').value || item.category || 'Citizenship';
           if (document.getElementById('blog-subcategory')) item.subcategory = document.getElementById('blog-subcategory').value || item.subcategory || '';
+          
+          const checkedTargets = Array.from(document.querySelectorAll('.blog-target-prog-cb:checked')).map(cb => cb.value);
+          item.target_programs = checkedTargets;
+          if (item.subcategory && !item.target_programs.includes(item.subcategory)) {
+            item.target_programs.push(item.subcategory);
+          }
+
           if (document.getElementById('blog-date')) item.publish_date = document.getElementById('blog-date').value || item.publish_date || new Date().toISOString().split('T')[0];
           if (document.getElementById('blog-read-time')) item.read_time = document.getElementById('blog-read-time').value.trim() || item.read_time || '5 min read';
           if (document.getElementById('blog-img')) item.featured_img = document.getElementById('blog-img').value.trim() || item.featured_img || '';
