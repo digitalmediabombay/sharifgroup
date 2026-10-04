@@ -12,7 +12,15 @@
 <script>
         (function() {
             try {
-                var l = localStorage.getItem('sharif_lang') || localStorage.getItem('sharif_preferred_lang') || 'en';
+                for (var i = localStorage.length - 1; i >= 0; i--) {
+                    var k = localStorage.key(i);
+                    if (k && k.indexOf('sharif_i18n_') === 0 && k.indexOf('20260930_v25') === -1) {
+                        localStorage.removeItem(k);
+                    }
+                }
+            } catch(e) {}
+            try {
+                var l = localStorage.getItem('sharif_lang') || localStorage.getItem('sharif_preferred_lang') || 'fa';
                 if (l === 'ar' || l === 'fa') {
                     document.documentElement.dir = 'rtl';
                     document.documentElement.lang = l;
@@ -38,8 +46,8 @@
             }
         })();
     </script>
-<title>وبلاگ تخصصی | شریف گروپ</title>
-<meta content="وبلاگ تخصصی | شریف گروپ" name="title"/>
+<title>بلاگ تخصصی | شریف گروپ</title>
+<meta content="بلاگ تخصصی | شریف گروپ" name="title"/>
 <meta content="راهنمای جامع شما برای آگاهی از قوانین جدید مهاجرت سرمایه‌گذاری، پاسپورت دوم و اقامت دائم بین‌المللی." name="description"/>
 <meta content="citizenship by investment blog, golden visa guide 2026, second passport news, dubai real estate insights, uae corporate tax guide, dominica passport guide, portugal golden visa funds" name="keywords"/>
 <link href="https://sharifgroup.ae/fa/blog/" rel="canonical"/>
@@ -57,7 +65,7 @@
 <meta content="blog" property="og:type"/>
 <meta content="fa_IR" property="og:locale"/>
 <meta content="Sharif Group Dubai" property="og:site_name"/>
-<meta content="وبلاگ تخصصی | شریف گروپ" property="og:title"/>
+<meta content="بلاگ تخصصی | شریف گروپ" property="og:title"/>
 <meta content="راهنمای جامع شما برای آگاهی از قوانین جدید مهاجرت سرمایه‌گذاری، پاسپورت دوم و اقامت دائم بین‌المللی." property="og:description"/>
 <meta content="https://sharifgroup.ae/fa/blog/" property="og:url"/>
 <meta content="https://sharifgroup.ae/assets/images/dubai-office-2.webp" property="og:image"/>
@@ -66,7 +74,7 @@
 <meta content="630" property="og:image:height"/>
 <meta content="Sharif Group Dubai Blog and Migration Insights" property="og:image:alt"/>
 <meta content="summary_large_image" name="twitter:card"/>
-<meta content="وبلاگ تخصصی | شریف گروپ" name="twitter:title"/>
+<meta content="بلاگ تخصصی | شریف گروپ" name="twitter:title"/>
 <meta content="راهنمای جامع شما برای آگاهی از قوانین جدید مهاجرت سرمایه‌گذاری، پاسپورت دوم و اقامت دائم بین‌المللی." name="twitter:description"/>
 <meta content="https://sharifgroup.ae/assets/images/dubai-office-2.webp" name="twitter:image"/>
 <meta content="verified-editorial-blog" name="ai-content-declaration"/>
@@ -247,6 +255,19 @@
         [dir="rtl"] #detail-title {
             direction: rtl !important;
             text-align: right !important;
+        }
+
+        #detail-title {
+            min-height: 1.35em !important;
+            display: block !important;
+        }
+        #detail-title:empty::before {
+            content: attr(data-placeholder);
+            color: #9ca3af !important;
+            opacity: 0.65 !important;
+            font-weight: 400 !important;
+            pointer-events: none !important;
+            display: inline-block !important;
         }
 
         /* ==========================================================================
@@ -562,7 +583,7 @@
 <span class="text-neutral-300 font-light">|</span>
 <a class="hover:text-luxury-gold transition duration-200 py-2" data-i18n="nav.contact" href="/fa/contact/" onmouseenter="closeAllMegaMenus()">تماس با ما</a>
 <span class="text-neutral-300 font-light">|</span>
-<a class="hover:text-luxury-gold transition duration-200 py-2" data-i18n="nav.blog" href="/fa/blog/" onmouseenter="closeAllMegaMenus()">وبلاگ</a>
+<a class="hover:text-luxury-gold transition duration-200 py-2" data-i18n="nav.blog" href="/fa/blog/" onmouseenter="closeAllMegaMenus()">بلاگ</a>
 </nav>
 </div>
 <!-- Right Action Pill Buttons -->
@@ -669,7 +690,7 @@
 <a class="py-3 border-b border-neutral-200 hover:text-luxury-gold transition block" data-i18n="megaMenu.aboutTitle" href="/fa/aboutus/" onclick="toggleMobileMenu()">درباره شریف گروپ</a>
 <a class="py-3 border-b border-neutral-200 hover:text-luxury-gold transition block" data-i18n="megaMenu.aboutFounder" href="/fa/about-founder/" onclick="toggleMobileMenu()">درباره بنیان‌گذار | علی شریف</a>
 <a class="py-3 border-b border-neutral-200 hover:text-luxury-gold transition block" data-i18n="nav.socialResp" href="/fa/socialresponsibility/" onclick="toggleMobileMenu()">مسئولیت اجتماعی</a>
-<a class="py-3 border-b border-neutral-200 hover:text-luxury-gold transition block" data-i18n="nav.blog" href="/fa/blog/" onclick="toggleMobileMenu()">وبلاگ</a>
+<a class="py-3 border-b border-neutral-200 hover:text-luxury-gold transition block" data-i18n="nav.blog" href="/fa/blog/" onclick="toggleMobileMenu()">بلاگ</a>
 <a class="py-3 border-b border-neutral-200 text-[#C5A880] transition block" data-i18n="nav.contact" href="/fa/contact/" onclick="toggleMobileMenu()">تماس با ما</a>
 </nav>
 </div>
@@ -847,7 +868,7 @@
 <div class="relative z-10 max-w-5xl mx-auto space-y-4">
 <span class="text-xs font-bold uppercase tracking-[0.3em] text-luxury-gold flex items-center justify-center gap-2" data-i18n="blog.badge">تحلیل‌ها و بینش بازار</span>
 <h1 class="font-serif text-white font-normal tracking-tight drop-shadow-xl flex flex-col items-center gap-2">
-<span class="contact-hero-glow font-serif text-4xl sm:text-6xl md:text-7xl cursor-pointer" data-i18n="nav.blog">وبلاگ</span>
+<span class="contact-hero-glow font-serif text-4xl sm:text-6xl md:text-7xl cursor-pointer" data-i18n="nav.blog">بلاگ</span>
 <span class="text-lg sm:text-2xl md:text-3xl text-white font-serif tracking-widest uppercase font-semibold" data-i18n="blog.subtitle">شریف گروپ دبی</span>
 </h1>
 <p class="text-xs sm:text-sm text-neutral-300 font-light max-w-xl mx-auto leading-relaxed pt-2" data-i18n="blog.heroDesc">راهنمای جامع شما برای آگاهی از قوانین جدید مهاجرت سرمایه‌گذاری، پاسپورت دوم و اقامت دائم بین‌المللی.</p>
@@ -1961,7 +1982,7 @@
 <nav class="text-[11px] font-semibold text-neutral-500 flex items-center gap-1.5 uppercase tracking-wider">
 <a class="hover:text-neutral-900" data-i18n="footer.home" href="/fa/">خانه</a>
 <span>/</span>
-<a class="hover:text-neutral-900" data-i18n="nav.blog" href="/fa/blog/" onclick="closeBlogDetail(); return false;">وبلاگ</a>
+<a class="hover:text-neutral-900" data-i18n="nav.blog" href="/fa/blog/" onclick="closeBlogDetail(); return false;">بلاگ</a>
 <span>/</span>
 <span class="text-luxury-gold truncate max-w-[200px] sm:max-w-xs" id="detail-breadcrumb-title">Article</span>
 </nav>
@@ -2223,7 +2244,7 @@
 <li><a class="hover:text-luxury-gold transition" data-i18n="footer.realEstate" href="/fa/realestate/">املاک و مستغلات</a></li>
 <li><a class="hover:text-luxury-gold transition" data-i18n="megaMenu.educationalAdvisory" href="/fa/educationaladvisory/">مشاوره آموزشی</a></li>
 <li><a class="hover:text-luxury-gold transition" data-i18n="nav.contact" href="/fa/contact/">تماس با ما</a></li>
-<li><a class="hover:text-luxury-gold transition" data-i18n="megaMenu.insights" href="/fa/blog/">مطالب و وبلاگ</a></li>
+<li><a class="hover:text-luxury-gold transition" data-i18n="megaMenu.insights" href="/fa/blog/">مطالب و بلاگ</a></li>
 <li><a class="hover:text-luxury-gold transition" data-i18n="nav.eligibilityChecker" href="/fa/eligibilitychecker/">بررسی شرایط واجد بودن</a></li>
 </ul>
 </div>
@@ -7660,17 +7681,17 @@
                 // Dynamically resolve CMS blogs fresh for the current language
                 var found = null;
                 try {
-                    const rawBlogs = localStorage.getItem('sgcms_blog_live') || '[]';
-                    let localBlogs = [];
-                    try { localBlogs = JSON.parse(rawBlogs); } catch(e) { localBlogs = []; }
-                    if ((!localBlogs || !localBlogs.length) && window._data && Array.isArray(window._data.sgcms_blog)) {
-                        localBlogs = window._data.sgcms_blog;
-                    }
                     var isInsideEditor = (function() {
                         try {
                             return window.self !== window.top || window.location.search.indexOf('cms_editor') !== -1 || window.location.search.indexOf('cms_preview') !== -1;
                         } catch(e) { return false; }
                     })();
+                    const rawBlogs = (isInsideEditor ? (localStorage.getItem('sgcms_blog') || localStorage.getItem('sgcms_blog_live')) : localStorage.getItem('sgcms_blog_live')) || '[]';
+                    let localBlogs = [];
+                    try { localBlogs = JSON.parse(rawBlogs); } catch(e) { localBlogs = []; }
+                    if ((!localBlogs || !localBlogs.length) && window._data && Array.isArray(window._data.sgcms_blog)) {
+                        localBlogs = window._data.sgcms_blog;
+                    }
                     if (Array.isArray(localBlogs) && localBlogs.length) {
                         found = localBlogs.find(function(b) {
                             if (!b) return false;
@@ -7785,7 +7806,7 @@
                         }
 
                         baseArticle = {
-                            title: ld.title || (found.en && found.en.title) || found.title || found.hero_title || 'Article',
+                            title: (found[curLang] && found[curLang].title) || ld.title || (found.en && found.en.title) || found.title || found.hero_title || (curLang === 'fa' ? '\u0639\u0646\u0648\u0627\u0646 \u0645\u0642\u0627\u0644\u0647' : (curLang === 'ar' ? '\u0639\u0646\u0648\u0627\u0646 \u0627\u0644\u0645\u0642\u0627\u0644' : (curLang === 'zh' ? '\u6587\u7ae0\u6807\u9898' : 'Article'))),
                             category: found.category || 'Citizenship',
                             author: found.author || 'Sharif Group Advisory',
                             date: found.publish_date || '2026-09-01',
@@ -7895,16 +7916,29 @@
                 // Populate Content
                 const titleEl = document.getElementById('detail-title');
                 const breadcrumbTitleEl = document.getElementById('detail-breadcrumb-title');
+                let rawTitle = (article && article.title && article.title.trim()) ? article.title.trim() : '';
+                if (!rawTitle && baseArticle && baseArticle.title && baseArticle.title.trim()) {
+                    rawTitle = baseArticle.title.trim();
+                }
+                if (!rawTitle) {
+                    rawTitle = (found && ((found[currentLang] && found[currentLang].title) || (found.en && found.en.title) || found.title || found.hero_title))
+                        || ((currentLang === 'fa') ? 'عنوان مقاله' : (currentLang === 'ar' ? 'عنوان المقال' : (currentLang === 'zh' ? '文章标题' : 'Article Title')));
+                }
+                const placeholderText = isRtl
+                    ? (currentLang === 'fa' ? 'عنوان مقاله...' : 'عنوان المقال...')
+                    : (currentLang === 'zh' ? '文章标题...' : 'Article title...');
+
                 if (titleEl) {
-                    titleEl.setAttribute('data-i18n', `blog.articles.${slug}.title`);
-                    titleEl.innerText = article.title;
+                    titleEl.removeAttribute('data-i18n');
+                    titleEl.innerText = rawTitle;
                     titleEl.setAttribute('dir', isRtl ? 'rtl' : 'ltr');
                     titleEl.style.direction = isRtl ? 'rtl' : 'ltr';
                     titleEl.style.textAlign = isRtl ? 'right' : 'left';
+                    titleEl.setAttribute('data-placeholder', placeholderText);
                 }
                 if (breadcrumbTitleEl) {
-                    breadcrumbTitleEl.setAttribute('data-i18n', `blog.articles.${slug}.title`);
-                    breadcrumbTitleEl.innerText = article.title;
+                    breadcrumbTitleEl.removeAttribute('data-i18n');
+                    breadcrumbTitleEl.innerText = rawTitle;
                     breadcrumbTitleEl.setAttribute('dir', isRtl ? 'rtl' : 'ltr');
                 }
                 const catBadge = document.getElementById('detail-category-badge');
@@ -8510,8 +8544,8 @@
     // Flag that the user is coming from an internal page of Sharif Group website
     sessionStorage.setItem('sharif_preloader_shown', 'true');
 </script>
-<script src="/assets/js/language-switcher.js"></script>
-<script src="/assets/js/blog-translator.js"></script>
+<script src="/assets/js/language-switcher.js?v=20260930_v25"></script>
+<script src="/assets/js/blog-translator.js?v=20260930_v25"></script>
 <script src="/assets/js/forms.js"></script>
 <script src="/admin/cms-loader.js"></script>
 </body>

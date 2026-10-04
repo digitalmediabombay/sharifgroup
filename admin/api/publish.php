@@ -40,14 +40,57 @@ foreach ($payload['data'] as $k => $v) {
     }
 }
 
-// Deduplicate blog entries if sgcms_blog is present
-if (!empty($payload['data']['sgcms_blog']) && is_array($payload['data']['sgcms_blog'])) {
+// Maintain deleted slugs blacklist
+$deletedSlugs = [];
+if (!empty($payload['data']['sgcms_deleted_slugs']) && is_array($payload['data']['sgcms_deleted_slugs'])) {
+    $deletedSlugs = $payload['data']['sgcms_deleted_slugs'];
+}
+$currentPublishedBefore = readPublishedSnapshot();
+if (!empty($currentPublishedBefore['sgcms_deleted_slugs']) && is_array($currentPublishedBefore['sgcms_deleted_slugs'])) {
+    $deletedSlugs = array_unique(array_merge($deletedSlugs, $currentPublishedBefore['sgcms_deleted_slugs']));
+}
+$payload['data']['sgcms_deleted_slugs'] = array_values($deletedSlugs);
+
+$delMap = [];
+foreach ($deletedSlugs as $ds) {
+    $c = strtolower(trim((string)$ds));
+    if ($c !== '') $delMap[$c] = true;
+}
+
+// Un-blacklist any slug or ID actively present in incoming sgcms_blog payload
+if (isset($payload['data']['sgcms_blog']) && is_array($payload['data']['sgcms_blog'])) {
+    foreach ($payload['data']['sgcms_blog'] as $blogItem) {
+        if (!is_array($blogItem) || !empty($blogItem['deleted']) || ($blogItem['status'] ?? '') === 'deleted') continue;
+        $id = strtolower(trim($blogItem['id'] ?? ''));
+        $slug = strtolower(trim($blogItem['slug'] ?? ($blogItem['en']['slug'] ?? '')));
+        $enSlug = strtolower(trim($blogItem['en']['slug'] ?? ''));
+        if ($id !== '') unset($delMap[$id]);
+        if ($slug !== '') unset($delMap[$slug]);
+        if ($enSlug !== '') unset($delMap[$enSlug]);
+    }
+    $deletedSlugs = array_values(array_filter($deletedSlugs, function($ds) use ($delMap) {
+        return isset($delMap[strtolower(trim((string)$ds))]);
+    }));
+    $payload['data']['sgcms_deleted_slugs'] = $deletedSlugs;
+}
+
+// Deduplicate blog entries and filter deleted items if sgcms_blog is present
+if (isset($payload['data']['sgcms_blog']) && is_array($payload['data']['sgcms_blog'])) {
     $dedupedBlogs = [];
     $seenIds = [];
     $seenTitles = [];
     foreach ($payload['data']['sgcms_blog'] as $blogItem) {
         if (!is_array($blogItem)) continue;
-        $id = $blogItem['id'] ?? '';
+        $id = strtolower(trim($blogItem['id'] ?? ''));
+        $slug = strtolower(trim($blogItem['slug'] ?? ($blogItem['en']['slug'] ?? '')));
+        $enSlug = strtolower(trim($blogItem['en']['slug'] ?? ''));
+
+        // Skip if deleted
+        if ($id && isset($delMap[$id])) continue;
+        if ($slug && isset($delMap[$slug])) continue;
+        if ($enSlug && isset($delMap[$enSlug])) continue;
+        if (!empty($blogItem['deleted']) || ($blogItem['status'] ?? '') === 'deleted') continue;
+
         $titleEn = trim($blogItem['en']['title'] ?? ($blogItem['title'] ?? ''));
         $titleAr = trim($blogItem['ar']['title'] ?? '');
         $titleKey = mb_strtolower($titleEn ?: $titleAr);
@@ -59,7 +102,7 @@ if (!empty($payload['data']['sgcms_blog']) && is_array($payload['data']['sgcms_b
         if ($titleKey) $seenTitles[$titleKey] = true;
         $dedupedBlogs[] = $blogItem;
     }
-    $payload['data']['sgcms_blog'] = $dedupedBlogs;
+    $payload['data']['sgcms_blog'] = array_values($dedupedBlogs);
 }
 
 // 1. GUARANTEED LIVE UPDATE: Merge and write published snapshot directly to published_content.json

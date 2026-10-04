@@ -289,31 +289,52 @@
                     var currentLang = 'all';
                     var currentQuery = '';
 
+                    function getTokens(str) {
+                        if (!str) return [];
+                        var s = str.toLowerCase()
+                            .replace(/^https?:\/\//, '')
+                            .replace(/^www\./, '')
+                            .replace(/sharifgroup\.ae\/?/, '')
+                            .replace(/[^a-z0-9]+/g, ' ')
+                            .trim();
+                        return s ? s.split(/\s+/).filter(Boolean) : [];
+                    }
+
                     function filterRows() {
                         var rows = document.querySelectorAll('tbody tr');
                         var visibleCount = 0;
+                        var rawQ = (currentQuery || '').trim().toLowerCase();
+                        var directTerm = rawQ.replace(/^https?:\/\//, '').replace(/^www\./, '');
+                        var qTokens = getTokens(rawQ);
+
                         rows.forEach(function(r) {
-                            var url = (r.getAttribute('data-url') || '').toLowerCase();
+                            var rawUrl = (r.getAttribute('data-url') || '').toLowerCase();
+                            var cleanUrl = rawUrl.replace(/^https?:\/\//, '').replace(/^www\./, '');
                             var lang = r.getAttribute('data-lang') || 'en';
 
-                            var matchQuery = !currentQuery || (url.indexOf(currentQuery) !== -1);
+                            var matchQuery = true;
+                            if (rawQ) {
+                                var directMatch = (rawUrl.indexOf(rawQ) !== -1) || (cleanUrl.indexOf(directTerm) !== -1);
+                                var tokenMatch = qTokens.length > 0 && qTokens.every(function(t) {
+                                    return cleanUrl.indexOf(t) !== -1;
+                                });
+                                matchQuery = directMatch || tokenMatch;
+                            }
                             var matchLang = (currentLang === 'all') || (lang === currentLang);
 
-                            if (matchQuery) {
-                                if (matchLang) {
-                                    r.style.display = '';
-                                    visibleCount++;
-                                    return;
-                                }
+                            if (matchQuery && matchLang) {
+                                r.style.display = '';
+                                visibleCount++;
+                            } else {
+                                r.style.display = 'none';
                             }
-                            r.style.display = 'none';
                         });
                         var countEl = document.getElementById('visibleCount');
                         if (countEl) countEl.textContent = visibleCount;
                     }
 
                     function onSearch(e) {
-                        currentQuery = (e.target.value || '').trim().toLowerCase();
+                        currentQuery = (e.target.value || '').trim();
                         filterRows();
                     }
 
@@ -370,7 +391,7 @@
                     </div>
 
                     <div class="filter-bar">
-                        <input type="text" class="search-input" placeholder="Search page URL or slug..." onkeyup="onSearch(event)" />
+                        <input type="text" class="search-input" placeholder="Search page URL or slug..." oninput="onSearch(event)" onkeyup="onSearch(event)" />
                         <div class="lang-tabs">
                             <button type="button" class="tab-btn active" onclick="setLang('all', this)">All</button>
                             <button type="button" class="tab-btn" onclick="setLang('en', this)">English</button>

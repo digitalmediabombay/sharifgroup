@@ -179,6 +179,13 @@
     <FilesMatch "\.(html|htm)$">
         Header set X-Robots-Tag "index, follow, max-image-preview:large, max-snippet:-1, max-video-preview:-1"
     </FilesMatch>
+
+    # Sitemap freshness: allow immediate reflection of newly added CMS articles
+    <FilesMatch "^(sitemap\.(xml|php)|sitemap\.xsl)$">
+        Header set Cache-Control "no-cache, no-store, must-revalidate, max-age=0"
+        Header set Pragma "no-cache"
+        Header set Expires "0"
+    </FilesMatch>
 </IfModule>
 
 # UTF-8 Charset Encoding

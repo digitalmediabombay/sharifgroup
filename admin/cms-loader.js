@@ -255,6 +255,22 @@
     }
   };
 
+  const PROGRAM_HERO_I18N = {
+    dominica: { en: 'Dominica', ar: 'دومينيكا', fa: 'دومینیکا', zh: '多米尼克' },
+    stkitts: { en: 'St. Kitts & Nevis', ar: 'سانت كيتس ونيفيس', fa: 'سنت کیتس و نویس', zh: '圣基茨和尼维斯' },
+    antigua: { en: 'Antigua & Barbuda', ar: 'أنتيغوا وباربودا', fa: 'آنتیگوا و باربودا', zh: '安提瓜和巴布达' },
+    stlucia: { en: 'Saint Lucia', ar: 'سانت لوسيا', fa: 'سنت لوسیا', zh: '圣卢西亚' },
+    lucia: { en: 'Saint Lucia', ar: 'سانت لوسيا', fa: 'سنت لوسیا', zh: '圣卢西亚' },
+    grenada: { en: 'Grenada', ar: 'غرينادا', fa: 'گرنادا', zh: '格林纳达' },
+    vanuatu: { en: 'Vanuatu', ar: 'فانواتو', fa: 'وانواتو', zh: '瓦努阿图' },
+    saotome: { en: 'São Tomé and Príncipe', ar: 'ساو تومي وبرينسيبي', fa: 'سائوتومه و پرنسیپ', zh: '圣多美和普林西比' },
+    nauru: { en: 'Republic of Nauru', ar: 'جمهورية ناورو', fa: 'جمهوری نائورو', zh: '瑙鲁共和国' },
+    portugal: { en: 'Portugal', ar: 'البرتغال', fa: 'پرتغال', zh: '葡萄牙' },
+    greece: { en: 'Greece', ar: 'اليونان', fa: 'یونان', zh: '希腊' },
+    panama: { en: 'Panama', ar: 'بنما', fa: 'پاناما', zh: '巴拿马' },
+    uae: { en: 'United Arab Emirates', ar: 'الإمارات العربية المتحدة', fa: 'امارات متحده عربی', zh: '阿拉伯联合酋长国' }
+  };
+
   function tNav(key, lang) {
     const l = lang || getLang();
     if (typeof window.getTranslation === 'function') {
@@ -991,20 +1007,29 @@
     }
 
     // 7. Contact Block
-    const cb = data.contact_block;
-    if (cb) {
-      if (cb.badge) setText('[data-i18n="contact.badge"]', cb.badge);
-      if (cb.heading) setText('[data-i18n="contact.heading"]', cb.heading);
-      if (cb.subheading) setText('[data-i18n="contact.subheading"]', cb.subheading);
-      if (cb.phone) {
+    // Guard: Only apply text overrides if English OR if an explicit non-English localized override exists
+    const cb = isEn ? (data.contact_block?.en || data.contact_block || {}) : (data.contact_block?.[l] || null);
+    if (cb && !isEnglishFallback(cb.heading, l)) {
+      if (cb.badge && !isEnglishFallback(cb.badge, l)) setText('[data-i18n="contact.badge"]', cb.badge);
+      if (cb.heading) {
+        const words = cb.heading.trim().split(' ');
+        const last = words.length > 1 ? words.pop() : '';
+        setText('[data-i18n="contact.heading"]', words.join(' '));
+        setText('[data-i18n="contact.headingItalic"]', last);
+      }
+      if (cb.subheading && !isEnglishFallback(cb.subheading, l)) setText('[data-i18n="contact.subheading"]', cb.subheading);
+      if (cb.office_address && !isEnglishFallback(cb.office_address, l)) setText('[data-i18n="contact.officeAddress"]', cb.office_address);
+    }
+    const rawCb = data.contact_block;
+    if (rawCb) {
+      if (rawCb.phone) {
         const ph = document.querySelector('[data-i18n="contact.phoneNumber"] ~ p a');
-        if (ph) { ph.textContent = cb.phone; ph.href = 'tel:' + cb.phone.replace(/\s+/g, ''); }
+        if (ph) { ph.textContent = rawCb.phone; ph.href = 'tel:' + rawCb.phone.replace(/\s+/g, ''); }
       }
-      if (cb.email) {
+      if (rawCb.email) {
         const em = document.querySelector('[data-i18n="contact.emailAddress"] ~ p a');
-        if (em) { em.textContent = cb.email; em.href = 'mailto:' + cb.email; }
+        if (em) { em.textContent = rawCb.email; em.href = 'mailto:' + rawCb.email; }
       }
-      if (cb.office_address) setText('[data-i18n="contact.officeAddress"]', cb.office_address);
     }
   }
 
@@ -1030,6 +1055,8 @@
         : (TAB_I18N.citizenship[l] || 'Citizenship By Investment');
 
     const i18nSlug = (prog.id && prog.id !== 'sao-tome-and-principe') ? prog.id : (slug === 'sao-tome-and-principe' ? 'saotome' : slug);
+    const progKey = (prog.id && PROGRAM_HERO_I18N[prog.id]) ? prog.id : (slug && PROGRAM_HERO_I18N[slug] ? slug : (i18nSlug && PROGRAM_HERO_I18N[i18nSlug] ? i18nSlug : ''));
+    const localizedHeroFallback = (progKey && PROGRAM_HERO_I18N[progKey]) ? (PROGRAM_HERO_I18N[progKey][l] || PROGRAM_HERO_I18N[progKey].en) : '';
 
     let i18nSub = null;
     let i18nCountry = null;
@@ -1044,16 +1071,24 @@
       }
     }
 
-    let rawCountry = (ld.hero_title || i18nCountry || (ld.title ? ld.title.replace(/\s+(citizenship|residency).*$/i, '').trim() : '') || prog.name || prog.id || slug || '').trim();
-    if (isUae) {
-      if (!ld.hero_title && (!i18nCountry || i18nCountry === 'UAE')) {
-        rawCountry = (l === 'ar' ? 'الإمارات العربية المتحدة' : l === 'fa' ? 'امارات متحده عربی' : l === 'zh' ? '阿拉伯联合酋长国' : 'United Arab Emirates');
-      }
+    let rawCountry = '';
+    if (ld.hero_title && (l === 'en' || !isEnglishFallback(ld.hero_title, l))) {
+      rawCountry = ld.hero_title.trim();
+    } else if (i18nCountry && (l === 'en' || !isEnglishFallback(i18nCountry, l))) {
+      rawCountry = i18nCountry.trim();
+    } else if (localizedHeroFallback) {
+      rawCountry = localizedHeroFallback;
+    } else if (ld.title && (l === 'en' || !isEnglishFallback(ld.title, l))) {
+      rawCountry = ld.title.replace(/\s+(citizenship|residency).*$/i, '').trim();
+    } else {
+      rawCountry = localizedHeroFallback || prog.name || prog.id || slug || 'Dominica';
     }
-    if (/^(citizenship(\s+by\s+investment)?|residency(\s+by\s+investment)?)$/i.test(rawCountry)) {
-      rawCountry = (prog.name || prog.id || slug || '').replace(/[^a-zA-Z\s]/g, ' ').trim();
+
+    if (l !== 'en' && isEnglishFallback(rawCountry, l) && localizedHeroFallback) {
+      rawCountry = localizedHeroFallback;
     }
-    const displayCountry = rawCountry ? (rawCountry.charAt(0).toUpperCase() + rawCountry.slice(1)) : 'Dominica';
+
+    const displayCountry = rawCountry || localizedHeroFallback || (prog.name || 'Dominica');
 
     let sectionTab = '';
     const rawSub = (ld.hero_subtitle || '').trim();
@@ -1658,13 +1693,15 @@
   };
 
   function getProgramUrl(prog, type, prefix) {
+    const l = getLang();
+    const langPrefix = (l && l !== 'en') ? (l + '/') : '';
     if (KNOWN_PROGRAM_PATHS[prog.id]) {
-      return prefix + KNOWN_PROGRAM_PATHS[prog.id];
+      return prefix + langPrefix + KNOWN_PROGRAM_PATHS[prog.id];
     }
     const base = type === 'residency'
       ? 'programs/residencybyinvestment/portugal/index.html'
       : 'programs/citizenshipbyinvestment/dominica/index.html';
-    return prefix + base + '?program_id=' + encodeURIComponent(prog.id);
+    return prefix + langPrefix + base + '?program_id=' + encodeURIComponent(prog.id);
   }
 
   function getProgramFlag(prog, prefix) {
@@ -1686,7 +1723,8 @@
     if (!gridWrap) return;
 
     const isCitizenship = (type === 'citizenship');
-    const allUrl = prefix + (isCitizenship ? 'citizenshipbyinvestment/index.html' : 'residencybyinvestment/index.html');
+    const langPrefix = (l && l !== 'en') ? (l + '/') : '';
+    const allUrl = prefix + langPrefix + (isCitizenship ? 'citizenshipbyinvestment/index.html' : 'residencybyinvestment/index.html');
     const allKey = isCitizenship ? 'allCitizenshipPrograms' : 'allResidencyPrograms';
     const allLabel = tNav(allKey, l);
     const titleKey = isCitizenship ? 'citizenshipTitle' : 'residencyTitle';
@@ -1746,10 +1784,16 @@
 
       const itemsHtml = secProgs.map(p => {
         let pLabel = p[l]?.nav_label;
-        if (!pLabel) {
+        if (!pLabel || (l !== 'en' && isEnglishFallback(pLabel, l))) {
           const defP = (type === 'citizenship' ? DEFAULT_CITIZENSHIP : DEFAULT_RESIDENCY).find(d => d.id === p.id || d.slug === p.slug);
           if (defP && defP[l]?.nav_label) {
             pLabel = defP[l].nav_label;
+          }
+        }
+        if (!pLabel || (l !== 'en' && isEnglishFallback(pLabel, l))) {
+          const hName = PROGRAM_HERO_I18N[p.id]?.[l];
+          if (hName) {
+            pLabel = hName + (type === 'citizenship' ? (l === 'ar' ? ' | جواز سفر' : l === 'fa' ? ' | پاسپورت' : l === 'zh' ? ' | 护照' : ' | Passport') : (l === 'ar' ? ' | التأشيرة الذهبية' : l === 'fa' ? ' | ویزای طلایی' : l === 'zh' ? ' | 黄金签证' : ' | Golden Visa'));
           }
         }
         if (!pLabel) {
@@ -1799,7 +1843,8 @@
   function renderMobileSubmenu(mobUl, type, programs, prefix, l) {
     if (!mobUl) return;
     const isCitizenship = (type === 'citizenship');
-    const allUrl = prefix + (isCitizenship ? 'citizenshipbyinvestment/index.html' : 'residencybyinvestment/index.html');
+    const langPrefix = (l && l !== 'en') ? (l + '/') : '';
+    const allUrl = prefix + langPrefix + (isCitizenship ? 'citizenshipbyinvestment/index.html' : 'residencybyinvestment/index.html');
     const allKey = isCitizenship ? 'allCitizenshipPrograms' : 'allResidencyPrograms';
     const allLabel = tNav(allKey, l);
 
@@ -1808,10 +1853,16 @@
 
     const itemsHtml = visibleProgs.map(p => {
       let pLabel = p[l]?.nav_label;
-      if (!pLabel) {
+      if (!pLabel || (l !== 'en' && isEnglishFallback(pLabel, l))) {
         const defP = (type === 'citizenship' ? DEFAULT_CITIZENSHIP : DEFAULT_RESIDENCY).find(d => d.id === p.id || d.slug === p.slug);
         if (defP && defP[l]?.nav_label) {
           pLabel = defP[l].nav_label;
+        }
+      }
+      if (!pLabel || (l !== 'en' && isEnglishFallback(pLabel, l))) {
+        const hName = PROGRAM_HERO_I18N[p.id]?.[l];
+        if (hName) {
+          pLabel = hName + (type === 'citizenship' ? (l === 'ar' ? ' | جواز سفر' : l === 'fa' ? ' | پاسپورت' : l === 'zh' ? ' | 护照' : ' | Passport') : (l === 'ar' ? ' | التأشيرة الذهبية' : l === 'fa' ? ' | ویزای طلایی' : l === 'zh' ? ' | 黄金签证' : ' | Golden Visa'));
         }
       }
       if (!pLabel) {
@@ -1832,6 +1883,8 @@
     }
   }
 
+
+
   function hydrateNavigation(lang) {
     const l = lang || getLang();
     const prefix = getPathPrefix();
@@ -1842,90 +1895,90 @@
     const DEFAULT_CITIZENSHIP = [
       {
         id: 'dominica', slug: 'dominica', name: 'Dominica', portfolio: 'caribbean', flag: 'https://flagcdn.com/dm.svg',
-        en: { nav_label: 'Dominica | Passport', hero_subtitle: 'Citizenship By Investment' },
-        ar: { nav_label: 'دومينيكا | جواز سفر', hero_subtitle: 'الجنسية عن طريق الاستثمار' },
-        fa: { nav_label: 'دومینیکا | پاسپورت', hero_subtitle: 'شهروندی از طریق سرمایه‌گذاری' },
-        zh: { nav_label: '多米尼克 | 护照', hero_subtitle: '投资入籍' }
+        en: { hero_title: 'Dominica', nav_label: 'Dominica | Passport', hero_subtitle: 'Citizenship By Investment' },
+        ar: { hero_title: 'دومينيكا', nav_label: 'دومينيكا | جواز سفر', hero_subtitle: 'الجنسية عن طريق الاستثمار' },
+        fa: { hero_title: 'دومینیکا', nav_label: 'دومینیکا | پاسپورت', hero_subtitle: 'شهروندی از طریق سرمایه‌گذاری' },
+        zh: { hero_title: '多米尼克', nav_label: '多米尼克 | 护照', hero_subtitle: '投资入籍' }
       },
       {
         id: 'stkitts', slug: 'stkitts', name: 'St. Kitts & Nevis', portfolio: 'caribbean', flag: 'https://flagcdn.com/kn.svg',
-        en: { nav_label: 'St. Kitts & Nevis | Passport', hero_subtitle: 'Citizenship By Investment' },
-        ar: { nav_label: 'سانت كيتس ونيفيس | جواز سفر', hero_subtitle: 'الجنسية عن طريق الاستثمار' },
-        fa: { nav_label: 'سنت کیتس و نویس | پاسپورت', hero_subtitle: 'شهروندی از طریق سرمایه‌گذاری' },
-        zh: { nav_label: '圣基茨 | 护照', hero_subtitle: '投资入籍' }
+        en: { hero_title: 'St. Kitts & Nevis', nav_label: 'St. Kitts & Nevis | Passport', hero_subtitle: 'Citizenship By Investment' },
+        ar: { hero_title: 'سانت كيتس ونيفيس', nav_label: 'سانت كيتس ونيفيس | جواز سفر', hero_subtitle: 'الجنسية عن طريق الاستثمار' },
+        fa: { hero_title: 'سنت کیتس و نویس', nav_label: 'سنت کیتس و نویس | پاسپورت', hero_subtitle: 'شهروندی از طریق سرمایه‌گذاری' },
+        zh: { hero_title: '圣基茨和尼维斯', nav_label: '圣基茨 | 护照', hero_subtitle: '投资入籍' }
       },
       {
         id: 'antigua', slug: 'antiguaandbarbuda', name: 'Antigua & Barbuda', portfolio: 'caribbean', flag: 'https://flagcdn.com/ag.svg',
-        en: { nav_label: 'Antigua & Barbuda | Passport', hero_subtitle: 'Citizenship By Investment' },
-        ar: { nav_label: 'أنتيغوا وباربودا | جواز سفر', hero_subtitle: 'الجنسية عن طريق الاستثمار' },
-        fa: { nav_label: 'آنتیگوا و باربودا | پاسپورت', hero_subtitle: 'شهروندی از طریق سرمایه‌گذاری' },
-        zh: { nav_label: '安提瓜 | 护照', hero_subtitle: '投资入籍' }
+        en: { hero_title: 'Antigua & Barbuda', nav_label: 'Antigua & Barbuda | Passport', hero_subtitle: 'Citizenship By Investment' },
+        ar: { hero_title: 'أنتيغوا وباربودا', nav_label: 'أنتيغوا وباربودا | جواز سفر', hero_subtitle: 'الجنسية عن طريق الاستثمار' },
+        fa: { hero_title: 'آنتیگوا و باربودا', nav_label: 'آنتیگوا و باربودا | پاسپورت', hero_subtitle: 'شهروندی از طریق سرمایه‌گذاری' },
+        zh: { hero_title: '安提瓜和巴布达', nav_label: '安提瓜 | 护照', hero_subtitle: '投资入籍' }
       },
       {
         id: 'stlucia', slug: 'stlucia', name: 'Saint Lucia', portfolio: 'caribbean', flag: 'https://flagcdn.com/lc.svg',
-        en: { nav_label: 'Saint Lucia | Passport', hero_subtitle: 'Citizenship By Investment' },
-        ar: { nav_label: 'سانت لوسيا | جواز سفر', hero_subtitle: 'الجنسية عن طريق الاستثمار' },
-        fa: { nav_label: 'سنت لوسیا | پاسپورت', hero_subtitle: 'شهروندی از طریق سرمایه‌گذاری' },
-        zh: { nav_label: '圣卢西亚 | 护照', hero_subtitle: '投资入籍' }
+        en: { hero_title: 'Saint Lucia', nav_label: 'Saint Lucia | Passport', hero_subtitle: 'Citizenship By Investment' },
+        ar: { hero_title: 'سانت لوسيا', nav_label: 'سانت لوسيا | جواز سفر', hero_subtitle: 'الجنسية عن طريق الاستثمار' },
+        fa: { hero_title: 'سنت لوسیا', nav_label: 'سنت لوسیا | پاسپورت', hero_subtitle: 'شهروندی از طریق سرمایه‌گذاری' },
+        zh: { hero_title: '圣卢西亚', nav_label: '圣卢西亚 | 护照', hero_subtitle: '投资入籍' }
       },
       {
         id: 'grenada', slug: 'grenada', name: 'Grenada', portfolio: 'caribbean', flag: 'https://flagcdn.com/gd.svg',
-        en: { nav_label: 'Grenada | Passport', hero_subtitle: 'Citizenship By Investment' },
-        ar: { nav_label: 'غرينادا | جواز سفر', hero_subtitle: 'الجنسية عن طريق الاستثمار' },
-        fa: { nav_label: 'گرنادا | پاسپورت', hero_subtitle: 'شهروندی از طریق سرمایه‌گذاری' },
-        zh: { nav_label: '格林纳达 | 护照', hero_subtitle: '投资入籍' }
+        en: { hero_title: 'Grenada', nav_label: 'Grenada | Passport', hero_subtitle: 'Citizenship By Investment' },
+        ar: { hero_title: 'غرينادا', nav_label: 'غرينادا | جواز سفر', hero_subtitle: 'الجنسية عن طريق الاستثمار' },
+        fa: { hero_title: 'گرنادا', nav_label: 'گرنادا | پاسپورت', hero_subtitle: 'شهروندی از طریق سرمایه‌گذاری' },
+        zh: { hero_title: '格林纳达', nav_label: '格林纳达 | 护照', hero_subtitle: '投资入籍' }
       },
       {
         id: 'vanuatu', slug: 'vanuatu', name: 'Vanuatu', portfolio: 'global', flag: 'https://flagcdn.com/vu.svg',
-        en: { nav_label: 'Vanuatu | Passport', hero_subtitle: 'Citizenship By Investment' },
-        ar: { nav_label: 'فانواتو | جواز سفر', hero_subtitle: 'الجنسية عن طريق الاستثمار' },
-        fa: { nav_label: 'وانواتو | پاسپورت', hero_subtitle: 'شهروندی از طریق سرمایه‌گذاری' },
-        zh: { nav_label: '瓦努阿图 | 护照', hero_subtitle: '投资入籍' }
+        en: { hero_title: 'Vanuatu', nav_label: 'Vanuatu | Passport', hero_subtitle: 'Citizenship By Investment' },
+        ar: { hero_title: 'فانواتو', nav_label: 'فانواتو | جواز سفر', hero_subtitle: 'الجنسية عن طريق الاستثمار' },
+        fa: { hero_title: 'وانواتو', nav_label: 'وانواتو | پاسپورت', hero_subtitle: 'شهروندی از طریق سرمایه‌گذاری' },
+        zh: { hero_title: '瓦努阿图', nav_label: '瓦努阿图 | 护照', hero_subtitle: '投资入籍' }
       },
       {
         id: 'saotome', slug: 'sao-tome-and-principe', name: 'São Tomé and Príncipe', portfolio: 'global', flag: 'https://flagcdn.com/st.svg',
-        en: { nav_label: 'São Tomé and Príncipe | Passport', hero_subtitle: 'Citizenship By Investment' },
-        ar: { nav_label: 'ساو تومي وبرينسيبي | جواز سفر', hero_subtitle: 'الجنسية عن طريق الاستثمار' },
-        fa: { nav_label: 'سائوتومه و پرنسیپ | پاسپورت', hero_subtitle: 'شهروندی از طریق سرمایه‌گذاری' },
-        zh: { nav_label: '圣多美 | 护照', hero_subtitle: '投资入籍' }
+        en: { hero_title: 'São Tomé & Príncipe', nav_label: 'São Tomé and Príncipe | Passport', hero_subtitle: 'Citizenship By Investment' },
+        ar: { hero_title: 'ساو تومي وبرينسيبي', nav_label: 'ساو تومي وبرينسيبي | جواز سفر', hero_subtitle: 'الجنسية عن طريق الاستثمار' },
+        fa: { hero_title: 'سائوتومه و پرنسیپ', nav_label: 'سائوتومه و پرنسیپ | پاسپورت', hero_subtitle: 'شهروندی از طریق سرمایه‌گذاری' },
+        zh: { hero_title: '圣多美和普林西比', nav_label: '圣多美 | 护照', hero_subtitle: '投资入籍' }
       },
       {
         id: 'nauru', slug: 'nauru', name: 'Republic of Nauru', portfolio: 'global', flag: 'https://flagcdn.com/nr.svg',
-        en: { nav_label: 'Republic of Nauru | Passport', hero_subtitle: 'Citizenship By Investment' },
-        ar: { nav_label: 'جمهورية ناورو | جواز سفر', hero_subtitle: 'الجنسية عن طريق الاستثمار' },
-        fa: { nav_label: 'جمهوری نائورو | پاسپورت', hero_subtitle: 'شهروندی از طریق سرمایه‌گذاری' },
-        zh: { nav_label: '瑙鲁共和国 | 护照', hero_subtitle: '投资入籍' }
+        en: { hero_title: 'Republic of Nauru', nav_label: 'Republic of Nauru | Passport', hero_subtitle: 'Citizenship By Investment' },
+        ar: { hero_title: 'جمهورية ناورو', nav_label: 'جمهورية ناورو | جواز سفر', hero_subtitle: 'الجنسية عن طريق الاستثمار' },
+        fa: { hero_title: 'جمهوری نائورو', nav_label: 'جمهوری نائورو | پاسپورت', hero_subtitle: 'شهروندی از طریق سرمایه‌گذاری' },
+        zh: { hero_title: '瑙鲁共和国', nav_label: '瑙鲁共和国 | 护照', hero_subtitle: '投资入籍' }
       }
     ];
 
     const DEFAULT_RESIDENCY = [
       {
         id: 'portugal', slug: 'portugal', name: 'Portugal', portfolio: 'european', flag: 'https://flagcdn.com/pt.svg',
-        en: { nav_label: 'Portugal | Golden Visa', hero_subtitle: 'Residency By Investment' },
-        ar: { nav_label: 'البرتغال | التأشيرة الذهبية', hero_subtitle: 'الإقامة عن طريق الاستثمار' },
-        fa: { nav_label: 'پرتغال | ویزای طلایی', hero_subtitle: 'اقامت از طریق سرمایه‌گذاری' },
-        zh: { nav_label: '葡萄牙 | 黄金签证', hero_subtitle: '投资居留' }
+        en: { hero_title: 'Portugal', nav_label: 'Portugal | Golden Visa', hero_subtitle: 'Residency By Investment' },
+        ar: { hero_title: 'البرتغال', nav_label: 'البرتغال | التأشيرة الذهبية', hero_subtitle: 'الإقامة عن طريق الاستثمار' },
+        fa: { hero_title: 'پرتغال', nav_label: 'پرتغال | ویزای طلایی', hero_subtitle: 'اقامت از طریق سرمایه‌گذاری' },
+        zh: { hero_title: '葡萄牙', nav_label: '葡萄牙 | 黄金签证', hero_subtitle: '投资居留' }
       },
       {
         id: 'greece', slug: 'greece', name: 'Greece', portfolio: 'european', flag: 'https://flagcdn.com/gr.svg',
-        en: { nav_label: 'Greece | Golden Visa', hero_subtitle: 'Residency By Investment' },
-        ar: { nav_label: 'اليونان | التأشيرة الذهبية', hero_subtitle: 'الإقامة عن طريق الاستثمار' },
-        fa: { nav_label: 'یونان | ویزای طلایی', hero_subtitle: 'اقامت از طریق سرمایه‌گذاری' },
-        zh: { nav_label: '希腊 | 黄金签证', hero_subtitle: '投资居留' }
+        en: { hero_title: 'Greece', nav_label: 'Greece | Golden Visa', hero_subtitle: 'Residency By Investment' },
+        ar: { hero_title: 'اليونان', nav_label: 'اليونان | التأشيرة الذهبية', hero_subtitle: 'الإقامة عن طريق الاستثمار' },
+        fa: { hero_title: 'یونان', nav_label: 'یونان | ویزای طلایی', hero_subtitle: 'اقامت از طریق سرمایه‌گذاری' },
+        zh: { hero_title: '希腊', nav_label: '希腊 | 黄金签证', hero_subtitle: '投资居留' }
       },
       {
         id: 'panama', slug: 'panama', name: 'Panama', portfolio: 'uae', flag: 'https://flagcdn.com/pa.svg',
-        en: { nav_label: 'Panama | Golden Visa', hero_subtitle: 'Residency By Investment' },
-        ar: { nav_label: 'بنما | التأشيرة الذهبية', hero_subtitle: 'الإقامة عن طريق الاستثمار' },
-        fa: { nav_label: 'پاناما | ویزای طلایی', hero_subtitle: 'اقامت از طریق سرمایه‌گذاری' },
-        zh: { nav_label: '巴拿马 | 黄金签证', hero_subtitle: '投资居留' }
+        en: { hero_title: 'Panama', nav_label: 'Panama | Golden Visa', hero_subtitle: 'Residency By Investment' },
+        ar: { hero_title: 'بنما', nav_label: 'بنما | التأشيرة الذهبية', hero_subtitle: 'الإقامة عن طريق الاستثمار' },
+        fa: { hero_title: 'پاناما', nav_label: 'پاناما | ویزای طلایی', hero_subtitle: 'اقامت از طریق سرمایه‌گذاری' },
+        zh: { hero_title: '巴拿马', nav_label: '巴拿马 | 黄金签证', hero_subtitle: '投资居留' }
       },
       {
         id: 'uae', slug: 'uae', name: 'United Arab Emirates', portfolio: 'uae', flag: 'https://flagcdn.com/ae.svg',
-        en: { nav_label: 'United Arab Emirates | Golden Visa', hero_subtitle: 'Golden Visa' },
-        ar: { nav_label: 'الإمارات العربية المتحدة | التأشيرة الذهبية', hero_subtitle: 'التأشيرة الذهبية' },
-        fa: { nav_label: 'امارات متحده عربی | ویزای طلایی', hero_subtitle: 'ویزای طلایی' },
-        zh: { nav_label: '阿联酋 | 黄金签证', hero_subtitle: '黄金签证' }
+        en: { hero_title: 'United Arab Emirates', nav_label: 'United Arab Emirates | Golden Visa', hero_subtitle: 'Golden Visa' },
+        ar: { hero_title: 'الإمارات العربية المتحدة', nav_label: 'الإمارات العربية المتحدة | التأشيرة الذهبية', hero_subtitle: 'التأشيرة الذهبية' },
+        fa: { hero_title: 'امارات متحده عربی', nav_label: 'امارات متحده عربی | ویزای طلایی', hero_subtitle: 'ویزای طلایی' },
+        zh: { hero_title: '阿拉伯联合酋长国', nav_label: '阿联酋 | 黄金签证', hero_subtitle: '黄金签证' }
       }
     ];
 
@@ -1945,12 +1998,23 @@
         }
         if (p && (p.id === 'uae' || p.slug === 'uae')) {
           p.name = 'United Arab Emirates';
-          if (p.en) {
-            p.en.nav_label = 'United Arab Emirates | Golden Visa';
-            p.en.hero_title = 'United Arab Emirates';
-            p.en.hero_subtitle = 'Golden Visa';
-            p.en.title = 'United Arab Emirates Golden Visa';
-          }
+          if (!p.en) p.en = {};
+          p.en.nav_label = p.en.nav_label || 'United Arab Emirates | Golden Visa';
+          p.en.hero_title = p.en.hero_title || 'United Arab Emirates';
+          p.en.hero_subtitle = p.en.hero_subtitle || 'Golden Visa';
+          p.en.title = p.en.title || 'United Arab Emirates Golden Visa';
+          if (!p.ar) p.ar = {};
+          p.ar.hero_title = p.ar.hero_title || 'الإمارات العربية المتحدة';
+          p.ar.hero_subtitle = p.ar.hero_subtitle || 'التأشيرة الذهبية';
+          p.ar.nav_label = p.ar.nav_label || 'الإمارات العربية المتحدة | التأشيرة الذهبية';
+          if (!p.fa) p.fa = {};
+          p.fa.hero_title = p.fa.hero_title || 'امارات متحده عربی';
+          p.fa.hero_subtitle = p.fa.hero_subtitle || 'ویزای طلایی';
+          p.fa.nav_label = p.fa.nav_label || 'امارات متحده عربی | ویزای طلایی';
+          if (!p.zh) p.zh = {};
+          p.zh.hero_title = p.zh.hero_title || '阿拉伯联合酋长国';
+          p.zh.hero_subtitle = p.zh.hero_subtitle || '黄金签证';
+          p.zh.nav_label = p.zh.nav_label || '阿联酋 | 黄金签证';
         }
         if (p && BUILTIN_FLAG_CODES[p.id] && (!p.flag || p.flag.includes('/assets/images/'))) {
           p.flag = `https://flagcdn.com/${BUILTIN_FLAG_CODES[p.id]}.svg`;
@@ -1958,6 +2022,7 @@
         }
       });
     }
+
 
     const ciList = Array.isArray(ci) && ci.length ? ci : DEFAULT_CITIZENSHIP;
     const riList = Array.isArray(ri) && ri.length ? ri : DEFAULT_RESIDENCY;
@@ -1974,6 +2039,42 @@
     renderMobileSubmenu(document.getElementById('mob-rbi'), 'residency', riList, prefix, l);
   }
 
+  function isEnglishFallback(str, currentLang) {
+    if (!str || typeof str !== 'string') return true;
+    if (/[\u2500-\u259F\uFFFD]/.test(str)) return true;
+    if (currentLang === 'en') return false;
+    const trimmed = str.trim();
+    const enPhrases = [
+      'About Sharif Group',
+      'EXECUTIVE BRIEFING',
+      'A premier migration, citizenship, and luxury investment advisory platform rooted in Business Bay, Dubai.',
+      'WHO WE ARE',
+      'Company Overview: Sharif Group',
+      'Company Overview:',
+      'Sharif Group is a dedicated private consulting company based in Business Bay, Dubai.',
+      'Book Consultation',
+      'Three Companies. One Commitment.',
+      'CORPORATE ARCHITECTURE',
+      'A MESSAGE FROM OUR FOUNDER',
+      'Ali Sharif',
+      'CEO & Founder, Sharif Group',
+      'Schedule Your Expert Consultation Today',
+      'Request Executive Briefing'
+    ];
+    if (enPhrases.includes(trimmed)) return true;
+    if (currentLang === 'ar' || currentLang === 'fa') {
+      const hasArabic = /[\u0600-\u06FF\u0750-\u077F\u08A0-\u08FF\uFB50-\uFDFF\uFE70-\uFEFF]/.test(trimmed);
+      const isAscii = /^[A-Za-z0-9\s.,:;!?'"()&/\-]+$/.test(trimmed);
+      if (!hasArabic && isAscii && trimmed.length > 3) return true;
+    }
+    if (currentLang === 'zh') {
+      const hasChinese = /[\u4E00-\u9FFF]/.test(trimmed);
+      const isAscii = /^[A-Za-z0-9\s.,:;!?'"()&/\-]+$/.test(trimmed);
+      if (!hasChinese && isAscii && trimmed.length > 3) return true;
+    }
+    return false;
+  }
+
   function hydrateAboutUs(lang) {
     const data = store('sgcms_aboutus');
     if (!data) return;
@@ -1982,28 +2083,45 @@
     const isEn = (l === 'en');
 
     // 1. Hero
+    const defAboutHero = {
+      ar: { badge: 'إحاطة تنفيذية', title: 'نبذة عن مجموعة شريف', subtitle: 'منصة رائدة للاستشارات في مجال الهجرة والمواطنة والاستثمارات الفاخرة، تتخذ من الخليج التجاري في دبي مقرًا لها.' },
+      fa: { badge: 'جلسه توجیهی اجرایی', title: 'درباره شریف گروپ', subtitle: 'یک پلتفرم برتر مشاوره در زمینه مهاجرت، شهروندی و سرمایه‌گذاری‌های لوکس، مستقر در بیزنس‌بی دبی.' },
+      zh: { badge: '执行简报', title: '关于 谢里夫集团', subtitle: '一个立足于迪拜商业湾的高端移民、公民身份及奢华投资咨询平台。' }
+    };
     const hero = isEn ? (data.hero?.[l] || data.hero?.en || {}) : (data.hero?.[l] || null);
-    if (hero) {
-      if (hero.badge) setText('[data-i18n="pages.aboutUs.heroBadge"]', hero.badge);
-      if (hero.title) setText('[data-i18n="pages.aboutUs.heroTitle"]', hero.title);
-      if (hero.subtitle) setText('.about-hero-subtitle, [data-i18n="pages.aboutUs.heroSubtitle"]', hero.subtitle);
-      if (hero.img) {
-        const heroSlide = document.querySelector('.contact-hero-slide');
-        if (heroSlide) heroSlide.style.backgroundImage = `linear-gradient(rgba(11,15,20,0.7), rgba(11,15,20,0.8)), url('${hero.img}')`;
-      }
+    const badge = (hero && hero.badge && !isEnglishFallback(hero.badge, l)) ? hero.badge : (defAboutHero[l]?.badge || null);
+    const title = (hero && hero.title && !isEnglishFallback(hero.title, l)) ? hero.title : (defAboutHero[l]?.title || null);
+    const subtitle = (hero && hero.subtitle && !isEnglishFallback(hero.subtitle, l)) ? hero.subtitle : (defAboutHero[l]?.subtitle || null);
+    if (badge) setText('[data-i18n="pages.aboutUs.heroBadge"]', badge);
+    if (title) setText('[data-i18n="pages.aboutUs.heroTitle"]', title);
+    if (subtitle) setText('.about-hero-subtitle, [data-i18n="pages.aboutUs.heroSubtitle"]', subtitle);
+    if (hero && hero.img) {
+      const heroSlide = document.querySelector('.contact-hero-slide');
+      if (heroSlide) heroSlide.style.backgroundImage = `linear-gradient(rgba(11,15,20,0.7), rgba(11,15,20,0.8)), url('${hero.img}')`;
     }
 
     // 2. Overview
     const ov = isEn ? (data.overview?.[l] || data.overview?.en || {}) : (data.overview?.[l] || null);
     if (ov) {
-      if (ov.badge) setText('[data-i18n="pages.aboutUs.about_overview_item1"]', ov.badge);
-      if (ov.heading) {
+      if (ov.badge && !isEnglishFallback(ov.badge, l)) setText('[data-i18n="pages.aboutUs.about_overview_item1"]', ov.badge);
+      if (ov.heading && !isEnglishFallback(ov.heading, l)) {
         const el = document.querySelector('[data-i18n-html="pages.aboutUs.about_overview_item2"], [data-i18n="pages.aboutUs.about_overview_item2"]');
-        if (el) el.innerHTML = ov.heading.includes('<') ? ov.heading : `${ov.heading}:<br/><span class="italic text-[#C5A880] font-serif font-normal">Sharif Group</span>`;
+        if (el) {
+          if (ov.heading.includes('<')) {
+            el.innerHTML = ov.heading;
+          } else {
+            const brandMap = { ar: 'مجموعة شريف', fa: 'شریف گروپ', zh: '谢里夫集团', en: 'Sharif Group' };
+            const brand = brandMap[l] || 'Sharif Group';
+            let cleanHead = ov.heading.replace(new RegExp(brand + '$', 'i'), '').trim();
+            cleanHead = cleanHead.replace(/[:：\s]+$/, '').trim();
+            const colon = l === 'zh' ? '：' : ':';
+            el.innerHTML = `${cleanHead}${colon}<br/><span class="italic text-[#C5A880] font-serif font-normal">${brand}</span>`;
+          }
+        }
       }
-      if (ov.p1) setText('[data-i18n="pages.aboutUs.about_overview_item3"]', ov.p1);
-      if (ov.p2) setText('[data-i18n="pages.aboutUs.about_overview_item4"]', ov.p2);
-      if (ov.cta_text) setText('[data-i18n="pages.aboutUs.about_overview_item5"]', ov.cta_text);
+      if (ov.p1 && !isEnglishFallback(ov.p1, l)) setText('[data-i18n="pages.aboutUs.about_overview_item3"]', ov.p1);
+      if (ov.p2 && !isEnglishFallback(ov.p2, l)) setText('[data-i18n="pages.aboutUs.about_overview_item4"]', ov.p2);
+      if (ov.cta_text && !isEnglishFallback(ov.cta_text, l)) setText('[data-i18n="pages.aboutUs.about_overview_item5"]', ov.cta_text);
     }
 
     // 3. Stats
@@ -2017,7 +2135,12 @@
           counters[i].textContent = st.value;
         }
         if (labels[i]) {
-          labels[i].textContent = st['label_' + l] || (isEn ? st.label_en : labels[i].textContent);
+          const lVal = st['label_' + l];
+          if (lVal && !isEnglishFallback(lVal, l)) {
+            labels[i].textContent = lVal;
+          } else if (isEn) {
+            labels[i].textContent = st.label_en || labels[i].textContent;
+          }
         }
       });
     }
@@ -2025,44 +2148,56 @@
     // 4. Corporate Architecture
     const arch = isEn ? (data.architecture?.[l] || data.architecture?.en || {}) : (data.architecture?.[l] || null);
     if (arch) {
-      if (arch.badge) setText('[data-i18n="pages.aboutUs.corporate_architecture_item1"]', arch.badge);
-      if (arch.title) {
+      if (arch.badge && !isEnglishFallback(arch.badge, l)) setText('[data-i18n="pages.aboutUs.corporate_architecture_item1"]', arch.badge);
+      if (arch.title && !isEnglishFallback(arch.title, l)) {
         const el = document.querySelector('[data-i18n-html="pages.aboutUs.corporate_architecture_item2"], [data-i18n="pages.aboutUs.corporate_architecture_item2"]');
-        if (el) el.innerHTML = arch.title.includes('<') ? arch.title : `Three Companies. <span class="italic text-[#C5A880] font-serif font-normal">One Commitment.</span>`;
+        if (el) {
+          if (arch.title.includes('<')) {
+            el.innerHTML = arch.title;
+          } else {
+            const archMap = {
+              ar: 'ثلاث شركات. <span class="italic text-[#C5A880] font-serif font-normal">التزام واحد.</span>',
+              fa: 'سه شرکت. <span class="italic text-[#C5A880] font-serif font-normal">یک تعهد.</span>',
+              zh: '三家公司。<span class="italic text-[#C5A880] font-serif font-normal">一份承诺。</span>',
+              en: 'Three Companies. <span class="italic text-[#C5A880] font-serif font-normal">One Commitment.</span>'
+            };
+            el.innerHTML = archMap[l] || arch.title;
+          }
+        }
       }
-      if (arch.desc) setText('[data-i18n="pages.aboutUs.corporate_architecture_item3"]', arch.desc);
+      if (arch.desc && !isEnglishFallback(arch.desc, l)) setText('[data-i18n="pages.aboutUs.corporate_architecture_item3"]', arch.desc);
 
-      if (arch.c1_badge) setText('[data-i18n="pages.aboutUs.corporate_architecture_item4"]', arch.c1_badge);
-      if (arch.c1_p1) setText('[data-i18n="pages.aboutUs.corporate_architecture_item7"]', arch.c1_p1);
-      if (arch.c1_p2) setText('[data-i18n="pages.aboutUs.corporate_architecture_item8"]', arch.c1_p2);
+      if (arch.c1_badge && !isEnglishFallback(arch.c1_badge, l)) setText('[data-i18n="pages.aboutUs.corporate_architecture_item4"]', arch.c1_badge);
+      if (arch.c1_p1 && !isEnglishFallback(arch.c1_p1, l)) setText('[data-i18n="pages.aboutUs.corporate_architecture_item7"]', arch.c1_p1);
+      if (arch.c1_p2 && !isEnglishFallback(arch.c1_p2, l)) setText('[data-i18n="pages.aboutUs.corporate_architecture_item8"]', arch.c1_p2);
 
-      if (arch.c2_badge) setText('[data-i18n="pages.aboutUs.corporate_architecture_item11"]', arch.c2_badge);
-      if (arch.c2_p1) setText('[data-i18n="pages.aboutUs.corporate_architecture_item14"]', arch.c2_p1);
-      if (arch.c2_p2) setText('[data-i18n="pages.aboutUs.corporate_architecture_item15"]', arch.c2_p2);
+      if (arch.c2_badge && !isEnglishFallback(arch.c2_badge, l)) setText('[data-i18n="pages.aboutUs.corporate_architecture_item11"]', arch.c2_badge);
+      if (arch.c2_p1 && !isEnglishFallback(arch.c2_p1, l)) setText('[data-i18n="pages.aboutUs.corporate_architecture_item14"]', arch.c2_p1);
+      if (arch.c2_p2 && !isEnglishFallback(arch.c2_p2, l)) setText('[data-i18n="pages.aboutUs.corporate_architecture_item15"]', arch.c2_p2);
 
-      if (arch.c3_badge) setText('[data-i18n="pages.aboutUs.corporate_architecture_item18"]', arch.c3_badge);
-      if (arch.c3_p1) setText('[data-i18n="pages.aboutUs.corporate_architecture_item21"]', arch.c3_p1);
-      if (arch.c3_p2) setText('[data-i18n="pages.aboutUs.corporate_architecture_item22"]', arch.c3_p2);
+      if (arch.c3_badge && !isEnglishFallback(arch.c3_badge, l)) setText('[data-i18n="pages.aboutUs.corporate_architecture_item18"]', arch.c3_badge);
+      if (arch.c3_p1 && !isEnglishFallback(arch.c3_p1, l)) setText('[data-i18n="pages.aboutUs.corporate_architecture_item21"]', arch.c3_p1);
+      if (arch.c3_p2 && !isEnglishFallback(arch.c3_p2, l)) setText('[data-i18n="pages.aboutUs.corporate_architecture_item22"]', arch.c3_p2);
     }
 
     // 5. Founder
     const f = isEn ? (data.founder?.[l] || data.founder?.en || {}) : (data.founder?.[l] || null);
     if (f) {
-      if (f.name) setText('[data-i18n="pages.aboutUs.founder_message_item1"], [data-i18n="pages.aboutUs.founder_message_item7"]', f.name, { all: true });
-      if (f.title) setText('[data-i18n="pages.aboutUs.founder_message_item2"], [data-i18n="pages.aboutUs.founder_message_item8"]', f.title, { all: true });
-      if (f.badge) setText('[data-i18n="pages.aboutUs.founder_message_item3"]', f.badge);
-      if (f.quote) setText('[data-i18n-html="pages.aboutUs.founder_message_item4"], [data-i18n="pages.aboutUs.founder_message_item4"]', f.quote);
-      if (f.p1) setText('[data-i18n="pages.aboutUs.founder_message_item5"]', f.p1);
-      if (f.p2) setText('[data-i18n="pages.aboutUs.founder_message_item6"]', f.p2);
+      if (f.name && !isEnglishFallback(f.name, l)) setText('[data-i18n="pages.aboutUs.founder_message_item1"], [data-i18n="pages.aboutUs.founder_message_item7"]', f.name, { all: true });
+      if (f.title && !isEnglishFallback(f.title, l)) setText('[data-i18n="pages.aboutUs.founder_message_item2"], [data-i18n="pages.aboutUs.founder_message_item8"]', f.title, { all: true });
+      if (f.badge && !isEnglishFallback(f.badge, l)) setText('[data-i18n="pages.aboutUs.founder_message_item3"]', f.badge);
+      if (f.quote && !isEnglishFallback(f.quote, l)) setText('[data-i18n-html="pages.aboutUs.founder_message_item4"], [data-i18n="pages.aboutUs.founder_message_item4"]', f.quote);
+      if (f.p1 && !isEnglishFallback(f.p1, l)) setText('[data-i18n="pages.aboutUs.founder_message_item5"]', f.p1);
+      if (f.p2 && !isEnglishFallback(f.p2, l)) setText('[data-i18n="pages.aboutUs.founder_message_item6"]', f.p2);
     }
 
     // 6. Bottom CTA
     const cta = isEn ? (data.cta?.[l] || data.cta?.en || {}) : (data.cta?.[l] || null);
     if (cta) {
-      if (cta.badge) setText('[data-i18n="pages.aboutUs.about_cta_item1"]', cta.badge);
-      if (cta.heading) setText('[data-i18n-html="pages.aboutUs.about_cta_item2"], [data-i18n="pages.aboutUs.about_cta_item2"]', cta.heading);
-      if (cta.desc) setText('[data-i18n="pages.aboutUs.about_cta_item3"]', cta.desc);
-      if (cta.btn_text) setText('[data-i18n="pages.aboutUs.about_cta_item4"]', cta.btn_text);
+      if (cta.badge && !isEnglishFallback(cta.badge, l)) setText('[data-i18n="pages.aboutUs.about_cta_item1"]', cta.badge);
+      if (cta.heading && !isEnglishFallback(cta.heading, l)) setText('[data-i18n-html="pages.aboutUs.about_cta_item2"], [data-i18n="pages.aboutUs.about_cta_item2"]', cta.heading);
+      if (cta.desc && !isEnglishFallback(cta.desc, l)) setText('[data-i18n="pages.aboutUs.about_cta_item3"]', cta.desc);
+      if (cta.btn_text && !isEnglishFallback(cta.btn_text, l)) setText('[data-i18n="pages.aboutUs.about_cta_item4"]', cta.btn_text);
     }
   }
 
@@ -2117,17 +2252,19 @@
     const data = store('sgcms_cookiepolicy');
     if (!data) return;
     const l = lang || getLang();
-    const d = data[l] || data.en || data;
+    const isEn = (l === 'en');
+    const d = isEn ? (data[l] || data.en || data) : (data[l] || null);
+    if (!d) return;
 
-    if (d.hero_badge) setText('[data-i18n="pages.cookiePolicy.heroBadge"]', d.hero_badge);
-    if (d.hero_title) setText('[data-i18n="pages.cookiePolicy.heroTitle"], [data-i18n="footer.cookiePolicy"]', d.hero_title);
-    if (d.hero_desc) setText('[data-i18n="pages.cookiePolicy.heroDesc"]', d.hero_desc);
+    if (d.hero_badge && !isEnglishFallback(d.hero_badge, l)) setText('[data-i18n="pages.cookiePolicy.heroBadge"]', d.hero_badge);
+    if (d.hero_title && !isEnglishFallback(d.hero_title, l)) setText('[data-i18n="pages.cookiePolicy.heroTitle"], [data-i18n="footer.cookiePolicy"]', d.hero_title);
+    if (d.hero_desc && !isEnglishFallback(d.hero_desc, l)) setText('[data-i18n="pages.cookiePolicy.heroDesc"]', d.hero_desc);
 
-    if (d.p1_title) {
+    if (d.p1_title && !isEnglishFallback(d.p1_title, l)) {
       const el = document.querySelector('#sec-cookie-content h4, .cookie-p1-title');
       if (el) el.textContent = d.p1_title;
     }
-    if (d.p1_desc) {
+    if (d.p1_desc && !isEnglishFallback(d.p1_desc, l)) {
       const el = document.querySelector('#sec-cookie-content p, .cookie-p1-desc');
       if (el) el.textContent = d.p1_desc;
     }
@@ -3595,15 +3732,22 @@
         let bIdx = blogs.findIndex(b => {
           if (!b) return false;
           const bId = String(b.id || '').toLowerCase().trim();
-          const bSlug = String(b.slug || b.en?.slug || '').toLowerCase().trim();
+          const bSlug = String(b.slug || b.en?.slug || b.ar?.slug || b.fa?.slug || b.zh?.slug || '').toLowerCase().trim();
           return (bId && (bId === s || s.includes(bId))) || (bSlug && (bSlug === s || s.includes(bSlug) || bSlug.includes(s)));
         });
         if (bIdx === -1 && blogs.length) {
           const detailTitle = document.getElementById('detail-title')?.innerText?.trim().toLowerCase();
           if (detailTitle) {
             bIdx = blogs.findIndex(b => {
+              if (!b) return false;
               const bTitle = (b.en?.title || b.title || '').trim().toLowerCase();
-              return bTitle && (bTitle === detailTitle || bTitle.includes(detailTitle) || detailTitle.includes(bTitle));
+              const bAr = (b.ar?.title || '').trim().toLowerCase();
+              const bFa = (b.fa?.title || '').trim().toLowerCase();
+              const bZh = (b.zh?.title || '').trim().toLowerCase();
+              return (bTitle && (bTitle === detailTitle || bTitle.includes(detailTitle) || detailTitle.includes(bTitle))) ||
+                     (bAr && (bAr === detailTitle || bAr.includes(detailTitle) || detailTitle.includes(bAr))) ||
+                     (bFa && (bFa === detailTitle || bFa.includes(detailTitle) || detailTitle.includes(bFa))) ||
+                     (bZh && (bZh === detailTitle || bZh.includes(detailTitle) || detailTitle.includes(bZh)));
             });
           }
         }
@@ -3617,7 +3761,9 @@
             if (l === 'en') {
               blogs[bIdx].title = newText;
               if (blogs[bIdx].en) blogs[bIdx].en.title = newText;
-              if (window.articlesDatabase && window.articlesDatabase[currentSlug]) window.articlesDatabase[currentSlug].title = newText;
+            }
+            if (window.articlesDatabase && window.articlesDatabase[currentSlug]) {
+              window.articlesDatabase[currentSlug].title = newText;
             }
             const tEl = document.getElementById('detail-title');
             if (tEl) tEl.innerText = newText;
@@ -4083,15 +4229,22 @@
             let bIdx = blogs.findIndex(b => {
               if (!b) return false;
               const bId = String(b.id || '').toLowerCase().trim();
-              const bSlug = String(b.slug || b.en?.slug || '').toLowerCase().trim();
+              const bSlug = String(b.slug || b.en?.slug || b.ar?.slug || b.fa?.slug || b.zh?.slug || '').toLowerCase().trim();
               return (bId && (bId === s || s.includes(bId))) || (bSlug && (bSlug === s || s.includes(bSlug) || bSlug.includes(s)));
             });
             if (bIdx === -1 && blogs.length) {
               const detailTitle = document.getElementById('detail-title')?.innerText?.trim().toLowerCase();
               if (detailTitle) {
                 bIdx = blogs.findIndex(b => {
+                  if (!b) return false;
                   const bTitle = (b.en?.title || b.title || '').trim().toLowerCase();
-                  return bTitle && (bTitle === detailTitle || bTitle.includes(detailTitle) || detailTitle.includes(bTitle));
+                  const bAr = (b.ar?.title || '').trim().toLowerCase();
+                  const bFa = (b.fa?.title || '').trim().toLowerCase();
+                  const bZh = (b.zh?.title || '').trim().toLowerCase();
+                  return (bTitle && (bTitle === detailTitle || bTitle.includes(detailTitle) || detailTitle.includes(bTitle))) ||
+                         (bAr && (bAr === detailTitle || bAr.includes(detailTitle) || detailTitle.includes(bAr))) ||
+                         (bFa && (bFa === detailTitle || bFa.includes(detailTitle) || detailTitle.includes(bFa))) ||
+                         (bZh && (bZh === detailTitle || bZh.includes(detailTitle) || detailTitle.includes(bZh)));
                 });
               }
             }
@@ -4354,7 +4507,13 @@
           const defaultTab = progType === 'residency' ? (PROGRAM_TAB_I18N.residency[l] || 'Residency By Investment') : (PROGRAM_TAB_I18N.citizenship[l] || 'Citizenship By Investment');
           const subEl = document.querySelector('h1 span.uppercase, [data-i18n*="heroSubtitle"], [data-cms="hero-subtitle"]');
           const currentSub = (subEl?.textContent?.trim() || defaultTab);
-          const cleanCountry = String(value).replace(/\s+(citizenship|residency).*$/i, '').trim();
+          let cleanCountry = String(value).replace(/\s+(citizenship|residency).*$/i, '').trim();
+          if (l !== 'en' && isEnglishFallback(cleanCountry, l)) {
+            const matchedKey = Object.keys(PROGRAM_HERO_I18N).find(k => path.includes(k) || (k === 'saotome' && (path.includes('sao') || path.includes('principe'))));
+            if (matchedKey && PROGRAM_HERO_I18N[matchedKey][l]) {
+              cleanCountry = PROGRAM_HERO_I18N[matchedKey][l];
+            }
+          }
           const els = document.querySelectorAll('h1 [class*="-hero-glow"], h1 .dominica-hero-glow, h1 .stlucia-hero-glow, h1 span:first-child, [data-i18n*="heroTitle"], [data-cms="hero-title"]');
           els.forEach(el => { el.textContent = cleanCountry; });
           const fullTitle = formatProgramPageTitle(cleanCountry || value, progType, currentSub);
@@ -4595,7 +4754,18 @@
           else if (field === 'about_ov_badge') setText('[data-i18n="pages.aboutUs.about_overview_item1"]', value);
           else if (field === 'about_ov_heading') {
             const el = document.querySelector('[data-i18n-html="pages.aboutUs.about_overview_item2"], [data-i18n="pages.aboutUs.about_overview_item2"]');
-            if (el) el.innerHTML = value.includes('<') ? value : `${value}:<br/><span class="italic text-[#C5A880] font-serif font-normal">Sharif Group</span>`;
+            if (el) {
+              if (value.includes('<')) {
+                el.innerHTML = value;
+              } else {
+                const brandMap = { ar: 'مجموعة شريف', fa: 'شریف گروپ', zh: '谢里夫集团', en: 'Sharif Group' };
+                const brand = brandMap[l] || 'Sharif Group';
+                let cleanHead = value.replace(new RegExp(brand + '$', 'i'), '').trim();
+                cleanHead = cleanHead.replace(/[:：\s]+$/, '').trim();
+                const colon = l === 'zh' ? '：' : ':';
+                el.innerHTML = `${cleanHead}${colon}<br/><span class="italic text-[#C5A880] font-serif font-normal">${brand}</span>`;
+              }
+            }
           }
           else if (field === 'about_ov_p1') setText('[data-i18n="pages.aboutUs.about_overview_item3"]', value);
           else if (field === 'about_ov_p2') setText('[data-i18n="pages.aboutUs.about_overview_item4"]', value);
@@ -4603,7 +4773,19 @@
           else if (field === 'about_arch_badge') setText('[data-i18n="pages.aboutUs.corporate_architecture_item1"]', value);
           else if (field === 'about_arch_title') {
             const el = document.querySelector('[data-i18n-html="pages.aboutUs.corporate_architecture_item2"], [data-i18n="pages.aboutUs.corporate_architecture_item2"]');
-            if (el) el.innerHTML = value.includes('<') ? value : `Three Companies. <span class="italic text-[#C5A880] font-serif font-normal">One Commitment.</span>`;
+            if (el) {
+              if (value.includes('<')) {
+                el.innerHTML = value;
+              } else {
+                const archMap = {
+                  ar: 'ثلاث شركات. <span class="italic text-[#C5A880] font-serif font-normal">التزام واحد.</span>',
+                  fa: 'سه شرکت. <span class="italic text-[#C5A880] font-serif font-normal">یک تعهد.</span>',
+                  zh: '三家公司。<span class="italic text-[#C5A880] font-serif font-normal">一份承诺。</span>',
+                  en: 'Three Companies. <span class="italic text-[#C5A880] font-serif font-normal">One Commitment.</span>'
+                };
+                el.innerHTML = archMap[l] || value;
+              }
+            }
           }
           else if (field === 'about_arch_desc') setText('[data-i18n="pages.aboutUs.corporate_architecture_item3"]', value);
           else if (field === 'about_c1_badge') setText('[data-i18n="pages.aboutUs.corporate_architecture_item4"]', value);

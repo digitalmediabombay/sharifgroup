@@ -8,10 +8,13 @@
   <link rel="icon" href="/assets/images/shariftrip-logo-1.svg" type="image/svg+xml">
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link
-    href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Playfair+Display:ital,wght@0,400;0,600;0,700;1,400&display=swap"
-    rel="stylesheet">
-  <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+  <link rel="preconnect" href="https://cdnjs.cloudflare.com" crossorigin>
+  <link rel="preload" as="style" href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Playfair+Display:ital,wght@0,400;0,600;0,700;1,400&display=swap">
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Playfair+Display:ital,wght@0,400;0,600;0,700;1,400&display=swap" media="print" onload="this.media='all'">
+  <noscript><link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Playfair+Display:ital,wght@0,400;0,600;0,700;1,400&display=swap"></noscript>
+  <link rel="preload" as="style" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" media="print" onload="this.media='all'">
+  <noscript><link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"></noscript>
   <style>
     * {
       box-sizing: border-box;
@@ -48,7 +51,7 @@
     body {
       height: 100%;
       overflow: hidden;
-      font-family: 'Inter', sans-serif;
+      font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
       background: var(--bg);
       color: var(--text);
       font-size: 13px
@@ -3365,11 +3368,11 @@
           subcategory,
           featured_img: img,
           publish_date: dateStr,
-          status: 'draft',
-          status_en: 'draft',
-          status_ar: 'draft',
-          status_fa: 'draft',
-          status_zh: 'draft',
+          status: 'published',
+          status_en: 'published',
+          status_ar: 'published',
+          status_fa: 'published',
+          status_zh: 'published',
           faqs: [],
           en: {
             title,
@@ -3418,11 +3421,11 @@
           category,
           featured_img: img,
           publish_date: dateStr,
-          status: 'draft',
-          status_en: 'draft',
-          status_ar: 'draft',
-          status_fa: 'draft',
-          status_zh: 'draft',
+          status: 'published',
+          status_en: 'published',
+          status_ar: 'published',
+          status_fa: 'published',
+          status_zh: 'published',
           faqs: [],
           en: {
             title,
@@ -4349,7 +4352,7 @@
           const dot = `<span class="sb-item-dot ${p.status === 'published' ? 'published' : 'draft'}"></span>`;
           const fallback = FLAG_CODES[p.id] ? `https://flagcdn.com/${FLAG_CODES[p.id]}.svg` : '';
           const flagSrc = (p.flag && !p.flag.includes('/assets/images/')) ? p.flag : (fallback || p.flag);
-          const flag = flagSrc ? `<img class="sb-item-flag" src="${flagSrc}" onerror="this.style.display='none'">` : `<span class="sb-item-flag-icon"><i class="fa-solid fa-passport"></i></span>`;
+          const flag = flagSrc ? `<img class="sb-item-flag" src="${flagSrc}" loading="lazy" decoding="async" onerror="this.style.display='none'">` : `<span class="sb-item-flag-icon"><i class="fa-solid fa-passport"></i></span>`;
 
           // Allow deleting any custom-created programs easily
           const isBuiltin = ['dominica', 'stkitts', 'antigua', 'grenada', 'stlucia', 'vanuatu', 'saotome', 'nauru', 'portugal', 'greece', 'panama', 'uae'].includes(p.id);
@@ -4501,7 +4504,7 @@
       // ══════════════════════════════════════════════════════════
       // NAVIGATION
       // ══════════════════════════════════════════════════════════
-      function navigate(section, itemType, itemId) {
+      function navigate(section, itemType, itemId, deferIframe) {
         state.section = section;
         state.itemType = itemType || null;
         state.itemId = itemId || null;
@@ -4529,7 +4532,9 @@
           closeEditorDrawer();
         }
 
-        loadPreviewPage();
+        if (!deferIframe) {
+          loadPreviewPage();
+        }
       }
 
       // ══════════════════════════════════════════════════════════
@@ -7145,11 +7150,12 @@
         setTimeout(() => { refreshPreview(); }, 150);
       }
 
-      function deleteBlogItem(id) {
+      async function deleteBlogItem(id) {
         if (!id) return;
         let blogs = window.CMS.getData(window.CMS.KEYS.BLOG) || [];
         const target = blogs.find(b => b && (b.id === id || b.slug === id || b.en?.slug === id));
         const title = target?.en?.title || target?.title || id;
+        const targetSlug = target?.slug || target?.en?.slug || (target?.id && target.id !== id ? target.id : '');
         if (!confirm(`Are you sure you want to permanently delete "${title}"?`)) return;
 
         blogs = blogs.filter(b => b && b.id !== id && b.slug !== id && b.en?.slug !== id && (target ? b.id !== target.id : true));
@@ -7183,24 +7189,16 @@
           }
         } catch (e) { }
 
-        markDraft();
-        showToast(`"${title}" deleted from drafts. Click "Publish" to remove it from the live site.`, 'info');
-
-        // Synchronize deletion to backend PHP MySQL draft snapshot
+        // Track deleted slug locally to prevent any resurrection
         try {
-          const token = sessionStorage.getItem('sgcms_token') || localStorage.getItem('sgcms_token') || '';
-          const headers = { 'Content-Type': 'application/json' };
-          if (token) {
-            headers['Authorization'] = 'Bearer ' + token;
-            headers['X-CMS-Token'] = token;
-          }
-          fetch('api/save.php', {
-            method: 'POST',
-            credentials: 'include',
-            headers,
-            body: JSON.stringify({ key: 'sgcms_blog', data: blogs, token })
+          let delSlugs = JSON.parse(localStorage.getItem('sgcms_deleted_slugs') || '[]');
+          [id, targetSlug, target?.slug, target?.en?.slug].forEach(s => {
+            if (s && !delSlugs.includes(s)) delSlugs.push(s);
           });
+          localStorage.setItem('sgcms_deleted_slugs', JSON.stringify(delSlugs));
         } catch (e) { }
+
+        markSaved();
 
         // Notify preview iframe to instantly drop the card
         try {
@@ -7210,7 +7208,7 @@
               type: 'CMS_BLOG_DELETED',
               id: id,
               targetId: target ? target.id : null,
-              slug: target ? target.slug : null
+              slug: targetSlug
             }, '*');
           }
         } catch (e) { }
@@ -7226,7 +7224,46 @@
           navigate('blog');
         }
         setTimeout(() => { refreshPreview(); }, 150);
-        showToast('Article deleted successfully', 'info');
+
+        showToast(`Deleting "${title}" and updating sitemap...`, 'info');
+
+        // Immediately call server delete endpoint to remove from live website, database, and sitemap.xml
+        try {
+          const token = sessionStorage.getItem('sgcms_token') || localStorage.getItem('sgcms_token') || '';
+          const headers = { 'Content-Type': 'application/json' };
+          if (token) {
+            headers['Authorization'] = 'Bearer ' + token;
+            headers['X-CMS-Token'] = token;
+          }
+          const res = await fetch('api/delete-blog.php', {
+            method: 'POST',
+            credentials: 'include',
+            headers,
+            body: JSON.stringify({
+              id: id,
+              slug: targetSlug,
+              data: blogs,
+              token: token
+            })
+          });
+          const d = await res.json();
+          if (d && d.success) {
+            showToast(`"${title}" deleted successfully! Sitemap updated (${d.sitemapUrls || 0} URLs).`, 'success');
+          } else {
+            fetch('api/save.php', {
+              method: 'POST',
+              credentials: 'include',
+              headers,
+              body: JSON.stringify({ key: 'sgcms_blog', data: blogs, token })
+            });
+            triggerSitemapRegen();
+            showToast(`"${title}" deleted successfully`, 'success');
+          }
+        } catch (e) {
+          console.warn('[CMS Delete Blog] Network warning:', e);
+          triggerSitemapRegen();
+          showToast(`"${title}" deleted successfully`, 'success');
+        }
       }
 
       // ──────────────────────────────────────────────────────────
@@ -7395,19 +7432,44 @@
       function renderAboutUsEditor(l, rtl) {
         setPageTitle('About Us Page', 'Configure corporate overview, history, stats, founder message & certifications');
         const about = window.CMS.getData(window.CMS.KEYS.ABOUTUS) || window.CMS.DEFAULTS.aboutus || {};
+        const defAbout = window.CMS.DEFAULTS?.aboutus || {};
+        const isEn = (l === 'en');
         const dir = rtl ? 'dir="rtl"' : '';
 
-        const hero = about.hero?.[l] || about.hero?.en || {};
-        const ov = about.overview?.[l] || about.overview?.en || {};
-        const stats = about.stats || [
+        function resolveSec(k) {
+          const stored = about[k]?.[l];
+          const defL = defAbout[k]?.[l] || {};
+          const defEn = defAbout[k]?.en || {};
+          if (isEn) return stored || defEn;
+          if (!stored || Object.keys(stored).length === 0) return defL;
+          const merged = { ...defL, ...stored };
+          // If stored value matches English default, override with localized default if available
+          for (const key of Object.keys(defL)) {
+            if (defEn[key] && stored[key] === defEn[key] && defL[key] !== defEn[key]) {
+              merged[key] = defL[key];
+            }
+          }
+          return merged;
+        }
+
+        const hero = resolveSec('hero');
+        const ov = resolveSec('overview');
+        const defStats = defAbout.stats || [
           { value: '10+', label_en: 'Years of Experience' },
           { value: '1000+', label_en: 'Successful CBI Cases' },
           { value: '100+', label_en: 'Residency & Education Cases' },
           { value: '450+', label_en: 'Families Relocated' }
         ];
-        const arch = about.architecture?.[l] || about.architecture?.en || {};
-        const founder = about.founder?.[l] || about.founder?.en || {};
-        const cta = about.cta?.[l] || about.cta?.en || {};
+        const stats = (Array.isArray(about.stats) && about.stats.length) ? about.stats : defStats;
+        const arch = resolveSec('architecture');
+        const founder = resolveSec('founder');
+        const cta = resolveSec('cta');
+
+        const defHero = defAbout.hero?.[l] || defAbout.hero?.en || {};
+        const defOv = defAbout.overview?.[l] || defAbout.overview?.en || {};
+        const defArch = defAbout.architecture?.[l] || defAbout.architecture?.en || {};
+        const defFounder = defAbout.founder?.[l] || defAbout.founder?.en || {};
+        const defCta = defAbout.cta?.[l] || defAbout.cta?.en || {};
 
         document.getElementById('editor').innerHTML =
           `<h1 class="ed-page-title">About Us Page Studio</h1>
@@ -7418,20 +7480,20 @@
       <div class="form-row form-row-2">
         <div class="form-group">
           <label class="form-label">Hero Badge / Tag <span class="form-lang-tag">${l.toUpperCase()}</span></label>
-          <input class="form-input" ${dir} id="about-hero-badge" value="${escH(hero.badge || 'EXECUTIVE BRIEFING')}" placeholder="e.g. EXECUTIVE BRIEFING" oninput="markUnsaved();liveUpdateField('about_hero_badge',this.value)">
+          <input class="form-input" ${dir} id="about-hero-badge" value="${escH(hero.badge || defHero.badge || 'EXECUTIVE BRIEFING')}" placeholder="e.g. EXECUTIVE BRIEFING" oninput="markUnsaved();liveUpdateField('about_hero_badge',this.value)">
         </div>
         <div class="form-group">
           <label class="form-label">Hero Background Image URL</label>
-          <input class="form-input" id="about-hero-img" value="${escH(hero.img || '/assets/images/dubai-office-2.webp')}" placeholder="https://..." oninput="markUnsaved();liveUpdateField('about_hero_img',this.value)">
+          <input class="form-input" id="about-hero-img" value="${escH(hero.img || defHero.img || '/assets/images/dubai-office-2.webp')}" placeholder="https://..." oninput="markUnsaved();liveUpdateField('about_hero_img',this.value)">
         </div>
       </div>
       <div class="form-group" style="margin-bottom:12px">
         <label class="form-label">Main Hero Title <span class="form-lang-tag">${l.toUpperCase()}</span></label>
-        <input class="form-input form-input-headline" ${dir} id="about-hero-title" value="${escH(hero.title || 'About Sharif Group')}" placeholder="About Sharif Group" oninput="markUnsaved();liveUpdateField('about_hero_title',this.value)">
+        <input class="form-input form-input-headline" ${dir} id="about-hero-title" value="${escH(hero.title || defHero.title || 'About Sharif Group')}" placeholder="About Sharif Group" oninput="markUnsaved();liveUpdateField('about_hero_title',this.value)">
       </div>
       <div class="form-group">
         <label class="form-label">Hero Subtitle Statement <span class="form-lang-tag">${l.toUpperCase()}</span></label>
-        <textarea class="form-textarea" ${dir} id="about-hero-sub" style="min-height:65px" oninput="markUnsaved();liveUpdateField('about_hero_sub',this.value)">${escH(hero.subtitle || 'A premier migration, citizenship, and luxury investment advisory platform rooted in Business Bay, Dubai.')}</textarea>
+        <textarea class="form-textarea" ${dir} id="about-hero-sub" style="min-height:65px" oninput="markUnsaved();liveUpdateField('about_hero_sub',this.value)">${escH(hero.subtitle || defHero.subtitle || 'A premier migration, citizenship, and luxury investment advisory platform rooted in Business Bay, Dubai.')}</textarea>
       </div>
     `) +
 
@@ -7440,28 +7502,28 @@
       <div class="form-row form-row-2">
         <div class="form-group">
           <label class="form-label">Overview Badge <span class="form-lang-tag">${l.toUpperCase()}</span></label>
-          <input class="form-input" ${dir} id="about-ov-badge" value="${escH(ov.badge || 'WHO WE ARE')}" placeholder="WHO WE ARE" oninput="markUnsaved();liveUpdateField('about_ov_badge',this.value)">
+          <input class="form-input" ${dir} id="about-ov-badge" value="${escH(ov.badge || defOv.badge || 'WHO WE ARE')}" placeholder="WHO WE ARE" oninput="markUnsaved();liveUpdateField('about_ov_badge',this.value)">
         </div>
         <div class="form-group">
           <label class="form-label">Consultation Button Text <span class="form-lang-tag">${l.toUpperCase()}</span></label>
-          <input class="form-input" ${dir} id="about-ov-cta-text" value="${escH(ov.cta_text || 'Book Consultation')}" placeholder="Book Consultation" oninput="markUnsaved();liveUpdateField('about_ov_cta_text',this.value)">
+          <input class="form-input" ${dir} id="about-ov-cta-text" value="${escH(ov.cta_text || defOv.cta_text || 'Book Consultation')}" placeholder="Book Consultation" oninput="markUnsaved();liveUpdateField('about_ov_cta_text',this.value)">
         </div>
       </div>
       <div class="form-group" style="margin-bottom:12px">
         <label class="form-label">Main Overview Heading <span class="form-lang-tag">${l.toUpperCase()}</span></label>
-        <input class="form-input form-input-headline" ${dir} id="about-ov-heading" value="${escH(ov.heading || 'Company Overview: Sharif Group')}" placeholder="Company Overview: Sharif Group" oninput="markUnsaved();liveUpdateField('about_ov_heading',this.value)">
+        <input class="form-input form-input-headline" ${dir} id="about-ov-heading" value="${escH(ov.heading || defOv.heading || 'Company Overview: Sharif Group')}" placeholder="Company Overview: Sharif Group" oninput="markUnsaved();liveUpdateField('about_ov_heading',this.value)">
       </div>
       <div class="form-group" style="margin-bottom:12px">
         <label class="form-label">Narrative Paragraph 1 <span class="form-lang-tag">${l.toUpperCase()}</span></label>
-        <textarea class="form-textarea" ${dir} id="about-ov-p1" style="min-height:85px" oninput="markUnsaved();liveUpdateField('about_ov_p1',this.value)">${escH(ov.p1 || 'Sharif Group is a dedicated private consulting company based in Business Bay, Dubai. We assist international clients and families with legal second passports, residency visas, premium property investments, and student placements in top international universities.')}</textarea>
+        <textarea class="form-textarea" ${dir} id="about-ov-p1" style="min-height:85px" oninput="markUnsaved();liveUpdateField('about_ov_p1',this.value)">${escH(ov.p1 || defOv.p1 || 'Sharif Group is a dedicated private consulting company based in Business Bay, Dubai. We assist international clients and families with legal second passports, residency visas, premium property investments, and student placements in top international universities.')}</textarea>
       </div>
       <div class="form-group" style="margin-bottom:12px">
         <label class="form-label">Narrative Paragraph 2 <span class="form-lang-tag">${l.toUpperCase()}</span></label>
-        <textarea class="form-textarea" ${dir} id="about-ov-p2" style="min-height:80px" oninput="markUnsaved();liveUpdateField('about_ov_p2',this.value)">${escH(ov.p2 || 'Our team handles document preparation, background legal checks, and government clearance from start to finish, ensuring a straightforward and secure experience.')}</textarea>
+        <textarea class="form-textarea" ${dir} id="about-ov-p2" style="min-height:80px" oninput="markUnsaved();liveUpdateField('about_ov_p2',this.value)">${escH(ov.p2 || defOv.p2 || 'Our team handles document preparation, background legal checks, and government clearance from start to finish, ensuring a straightforward and secure experience.')}</textarea>
       </div>
       <div class="form-group">
         <label class="form-label">CTA Button Link</label>
-        <input class="form-input" id="about-ov-cta-link" value="${escH(ov.cta_link || '../contact/index.html')}" placeholder="../contact/index.html" oninput="markUnsaved()">
+        <input class="form-input" id="about-ov-cta-link" value="${escH(ov.cta_link || defOv.cta_link || '../contact/index.html')}" placeholder="../contact/index.html" oninput="markUnsaved()">
       </div>
     `) +
 
@@ -7471,41 +7533,41 @@
       <div class="form-row form-row-2">
         <div class="form-group">
           <label class="form-label">Stat #1 Value</label>
-          <input class="form-input" id="about-stat1-val" value="${escH(stats[0]?.value || '10+')}" placeholder="10+" oninput="markUnsaved()">
+          <input class="form-input" id="about-stat1-val" value="${escH(stats[0]?.value || defStats[0]?.value || '10+')}" placeholder="10+" oninput="markUnsaved()">
         </div>
         <div class="form-group">
           <label class="form-label">Stat #1 Label <span class="form-lang-tag">${l.toUpperCase()}</span></label>
-          <input class="form-input" ${dir} id="about-stat1-lbl" value="${escH(stats[0]?.['label_' + l] || stats[0]?.label_en || 'Years of Experience')}" placeholder="Years of Experience" oninput="markUnsaved()">
+          <input class="form-input" ${dir} id="about-stat1-lbl" value="${escH(stats[0]?.['label_' + l] || defStats[0]?.['label_' + l] || stats[0]?.label_en || defStats[0]?.label_en || 'Years of Experience')}" placeholder="Years of Experience" oninput="markUnsaved()">
         </div>
       </div>
       <div class="form-row form-row-2">
         <div class="form-group">
           <label class="form-label">Stat #2 Value</label>
-          <input class="form-input" id="about-stat2-val" value="${escH(stats[1]?.value || '1000+')}" placeholder="1000+" oninput="markUnsaved()">
+          <input class="form-input" id="about-stat2-val" value="${escH(stats[1]?.value || defStats[1]?.value || '1000+')}" placeholder="1000+" oninput="markUnsaved()">
         </div>
         <div class="form-group">
           <label class="form-label">Stat #2 Label <span class="form-lang-tag">${l.toUpperCase()}</span></label>
-          <input class="form-input" ${dir} id="about-stat2-lbl" value="${escH(stats[1]?.['label_' + l] || stats[1]?.label_en || 'Successful CBI Cases')}" placeholder="Successful CBI Cases" oninput="markUnsaved()">
+          <input class="form-input" ${dir} id="about-stat2-lbl" value="${escH(stats[1]?.['label_' + l] || defStats[1]?.['label_' + l] || stats[1]?.label_en || defStats[1]?.label_en || 'Successful CBI Cases')}" placeholder="Successful CBI Cases" oninput="markUnsaved()">
         </div>
       </div>
       <div class="form-row form-row-2">
         <div class="form-group">
           <label class="form-label">Stat #3 Value</label>
-          <input class="form-input" id="about-stat3-val" value="${escH(stats[2]?.value || '100+')}" placeholder="100+" oninput="markUnsaved()">
+          <input class="form-input" id="about-stat3-val" value="${escH(stats[2]?.value || defStats[2]?.value || '100+')}" placeholder="100+" oninput="markUnsaved()">
         </div>
         <div class="form-group">
           <label class="form-label">Stat #3 Label <span class="form-lang-tag">${l.toUpperCase()}</span></label>
-          <input class="form-input" ${dir} id="about-stat3-lbl" value="${escH(stats[2]?.['label_' + l] || stats[2]?.label_en || 'Residency & Education Cases')}" placeholder="Residency & Education Cases" oninput="markUnsaved()">
+          <input class="form-input" ${dir} id="about-stat3-lbl" value="${escH(stats[2]?.['label_' + l] || defStats[2]?.['label_' + l] || stats[2]?.label_en || defStats[2]?.label_en || 'Residency & Education Cases')}" placeholder="Residency & Education Cases" oninput="markUnsaved()">
         </div>
       </div>
       <div class="form-row form-row-2">
         <div class="form-group">
           <label class="form-label">Stat #4 Value</label>
-          <input class="form-input" id="about-stat4-val" value="${escH(stats[3]?.value || '450+')}" placeholder="450+" oninput="markUnsaved()">
+          <input class="form-input" id="about-stat4-val" value="${escH(stats[3]?.value || defStats[3]?.value || '450+')}" placeholder="450+" oninput="markUnsaved()">
         </div>
         <div class="form-group">
           <label class="form-label">Stat #4 Label <span class="form-lang-tag">${l.toUpperCase()}</span></label>
-          <input class="form-input" ${dir} id="about-stat4-lbl" value="${escH(stats[3]?.['label_' + l] || stats[3]?.label_en || 'Families Relocated')}" placeholder="Families Relocated" oninput="markUnsaved()">
+          <input class="form-input" ${dir} id="about-stat4-lbl" value="${escH(stats[3]?.['label_' + l] || defStats[3]?.['label_' + l] || stats[3]?.label_en || defStats[3]?.label_en || 'Families Relocated')}" placeholder="Families Relocated" oninput="markUnsaved()">
         </div>
       </div>
     `) +
@@ -7515,16 +7577,16 @@
       <div class="form-row form-row-2">
         <div class="form-group">
           <label class="form-label">Architecture Badge <span class="form-lang-tag">${l.toUpperCase()}</span></label>
-          <input class="form-input" ${dir} id="about-arch-badge" value="${escH(arch.badge || 'CORPORATE ARCHITECTURE')}" placeholder="CORPORATE ARCHITECTURE" oninput="markUnsaved();liveUpdateField('about_arch_badge',this.value)">
+          <input class="form-input" ${dir} id="about-arch-badge" value="${escH(arch.badge || defArch.badge || 'CORPORATE ARCHITECTURE')}" placeholder="CORPORATE ARCHITECTURE" oninput="markUnsaved();liveUpdateField('about_arch_badge',this.value)">
         </div>
         <div class="form-group">
           <label class="form-label">Architecture Title <span class="form-lang-tag">${l.toUpperCase()}</span></label>
-          <input class="form-input" ${dir} id="about-arch-title" value="${escH(arch.title || 'Three Companies. One Commitment.')}" placeholder="Three Companies. One Commitment." oninput="markUnsaved();liveUpdateField('about_arch_title',this.value)">
+          <input class="form-input" ${dir} id="about-arch-title" value="${escH(arch.title || defArch.title || 'Three Companies. One Commitment.')}" placeholder="Three Companies. One Commitment." oninput="markUnsaved();liveUpdateField('about_arch_title',this.value)">
         </div>
       </div>
       <div class="form-group" style="margin-bottom:16px">
         <label class="form-label">Section Description <span class="form-lang-tag">${l.toUpperCase()}</span></label>
-        <textarea class="form-textarea" ${dir} id="about-arch-desc" style="min-height:60px" oninput="markUnsaved();liveUpdateField('about_arch_desc',this.value)">${escH(arch.desc || 'We structure our specialized operations under three dedicated corporate brands to deliver clean, transparent, and expert execution across every discipline.')}</textarea>
+        <textarea class="form-textarea" ${dir} id="about-arch-desc" style="min-height:60px" oninput="markUnsaved();liveUpdateField('about_arch_desc',this.value)">${escH(arch.desc || defArch.desc || 'We structure our specialized operations under three dedicated corporate brands to deliver clean, transparent, and expert execution across every discipline.')}</textarea>
       </div>
 
       <!-- Company 1: Sharif Global -->
@@ -7532,15 +7594,15 @@
         <div style="font-weight:700;font-size:12px;color:var(--text);margin-bottom:8px"><i class="fa-solid fa-passport" style="color:var(--gold);margin-right:6px"></i> Company 1: Sharif Global Documents Clearing Services L.L.C</div>
         <div class="form-group" style="margin-bottom:8px">
           <label class="form-label">Badge</label>
-          <input class="form-input" ${dir} id="about-c1-badge" value="${escH(arch.c1_badge || 'Citizenship & Residency')}" oninput="markUnsaved();liveUpdateField('about_c1_badge',this.value)">
+          <input class="form-input" ${dir} id="about-c1-badge" value="${escH(arch.c1_badge || defArch.c1_badge || 'Citizenship & Residency')}" oninput="markUnsaved();liveUpdateField('about_c1_badge',this.value)">
         </div>
         <div class="form-group" style="margin-bottom:8px">
           <label class="form-label">Narrative 1</label>
-          <textarea class="form-textarea" ${dir} id="about-c1-p1" style="min-height:65px" oninput="markUnsaved();liveUpdateField('about_c1_p1',this.value)">${escH(arch.c1_p1 || 'Sharif Global helps families and investors get legal second passports and European residency cards. We handle all paperwork smoothly, check your documents carefully, and deal directly with government authorities.')}</textarea>
+          <textarea class="form-textarea" ${dir} id="about-c1-p1" style="min-height:65px" oninput="markUnsaved();liveUpdateField('about_c1_p1',this.value)">${escH(arch.c1_p1 || defArch.c1_p1 || 'Sharif Global helps families and investors get legal second passports and European residency cards. We handle all paperwork smoothly, check your documents carefully, and deal directly with government authorities.')}</textarea>
         </div>
         <div class="form-group">
           <label class="form-label">Narrative 2</label>
-          <textarea class="form-textarea" ${dir} id="about-c1-p2" style="min-height:65px" oninput="markUnsaved();liveUpdateField('about_c1_p2',this.value)">${escH(arch.c1_p2 || 'We also guide your children with student admissions to top international schools and world-renowned universities abroad. Our team manages the legal attestation, translation, and complete file submissions.')}</textarea>
+          <textarea class="form-textarea" ${dir} id="about-c1-p2" style="min-height:65px" oninput="markUnsaved();liveUpdateField('about_c1_p2',this.value)">${escH(arch.c1_p2 || defArch.c1_p2 || 'We also guide your children with student admissions to top international schools and world-renowned universities abroad. Our team manages the legal attestation, translation, and complete file submissions.')}</textarea>
         </div>
       </div>
 
@@ -7549,15 +7611,15 @@
         <div style="font-weight:700;font-size:12px;color:var(--text);margin-bottom:8px"><i class="fa-solid fa-city" style="color:var(--gold);margin-right:6px"></i> Company 2: Sharif Star Real Estate Broker L.L.C</div>
         <div class="form-group" style="margin-bottom:8px">
           <label class="form-label">Badge</label>
-          <input class="form-input" ${dir} id="about-c2-badge" value="${escH(arch.c2_badge || 'Real Estate Brokerage')}" oninput="markUnsaved();liveUpdateField('about_c2_badge',this.value)">
+          <input class="form-input" ${dir} id="about-c2-badge" value="${escH(arch.c2_badge || defArch.c2_badge || 'Real Estate Brokerage')}" oninput="markUnsaved();liveUpdateField('about_c2_badge',this.value)">
         </div>
         <div class="form-group" style="margin-bottom:8px">
           <label class="form-label">Narrative 1</label>
-          <textarea class="form-textarea" ${dir} id="about-c2-p1" style="min-height:65px" oninput="markUnsaved();liveUpdateField('about_c2_p1',this.value)">${escH(arch.c2_p1 || 'Sharif Star is our official licensed real estate agency helping local and foreign buyers find premium homes across Dubai. We find luxury villas, high-floor apartments, and profitable off-plan projects in top neighborhoods.')}</textarea>
+          <textarea class="form-textarea" ${dir} id="about-c2-p1" style="min-height:65px" oninput="markUnsaved();liveUpdateField('about_c2_p1',this.value)">${escH(arch.c2_p1 || defArch.c2_p1 || 'Sharif Star is our official licensed real estate agency helping local and foreign buyers find premium homes across Dubai. We find luxury villas, high-floor apartments, and profitable off-plan projects in top neighborhoods.')}</textarea>
         </div>
         <div class="form-group">
           <label class="form-label">Narrative 2</label>
-          <textarea class="form-textarea" ${dir} id="about-c2-p2" style="min-height:65px" oninput="markUnsaved();liveUpdateField('about_c2_p2',this.value)">${escH(arch.c2_p2 || 'We also structure high-value property purchases that qualify you directly for the 10-Year UAE Golden Visa. Our real estate brokers assist you through contract signing, title deed registration, and ongoing leasing.')}</textarea>
+          <textarea class="form-textarea" ${dir} id="about-c2-p2" style="min-height:65px" oninput="markUnsaved();liveUpdateField('about_c2_p2',this.value)">${escH(arch.c2_p2 || defArch.c2_p2 || 'We also structure high-value property purchases that qualify you directly for the 10-Year UAE Golden Visa. Our real estate brokers assist you through contract signing, title deed registration, and ongoing leasing.')}</textarea>
         </div>
       </div>
 
@@ -7566,15 +7628,15 @@
         <div style="font-weight:700;font-size:12px;color:var(--text);margin-bottom:8px"><i class="fa-solid fa-chart-line" style="color:var(--gold);margin-right:6px"></i> Company 3: Sharif Capital Commercial Brokers L.L.C</div>
         <div class="form-group" style="margin-bottom:8px">
           <label class="form-label">Badge</label>
-          <input class="form-input" ${dir} id="about-c3-badge" value="${escH(arch.c3_badge || 'Capital & Brokerage')}" oninput="markUnsaved();liveUpdateField('about_c3_badge',this.value)">
+          <input class="form-input" ${dir} id="about-c3-badge" value="${escH(arch.c3_badge || defArch.c3_badge || 'Capital & Brokerage')}" oninput="markUnsaved();liveUpdateField('about_c3_badge',this.value)">
         </div>
         <div class="form-group" style="margin-bottom:8px">
           <label class="form-label">Narrative 1</label>
-          <textarea class="form-textarea" ${dir} id="about-c3-p1" style="min-height:65px" oninput="markUnsaved();liveUpdateField('about_c3_p1',this.value)">${escH(arch.c3_p1 || 'Sharif Capital is our specialized business brokerage branch connecting entrepreneurs and serious investors with solid commercial opportunities in Dubai and the GCC region.')}</textarea>
+          <textarea class="form-textarea" ${dir} id="about-c3-p1" style="min-height:65px" oninput="markUnsaved();liveUpdateField('about_c3_p1',this.value)">${escH(arch.c3_p1 || defArch.c3_p1 || 'Sharif Capital is our specialized business brokerage branch connecting entrepreneurs and serious investors with solid commercial opportunities in Dubai and the GCC region.')}</textarea>
         </div>
         <div class="form-group">
           <label class="form-label">Narrative 2</label>
-          <textarea class="form-textarea" ${dir} id="about-c3-p2" style="min-height:65px" oninput="markUnsaved();liveUpdateField('about_c3_p2',this.value)">${escH(arch.c3_p2 || 'We also help global business owners set up new companies, open corporate bank accounts, and structure joint business ventures with complete confidentiality.')}</textarea>
+          <textarea class="form-textarea" ${dir} id="about-c3-p2" style="min-height:65px" oninput="markUnsaved();liveUpdateField('about_c3_p2',this.value)">${escH(arch.c3_p2 || defArch.c3_p2 || 'We also help global business owners set up new companies, open corporate bank accounts, and structure joint business ventures with complete confidentiality.')}</textarea>
         </div>
       </div>
     `) +
@@ -7584,38 +7646,38 @@
       <div class="form-row form-row-2">
         <div class="form-group">
           <label class="form-label">Founder Full Name <span class="form-lang-tag">${l.toUpperCase()}</span></label>
-          <input class="form-input" ${dir} id="about-founder-name" value="${escH(founder.name || 'Ali Sharif')}" placeholder="Ali Sharif" oninput="markUnsaved();liveUpdateField('about_founder_name',this.value)">
+          <input class="form-input" ${dir} id="about-founder-name" value="${escH(founder.name || defFounder.name || 'Ali Sharif')}" placeholder="Ali Sharif" oninput="markUnsaved();liveUpdateField('about_founder_name',this.value)">
         </div>
         <div class="form-group">
           <label class="form-label">Founder Title & Position <span class="form-lang-tag">${l.toUpperCase()}</span></label>
-          <input class="form-input" ${dir} id="about-founder-title" value="${escH(founder.title || 'CEO & Founder, Sharif Group')}" placeholder="CEO & Founder, Sharif Group" oninput="markUnsaved();liveUpdateField('about_founder_title',this.value)">
+          <input class="form-input" ${dir} id="about-founder-title" value="${escH(founder.title || defFounder.title || 'CEO & Founder, Sharif Group')}" placeholder="CEO & Founder, Sharif Group" oninput="markUnsaved();liveUpdateField('about_founder_title',this.value)">
         </div>
       </div>
       <div class="form-row form-row-2">
         <div class="form-group">
           <label class="form-label">Badge Label <span class="form-lang-tag">${l.toUpperCase()}</span></label>
-          <input class="form-input" ${dir} id="about-founder-badge" value="${escH(founder.badge || 'A MESSAGE FROM OUR FOUNDER')}" placeholder="A MESSAGE FROM OUR FOUNDER" oninput="markUnsaved();liveUpdateField('about_founder_badge',this.value)">
+          <input class="form-input" ${dir} id="about-founder-badge" value="${escH(founder.badge || defFounder.badge || 'A MESSAGE FROM OUR FOUNDER')}" placeholder="A MESSAGE FROM OUR FOUNDER" oninput="markUnsaved();liveUpdateField('about_founder_badge',this.value)">
         </div>
         <div class="form-group">
           <label class="form-label">Photo File / URL</label>
-          <input class="form-input" id="about-founder-photo" value="${escH(founder.photo || 'alisharif.webp')}" placeholder="alisharif.webp" oninput="markUnsaved()">
+          <input class="form-input" id="about-founder-photo" value="${escH(founder.photo || defFounder.photo || 'alisharif.webp')}" placeholder="alisharif.webp" oninput="markUnsaved()">
         </div>
       </div>
       <div class="form-group" style="margin-bottom:12px">
         <label class="form-label">Core Highlighted Quote <span class="form-lang-tag">${l.toUpperCase()}</span></label>
-        <textarea class="form-textarea" ${dir} id="about-founder-quote" style="min-height:75px" oninput="markUnsaved();liveUpdateField('about_founder_quote',this.value)">${escH(founder.quote || 'A future where happy clients, positive community impact, and continuous progress guide everything we do.')}</textarea>
+        <textarea class="form-textarea" ${dir} id="about-founder-quote" style="min-height:75px" oninput="markUnsaved();liveUpdateField('about_founder_quote',this.value)">${escH(founder.quote || defFounder.quote || 'A future where happy clients, positive community impact, and continuous progress guide everything we do.')}</textarea>
       </div>
       <div class="form-group" style="margin-bottom:12px">
         <label class="form-label">Message Paragraph 1 <span class="form-lang-tag">${l.toUpperCase()}</span></label>
-        <textarea class="form-textarea" ${dir} id="about-founder-p1" style="min-height:80px" oninput="markUnsaved();liveUpdateField('about_founder_p1',this.value)">${escH(founder.p1 || 'As the founder of Sharif Group, I, Ali Sharif, started this journey with a clear goal: to build real value for our clients and trusted partners. Today, with our hard-working team, we are proud to set high standards in second citizenship and global investment advisory.')}</textarea>
+        <textarea class="form-textarea" ${dir} id="about-founder-p1" style="min-height:80px" oninput="markUnsaved();liveUpdateField('about_founder_p1',this.value)">${escH(founder.p1 || defFounder.p1 || 'As the founder of Sharif Group, I, Ali Sharif, started this journey with a clear goal: to build real value for our clients and trusted partners. Today, with our hard-working team, we are proud to set high standards in second citizenship and global investment advisory.')}</textarea>
       </div>
       <div class="form-group" style="margin-bottom:12px">
         <label class="form-label">Message Paragraph 2 <span class="form-lang-tag">${l.toUpperCase()}</span></label>
-        <textarea class="form-textarea" ${dir} id="about-founder-p2" style="min-height:80px" oninput="markUnsaved();liveUpdateField('about_founder_p2',this.value)">${escH(founder.p2 || 'Over the past few years, our growth has been driven by honest effort and commitment. We have expanded our reach internationally, opening dedicated office hubs in both Dubai and London to serve our clients seamlessly.')}</textarea>
+        <textarea class="form-textarea" ${dir} id="about-founder-p2" style="min-height:80px" oninput="markUnsaved();liveUpdateField('about_founder_p2',this.value)">${escH(founder.p2 || defFounder.p2 || 'Over the past few years, our growth has been driven by honest effort and commitment. We have expanded our reach internationally, opening dedicated office hubs in both Dubai and London to serve our clients seamlessly.')}</textarea>
       </div>
       <div class="form-group">
         <label class="form-label">Founder Biography Profile Link</label>
-        <input class="form-input" id="about-founder-link" value="${escH(founder.profile_link || 'https://sharifgroup.ae/about-founder/')}" placeholder="https://sharifgroup.ae/about-founder/" oninput="markUnsaved()">
+        <input class="form-input" id="about-founder-link" value="${escH(founder.profile_link || defFounder.profile_link || 'https://sharifgroup.ae/about-founder/')}" placeholder="https://sharifgroup.ae/about-founder/" oninput="markUnsaved()">
       </div>
     `) +
 
@@ -7624,24 +7686,24 @@
       <div class="form-row form-row-2">
         <div class="form-group">
           <label class="form-label">CTA Badge <span class="form-lang-tag">${l.toUpperCase()}</span></label>
-          <input class="form-input" ${dir} id="about-cta-badge" value="${escH(cta.badge || 'EXECUTIVE ADVISORY DESK')}" placeholder="EXECUTIVE ADVISORY DESK" oninput="markUnsaved();liveUpdateField('about_cta_badge',this.value)">
+          <input class="form-input" ${dir} id="about-cta-badge" value="${escH(cta.badge || defCta.badge || 'EXECUTIVE ADVISORY DESK')}" placeholder="EXECUTIVE ADVISORY DESK" oninput="markUnsaved();liveUpdateField('about_cta_badge',this.value)">
         </div>
         <div class="form-group">
           <label class="form-label">Button Text <span class="form-lang-tag">${l.toUpperCase()}</span></label>
-          <input class="form-input" ${dir} id="about-cta-btn" value="${escH(cta.btn_text || 'Request Executive Briefing')}" placeholder="Request Executive Briefing" oninput="markUnsaved();liveUpdateField('about_cta_btn',this.value)">
+          <input class="form-input" ${dir} id="about-cta-btn" value="${escH(cta.btn_text || defCta.btn_text || 'Request Executive Briefing')}" placeholder="Request Executive Briefing" oninput="markUnsaved();liveUpdateField('about_cta_btn',this.value)">
         </div>
       </div>
       <div class="form-group" style="margin-bottom:12px">
         <label class="form-label">Heading <span class="form-lang-tag">${l.toUpperCase()}</span></label>
-        <input class="form-input form-input-headline" ${dir} id="about-cta-heading" value="${escH(cta.heading || 'Schedule Your Expert Consultation Today')}" placeholder="Schedule Your Expert Consultation Today" oninput="markUnsaved();liveUpdateField('about_cta_heading',this.value)">
+        <input class="form-input form-input-headline" ${dir} id="about-cta-heading" value="${escH(cta.heading || defCta.heading || 'Schedule Your Expert Consultation Today')}" placeholder="Schedule Your Expert Consultation Today" oninput="markUnsaved();liveUpdateField('about_cta_heading',this.value)">
       </div>
       <div class="form-group" style="margin-bottom:12px">
         <label class="form-label">Description <span class="form-lang-tag">${l.toUpperCase()}</span></label>
-        <textarea class="form-textarea" ${dir} id="about-cta-desc" style="min-height:65px" oninput="markUnsaved();liveUpdateField('about_cta_desc',this.value)">${escH(cta.desc || 'Connect directly with our registered advisors at 116, The Binary Tower, Business Bay, Dubai to initialize your pre-vetting sequence.')}</textarea>
+        <textarea class="form-textarea" ${dir} id="about-cta-desc" style="min-height:65px" oninput="markUnsaved();liveUpdateField('about_cta_desc',this.value)">${escH(cta.desc || defCta.desc || 'Connect directly with our registered advisors at 116, The Binary Tower, Business Bay, Dubai to initialize your pre-vetting sequence.')}</textarea>
       </div>
       <div class="form-group">
         <label class="form-label">Button Link</label>
-        <input class="form-input" id="about-cta-link" value="${escH(cta.btn_link || '../contact/index.html')}" placeholder="../contact/index.html" oninput="markUnsaved()">
+        <input class="form-input" id="about-cta-link" value="${escH(cta.btn_link || defCta.btn_link || '../contact/index.html')}" placeholder="../contact/index.html" oninput="markUnsaved()">
       </div>
     `) +
 
@@ -7653,7 +7715,15 @@
 
       function saveAboutUs() {
         const l = state.lang;
+        const isEn = (l === 'en');
         const about = window.CMS.getData(window.CMS.KEYS.ABOUTUS) || window.CMS.DEFAULTS.aboutus || {};
+        const defAbout = window.CMS.DEFAULTS?.aboutus || {};
+        const defStats = defAbout.stats || [
+          { value: '10+', label_en: 'Years of Experience' },
+          { value: '1000+', label_en: 'Successful CBI Cases' },
+          { value: '100+', label_en: 'Residency & Education Cases' },
+          { value: '450+', label_en: 'Families Relocated' }
+        ];
 
         about.hero = about.hero || {};
         about.hero[l] = about.hero[l] || {};
@@ -7672,12 +7742,20 @@
         if (document.getElementById('about-ov-cta-link')) about.overview[l].cta_link = document.getElementById('about-ov-cta-link').value;
 
         if (document.getElementById('about-stat1-val')) {
-          about.stats = [
-            { value: document.getElementById('about-stat1-val')?.value || '10+', ['label_' + l]: document.getElementById('about-stat1-lbl')?.value || '', label_en: document.getElementById('about-stat1-lbl')?.value || '' },
-            { value: document.getElementById('about-stat2-val')?.value || '1000+', ['label_' + l]: document.getElementById('about-stat2-lbl')?.value || '', label_en: document.getElementById('about-stat2-lbl')?.value || '' },
-            { value: document.getElementById('about-stat3-val')?.value || '100+', ['label_' + l]: document.getElementById('about-stat3-lbl')?.value || '', label_en: document.getElementById('about-stat3-lbl')?.value || '' },
-            { value: document.getElementById('about-stat4-val')?.value || '450+', ['label_' + l]: document.getElementById('about-stat4-lbl')?.value || '', label_en: document.getElementById('about-stat4-lbl')?.value || '' }
-          ];
+          const prevStats = (Array.isArray(about.stats) && about.stats.length) ? about.stats : defStats;
+          about.stats = [0, 1, 2, 3].map(i => {
+            const prev = prevStats[i] || {};
+            const defItem = defStats[i] || {};
+            const valEl = document.getElementById(`about-stat${i + 1}-val`);
+            const lblEl = document.getElementById(`about-stat${i + 1}-lbl`);
+            const updated = { ...defItem, ...prev };
+            if (valEl && valEl.value.trim()) updated.value = valEl.value.trim();
+            if (lblEl && lblEl.value.trim()) {
+              updated['label_' + l] = lblEl.value.trim();
+              if (isEn || !updated.label_en) updated.label_en = lblEl.value.trim();
+            }
+            return updated;
+          });
         }
 
         about.architecture = about.architecture || {};
@@ -7727,17 +7805,29 @@
       // ──────────────────────────────────────────────────────────
       function renderCookiePolicyEditor(l, rtl) {
         setPageTitle('Cookie Policy', 'Digital tracking disclosure & essential cookie parameters');
-        const cp = window.CMS.getData('sgcms_cookiepolicy') || {};
+        const cp = window.CMS.getData('sgcms_cookiepolicy') || window.CMS.DEFAULTS?.cookiepolicy || {};
+        const defCp = window.CMS.DEFAULTS?.cookiepolicy || {};
+        const defL = defCp[l] || {};
+        const defEn = defCp.en || {};
+        const isEn = (l === 'en');
         const dir = rtl ? 'dir="rtl"' : '';
-        const langData = cp[l] || cp.en || {};
+        const stored = cp[l] || {};
+        const langData = isEn ? (cp.en || defEn) : { ...defL, ...stored };
+        if (!isEn) {
+          for (const key of Object.keys(defL)) {
+            if (defEn[key] && stored[key] === defEn[key] && defL[key] !== defEn[key]) {
+              langData[key] = defL[key];
+            }
+          }
+        }
 
-        const heroBadge = langData.hero_badge || 'DIGITAL GOVERNANCE & TRACKING';
-        const heroTitle = langData.hero_title || 'Cookie Policy & Digital Tracking';
-        const heroDesc = langData.hero_desc || 'Transparent guidelines on how Sharif Group utilizes essential browser cookies, security verification tokens, and anonymous analytical telemetry.';
-        const p1Title = langData.p1_title || '1. Essential Digital Architecture & Session Integrity';
-        const p1Desc = langData.p1_desc || 'Sharif Group utilizes strict first-party cookies necessary for secure user navigation, protecting user sessions, and preserving multi-step inquiries.';
-        const p2Title = langData.p2_title || '2. Analytical Telemetry & Performance Optimization';
-        const p2Desc = langData.p2_desc || 'We deploy encrypted, privacy-compliant aggregated analytical trackers to optimize page loading speeds and evaluate device responsiveness.';
+        const heroBadge = langData.hero_badge || defL.hero_badge || defEn.hero_badge || 'DIGITAL GOVERNANCE & TRACKING';
+        const heroTitle = langData.hero_title || defL.hero_title || defEn.hero_title || 'Cookie Policy & Digital Tracking';
+        const heroDesc = langData.hero_desc || defL.hero_desc || defEn.hero_desc || 'Transparent guidelines on how Sharif Group utilizes essential browser cookies, security verification tokens, and anonymous analytical telemetry.';
+        const p1Title = langData.p1_title || defL.p1_title || defEn.p1_title || '1. Essential Digital Architecture & Session Integrity';
+        const p1Desc = langData.p1_desc || defL.p1_desc || defEn.p1_desc || 'Sharif Group utilizes strict first-party cookies necessary for secure user navigation, protecting user sessions, and preserving multi-step inquiries.';
+        const p2Title = langData.p2_title || defL.p2_title || defEn.p2_title || '2. Analytical Telemetry & Performance Optimization';
+        const p2Desc = langData.p2_desc || defL.p2_desc || defEn.p2_desc || 'We deploy encrypted, privacy-compliant aggregated analytical trackers to optimize page loading speeds and evaluate device responsiveness.';
 
         document.getElementById('editor').innerHTML =
           `<h1 class="ed-page-title">Cookie Policy Page</h1>
@@ -8563,44 +8653,123 @@
               // 4. ABOUT US PAGE TRANSLATION
             } else if (section === 'aboutus') {
               const about = window.CMS.getData(window.CMS.KEYS.ABOUTUS) || window.CMS.DEFAULTS.aboutus;
+              const defAbout = window.CMS.DEFAULTS?.aboutus || {};
+              const defHeroL = defAbout.hero?.[lang] || {};
+              const defOvL = defAbout.overview?.[lang] || {};
+              const defArchL = defAbout.architecture?.[lang] || {};
+              const defFounderL = defAbout.founder?.[lang] || {};
+              const defCtaL = defAbout.cta?.[lang] || {};
+
+              async function safeTrans(text, targetL, defText) {
+                if (!text) return defText || '';
+                try {
+                  const res = await window.CMS.AI.translate(text, targetL);
+                  if ((!res || res.trim() === text.trim()) && defText && defText.trim() && defText.trim() !== text.trim()) {
+                    return defText;
+                  }
+                  return res || defText || text;
+                } catch(e) {
+                  return defText || text;
+                }
+              }
+
               fill.style.width = '30%'; msg.textContent = `[${langNames[lang]}] Translating About Us briefing…`;
               if (about.hero?.en) {
-                about.hero[lang] = about.hero[lang] || {};
-                if (about.hero.en.badge) about.hero[lang].badge = await window.CMS.AI.translate(about.hero.en.badge, lang);
-                if (about.hero.en.title) about.hero[lang].title = await window.CMS.AI.translate(about.hero.en.title, lang);
-                if (about.hero.en.subtitle) about.hero[lang].subtitle = await window.CMS.AI.translate(about.hero.en.subtitle, lang);
+                about.hero[lang] = { ...defHeroL, ...(about.hero[lang] || {}) };
+                if (about.hero.en.badge) about.hero[lang].badge = await safeTrans(about.hero.en.badge, lang, defHeroL.badge);
+                if (about.hero.en.title) about.hero[lang].title = await safeTrans(about.hero.en.title, lang, defHeroL.title);
+                if (about.hero.en.subtitle) about.hero[lang].subtitle = await safeTrans(about.hero.en.subtitle, lang, defHeroL.subtitle);
+                if (about.hero.en.img) about.hero[lang].img = about.hero.en.img;
               }
-              fill.style.width = '55%'; msg.textContent = `[${langNames[lang]}] Translating company overview…`;
+              fill.style.width = '45%'; msg.textContent = `[${langNames[lang]}] Translating company overview…`;
               if (about.overview?.en) {
-                about.overview[lang] = about.overview[lang] || {};
-                if (about.overview.en.heading) about.overview[lang].heading = await window.CMS.AI.translate(about.overview.en.heading, lang);
-                if (about.overview.en.p1) about.overview[lang].p1 = await window.CMS.AI.translate(about.overview.en.p1, lang);
-                if (about.overview.en.p2) about.overview[lang].p2 = await window.CMS.AI.translate(about.overview.en.p2, lang);
-                if (about.overview.en.cta_text) about.overview[lang].cta_text = await window.CMS.AI.translate(about.overview.en.cta_text, lang);
+                about.overview[lang] = { ...defOvL, ...(about.overview[lang] || {}) };
+                if (about.overview.en.badge) about.overview[lang].badge = await safeTrans(about.overview.en.badge, lang, defOvL.badge);
+                if (about.overview.en.heading) about.overview[lang].heading = await safeTrans(about.overview.en.heading, lang, defOvL.heading);
+                if (about.overview.en.p1) about.overview[lang].p1 = await safeTrans(about.overview.en.p1, lang, defOvL.p1);
+                if (about.overview.en.p2) about.overview[lang].p2 = await safeTrans(about.overview.en.p2, lang, defOvL.p2);
+                if (about.overview.en.cta_text) about.overview[lang].cta_text = await safeTrans(about.overview.en.cta_text, lang, defOvL.cta_text);
+                if (about.overview.en.cta_link) about.overview[lang].cta_link = about.overview.en.cta_link;
               }
-              fill.style.width = '80%'; msg.textContent = `[${langNames[lang]}] Translating founder message…`;
+              fill.style.width = '60%'; msg.textContent = `[${langNames[lang]}] Translating performance metrics…`;
+              if (Array.isArray(about.stats) && about.stats.length) {
+                for (let i = 0; i < about.stats.length; i++) {
+                  const defStatL = defAbout.stats?.[i]?.['label_' + lang];
+                  if (about.stats[i].label_en) {
+                    about.stats[i]['label_' + lang] = await safeTrans(about.stats[i].label_en, lang, defStatL);
+                  } else if (defStatL) {
+                    about.stats[i]['label_' + lang] = defStatL;
+                  }
+                }
+              }
+              fill.style.width = '75%'; msg.textContent = `[${langNames[lang]}] Translating corporate architecture…`;
+              if (about.architecture?.en) {
+                about.architecture[lang] = { ...defArchL, ...(about.architecture[lang] || {}) };
+                const enArch = about.architecture.en;
+                if (enArch.badge) about.architecture[lang].badge = await safeTrans(enArch.badge, lang, defArchL.badge);
+                if (enArch.title) about.architecture[lang].title = await safeTrans(enArch.title, lang, defArchL.title);
+                if (enArch.desc) about.architecture[lang].desc = await safeTrans(enArch.desc, lang, defArchL.desc);
+                if (enArch.c1_badge) about.architecture[lang].c1_badge = await safeTrans(enArch.c1_badge, lang, defArchL.c1_badge);
+                if (enArch.c1_p1) about.architecture[lang].c1_p1 = await safeTrans(enArch.c1_p1, lang, defArchL.c1_p1);
+                if (enArch.c1_p2) about.architecture[lang].c1_p2 = await safeTrans(enArch.c1_p2, lang, defArchL.c1_p2);
+                if (enArch.c2_badge) about.architecture[lang].c2_badge = await safeTrans(enArch.c2_badge, lang, defArchL.c2_badge);
+                if (enArch.c2_p1) about.architecture[lang].c2_p1 = await safeTrans(enArch.c2_p1, lang, defArchL.c2_p1);
+                if (enArch.c2_p2) about.architecture[lang].c2_p2 = await safeTrans(enArch.c2_p2, lang, defArchL.c2_p2);
+                if (enArch.c3_badge) about.architecture[lang].c3_badge = await safeTrans(enArch.c3_badge, lang, defArchL.c3_badge);
+                if (enArch.c3_p1) about.architecture[lang].c3_p1 = await safeTrans(enArch.c3_p1, lang, defArchL.c3_p1);
+                if (enArch.c3_p2) about.architecture[lang].c3_p2 = await safeTrans(enArch.c3_p2, lang, defArchL.c3_p2);
+              }
+              fill.style.width = '85%'; msg.textContent = `[${langNames[lang]}] Translating founder message…`;
               if (about.founder?.en) {
-                about.founder[lang] = about.founder[lang] || {};
-                if (about.founder.en.quote) about.founder[lang].quote = await window.CMS.AI.translate(about.founder.en.quote, lang);
-                if (about.founder.en.p1) about.founder[lang].p1 = await window.CMS.AI.translate(about.founder.en.p1, lang);
-                if (about.founder.en.p2) about.founder[lang].p2 = await window.CMS.AI.translate(about.founder.en.p2, lang);
+                about.founder[lang] = { ...defFounderL, ...(about.founder[lang] || {}) };
+                if (about.founder.en.name) about.founder[lang].name = await safeTrans(about.founder.en.name, lang, defFounderL.name);
+                if (about.founder.en.title) about.founder[lang].title = await safeTrans(about.founder.en.title, lang, defFounderL.title);
+                if (about.founder.en.badge) about.founder[lang].badge = await safeTrans(about.founder.en.badge, lang, defFounderL.badge);
+                if (about.founder.en.quote) about.founder[lang].quote = await safeTrans(about.founder.en.quote, lang, defFounderL.quote);
+                if (about.founder.en.p1) about.founder[lang].p1 = await safeTrans(about.founder.en.p1, lang, defFounderL.p1);
+                if (about.founder.en.p2) about.founder[lang].p2 = await safeTrans(about.founder.en.p2, lang, defFounderL.p2);
+              }
+              fill.style.width = '95%'; msg.textContent = `[${langNames[lang]}] Translating VIP consultation desk…`;
+              if (about.cta?.en) {
+                about.cta[lang] = { ...defCtaL, ...(about.cta[lang] || {}) };
+                if (about.cta.en.badge) about.cta[lang].badge = await safeTrans(about.cta.en.badge, lang, defCtaL.badge);
+                if (about.cta.en.heading) about.cta[lang].heading = await safeTrans(about.cta.en.heading, lang, defCtaL.heading);
+                if (about.cta.en.desc) about.cta[lang].desc = await safeTrans(about.cta.en.desc, lang, defCtaL.desc);
+                if (about.cta.en.btn_text) about.cta[lang].btn_text = await safeTrans(about.cta.en.btn_text, lang, defCtaL.btn_text);
+                if (about.cta.en.btn_link) about.cta[lang].btn_link = about.cta.en.btn_link;
               }
               window.CMS.saveData(window.CMS.KEYS.ABOUTUS, about);
 
               // 5. COOKIE POLICY PAGE TRANSLATION
             } else if (section === 'cookiepolicy') {
-              const cp = window.CMS.getData('sgcms_cookiepolicy') || {};
-              const en = cp.en || {};
-              cp[lang] = cp[lang] || {};
+              const cp = window.CMS.getData('sgcms_cookiepolicy') || window.CMS.DEFAULTS?.cookiepolicy || {};
+              const defCp = window.CMS.DEFAULTS?.cookiepolicy || {};
+              const defL = defCp[lang] || {};
+              const en = cp.en || defCp.en || {};
+              cp[lang] = { ...defL, ...(cp[lang] || {}) };
+
+              async function safeCpTrans(text, targetL, defText) {
+                if (!text) return defText || '';
+                try {
+                  const res = await window.CMS.AI.translate(text, targetL);
+                  if ((!res || res.trim() === text.trim()) && defText && defText.trim() && defText.trim() !== text.trim()) {
+                    return defText;
+                  }
+                  return res || defText || text;
+                } catch(e) {
+                  return defText || text;
+                }
+              }
+
               fill.style.width = '40%'; msg.textContent = `[${langNames[lang]}] Translating cookie disclosures…`;
-              if (en.hero_badge) cp[lang].hero_badge = await window.CMS.AI.translate(en.hero_badge, lang);
-              if (en.hero_title) cp[lang].hero_title = await window.CMS.AI.translate(en.hero_title, lang);
-              if (en.hero_desc) cp[lang].hero_desc = await window.CMS.AI.translate(en.hero_desc, lang);
+              if (en.hero_badge) cp[lang].hero_badge = await safeCpTrans(en.hero_badge, lang, defL.hero_badge);
+              if (en.hero_title) cp[lang].hero_title = await safeCpTrans(en.hero_title, lang, defL.hero_title);
+              if (en.hero_desc) cp[lang].hero_desc = await safeCpTrans(en.hero_desc, lang, defL.hero_desc);
               fill.style.width = '75%'; msg.textContent = `[${langNames[lang]}] Translating policy guidelines…`;
-              if (en.p1_title) cp[lang].p1_title = await window.CMS.AI.translate(en.p1_title, lang);
-              if (en.p1_desc) cp[lang].p1_desc = await window.CMS.AI.translate(en.p1_desc, lang);
-              if (en.p2_title) cp[lang].p2_title = await window.CMS.AI.translate(en.p2_title, lang);
-              if (en.p2_desc) cp[lang].p2_desc = await window.CMS.AI.translate(en.p2_desc, lang);
+              if (en.p1_title) cp[lang].p1_title = await safeCpTrans(en.p1_title, lang, defL.p1_title);
+              if (en.p1_desc) cp[lang].p1_desc = await safeCpTrans(en.p1_desc, lang, defL.p1_desc);
+              if (en.p2_title) cp[lang].p2_title = await safeCpTrans(en.p2_title, lang, defL.p2_title);
+              if (en.p2_desc) cp[lang].p2_desc = await safeCpTrans(en.p2_desc, lang, defL.p2_desc);
               window.CMS.saveData('sgcms_cookiepolicy', cp);
 
               // 6. CONTACT & SALES TRANSLATION
@@ -8678,7 +8847,8 @@
             'sgcms_custom_sections',
             'sgcms_flag_codes',
             'sgcms_cookiepolicy',
-            'sgcms_dom_overrides'
+            'sgcms_dom_overrides',
+            'sgcms_deleted_slugs'
           ];
 
           // Sanitize any corrupted DOM overrides
@@ -8743,6 +8913,20 @@
               }
             } catch (e) { }
           });
+
+          // Ensure active blog articles are marked published on live publish
+          if (Array.isArray(payload.data.sgcms_blog)) {
+            payload.data.sgcms_blog.forEach(b => {
+              if (b && !b.deleted && b.status !== 'deleted') {
+                b.status = 'published';
+                b.status_en = 'published';
+                b.status_ar = 'published';
+                b.status_fa = 'published';
+                b.status_zh = 'published';
+              }
+            });
+            try { localStorage.setItem('sgcms_blog', JSON.stringify(payload.data.sgcms_blog)); } catch(e){}
+          }
 
           // ── Always mirror to local live published store so preview & live website update immediately ──
           keys.forEach(k => {
@@ -9119,8 +9303,13 @@
 
       updatePublishStatusUI();
       populateSidebar();
-      navigate('homepage');
+      navigate('homepage', null, null, true);
       setCanvasMode(state.canvasMode, true);
+
+      // Instant paint: yield main thread so dashboard chrome paints immediately, then boot live preview iframe
+      requestAnimationFrame(() => {
+        setTimeout(loadPreviewPage, 40);
+      });
 
       // Asynchronously fetch latest draft state from MySQL backend in background
       if (window.CMS && window.CMS.Backend) {

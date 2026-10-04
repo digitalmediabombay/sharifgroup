@@ -83,6 +83,9 @@
         container.querySelectorAll('[data-i18n]').forEach(function (el) {
             var key = el.getAttribute('data-i18n');
             var val = getNestedValue(data, key);
+            if (l === 'fa' && key === 'nav.blog') {
+                val = 'بلاگ';
+            }
             if (val !== null && val !== undefined) {
                 var localized = (l === 'ar' || l === 'fa') ? localizeNumbers(val, l) : val;
                 el.textContent = decodeHtmlEntities(localized);
@@ -209,12 +212,17 @@
         }
     }
 
-    var I18N_VERSION = '20260921_v18';
+    var I18N_VERSION = '20261001_v26';
 
     function loadTranslation(lang, callback) {
         var pathname = (window.location && window.location.pathname) ? window.location.pathname.toLowerCase() : '';
         var href = (window.location && window.location.href) ? window.location.href.toLowerCase() : '';
         var isEligibilityChecker = pathname.includes('/eligibilitychecker') || href.includes('/eligibilitychecker');
+
+        // Ensure memory cache has correct Persian blog wording
+        if (translationsCache && translationsCache.fa && translationsCache.fa.nav && translationsCache.fa.nav.blog === 'وبلاگ') {
+            translationsCache.fa.nav.blog = 'بلاگ';
+        }
 
         // 1. If already loaded in memory and has deep content
         if (translationsCache[lang] && (translationsCache[lang].pages || translationsCache[lang].nav)) {
@@ -229,27 +237,34 @@
             translationsCache[lang] = deepMerge(translationsCache[lang] || {}, JSON.parse(JSON.stringify(window.LEGAL_TRANSLATIONS[lang])));
         }
 
-        // Proactively clean any outdated cache that lacks eligibilityChecker translations
+        var storageKey = 'sharif_i18n_' + lang + '_' + I18N_VERSION;
+
+        // Proactively clean any outdated cache or stale blog entries
         try {
             for (var i = localStorage.length - 1; i >= 0; i--) {
                 var k = localStorage.key(i);
                 if (k && k.indexOf('sharif_i18n_') === 0) {
                     try {
-                        var d = JSON.parse(localStorage.getItem(k));
-                        if (d && (!d.pages || !d.pages.eligibilityChecker)) {
+                        var raw = localStorage.getItem(k);
+                        var d = JSON.parse(raw);
+                        if (!d || !d.pages || !d.pages.eligibilityChecker || (d.nav && d.nav.blog === 'وبلاگ') || k !== storageKey) {
                             localStorage.removeItem(k);
                         }
-                    } catch (e) {}
+                    } catch (e) {
+                        localStorage.removeItem(k);
+                    }
                 }
             }
         } catch (e) {}
 
         // 3. Check persistent localStorage cache for instant 0ms zero-network retrieval
-        var storageKey = 'sharif_i18n_' + lang + '_' + I18N_VERSION;
         try {
             var cachedJson = localStorage.getItem(storageKey);
             if (cachedJson) {
                 var parsedData = JSON.parse(cachedJson);
+                if (parsedData && parsedData.nav && parsedData.nav.blog === 'وبلاگ') {
+                    parsedData.nav.blog = 'بلاگ';
+                }
                 if (isEligibilityChecker && (!parsedData.pages || !parsedData.pages.eligibilityChecker)) {
                     // Stale cache missing eligibility checker translations: discard and re-fetch fresh!
                 } else if (parsedData && (parsedData.pages || parsedData.nav || parsedData.services || parsedData.footer)) {
@@ -325,9 +340,14 @@
 
     function getCleanCurrentPath() {
         var pathname = (window.location && window.location.pathname) ? window.location.pathname : '/';
+        // Strip trailing index.html / index.htm from pathname
+        pathname = pathname.replace(/\/index\.html?$/i, '/');
         var segments = pathname.split('/').filter(Boolean);
         if (segments.length > 0 && ['ar', 'fa', 'zh', 'en'].indexOf(segments[0].toLowerCase()) !== -1) {
             segments.shift();
+        }
+        if (segments.length > 0 && /^index\.html?$/i.test(segments[segments.length - 1])) {
+            segments.pop();
         }
         return segments.length > 0 ? '/' + segments.join('/') + '/' : '/';
     }
@@ -348,6 +368,12 @@
         var isLang = (lang === 'ar' || lang === 'fa' || lang === 'zh');
         var links = document.querySelectorAll('a[href^="/"]');
         links.forEach(function (a) {
+            // Guard: NEVER rewrite language switcher buttons or dropdown items!
+            if (a.classList.contains('lang-option') || a.classList.contains('mobile-lang-option') ||
+                a.closest('.lang-switcher-wrapper, #lang-dropdown-menu, .mobile-lang-grid')) {
+                return;
+            }
+
             var href = a.getAttribute('href');
             if (!href || href.startsWith('//')) return;
             // Exclude static assets, admin, api, anchor hashes, files with extensions
@@ -1323,30 +1349,49 @@
     }
 
     window.switchLanguage = function (targetLang, event) {
-        if (event && event.preventDefault) {
-            event.preventDefault();
-        }
         var lang = normalizeLang(targetLang);
-        currentLang = lang;
 
         try {
             localStorage.setItem('sharif_lang', lang);
             localStorage.setItem('sharif_preferred_lang', lang);
         } catch (e) {}
 
-        // Update clean URL path in browser address bar (e.g. /ar/, /zh/, /fa/)
-        updateUrlPathForLang(lang);
+        var inIframe = false;
+        try { inIframe = (window.self !== window.top); } catch (e) { inIframe = true; }
+        var isEditor = inIframe || (window.location.search && (window.location.search.indexOf('cms_editor') !== -1 || window.location.search.indexOf('cms_preview') !== -1));
 
-        // Hide dropdown
-        var dropdown = document.getElementById('lang-dropdown-menu');
-        var arrow = document.getElementById('lang-arrow-icon');
-        if (dropdown) dropdown.classList.add('hidden');
-        if (arrow) arrow.style.transform = 'rotate(0deg)';
+        // When testing offline on file:/// or inside CMS editor iframe: stay in-place without page reload
+        if (isEditor || (window.location && window.location.protocol === 'file:')) {
+            if (event && event.preventDefault) event.preventDefault();
+            currentLang = lang;
+            updateUrlPathForLang(lang);
+            var dropdown = document.getElementById('lang-dropdown-menu');
+            var arrow = document.getElementById('lang-arrow-icon');
+            if (dropdown) dropdown.classList.add('hidden');
+            if (arrow) arrow.style.transform = 'rotate(0deg)';
+            loadTranslation(lang, function (data) {
+                applyTranslations(data, lang);
+            });
+            return;
+        }
 
-        // Load & apply
-        loadTranslation(lang, function (data) {
-            applyTranslations(data, lang);
-        });
+        // On live public website:
+        // Compute clean target URL to the dedicated physical pre-rendered localized page
+        var cleanPath = getCleanCurrentPath();
+        var targetUrl = (lang === 'en') ? cleanPath : ('/' + lang + (cleanPath === '/' ? '/' : cleanPath));
+
+        // If user clicked the language they are ALREADY on, just close the dropdown
+        var currentClean = (window.location.pathname || '/').replace(/\/index\.html?$/i, '/');
+        if (currentClean === targetUrl && currentLang === lang) {
+            if (event && event.preventDefault) event.preventDefault();
+            var dd = document.getElementById('lang-dropdown-menu');
+            if (dd) dd.classList.add('hidden');
+            return;
+        }
+
+        // Navigate cleanly to the dedicated localized page!
+        if (event && event.preventDefault) event.preventDefault();
+        window.location.href = targetUrl;
     };
 
     window.addEventListener('popstate', function () {
@@ -1624,8 +1669,8 @@
             document.documentElement.classList.remove('i18n-pending');
         }
         setupCounterInterceptor();
-        updateLanguageSwitcherHrefs();
         localizeInternalLinks(currentLang);
+        updateLanguageSwitcherHrefs();
         loadTranslation(currentLang, function (data) {
             applyTranslations(data, currentLang);
         });

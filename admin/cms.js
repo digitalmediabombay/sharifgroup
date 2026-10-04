@@ -1,4 +1,4 @@
-'use strict';
+﻿'use strict';
 
 // ─── CREDENTIALS (Demo) ───────────────────────────────────────
 const CMS_CREDENTIALS = {
@@ -462,6 +462,23 @@ const AI = {
 };
 
 // ─── DEFAULT DATA ─────────────────────────────────────────────
+function isEnglishFallback(str, currentLang) {
+  if (!str || typeof str !== 'string') return true;
+  if (/[\u2500-\u259F\uFFFD]/.test(str)) return true;
+  if (currentLang === 'en') return false;
+  const trimmed = str.trim();
+  if (currentLang === 'ar' || currentLang === 'fa') {
+    const hasArabic = /[\u0600-\u06FF\u0750-\u077F\u08A0-\u08FF\uFB50-\uFDFF\uFE70-\uFEFF]/.test(trimmed);
+    const isAscii = /^[A-Za-z0-9\s.,:;!?'"()&/\-]+$/.test(trimmed);
+    if (!hasArabic && isAscii && trimmed.length > 2) return true;
+  }
+  if (currentLang === 'zh') {
+    const hasChinese = /[\u4E00-\u9FFF]/.test(trimmed);
+    const isAscii = /^[A-Za-z0-9\s.,:;!?'"()&/\-]+$/.test(trimmed);
+    if (!hasChinese && isAscii && trimmed.length > 2) return true;
+  }
+  return false;
+}
 const DEFAULTS = {
   homepage: {
     hero: {
@@ -661,6 +678,68 @@ const DEFAULTS = {
       email: 'contact@sharifgroup.ae'
     }
   },
+  aboutus: {
+    hero: {
+      en: {
+        badge: 'EXECUTIVE BRIEFING',
+        title: 'About Sharif Group',
+        subtitle: 'A premier migration, citizenship, and luxury investment advisory platform rooted in Business Bay, Dubai.',
+        img: '/assets/images/dubai-office-2.webp'
+      },
+      ar: {
+        badge: 'إحاطة تنفيذية',
+        title: 'نبذة عن مجموعة شريف',
+        subtitle: 'منصة رائدة للاستشارات في مجال الهجرة والمواطنة والاستثمارات الفاخرة، تتخذ من الخليج التجاري في دبي مقرًا لها.',
+        img: '/assets/images/dubai-office-2.webp'
+      },
+      fa: {
+        badge: 'جلسه توجیهی اجرایی',
+        title: 'درباره شریف گروپ',
+        subtitle: 'یک پلتفرم برتر مشاوره در زمینه مهاجرت، شهروندی و سرمایه‌گذاری‌های لوکس، مستقر در بیزنس‌بی دبی.',
+        img: '/assets/images/dubai-office-2.webp'
+      },
+      zh: {
+        badge: '执行简报',
+        title: '关于 谢里夫集团',
+        subtitle: '一个立足于迪拜商业湾的高端移民、公民身份及奢华投资咨询平台。',
+        img: '/assets/images/dubai-office-2.webp'
+      }
+    },
+    overview: {
+      en: {
+        badge: 'WHO WE ARE',
+        heading: 'Company Overview: Sharif Group',
+        p1: 'Sharif Group is a dedicated private consulting company based in Business Bay, Dubai. We assist international clients and families with legal second passports, residency visas, premium property investments, and student placements in top international universities.',
+        p2: 'Our team handles document preparation, background legal checks, and government clearance from start to finish, ensuring a straightforward and secure experience.',
+        cta_text: 'Book Consultation',
+        cta_link: '../contact/index.html'
+      },
+      ar: {
+        badge: 'من نحن',
+        heading: 'نبذة عن الشركة: مجموعة شريف',
+        p1: 'مجموعة شريف هي شركة استشارات خاصة متخصصة تتخذ من الخليج التجاري في دبي مقرًا لها. نساعد العملاء والعائلات الدوليين في الحصول على جوازات سفر ثانية قانونية، وتأشيرات الإقامة، والاستثمارات العقارية الفاخرة، والقبول الطلابي في أفضل الجامعات الدولية.',
+        p2: 'يتولى فريقنا إعداد المستندات، وإجراء الفحوصات القانونية للخلفية، والحصول على الموافقات الحكومية من البداية إلى النهاية، بما يضمن تجربة واضحة وآمنة.',
+        cta_text: 'احجز استشارة',
+        cta_link: '../contact/index.html'
+      },
+      fa: {
+        badge: 'درباره ما',
+        heading: 'بررسی اجمالی شرکت: شریف گروپ',
+        p1: 'شریف گروپ یک شرکت مشاوره خصوصی معتبر مستقر در بیزینس بی دبی است. ما به مشتریان و خانواده‌های بین‌المللی در دریافت پاسپورت دوم قانونی، ویزای اقامت، سرمایه‌گذاری املاک لوکس و پذیرش دانشگاه‌های برتر کمک می‌کنیم.',
+        p2: 'تیم ما تمامی مراحل آماده‌سازی اسناد، بررسی‌های حقوقی و تأییدیه‌های دولتی را از ابتدا تا انتها با اطمینان کامل انجام می‌دهد.',
+        cta_text: 'رزرو مشاوره',
+        cta_link: '../contact/index.html'
+      },
+      zh: {
+        badge: '我们是谁',
+        heading: '公司概览：谢里夫集团',
+        p1: '谢里夫集团是一家总部位于迪拜商业湾的专业私人咨询公司。我们协助全球客户及高净值家庭合法获得第二本护照、居留签证、高端房产投资以及世界顶尖名校录取。',
+        p2: '我们的专业团队全程统筹文件准备、合规背调及主权政府审批，确保流程高效、透明、完全安全合规。',
+        cta_text: '预约咨询',
+        cta_link: '../contact/index.html'
+      }
+    }
+  },
   citizenship: [
     {
       id: 'dominica',
@@ -671,6 +750,7 @@ const DEFAULTS = {
       nav_sort: 1,
       status: 'published',
       en: {
+        hero_title: 'Dominica',
         title: 'Dominica Citizenship by Investment',
         nav_label: 'Dominica | Passport',
         hero_subtitle: 'Citizenship By Investment',
@@ -713,6 +793,7 @@ const DEFAULTS = {
         ]
       },
       ar: {
+        hero_title: 'دومينيكا',
         title: 'الجنسية الدومينيكية عن طريق الاستثمار',
         nav_label: 'دومينيكا | جواز سفر',
         hero_subtitle: 'الجنسية عن طريق الاستثمار',
@@ -728,6 +809,7 @@ const DEFAULTS = {
         faqs: []
       },
       fa: {
+        hero_title: 'دومینیکا',
         title: 'شهروندی دومینیکا از طریق سرمایه‌گذاری',
         nav_label: 'دومینیکا | پاسپورت',
         hero_subtitle: 'شهروندی از طریق سرمایه‌گذاری',
@@ -743,6 +825,7 @@ const DEFAULTS = {
         faqs: []
       },
       zh: {
+        hero_title: '多米尼克',
         title: '多米尼克投资入籍项目',
         nav_label: '多米尼克 | 护照',
         hero_subtitle: '投资入籍项目',
@@ -767,6 +850,7 @@ const DEFAULTS = {
       nav_sort: 2,
       status: 'published',
       en: {
+        hero_title: 'St. Kitts & Nevis',
         title: 'St. Kitts & Nevis Citizenship by Investment',
         nav_label: 'St. Kitts & Nevis | Passport',
         hero_subtitle: 'Citizenship By Investment',
@@ -780,9 +864,9 @@ const DEFAULTS = {
         ],
         faqs: []
       },
-      ar: { title: 'جنسية سانت كيتس ونيفيس', hero_subtitle: 'الجنسية عن طريق الاستثمار', nav_label: 'سانت كيتس | جواز سفر', investment_from: '$250,000', processing_time: '3-6 أشهر', visa_free: '+155', overview: '', benefits: [], faqs: [] },
-      fa: { title: 'شهروندی سنت کیتس و نویس', hero_subtitle: 'شهروندی از طریق سرمایه‌گذاری', nav_label: 'سنت کیتس | پاسپورت', investment_from: '$250,000', processing_time: '۳ تا ۶ ماه', visa_free: '+۱۵۵', overview: '', benefits: [], faqs: [] },
-      zh: { title: '圣基茨和尼维斯投资入籍', hero_subtitle: '投资入籍', nav_label: '圣基茨 | 护照', investment_from: '$250,000', processing_time: '3-6个月', visa_free: '155+', overview: '', benefits: [], faqs: [] }
+      ar: { hero_title: 'سانت كيتس ونيفيس', title: 'جنسية سانت كيتس ونيفيس', hero_subtitle: 'الجنسية عن طريق الاستثمار', nav_label: 'سانت كيتس | جواز سفر', investment_from: '$250,000', processing_time: '3-6 أشهر', visa_free: '+155', overview: '', benefits: [], faqs: [] },
+      fa: { hero_title: 'سنت کیتس و نویس', title: 'شهروندی سنت کیتس و نویس', hero_subtitle: 'شهروندی از طریق سرمایه‌گذاری', nav_label: 'سنت کیتس | پاسپورت', investment_from: '$250,000', processing_time: '۳ تا ۶ ماه', visa_free: '+۱۵۵', overview: '', benefits: [], faqs: [] },
+      zh: { hero_title: '圣基茨和尼维斯', title: '圣基茨和尼维斯投资入籍', hero_subtitle: '投资入籍', nav_label: '圣基茨 | 护照', investment_from: '$250,000', processing_time: '3-6个月', visa_free: '155+', overview: '', benefits: [], faqs: [] }
     },
     {
       id: 'antigua',
@@ -793,6 +877,7 @@ const DEFAULTS = {
       nav_sort: 3,
       status: 'published',
       en: {
+        hero_title: 'Antigua & Barbuda',
         title: 'Antigua & Barbuda Citizenship by Investment',
         nav_label: 'Antigua & Barbuda | Passport',
         hero_subtitle: 'Citizenship By Investment',
@@ -805,9 +890,9 @@ const DEFAULTS = {
         ],
         faqs: []
       },
-      ar: { title: 'جنسية أنتيغوا وبربودا', hero_subtitle: 'الجنسية عن طريق الاستثمار', nav_label: 'أنتيغوا | جواز سفر', investment_from: '$100,000', processing_time: '3-5 أشهر', visa_free: '+150', overview: '', benefits: [], faqs: [] },
-      fa: { title: 'شهروندی آنتیگوا و باربودا', hero_subtitle: 'شهروندی از طریق سرمایه‌گذاری', nav_label: 'آنتیگوا | پاسپورت', investment_from: '$100,000', processing_time: '۳ تا ۵ ماه', visa_free: '+۱۵۰', overview: '', benefits: [], faqs: [] },
-      zh: { title: '安提瓜和巴布达投资入籍', hero_subtitle: '投资入籍', nav_label: '安提瓜 | 护照', investment_from: '$100,000', processing_time: '3-5个月', visa_free: '150+', overview: '', benefits: [], faqs: [] }
+      ar: { hero_title: 'أنتيغوا وبربودا', title: 'جنسية أنتيغوا وبربودا', hero_subtitle: 'الجنسية عن طريق الاستثمار', nav_label: 'أنتيغوا | جواز سفر', investment_from: '$100,000', processing_time: '3-5 أشهر', visa_free: '+150', overview: '', benefits: [], faqs: [] },
+      fa: { hero_title: 'آنتیگوا و باربودا', title: 'شهروندی آنتیگوا و باربودا', hero_subtitle: 'شهروندی از طریق سرمایه‌گذاری', nav_label: 'آنتیگوا | پاسپورت', investment_from: '$100,000', processing_time: '۳ تا ۵ ماه', visa_free: '+۱۵۰', overview: '', benefits: [], faqs: [] },
+      zh: { hero_title: '安提瓜和巴布达', title: '安提瓜和巴布达投资入籍', hero_subtitle: '投资入籍', nav_label: '安提瓜 | 护照', investment_from: '$100,000', processing_time: '3-5个月', visa_free: '150+', overview: '', benefits: [], faqs: [] }
     },
     {
       id: 'stlucia',
@@ -818,6 +903,7 @@ const DEFAULTS = {
       nav_sort: 4,
       status: 'published',
       en: {
+        hero_title: 'Saint Lucia',
         title: 'Saint Lucia Citizenship by Investment',
         nav_label: 'Saint Lucia | Passport',
         hero_subtitle: 'Citizenship By Investment',
@@ -831,9 +917,9 @@ const DEFAULTS = {
         ],
         faqs: []
       },
-      ar: { title: 'جنسية سانت لوسيا عبر الاستثمار', hero_subtitle: 'الجنسية عن طريق الاستثمار', nav_label: 'سانت لوسيا | جواز سفر', investment_from: '$240,000', processing_time: '3-4 أشهر', visa_free: '+140', overview: '', benefits: [], faqs: [] },
-      fa: { title: 'شهروندی سنت لوسیا از طریق سرمایه‌گذاری', hero_subtitle: 'شهروندی از طریق سرمایه‌گذاری', nav_label: 'سنت لوسیا | پاسپورت', investment_from: '$240,000', processing_time: '۳ تا ۴ ماه', visa_free: '+۱۴۰', overview: '', benefits: [], faqs: [] },
-      zh: { title: '圣卢西亚投资入籍', hero_subtitle: '投资入籍', nav_label: '圣卢西亚 | 护照', investment_from: '$240,000', processing_time: '3-4个月', visa_free: '140+', overview: '', benefits: [], faqs: [] }
+      ar: { hero_title: 'سانت لوسيا', title: 'جنسية سانت لوسيا عبر الاستثمار', hero_subtitle: 'الجنسية عن طريق الاستثمار', nav_label: 'سانت لوسيا | جواز سفر', investment_from: '$240,000', processing_time: '3-4 أشهر', visa_free: '+140', overview: '', benefits: [], faqs: [] },
+      fa: { hero_title: 'سنت لوسیا', title: 'شهروندی سنت لوسیا از طریق سرمایه‌گذاری', hero_subtitle: 'شهروندی از طریق سرمایه‌گذاری', nav_label: 'سنت لوسیا | پاسپورت', investment_from: '$240,000', processing_time: '۳ تا ۴ ماه', visa_free: '+۱۴۰', overview: '', benefits: [], faqs: [] },
+      zh: { hero_title: '圣卢西亚', title: '圣卢西亚投资入籍', hero_subtitle: '投资入籍', nav_label: '圣卢西亚 | 护照', investment_from: '$240,000', processing_time: '3-4个月', visa_free: '140+', overview: '', benefits: [], faqs: [] }
     },
     {
       id: 'grenada',
@@ -844,6 +930,7 @@ const DEFAULTS = {
       nav_sort: 5,
       status: 'published',
       en: {
+        hero_title: 'Grenada',
         title: 'Grenada Citizenship by Investment',
         nav_label: 'Grenada | Passport',
         hero_subtitle: 'Citizenship By Investment',
@@ -856,9 +943,9 @@ const DEFAULTS = {
         ],
         faqs: []
       },
-      ar: { title: 'جنسية غرينادا', hero_subtitle: 'الجنسية عن طريق الاستثمار', nav_label: 'غرينادا | جواز سفر', investment_from: '$150,000', processing_time: '4-6 أشهر', visa_free: '+140', overview: '', benefits: [], faqs: [] },
-      fa: { title: 'شهروندی گرنادا', hero_subtitle: 'شهروندی از طریق سرمایه‌گذاری', nav_label: 'گرنادا | پاسپورت', investment_from: '$150,000', processing_time: '۴ تا ۶ ماه', visa_free: '+۱۴۰', overview: '', benefits: [], faqs: [] },
-      zh: { title: '格林纳达投资入籍', hero_subtitle: '投资入籍', nav_label: '格林纳达 | 护照', investment_from: '$150,000', processing_time: '4-6个月', visa_free: '140+', overview: '', benefits: [], faqs: [] }
+      ar: { hero_title: 'غرينادا', title: 'جنسية غرينادا', hero_subtitle: 'الجنسية عن طريق الاستثمار', nav_label: 'غرينادا | جواز سفر', investment_from: '$150,000', processing_time: '4-6 أشهر', visa_free: '+140', overview: '', benefits: [], faqs: [] },
+      fa: { hero_title: 'گرنادا', title: 'شهروندی گرنادا', hero_subtitle: 'شهروندی از طریق سرمایه‌گذاری', nav_label: 'گرنادا | پاسپورت', investment_from: '$150,000', processing_time: '۴ تا ۶ ماه', visa_free: '+۱۴۰', overview: '', benefits: [], faqs: [] },
+      zh: { hero_title: '格林纳达', title: '格林纳达投资入籍', hero_subtitle: '投资入籍', nav_label: '格林纳达 | 护照', investment_from: '$150,000', processing_time: '4-6个月', visa_free: '140+', overview: '', benefits: [], faqs: [] }
     },
     {
       id: 'vanuatu',
@@ -869,6 +956,7 @@ const DEFAULTS = {
       nav_sort: 1,
       status: 'published',
       en: {
+        hero_title: 'Vanuatu',
         title: 'Vanuatu Citizenship by Investment',
         nav_label: 'Vanuatu | Passport',
         hero_subtitle: 'Citizenship By Investment',
@@ -881,9 +969,9 @@ const DEFAULTS = {
         ],
         faqs: []
       },
-      ar: { title: 'جنسية فانواتو', hero_subtitle: 'الجنسية عن طريق الاستثمار', nav_label: 'فانواتو | جواز سفر', investment_from: '$130,000', processing_time: '30-60 يوماً', visa_free: '+130', overview: '', benefits: [], faqs: [] },
-      fa: { title: 'شهروندی وانواتو', hero_subtitle: 'شهروندی از طریق سرمایه‌گذاری', nav_label: 'وانواتو | پاسپورت', investment_from: '$130,000', processing_time: '۳۰ تا ۶۰ روز', visa_free: '+۱۳۰', overview: '', benefits: [], faqs: [] },
-      zh: { title: '瓦努阿图投资入籍', hero_subtitle: '投资入籍', nav_label: '瓦努阿图 | 护照', investment_from: '$130,000', processing_time: '30-60天', visa_free: '130+', overview: '', benefits: [], faqs: [] }
+      ar: { hero_title: 'فانواتو', title: 'جنسية فانواتو', hero_subtitle: 'الجنسية عن طريق الاستثمار', nav_label: 'فانواتو | جواز سفر', investment_from: '$130,000', processing_time: '30-60 يوماً', visa_free: '+130', overview: '', benefits: [], faqs: [] },
+      fa: { hero_title: 'وانواتو', title: 'شهروندی وانواتو', hero_subtitle: 'شهروندی از طریق سرمایه‌گذاری', nav_label: 'وانواتو | پاسپورت', investment_from: '$130,000', processing_time: '۳۰ تا ۶۰ روز', visa_free: '+۱۳۰', overview: '', benefits: [], faqs: [] },
+      zh: { hero_title: '瓦努阿图', title: '瓦努阿图投资入籍', hero_subtitle: '投资入籍', nav_label: '瓦努阿图 | 护照', investment_from: '$130,000', processing_time: '30-60天', visa_free: '130+', overview: '', benefits: [], faqs: [] }
     },
     {
       id: 'saotome',
@@ -894,6 +982,7 @@ const DEFAULTS = {
       nav_sort: 2,
       status: 'published',
       en: {
+        hero_title: 'São Tomé & Príncipe',
         title: 'São Tomé & Príncipe Citizenship by Investment',
         nav_label: 'São Tomé and Príncipe | Passport',
         hero_subtitle: 'Citizenship By Investment',
@@ -907,9 +996,9 @@ const DEFAULTS = {
         ],
         faqs: []
       },
-      ar: { title: 'جنسية ساو تومي وبرينسيبي', hero_subtitle: 'الجنسية عن طريق الاستثمار', nav_label: 'ساو تومي | جواز سفر', investment_from: '$100,000', processing_time: '2-3 أشهر', visa_free: '+90', overview: '', benefits: [], faqs: [] },
-      fa: { title: 'شهروندی سائوتومه و پرنسیپ', hero_subtitle: 'شهروندی از طریق سرمایه‌گذاری', nav_label: 'سائوتومه | پاسپورت', investment_from: '$100,000', processing_time: '۲ تا ۳ ماه', visa_free: '+۹۰', overview: '', benefits: [], faqs: [] },
-      zh: { title: '圣多美和普林西比投资入籍', hero_subtitle: '投资入籍', nav_label: '圣多美 | 护照', investment_from: '$100,000', processing_time: '2-3个月', visa_free: '90+', overview: '', benefits: [], faqs: [] }
+      ar: { hero_title: 'ساو تومي وبرينسيبي', title: 'جنسية ساو تومي وبرينسيبي', hero_subtitle: 'الجنسية عن طريق الاستثمار', nav_label: 'ساو تومي | جواز سفر', investment_from: '$100,000', processing_time: '2-3 أشهر', visa_free: '+90', overview: '', benefits: [], faqs: [] },
+      fa: { hero_title: 'سائوتومه و پرنسیپ', title: 'شهروندی سائوتومه و پرنسیپ', hero_subtitle: 'شهروندی از طریق سرمایه‌گذاری', nav_label: 'سائوتومه | پاسپورت', investment_from: '$100,000', processing_time: '۲ تا ۳ ماه', visa_free: '+۹۰', overview: '', benefits: [], faqs: [] },
+      zh: { hero_title: '圣多美和普林西比', title: '圣多美和普林西比投资入籍', hero_subtitle: '投资入籍', nav_label: '圣多美 | 护照', investment_from: '$100,000', processing_time: '2-3个月', visa_free: '90+', overview: '', benefits: [], faqs: [] }
     },
     {
       id: 'nauru',
@@ -920,6 +1009,7 @@ const DEFAULTS = {
       nav_sort: 3,
       status: 'published',
       en: {
+        hero_title: 'Republic of Nauru',
         title: 'Republic of Nauru Citizenship by Investment',
         nav_label: 'Republic of Nauru | Passport',
         hero_subtitle: 'Citizenship By Investment',
@@ -933,9 +1023,9 @@ const DEFAULTS = {
         ],
         faqs: []
       },
-      ar: { title: 'جنسية جمهورية ناورو', hero_subtitle: 'الجنسية عن طريق الاستثمار', nav_label: 'جمهورية ناورو | جواز سفر', investment_from: '$105,000', processing_time: '3-4 أشهر', visa_free: '+89', overview: '', benefits: [], faqs: [] },
-      fa: { title: 'شهروندی جمهوری نائورو', hero_subtitle: 'شهروندی از طریق سرمایه‌گذاری', nav_label: 'جمهوری نائورو | پاسپورت', investment_from: '$105,000', processing_time: '۳ تا ۴ ماه', visa_free: '+۸۹', overview: '', benefits: [], faqs: [] },
-      zh: { title: '瑙鲁共和国投资入籍', hero_subtitle: '投资入籍', nav_label: '瑙鲁共和国 | 护照', investment_from: '$105,000', processing_time: '3-4个月', visa_free: '89+', overview: '', benefits: [], faqs: [] }
+      ar: { hero_title: 'جمهورية ناورو', title: 'جنسية جمهورية ناورو', hero_subtitle: 'الجنسية عن طريق الاستثمار', nav_label: 'جمهورية ناورو | جواز سفر', investment_from: '$105,000', processing_time: '3-4 أشهر', visa_free: '+89', overview: '', benefits: [], faqs: [] },
+      fa: { hero_title: 'جمهوری نائورو', title: 'شهروندی جمهوری نائورو', hero_subtitle: 'شهروندی از طریق سرمایه‌گذاری', nav_label: 'جمهوری نائورو | پاسپورت', investment_from: '$105,000', processing_time: '۳ تا ۴ ماه', visa_free: '+۸۹', overview: '', benefits: [], faqs: [] },
+      zh: { hero_title: '瑙鲁共和国', title: '瑙鲁共和国投资入籍', hero_subtitle: '投资入籍', nav_label: '瑙鲁共和国 | 护照', investment_from: '$105,000', processing_time: '3-4个月', visa_free: '89+', overview: '', benefits: [], faqs: [] }
     }
   ],
   residency: [
@@ -948,6 +1038,7 @@ const DEFAULTS = {
       nav_sort: 1,
       status: 'published',
       en: {
+        hero_title: 'Portugal',
         title: 'Portugal Golden Visa',
         nav_label: 'Portugal | Golden Visa',
         hero_subtitle: 'Residency By Investment',
@@ -959,9 +1050,9 @@ const DEFAULTS = {
         ],
         faqs: []
       },
-      ar: { title: 'التأشيرة الذهبية البرتغالية', hero_subtitle: 'الإقامة عن طريق الاستثمار', nav_label: 'البرتغال | الذهبية', investment_from: '€500,000', processing_time: '6-12 شهراً', overview: '', benefits: [], faqs: [] },
-      fa: { title: 'ویزای طلایی پرتغال', hero_subtitle: 'اقامت از طریق سرمایه‌گذاری', nav_label: 'پرتغال | ویزای طلایی', investment_from: '€500,000', processing_time: '۶ تا ۱۲ ماه', overview: '', benefits: [], faqs: [] },
-      zh: { title: '葡萄牙黄金签证', hero_subtitle: '投资居留', nav_label: '葡萄牙 | 黄金签证', investment_from: '€500,000', processing_time: '6-12个月', overview: '', benefits: [], faqs: [] }
+      ar: { hero_title: 'البرتغال', title: 'التأشيرة الذهبية البرتغالية', hero_subtitle: 'الإقامة عن طريق الاستثمار', nav_label: 'البرتغال | الذهبية', investment_from: '€500,000', processing_time: '6-12 شهراً', overview: '', benefits: [], faqs: [] },
+      fa: { hero_title: 'پرتغال', title: 'ویزای طلایی پرتغال', hero_subtitle: 'اقامت از طریق سرمایه‌گذاری', nav_label: 'پرتغال | ویزای طلایی', investment_from: '€500,000', processing_time: '۶ تا ۱۲ ماه', overview: '', benefits: [], faqs: [] },
+      zh: { hero_title: '葡萄牙', title: '葡萄牙黄金签证', hero_subtitle: '投资居留', nav_label: '葡萄牙 | 黄金签证', investment_from: '€500,000', processing_time: '6-12个月', overview: '', benefits: [], faqs: [] }
     },
     {
       id: 'greece',
@@ -972,6 +1063,7 @@ const DEFAULTS = {
       nav_sort: 2,
       status: 'published',
       en: {
+        hero_title: 'Greece',
         title: 'Greece Golden Visa',
         nav_label: 'Greece | Golden Visa',
         hero_subtitle: 'Residency By Investment',
@@ -983,9 +1075,9 @@ const DEFAULTS = {
         ],
         faqs: []
       },
-      ar: { title: 'التأشيرة الذهبية اليونانية', hero_subtitle: 'الإقامة عن طريق الاستثمار', nav_label: 'اليونان | الذهبية', investment_from: '€250,000', processing_time: '3-6 أشهر', overview: '', benefits: [], faqs: [] },
-      fa: { title: 'ویزای طلایی یونان', hero_subtitle: 'اقامت از طریق سرمایه‌گذاری', nav_label: 'یونان | ویزای طلایی', investment_from: '€250,000', processing_time: '۳ تا ۶ ماه', overview: '', benefits: [], faqs: [] },
-      zh: { title: '希腊黄金签证', hero_subtitle: '投资居留', nav_label: '希腊 | 黄金签证', investment_from: '€250,000', processing_time: '3-6个月', overview: '', benefits: [], faqs: [] }
+      ar: { hero_title: 'اليونان', title: 'التأشيرة الذهبية اليونانية', hero_subtitle: 'الإقامة عن طريق الاستثمار', nav_label: 'اليونان | الذهبية', investment_from: '€250,000', processing_time: '3-6 أشهر', overview: '', benefits: [], faqs: [] },
+      fa: { hero_title: 'یونان', title: 'ویزای طلایی یونان', hero_subtitle: 'اقامت از طریق سرمایه‌گذاری', nav_label: 'یونان | ویزای طلایی', investment_from: '€250,000', processing_time: '۳ تا ۶ ماه', overview: '', benefits: [], faqs: [] },
+      zh: { hero_title: '希腊', title: '希腊黄金签证', hero_subtitle: '投资居留', nav_label: '希腊 | 黄金签证', investment_from: '€250,000', processing_time: '3-6个月', overview: '', benefits: [], faqs: [] }
     },
     {
       id: 'panama',
@@ -996,6 +1088,7 @@ const DEFAULTS = {
       nav_sort: 3,
       status: 'published',
       en: {
+        hero_title: 'Panama',
         title: 'Panama Golden Visa & Permanent Residency',
         nav_label: 'Panama | Golden Visa',
         hero_subtitle: 'Residency By Investment',
@@ -1008,9 +1101,9 @@ const DEFAULTS = {
         ],
         faqs: []
       },
-      ar: { title: 'التأشيرة الذهبية لبنما', hero_subtitle: 'الإقامة عن طريق الاستثمار', nav_label: 'بنما | الذهبية', investment_from: '$200,000', processing_time: '30-60 يوماً', overview: '', benefits: [], faqs: [] },
-      fa: { title: 'ویزای طلایی پاناما', hero_subtitle: 'اقامت از طریق سرمایه‌گذاری', nav_label: 'پاناما | ویزای طلایی', investment_from: '$200,000', processing_time: '۳۰ تا ۶۰ روز', overview: '', benefits: [], faqs: [] },
-      zh: { title: '巴拿马黄金签证', hero_subtitle: '投资居留', nav_label: '巴拿马 | 黄金签证', investment_from: '$200,000', processing_time: '30-60天', overview: '', benefits: [], faqs: [] }
+      ar: { hero_title: 'بنما', title: 'التأشيرة الذهبية لبنما', hero_subtitle: 'الإقامة عن طريق الاستثمار', nav_label: 'بنما | الذهبية', investment_from: '$200,000', processing_time: '30-60 يوماً', overview: '', benefits: [], faqs: [] },
+      fa: { hero_title: 'پاناما', title: 'ویزای طلایی پاناما', hero_subtitle: 'اقامت از طریق سرمایه‌گذاری', nav_label: 'پاناما | ویزای طلایی', investment_from: '$200,000', processing_time: '۳۰ تا ۶۰ روز', overview: '', benefits: [], faqs: [] },
+      zh: { hero_title: '巴拿马', title: '巴拿马黄金签证', hero_subtitle: '投资居留', nav_label: '巴拿马 | 黄金签证', investment_from: '$200,000', processing_time: '30-60天', overview: '', benefits: [], faqs: [] }
     },
     {
       id: 'uae',
@@ -1033,9 +1126,9 @@ const DEFAULTS = {
         ],
         faqs: []
       },
-      ar: { title: 'الإقامة الذهبية الإماراتية 10 سنوات', hero_subtitle: 'التأشيرة الذهبية', nav_label: 'الإمارات | الذهبية', investment_from: 'AED 2,000,000', processing_time: '2-4 أسابيع', overview: '', benefits: [], faqs: [] },
-      fa: { title: 'ویزای طلایی ۱۰ ساله امارات', hero_subtitle: 'ویزای طلایی', nav_label: 'امارات | ویزای طلایی', investment_from: 'AED 2,000,000', processing_time: '۲ تا ۴ هفته', overview: '', benefits: [], faqs: [] },
-      zh: { title: '阿联酋10年黄金签证', hero_subtitle: '黄金签证', nav_label: '阿联酋 | 黄金签证', investment_from: 'AED 200万', processing_time: '2-4周', overview: '', benefits: [], faqs: [] }
+      ar: { hero_title: 'الإمارات العربية المتحدة', title: 'الإقامة الذهبية الإماراتية 10 سنوات', hero_subtitle: 'التأشيرة الذهبية', nav_label: 'الإمارات | الذهبية', investment_from: 'AED 2,000,000', processing_time: '2-4 أسابيع', overview: '', benefits: [], faqs: [] },
+      fa: { hero_title: 'امارات متحده عربی', title: 'ویزای طلایی ۱۰ ساله امارات', hero_subtitle: 'ویزای طلایی', nav_label: 'امارات | ویزای طلایی', investment_from: 'AED 2,000,000', processing_time: '۲ تا ۴ هفته', overview: '', benefits: [], faqs: [] },
+      zh: { hero_title: '阿拉伯联合酋长国', title: '阿联酋10年黄金签证', hero_subtitle: '黄金签证', nav_label: '阿联酋 | 黄金签证', investment_from: 'AED 200万', processing_time: '2-4周', overview: '', benefits: [], faqs: [] }
     }
   ],
   blog: [],
@@ -1058,71 +1151,277 @@ const DEFAULTS = {
     consent_zh: '我同意隐私政策。'
   },
   aboutus: {
-    hero: {
-      en: {
-        badge: 'EXECUTIVE BRIEFING',
-        title: 'About Sharif Group',
-        subtitle: 'A premier migration, citizenship, and luxury investment advisory platform rooted in Business Bay, Dubai.',
-        img: 'https://sharifgroup.ae/wp-content/uploads/2026/05/dubai-office-2.jpg.webp'
-      }
-    },
-    overview: {
-      en: {
-        badge: 'WHO WE ARE',
-        heading: 'Company Overview: Sharif Group',
-        p1: 'Sharif Group is a dedicated private consulting company based in Business Bay, Dubai. We assist international clients and families with legal second passports, residency visas, premium property investments, and student placements in top international universities.',
-        p2: 'Our team handles document preparation, background legal checks, and government clearance from start to finish, ensuring a straightforward and secure experience.',
-        cta_text: 'Book Consultation',
-        cta_link: '../contact/index.html'
-      }
-    },
-    stats: [
-      { value: '10+', label_en: 'Years of Experience' },
-      { value: '1000+', label_en: 'Successful CBI Cases' },
-      { value: '100+', label_en: 'Residency & Education Cases' },
-      { value: '450+', label_en: 'Families Relocated' }
-    ],
-    architecture: {
-      en: {
-        badge: 'CORPORATE ARCHITECTURE',
-        title: 'Three Companies. One Commitment.',
-        desc: 'We structure our specialized operations under three dedicated corporate brands to deliver clean, transparent, and expert execution across every discipline.',
-        c1_name: 'SHARIF GLOBAL DOCUMENTS CLEARING SERVICES L.L.C',
-        c1_badge: 'Citizenship & Residency',
-        c1_p1: 'Sharif Global helps families and investors get legal second passports and European residency cards. We handle all paperwork smoothly, check your documents carefully, and deal directly with government authorities.',
-        c1_p2: 'We also guide your children with student admissions to top international schools and world-renowned universities abroad. Our team manages the legal attestation, translation, and complete file submissions.',
-        c2_name: 'SHARIF STAR REAL ESTATE BROKER L.L.C',
-        c2_badge: 'Real Estate Brokerage',
-        c2_p1: 'Sharif Star is our official licensed real estate agency helping local and foreign buyers find premium homes across Dubai. We find luxury villas, high-floor apartments, and profitable off-plan projects in top neighborhoods.',
-        c2_p2: 'We also structure high-value property purchases that qualify you directly for the 10-Year UAE Golden Visa. Our real estate brokers assist you through contract signing, title deed registration, and ongoing leasing.',
-        c3_name: 'SHARIF CAPITAL COMMERCIAL BROKERS L.L.C',
-        c3_badge: 'Capital & Brokerage',
-        c3_p1: 'Sharif Capital is our specialized business brokerage branch connecting entrepreneurs and serious investors with solid commercial opportunities in Dubai and the GCC region.',
-        c3_p2: 'We also help global business owners set up new companies, open corporate bank accounts, and structure joint business ventures with complete confidentiality.'
-      }
-    },
-    founder: {
-      en: {
-        name: 'Ali Sharif',
-        title: 'CEO & Founder, Sharif Group',
-        badge: 'A MESSAGE FROM OUR FOUNDER',
-        quote: 'A future where happy clients, positive community impact, and continuous progress guide everything we do.',
-        p1: 'As the founder of Sharif Group, I, Ali Sharif, started this journey with a clear goal: to build real value for our clients and trusted partners. Today, with our hard-working team, we are proud to set high standards in second citizenship and global investment advisory.',
-        p2: 'Over the past few years, our growth has been driven by honest effort and commitment. We have expanded our reach internationally, opening dedicated office hubs in both Dubai and London to serve our clients seamlessly.',
-        photo: 'alisharif.webp',
-        profile_link: 'https://sharifgroup.ae/ali-sharif/'
-      }
-    },
-    cta: {
-      en: {
-        badge: 'EXECUTIVE ADVISORY DESK',
-        heading: 'Schedule Your Expert Consultation Today',
-        desc: 'Connect directly with our registered advisors at 116, The Binary Tower, Business Bay, Dubai to initialize your pre-vetting sequence.',
-        btn_text: 'Request Executive Briefing',
-        btn_link: '../contact/index.html'
-      }
-    }
-  }
+    "hero":  {
+                 "en":  {
+                            "badge":  "EXECUTIVE BRIEFING",
+                            "title":  "About Sharif Group",
+                            "subtitle":  "A premier migration, citizenship, and luxury investment advisory platform rooted in Business Bay, Dubai.",
+                            "img":  "https://sharifgroup.ae/wp-content/uploads/2026/05/dubai-office-2.jpg.webp"
+                        },
+                 "ar":  {
+                            "badge":  "إحاطة تنفيذية",
+                            "title":  "نبذة عن مجموعة شريف",
+                            "subtitle":  "منصة رائدة للاستشارات في مجال الهجرة والمواطنة والاستثمارات الفاخرة، تتخذ من الخليج التجاري في دبي مقرًا لها.",
+                            "img":  "https://sharifgroup.ae/wp-content/uploads/2026/05/dubai-office-2.jpg.webp"
+                        },
+                 "fa":  {
+                            "badge":  "جلسه توجیهی اجرایی",
+                            "title":  "درباره شریف گروپ",
+                            "subtitle":  "یک پلتفرم برتر مشاوره در زمینه مهاجرت، شهروندی و سرمایه‌گذاری‌های لوکس، مستقر در بیزنس‌بی دبی.",
+                            "img":  "https://sharifgroup.ae/wp-content/uploads/2026/05/dubai-office-2.jpg.webp"
+                        },
+                 "zh":  {
+                            "badge":  "执行简报",
+                            "title":  "关于 谢里夫集团",
+                            "subtitle":  "一个立足于迪拜商业湾的高端移民、公民身份及奢华投资咨询平台。",
+                            "img":  "https://sharifgroup.ae/wp-content/uploads/2026/05/dubai-office-2.jpg.webp"
+                        }
+             },
+    "overview":  {
+                     "en":  {
+                                "badge":  "WHO WE ARE",
+                                "heading":  "Company Overview:",
+                                "p1":  "Sharif Group is a dedicated private consulting company based in Business Bay, Dubai. We assist international clients and families with legal second passports, residency visas, premium property investments, and student placements in top international universities.",
+                                "p2":  "Our team handles document preparation, background legal checks, and government clearance from start to finish, ensuring a straightforward and secure experience.",
+                                "cta_text":  "Book Consultation",
+                                "cta_link":  "../contact/index.html"
+                            },
+                     "ar":  {
+                                "badge":  "من نحن",
+                                "heading":  "نظرة عامة على الشركة:",
+                                "p1":  "مجموعة شريف هي شركة استشارات خاصة متخصصة تتخذ من الخليج التجاري في دبي مقرًا لها. نساعد العملاء والعائلات الدوليين في الحصول على جوازات سفر ثانية قانونية، وتأشيرات الإقامة، والاستثمارات العقارية الفاخرة، والقبول الطلابي في أفضل الجامعات الدولية.",
+                                "p2":  "يتولى فريقنا إعداد المستندات، وإجراء الفحوصات القانونية للخلفية، والحصول على الموافقات الحكومية من البداية إلى النهاية، بما يضمن تجربة واضحة وآمنة.",
+                                "cta_text":  "احجز استشارة",
+                                "cta_link":  "../ar/contact/index.html"
+                            },
+                     "fa":  {
+                                "badge":  "ما که هستیم",
+                                "heading":  "مروری بر شرکت:",
+                                "p1":  "شریف گروپ یک شرکت مشاوره خصوصی و تخصصی مستقر در بیزنس‌بی دبی است. ما به مشتریان و خانواده‌های بین‌المللی در زمینه دریافت پاسپورت دوم قانونی، ویزاهای اقامت، سرمایه‌گذاری در املاک ممتاز و پذیرش دانشجویان در برترین دانشگاه‌های بین‌المللی کمک می‌کنیم.",
+                                "p2":  "تیم ما از ابتدا تا انتهای فرآیند، آماده‌سازی مدارک، بررسی‌های قانونی سوابق و دریافت تأییدیه‌های دولتی را مدیریت می‌کند تا تجربه‌ای ساده و ایمن را برای شما فراهم سازد.",
+                                "cta_text":  "رزرو مشاوره",
+                                "cta_link":  "../fa/contact/index.html"
+                            },
+                     "zh":  {
+                                "badge":  "我们是谁",
+                                "heading":  "企业概览：",
+                                "p1":  "谢里夫集团 是一家总部位于迪拜商业湾的专业私人咨询公司。我们为国际客户及家庭提供合法第二护照、居留签证、高端房地产投资以及世界顶尖国际大学学生申请与安置服务。",
+                                "p2":  "我们的团队从头到尾负责文件准备、背景法律审查及政府审批，确保整个流程清晰、顺畅且安全。",
+                                "cta_text":  "预约咨询",
+                                "cta_link":  "../zh/contact/index.html"
+                            }
+                 },
+    "stats":  [
+                  {
+                      "value":  "10+",
+                      "label_en":  "Years of Experience",
+                      "label_ar":  "سنوات من الخبرة",
+                      "label_fa":  "سال‌ها تجربه",
+                      "label_zh":  "多年经验"
+                  },
+                  {
+                      "value":  "1000+",
+                      "label_en":  "Successful CBI Cases",
+                      "label_ar":  "ملفات ناجحة لبرامج الجنسية عن طريق الاستثمار",
+                      "label_fa":  "پرونده‌های موفق شهروندی از طریق سرمایه‌گذاری",
+                      "label_zh":  "成功办理的投资入籍案例"
+                  },
+                  {
+                      "value":  "100+",
+                      "label_en":  "Residency \u0026 Education Cases",
+                      "label_ar":  "ملفات الإقامة والتعليم",
+                      "label_fa":  "پرونده‌های اقامت و تحصیل",
+                      "label_zh":  "居留及教育案例"
+                  },
+                  {
+                      "value":  "450+",
+                      "label_en":  "Families Relocated",
+                      "label_ar":  "العائلات التي تم نقل إقامتها",
+                      "label_fa":  "خانواده‌های جابه‌جا شده",
+                      "label_zh":  "已完成迁移安置的家庭"
+                  }
+              ],
+    "architecture":  {
+                         "en":  {
+                                    "badge":  "CORPORATE ARCHITECTURE",
+                                    "title":  "Three Companies. \u003cspan class=\"italic text-[#C5A880] font-serif font-normal\"\u003eOne Commitment.\u003c/span\u003e",
+                                    "desc":  "We structure our specialized operations under three dedicated corporate brands to deliver clean, transparent, and expert execution across every discipline. Hover over any company to explore its scope.",
+                                    "c1_name":  "SHARIF GLOBAL DOCUMENTS CLEARING SERVICES L.L.C",
+                                    "c1_badge":  "Citizenship \u0026 Residency",
+                                    "c1_p1":  "Sharif Global helps families and investors get legal second passports and European residency cards. We handle all paperwork smoothly, check your documents carefully, and deal directly with government authorities. Our primary focus is to give you and your family total travel freedom and security.",
+                                    "c1_p2":  "We also guide your children with student admissions to top international schools and world-renowned universities abroad. Our team manages the legal attestation, translation, and complete file submissions from start to finish. We make sure every application is completely stress-free with zero delays or errors.",
+                                    "c2_name":  "SHARIF STAR REAL ESTATE BROKER L.L.C",
+                                    "c2_badge":  "Real Estate Brokerage",
+                                    "c2_p1":  "Sharif Star is our official licensed real estate agency helping local and foreign buyers find premium homes across Dubai. We find luxury villas, high-floor apartments, and profitable off-plan projects in top neighborhoods. We carefully check developer track records so you invest your capital safely with great returns.",
+                                    "c2_p2":  "We also structure high-value property purchases that qualify you directly for the 10-Year UAE Golden Visa. Our real estate brokers assist you through contract signing, title deed registration, and ongoing property leasing management. We ensure your entire real estate journey in Dubai is clear, simple, and fully profitable.",
+                                    "c3_name":  "SHARIF CAPITAL COMMERCIAL BROKERS L.L.C",
+                                    "c3_badge":  "Capital \u0026 Brokerage",
+                                    "c3_p1":  "Sharif Capital is our specialized business brokerage branch connecting entrepreneurs and serious investors with solid commercial opportunities. We arrange private business introductions, assist corporate mergers, and facilitate large trade deals in Dubai and the GCC region. We protect your transactions with complete confidentiality and verified financial due diligence.",
+                                    "c3_p2":  "We also help global business owners set up new companies, open corporate bank accounts, and structure joint business ventures. Our team creates smart corporate setups designed to grow your private enterprise smoothly in the UAE market. We build long-term business partnerships based on clear legal agreements, trust, and shared commercial success."
+                                },
+                         "ar":  {
+                                    "badge":  "الهيكل المؤسسي",
+                                    "title":  "ثلاث شركات. \u003cspan class=\"italic text-[#C5A880] font-serif font-normal\"\u003eالتزام واحد.\u003c/span\u003e",
+                                    "desc":  "ننظم عملياتنا المتخصصة تحت ثلاث علامات تجارية مؤسسية مخصصة لتقديم تنفيذ واضح وشفاف واحترافي في كل مجال. مرر المؤشر فوق أي شركة لاستكشاف نطاق خدماتها.",
+                                    "c1_name":  "شركة شريف جلوبال لخدمات تخليص المعاملات ذ.م.م",
+                                    "c1_badge":  "الجنسية والإقامة",
+                                    "c1_p1":  "تساعد شريف جلوبال العائلات والمستثمرين في الحصول على جوازات سفر ثانية قانونية وبطاقات إقامة أوروبية. نتولى جميع المستندات بسلاسة، وندقق في وثائقكم بعناية، ونتعامل مباشرة مع الجهات الحكومية. ويتمثل تركيزنا الأساسي في منحكم ولعائلاتكم حرية سفر وأمانًا كاملين.",
+                                    "c1_p2":  "كما نوجه أبناءكم في إجراءات القبول الطلابي في أفضل المدارس الدولية والجامعات العالمية المرموقة في الخارج. يدير فريقنا التصديقات القانونية والترجمة وتقديم الملفات كاملة من البداية إلى النهاية. ونحرص على أن يكون كل طلب خاليًا تمامًا من التوتر، دون أي تأخير أو أخطاء.",
+                                    "c2_name":  "شركة شريف ستار للوساطة العقارية ذ.م.م",
+                                    "c2_badge":  "الوساطة العقارية",
+                                    "c2_p1":  "شريف ستار هي وكالتنا العقارية الرسمية المرخصة التي تساعد المشترين المحليين والأجانب في العثور على عقارات متميزة في مختلف أنحاء دبي. نساعد في العثور على الفلل الفاخرة والشقق في الطوابق العليا والمشاريع المربحة قيد الإنشاء في أفضل الأحياء. كما نتحقق بعناية من سجل المطورين لضمان استثمار رأس مالكم بأمان وتحقيق عوائد جيدة.",
+                                    "c2_p2":  "كما ننظم عمليات شراء العقارات عالية القيمة التي تؤهلكم مباشرة للحصول على التأشيرة الذهبية الإماراتية لمدة 10 سنوات. ويساعدكم وسطاء العقارات لدينا في توقيع العقود، وتسجيل سندات الملكية، وإدارة تأجير العقار بشكل مستمر. ونحرص على أن تكون رحلتكم العقارية بالكامل في دبي واضحة وبسيطة ومربحة إلى أقصى حد.",
+                                    "c3_name":  "شركة شريف كابيتال للوساطة التجارية ذ.م.م",
+                                    "c3_badge":  "رأس المال والوساطة",
+                                    "c3_p1":  "شريف كابيتال هو فرعنا المتخصص في الوساطة التجارية، حيث يربط رواد الأعمال والمستثمرين الجادين بفرص تجارية قوية. ننظم التعارف التجاري الخاص، ونساعد في عمليات اندماج الشركات، ونسهّل الصفقات التجارية الكبيرة في دبي ومنطقة دول مجلس التعاون الخليجي. ونحمي معاملاتكم من خلال السرية التامة والعناية الواجبة المالية الموثقة.",
+                                    "c3_p2":  "كما نساعد أصحاب الأعمال العالميين في تأسيس شركات جديدة، وفتح حسابات مصرفية للشركات، وهيكلة المشاريع التجارية المشتركة. ينشئ فريقنا هياكل مؤسسية ذكية مصممة لمساعدة مؤسساتكم الخاصة على النمو بسلاسة في سوق الإمارات. ونبني شراكات تجارية طويلة الأمد تقوم على اتفاقيات قانونية واضحة، والثقة، والنجاح التجاري المشترك."
+                                },
+                         "fa":  {
+                                    "badge":  "ساختار سازمانی",
+                                    "title":  "سه شرکت. \u003cspan class=\"italic text-[#C5A880] font-serif font-normal\"\u003eیک تعهد.\u003c/span\u003e",
+                                    "desc":  "ما فعالیت‌های تخصصی خود را تحت سه برند شرکتی اختصاصی سازمان‌دهی کرده‌ایم تا در هر حوزه، اجرایی شفاف، منظم و تخصصی ارائه دهیم. برای مشاهده حوزه فعالیت هر شرکت، نشانگر را روی آن قرار دهید.",
+                                    "c1_name":  "شرکت شریف گلوبال برای خدمات ترخیص اسناد با مسئولیت محدود",
+                                    "c1_badge":  "شهروندی و اقامت",
+                                    "c1_p1":  "شریف گلوبال به خانواده‌ها و سرمایه‌گذاران کمک می‌کند تا پاسپورت‌های دوم قانونی و کارت‌های اقامت اروپایی دریافت کنند. ما تمام امور اداری و مدارک را به‌صورت روان مدیریت می‌کنیم، اسناد شما را با دقت بررسی کرده و مستقیماً با مقامات دولتی در ارتباط هستیم. تمرکز اصلی ما فراهم کردن آزادی کامل سفر و امنیت برای شما و خانواده‌تان است.",
+                                    "c1_p2":  "ما همچنین فرزندان شما را در فرآیند پذیرش دانشجویی در برترین مدارس بین‌المللی و دانشگاه‌های معتبر جهان در خارج از کشور راهنمایی می‌کنیم. تیم ما تأییدات قانونی، ترجمه و ارسال کامل پرونده‌ها را از ابتدا تا انتها مدیریت می‌کند. ما اطمینان حاصل می‌کنیم که هر درخواست بدون استرس، تأخیر یا خطا انجام شود.",
+                                    "c2_name":  "شرکت کارگزاری املاک شریف ستار با مسئولیت محدود",
+                                    "c2_badge":  "کارگزاری املاک",
+                                    "c2_p1":  "شریف ستار آژانس رسمی و دارای مجوز املاک ماست که به خریداران داخلی و خارجی برای یافتن خانه‌های ممتاز در سراسر دبی کمک می‌کند. ما ویلاهای لوکس، آپارتمان‌های طبقات بالا و پروژه‌های پیش‌فروش سودآور را در بهترین مناطق پیدا می‌کنیم. همچنین سوابق سازندگان را با دقت بررسی می‌کنیم تا سرمایه خود را با اطمینان و با امکان بازدهی مناسب سرمایه‌گذاری کنید.",
+                                    "c2_p2":  "ما همچنین خرید املاک با ارزش بالا را به‌گونه‌ای ساختاربندی می‌کنیم که مستقیماً واجد شرایط دریافت ویزای طلایی ۱۰ ساله امارات شوید. کارگزاران املاک ما در امضای قرارداد، ثبت سند مالکیت و مدیریت مستمر اجاره ملک شما را همراهی می‌کنند. ما اطمینان می‌دهیم که تمام مسیر سرمایه‌گذاری و خرید ملک شما در دبی شفاف، ساده و کاملاً سودآور باشد.",
+                                    "c3_name":  "شرکت کارگزاری تجاری شریف کاپیتال با مسئولیت محدود",
+                                    "c3_badge":  "سرمایه و کارگزاری",
+                                    "c3_p1":  "شریف کاپیتال شعبه تخصصی کارگزاری تجاری ماست که کارآفرینان و سرمایه‌گذاران جدی را به فرصت‌های تجاری معتبر متصل می‌کند. ما معرفی‌های خصوصی تجاری را ترتیب می‌دهیم، در ادغام شرکت‌ها کمک می‌کنیم و معاملات تجاری بزرگ را در دبی و منطقه شورای همکاری خلیج فارس تسهیل می‌کنیم. از معاملات شما با حفظ محرمانگی کامل و انجام بررسی‌های مالی دقیق و تأییدشده محافظت می‌کنیم.",
+                                    "c3_p2":  "ما همچنین به صاحبان کسب‌وکار در سراسر جهان برای تأسیس شرکت‌های جدید، افتتاح حساب‌های بانکی شرکتی و ساختاربندی سرمایه‌گذاری‌های مشترک تجاری کمک می‌کنیم. تیم ما ساختارهای شرکتی هوشمندانه‌ای ایجاد می‌کند که برای رشد روان کسب‌وکار خصوصی شما در بازار امارات طراحی شده‌اند. ما شراکت‌های تجاری بلندمدتی بر پایه توافقات حقوقی شفاف، اعتماد و موفقیت تجاری مشترک ایجاد می‌کنیم."
+                                },
+                         "zh":  {
+                                    "badge":  "企业架构",
+                                    "title":  "三家公司。\u003cspan class=\"italic text-[#C5A880] font-serif font-normal\"\u003e一份承诺。\u003c/span\u003e",
+                                    "desc":  "我们将专业业务整合于三个专属企业品牌之下，以在各个领域提供清晰、透明且专业的执行服务。将鼠标悬停在任一公司上，即可了解其业务范围。",
+                                    "c1_name":  "谢里夫全球文件清关服务有限公司",
+                                    "c1_badge":  "公民身份与居留",
+                                    "c1_p1":  "谢里夫全球 帮助家庭和投资者获得合法第二护照及欧洲居留卡。我们顺畅处理所有文件，仔细审核您的资料，并直接与政府机构沟通。我们的首要目标是为您和您的家人提供充分的出行自由与安全保障。",
+                                    "c1_p2":  "我们还为您的子女提供海外顶尖国际学校及世界知名大学的学生申请指导。我们的团队从头到尾负责法律认证、翻译及完整文件提交，确保每一份申请都轻松顺畅，避免延误或错误。",
+                                    "c2_name":  "谢里夫之星房地产经纪有限公司",
+                                    "c2_badge":  "房地产经纪",
+                                    "c2_p1":  "谢里夫之星 是我们官方持牌的房地产机构，帮助本地及海外买家在迪拜各地寻找高端住宅。我们为客户寻找豪华别墅、高层公寓以及顶级社区中具有盈利潜力的期房项目。我们会仔细审查开发商的过往记录，帮助您更安全地投资资本并获得良好回报。",
+                                    "c2_p2":  "我们还协助规划高价值房地产购买方案，使您可直接符合申请10年期阿联酋黄金签证的条件。我们的房地产经纪人将协助您完成合同签署、产权契据登记以及持续的房产租赁管理。我们确保您在迪拜的整个房地产投资旅程清晰、简单并具有良好的盈利潜力。",
+                                    "c3_name":  "谢里夫资本商业经纪有限公司",
+                                    "c3_badge":  "资本与经纪",
+                                    "c3_p1":  "谢里夫资本 是我们专业的商业经纪分支机构，致力于将企业家和专业投资者与可靠的商业机会连接起来。我们安排私人商业引荐，协助企业并购，并促成迪拜及海湾合作委员会（GCC）地区的大型贸易交易。我们通过严格保密及经过验证的财务尽职调查，为您的交易提供保障。",
+                                    "c3_p2":  "我们还帮助全球企业主设立新公司、开立企业银行账户并构建合资商业项目。我们的团队为您的私人企业打造合理的企业架构，助力其在阿联酋市场顺利发展。我们基于清晰的法律协议、信任及共同的商业成功，建立长期的商业合作伙伴关系。"
+                                }
+                     },
+    "founder":  {
+                    "en":  {
+                               "name":  "Ali Sharif",
+                               "title":  "CEO \u0026 Founder, Sharif Group",
+                               "badge":  "A MESSAGE FROM OUR FOUNDER",
+                               "quote":  "A future where happy clients, positive community impact, and continuous progress go hand in hand.",
+                               "p1":  "As the founder of Sharif Group, I, Ali Sharif, started this journey with a clear goal: to build real value for our clients and trusted partners. Today, with our hard-working team, we are proud to set high standards in second citizenship and global investment advisory.",
+                               "p2":  "Over the past few years, our growth has been driven by honest effort and commitment. We have expanded our reach internationally, opening dedicated office hubs in both Dubai and London to serve our clients seamlessly.",
+                               "photo":  "alisharif.webp",
+                               "profile_link":  "https://sharifgroup.ae/ali-sharif/"
+                           },
+                    "ar":  {
+                               "name":  "علي شريف",
+                               "title":  "الرئيس التنفيذي والمؤسس، مجموعة شريف",
+                               "badge":  "رسالة من مؤسسنا",
+                               "quote":  "مستقبل يسير فيه رضا العملاء والأثر الإيجابي والتقدم المستمر يداً بيد.",
+                               "p1":  "بصفتي مؤسس مجموعة شريف، بدأتُ أنا علي شريف هذه الرحلة بهدف واضح: بناء قيمة حقيقية لعملائنا وشركائنا الموثوقين. واليوم، وبفضل فريقنا المجتهد، نفخر بوضع معايير عالية في مجال الجنسية الثانية والاستشارات الاستثمارية العالمية.",
+                               "p2":  "خلال السنوات الماضية، كان نمونا مدفوعًا بالجهد الصادق والالتزام. وقد وسعنا نطاق أعمالنا دوليًا، وافتتحنا مراكز مكاتب مخصصة في كل من دبي ولندن لخدمة عملائنا بسلاسة.",
+                               "photo":  "alisharif.webp",
+                               "profile_link":  "https://sharifgroup.ae/ar/ali-sharif/"
+                           },
+                    "fa":  {
+                               "name":  "علی شریف",
+                               "title":  "مدیرعامل و بنیان‌گذار، شریف گروپ",
+                               "badge":  "پیام بنیان‌گذار ما",
+                               "quote":  "آینده‌ای که در آن رضایت موکلان، اثر مثبت اجتماعی و رشد مداوم همگام هستند.",
+                               "p1":  "من، علی شریف، به‌عنوان بنیان‌گذار شریف گروپ، این مسیر را با هدفی روشن آغاز کردم: ایجاد ارزش واقعی برای مشتریان و شرکای مورد اعتمادمان. امروز، به همراه تیم سخت‌کوش خود، مفتخریم که استانداردهای بالایی را در زمینه شهروندی دوم و مشاوره سرمایه‌گذاری جهانی تعیین کنیم.",
+                               "p2":  "طی چند سال گذشته، رشد ما حاصل تلاش صادقانه و تعهد بوده است. ما دامنه فعالیت بین‌المللی خود را گسترش داده و دفاتر اختصاصی در دبی و لندن افتتاح کرده‌ایم تا خدمات خود را به مشتریان به‌صورت یکپارچه ارائه دهیم.",
+                               "photo":  "alisharif.webp",
+                               "profile_link":  "https://sharifgroup.ae/fa/ali-sharif/"
+                           },
+                    "zh":  {
+                               "name":  "阿里·谢里夫",
+                               "title":  "谢里夫集团 首席执行官兼创始人",
+                               "badge":  "创始人寄语",
+                               "quote":  "携手客户福祉、社会贡献与持续进步，共绘辉煌未来。",
+                               "p1":  "作为 谢里夫集团 的创始人，我阿里·谢里夫怀着明确的目标开启了这段旅程：为我们的客户和可信赖的合作伙伴创造真正的价值。如今，凭借我们勤奋的团队，我们很自豪能够在第二公民身份及全球投资咨询领域树立高标准。",
+                               "p2":  "在过去几年中，我们的成长源于真诚的努力与坚定的承诺。我们已将业务拓展至国际市场，并在迪拜和伦敦设立专属办公中心，以便为客户提供无缝服务。",
+                               "photo":  "alisharif.webp",
+                               "profile_link":  "https://sharifgroup.ae/zh/ali-sharif/"
+                           }
+                },
+    "cta":  {
+                "en":  {
+                           "badge":  "EXECUTIVE ADVISORY DESK",
+                           "heading":  "Schedule Your Expert \u003cspan class=\"italic text-[#786142] font-serif font-normal\"\u003eConsultation Today\u003c/span\u003e",
+                           "desc":  "Connect directly with our registered advisors at 116, The Binary Tower, Business Bay, Dubai to initialize your pre-vetting sequence.",
+                           "btn_text":  "Request Executive Briefing",
+                           "btn_link":  "../contact/index.html"
+                       },
+                "ar":  {
+                           "badge":  "مكتب الاستشارات التنفيذية",
+                           "heading":  "احجز \u003cspan class=\"italic text-[#786142] font-serif font-normal\"\u003eاستشارتك مع خبرائنا اليوم\u003c/span\u003e",
+                           "desc":  "تواصل مباشرةً مع مستشارينا المسجلين في 116، ذا باينري تاور، الخليج التجاري، دبي، لبدء إجراءات التقييم الأولي لملفك.",
+                           "btn_text":  "طلب إحاطة تنفيذية",
+                           "btn_link":  "../ar/contact/index.html"
+                       },
+                "fa":  {
+                           "badge":  "میز مشاوره اجرایی",
+                           "heading":  "\u003cspan class=\"italic text-[#786142] font-serif font-normal\"\u003eهمین امروز مشاوره تخصصی خود را\u003c/span\u003e رزرو کنید",
+                           "desc":  "برای آغاز فرآیند ارزیابی اولیه، مستقیماً با مشاوران ثبت‌شده ما در آدرس 116، The Binary Tower، بیزنس‌بی، دبی، در ارتباط باشید.",
+                           "btn_text":  "درخواست جلسه توجیهی اجرایی",
+                           "btn_link":  "../fa/contact/index.html"
+                       },
+                "zh":  {
+                           "badge":  "执行咨询服务台",
+                           "heading":  "立即预约您的专家\u003cspan class=\"italic text-[#786142] font-serif font-normal\"\u003e咨询\u003c/span\u003e",
+                           "desc":  "直接联系位于迪拜商业湾 The Binary Tower 116 号的注册顾问，开始您的初步审核流程。",
+                           "btn_text":  "申请执行简报",
+                           "btn_link":  "../zh/contact/index.html"
+                       }
+            }
+},
+  cookiepolicy: {
+    "en":  {
+               "hero_badge":  "DIGITAL GOVERNANCE \u0026 TRACKING",
+               "hero_title":  null,
+               "hero_desc":  "Transparent guidelines on how we utilize cookies and digital storage technologies to optimize your browsing experience.",
+               "p1_title":  "1. What Are Cookies?",
+               "p1_desc":  "Cookies are small text files downloaded and stored on your computer or mobile device when you visit a website. They help websites remember your preferences, recognize your device, and ensure secure navigation across various pages.",
+               "p2_title":  "2. Scope of Cookie Usage",
+               "p2_desc":  "This Cookie Policy applies directly to the official Sharif Group website operated from Business Bay, Dubai. It explains how we utilize digital tracking tools to optimize our citizenship and residency advisory platform for global users."
+           },
+    "ar":  {
+               "hero_badge":  "الحوكمة الرقمية والتتبع",
+               "hero_title":  null,
+               "hero_desc":  "إرشادات واضحة حول كيفية استخدامنا لملفات تعريف الارتباط وتقنيات التخزين الرقمي لتحسين تجربة التصفح الخاصة بك.",
+               "p1_title":  "1. ما هي ملفات تعريف الارتباط؟",
+               "p1_desc":  "ملفات تعريف الارتباط هي ملفات نصية صغيرة يتم تنزيلها وتخزينها على جهاز الكمبيوتر أو الجهاز المحمول عند زيارة أحد المواقع الإلكترونية. وهي تساعد المواقع على تذكر تفضيلاتك والتعرف على جهازك وضمان التنقل الآمن بين الصفحات المختلفة.",
+               "p2_title":  "2. نطاق استخدام ملفات تعريف الارتباط",
+               "p2_desc":  "تنطبق سياسة ملفات تعريف الارتباط هذه مباشرةً على موقع مجموعة شريف الرسمي الذي يتم تشغيله من الخليج التجاري في دبي. وتوضح كيفية استخدامنا لأدوات التتبع الرقمي لتحسين منصة الاستشارات المتعلقة بالجنسية والإقامة للمستخدمين حول العالم."
+           },
+    "fa":  {
+               "hero_badge":  "حاکمیت دیجیتال و ردیابی",
+               "hero_title":  null,
+               "hero_desc":  "دستورالعمل‌های شفاف درباره نحوه استفاده ما از کوکی‌ها و فناوری‌های ذخیره‌سازی دیجیتال برای بهینه‌سازی تجربه مرور شما.",
+               "p1_title":  "1. کوکی‌ها چیستند؟",
+               "p1_desc":  "کوکی‌ها فایل‌های متنی کوچکی هستند که هنگام بازدید از یک وب‌سایت روی رایانه یا دستگاه تلفن همراه شما دانلود و ذخیره می‌شوند. آن‌ها به وب‌سایت‌ها کمک می‌کنند ترجیحات شما را به خاطر بسپارند، دستگاه شما را شناسایی کنند و امکان پیمایش ایمن میان صفحات مختلف را فراهم کنند.",
+               "p2_title":  "2. Cookie usage范围",
+               "p2_desc":  "این سیاست کوکی مستقیماً بر وب‌سایت رسمی شریف گروپ که از بیزنس بی، دبی، اداره می‌شود اعمال می‌گردد. این سیاست توضیح می‌دهد که چگونه از ابزارهای ردیابی دیجیتال برای بهینه‌سازی پلتفرم مشاوره شهروندی و اقامت خود برای کاربران سراسر جهان استفاده می‌کنیم."
+           },
+    "zh":  {
+               "hero_badge":  "数字治理与追踪",
+               "hero_title":  null,
+               "hero_desc":  "透明说明我们如何使用信息记录程序和数字存储技术，以优化您的浏览体验。",
+               "p1_title":  "1. 什么是信息记录程序？",
+               "p1_desc":  "信息记录程序（数据记录文件）是您访问网站时下载并存储在计算机或移动设备上的小型文本文件。它们帮助网站记住您的偏好、识别您的设备，并确保您能够安全地浏览不同页面。",
+               "p2_title":  "2. 信息记录程序使用范围",
+               "p2_desc":  "本信息记录程序政策直接适用于由迪拜商业湾运营的谢里夫集团官方网站。本政策说明我们如何利用数字追踪工具，为全球用户优化我们的公民身份和居留咨询体验。"
+           }
+}
 };
 
 function getData(key) {
@@ -1148,16 +1447,81 @@ function getData(key) {
         updated = true;
       }
     });
-    // Auto-heal flags to ensure reliable display
+    // Auto-heal flags and localized hero_title to ensure reliable display
     stored.forEach(item => {
       if (item && item.id) {
         const defMatch = DEFAULTS[defKey].find(d => d.id === item.id);
-        if (defMatch && defMatch.flag) {
-          if (!item.flag || item.flag.includes('Flag_of_Sao_Tome_and_Principe.svg') || item.flag.includes('wikimedia.org')) {
+        if (defMatch) {
+          if (defMatch.flag && (!item.flag || item.flag.includes('Flag_of_Sao_Tome_and_Principe.svg') || item.flag.includes('wikimedia.org'))) {
             item.flag = defMatch.flag;
             updated = true;
           }
+          ['en', 'ar', 'fa', 'zh'].forEach(lang => {
+            if (defMatch[lang] && defMatch[lang].hero_title) {
+              if (!item[lang]) item[lang] = {};
+              if (!item[lang].hero_title || (lang !== 'en' && isEnglishFallback(item[lang].hero_title, lang))) {
+                item[lang].hero_title = defMatch[lang].hero_title;
+                updated = true;
+              }
+            }
+          });
         }
+      }
+    });
+    if (updated) {
+      Store.set(storeKey, stored);
+    }
+  }
+
+  if (defKey === 'aboutus' && stored && typeof stored === 'object' && DEFAULTS.aboutus) {
+    const def = DEFAULTS.aboutus;
+    let updated = false;
+    const langs = ['ar', 'fa', 'zh'];
+    const sections = ['hero', 'overview', 'architecture', 'founder', 'cta'];
+    sections.forEach(sec => {
+      if (!stored[sec]) {
+        stored[sec] = JSON.parse(JSON.stringify(def[sec] || {}));
+        updated = true;
+      } else {
+        langs.forEach(lang => {
+          const cur = stored[sec][lang];
+          const defLang = def[sec] && def[sec][lang];
+          if ((!cur || Object.keys(cur).length === 0) && defLang) {
+            stored[sec][lang] = JSON.parse(JSON.stringify(defLang));
+            updated = true;
+          } else if (cur && defLang && cur.title === 'About Sharif Group' && defLang.title !== 'About Sharif Group') {
+            stored[sec][lang] = JSON.parse(JSON.stringify(defLang));
+            updated = true;
+          }
+        });
+      }
+    });
+    if (Array.isArray(stored.stats) && Array.isArray(def.stats)) {
+      stored.stats.forEach((st, idx) => {
+        const defSt = def.stats[idx];
+        if (defSt) {
+          langs.forEach(lang => {
+            const k = 'label_' + lang;
+            if (!st[k] && defSt[k]) {
+              st[k] = defSt[k];
+              updated = true;
+            }
+          });
+        }
+      });
+    }
+    if (updated) {
+      Store.set(storeKey, stored);
+    }
+  }
+
+  if (defKey === 'cookiepolicy' && stored && typeof stored === 'object' && DEFAULTS.cookiepolicy) {
+    const def = DEFAULTS.cookiepolicy;
+    let updated = false;
+    ['ar', 'fa', 'zh'].forEach(lang => {
+      if (!stored[lang] && def[lang]) {
+        stored[lang] = JSON.parse(JSON.stringify(def[lang]));
+        updated = true;
       }
     });
     if (updated) {

@@ -82,6 +82,128 @@ function buildSitemapXml($rootDir, $writeToDisk = false) {
         $seenPaths[$path] = true;
     }
 
+    // Load deleted slugs blacklist from published_content.json if present
+    $deletedSlugs = [];
+    $cmsBlogs = [];
+    $publishedJsonFile = $rootDir . '/admin/api/published_content.json';
+    if (file_exists($publishedJsonFile)) {
+        $jsonStr = @file_get_contents($publishedJsonFile);
+        if ($jsonStr) {
+            $parsed = @json_decode($jsonStr, true);
+            if (is_array($parsed)) {
+                if (!empty($parsed['sgcms_blog']) && is_array($parsed['sgcms_blog'])) {
+                    $cmsBlogs = $parsed['sgcms_blog'];
+                }
+                if (!empty($parsed['sgcms_deleted_slugs']) && is_array($parsed['sgcms_deleted_slugs'])) {
+                    $deletedSlugs = array_merge($deletedSlugs, $parsed['sgcms_deleted_slugs']);
+                }
+            }
+        }
+    }
+
+    // Fallback 1: Query MySQL if published_content.json has no blogs or was empty
+    if (empty($cmsBlogs) && file_exists($rootDir . '/admin/api/db.php')) {
+        try {
+            require_once $rootDir . '/admin/api/db.php';
+            if (function_exists('getDb')) {
+                $db = getDb(true);
+                if ($db !== null) {
+                    $stmt = $db->prepare("SELECT live_data, draft_data FROM cms_content WHERE content_key = 'sgcms_blog' LIMIT 1");
+                    $stmt->execute();
+                    $row = $stmt->fetch();
+                    $raw = !empty($row['live_data']) ? $row['live_data'] : (!empty($row['draft_data']) ? $row['draft_data'] : null);
+                    if ($raw) {
+                        $dbBlogs = json_decode($raw, true);
+                        if (is_array($dbBlogs) && !empty($dbBlogs)) {
+                            $cmsBlogs = $dbBlogs;
+                        }
+                    }
+                    $dStmt = $db->prepare("SELECT live_data FROM cms_content WHERE content_key = 'sgcms_deleted_slugs' LIMIT 1");
+                    $dStmt->execute();
+                    $dRow = $dStmt->fetch();
+                    if (!empty($dRow['live_data'])) {
+                        $dbDel = json_decode($dRow['live_data'], true);
+                        if (is_array($dbDel)) {
+                            $deletedSlugs = array_merge($deletedSlugs, $dbDel);
+                        }
+                    }
+                }
+            }
+        } catch (Throwable $e) {}
+    }
+
+    // Fallback 2: Check draft_content.json if published_content and MySQL both had no blogs
+    if (empty($cmsBlogs)) {
+        $draftJsonFile = $rootDir . '/admin/api/draft_content.json';
+        if (file_exists($draftJsonFile)) {
+            $draftStr = @file_get_contents($draftJsonFile);
+            if ($draftStr) {
+                $dParsed = @json_decode($draftStr, true);
+                if (isset($dParsed['sgcms_blog']) && is_array($dParsed['sgcms_blog']) && !empty($dParsed['sgcms_blog'])) {
+                    $cmsBlogs = $dParsed['sgcms_blog'];
+                }
+                if (!empty($dParsed['sgcms_deleted_slugs']) && is_array($dParsed['sgcms_deleted_slugs'])) {
+                    $deletedSlugs = array_merge($deletedSlugs, $dParsed['sgcms_deleted_slugs']);
+                }
+            }
+        }
+    }
+
+    // Build hash map of deleted slugs / IDs for fast exclusion
+    $deletedMap = [];
+    foreach ($deletedSlugs as $ds) {
+        $clean = strtolower(trim((string)$ds));
+        if ($clean !== '') {
+            $deletedMap[$clean] = true;
+        }
+    }
+
+    // Un-blacklist any slug or ID actively present in $cmsBlogs (user re-created or editing article)
+    if (!empty($cmsBlogs) && is_array($cmsBlogs)) {
+        $reHealed = false;
+        foreach ($cmsBlogs as $b) {
+            if (!is_array($b) || !empty($b['deleted']) || ($b['status'] ?? '') === 'deleted') continue;
+            $as = strtolower(trim($b['slug'] ?? ($b['en']['slug'] ?? '')));
+            $aid = strtolower(trim($b['id'] ?? ''));
+            if ($as !== '' && isset($deletedMap[$as])) {
+                unset($deletedMap[$as]);
+                $reHealed = true;
+            }
+            if ($aid !== '' && isset($deletedMap[$aid])) {
+                unset($deletedMap[$aid]);
+                $reHealed = true;
+            }
+        }
+        // Self-heal published_content.json & draft_content.json so deleted_slugs doesn't keep blocking it
+        if ($reHealed) {
+            if (file_exists($publishedJsonFile)) {
+                $pRaw = @file_get_contents($publishedJsonFile);
+                if ($pRaw) {
+                    $pJson = @json_decode($pRaw, true);
+                    if (isset($pJson['sgcms_deleted_slugs']) && is_array($pJson['sgcms_deleted_slugs'])) {
+                        $pJson['sgcms_deleted_slugs'] = array_values(array_filter($pJson['sgcms_deleted_slugs'], function($s) use ($deletedMap) {
+                            return isset($deletedMap[strtolower(trim((string)$s))]);
+                        }));
+                        @file_put_contents($publishedJsonFile, json_encode($pJson, JSON_PRETTY_PRINT | JSON_UNESCAPED_SLASHES | JSON_UNESCAPED_UNICODE));
+                    }
+                }
+            }
+            $draftJsonFile = $rootDir . '/admin/api/draft_content.json';
+            if (file_exists($draftJsonFile)) {
+                $dRaw = @file_get_contents($draftJsonFile);
+                if ($dRaw) {
+                    $dJson = @json_decode($dRaw, true);
+                    if (isset($dJson['sgcms_deleted_slugs']) && is_array($dJson['sgcms_deleted_slugs'])) {
+                        $dJson['sgcms_deleted_slugs'] = array_values(array_filter($dJson['sgcms_deleted_slugs'], function($s) use ($deletedMap) {
+                            return isset($deletedMap[strtolower(trim((string)$s))]);
+                        }));
+                        @file_put_contents($draftJsonFile, json_encode($dJson, JSON_PRETTY_PRINT | JSON_UNESCAPED_SLASHES | JSON_UNESCAPED_UNICODE));
+                    }
+                }
+            }
+        }
+    }
+
     // 2. Discover static blog articles from filesystem directories
     $blogDir = $rootDir . '/blog';
     if (is_dir($blogDir)) {
@@ -90,6 +212,11 @@ function buildSitemapXml($rootDir, $writeToDisk = false) {
             if ($item === '.' || $item === '..' || !is_dir($blogDir . '/' . $item)) {
                 continue;
             }
+            $cleanItem = strtolower(trim((string)$item));
+            if (isset($deletedMap[$cleanItem])) {
+                continue;
+            }
+
             $articleIndex = $blogDir . '/' . $item . '/index.html';
             if (file_exists($articleIndex)) {
                 $mtime = filemtime($articleIndex);
@@ -120,48 +247,14 @@ function buildSitemapXml($rootDir, $writeToDisk = false) {
         }
     }
 
-    // 3. Discover dynamic CMS dashboard blog articles from published_content.json & MySQL
-    $cmsBlogs = [];
-    $publishedJsonFile = $rootDir . '/admin/api/published_content.json';
-    if (file_exists($publishedJsonFile)) {
-        $jsonStr = @file_get_contents($publishedJsonFile);
-        if ($jsonStr) {
-            $parsed = @json_decode($jsonStr, true);
-            if (isset($parsed['sgcms_blog']) && is_array($parsed['sgcms_blog'])) {
-                $cmsBlogs = $parsed['sgcms_blog'];
-            }
-        }
-    }
-
-    // Fallback: If empty, check MySQL database if configured
-    if (empty($cmsBlogs) && file_exists($rootDir . '/admin/api/db.php')) {
-        try {
-            require_once $rootDir . '/admin/api/db.php';
-            if (function_exists('getDb')) {
-                $db = getDb(true);
-                if ($db !== null) {
-                    $stmt = $db->prepare("SELECT live_data FROM cms_content WHERE content_key = 'sgcms_blog' LIMIT 1");
-                    $stmt->execute();
-                    $row = $stmt->fetch();
-                    if (!empty($row['live_data'])) {
-                        $dbBlogs = json_decode($row['live_data'], true);
-                        if (is_array($dbBlogs)) {
-                            $cmsBlogs = $dbBlogs;
-                        }
-                    }
-                }
-            }
-        } catch (Throwable $e) {}
-    }
-
-    // Process published CMS blogs into sitemap
+    // 3. Process published CMS blogs into sitemap
     if (!empty($cmsBlogs) && is_array($cmsBlogs)) {
         foreach ($cmsBlogs as $b) {
             if (!is_array($b)) continue;
 
-            // Only include published articles (exclude explicit drafts)
+            // Include all active articles (exclude only explicitly deleted or hidden items)
             $statusEn = strtolower($b['status_en'] ?? ($b['status'] ?? ($b['en']['status'] ?? 'published')));
-            if ($statusEn === 'draft') {
+            if ($statusEn === 'deleted' || $statusEn === 'hidden' || !empty($b['deleted'])) {
                 continue;
             }
 
@@ -179,6 +272,13 @@ function buildSitemapXml($rootDir, $writeToDisk = false) {
                 $slug = trim($b['id']);
             }
             if (!$slug) continue;
+
+            // Exclude if slug or ID matches deleted blacklist
+            $slugClean = strtolower(trim($slug));
+            $idClean = strtolower(trim($b['id'] ?? ''));
+            if (isset($deletedMap[$slugClean]) || ($idClean !== '' && isset($deletedMap[$idClean]))) {
+                continue;
+            }
 
             $entryPath = '/blog/' . $slug . '/';
             if (!isset($seenPaths[$entryPath])) {
@@ -255,30 +355,30 @@ function buildSitemapXml($rootDir, $writeToDisk = false) {
 
 // ── STANDALONE SCRIPT EXECUTION (Web Request or CLI) ─────────────────────────
 $isDirectExecution = (
-    (php_sapi_name() === 'cli' && isset($argv[0]) && realpath($argv[0]) === realpath(__FILE__)) ||
-    (isset($_SERVER['SCRIPT_FILENAME']) && realpath($_SERVER['SCRIPT_FILENAME']) === realpath(__FILE__))
+    php_sapi_name() === 'cli' ||
+    (!defined('SITEMAP_LOADED_AS_LIB') && (
+        basename($_SERVER['SCRIPT_FILENAME'] ?? '') === 'sitemap.php' ||
+        basename($_SERVER['SCRIPT_NAME'] ?? '') === 'sitemap.php' ||
+        strpos($_SERVER['REQUEST_URI'] ?? '', 'sitemap.php') !== false ||
+        strpos($_SERVER['REQUEST_URI'] ?? '', 'sitemap.xml') !== false
+    ))
 );
 
 if ($isDirectExecution) {
     $rootDir = realpath(__DIR__);
-    $shouldWrite = (
-        (isset($argv) && in_array('--write', $argv)) ||
-        (!empty($_GET['save']) && $_GET['save'] === '1')
-    );
+    // Always write sitemap.xml to disk so static web server delivery also remains 100% updated
+    $shouldWrite = true;
 
     $res = buildSitemapXml($rootDir, $shouldWrite);
 
     if (php_sapi_name() === 'cli') {
-        if ($shouldWrite) {
-            echo "Successfully wrote dynamic sitemap to " . $rootDir . "/sitemap.xml with " . $res['urlCount'] . " total URLs (" . $res['entriesCount'] . " unique paths across 4 languages).\n";
-        } else {
-            echo "Sitemap dry run completed: " . $res['urlCount'] . " URLs generated. Use --write to save to sitemap.xml.\n";
-        }
+        echo "Successfully wrote dynamic sitemap to " . $rootDir . "/sitemap.xml with " . $res['urlCount'] . " total URLs (" . $res['entriesCount'] . " unique paths across 4 languages).\n";
     } else {
-        // Web context: send XML headers and body
+        // Web context: send XML headers and body with zero-caching so updates reflect instantaneously
         header('Content-Type: application/xml; charset=utf-8');
-        header('X-Robots-Tag: noindex');
-        header('Cache-Control: public, max-age=3600');
+        header('Cache-Control: no-cache, no-store, must-revalidate, max-age=0');
+        header('Pragma: no-cache');
+        header('Expires: 0');
         echo $res['xml'];
     }
 }
