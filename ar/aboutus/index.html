@@ -339,6 +339,28 @@
         }
     </style>
 <link href="../assets/css/multilingual.css?v=5" rel="stylesheet"/>
+    <!-- CMS Live Studio Integration (Active inside dashboard editor) -->
+    <script>
+        (function() {
+            var inIframe = window.self !== window.top;
+            var isEditor = window.location.search.indexOf('cms_editor') !== -1;
+            if (inIframe || isEditor) {
+                try {
+                    var st = document.createElement('style');
+                    st.textContent = '#preloader { display: none !important; } body { overflow: auto !important; }';
+                    document.head.appendChild(st);
+                } catch(e) {}
+                var s = document.createElement('script');
+                s.src = '/admin/cms-loader.js?v=' + Date.now();
+                s.onerror = function() {
+                    var fb = document.createElement('script');
+                    fb.src = (window.location.pathname.indexOf('/programs/') !== -1 ? '../../../admin/cms-loader.js' : '../admin/cms-loader.js') + '?v=' + Date.now();
+                    document.head.appendChild(fb);
+                };
+                document.head.appendChild(s);
+            }
+        })();
+    </script>
 </head>
 <body class="bg-luxury-light text-luxury-dark font-sans overflow-x-hidden">
 <!-- HEADER COMPONENT -->
@@ -672,9 +694,9 @@
 <span data-i18n="pages.aboutUs.heroBadge">إحاطة تنفيذية</span>
 </span>
 <h1 class="font-serif text-white font-normal tracking-tight drop-shadow-xl text-4xl sm:text-6xl md:text-7xl lg:text-8xl leading-tight">
-<span class="contact-hero-glow font-serif cursor-pointer" data-i18n="pages.aboutUs.heroTitle">نبذة عن مجموعة شريف</span>
+<span class="contact-hero-glow font-serif cursor-pointer" data-i18n="pages.aboutUs.heroTitle">حول مجموعة شريف</span>
 </h1>
-<p class="text-xs sm:text-sm md:text-base text-neutral-300 font-light max-w-xl mx-auto leading-relaxed pt-1 about-hero-subtitle" data-i18n="pages.aboutUs.heroSubtitle">منصة رائدة للاستشارات في مجال الهجرة والمواطنة والاستثمارات الفاخرة، تتخذ من الخليج التجاري في دبي مقرًا لها.</p>
+<p class="text-xs sm:text-sm md:text-base text-neutral-300 font-light max-w-xl mx-auto leading-relaxed pt-1 about-hero-subtitle" data-i18n="pages.aboutUs.heroSubtitle">منصة استشارية رائدة في مجال الهجرة والمواطنة والاستثمار الفاخر متجذرة في الخليج التجاري، دبي.</p>
 </div>
 </section>
 <!-- SECTION 1: GLOBAL MOBILITY & STATS (REDESIGNED LUXURY BANNER) -->
@@ -692,13 +714,13 @@
 <div class="w-10 h-10 rounded-xl bg-luxury-gold/20 text-luxury-gold border border-luxury-gold/40 flex items-center justify-center text-sm shadow-md icon-hover-box">
 <i class="fa-solid fa-gem"></i>
 </div>
-<span class="text-[10px] font-bold uppercase tracking-[0.25em] text-luxury-gold" data-i18n="pages.aboutUs.about_overview_item1">من نحن</span>
+<span class="text-[10px] font-bold uppercase tracking-[0.25em] text-luxury-gold" data-i18n="pages.aboutUs.about_overview_item1">من نحن؟</span>
 </div>
-<h2 class="font-serif text-3xl sm:text-4xl xl:text-5xl font-bold text-white leading-tight" data-i18n-html="pages.aboutUs.about_overview_item2">نبذة عن الشركة:<br/> <span class="italic text-[#C5A880] font-serif font-normal" data-i18n="pages.aboutUs.overviewSub">مجموعة شريف</span></h2>
+<h2 class="font-serif text-3xl sm:text-4xl xl:text-5xl font-bold text-white leading-tight" data-i18n-html="pages.aboutUs.about_overview_item2">نبذة عن الشركة:<br/><span class="italic text-[#C5A880] font-serif font-normal">مجموعة شريف</span></h2>
 <div class="w-16 h-[2px] bg-[#C5A880]"></div>
 <div class="space-y-3 text-xs sm:text-sm text-neutral-300 font-light leading-relaxed">
-<p data-i18n="pages.aboutUs.about_overview_item3">مجموعة شريف هي شركة استشارات خاصة متخصصة تتخذ من الخليج التجاري في دبي مقرًا لها. نساعد العملاء والعائلات الدوليين في الحصول على جوازات سفر ثانية قانونية، وتأشيرات الإقامة، والاستثمارات العقارية الفاخرة، والقبول الطلابي في أفضل الجامعات الدولية.</p>
-<p data-i18n="pages.aboutUs.about_overview_item4">يتولى فريقنا إعداد المستندات، وإجراء الفحوصات القانونية للخلفية، والحصول على الموافقات الحكومية من البداية إلى النهاية، بما يضمن تجربة واضحة وآمنة.</p>
+<p data-i18n="pages.aboutUs.about_overview_item3">مجموعة شريف هي شركة استشارية خاصة متخصصة مقرها في الخليج التجاري، دبي. نحن نساعد العملاء الدوليين والعائلات في الحصول على جوازات سفر ثانية قانونية، وتأشيرات إقامة، واستثمارات عقارية متميزة، وتوظيف الطلاب في أفضل الجامعات الدولية.</p>
+<p data-i18n="pages.aboutUs.about_overview_item4">يتولى فريقنا إعداد المستندات والفحوصات القانونية الأساسية والتخليص الحكومي من البداية إلى النهاية، مما يضمن تجربة مباشرة وآمنة.</p>
 </div>
 <div class="pt-2">
 <a class="inline-block px-7 py-3.5 rounded-xl bg-[#786142] text-white text-xs font-bold uppercase tracking-widest hover:bg-luxury-gold transition duration-300 shadow-xl" data-i18n="pages.aboutUs.about_overview_item5" href="/ar/contact/">احجز استشارة</a>

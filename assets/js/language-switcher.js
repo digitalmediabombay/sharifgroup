@@ -128,7 +128,13 @@
             return normalizeLang(urlLang);
         }
 
-        // 3. Check stored preference
+        // 3. Document explicit lang attribute takes precedence over legacy stored preference
+        var docLang = (document.documentElement && document.documentElement.lang) ? document.documentElement.lang.toLowerCase().trim() : '';
+        if (docLang && ['ar', 'fa', 'zh', 'en'].indexOf(docLang) !== -1) {
+            return normalizeLang(docLang);
+        }
+
+        // 4. Check stored preference
         try {
             var stored = localStorage.getItem('sharif_lang') || localStorage.getItem('sharif_preferred_lang');
             if (stored) {
@@ -212,7 +218,7 @@
         }
     }
 
-    var I18N_VERSION = '20261001_v26';
+    var I18N_VERSION = '20261006_v50';
 
     function loadTranslation(lang, callback) {
         var pathname = (window.location && window.location.pathname) ? window.location.pathname.toLowerCase() : '';
@@ -243,16 +249,8 @@
         try {
             for (var i = localStorage.length - 1; i >= 0; i--) {
                 var k = localStorage.key(i);
-                if (k && k.indexOf('sharif_i18n_') === 0) {
-                    try {
-                        var raw = localStorage.getItem(k);
-                        var d = JSON.parse(raw);
-                        if (!d || !d.pages || !d.pages.eligibilityChecker || (d.nav && d.nav.blog === 'وبلاگ') || k !== storageKey) {
-                            localStorage.removeItem(k);
-                        }
-                    } catch (e) {
-                        localStorage.removeItem(k);
-                    }
+                if (k && k.indexOf('sharif_i18n_') === 0 && k !== storageKey) {
+                    localStorage.removeItem(k);
                 }
             }
         } catch (e) {}
@@ -1144,15 +1142,17 @@
                 localized = decodeHtmlEntities(localized);
                 var heroGlowChild = el.querySelector('.contact-hero-glow, .dominica-hero-glow, .stlucia-hero-glow');
                 if (heroGlowChild && el !== heroGlowChild) {
-                    heroGlowChild.textContent = localized;
+                    if (heroGlowChild.textContent.trim() !== localized.trim()) {
+                        heroGlowChild.textContent = localized;
+                    }
                 } else if (el.querySelector('span[data-i18n]') && el.querySelector('i, svg, [class*="fa-"]')) {
                     // Parent container has icons and a child span with data-i18n: do not wipe out icons!
                     var innerSpan = el.querySelector('span[data-i18n]');
-                    if (innerSpan) innerSpan.textContent = localized;
+                    if (innerSpan && innerSpan.textContent.trim() !== localized.trim()) innerSpan.textContent = localized;
                 } else if (el.querySelector('i, svg, [class*="fa-"]') && el.querySelector('span')) {
                     // Parent has icon and inner span: update the span only
                     var targetSpan = el.querySelector('span');
-                    if (targetSpan) targetSpan.textContent = localized;
+                    if (targetSpan && targetSpan.textContent.trim() !== localized.trim()) targetSpan.textContent = localized;
                 } else if (el.querySelector('.text-red-500, span.text-red-500')) {
                     // Form label has a required asterisk span: preserve it!
                     var starEl = el.querySelector('.text-red-500, span.text-red-500');
@@ -1162,7 +1162,9 @@
                     // If the translation contains HTML formatting (e.g. italic spans, line breaks), preserve it
                     el.innerHTML = localized;
                 } else {
-                    el.textContent = localized;
+                    if (el.textContent.trim() !== localized.trim()) {
+                        el.textContent = localized;
+                    }
                 }
             }
         });
@@ -1660,19 +1662,49 @@
         document.head.appendChild(s);
     }
 
+    function getPageNativeLang() {
+        var htmlLang = (document.documentElement && document.documentElement.lang) ? document.documentElement.lang.toLowerCase().trim() : '';
+        if (htmlLang) {
+            return normalizeLang(htmlLang);
+        }
+        var pathname = (window.location && window.location.pathname) ? window.location.pathname : '';
+        var segments = pathname.split('/').filter(Boolean);
+        if (segments.length > 0) {
+            var first = segments[0].toLowerCase();
+            if (first === 'ar' || first === 'fa' || first === 'zh' || first === 'en') {
+                return normalizeLang(first);
+            }
+        }
+        return 'en';
+    }
+
     function init() {
         // Ensure multilingual CSS styling is always loaded
         ensureMultilingualCSS();
 
+        var pageNativeLang = getPageNativeLang();
         currentLang = getInitialLang();
-        if (currentLang === 'en') {
-            document.documentElement.classList.remove('i18n-pending');
-        }
+
+        // Safety: unmask immediately
+        document.documentElement.classList.remove('i18n-pending');
+
         setupCounterInterceptor();
         localizeInternalLinks(currentLang);
         updateLanguageSwitcherHrefs();
+        updateLanguageUI(currentLang);
+
+        // Preload translation in background.
+        // If currentLang matches pageNativeLang, page was ALREADY server-rendered (SSG) in that language!
+        // We DO NOT overwrite the live DOM with static JSON, preventing any flash of old content / flicker!
         loadTranslation(currentLang, function (data) {
-            applyTranslations(data, currentLang);
+            if (currentLang !== pageNativeLang) {
+                applyTranslations(data, currentLang);
+            } else {
+                if (currentLang === 'ar' || currentLang === 'fa') {
+                    applyNumberLocalization(currentLang);
+                }
+                translateConsultationForms(currentLang);
+            }
         });
 
         // Load CMS live-content overlay on all public pages

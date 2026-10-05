@@ -95,7 +95,7 @@
 
   // Module-level editMode and WYSIWYG editor state accessible across all functions
   let editMode = (window.self !== window.top || window.location.search.indexOf('cms_editor') !== -1)
-    ? (localStorage.getItem('sgcms_canvas_mode') !== 'browse')
+    ? (localStorage.getItem('sgcms_canvas_mode') === 'browse' ? false : true)
     : false;
   let initBlogBodyWysiwygEditor = function () {};
   let setEditMode = function () {};
@@ -2522,6 +2522,20 @@
         background: transparent !important;
         min-height: auto !important;
       }
+      .cms-blog-body-editor figure,
+      .cms-blog-body-editor img {
+        cursor: pointer !important;
+        transition: all 0.2s ease !important;
+      }
+      .cms-blog-body-editor figure:hover img,
+      .cms-blog-body-editor img:hover {
+        outline: 2.5px solid #C5A880 !important;
+        outline-offset: 3px !important;
+        box-shadow: 0 8px 24px rgba(197, 168, 128, 0.4) !important;
+      }
+      .cms-blog-body-editor figure {
+        position: relative !important;
+      }
       .cms-blog-body-editor:empty::before {
         content: 'Click here and paste your article text (Ctrl+V)... Then highlight any line to convert it into Heading 2, Heading 3, Bold, or Quote!';
         color: #9ca3af;
@@ -2764,6 +2778,14 @@
         <input type="text" id="cip-url-input" placeholder="https://images.unsplash.com/..." style="flex:1;background:#262626;border:1px solid #C5A880;color:#fff;font-size:11px;padding:6px 8px;border-radius:6px;outline:none">
         <button type="button" id="cip-apply-btn" style="background:linear-gradient(135deg,#C5A880,#B3946B);border:none;color:#0A0A0A;font-size:11px;font-weight:700;padding:6px 12px;border-radius:6px;cursor:pointer">Apply</button>
       </div>
+
+      <!-- Remove Image Action (for existing image in article content or cover) -->
+      <div id="cip-remove-wrap" style="display:none;margin-top:12px;padding-top:10px;border-top:1px solid rgba(255,255,255,0.1)">
+        <button type="button" id="cip-remove-btn" style="width:100%;background:rgba(239,68,68,0.14);border:1px solid rgba(239,68,68,0.5);color:#f87171;font-size:11px;font-weight:700;padding:8px 10px;border-radius:6px;cursor:pointer;display:flex;align-items:center;justify-content:center;gap:6px;transition:all .15s">
+          <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 6h18"/><path d="M19 6v14c0 1-1 2-2 2H7c-1 0-2-1-2-2V6"/><path d="M8 6V4c0-1 1-2 2-2h4c1 0 2 1 2 2v2"/><line x1="10" y1="11" x2="10" y2="17"/><line x1="14" y1="11" x2="14" y2="17"/></svg>
+          <span id="cip-remove-btn-text">Remove Image From Article</span>
+        </button>
+      </div>
     `;
     document.body.appendChild(imagePopover);
 
@@ -2774,14 +2796,17 @@
     function openImagePickerPopover(imgEl, isInsert = false) {
       isInlineImageInsertion = isInsert;
       activeImgEl = imgEl;
-      const popW = 310;
+      const popW = 325;
       let left = window.innerWidth / 2 - (popW / 2);
-      let top = window.scrollY + 100;
+      let top = Math.max(30, window.innerHeight / 4);
 
       if (imgEl) {
         const rect = imgEl.getBoundingClientRect();
-        left = rect.left + window.scrollX + (rect.width / 2) - (popW / 2);
-        top = rect.top + window.scrollY + 20;
+        left = rect.left + (rect.width / 2) - (popW / 2);
+        top = rect.bottom + 8;
+        if (top + 390 > window.innerHeight) {
+          top = Math.max(10, rect.top - 400);
+        }
       } else {
         left = Math.max(10, Math.min(window.innerWidth - popW - 10, (window.innerWidth - popW) / 2));
         top = Math.max(30, window.innerHeight / 4);
@@ -2796,8 +2821,28 @@
 
       const titleEl = imagePopover.querySelector('#cip-header-title');
       if (titleEl) {
-        titleEl.textContent = isInsert ? 'Insert Image Into Article' : 'Replace Image';
+        titleEl.textContent = isInsert ? 'Insert Image Into Article' : (imgEl?.closest('#detail-content-body') ? 'Article Image Settings' : 'Replace Image');
       }
+
+      const removeWrap = imagePopover.querySelector('#cip-remove-wrap');
+      const removeBtnText = imagePopover.querySelector('#cip-remove-btn-text');
+      if (removeWrap) {
+        if (!isInsert && imgEl) {
+          removeWrap.style.display = 'block';
+          if (removeBtnText) {
+            removeBtnText.textContent = imgEl.closest('#detail-content-body')
+              ? 'Remove Image From Article'
+              : 'Remove This Image';
+          }
+        } else {
+          removeWrap.style.display = 'none';
+        }
+      }
+
+      const idleEl = imagePopover.querySelector('#cip-upload-idle');
+      const busyEl = imagePopover.querySelector('#cip-upload-busy');
+      if (idleEl) idleEl.style.display = 'block';
+      if (busyEl) busyEl.style.display = 'none';
 
       const input = imagePopover.querySelector('#cip-url-input');
       input.value = imgEl ? (imgEl.src || '') : '';
@@ -2809,6 +2854,67 @@
       activeImgEl = null;
       isInlineImageInsertion = false;
       savedInlineRange = null;
+    });
+
+    imagePopover.querySelector('#cip-remove-btn')?.addEventListener('click', (e) => {
+      e.preventDefault();
+      e.stopPropagation();
+      if (!activeImgEl) {
+        imagePopover.style.display = 'none';
+        return;
+      }
+
+      const toRemove = activeImgEl;
+      const figure = toRemove.closest('figure');
+      const bodyEl = document.getElementById('detail-content-body');
+
+      if (figure && bodyEl && bodyEl.contains(figure)) {
+        const next = figure.nextElementSibling;
+        if (next && next.tagName === 'P' && (next.innerHTML.trim() === '<br>' || !next.textContent.trim())) {
+          next.remove();
+        }
+        figure.remove();
+        triggerBlogBodySave(true);
+        flashToast('Image removed from article!');
+      } else if (bodyEl && bodyEl.contains(toRemove)) {
+        toRemove.remove();
+        triggerBlogBodySave(true);
+        flashToast('Image removed from article!');
+      } else {
+        toRemove.src = '';
+        toRemove.style.display = 'none';
+        const path = window.location.pathname.toLowerCase();
+        if (path.includes('blog')) {
+          const blogs = store('sgcms_blog') || [];
+          const currentSlug = window.currentActiveArticleSlug || extractSlug();
+          const bIdx = blogs.findIndex(b => b.slug === currentSlug || b.id === currentSlug || (b.en && b.en.slug === currentSlug));
+          if (bIdx >= 0) {
+            blogs[bIdx].featured_img = '';
+            saveStore('sgcms_blog', blogs);
+          }
+        }
+        if (window.parent && window.parent !== window) {
+          window.parent.postMessage({ type: 'CMS_INLINE_SAVED', selector: 'image', src: '' }, '*');
+        }
+        flashToast('Image removed!');
+      }
+
+      imagePopover.style.display = 'none';
+      activeImgEl = null;
+      isInlineImageInsertion = false;
+      savedInlineRange = null;
+    });
+
+    // Keyboard support: delete or backspace to remove active image when popover is open
+    document.addEventListener('keydown', (e) => {
+      if (!editMode) return;
+      if ((e.key === 'Delete' || e.key === 'Backspace') && activeImgEl && imagePopover.style.display === 'block') {
+        if (document.activeElement && (document.activeElement.tagName === 'INPUT' || document.activeElement.tagName === 'TEXTAREA')) {
+          return;
+        }
+        e.preventDefault();
+        imagePopover.querySelector('#cip-remove-btn')?.click();
+      }
     });
 
     function applyNewImage(newSrc) {
@@ -2916,13 +3022,64 @@
       });
     }
 
+    function compressImageForStudio(file, maxWidth = 1400, maxHeight = 900, quality = 0.82) {
+      return new Promise((resolve) => {
+        if (!file || !file.type.startsWith('image/') || file.type === 'image/svg+xml') {
+          resolve(file);
+          return;
+        }
+        const reader = new FileReader();
+        reader.onload = (e) => {
+          const img = new Image();
+          img.onload = () => {
+            let w = img.width;
+            let h = img.height;
+            if (w > maxWidth || h > maxHeight) {
+              const ratio = Math.min(maxWidth / w, maxHeight / h);
+              w = Math.round(w * ratio);
+              h = Math.round(h * ratio);
+            }
+            const canvas = document.createElement('canvas');
+            canvas.width = w;
+            canvas.height = h;
+            const ctx = canvas.getContext('2d');
+            ctx.imageSmoothingEnabled = true;
+            ctx.imageSmoothingQuality = 'high';
+            ctx.drawImage(img, 0, 0, w, h);
+
+            let mime = 'image/webp';
+            try {
+              if (!canvas.toDataURL('image/webp').startsWith('data:image/webp')) mime = 'image/jpeg';
+            } catch (err) { mime = 'image/jpeg'; }
+
+            const ext = mime === 'image/webp' ? '.webp' : '.jpg';
+            canvas.toBlob((blob) => {
+              if (blob) {
+                const cleanName = file.name.replace(/\.[^.]+$/, '') + ext;
+                resolve(new File([blob], cleanName, { type: mime }));
+              } else {
+                resolve(file);
+              }
+            }, mime, quality);
+          };
+          img.onerror = () => resolve(file);
+          img.src = e.target.result;
+        };
+        reader.onerror = () => resolve(file);
+        reader.readAsDataURL(file);
+      });
+    }
+
     async function uploadLocalPcImage(file) {
       if (!file) return;
       if (cipIdleEl) cipIdleEl.style.display = 'none';
       if (cipBusyEl) cipBusyEl.style.display = 'block';
 
+      // Pre-compress to ultra-fast lightweight WebP before network transmission
+      const optimizedFile = await compressImageForStudio(file);
+
       const formData = new FormData();
-      formData.append('file', file);
+      formData.append('file', optimizedFile);
       const token = localStorage.getItem('sg_cms_token') || sessionStorage.getItem('sg_cms_token') || '';
       if (token) formData.append('token', token);
 
@@ -3075,6 +3232,14 @@
               }
             }
             saveStore('sgcms_blog', blogs);
+            saveStore('sgcms_blog_live', blogs);
+            try {
+              if (typeof BroadcastChannel !== 'undefined') {
+                const bc = new BroadcastChannel('sgcms_blog_channel');
+                bc.postMessage({ type: 'BLOGS_UPDATED', blogs: blogs, timestamp: Date.now() });
+                bc.close();
+              }
+            } catch (e) {}
 
             if (window.parent && window.parent !== window) {
               try {
@@ -3470,15 +3635,15 @@
     let hoveredEl = null;
 
     editMode = (window.self !== window.top || window.location.search.indexOf('cms_editor') !== -1)
-      ? (localStorage.getItem('sgcms_canvas_mode') !== 'browse')
+      ? (localStorage.getItem('sgcms_canvas_mode') === 'browse' ? false : true)
       : false;
 
     setEditMode = function(enabled, notifyParent, showMsg) {
-      editMode = enabled;
-      localStorage.setItem('sgcms_canvas_mode', enabled ? 'edit' : 'browse');
-      document.body.classList.toggle('cms-mode-browse', !enabled);
+      editMode = Boolean(enabled);
+      localStorage.setItem('sgcms_canvas_mode', editMode ? 'edit' : 'browse');
+      document.body.classList.toggle('cms-mode-browse', !editMode);
 
-      if (!enabled) {
+      if (!editMode) {
         if (activeEl) cancelCurrentActive();
         if (hoveredEl) {
           hoveredEl.classList.remove('cms-target-hover');
@@ -3491,15 +3656,15 @@
       initBlogBodyWysiwygEditor();
 
       if (showMsg) {
-        flashToast(enabled ? 'Edit Mode: Click any text to edit' : 'Live Browse: Click links & buttons freely');
+        flashToast(editMode ? 'Edit Mode: Click any text to edit' : 'Live Browse: Click links & buttons freely');
       }
 
       if (notifyParent && window.parent && window.parent !== window) {
-        window.parent.postMessage({ type: 'CMS_MODE_CHANGED', mode: enabled ? 'edit' : 'browse' }, '*');
+        window.parent.postMessage({ type: 'CMS_MODE_CHANGED', mode: editMode ? 'edit' : 'browse' }, '*');
       }
     }
 
-    setEditMode(editMode, false, false);
+    setEditMode(editMode !== false, false, false);
 
     // Helper to generate a stable selector for any element
     function getStableSelector(el) {
@@ -3544,7 +3709,7 @@
 
     // Determine if element is an editable text target
     function isEditableTarget(el) {
-      if (!el || el === document.body || el === document.documentElement) return false;
+      if (!el || el === document.body || el === document.documentElement || el.nodeType !== 1) return false;
       const tag = (el.tagName || '').toUpperCase();
       const ignoreTags = ['SCRIPT', 'STYLE', 'SVG', 'PATH', 'IFRAME', 'INPUT', 'TEXTAREA', 'SELECT', 'VIDEO', 'CANVAS', 'G', 'RECT', 'CIRCLE', 'POLYGON', 'POLYLINE', 'LINE'];
       if (ignoreTags.includes(tag)) return false;
@@ -3555,27 +3720,18 @@
         return false;
       }
 
-      // Special priority: elements inside the blog article detail container (except body) are ALWAYS editable
-      if (el.closest('#detail-breadcrumb-title, #detail-title, #detail-author, #detail-date, #detail-updated, #detail-category-badge, #detail-faq-wrapper, #detail-image')) {
-        if (tag === 'IMG') return true;
-        if (el.id === 'detail-title' || el.closest('#detail-title')) return true;
-        return Boolean(el.innerText && el.innerText.trim().length > 0);
+      // Explicit data-i18n or data-cms is always an editable target
+      if (el.hasAttribute && (el.hasAttribute('data-i18n') || el.hasAttribute('data-cms'))) {
+        return true;
       }
 
-      // Navigation header, navbar, mobile menu and mega-menus are site navigation, NOT editable body text
-      // NOTE: Exempt the blog detail breadcrumb nav — it is inside #blog-detail-view-container, not a site nav
-      const navEl = el.closest('header, nav, #main-header, #mobile-menu, .mega-menu, [id*="mega"], [class*="navbar"]');
-      if (navEl && !navEl.closest('#blog-detail-view-container')) {
-        return false;
+      if (tag === 'IMG') {
+        return true;
       }
 
       // Explicitly exempt detail back button
       if (el.closest('[onclick*="closeBlogDetail"], [data-i18n="blog.backToArticles"]')) {
         return false;
-      }
-
-      if (tag === 'IMG') {
-        return true;
       }
 
       // Explicitly allow blog detail header elements
@@ -3587,10 +3743,9 @@
       const classStr = typeof el.className === 'string' ? el.className : (el.className?.baseVal || (el.getAttribute ? (el.getAttribute('class') || '') : ''));
       const hasGlow = classStr.includes('-hero-glow') || (el.classList && (el.classList.contains('dominica-hero-glow') || el.classList.contains('stlucia-hero-glow') || el.classList.contains('counter-value')));
       if (textTags.includes(tag) || hasGlow) {
-        // Return true if it has text
-        return Boolean(el.innerText && el.innerText.trim().length > 0);
+        const txt = (el.innerText || el.textContent || '').trim();
+        return txt.length > 0;
       }
-      if (el.hasAttribute && (el.hasAttribute('data-i18n') || el.hasAttribute('data-cms'))) return true;
       return false;
     }
 
@@ -3600,12 +3755,6 @@
 
       // Ignore CMS toolbar, popovers, tooltip, blog body editor
       if (el.closest('#cms-inline-toolbar, #cms-hover-tooltip, #cms-save-toast, #cms-preview-badge, #cms-image-popover, .cms-section-tool, #cms-blog-body-docked-bar, #cms-selection-bubble, #detail-content-body')) {
-        return null;
-      }
-
-      // Navigation header, navbar, mobile menu and mega-menus are site navigation
-      const navArea = el.closest('header, nav, #main-header, #mobile-menu, .mega-menu, [id*="mega"], [class*="navbar"]');
-      if (navArea && !navArea.closest('#blog-detail-view-container')) {
         return null;
       }
 
@@ -3621,7 +3770,7 @@
 
       // Don't treat standalone icon tags as standalone text targets
       if (el.tagName === 'I' || el.tagName === 'SVG' || el.tagName === 'PATH') {
-        const parentContainer = el.closest('button, a, p, h1, h2, h3, h4, h5, h6, li, [data-i18n], [data-cms]');
+        const parentContainer = el.closest('button, a, p, h1, h2, h3, h4, h5, h6, li, span, [data-i18n], [data-cms]');
         if (parentContainer && isEditableTarget(parentContainer)) return resolveEditableTarget(parentContainer);
         return null;
       }
@@ -3972,9 +4121,8 @@
       });
     }
 
-    // Delegated Hover with requestAnimationFrame throttling to eliminate jitter
+    // Delegated Hover with high-performance responsive pointer tracking
     let hoverRaf = null;
-    let pendingHoverTarget = null;
 
     function applyHoverState(targetEl) {
       if (!editMode || activeEl) return;
@@ -4015,16 +4163,17 @@
       }
     }
 
-    document.addEventListener('mouseover', (e) => {
+    function handlePointerHover(e) {
       if (!editMode || activeEl) return;
-      pendingHoverTarget = e.target;
-      if (!hoverRaf) {
-        hoverRaf = requestAnimationFrame(() => {
-          hoverRaf = null;
-          applyHoverState(pendingHoverTarget);
-        });
-      }
-    });
+      const target = e.target;
+      if (hoverRaf) cancelAnimationFrame(hoverRaf);
+      hoverRaf = requestAnimationFrame(() => {
+        applyHoverState(target);
+      });
+    }
+
+    document.addEventListener('mouseover', handlePointerHover, { passive: true });
+    document.addEventListener('mousemove', handlePointerHover, { passive: true });
 
     document.addEventListener('mouseout', (e) => {
       if (hoveredEl && (!e.relatedTarget || !hoveredEl.contains(e.relatedTarget))) {
@@ -4032,7 +4181,7 @@
         hoveredEl = null;
         tooltip.style.display = 'none';
       }
-    });
+    }, { passive: true });
 
     // Delegated Click to Edit & Navbar Navigation
     document.addEventListener('click', (e) => {
@@ -4166,18 +4315,44 @@
       // 5. In Edit Mode: If clicking inside toolbar or blog body editor, allow interaction
       if (e.target.closest('#cms-inline-toolbar') || e.target.closest('#cms-hover-tooltip') || e.target.closest('#cms-image-popover') || e.target.closest('#cms-blog-body-docked-bar') || e.target.closest('#cms-selection-bubble')) return;
 
+      // Check if clicking the site logo (anchor or image) to navigate to the homepage
+      const logoAnchor = e.target.closest('a[href="/"], a[href="/index.html"], a[href="../index.html"], a[href="index.html"]');
+      const isLogoImg = e.target.id === 'nav-logo' || (e.target.classList && e.target.classList.contains('hd-logo')) || (logoAnchor && logoAnchor.contains(e.target));
+      if (logoAnchor || isLogoImg) {
+        e.preventDefault();
+        e.stopPropagation();
+        if (activeEl) {
+          saveCurrentActive();
+        }
+        if (isInsideIframe && window.parent && window.parent !== window) {
+          try {
+            window.parent.postMessage({
+              type: 'CMS_NAVIGATE_PAGE',
+              url: (logoAnchor && logoAnchor.href) || '/',
+              path: '/'
+            }, '*');
+          } catch (err) { }
+        }
+        window.location.href = (window.location.origin || '') + '/index.html?cms_editor=1';
+        return;
+      }
+
+      // Check for image click FIRST (including images inside article content body)
+      const clickedImg = e.target.closest('img') || (e.target.closest('figure') ? e.target.closest('figure').querySelector('img') : null);
+      if (clickedImg) {
+        e.preventDefault();
+        e.stopPropagation();
+        if (activeEl) {
+          saveCurrentActive();
+        }
+        openImagePickerPopover(clickedImg);
+        return;
+      }
+
       if (e.target.closest('#detail-content-body')) {
         if (activeEl) {
           saveCurrentActive();
         }
-        return;
-      }
-
-      const clickedImg = e.target.closest('img');
-      if (clickedImg) {
-        e.preventDefault();
-        e.stopPropagation();
-        openImagePickerPopover(clickedImg);
         return;
       }
 
@@ -4473,9 +4648,12 @@
         openFn();
       } else if (msg.type === 'CMS_SET_MODE') {
         setEditMode(msg.mode === 'edit', false, false);
-      } else if (msg.type === 'CMS_SAVE_ACTIVE') {
+      } else if (msg.type === 'CMS_SAVE_ACTIVE' || msg.type === 'CMS_FORCE_BLUR_SAVE') {
         if (activeEl) {
           saveCurrentActive();
+        }
+        if (typeof triggerBlogBodySave === 'function') {
+          triggerBlogBodySave();
         }
       } else if (msg.type === 'CMS_UPDATE_BLOG_DRAFT') {
         updateLiveBlogDraft(msg.draft);

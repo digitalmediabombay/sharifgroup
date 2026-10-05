@@ -1,4 +1,4 @@
-﻿'use strict';
+'use strict';
 
 // ─── CREDENTIALS (Demo) ───────────────────────────────────────
 const CMS_CREDENTIALS = {
@@ -1667,6 +1667,52 @@ const Backend = {
                 try { itemVal = JSON.parse(trimmed); } catch(e) {}
               }
             }
+
+            // CRITICAL SAFETY GUARD: For sgcms_blog, NEVER blindly wipe out local articles that haven't synced yet
+            if (k === 'sgcms_blog' && Array.isArray(itemVal)) {
+              let localBlogs = [];
+              const targetStoreKey = (mode === 'live') ? 'sgcms_blog_live' : 'sgcms_blog';
+              try { localBlogs = JSON.parse(localStorage.getItem(targetStoreKey)) || []; } catch(e) {}
+              if (!localBlogs.length && mode === 'draft') {
+                try { localBlogs = JSON.parse(localStorage.getItem('sgcms_blog_live')) || []; } catch(e) {}
+              }
+
+              if (Array.isArray(localBlogs) && localBlogs.length) {
+                let delSlugs = [];
+                try { delSlugs = JSON.parse(localStorage.getItem('sgcms_deleted_slugs')) || []; } catch(e) {}
+                const delSet = new Set(delSlugs.map(s => String(s).toLowerCase().trim()));
+
+                const serverIds = new Set(itemVal.map(b => String((b && b.id) || '').toLowerCase().trim()));
+                const serverSlugs = new Set(itemVal.map(b => String((b && (b.slug || b.en?.slug)) || '').toLowerCase().trim()));
+
+                let merged = [...itemVal];
+                let hasUnsynced = false;
+
+                localBlogs.forEach(lb => {
+                  if (!lb) return;
+                  const lid = String(lb.id || '').toLowerCase().trim();
+                  const lslug = String(lb.slug || lb.en?.slug || '').toLowerCase().trim();
+                  const isDeleted = (lid && delSet.has(lid)) || (lslug && delSet.has(lslug)) || lb.deleted || lb.status === 'deleted';
+                  
+                  // If not deleted and missing from server payload, keep it!
+                  if (!isDeleted) {
+                    const alreadyInServer = (lid && serverIds.has(lid)) || (lslug && serverSlugs.has(lslug));
+                    if (!alreadyInServer) {
+                      merged.unshift(lb);
+                      hasUnsynced = true;
+                    }
+                  }
+                });
+
+                itemVal = merged;
+
+                // If local additions exist that server was missing, auto-sync to backend in background
+                if (hasUnsynced && typeof this.syncToDb === 'function') {
+                  setTimeout(() => { this.syncToDb('draft'); }, 400);
+                }
+              }
+            }
+
             const valStr = JSON.stringify(itemVal);
             if (mode === 'live') {
               localStorage.setItem(k + '_live', valStr);

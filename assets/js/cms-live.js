@@ -68,13 +68,58 @@
     return '/' + url;
   }
 
-  function setEl(selector, text, all) {
+  function isEnglishFallback(str, currentLang) {
+    if (!str || typeof str !== 'string') return true;
+    if (isCorrupted(str)) return true;
+    if (!currentLang || currentLang === 'en') return false;
+    var trimmed = str.trim();
+    var enPhrases = [
+      'About Sharif Group',
+      'EXECUTIVE BRIEFING',
+      'A premier migration, citizenship, and luxury investment advisory platform rooted in Business Bay, Dubai.',
+      'WHO WE ARE',
+      'Company Overview: Sharif Group',
+      'Company Overview:',
+      'Sharif Group is a dedicated private consulting company based in Business Bay, Dubai.',
+      'Book Consultation',
+      'Three Companies. One Commitment.',
+      'CORPORATE ARCHITECTURE',
+      'A MESSAGE FROM OUR FOUNDER',
+      'Ali Sharif',
+      'CEO & Founder, Sharif Group',
+      'Schedule Your Expert Consultation Today',
+      'Request Executive Briefing'
+    ];
+    if (enPhrases.indexOf(trimmed) !== -1) return true;
+    if (currentLang === 'ar' || currentLang === 'fa') {
+      var hasArabic = /[\u0600-\u06FF\u0750-\u077F\u08A0-\u08FF\uFB50-\uFDFF\uFE70-\uFEFF]/.test(trimmed);
+      var isAscii = /^[A-Za-z0-9\s.,:;!?'"()&/\-]+$/.test(trimmed);
+      if (!hasArabic && isAscii && trimmed.length > 3) return true;
+    }
+    if (currentLang === 'zh') {
+      var hasChinese = /[\u4E00-\u9FFF]/.test(trimmed);
+      var isAsciiZh = /^[A-Za-z0-9\s.,:;!?'"()&/\-]+$/.test(trimmed);
+      if (!hasChinese && isAsciiZh && trimmed.length > 3) return true;
+    }
+    return false;
+  }
+
+  function setEl(selector, text, all, lang) {
     if (text == null || text === '' || isCorrupted(text)) return;
+    var targetLang = lang || getLang();
+    if (targetLang && targetLang !== 'en' && isEnglishFallback(text, targetLang)) return;
     var list = all
       ? Array.from(document.querySelectorAll(selector))
       : [document.querySelector(selector)];
+    var nextText = String(text);
+    var nextTrimmed = nextText.trim();
     for (var i = 0; i < list.length; i++) {
-      if (list[i]) list[i].textContent = text;
+      if (list[i]) {
+        var curTrimmed = (list[i].textContent || '').trim();
+        if (curTrimmed !== nextTrimmed) {
+          list[i].textContent = nextText;
+        }
+      }
     }
   }
 
@@ -217,41 +262,6 @@
   }
 
   /* ── About-Us Page Hydration ────────────────────── */
-  function isEnglishFallback(str, currentLang) {
-    if (!str || typeof str !== 'string') return true;
-    if (isCorrupted(str)) return true;
-    if (currentLang === 'en') return false;
-    var trimmed = str.trim();
-    var enPhrases = [
-      'About Sharif Group',
-      'EXECUTIVE BRIEFING',
-      'A premier migration, citizenship, and luxury investment advisory platform rooted in Business Bay, Dubai.',
-      'WHO WE ARE',
-      'Company Overview: Sharif Group',
-      'Company Overview:',
-      'Sharif Group is a dedicated private consulting company based in Business Bay, Dubai.',
-      'Book Consultation',
-      'Three Companies. One Commitment.',
-      'CORPORATE ARCHITECTURE',
-      'A MESSAGE FROM OUR FOUNDER',
-      'Ali Sharif',
-      'CEO & Founder, Sharif Group',
-      'Schedule Your Expert Consultation Today',
-      'Request Executive Briefing'
-    ];
-    if (enPhrases.indexOf(trimmed) !== -1) return true;
-    if (currentLang === 'ar' || currentLang === 'fa') {
-      var hasArabic = /[\u0600-\u06FF\u0750-\u077F\u08A0-\u08FF\uFB50-\uFDFF\uFE70-\uFEFF]/.test(trimmed);
-      var isAscii = /^[A-Za-z0-9\s.,:;!?'"()&/\-]+$/.test(trimmed);
-      if (!hasArabic && isAscii && trimmed.length > 3) return true;
-    }
-    if (currentLang === 'zh') {
-      var hasChinese = /[\u4E00-\u9FFF]/.test(trimmed);
-      var isAsciiZh = /^[A-Za-z0-9\s.,:;!?'"()&/\-]+$/.test(trimmed);
-      if (!hasChinese && isAsciiZh && trimmed.length > 3) return true;
-    }
-    return false;
-  }
 
   function hydrateAboutUs(l) {
     var au = _data.sgcms_aboutus;
@@ -352,16 +362,53 @@
   }
 
   /* ── Blog Hydration (Public Grid & Reader) ───────── */
-  function mapCategoryToDataCat(cat, subcat) {
+  function mapCategoryToDataCat(cat, subcat, title, slug) {
     cat = (cat || '').toLowerCase();
     subcat = (subcat || '').toLowerCase();
+    title = (title || '').toLowerCase();
+    slug = (slug || '').toLowerCase();
     var res = [];
-    if (cat.indexOf('citizen') !== -1 || subcat.indexOf('citizen') !== -1) res.push('citizenship');
+    if (cat.indexOf('citizen') !== -1 || subcat.indexOf('citizen') !== -1 || title.indexOf('passport') !== -1 || title.indexOf('citizen') !== -1) res.push('citizenship');
     if (cat.indexOf('residen') !== -1 || subcat.indexOf('residen') !== -1) res.push('residency');
-    if (cat.indexOf('golden') !== -1 || subcat.indexOf('golden') !== -1) res.push('golden-visa');
+    if (cat.indexOf('golden') !== -1 || subcat.indexOf('golden') !== -1) { res.push('golden-visa'); res.push('residency'); }
     if (cat.indexOf('estate') !== -1 || subcat.indexOf('estate') !== -1) res.push('real-estate');
     if (cat.indexOf('educat') !== -1 || subcat.indexOf('educat') !== -1) res.push('educational');
-    return res.length ? res.join(' ') : 'citizenship';
+    if (cat.indexOf('company') !== -1 || cat.indexOf('tax') !== -1 || cat.indexOf('corporate') !== -1) res.push('company');
+    if (cat.indexOf('sharif') !== -1) res.push('sharif');
+
+    var knownSubs = {
+      'dominica': 'dominica',
+      'st-kitts': 'st-kitts',
+      'stkitts': 'st-kitts',
+      'antigua': 'antigua',
+      'saint-lucia': 'saint-lucia',
+      'stlucia': 'saint-lucia',
+      'grenada': 'grenada',
+      'vanuatu': 'vanuatu',
+      'sao-tome': 'sao-tome',
+      'saotome': 'sao-tome',
+      'nauru': 'nauru',
+      'portugal': 'portugal',
+      'greece': 'greece',
+      'panama': 'panama',
+      'uae': 'uae'
+    };
+
+    for (var k in knownSubs) {
+      if (subcat.indexOf(k) !== -1 || title.indexOf(k.replace(/-/g, ' ')) !== -1 || slug.indexOf(k) !== -1) {
+        var tag = knownSubs[k];
+        if (res.indexOf(tag) === -1) res.push(tag);
+        if (tag === 'dominica' || tag === 'st-kitts' || tag === 'antigua' || tag === 'saint-lucia' || tag === 'grenada' || tag === 'vanuatu' || tag === 'sao-tome' || tag === 'nauru') {
+          if (res.indexOf('citizenship') === -1) res.push('citizenship');
+        }
+        if (tag === 'portugal' || tag === 'greece' || tag === 'panama' || tag === 'uae') {
+          if (res.indexOf('residency') === -1) res.push('residency');
+        }
+      }
+    }
+
+    if (!res.length) res.push('citizenship');
+    return Array.from(new Set(res)).join(' ');
   }
 
   function hydrateBlog(l) {
@@ -416,7 +463,7 @@
 
       var subcat = b.subcategory ? ' · ' + b.subcategory : '';
       var catDisplay = (b.category || 'Sharif Group Insights') + subcat;
-      var dataCat = mapCategoryToDataCat(b.category, b.subcategory);
+      var dataCat = mapCategoryToDataCat(b.category, b.subcategory, title, slug);
 
       var localizedFaqs = (ld.faqs && Array.isArray(ld.faqs) && ld.faqs.length) ? ld.faqs
         : ((b[l] && b[l].faqs && Array.isArray(b[l].faqs) && b[l].faqs.length) ? b[l].faqs
@@ -468,7 +515,7 @@
       var readMoreLabel = (l === 'ar') ? 'اقرأ المزيد' : ((l === 'fa') ? 'ادامه مطلب' : ((l === 'zh') ? '阅读更多' : 'READ MORE'));
 
       if (existingCard) {
-        existingCard.setAttribute('data-cat', dataCat);
+        var existingCat = existingCard.getAttribute('data-cat') || ''; var combinedCat = Array.from(new Set((existingCat + ' ' + dataCat).trim().split(/\s+/))).filter(Boolean).join(' '); existingCard.setAttribute('data-cat', combinedCat);
         existingCard.setAttribute('data-cms-slug', slug);
         var h4El = existingCard.querySelector('h4');
         if (h4El) h4El.textContent = title;
@@ -511,9 +558,215 @@
     }
   }
 
+  /* ── Homepage Blog Carousel Hydration ─────────────────── */
+  function formatBlogDate(raw) {
+    if (!raw) return 'Oct 04, 2026';
+    try {
+      var parts = String(raw).split('-');
+      if (parts.length === 3) {
+        var months = ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
+        var mIdx = parseInt(parts[1], 10) - 1;
+        if (mIdx >= 0 && mIdx < 12) {
+          return months[mIdx] + ' ' + parts[2] + ', ' + parts[0];
+        }
+      }
+    } catch (e) {}
+    return raw;
+  }
+
+  function hydrateHomepageBlogs(l) {
+    var slider = document.getElementById('blog-slider-inner');
+    if (!slider) return;
+
+    // Enable smooth native scroll behavior on the slider container
+    try {
+      slider.style.overflowX = 'auto';
+      slider.style.scrollbarWidth = 'none';
+      slider.style.msOverflowStyle = 'none';
+      if (!document.getElementById('hide-blog-slider-scrollbar-style')) {
+        var st = document.createElement('style');
+        st.id = 'hide-blog-slider-scrollbar-style';
+        st.textContent = '#blog-slider-inner::-webkit-scrollbar { display: none !important; }';
+        document.head.appendChild(st);
+      }
+    } catch (e) {}
+
+    var blogs = (_data && _data.sgcms_blog) || [];
+    if (!Array.isArray(blogs) || !blogs.length) {
+      try {
+        var rawLocal = localStorage.getItem('sgcms_blog_live');
+        if (rawLocal) {
+          var parsedLocal = JSON.parse(rawLocal);
+          if (Array.isArray(parsedLocal) && parsedLocal.length) blogs = parsedLocal;
+        }
+      } catch (e) {}
+    }
+    if (!Array.isArray(blogs) || !blogs.length) return;
+
+    var readMoreText = (l === 'ar') ? 'اقرأ المزيد' : ((l === 'fa') ? 'ادامه مطلب' : ((l === 'zh') ? '阅读更多' : 'Read More'));
+
+    // Filter published blogs
+    var publishedBlogs = blogs.filter(function(b) {
+      if (!b) return false;
+      var status = (b['status_' + l] || b.status_en || b.status || (b.en && b.en.status) || 'published').toLowerCase();
+      return (status !== 'draft' && status !== 'hidden');
+    });
+
+    if (!publishedBlogs.length) return;
+
+    // Prepend new blogs (newest first: iterate reversed so the first blog ends up at index 0)
+    publishedBlogs.slice().reverse().forEach(function(b) {
+      var ld = b[l] || b.en || b;
+      var title = (ld && ld.title) || (b.en && b.en.title) || b.title || '';
+      if (!title || isCorrupted(title)) {
+        if (b.en && b.en.title && !isCorrupted(b.en.title)) title = b.en.title;
+        else if (b.title && !isCorrupted(b.title)) title = b.title;
+      }
+      if (!title) return;
+      if (/^read\s+full\s+guide/i.test(title.trim())) {
+        if (b.en && b.en.title && !/^read\s+full\s+guide/i.test(b.en.title.trim())) {
+          title = b.en.title;
+        } else if (b.slug) {
+          title = b.slug.replace(/-/g, ' ').replace(/\b\w/g, function(c){ return c.toUpperCase(); });
+        }
+      }
+
+      var slug = b.slug || (b.en && b.en.slug) || (ld && ld.slug) || b.id;
+      var excerpt = (ld && ld.excerpt) || (b.en && b.en.excerpt) || b.excerpt || '';
+      if (!excerpt) {
+        var rawBody = (ld && ld.body) || (b.en && b.en.body) || b.body || '';
+        if (rawBody) {
+          var cleanText = rawBody.replace(/<[^>]*>/g, ' ').replace(/&nbsp;/g, ' ').replace(/\s+/g, ' ').trim();
+          if (cleanText) {
+            excerpt = cleanText.substring(0, 140) + (cleanText.length > 140 ? '...' : '');
+          }
+        }
+      }
+
+      var cleanImg = normalizeImageUrl(b.featured_img);
+      var catBadge = b.subcategory ? b.subcategory.toUpperCase().replace(/-/g, ' ') : (b.category ? b.category.toUpperCase() : 'INSIGHTS');
+      var blogUrl = '/' + (l !== 'en' ? l + '/' : '') + 'blog/' + slug + '/';
+      var dateStr = formatBlogDate(b.publish_date || '2026-10-01');
+
+      // Check if dynamic card already exists
+      var existing = slider.querySelector('[data-cms-blog-id="' + b.id + '"], [data-cms-slug="' + slug + '"]');
+      if (existing) {
+        var h3Link = existing.querySelector('h3 a') || existing.querySelector('h3');
+        if (h3Link) {
+          h3Link.textContent = title;
+          if (h3Link.tagName.toLowerCase() === 'a') {
+            h3Link.setAttribute('href', blogUrl);
+          } else {
+            var inA = h3Link.querySelector('a');
+            if (inA) {
+              inA.textContent = title;
+              inA.setAttribute('href', blogUrl);
+            }
+          }
+        }
+        var p = existing.querySelector('p');
+        if (p && excerpt) p.textContent = excerpt;
+        var img = existing.querySelector('img');
+        if (img && cleanImg) {
+          img.src = cleanImg;
+          var imgLink = img.closest('a');
+          if (imgLink) imgLink.setAttribute('href', blogUrl);
+        }
+        var badge = existing.querySelector('.relative span');
+        if (badge && catBadge) badge.textContent = catBadge;
+        var dateEl = existing.querySelector('.text-\\[10px\\]');
+        if (dateEl) dateEl.innerHTML = '<i class="fa-regular fa-calendar mr-1"></i> ' + dateStr;
+        var rm = existing.querySelector('[data-home-read-more], .home-blog-read-more, div.px-6.pb-6 a');
+        if (rm && rm !== h3Link) {
+          rm.setAttribute('href', blogUrl);
+          var sp = rm.querySelector('span');
+          if (sp) sp.textContent = readMoreText;
+        }
+        return;
+      }
+
+      // Check if static card with this slug exists
+      var staticCards = slider.querySelectorAll('h3 a');
+      var foundStatic = null;
+      for (var scIdx = 0; scIdx < staticCards.length; scIdx++) {
+        var scLink = staticCards[scIdx];
+        if (scLink.getAttribute('href') && scLink.getAttribute('href').indexOf(slug) !== -1) {
+          foundStatic = scLink.closest('.bg-neutral-900') || scLink.parentElement.parentElement.parentElement;
+          break;
+        }
+      }
+      if (foundStatic) {
+        foundStatic.setAttribute('data-cms-blog-id', b.id);
+        foundStatic.setAttribute('data-cms-slug', slug);
+        var staticH3Link = foundStatic.querySelector('h3 a') || foundStatic.querySelector('h3');
+        if (staticH3Link) {
+          staticH3Link.textContent = title;
+          if (staticH3Link.tagName.toLowerCase() === 'a') {
+            staticH3Link.setAttribute('href', blogUrl);
+          } else {
+            var stA = staticH3Link.querySelector('a');
+            if (stA) {
+              stA.textContent = title;
+              stA.setAttribute('href', blogUrl);
+            }
+          }
+        }
+        var staticP = foundStatic.querySelector('p');
+        if (staticP && excerpt) staticP.textContent = excerpt;
+        var staticImg = foundStatic.querySelector('img');
+        if (staticImg && cleanImg) staticImg.src = cleanImg;
+        return;
+      }
+
+      // Create new dynamic card matching the exact homepage luxury dark styling
+      var card = document.createElement('div');
+      card.className = 'bg-neutral-900 rounded-[2rem] border border-luxury-gold/30 overflow-hidden shadow-xl flex flex-col justify-between hover:shadow-[0_0_25px_rgba(197,168,128,0.4)] transition duration-500 min-w-[320px] max-w-[320px] shrink-0 group dynamic-home-blog';
+      card.setAttribute('data-cms-blog-id', b.id);
+      card.setAttribute('data-cms-slug', slug);
+
+      card.innerHTML =
+        '<div>' +
+          '<div class="relative aspect-[16/10] overflow-hidden">' +
+            '<img alt="' + title.replace(/"/g, '&quot;') + '" class="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110" src="' + cleanImg + '" onerror="this.onerror=null;this.src=\'/assets/images/dubai-office-2.webp\'" loading="lazy" decoding="async"/>' +
+            '<div class="absolute inset-0 bg-gradient-to-t from-neutral-950 via-transparent to-transparent opacity-60"></div>' +
+            '<span class="absolute top-3 left-3 px-3 py-1 bg-black/70 backdrop-blur-md text-[10px] uppercase font-bold tracking-wider text-luxury-gold border border-luxury-gold/30 rounded-full">' + catBadge + '</span>' +
+          '</div>' +
+          '<div class="p-6 space-y-2.5 text-left">' +
+            '<span class="text-[10px] text-luxury-gold font-bold uppercase tracking-widest"><i class="fa-regular fa-calendar mr-1"></i> ' + dateStr + '</span>' +
+            '<h3 class="font-serif font-bold text-white text-base group-hover:text-luxury-gold transition leading-snug">' +
+              '<a href="' + blogUrl + '">' + title + '</a>' +
+            '</h3>' +
+            '<p class="text-xs text-neutral-300 leading-relaxed font-light line-clamp-3">' + excerpt + '</p>' +
+          '</div>' +
+        '</div>' +
+        '<div class="px-6 pb-6 pt-0 text-left">' +
+          '<a class="inline-flex items-center gap-1.5 text-xs uppercase tracking-widest text-luxury-gold font-bold group-hover:text-white transition home-blog-read-more" data-home-read-more="true" href="' + blogUrl + '">' +
+            '<span>' + readMoreText + '</span> <i class="fa-solid fa-arrow-right text-[10px] transition-transform duration-300 group-hover:translate-x-1"></i>' +
+          '</a>' +
+        '</div>';
+
+      slider.prepend(card);
+    });
+    try {
+      var allCards = slider.querySelectorAll('.premium-hover, .bg-white.rounded-3xl');
+      allCards.forEach(function(c) {
+        if (c.getAttribute('data-clickable-initialized')) return;
+        c.setAttribute('data-clickable-initialized', 'true');
+        c.style.cursor = 'pointer';
+        c.addEventListener('click', function(e) {
+          if (e.target.closest('a') || e.target.closest('button')) return;
+          var a = c.querySelector('h4 a, a.program-blog-read-more, a[data-program-read-more]');
+          if (a && a.href) {
+            window.location.href = a.href;
+          }
+        });
+      });
+    } catch(e) {}
+  }
+
   /* ── Program / Service Pages Blog Carousel Hydration ── */
   function hydrateProgramPageBlogs(l) {
-    var slider = document.getElementById('dominica-blog-slider-inner') || document.querySelector('[id*="blog-slider-inner"]');
+    var slider = document.getElementById('dominica-blog-slider-inner');
     if (!slider) return;
 
     var path = window.location.pathname.toLowerCase();
@@ -601,10 +854,33 @@
     // Prepend matched blogs to the slider (newest first)
     matchedBlogs.forEach(function(b) {
       var ld = b[l] || b.en || b;
-      var title = ld.title || (b.en && b.en.title) || b.title;
-      if (!title || isCorrupted(title)) return;
-      var slug = b.slug || (b.en && b.en.slug) || ld.slug || b.id;
-      var excerpt = ld.excerpt || (b.en && b.en.excerpt) || '';
+      var title = (ld && ld.title) || (b.en && b.en.title) || b.title || '';
+      if (!title || isCorrupted(title)) {
+        if (b.en && b.en.title && !isCorrupted(b.en.title)) title = b.en.title;
+        else if (b.title && !isCorrupted(b.title)) title = b.title;
+      }
+      if (!title) return;
+      // Guard against title being accidentally saved as "Read Full Guide"
+      if (/^read\s+full\s+guide/i.test(title.trim())) {
+        if (b.en && b.en.title && !/^read\s+full\s+guide/i.test(b.en.title.trim())) {
+          title = b.en.title;
+        } else if (b.slug) {
+          title = b.slug.replace(/-/g, ' ').replace(/\b\w/g, function(c){ return c.toUpperCase(); });
+        }
+      }
+
+      var slug = b.slug || (b.en && b.en.slug) || (ld && ld.slug) || b.id;
+      var excerpt = (ld && ld.excerpt) || (b.en && b.en.excerpt) || b.excerpt || '';
+      if (!excerpt) {
+        var rawBody = (ld && ld.body) || (b.en && b.en.body) || b.body || '';
+        if (rawBody) {
+          var cleanText = rawBody.replace(/<[^>]*>/g, ' ').replace(/&nbsp;/g, ' ').replace(/\s+/g, ' ').trim();
+          if (cleanText) {
+            excerpt = cleanText.substring(0, 130) + (cleanText.length > 130 ? '...' : '');
+          }
+        }
+      }
+
       var cleanImg = normalizeImageUrl(b.featured_img);
       var catBadge = b.subcategory ? b.subcategory.toUpperCase().replace(/-/g, ' ') : (b.category || 'INSIGHTS');
       var blogUrl = '/' + (l !== 'en' ? l + '/' : '') + 'blog/' + slug + '/';
@@ -613,17 +889,27 @@
       // Check if dynamic card already exists
       var existing = slider.querySelector('[data-cms-blog-id="' + b.id + '"], [data-cms-slug="' + slug + '"]');
       if (existing) {
-        var h4 = existing.querySelector('h4 a');
-        if (h4) {
-          h4.textContent = title;
-          h4.setAttribute('href', blogUrl);
+        var h4Link = existing.querySelector('h4 a');
+        if (h4Link) {
+          h4Link.textContent = title;
+          h4Link.setAttribute('href', blogUrl);
+        } else {
+          var h4 = existing.querySelector('h4');
+          if (h4) {
+            h4.innerHTML = '<a href="' + blogUrl + '">' + title + '</a>';
+          }
         }
         var p = existing.querySelector('p');
         if (p && excerpt) p.textContent = excerpt;
         var img = existing.querySelector('img');
-        if (img && cleanImg) img.src = cleanImg;
-        var rm = existing.querySelector('a[href*="/blog/"]');
-        if (rm) {
+        if (img && cleanImg) {
+          img.src = cleanImg;
+          var imgLink = img.closest('a');
+          if (imgLink) imgLink.setAttribute('href', blogUrl);
+        }
+        // Target ONLY the bottom Read More button, never the title link!
+        var rm = existing.querySelector('[data-program-read-more], .program-blog-read-more, div.px-6.pb-6 a');
+        if (rm && rm !== h4Link) {
           rm.setAttribute('href', blogUrl);
           rm.textContent = readMoreLabel + ' →';
         }
@@ -643,15 +929,29 @@
       if (foundStatic) {
         foundStatic.setAttribute('data-cms-blog-id', b.id);
         foundStatic.setAttribute('data-cms-slug', slug);
-        var h4 = foundStatic.querySelector('h4 a');
-        if (h4) {
-          h4.textContent = title;
-          h4.setAttribute('href', blogUrl);
+        var staticH4Link = foundStatic.querySelector('h4 a');
+        if (staticH4Link) {
+          staticH4Link.textContent = title;
+          staticH4Link.setAttribute('href', blogUrl);
+        } else {
+          var staticH4 = foundStatic.querySelector('h4');
+          if (staticH4) {
+            staticH4.innerHTML = '<a href="' + blogUrl + '">' + title + '</a>';
+          }
         }
         var p = foundStatic.querySelector('p');
         if (p && excerpt) p.textContent = excerpt;
         var img = foundStatic.querySelector('img');
-        if (img && cleanImg) img.src = cleanImg;
+        if (img && cleanImg) {
+          img.src = cleanImg;
+          var staticImgLink = img.closest('a');
+          if (staticImgLink) staticImgLink.setAttribute('href', blogUrl);
+        }
+        var staticRm = foundStatic.querySelector('[data-program-read-more], .program-blog-read-more, div.px-6.pb-6 a');
+        if (staticRm && staticRm !== staticH4Link) {
+          staticRm.setAttribute('href', blogUrl);
+          staticRm.textContent = readMoreLabel + ' →';
+        }
         return;
       }
 
@@ -664,8 +964,10 @@
       card.innerHTML =
         '<div>' +
           '<div class="relative h-48 overflow-hidden bg-neutral-900">' +
-            '<img alt="' + title.replace(/"/g, '&quot;') + '" class="w-full h-full object-cover transition-transform duration-500 hover:scale-105" src="' + cleanImg + '" onerror="this.onerror=null;this.src=\'/assets/images/dubai-office-2.webp\'" />' +
-            '<span class="absolute top-4 left-4 px-3 py-1 bg-neutral-900/90 backdrop-blur text-[9px] font-bold uppercase tracking-widest text-luxury-gold rounded-full border border-luxury-gold/30">' + catBadge + '</span>' +
+            '<a href="' + blogUrl + '" class="block w-full h-full">' +
+              '<img alt="' + title.replace(/"/g, '&quot;') + '" class="w-full h-full object-cover transition-transform duration-500 hover:scale-105" src="' + cleanImg + '" onerror="this.onerror=null;this.src=\'/assets/images/dubai-office-2.webp\'" />' +
+            '</a>' +
+            '<span class="absolute top-4 left-4 px-3 py-1 bg-neutral-900/90 backdrop-blur text-[9px] font-bold uppercase tracking-widest text-luxury-gold rounded-full border border-luxury-gold/30 pointer-events-none">' + catBadge + '</span>' +
           '</div>' +
           '<div class="p-6 space-y-2 text-left">' +
             '<span class="text-[10px] text-neutral-400 font-bold block">' + dateStr + '</span>' +
@@ -676,13 +978,28 @@
           '</div>' +
         '</div>' +
         '<div class="px-6 pb-6 pt-2 text-left">' +
-          '<a class="text-xs font-bold uppercase tracking-wider text-[#786142] border-b border-[#786142] hover:text-luxury-gold hover:border-luxury-gold transition-colors pb-0.5 inline-block" href="' + blogUrl + '">' +
+          '<a class="text-xs font-bold uppercase tracking-wider text-[#786142] border-b border-[#786142] hover:text-luxury-gold hover:border-luxury-gold transition-colors pb-0.5 inline-block program-blog-read-more" data-program-read-more="true" href="' + blogUrl + '">' +
             readMoreLabel + ' →' +
           '</a>' +
         '</div>';
 
       slider.prepend(card);
     });
+    try {
+      var allCards = slider.querySelectorAll('.premium-hover, .bg-white.rounded-3xl');
+      allCards.forEach(function(c) {
+        if (c.getAttribute('data-clickable-initialized')) return;
+        c.setAttribute('data-clickable-initialized', 'true');
+        c.style.cursor = 'pointer';
+        c.addEventListener('click', function(e) {
+          if (e.target.closest('a') || e.target.closest('button')) return;
+          var a = c.querySelector('h4 a, a.program-blog-read-more, a[data-program-read-more]');
+          if (a && a.href) {
+            window.location.href = a.href;
+          }
+        });
+      });
+    } catch(e) {}
   }
 
   /* ── Main Hydration Router ──────────────────────── */
@@ -706,8 +1023,9 @@
       (!path.match(/\/citizenship|\/residency|\/programs|\/about|\/contact|\/blog|\/cookie|\/eligibility|\/realestate|\/educational|\/privacy|\/term|\/social|\/ali-sharif/))
     );
 
-    if (isHome) {
+    if (isHome || document.getElementById('blog-slider-inner')) {
       hydrateHomepage(l);
+      hydrateHomepageBlogs(l);
     } else if (path.indexOf('/about') !== -1 && path.indexOf('/programs') === -1) {
       hydrateAboutUs(l);
     } else if (path.indexOf('/contact') !== -1) {
@@ -738,9 +1056,78 @@
     runHydration(l);
   });
 
-  /* ── Fetch published_content.json ───────────────── */
+  /* ── Instant 0ms Pre-Hydration from Local Live Store ───────────────── */
+  try {
+    var cachedLiveBlogs = localStorage.getItem('sgcms_blog_live');
+    if (cachedLiveBlogs) {
+      var parsedBlogs = JSON.parse(cachedLiveBlogs);
+      if (Array.isArray(parsedBlogs) && parsedBlogs.length) {
+        if (!_data) _data = {};
+        _data.sgcms_blog = parsedBlogs;
+        runHydration(getLang());
+      }
+    }
+  } catch (e) {}
+
+  /* ── Cross-Tab Real-Time Sync (0ms latency across tabs & iframe) ───── */
+  try {
+    if (typeof BroadcastChannel !== 'undefined') {
+      var bc = new BroadcastChannel('sgcms_blog_channel');
+      bc.onmessage = function (ev) {
+        if (ev && ev.data && ev.data.type === 'BLOGS_UPDATED' && Array.isArray(ev.data.blogs)) {
+          if (!_data) _data = {};
+          _data.sgcms_blog = ev.data.blogs;
+          try {
+            localStorage.setItem('sgcms_blog_live', JSON.stringify(ev.data.blogs));
+          } catch (e) {}
+          var curL = getLang();
+          runHydration(curL);
+          if (document.getElementById('blog-slider-inner')) hydrateHomepageBlogs(curL);
+          if (typeof window.paginateBlogs === 'function') window.paginateBlogs();
+          if (typeof window.handleDirectArticleRoute === 'function') window.handleDirectArticleRoute();
+        }
+      };
+    }
+  } catch (e) {}
+
+  window.addEventListener('storage', function (e) {
+    if (e.key === 'sgcms_blog_live' && e.newValue) {
+      try {
+        var updated = JSON.parse(e.newValue);
+        if (Array.isArray(updated) && updated.length) {
+          if (!_data) _data = {};
+          _data.sgcms_blog = updated;
+          var curL = getLang();
+          runHydration(curL);
+          if (document.getElementById('blog-slider-inner')) hydrateHomepageBlogs(curL);
+          if (typeof window.paginateBlogs === 'function') window.paginateBlogs();
+        }
+      } catch (err) {}
+    }
+  });
+
+  window.addEventListener('message', function (ev) {
+    if (ev && ev.data && ev.data.type === 'CMS_BLOGS_LIVE_UPDATED' && Array.isArray(ev.data.blogs)) {
+      if (!_data) _data = {};
+      _data.sgcms_blog = ev.data.blogs;
+      try {
+        localStorage.setItem('sgcms_blog_live', JSON.stringify(ev.data.blogs));
+      } catch (e) {}
+      var curL = getLang();
+      runHydration(curL);
+      if (document.getElementById('blog-slider-inner')) hydrateHomepageBlogs(curL);
+      if (typeof window.paginateBlogs === 'function') window.paginateBlogs();
+    }
+  });
+
+  /* ── Fetch published_content.json from Server ───────────────── */
   function fetchAndApply() {
+    var primaryUrl = (window.location.pathname.indexOf('/blog') !== -1 || window.location.pathname.indexOf('/programs') !== -1)
+      ? '/admin/api/published_content.json?v=' + Date.now()
+      : 'admin/api/published_content.json?v=' + Date.now();
+
     var candidates = [
+      primaryUrl,
       '/admin/api/published_content.json?v=' + Date.now(),
       '/admin/api/content.php?mode=live&v=' + Date.now(),
       '../admin/api/published_content.json?v=' + Date.now(),
@@ -754,7 +1141,7 @@
         return;
       }
       var url = candidates[idx++];
-      fetch(url, { cache: 'no-cache' })
+      fetch(url, { cache: 'no-store' })
         .then(function (res) {
           if (!res.ok) { tryNext(); return null; }
           return res.json();
@@ -790,7 +1177,12 @@
                     window.handleDirectArticleRoute();
                   }
                 }, 50);
-              } else if (document.getElementById('dominica-blog-slider-inner') || document.querySelector('[id*="blog-slider-inner"]')) {
+              } else if (document.getElementById('blog-slider-inner')) {
+                var lang = getLang();
+                setTimeout(function () {
+                  hydrateHomepageBlogs(lang);
+                }, 50);
+              } else if (document.getElementById('dominica-blog-slider-inner')) {
                 var lang = getLang();
                 setTimeout(function () {
                   hydrateProgramPageBlogs(lang);
@@ -806,6 +1198,62 @@
 
     tryNext();
   }
+
+  /* ── 0ms Instant Boot Hydration from Local Live Store ──────── */
+  try {
+    var rawLocal = localStorage.getItem('sgcms_blog_live');
+    if (rawLocal) {
+      var cachedBlogs = JSON.parse(rawLocal);
+      if (Array.isArray(cachedBlogs) && cachedBlogs.length) {
+        _data = _data || {};
+        _data.sgcms_blog = cachedBlogs;
+        var initLang = getLang();
+        if (window.location.pathname.toLowerCase().indexOf('/blog') !== -1) {
+          hydrateBlog(initLang);
+        } else if (document.getElementById('blog-slider-inner')) {
+          hydrateHomepageBlogs(initLang);
+        } else if (document.getElementById('dominica-blog-slider-inner')) {
+          hydrateProgramPageBlogs(initLang);
+        }
+      }
+    }
+  } catch (e) { }
+
+  /* ── 0ms Real-Time Multi-Tab Broadcast Synchronization ─────── */
+  try {
+    if (typeof BroadcastChannel !== 'undefined') {
+      var bc = new BroadcastChannel('sgcms_blog_channel');
+      bc.onmessage = function (e) {
+        if (e.data && e.data.blogs && Array.isArray(e.data.blogs)) {
+          _data = _data || {};
+          _data.sgcms_blog = e.data.blogs;
+          try { localStorage.setItem('sgcms_blog_live', JSON.stringify(e.data.blogs)); } catch (err) { }
+          var activeLang = getLang();
+          if (window.location.pathname.toLowerCase().indexOf('/blog') !== -1) {
+            hydrateBlog(activeLang);
+            if (typeof window.paginateBlogs === 'function') window.paginateBlogs();
+            if (typeof window.handleDirectArticleRoute === 'function') window.handleDirectArticleRoute();
+          } else if (document.getElementById('blog-slider-inner')) {
+            hydrateHomepageBlogs(activeLang);
+          } else if (document.getElementById('dominica-blog-slider-inner')) {
+            hydrateProgramPageBlogs(activeLang);
+          }
+        }
+      };
+    }
+  } catch (e) { }
+
+  window.slideBlogs = function (direction) {
+    var inner = document.getElementById('blog-slider-inner');
+    if (!inner) return;
+    var cardWidth = 344;
+    var scrollAmount = cardWidth * 2;
+    if (direction === 'right') {
+      inner.scrollBy({ left: scrollAmount, behavior: 'smooth' });
+    } else {
+      inner.scrollBy({ left: -scrollAmount, behavior: 'smooth' });
+    }
+  };
 
   if (document.readyState === 'loading') {
     document.addEventListener('DOMContentLoaded', fetchAndApply);

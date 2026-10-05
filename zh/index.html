@@ -362,6 +362,28 @@ j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
             transform: translateY(-2px);
         }
     </style>
+    <!-- CMS Live Studio Integration (Active inside dashboard editor) -->
+    <script>
+        (function() {
+            var inIframe = window.self !== window.top;
+            var isEditor = window.location.search.indexOf('cms_editor') !== -1;
+            if (inIframe || isEditor) {
+                try {
+                    var st = document.createElement('style');
+                    st.textContent = '#preloader { display: none !important; } body { overflow: auto !important; }';
+                    document.head.appendChild(st);
+                } catch(e) {}
+                var s = document.createElement('script');
+                s.src = '/admin/cms-loader.js?v=' + Date.now();
+                s.onerror = function() {
+                    var fb = document.createElement('script');
+                    fb.src = (window.location.pathname.indexOf('/programs/') !== -1 ? '../../../admin/cms-loader.js' : '../admin/cms-loader.js') + '?v=' + Date.now();
+                    document.head.appendChild(fb);
+                };
+                document.head.appendChild(s);
+            }
+        })();
+    </script>
 </head>
 <body class="bg-luxury-light text-luxury-dark font-sans overflow-x-hidden">
 <!-- Google Tag Manager (noscript) -->
@@ -708,31 +730,31 @@ j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
 <div class="absolute inset-0 bg-gradient-to-t from-neutral-950/90 via-transparent to-neutral-950/50 z-0"></div>
 <div class="relative z-10 w-full max-w-7xl mx-auto space-y-3 text-center flex flex-col items-center">
 <span class="text-sm sm:text-base tracking-[0.25em] uppercase text-luxury-gold font-bold flex items-center justify-center gap-2 mb-1">
-<i class="fa-solid fa-shield-halved text-xs"></i> <span data-i18n="hero.tagline">升级您的品质生活</span>
+<i class="fa-solid fa-shield-halved text-xs"></i> <span data-i18n="hero.tagline">升级您的生活</span>
 </span>
 <h1 class="font-serif text-white font-normal tracking-tight drop-shadow-xl whitespace-nowrap">
-<span class="dominica-hero-glow text-3xl sm:text-5xl md:text-6xl lg:text-7xl xl:text-8xl cursor-pointer" data-i18n="hero.title">欢迎莅临谢里夫集团</span>
+<span class="dominica-hero-glow text-3xl sm:text-5xl md:text-6xl lg:text-7xl xl:text-8xl cursor-pointer" data-i18n="hero.title">欢迎来到谢里夫集团</span>
 </h1>
 <div class="pt-2 pb-1">
 <a class="inline-flex items-center gap-3 group hover:text-luxury-gold transition duration-300" href="/zh/citizenshipbyinvestment/">
 <i class="fa-solid fa-passport text-luxury-gold text-2xl sm:text-3xl md:text-4xl transition-transform duration-300 group-hover:scale-125 group-hover:rotate-12"></i>
-<span class="dominica-hero-glow text-3xl sm:text-5xl md:text-6xl font-serif" data-i18n="hero.citizenship">第二公民身份</span>
+<span class="dominica-hero-glow text-3xl sm:text-5xl md:text-6xl font-serif" data-i18n="hero.citizenship">国籍</span>
 </a>
 </div>
 <div class="w-full max-w-4xl mx-auto flex flex-wrap items-center justify-center gap-3 sm:gap-6 pt-2 text-sm sm:text-base text-neutral-200 font-medium tracking-wide">
 <a class="flex items-center gap-2 group hover:text-luxury-gold transition duration-300" href="/zh/residencybyinvestment/">
 <i class="fa-solid fa-id-card text-luxury-gold text-sm transition-transform duration-300 group-hover:scale-125 group-hover:rotate-12"></i>
-<span class="dominica-hero-glow text-base sm:text-lg" data-i18n="hero.residency">全球长期居留</span>
+<span class="dominica-hero-glow text-base sm:text-lg" data-i18n="hero.residency">居住权</span>
 </a>
 <span class="text-neutral-500 font-light">|</span>
 <a class="flex items-center gap-2 group hover:text-luxury-gold transition duration-300" href="/zh/realestate/">
 <i class="fa-solid fa-building text-luxury-gold text-sm transition-transform duration-300 group-hover:scale-125 group-hover:rotate-12"></i>
-<span class="dominica-hero-glow text-base sm:text-lg" data-i18n="hero.realEstate">海外高端房产</span>
+<span class="dominica-hero-glow text-base sm:text-lg" data-i18n="hero.realEstate">房地产</span>
 </a>
 <span class="text-neutral-500 font-light">|</span>
 <a class="flex items-center gap-2 group hover:text-luxury-gold transition duration-300" href="/zh/educationaladvisory/">
 <i class="fa-solid fa-graduation-cap text-luxury-gold text-sm transition-transform duration-300 group-hover:scale-125 group-hover:rotate-12"></i>
-<span class="dominica-hero-glow text-base sm:text-lg" data-i18n="hero.educationalAdvisory">名校教育规划</span>
+<span class="dominica-hero-glow text-base sm:text-lg" data-i18n="hero.educationalAdvisory">教育咨询</span>
 </a>
 </div>
 </div>
@@ -769,10 +791,10 @@ j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
 <div class="w-10 h-10 rounded-xl bg-luxury-gold/20 text-luxury-gold border border-luxury-gold/40 flex items-center justify-center text-sm shadow-md icon-hover-box transition-all duration-300 group-hover:bg-[#C5A880] group-hover:text-white group-hover:scale-110 group-hover:shadow-[0_0_15px_rgba(197,168,128,0.6)]">
 <i class="fa-solid fa-gem transition-transform duration-300 group-hover:rotate-12"></i>
 </div>
-<span class="text-[10px] font-bold uppercase tracking-[0.25em] text-luxury-gold" data-i18n="about.badge">集团简介</span>
+<span class="text-[10px] font-bold uppercase tracking-[0.25em] text-luxury-gold" data-i18n="about.badge">介绍</span>
 </div>
 <h2 class="font-serif text-3xl sm:text-4xl xl:text-5xl font-bold text-white leading-tight">
-<span data-i18n="about.heading">企业历程与背景：</span> <br/>
+<span data-i18n="about.heading">概述和背景：</span> <br/>
 <span class="italic text-[#C5A880] font-serif font-normal" data-i18n="about.subheading">谢里夫集团</span>
 </h2>
 <div class="w-16 h-[2px] bg-[#C5A880]"></div>
@@ -781,8 +803,8 @@ j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
 <p data-i18n="about.p2">我们经验丰富的专业团队全程把控申请材料、背调合规与政府官方审批，确保整个流程安全合规、顺畅高效、省心无忧。</p>
 </div>
 <div class="pt-4 flex flex-wrap items-center gap-4">
-<a class="inline-block px-7 py-3.5 rounded-xl bg-[#786142] text-white text-xs font-bold uppercase tracking-widest hover:bg-luxury-gold transition duration-300 shadow-xl premium-btn-hover" data-i18n="about.readStory" href="/zh/aboutus/">了解我们历程</a>
-<a class="inline-block px-7 py-3.5 rounded-xl border border-white/30 text-white text-xs font-bold uppercase tracking-widest hover:bg-white hover:text-neutral-900 transition duration-300" data-i18n="about.bookConsultation" href="/zh/contact/">预约专属咨询</a>
+<a class="inline-block px-7 py-3.5 rounded-xl bg-[#786142] text-white text-xs font-bold uppercase tracking-widest hover:bg-luxury-gold transition duration-300 shadow-xl premium-btn-hover" data-i18n="about.readStory" href="aboutus/index.html">阅读概述</a>
+<a class="inline-block px-7 py-3.5 rounded-xl border border-white/30 text-white text-xs font-bold uppercase tracking-widest hover:bg-white hover:text-neutral-900 transition duration-300" data-i18n="about.bookConsultation" href="contact/index.html">预约咨询</a>
 </div>
 </div>
 </div>
@@ -793,10 +815,10 @@ j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
 <!-- Centered Heading Intro -->
 <div class="max-w-4xl mx-auto px-6 text-center space-y-4 mb-20 relative z-20">
 <span class="text-xs tracking-[0.25em] uppercase text-luxury-gold font-bold flex items-center justify-center gap-2">
-<i class="fa-solid fa-star text-[10px]"></i> <span data-i18n="services.badge">核心通道</span>
+<i class="fa-solid fa-star text-[10px]"></i> <span data-i18n="services.badge">特色途径</span>
 </span>
 <p class="text-3xl sm:text-4xl md:text-5xl font-serif font-bold text-white tracking-tight">
-<span data-i18n="services.heading">核心服务与</span> <span class="italic text-luxury-gold font-serif font-normal" data-i18n="services.headingItalic">通道方案</span>
+<span data-i18n="services.heading">我们的服务&amp;</span> <span class="italic text-luxury-gold font-serif font-normal" data-i18n="services.headingItalic">途径</span>
 </p>
 <p class="text-xs text-neutral-400 max-w-lg mx-auto font-light leading-relaxed" data-i18n="services.description">主权双重国籍、欧洲黄金签证、迪拜顶级豪宅资产配置，以及常春藤名校学业规划。</p>
 </div>
@@ -1124,367 +1146,29 @@ j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
 </div>
 <div class="overflow-hidden">
 <div class="flex transition-transform duration-500 ease-in-out gap-6" id="blog-slider-inner" style="transform: translateX(0px);">
-<!-- Blog Card 1 -->
-<div class="bg-neutral-900 rounded-[2rem] border border-luxury-gold/30 overflow-hidden shadow-xl flex flex-col justify-between hover:shadow-[0_0_25px_rgba(197,168,128,0.4)] transition duration-500 min-w-[320px] max-w-[320px] shrink-0 group">
+<div class="bg-neutral-900 rounded-[2rem] border border-luxury-gold/30 overflow-hidden shadow-xl flex flex-col justify-between hover:shadow-[0_0_25px_rgba(197,168,128,0.4)] transition duration-500 min-w-[320px] max-w-[320px] shrink-0 group dynamic-home-blog" data-cms-blog-id="bid-izo738" data-cms-slug="dominica-passport-for-afghans-in-2026">
 <div>
 <div class="relative aspect-[16/10] overflow-hidden">
-<img alt="About Sharif Group" class="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110" decoding="async" loading="lazy" src="/assets/images/dubai-office-2.webp"/>
+<img alt="2026年阿富汗公民申请多米尼克护照指南" class="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110" src="/assets/images/uploads/d1d65d8b-b67e-495f-b779-93a3ff8eb47a_1791006383.webp" onerror="this.onerror=null;this.src='/assets/images/dubai-office-2.webp'" loading="lazy" decoding="async"/>
 <div class="absolute inset-0 bg-gradient-to-t from-neutral-950 via-transparent to-transparent opacity-60"></div>
-<span class="absolute top-3 left-3 px-3 py-1 bg-black/70 backdrop-blur-md text-[10px] uppercase font-bold tracking-wider text-luxury-gold border border-luxury-gold/30 rounded-full">About Us</span>
+<span class="absolute top-3 left-3 px-3 py-1 bg-black/70 backdrop-blur-md text-[10px] uppercase font-bold tracking-wider text-luxury-gold border border-luxury-gold/30 rounded-full">DOMINICA</span>
 </div>
-<div class="p-6 space-y-2.5">
-<span class="text-[10px] text-luxury-gold font-bold uppercase tracking-widest"><i class="fa-regular fa-calendar mr-1"></i> Jan 12, 2026</span>
-<h3 class="font-serif font-bold text-white text-base group-hover:text-luxury-gold transition leading-snug"><a data-i18n="blog.card1Title" href="/zh/blog/about-sharif-group-who-we-are-and-how-we-help/">走近谢里夫集团：企业背景与核心使命</a></h3>
-<p class="text-xs text-neutral-300 leading-relaxed font-light line-clamp-3" data-i18n="blog.card1Desc">了解我们常驻迪拜商业湾的专家团队如何协助全球家庭合规获取第二护照及黄金居留身份。</p>
+<div class="p-6 space-y-2.5 text-left">
+<span class="text-[10px] text-luxury-gold font-bold uppercase tracking-widest"><i class="fa-regular fa-calendar mr-1"></i> Oct 03, 2026</span>
+<h3 class="font-serif font-bold text-white text-base group-hover:text-luxury-gold transition leading-snug"><a href="/zh/blog/dominica-passport-for-afghans-in-2026/">2026年阿富汗公民申请多米尼克护照指南</a></h3>
+<p class="text-xs text-neutral-300 leading-relaxed font-light line-clamp-3">2026年，阿富汗护照在全球护照指数中再次排名末位，持有者仅可免签前往约23至24个目的地。对许多阿富汗家庭而言，这意味着每次办理签证都要等待数月、错失商务机会，未来也被一枚签证印章所左右。多米尼克护照是阿富汗公民获得第二本护照、改变这一现状的合法途径之一。本指南依据官方资料和S...</p>
 </div>
 </div>
-<div class="px-6 pb-6 pt-0">
-<a class="inline-flex items-center gap-1.5 text-xs uppercase tracking-widest text-luxury-gold font-bold group-hover:text-white transition" href="/zh/blog/about-sharif-group-who-we-are-and-how-we-help/"> <span data-i18n="blog.readMore">阅读更多</span> <i class="fa-solid fa-arrow-right text-[10px] transition-transform duration-300 group-hover:translate-x-1"></i>
+<div class="px-6 pb-6 pt-0 text-left">
+<a class="inline-flex items-center gap-1.5 text-xs uppercase tracking-widest text-luxury-gold font-bold group-hover:text-white transition home-blog-read-more" data-home-read-more="true" href="/zh/blog/dominica-passport-for-afghans-in-2026/"> <span>阅读更多</span> <i class="fa-solid fa-arrow-right group-hover:translate-x-1 text-[10px] transition-transform duration-300"></i>
 </a>
 </div>
 </div>
-<!-- Blog Card 2 -->
-<div class="bg-neutral-900 rounded-[2rem] border border-luxury-gold/30 overflow-hidden shadow-xl flex flex-col justify-between hover:shadow-[0_0_25px_rgba(197,168,128,0.4)] transition duration-500 min-w-[320px] max-w-[320px] shrink-0 group">
-<div>
-<div class="relative aspect-[16/10] overflow-hidden">
-<img alt="All Services" class="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110" decoding="async" loading="lazy" src="/assets/images/citizenship-by-inves_eb492f.webp"/>
-<div class="absolute inset-0 bg-gradient-to-t from-neutral-950 via-transparent to-transparent opacity-60"></div>
-<span class="absolute top-3 left-3 px-3 py-1 bg-black/70 backdrop-blur-md text-[10px] uppercase font-bold tracking-wider text-luxury-gold border border-luxury-gold/30 rounded-full">Services</span>
-</div>
-<div class="p-6 space-y-2.5">
-<span class="text-[10px] text-luxury-gold font-bold uppercase tracking-widest"><i class="fa-regular fa-calendar mr-1"></i> Jan 18, 2026</span>
-<h3 class="font-serif font-bold text-white text-base group-hover:text-luxury-gold transition leading-snug"><a data-i18n="blog.card2Title" href="/zh/blog/all-services-we-offer-at-sharif-group/">谢里夫集团全方位专业服务概览</a></h3>
-<p class="text-xs text-neutral-300 leading-relaxed font-light line-clamp-3" data-i18n="blog.card2Desc">全方位探索我们的专业行政服务，涵盖投资入籍、黄金签证、奢华房产购置及海外名校申请。</p>
-</div>
-</div>
-<div class="px-6 pb-6 pt-0">
-<a class="inline-flex items-center gap-1.5 text-xs uppercase tracking-widest text-luxury-gold font-bold group-hover:text-white transition" href="/zh/blog/all-services-we-offer-at-sharif-group/"> <span data-i18n="blog.readMore">阅读更多</span> <i class="fa-solid fa-arrow-right text-[10px] transition-transform duration-300 group-hover:translate-x-1"></i>
-</a>
-</div>
-</div>
-<!-- Blog Card 3 -->
-<div class="bg-neutral-900 rounded-[2rem] border border-luxury-gold/30 overflow-hidden shadow-xl flex flex-col justify-between hover:shadow-[0_0_25px_rgba(197,168,128,0.4)] transition duration-500 min-w-[320px] max-w-[320px] shrink-0 group">
-<div>
-<div class="relative aspect-[16/10] overflow-hidden">
-<img alt="Citizenship Guide" class="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110" decoding="async" loading="lazy" src="citizenshipbyinvestment.webp"/>
-<div class="absolute inset-0 bg-gradient-to-t from-neutral-950 via-transparent to-transparent opacity-60"></div>
-<span class="absolute top-3 left-3 px-3 py-1 bg-black/70 backdrop-blur-md text-[10px] uppercase font-bold tracking-wider text-luxury-gold border border-luxury-gold/30 rounded-full">Passport Guide</span>
-</div>
-<div class="p-6 space-y-2.5">
-<span class="text-[10px] text-luxury-gold font-bold uppercase tracking-widest"><i class="fa-regular fa-calendar mr-1"></i> Feb 01, 2026</span>
-<h3 class="font-serif font-bold text-white text-base group-hover:text-luxury-gold transition leading-snug"><a data-i18n="blog.card3Title" href="/zh/blog/what-is-citizenship-by-investment-a-simple-guide/">什么是投资入籍（CBI）？通俗入门解析</a></h3>
-<p class="text-xs text-neutral-300 leading-relaxed font-light line-clamp-3" data-i18n="blog.card3Desc">清晰直观地解析第二国籍的工作原理、核心优势以及为何高净值投资者纷纷配置法定第二护照。</p>
-</div>
-</div>
-<div class="px-6 pb-6 pt-0">
-<a class="inline-flex items-center gap-1.5 text-xs uppercase tracking-widest text-luxury-gold font-bold group-hover:text-white transition" href="/zh/blog/what-is-citizenship-by-investment-a-simple-guide/"> <span data-i18n="blog.readMore">阅读更多</span> <i class="fa-solid fa-arrow-right text-[10px] transition-transform duration-300 group-hover:translate-x-1"></i>
-</a>
-</div>
-</div>
-<!-- Blog Card 5 -->
-<div class="bg-neutral-900 rounded-[2rem] border border-luxury-gold/30 overflow-hidden shadow-xl flex flex-col justify-between hover:shadow-[0_0_25px_rgba(197,168,128,0.4)] transition duration-500 min-w-[320px] max-w-[320px] shrink-0 group">
-<div>
-<div class="relative aspect-[16/10] overflow-hidden">
-<img alt="Dominica Passport" class="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110" decoding="async" loading="lazy" src="/assets/images/Dominica_Passport_2b2f9e.webp"/>
-<div class="absolute inset-0 bg-gradient-to-t from-neutral-950 via-transparent to-transparent opacity-60"></div>
-<span class="absolute top-3 left-3 px-3 py-1 bg-black/70 backdrop-blur-md text-[10px] uppercase font-bold tracking-wider text-luxury-gold border border-luxury-gold/30 rounded-full">Dominica</span>
-</div>
-<div class="p-6 space-y-2.5">
-<span class="text-[10px] text-luxury-gold font-bold uppercase tracking-widest"><i class="fa-regular fa-calendar mr-1"></i> Feb 05, 2026</span>
-<h3 class="font-serif font-bold text-white text-base group-hover:text-luxury-gold transition leading-snug"><a data-i18n="blog.card4Title" href="/zh/blog/dominica-passport-how-to-apply-and-costs/">多米尼克护照：申请流程与投资费用全览</a></h3>
-<p class="text-xs text-neutral-300 leading-relaxed font-light line-clamp-3" data-i18n="blog.card4Desc">了解投资成本、快至90天的官方审批周期以及全程无需登陆即可办理多米尼克护照的优势。</p>
-</div>
-</div>
-<div class="px-6 pb-6 pt-0">
-<a class="inline-flex items-center gap-1.5 text-xs uppercase tracking-widest text-luxury-gold font-bold group-hover:text-white transition" href="/zh/blog/dominica-passport-how-to-apply-and-costs/"> <span data-i18n="blog.readMore">阅读更多</span> <i class="fa-solid fa-arrow-right text-[10px] transition-transform duration-300 group-hover:translate-x-1"></i>
-</a>
-</div>
-</div>
-<!-- Blog Card 6 -->
-<div class="bg-neutral-900 rounded-[2rem] border border-luxury-gold/30 overflow-hidden shadow-xl flex flex-col justify-between hover:shadow-[0_0_25px_rgba(197,168,128,0.4)] transition duration-500 min-w-[320px] max-w-[320px] shrink-0 group">
-<div>
-<div class="relative aspect-[16/10] overflow-hidden">
-<img alt="Sao Tome" class="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110" decoding="async" loading="lazy" src="/assets/images/Sao-Tome-and-Princip_f26fdf.webp"/>
-<div class="absolute inset-0 bg-gradient-to-t from-neutral-950 via-transparent to-transparent opacity-60"></div>
-<span class="absolute top-3 left-3 px-3 py-1 bg-black/70 backdrop-blur-md text-[10px] uppercase font-bold tracking-wider text-luxury-gold border border-luxury-gold/30 rounded-full">Sao Tome</span>
-</div>
-<div class="p-6 space-y-2.5">
-<span class="text-[10px] text-luxury-gold font-bold uppercase tracking-widest"><i class="fa-regular fa-calendar mr-1"></i> Feb 12, 2026</span>
-<h3 class="font-serif font-bold text-white text-base group-hover:text-luxury-gold transition leading-snug"><a data-i18n="blog.card5Title" href="/zh/blog/sao-tome-and-principe-private-second-passport-option/">圣多美和普林西比：高度私密的第二护照新选</a></h3>
-<p class="text-xs text-neutral-300 leading-relaxed font-light line-clamp-3" data-i18n="blog.card5Desc">深入探索专为注重极致隐私与极速出证的高净值投资者量身打造的非洲海岛护照项目。</p>
-</div>
-</div>
-<div class="px-6 pb-6 pt-0">
-<a class="inline-flex items-center gap-1.5 text-xs uppercase tracking-widest text-luxury-gold font-bold group-hover:text-white transition" href="/zh/blog/sao-tome-and-principe-private-second-passport-option/"> <span data-i18n="blog.readMore">阅读更多</span> <i class="fa-solid fa-arrow-right text-[10px] transition-transform duration-300 group-hover:translate-x-1"></i>
-</a>
-</div>
-</div>
-<!-- Blog Card 7 -->
-<div class="bg-neutral-900 rounded-[2rem] border border-luxury-gold/30 overflow-hidden shadow-xl flex flex-col justify-between hover:shadow-[0_0_25px_rgba(197,168,128,0.4)] transition duration-500 min-w-[320px] max-w-[320px] shrink-0 group">
-<div>
-<div class="relative aspect-[16/10] overflow-hidden">
-<img alt="St. Kitts" class="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110" decoding="async" loading="lazy" src="/assets/images/St-kitts-nevis-passp_535b42.webp"/>
-<div class="absolute inset-0 bg-gradient-to-t from-neutral-950 via-transparent to-transparent opacity-60"></div>
-<span class="absolute top-3 left-3 px-3 py-1 bg-black/70 backdrop-blur-md text-[10px] uppercase font-bold tracking-wider text-luxury-gold border border-luxury-gold/30 rounded-full">St. Kitts</span>
-</div>
-<div class="p-6 space-y-2.5">
-<span class="text-[10px] text-luxury-gold font-bold uppercase tracking-widest"><i class="fa-regular fa-calendar mr-1"></i> Feb 19, 2026</span>
-<h3 class="font-serif font-bold text-white text-base group-hover:text-luxury-gold transition leading-snug"><a data-i18n="blog.card6Title" href="/zh/blog/st-kitts-and-nevis-oldest-and-most-trusted-passport/">圣基茨和尼维斯：历史最悠久、最受尊崇的护照</a></h3>
-<p class="text-xs text-neutral-300 leading-relaxed font-light line-clamp-3" data-i18n="blog.card6Desc">探寻创立于1984年的全球经典入籍项目，提供无可比拟的全球出行自由度与稳固资产防护。</p>
-</div>
-</div>
-<div class="px-6 pb-6 pt-0">
-<a class="inline-flex items-center gap-1.5 text-xs uppercase tracking-widest text-luxury-gold font-bold group-hover:text-white transition" href="/zh/blog/st-kitts-and-nevis-oldest-and-most-trusted-passport/"> <span data-i18n="blog.readMore">阅读更多</span> <i class="fa-solid fa-arrow-right text-[10px] transition-transform duration-300 group-hover:translate-x-1"></i>
-</a>
-</div>
-</div>
-<!-- Blog Card 8 -->
-<div class="bg-neutral-900 rounded-[2rem] border border-luxury-gold/30 overflow-hidden shadow-xl flex flex-col justify-between hover:shadow-[0_0_25px_rgba(197,168,128,0.4)] transition duration-500 min-w-[320px] max-w-[320px] shrink-0 group">
-<div>
-<div class="relative aspect-[16/10] overflow-hidden">
-<img alt="St. Lucia" class="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110" decoding="async" loading="lazy" src="/assets/images/st-lucia-citizenship_732be1.webp"/>
-<div class="absolute inset-0 bg-gradient-to-t from-neutral-950 via-transparent to-transparent opacity-60"></div>
-<span class="absolute top-3 left-3 px-3 py-1 bg-black/70 backdrop-blur-md text-[10px] uppercase font-bold tracking-wider text-luxury-gold border border-luxury-gold/30 rounded-full">St. Lucia</span>
-</div>
-<div class="p-6 space-y-2.5">
-<span class="text-[10px] text-luxury-gold font-bold uppercase tracking-widest"><i class="fa-regular fa-calendar mr-1"></i> Feb 26, 2026</span>
-<h3 class="font-serif font-bold text-white text-base group-hover:text-luxury-gold transition leading-snug"><a data-i18n="blog.card7Title" href="/zh/blog/saint-lucia-passport-easy-steps-to-apply/">圣卢西亚护照：清晰办理步骤与灵活方案</a></h3>
-<p class="text-xs text-neutral-300 leading-relaxed font-light line-clamp-3" data-i18n="blog.card7Desc">探索圣卢西亚灵活的财务配置路径，包括到期可赎回的政府无息债券及经济便捷的家庭申请模式。</p>
-</div>
-</div>
-<div class="px-6 pb-6 pt-0">
-<a class="inline-flex items-center gap-1.5 text-xs uppercase tracking-widest text-luxury-gold font-bold group-hover:text-white transition" href="/zh/blog/saint-lucia-passport-easy-steps-to-apply/"> <span data-i18n="blog.readMore">阅读更多</span> <i class="fa-solid fa-arrow-right text-[10px] transition-transform duration-300 group-hover:translate-x-1"></i>
-</a>
-</div>
-</div>
-<!-- Blog Card 9 -->
-<div class="bg-neutral-900 rounded-[2rem] border border-luxury-gold/30 overflow-hidden shadow-xl flex flex-col justify-between hover:shadow-[0_0_25px_rgba(197,168,128,0.4)] transition duration-500 min-w-[320px] max-w-[320px] shrink-0 group">
-<div>
-<div class="relative aspect-[16/10] overflow-hidden">
-<img alt="Grenada" class="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110" decoding="async" loading="lazy" src="/assets/images/image2024-07-0500-58_8c7540.webp"/>
-<div class="absolute inset-0 bg-gradient-to-t from-neutral-950 via-transparent to-transparent opacity-60"></div>
-<span class="absolute top-3 left-3 px-3 py-1 bg-black/70 backdrop-blur-md text-[10px] uppercase font-bold tracking-wider text-luxury-gold border border-luxury-gold/30 rounded-full">Grenada</span>
-</div>
-<div class="p-6 space-y-2.5">
-<span class="text-[10px] text-luxury-gold font-bold uppercase tracking-widest"><i class="fa-regular fa-calendar mr-1"></i> Mar 05, 2026</span>
-<h3 class="font-serif font-bold text-white text-base group-hover:text-luxury-gold transition leading-snug"><a data-i18n="blog.card8Title" href="/zh/blog/grenada-passport-easy-way-to-move-to-the-usa/">格林纳达护照：移居美国的便捷快速通道</a></h3>
-<p class="text-xs text-neutral-300 leading-relaxed font-light line-clamp-3" data-i18n="blog.card8Desc">解析格林纳达护照如何直接解锁申请美国E-2投资者签证的资格，实现快速全家赴美经商生活。</p>
-</div>
-</div>
-<div class="px-6 pb-6 pt-0">
-<a class="inline-flex items-center gap-1.5 text-xs uppercase tracking-widest text-luxury-gold font-bold group-hover:text-white transition" href="/zh/blog/grenada-passport-easy-way-to-move-to-the-usa/"> <span data-i18n="blog.readMore">阅读更多</span> <i class="fa-solid fa-arrow-right text-[10px] transition-transform duration-300 group-hover:translate-x-1"></i>
-</a>
-</div>
-</div>
-<!-- Blog Card 10 -->
-<div class="bg-neutral-900 rounded-[2rem] border border-luxury-gold/30 overflow-hidden shadow-xl flex flex-col justify-between hover:shadow-[0_0_25px_rgba(197,168,128,0.4)] transition duration-500 min-w-[320px] max-w-[320px] shrink-0 group">
-<div>
-<div class="relative aspect-[16/10] overflow-hidden">
-<img alt="Nauru" class="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110" decoding="async" loading="lazy" src="/assets/images/f60b94aa49142996dbeb_1d910d.webp"/>
-<div class="absolute inset-0 bg-gradient-to-t from-neutral-950 via-transparent to-transparent opacity-60"></div>
-<span class="absolute top-3 left-3 px-3 py-1 bg-black/70 backdrop-blur-md text-[10px] uppercase font-bold tracking-wider text-luxury-gold border border-luxury-gold/30 rounded-full">Nauru</span>
-</div>
-<div class="p-6 space-y-2.5">
-<span class="text-[10px] text-luxury-gold font-bold uppercase tracking-widest"><i class="fa-regular fa-calendar mr-1"></i> Mar 12, 2026</span>
-<h3 class="font-serif font-bold text-white text-base group-hover:text-luxury-gold transition leading-snug"><a data-i18n="blog.card9Title" href="/zh/blog/republic-of-nauru-fast-pacific-passport/">瑙鲁共和国：快速获批的太平洋岛国护照</a></h3>
-<p class="text-xs text-neutral-300 leading-relaxed font-light line-clamp-3" data-i18n="blog.card9Desc">探秘瑙鲁安全、全流程远程办理的公民身份方案，尽享零全球税与超快出证流程。</p>
-</div>
-</div>
-<div class="px-6 pb-6 pt-0">
-<a class="inline-flex items-center gap-1.5 text-xs uppercase tracking-widest text-luxury-gold font-bold group-hover:text-white transition" href="/zh/blog/republic-of-nauru-fast-pacific-passport/"> <span data-i18n="blog.readMore">阅读更多</span> <i class="fa-solid fa-arrow-right text-[10px] transition-transform duration-300 group-hover:translate-x-1"></i>
-</a>
-</div>
-</div>
-<!-- Blog Card 11 -->
-<div class="bg-neutral-900 rounded-[2rem] border border-luxury-gold/30 overflow-hidden shadow-xl flex flex-col justify-between hover:shadow-[0_0_25px_rgba(197,168,128,0.4)] transition duration-500 min-w-[320px] max-w-[320px] shrink-0 group">
-<div>
-<div class="relative aspect-[16/10] overflow-hidden">
-<img alt="Residency" class="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110" decoding="async" loading="lazy" src="residencybyinvestment.webp"/>
-<div class="absolute inset-0 bg-gradient-to-t from-neutral-950 via-transparent to-transparent opacity-60"></div>
-<span class="absolute top-3 left-3 px-3 py-1 bg-black/70 backdrop-blur-md text-[10px] uppercase font-bold tracking-wider text-luxury-gold border border-luxury-gold/30 rounded-full">Residency</span>
-</div>
-<div class="p-6 space-y-2.5">
-<span class="text-[10px] text-luxury-gold font-bold uppercase tracking-widest"><i class="fa-regular fa-calendar mr-1"></i> Mar 19, 2026</span>
-<h3 class="font-serif font-bold text-white text-base group-hover:text-luxury-gold transition leading-snug"><a data-i18n="blog.card10Title" href="/zh/blog/what-is-residency-by-investment-simple-guide/">什么是投资居留（RBI）？黄金签证全面解读</a></h3>
-<p class="text-xs text-neutral-300 leading-relaxed font-light line-clamp-3" data-i18n="blog.card10Desc">全方位理解黄金签证运作机制，合法获得在全球知名目的地生活、经商与自由出行的权利。</p>
-</div>
-</div>
-<div class="px-6 pb-6 pt-0">
-<a class="inline-flex items-center gap-1.5 text-xs uppercase tracking-widest text-luxury-gold font-bold group-hover:text-white transition" href="/zh/blog/what-is-residency-by-investment-simple-guide/"> <span data-i18n="blog.readMore">阅读更多</span> <i class="fa-solid fa-arrow-right text-[10px] transition-transform duration-300 group-hover:translate-x-1"></i>
-</a>
-</div>
-</div>
-<!-- Blog Card 12 -->
-<div class="bg-neutral-900 rounded-[2rem] border border-luxury-gold/30 overflow-hidden shadow-xl flex flex-col justify-between hover:shadow-[0_0_25px_rgba(197,168,128,0.4)] transition duration-500 min-w-[320px] max-w-[320px] shrink-0 group">
-<div>
-<div class="relative aspect-[16/10] overflow-hidden">
-<img alt="Portugal" class="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110" decoding="async" loading="lazy" src="https://images.indianexpress.com/2025/08/portugal-visa.png"/>
-<div class="absolute inset-0 bg-gradient-to-t from-neutral-950 via-transparent to-transparent opacity-60"></div>
-<span class="absolute top-3 left-3 px-3 py-1 bg-black/70 backdrop-blur-md text-[10px] uppercase font-bold tracking-wider text-luxury-gold border border-luxury-gold/30 rounded-full">Portugal</span>
-</div>
-<div class="p-6 space-y-2.5">
-<span class="text-[10px] text-luxury-gold font-bold uppercase tracking-widest"><i class="fa-regular fa-calendar mr-1"></i> Mar 26, 2026</span>
-<h3 class="font-serif font-bold text-white text-base group-hover:text-luxury-gold transition leading-snug"><a data-i18n="blog.card11Title" href="/zh/blog/portugal-golden-visa-live-and-work-in-europe/">葡萄牙黄金签证：移居并在欧洲工作与生活</a></h3>
-<p class="text-xs text-neutral-300 leading-relaxed font-light line-clamp-3" data-i18n="blog.card11Desc">掌握通过葡萄牙基金投资获得欧洲居留权的要点，年均仅需居住7天即可迈向欧盟护照。</p>
-</div>
-</div>
-<div class="px-6 pb-6 pt-0">
-<a class="inline-flex items-center gap-1.5 text-xs uppercase tracking-widest text-luxury-gold font-bold group-hover:text-white transition" href="/zh/blog/portugal-golden-visa-live-and-work-in-europe/"> <span data-i18n="blog.readMore">阅读更多</span> <i class="fa-solid fa-arrow-right text-[10px] transition-transform duration-300 group-hover:translate-x-1"></i>
-</a>
-</div>
-</div>
-<!-- Blog Card 13 -->
-<div class="bg-neutral-900 rounded-[2rem] border border-luxury-gold/30 overflow-hidden shadow-xl flex flex-col justify-between hover:shadow-[0_0_25px_rgba(197,168,128,0.4)] transition duration-500 min-w-[320px] max-w-[320px] shrink-0 group">
-<div>
-<div class="relative aspect-[16/10] overflow-hidden">
-<img alt="Greece" class="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110" decoding="async" loading="lazy" src="/assets/images/Golden-Visa-housing_04f1eb.webp"/>
-<div class="absolute inset-0 bg-gradient-to-t from-neutral-950 via-transparent to-transparent opacity-60"></div>
-<span class="absolute top-3 left-3 px-3 py-1 bg-black/70 backdrop-blur-md text-[10px] uppercase font-bold tracking-wider text-luxury-gold border border-luxury-gold/30 rounded-full">Greece</span>
-</div>
-<div class="p-6 space-y-2.5">
-<span class="text-[10px] text-luxury-gold font-bold uppercase tracking-widest"><i class="fa-regular fa-calendar mr-1"></i> Apr 02, 2026</span>
-<h3 class="font-serif font-bold text-white text-base group-hover:text-luxury-gold transition leading-snug"><a data-i18n="blog.card12Title" href="/zh/blog/greece-golden-visa-buy-property-and-live-in-europe/">希腊黄金签证：置业安居畅行欧洲申根区</a></h3>
-<p class="text-xs text-neutral-300 leading-relaxed font-light line-clamp-3" data-i18n="blog.card12Desc">解析希腊不同梯度的购房移民政策，全家尊享欧洲永久居留身份及申根29国畅行特权。</p>
-</div>
-</div>
-<div class="px-6 pb-6 pt-0">
-<a class="inline-flex items-center gap-1.5 text-xs uppercase tracking-widest text-luxury-gold font-bold group-hover:text-white transition" href="/zh/blog/greece-golden-visa-buy-property-and-live-in-europe/"> <span data-i18n="blog.readMore">阅读更多</span> <i class="fa-solid fa-arrow-right text-[10px] transition-transform duration-300 group-hover:translate-x-1"></i>
-</a>
-</div>
-</div>
-<!-- Blog Card 14 -->
-<div class="bg-neutral-900 rounded-[2rem] border border-luxury-gold/30 overflow-hidden shadow-xl flex flex-col justify-between hover:shadow-[0_0_25px_rgba(197,168,128,0.4)] transition duration-500 min-w-[320px] max-w-[320px] shrink-0 group">
-<div>
-<div class="relative aspect-[16/10] overflow-hidden">
-<img alt="UAE Visa" class="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110" decoding="async" loading="lazy" src="/assets/images/ocxdxtp280tdntfq7qts_5d3f8e.webp"/>
-<div class="absolute inset-0 bg-gradient-to-t from-neutral-950 via-transparent to-transparent opacity-60"></div>
-<span class="absolute top-3 left-3 px-3 py-1 bg-black/70 backdrop-blur-md text-[10px] uppercase font-bold tracking-wider text-luxury-gold border border-luxury-gold/30 rounded-full">UAE Visa</span>
-</div>
-<div class="p-6 space-y-2.5">
-<span class="text-[10px] text-luxury-gold font-bold uppercase tracking-widest"><i class="fa-regular fa-calendar mr-1"></i> Apr 30, 2026</span>
-<h3 class="font-serif font-bold text-white text-base group-hover:text-luxury-gold transition leading-snug"><a data-i18n="blog.card13Title" href="/zh/blog/uae-10-year-golden-visa-how-to-get-yours-in-dubai/">阿联酋10年黄金签证：迪拜申请权威指南</a></h3>
-<p class="text-xs text-neutral-300 leading-relaxed font-light line-clamp-3" data-i18n="blog.card13Desc">通过在迪拜购买房产或商业投资申请10年长期居留签证的官方全流程细致指引。</p>
-</div>
-</div>
-<div class="px-6 pb-6 pt-0">
-<a class="inline-flex items-center gap-1.5 text-xs uppercase tracking-widest text-luxury-gold font-bold group-hover:text-white transition" href="/zh/blog/uae-10-year-golden-visa-how-to-get-yours-in-dubai/"> <span data-i18n="blog.readMore">阅读更多</span> <i class="fa-solid fa-arrow-right text-[10px] transition-transform duration-300 group-hover:translate-x-1"></i>
-</a>
-</div>
-</div>
-<!-- Blog Card 15 -->
-<div class="bg-neutral-900 rounded-[2rem] border border-luxury-gold/30 overflow-hidden shadow-xl flex flex-col justify-between hover:shadow-[0_0_25px_rgba(197,168,128,0.4)] transition duration-500 min-w-[320px] max-w-[320px] shrink-0 group">
-<div>
-<div class="relative aspect-[16/10] overflow-hidden">
-<img alt="Real Estate" class="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110" decoding="async" loading="lazy" src="/assets/images/how-to-buy-property-_8809f0.webp"/>
-<div class="absolute inset-0 bg-gradient-to-t from-neutral-950 via-transparent to-transparent opacity-60"></div>
-<span class="absolute top-3 left-3 px-3 py-1 bg-black/70 backdrop-blur-md text-[10px] uppercase font-bold tracking-wider text-luxury-gold border border-luxury-gold/30 rounded-full">Real Estate</span>
-</div>
-<div class="p-6 space-y-2.5">
-<span class="text-[10px] text-luxury-gold font-bold uppercase tracking-widest"><i class="fa-regular fa-calendar mr-1"></i> May 14, 2026</span>
-<h3 class="font-serif font-bold text-white text-base group-hover:text-luxury-gold transition leading-snug"><a data-i18n="blog.card14Title" href="/zh/blog/best-ways-to-buy-real-estate-in-dubai-for-profit/">迪拜房产投资高收益实战攻略</a></h3>
-<p class="text-xs text-neutral-300 leading-relaxed font-light line-clamp-3" data-i18n="blog.card14Desc">专家解析如何在市中心（Downtown）及朱美拉棕榈岛等优质地段锁定高租金回报的永久产权物业。</p>
-</div>
-</div>
-<div class="px-6 pb-6 pt-0">
-<a class="inline-flex items-center gap-1.5 text-xs uppercase tracking-widest text-luxury-gold font-bold group-hover:text-white transition" href="/zh/blog/best-ways-to-buy-real-estate-in-dubai-for-profit/"> <span data-i18n="blog.readMore">阅读更多</span> <i class="fa-solid fa-arrow-right text-[10px] transition-transform duration-300 group-hover:translate-x-1"></i>
-</a>
-</div>
-</div>
-<!-- Blog Card 16 -->
-<div class="bg-neutral-900 rounded-[2rem] border border-luxury-gold/30 overflow-hidden shadow-xl flex flex-col justify-between hover:shadow-[0_0_25px_rgba(197,168,128,0.4)] transition duration-500 min-w-[320px] max-w-[320px] shrink-0 group">
-<div>
-<div class="relative aspect-[16/10] overflow-hidden">
-<img alt="Vanuatu" class="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110" decoding="async" loading="lazy" src="/assets/images/posts_0001_vanuatu-p_9e4e77.webp"/>
-<div class="absolute inset-0 bg-gradient-to-t from-neutral-950 via-transparent to-transparent opacity-60"></div>
-<span class="absolute top-3 left-3 px-3 py-1 bg-black/70 backdrop-blur-md text-[10px] uppercase font-bold tracking-wider text-luxury-gold border border-luxury-gold/30 rounded-full">Vanuatu</span>
-</div>
-<div class="p-6 space-y-2.5">
-<span class="text-[10px] text-luxury-gold font-bold uppercase tracking-widest"><i class="fa-regular fa-calendar mr-1"></i> May 21, 2026</span>
-<h3 class="font-serif font-bold text-white text-base group-hover:text-luxury-gold transition leading-snug"><a data-i18n="blog.card15Title" href="/zh/blog/vanuatu-passport-get-your-passport-in-45-days/">瓦努阿图护照：45天极速获发合法护照</a></h3>
-<p class="text-xs text-neutral-300 leading-relaxed font-light line-clamp-3" data-i18n="blog.card15Desc">探索全球办理速度首屈一指的入籍计划，全线上45天办结且无任何海外税务负担。</p>
-</div>
-</div>
-<div class="px-6 pb-6 pt-0">
-<a class="inline-flex items-center gap-1.5 text-xs uppercase tracking-widest text-luxury-gold font-bold group-hover:text-white transition" href="/zh/blog/vanuatu-passport-get-your-passport-in-45-days/"> <span data-i18n="blog.readMore">阅读更多</span> <i class="fa-solid fa-arrow-right text-[10px] transition-transform duration-300 group-hover:translate-x-1"></i>
-</a>
-</div>
-</div>
-<!-- Blog Card 17 -->
-<div class="bg-neutral-900 rounded-[2rem] border border-luxury-gold/30 overflow-hidden shadow-xl flex flex-col justify-between hover:shadow-[0_0_25px_rgba(197,168,128,0.4)] transition duration-500 min-w-[320px] max-w-[320px] shrink-0 group">
-<div>
-<div class="relative aspect-[16/10] overflow-hidden">
-<img alt="Antigua" class="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110" decoding="async" loading="lazy" src="/assets/images/antiguapassport_d31b1f.webp"/>
-<div class="absolute inset-0 bg-gradient-to-t from-neutral-950 via-transparent to-transparent opacity-60"></div>
-<span class="absolute top-3 left-3 px-3 py-1 bg-black/70 backdrop-blur-md text-[10px] uppercase font-bold tracking-wider text-luxury-gold border border-luxury-gold/30 rounded-full">Antigua</span>
-</div>
-<div class="p-6 space-y-2.5">
-<span class="text-[10px] text-luxury-gold font-bold uppercase tracking-widest"><i class="fa-regular fa-calendar mr-1"></i> May 28, 2026</span>
-<h3 class="font-serif font-bold text-white text-base group-hover:text-luxury-gold transition leading-snug"><a data-i18n="blog.card16Title" href="/zh/blog/antigua-and-barbuda-best-passport-for-big-families/">安提瓜和巴布达：多代同堂大家庭优选方案</a></h3>
-<p class="text-xs text-neutral-300 leading-relaxed font-light line-clamp-3" data-i18n="blog.card16Desc">了解经济高效的家庭全包套餐，一份申请即可涵盖配偶、子女、父母乃至未婚兄弟姐妹。</p>
-</div>
-</div>
-<div class="px-6 pb-6 pt-0">
-<a class="inline-flex items-center gap-1.5 text-xs uppercase tracking-widest text-luxury-gold font-bold group-hover:text-white transition" href="/zh/blog/antigua-and-barbuda-best-passport-for-big-families/"> <span data-i18n="blog.readMore">阅读更多</span> <i class="fa-solid fa-arrow-right text-[10px] transition-transform duration-300 group-hover:translate-x-1"></i>
-</a>
-</div>
-</div>
-<!-- Blog Card 18 -->
-<div class="bg-neutral-900 rounded-[2rem] border border-luxury-gold/30 overflow-hidden shadow-xl flex flex-col justify-between hover:shadow-[0_0_25px_rgba(197,168,128,0.4)] transition duration-500 min-w-[320px] max-w-[320px] shrink-0 group">
-<div>
-<div class="relative aspect-[16/10] overflow-hidden">
-<img alt="Panama" class="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110" decoding="async" loading="lazy" src="/assets/images/panama-passport-1024_bd63ff.webp"/>
-<div class="absolute inset-0 bg-gradient-to-t from-neutral-950 via-transparent to-transparent opacity-60"></div>
-<span class="absolute top-3 left-3 px-3 py-1 bg-black/70 backdrop-blur-md text-[10px] uppercase font-bold tracking-wider text-luxury-gold border border-luxury-gold/30 rounded-full">Panama</span>
-</div>
-<div class="p-6 space-y-2.5">
-<span class="text-[10px] text-luxury-gold font-bold uppercase tracking-widest"><i class="fa-regular fa-calendar mr-1"></i> Jun 04, 2026</span>
-<h3 class="font-serif font-bold text-white text-base group-hover:text-luxury-gold transition leading-snug"><a data-i18n="blog.card17Title" href="/zh/blog/panama-golden-visa-simple-residency-in-central-america/">巴拿马黄金签证：中美洲商业中心的便利居留</a></h3>
-<p class="text-xs text-neutral-300 leading-relaxed font-light line-clamp-3" data-i18n="blog.card17Desc">探索巴拿马金融中心的居留选项，拥有永久居留权并免除一切离岸公司海外收益税。</p>
-</div>
-</div>
-<div class="px-6 pb-6 pt-0">
-<a class="inline-flex items-center gap-1.5 text-xs uppercase tracking-widest text-luxury-gold font-bold group-hover:text-white transition" href="/zh/blog/panama-golden-visa-simple-residency-in-central-america/"> <span data-i18n="blog.readMore">阅读更多</span> <i class="fa-solid fa-arrow-right text-[10px] transition-transform duration-300 group-hover:translate-x-1"></i>
-</a>
-</div>
-</div>
-<!-- Blog Card 19 -->
-<div class="bg-neutral-900 rounded-[2rem] border border-luxury-gold/30 overflow-hidden shadow-xl flex flex-col justify-between hover:shadow-[0_0_25px_rgba(197,168,128,0.4)] transition duration-500 min-w-[320px] max-w-[320px] shrink-0 group">
-<div>
-<div class="relative aspect-[16/10] overflow-hidden">
-<img alt="Real Estate Audit" class="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110" decoding="async" loading="lazy" src="/assets/images/photo-1560518883-c_5cdde8.webp"/>
-<div class="absolute inset-0 bg-gradient-to-t from-neutral-950 via-transparent to-transparent opacity-60"></div>
-<span class="absolute top-3 left-3 px-3 py-1 bg-black/70 backdrop-blur-md text-[10px] uppercase font-bold tracking-wider text-luxury-gold border border-luxury-gold/30 rounded-full">Real Estate</span>
-</div>
-<div class="p-6 space-y-2.5">
-<span class="text-[10px] text-luxury-gold font-bold uppercase tracking-widest"><i class="fa-regular fa-calendar mr-1"></i> Jun 11, 2026</span>
-<h3 class="font-serif font-bold text-white text-base group-hover:text-luxury-gold transition leading-snug"><a data-i18n="blog.card18Title" href="/zh/blog/how-we-check-properties-before-you-buy/">置业前我们如何执行严苛的产权法律审计</a></h3>
-<p class="text-xs text-neutral-300 leading-relaxed font-light line-clamp-3" data-i18n="blog.card18Desc">揭秘我们严谨的法律尽职调查、土地局产权核验及监管账户审查流程，护航您的每一分资金。</p>
-</div>
-</div>
-<div class="px-6 pb-6 pt-0">
-<a class="inline-flex items-center gap-1.5 text-xs uppercase tracking-widest text-luxury-gold font-bold group-hover:text-white transition" href="/zh/blog/how-we-check-properties-before-you-buy/"> <span data-i18n="blog.readMore">阅读更多</span> <i class="fa-solid fa-arrow-right text-[10px] transition-transform duration-300 group-hover:translate-x-1"></i>
-</a>
-</div>
-</div>
-<!-- Blog Card 20 -->
-<div class="bg-neutral-900 rounded-[2rem] border border-luxury-gold/30 overflow-hidden shadow-xl flex flex-col justify-between hover:shadow-[0_0_25px_rgba(197,168,128,0.4)] transition duration-500 min-w-[320px] max-w-[320px] shrink-0 group">
-<div>
-<div class="relative aspect-[16/10] overflow-hidden">
-<img alt="Education" class="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110" decoding="async" loading="lazy" src="/assets/images/660_464_smapse-oxfor_f1e366.webp"/>
-<div class="absolute inset-0 bg-gradient-to-t from-neutral-950 via-transparent to-transparent opacity-60"></div>
-<span class="absolute top-3 left-3 px-3 py-1 bg-black/70 backdrop-blur-md text-[10px] uppercase font-bold tracking-wider text-luxury-gold border border-luxury-gold/30 rounded-full">Education</span>
-</div>
-<div class="p-6 space-y-2.5">
-<span class="text-[10px] text-luxury-gold font-bold uppercase tracking-widest"><i class="fa-regular fa-calendar mr-1"></i> Jun 18, 2026</span>
-<h3 class="font-serif font-bold text-white text-base group-hover:text-luxury-gold transition leading-snug"><a data-i18n="blog.card19Title" href="/zh/blog/top-schools-and-universities-for-your-children/">为子女规划英美顶尖私立名校与名牌大学</a></h3>
-<p class="text-xs text-neutral-300 leading-relaxed font-light line-clamp-3" data-i18n="blog.card19Desc">揭示如何借助第二公民身份与国际居留优势，助力孩子以本地生待遇入读英美殿堂级学府。</p>
-</div>
-</div>
-<div class="px-6 pb-6 pt-0">
-<a class="inline-flex items-center gap-1.5 text-xs uppercase tracking-widest text-luxury-gold font-bold group-hover:text-white transition" href="/zh/blog/top-schools-and-universities-for-your-children/"> <span data-i18n="blog.readMore">阅读更多</span> <i class="fa-solid fa-arrow-right text-[10px] transition-transform duration-300 group-hover:translate-x-1"></i>
-</a>
-</div>
-</div>
+
+
+
+
+
 </div>
 </div>
 </div>
@@ -2301,16 +1985,23 @@ j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
                 if (navLogo) navLogo.style.opacity = '1';
                 preloaderDismissed = true;
             } else {
-                const tl = gsap.timeline();
-                tl.fromTo("#preloader-logo", { scale: 0.9, opacity: 0 }, { scale: 1, opacity: 1, duration: 1.0, ease: "power2.out" });
-                tl.to("#preloader-title", { opacity: 1, y: 0, duration: 0.8, ease: "power2.out" }, "-=0.4");
-                tl.to("#preloader-footer", { opacity: 0.99, duration: 0.6, ease: "power2.out" }, "-=0.3");
-
-                setTimeout(() => { dismissPreloader(); }, 1200);
+                if (typeof gsap !== 'undefined') {
+                    try {
+                        const tl = gsap.timeline();
+                        tl.fromTo("#preloader-logo", { scale: 0.9, opacity: 0 }, { scale: 1, opacity: 1, duration: 0.8, ease: "power2.out" });
+                        tl.to("#preloader-title", { opacity: 1, y: 0, duration: 0.6, ease: "power2.out" }, "-=0.3");
+                        tl.to("#preloader-footer", { opacity: 0.99, duration: 0.5, ease: "power2.out" }, "-=0.2");
+                        setTimeout(() => { dismissPreloader(); }, 900);
+                    } catch (e) {
+                        dismissPreloader();
+                    }
+                } else {
+                    dismissPreloader();
+                }
             }
 
-            // Fallback safety: guarantee preloader is dismissed after 1.5 seconds maximum
-            setTimeout(() => { dismissPreloader(); }, 1500);
+            // Guaranteed safety: dismiss preloader after 1.2s max
+            setTimeout(() => { dismissPreloader(); }, 1200);
 
             initHeroSlideshow();
             initCounters();
@@ -2323,27 +2014,41 @@ j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
             runPreloader();
         }
 
+        // Window load guarantees preloader is never stuck
+        window.addEventListener('load', () => { setTimeout(dismissPreloader, 300); });
+
         function dismissPreloader() {
             if (preloaderDismissed) return;
             preloaderDismissed = true;
 
-            sessionStorage.setItem('sharif_preloader_shown', 'true');
+            try { sessionStorage.setItem('sharif_preloader_shown', 'true'); } catch (e) {}
 
             const preloader = document.getElementById('preloader');
             const logo = document.getElementById('preloader-logo');
             const navLogo = document.getElementById('nav-logo');
 
-            const tl = gsap.timeline({
-                onComplete: () => {
+            if (typeof gsap !== 'undefined') {
+                try {
+                    const tl = gsap.timeline({
+                        onComplete: () => {
+                            if (preloader) preloader.style.display = 'none';
+                            document.body.style.overflow = 'auto';
+                        }
+                    });
+                    tl.to(["#preloader-title", "#preloader-footer"], { opacity: 0, y: -10, duration: 0.25, stagger: 0.05, ease: "power2.in" });
+                    tl.to(logo, { scale: 0.5, y: -40, opacity: 0, duration: 0.5, ease: "power2.inOut" }, "-=0.1");
+                    tl.to(preloader, { opacity: 0, duration: 0.45, ease: "power2.inOut" }, "-=0.3");
+                    tl.to(navLogo, { opacity: 1, duration: 0.4, ease: "power2.out" }, "-=0.2");
+                } catch (err) {
                     if (preloader) preloader.style.display = 'none';
                     document.body.style.overflow = 'auto';
+                    if (navLogo) navLogo.style.opacity = '1';
                 }
-            });
-
-            tl.to(["#preloader-title", "#preloader-footer"], { opacity: 0, y: -10, duration: 0.35, stagger: 0.05, ease: "power2.in" });
-            tl.to(logo, { scale: 0.5, y: -40, opacity: 0, duration: 0.7, ease: "power2.inOut" }, "-=0.15");
-            tl.to(preloader, { opacity: 0, duration: 0.65, ease: "power2.inOut" }, "-=0.45");
-            tl.to(navLogo, { opacity: 1, duration: 0.6, ease: "power2.out" }, "-=0.35");
+            } else {
+                if (preloader) preloader.style.display = 'none';
+                document.body.style.overflow = 'auto';
+                if (navLogo) navLogo.style.opacity = '1';
+            }
         }
 
         function initHeroSlideshow() {

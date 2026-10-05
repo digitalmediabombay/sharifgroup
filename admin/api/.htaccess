@@ -32,3 +32,13 @@
     RewriteRule ^upload/?$ upload.php [L,QSA]
     RewriteRule ^ai/?$ ai.php [L,QSA]
 </IfModule>
+
+# Zero-Cache rule for all dynamic CMS API endpoints & JSON snapshots
+<IfModule mod_headers.c>
+    <FilesMatch "\.(php|json)$">
+        Header set Cache-Control "no-cache, no-store, must-revalidate, max-age=0"
+        Header set Pragma "no-cache"
+        Header set Expires "0"
+    </FilesMatch>
+</IfModule>
+

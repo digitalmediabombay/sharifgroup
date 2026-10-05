@@ -151,6 +151,18 @@ if ($rootDir && file_exists($rootDir . '/sitemap.php')) {
     }
 }
 
+// 5. Regenerate blog listing HTML pages immediately (removes deleted article card)
+$blogListingsUpdated = false;
+try {
+    require_once __DIR__ . '/blog-regen.php';
+    if (function_exists('regenerateBlogListings')) {
+        $bRes = regenerateBlogListings($rootDir, $pubSnapshot);
+        $blogListingsUpdated = $bRes['success'] ?? false;
+    }
+} catch (Throwable $bre) {
+    error_log('[SharifCMS Delete Blog Listing Regen Error] ' . $bre->getMessage());
+}
+
 jsonResponse([
     'success'        => true,
     'message'        => 'Article permanently deleted from drafts, live site, and sitemap.',

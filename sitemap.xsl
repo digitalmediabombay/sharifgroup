@@ -286,6 +286,13 @@
                 </style>
                 <script type="text/javascript">
                 <xsl:text disable-output-escaping="yes"><![CDATA[
+                    // If user navigated directly to the .xsl template, redirect to the actual XML sitemap
+                    try {
+                        if (window.location && window.location.pathname && window.location.pathname.indexOf('sitemap.xsl') !== -1) {
+                            window.location.replace(window.location.pathname.replace('sitemap.xsl', 'sitemap.xml') + (window.location.search || ''));
+                        }
+                    } catch (e) {}
+
                     var currentLang = 'all';
                     var currentQuery = '';
 
@@ -401,6 +408,28 @@
                         </div>
                     </div>
 
+                    <xsl:if test="count(sitemap:urlset/sitemap:url) = 0">
+                        <div style="padding: 48px 32px; text-align: center; background: #ffffff;">
+                            <div style="width: 56px; height: 56px; border-radius: 50%; background: #eff6ff; display: inline-flex; align-items: center; justify-content: center; margin-bottom: 16px;">
+                                <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="#0284c7" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                    <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path>
+                                    <polyline points="14 2 14 8 20 8"></polyline>
+                                    <line x1="16" y1="13" x2="8" y2="13"></line>
+                                    <line x1="16" y1="17" x2="8" y2="17"></line>
+                                    <polyline points="10 9 9 9 8 9"></polyline>
+                                </svg>
+                            </div>
+                            <h3 style="font-size: 20px; font-weight: 700; color: #0b192c; margin-bottom: 8px;">XML Sitemap Stylesheet</h3>
+                            <p style="color: #64748b; font-size: 14.5px; max-width: 560px; margin: 0 auto 20px auto; line-height: 1.6;">
+                                This file (<code style="background: #f1f5f9; padding: 2px 6px; border-radius: 4px; color: #334155;">sitemap.xsl</code>) is the visual styling template for our search engine sitemap. To view all 536 indexed multilingual pages, please visit the main XML sitemap:
+                            </p>
+                            <a href="/sitemap.xml" style="display: inline-flex; align-items: center; gap: 8px; padding: 12px 28px; background: linear-gradient(135deg, #0b192c 0%, #1e293b 100%); color: #d4af37; border-radius: 8px; font-weight: 600; font-size: 14px; text-decoration: none; box-shadow: 0 4px 12px rgba(11, 25, 44, 0.15);">
+                                View Full Dynamic Sitemap (/sitemap.xml) →
+                            </a>
+                        </div>
+                    </xsl:if>
+
+                    <xsl:if test="count(sitemap:urlset/sitemap:url) &gt; 0">
                     <div class="table-wrapper">
                         <table>
                             <thead>
@@ -466,6 +495,7 @@
                             </tbody>
                         </table>
                     </div>
+                    </xsl:if>
 
                     <div class="footer-note">
                         <span>Sharif Group Dubai © All Rights Reserved</span>

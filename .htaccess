@@ -167,8 +167,22 @@
         Header set Cache-Control "max-age=2592000, public"
     </FilesMatch>
 
-    # JSON Locales
-    <FilesMatch "\.(json)$">
+    # CMS Admin tools & loaders must never be cached
+    <FilesMatch "(cms-loader\.js|cms\.js|dashboard\.html)$">
+        Header set Cache-Control "no-cache, no-store, must-revalidate"
+        Header set Pragma "no-cache"
+        Header set Expires 0
+    </FilesMatch>
+
+    # CMS live & draft dynamic snapshots must never be cached
+    <FilesMatch "(published_content\.json|draft_content\.json)$">
+        Header set Cache-Control "no-cache, no-store, must-revalidate, max-age=0"
+        Header set Pragma "no-cache"
+        Header set Expires 0
+    </FilesMatch>
+
+    # Static JSON Locales
+    <FilesMatch "(ar|en|fa|zh)\.json$">
         Header set Cache-Control "max-age=604800, public, must-revalidate"
     </FilesMatch>
 

@@ -64,16 +64,34 @@ if (!empty($incomingData['sgcms_blog']) && is_array($incomingData['sgcms_blog'])
         $id = $blogItem['id'] ?? '';
         $titleEn = trim($blogItem['en']['title'] ?? ($blogItem['title'] ?? ''));
         $titleAr = trim($blogItem['ar']['title'] ?? '');
-        $titleKey = mb_strtolower($titleEn ?: $titleAr);
+        $titleFa = trim($blogItem['fa']['title'] ?? '');
+        $titleZh = trim($blogItem['zh']['title'] ?? '');
+        $rawTitle = $titleEn ?: ($titleAr ?: ($titleFa ?: $titleZh));
+        $titleKey = mb_strtolower($rawTitle);
         
         if ($id && isset($seenIds[$id])) continue;
-        if ($titleKey && isset($seenTitles[$titleKey])) continue;
+        if ($titleKey && mb_strlen($titleKey) > 2 && isset($seenTitles[$titleKey])) continue;
         
         if ($id) $seenIds[$id] = true;
-        if ($titleKey) $seenTitles[$titleKey] = true;
+        if ($titleKey && mb_strlen($titleKey) > 2) $seenTitles[$titleKey] = true;
         $dedupedBlogs[] = $blogItem;
     }
     $incomingData['sgcms_blog'] = $dedupedBlogs;
+}
+
+// 0b. AUTOMATIC MULTI-LANGUAGE TRANSLATION SYNC:
+try {
+    require_once __DIR__ . '/translate_sync.php';
+    if (function_exists('autoTranslateChangedData')) {
+        $currentDraftBefore = readDraftSnapshot();
+        foreach ($incomingData as $k => &$sectionData) {
+            if ($k === 'sgcms_blog' || $k === 'sgcms_deleted_slugs' || $k === 'sgcms_settings') continue;
+            autoTranslateChangedData($k, $sectionData, $currentDraftBefore[$k] ?? null);
+        }
+        unset($sectionData);
+    }
+} catch (Throwable $te) {
+    error_log('[SharifCMS Save Translate Warning] ' . $te->getMessage());
 }
 
 // 1. Dual-Write: Update server-side draft snapshot file immediately

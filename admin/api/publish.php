@@ -93,16 +93,35 @@ if (isset($payload['data']['sgcms_blog']) && is_array($payload['data']['sgcms_bl
 
         $titleEn = trim($blogItem['en']['title'] ?? ($blogItem['title'] ?? ''));
         $titleAr = trim($blogItem['ar']['title'] ?? '');
-        $titleKey = mb_strtolower($titleEn ?: $titleAr);
+        $titleFa = trim($blogItem['fa']['title'] ?? '');
+        $titleZh = trim($blogItem['zh']['title'] ?? '');
+        $rawTitle = $titleEn ?: ($titleAr ?: ($titleFa ?: $titleZh));
+        $titleKey = mb_strtolower($rawTitle);
 
         if ($id && isset($seenIds[$id])) continue;
-        if ($titleKey && isset($seenTitles[$titleKey])) continue;
+        if ($titleKey && mb_strlen($titleKey) > 2 && isset($seenTitles[$titleKey])) continue;
 
         if ($id) $seenIds[$id] = true;
-        if ($titleKey) $seenTitles[$titleKey] = true;
+        if ($titleKey && mb_strlen($titleKey) > 2) $seenTitles[$titleKey] = true;
         $dedupedBlogs[] = $blogItem;
     }
     $payload['data']['sgcms_blog'] = array_values($dedupedBlogs);
+}
+
+// 0b. AUTOMATIC MULTI-LANGUAGE TRANSLATION SYNC:
+// Detect any modified fields in English and automatically translate into Arabic, Farsi, and Chinese
+try {
+    require_once __DIR__ . '/translate_sync.php';
+    if (function_exists('autoTranslateChangedData')) {
+        $currentPublishedBefore = readPublishedSnapshot();
+        foreach ($payload['data'] as $k => &$sectionData) {
+            if ($k === 'sgcms_blog' || $k === 'sgcms_deleted_slugs' || $k === 'sgcms_settings') continue;
+            autoTranslateChangedData($k, $sectionData, $currentPublishedBefore[$k] ?? null);
+        }
+        unset($sectionData);
+    }
+} catch (Throwable $te) {
+    error_log('[SharifCMS Publish Translate Warning] ' . $te->getMessage());
 }
 
 // 1. GUARANTEED LIVE UPDATE: Merge and write published snapshot directly to published_content.json
@@ -115,6 +134,35 @@ if (!$fileWritten) {
     error_log('[SharifCMS Publish File Warning] published_content.json could not be written directly.');
 }
 
+// 1b. SSG PRE-RENDER BLOG LISTINGS: Re-generate static listing HTML for all language versions (ZERO pop-in)
+$blogListingsUpdated = false;
+$blogListingsCount = 0;
+try {
+    require_once __DIR__ . '/blog-regen.php';
+    if (function_exists('regenerateBlogListings')) {
+        $bRes = regenerateBlogListings(realpath(dirname(__DIR__, 2)), $currentPublished);
+        $blogListingsUpdated = $bRes['success'] ?? false;
+        $blogListingsCount = $bRes['blogCount'] ?? 0;
+    }
+} catch (Throwable $bre) {
+    error_log('[SharifCMS Publish Blog Regen Warning] ' . $bre->getMessage());
+}
+
+// 1b-2. SSG PRE-RENDER HOMEPAGE & STATIC PAGES: Pre-bake updated text and latest blogs directly into static HTML (ZERO pop-in)
+$homepageUpdated = false;
+$homepagePagesCount = 0;
+try {
+    require_once __DIR__ . '/homepage-regen.php';
+    if (function_exists('regenerateHomepage')) {
+        $hRes = regenerateHomepage(realpath(dirname(__DIR__, 2)), $currentPublished);
+        $homepageUpdated = $hRes['success'] ?? false;
+        $homepagePagesCount = $hRes['count'] ?? 0;
+    }
+} catch (Throwable $hre) {
+    error_log('[SharifCMS Publish Homepage Regen Warning] ' . $hre->getMessage());
+}
+
+
 // Also update draft snapshot
 try {
     $currentDraft = readDraftSnapshot();
@@ -123,6 +171,61 @@ try {
     }
     writeDraftSnapshot($currentDraft);
 } catch (Exception $e) {}
+
+// 1c. SYNC LOCALES JSON FILES (en.json, ar.json, fa.json, zh.json)
+try {
+    $rootDir = realpath(dirname(__DIR__, 2));
+    if ($rootDir && isset($currentPublished['sgcms_homepage'])) {
+        $hp = $currentPublished['sgcms_homepage'];
+        foreach (['en', 'ar', 'fa', 'zh'] as $lCode) {
+            $locFile = $rootDir . '/assets/locales/' . $lCode . '.json';
+            if (file_exists($locFile)) {
+                $rawLoc = file_get_contents($locFile);
+                if (substr($rawLoc, 0, 3) === "\xEF\xBB\xBF") {
+                    $rawLoc = substr($rawLoc, 3);
+                }
+                $locData = json_decode($rawLoc, true);
+                if (is_array($locData)) {
+                    $heroObj = ($lCode === 'en')
+                        ? ($hp['hero']['en'] ?? ($hp['hero'] ?? []))
+                        : ($hp['hero'][$lCode] ?? []);
+                    if (!empty($heroObj)) {
+                        if (!empty($heroObj['headline'])) $locData['hero']['title'] = $heroObj['headline'];
+                        if (!empty($heroObj['tagline'])) $locData['hero']['tagline'] = $heroObj['tagline'];
+                        if (!empty($heroObj['pathway_citizenship'])) $locData['hero']['citizenship'] = $heroObj['pathway_citizenship'];
+                        if (!empty($heroObj['pathway_residency'])) $locData['hero']['residency'] = $heroObj['pathway_residency'];
+                        if (!empty($heroObj['pathway_realestate'])) $locData['hero']['realEstate'] = $heroObj['pathway_realestate'];
+                        if (!empty($heroObj['pathway_education'])) $locData['hero']['educationalAdvisory'] = $heroObj['pathway_education'];
+                    }
+                    $aboutObj = ($lCode === 'en')
+                        ? ($hp['about']['en'] ?? ($hp['about'] ?? []))
+                        : ($hp['about'][$lCode] ?? []);
+                    if (!empty($aboutObj)) {
+                        if (!empty($aboutObj['badge'])) $locData['about']['badge'] = $aboutObj['badge'];
+                        if (!empty($aboutObj['heading'])) $locData['about']['heading'] = $aboutObj['heading'];
+                        if (!empty($aboutObj['subheading'])) $locData['about']['subheading'] = $aboutObj['subheading'];
+                        if (!empty($aboutObj['btn1_text'])) $locData['about']['readStory'] = $aboutObj['btn1_text'];
+                        if (!empty($aboutObj['btn2_text'])) $locData['about']['bookConsultation'] = $aboutObj['btn2_text'];
+                        if (!empty($aboutObj['p1'])) $locData['about']['p1'] = $aboutObj['p1'];
+                        if (!empty($aboutObj['p2'])) $locData['about']['p2'] = $aboutObj['p2'];
+                    }
+                    $srvObj = ($lCode === 'en')
+                        ? ($hp['services'] ?? [])
+                        : ($hp['services'][$lCode] ?? []);
+                    if (!empty($srvObj)) {
+                        if (!empty($srvObj['badge'])) $locData['services']['badge'] = $srvObj['badge'];
+                        if (!empty($srvObj['heading'])) $locData['services']['heading'] = $srvObj['heading'];
+                        if (!empty($srvObj['heading_italic'])) $locData['services']['headingItalic'] = $srvObj['heading_italic'];
+                        if (!empty($srvObj['description'])) $locData['services']['description'] = $srvObj['description'];
+                    }
+                    file_put_contents($locFile, json_encode($locData, JSON_PRETTY_PRINT | JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES));
+                }
+            }
+        }
+    }
+} catch (Throwable $lce) {
+    error_log('[SharifCMS Publish Locales Sync Warning] ' . $lce->getMessage());
+}
 
 // 2. MySQL DATABASE UPDATE: Sync into MySQL if database is configured
 $db = getDb(true);
@@ -199,7 +302,11 @@ jsonResponse([
     'count'          => count($updatedKeys),
     'fileWritten'    => $fileWritten,
     'dbSynced'       => $dbPublished,
-    'dbError'        => $dbError,
-    'sitemapUpdated' => $sitemapUpdated,
-    'sitemapUrlCount'=> $sitemapUrlCount
+    'dbError'            => $dbError,
+    'sitemapUpdated'     => $sitemapUpdated,
+    'sitemapUrlCount'    => $sitemapUrlCount,
+    'blogListingsUpdated'=> $blogListingsUpdated,
+    'blogListingsCount'  => $blogListingsCount,
+    'homepageUpdated'    => $homepageUpdated,
+    'homepagePagesCount' => $homepagePagesCount
 ]);

@@ -339,6 +339,28 @@
         }
     </style>
 <link href="../assets/css/multilingual.css?v=5" rel="stylesheet"/>
+    <!-- CMS Live Studio Integration (Active inside dashboard editor) -->
+    <script>
+        (function() {
+            var inIframe = window.self !== window.top;
+            var isEditor = window.location.search.indexOf('cms_editor') !== -1;
+            if (inIframe || isEditor) {
+                try {
+                    var st = document.createElement('style');
+                    st.textContent = '#preloader { display: none !important; } body { overflow: auto !important; }';
+                    document.head.appendChild(st);
+                } catch(e) {}
+                var s = document.createElement('script');
+                s.src = '/admin/cms-loader.js?v=' + Date.now();
+                s.onerror = function() {
+                    var fb = document.createElement('script');
+                    fb.src = (window.location.pathname.indexOf('/programs/') !== -1 ? '../../../admin/cms-loader.js' : '../admin/cms-loader.js') + '?v=' + Date.now();
+                    document.head.appendChild(fb);
+                };
+                document.head.appendChild(s);
+            }
+        })();
+    </script>
 </head>
 <body class="bg-luxury-light text-luxury-dark font-sans overflow-x-hidden">
 <!-- HEADER COMPONENT -->
@@ -689,9 +711,7 @@
         <h1 class="font-serif text-white font-normal tracking-tight drop-shadow-xl text-4xl sm:text-6xl md:text-7xl lg:text-8xl leading-tight">
             <span class="contact-hero-glow font-serif cursor-pointer" data-i18n="pages.aboutUs.heroTitle">About Sharif Group</span>
         </h1>
-        <p class="text-xs sm:text-sm md:text-base text-neutral-300 font-light max-w-xl mx-auto leading-relaxed pt-1 about-hero-subtitle" data-i18n="pages.aboutUs.heroSubtitle">
-            A premier migration, citizenship, and luxury investment advisory platform rooted in Business Bay, Dubai.
-        </p>
+        <p class="text-xs sm:text-sm md:text-base text-neutral-300 font-light max-w-xl mx-auto leading-relaxed pt-1 about-hero-subtitle" data-i18n="pages.aboutUs.heroSubtitle">A premier migration, citizenship, and luxury investment advisory platform rooted in Business Bay, Dubai.</p>
     </div>
 </section>
 <!-- SECTION 1: GLOBAL MOBILITY & STATS (REDESIGNED LUXURY BANNER) -->
@@ -711,8 +731,7 @@
 </div>
 <span class="text-[10px] font-bold uppercase tracking-[0.25em] text-luxury-gold" data-i18n="pages.aboutUs.about_overview_item1">WHO WE ARE</span>
 </div>
-<h2 class="font-serif text-3xl sm:text-4xl xl:text-5xl font-bold text-white leading-tight" data-i18n-html="pages.aboutUs.about_overview_item2">Company Overview:<br/>
-<span class="italic text-[#C5A880] font-serif font-normal">Sharif Group</span></h2>
+<h2 class="font-serif text-3xl sm:text-4xl xl:text-5xl font-bold text-white leading-tight" data-i18n-html="pages.aboutUs.about_overview_item2">Company Overview:<br/><span class="italic text-[#C5A880] font-serif font-normal">Sharif Group</span></h2>
 <div class="w-16 h-[2px] bg-[#C5A880]"></div>
 <div class="space-y-3 text-xs sm:text-sm text-neutral-300 font-light leading-relaxed">
 <p data-i18n="pages.aboutUs.about_overview_item3">Sharif Group is a dedicated private consulting company based in Business Bay, Dubai. We assist international clients and families with legal second passports, residency visas, premium property investments, and student placements in top international universities.</p>

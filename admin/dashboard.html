@@ -1660,6 +1660,33 @@
       line-height: 1.5;
     }
 
+    .qb-target-pill {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      background: rgba(255, 255, 255, 0.03);
+      border: 1px solid rgba(255, 255, 255, 0.12);
+      border-radius: 6px;
+      padding: 5px 8px;
+      cursor: pointer;
+      font-size: 11px;
+      color: #ccc;
+      user-select: none;
+      transition: all 0.15s;
+    }
+    .qb-target-pill:hover {
+      background: rgba(255, 255, 255, 0.07);
+    }
+    .qb-target-pill input[type="checkbox"] {
+      accent-color: var(--gold);
+      cursor: pointer;
+    }
+    .qb-target-pill.checked {
+      border-color: var(--gold);
+      color: #fff;
+      background: rgba(197, 168, 128, 0.12);
+    }
+
     .sg-preset-grid {
       display: grid;
       grid-template-columns: repeat(4, 1fr);
@@ -1793,8 +1820,10 @@
             <line x1="3" y1="18" x2="21" y2="18" />
           </svg>
         </button>
-        <img src="../assets/images/shariftrip-logo-2.svg" onerror="this.src='/assets/images/shariftrip-logo-2.svg'"
-          alt="Sharif Group" class="hd-logo">
+        <div onclick="navigate('homepage')" title="Go to Homepage" style="display:flex;align-items:center;cursor:pointer">
+          <img src="../assets/images/shariftrip-logo-2.svg" onerror="this.src='/assets/images/shariftrip-logo-2.svg'"
+            alt="Sharif Group" class="hd-logo">
+        </div>
         <div class="hd-div"></div>
         <div>
           <div id="page-title">Content Management</div>
@@ -2181,9 +2210,58 @@
               <label class="form-label" style="font-weight:600">
                 <i class="fa-solid fa-layer-group" style="color:var(--gold);margin-right:4px"></i> Program Sub-Filter
               </label>
-              <select class="form-select" id="qb-subcategory">
+              <select class="form-select" id="qb-subcategory" onchange="syncQbSubcatToTargets(this.value)">
               </select>
               <div style="font-size:11px;color:var(--muted);margin-top:4px">Optional country/program filter.</div>
+            </div>
+          </div>
+
+          <!-- TARGET PROGRAM PAGES (BOTTOM INSIGHTS CAROUSEL) -->
+          <div class="form-group" style="margin-bottom:14px;background:rgba(197,168,128,0.05);border:1px solid rgba(197,168,128,0.25);border-radius:10px;padding:12px">
+            <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:6px;flex-wrap:wrap;gap:6px">
+              <label class="form-label" style="margin-bottom:0;color:var(--gold);font-weight:700;font-size:12px;display:flex;align-items:center;gap:6px">
+                <i class="fa-solid fa-map-pin"></i> Show Also on Specific Program Pages (Bottom Slider)
+              </label>
+              <div style="display:flex;gap:4px">
+                <button type="button" class="btn btn-secondary" style="font-size:10px;padding:2px 8px;height:auto" onclick="toggleQbTargetPrograms('citizenship')">+ All Citizenship</button>
+                <button type="button" class="btn btn-secondary" style="font-size:10px;padding:2px 8px;height:auto" onclick="toggleQbTargetPrograms('residency')">+ All Residency</button>
+                <button type="button" class="btn btn-secondary" style="font-size:10px;padding:2px 8px;height:auto;color:#ef4444" onclick="toggleQbTargetPrograms('clear')">Clear</button>
+              </div>
+            </div>
+            <div style="font-size:11px;color:#a3a3a3;margin-bottom:8px;line-height:1.4">
+              Select which destination page(s) should feature this article at the bottom in their <i>"Essential Guides &amp; Insights"</i> carousel (this article will <b>always</b> appear in the main <code>/blog/</code> archive):
+            </div>
+
+            <div style="margin-bottom:8px">
+              <span style="font-size:10px;text-transform:uppercase;letter-spacing:0.05em;color:var(--gold);font-weight:700;display:block;margin-bottom:4px">Citizenship by Investment:</span>
+              <div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(130px,1fr));gap:6px">
+                <label class="qb-target-pill"><input type="checkbox" class="qb-target-prog-cb" data-group="citizenship" value="dominica"> <span>Dominica</span></label>
+                <label class="qb-target-pill"><input type="checkbox" class="qb-target-prog-cb" data-group="citizenship" value="stkitts"> <span>St. Kitts & Nevis</span></label>
+                <label class="qb-target-pill"><input type="checkbox" class="qb-target-prog-cb" data-group="citizenship" value="grenada"> <span>Grenada</span></label>
+                <label class="qb-target-pill"><input type="checkbox" class="qb-target-prog-cb" data-group="citizenship" value="stlucia"> <span>Saint Lucia</span></label>
+                <label class="qb-target-pill"><input type="checkbox" class="qb-target-prog-cb" data-group="citizenship" value="antiguaandbarbuda"> <span>Antigua & Barbuda</span></label>
+                <label class="qb-target-pill"><input type="checkbox" class="qb-target-prog-cb" data-group="citizenship" value="vanuatu"> <span>Vanuatu</span></label>
+                <label class="qb-target-pill"><input type="checkbox" class="qb-target-prog-cb" data-group="citizenship" value="sao-tome-and-principe"> <span>São Tomé & Príncipe</span></label>
+                <label class="qb-target-pill"><input type="checkbox" class="qb-target-prog-cb" data-group="citizenship" value="nauru"> <span>Republic of Nauru</span></label>
+              </div>
+            </div>
+
+            <div style="margin-bottom:8px">
+              <span style="font-size:10px;text-transform:uppercase;letter-spacing:0.05em;color:var(--gold);font-weight:700;display:block;margin-bottom:4px">Residency by Investment:</span>
+              <div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(130px,1fr));gap:6px">
+                <label class="qb-target-pill"><input type="checkbox" class="qb-target-prog-cb" data-group="residency" value="uae"> <span>UAE Golden Visa</span></label>
+                <label class="qb-target-pill"><input type="checkbox" class="qb-target-prog-cb" data-group="residency" value="portugal"> <span>Portugal Golden Visa</span></label>
+                <label class="qb-target-pill"><input type="checkbox" class="qb-target-prog-cb" data-group="residency" value="greece"> <span>Greece Golden Visa</span></label>
+                <label class="qb-target-pill"><input type="checkbox" class="qb-target-prog-cb" data-group="residency" value="panama"> <span>Panama Golden Visa</span></label>
+              </div>
+            </div>
+
+            <div>
+              <span style="font-size:10px;text-transform:uppercase;letter-spacing:0.05em;color:var(--gold);font-weight:700;display:block;margin-bottom:4px">Other Key Service Pages:</span>
+              <div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(130px,1fr));gap:6px">
+                <label class="qb-target-pill"><input type="checkbox" class="qb-target-prog-cb" data-group="other" value="realestate"> <span>Dubai Real Estate</span></label>
+                <label class="qb-target-pill"><input type="checkbox" class="qb-target-prog-cb" data-group="other" value="educationaladvisory"> <span>Educational Advisory</span></label>
+              </div>
             </div>
           </div>
           <input type="hidden" id="qb-author" value="Sharif Group Legal Desk">
@@ -2738,10 +2816,22 @@
         }
         const sep = url.includes('?') ? '&' : '?';
         const currentSrc = url + sep + 'cms_editor=1';
-        const cleanUrl = url.split('?')[0].replace(/^\.\.\//, '');
+        let isAlreadyOnPage = false;
+        try {
+          if (iframe.src && iframe.src !== 'about:blank') {
+            const curUrlObj = new URL(iframe.src, window.location.href);
+            const targetUrlObj = new URL(url, window.location.href);
+            const curNorm = curUrlObj.pathname.replace(/\/index\.html?$/i, '').replace(/\/$/, '') || '/';
+            const tgtNorm = targetUrlObj.pathname.replace(/\/index\.html?$/i, '').replace(/\/$/, '') || '/';
+            isAlreadyOnPage = (curNorm === tgtNorm);
+          }
+        } catch (e) {
+          isAlreadyOnPage = false;
+        }
+
         const needsSlugReload = (state.section === 'blog-edit' && state.activeBlogSlug && iframe.src.indexOf('article_slug=' + encodeURIComponent(state.activeBlogSlug)) === -1)
           || (state.section === 'blog' && iframe.src.indexOf('article_slug=') !== -1);
-        if (!iframe.src || iframe.src.indexOf(cleanUrl) === -1 || iframe.src === 'about:blank' || needsSlugReload) {
+        if (!isAlreadyOnPage || !iframe.src || iframe.src === 'about:blank' || needsSlugReload) {
           iframe.src = currentSrc;
         } else {
           if (state.section === 'blog-edit' && state.activeBlogSlug && iframe.contentWindow) {
@@ -3071,49 +3161,52 @@
 
       // FIX: Re-send canvasMode on every iframe load so Edit Mode is never lost
       // even if the iframe navigated or reloaded before the postMessage arrived.
-      (function attachIframeLoadGuard() {
+      function triggerIframeGuard() {
         const iframe = document.getElementById('live-iframe');
         if (!iframe) return;
-        iframe.addEventListener('load', () => {
-          // Dynamically inject cms-loader.js into the iframe if not present
-          try {
-            const doc = iframe.contentDocument || iframe.contentWindow.document;
-            if (doc && doc.location.href && doc.location.href !== 'about:blank') {
-              if (!doc.querySelector('script[src*="cms-loader.js"]')) {
-                const s = doc.createElement('script');
-                const adminBase = new URL('./', window.location.href).href;
-                s.src = adminBase + 'cms-loader.js?v=' + Date.now();
-                s.onload = () => {
-                  sendToIframe({ type: 'CMS_SET_LANG', lang: state.lang });
-                  sendToIframe({ type: 'CMS_SET_MODE', mode: state.canvasMode });
-                  if (state.section === 'blog-edit' && state.activeBlogSlug) {
-                    sendToIframe({ type: 'CMS_OPEN_ARTICLE', slug: state.activeBlogSlug });
-                  }
-                  syncActiveFormToLivePreview();
-                };
-                doc.body.appendChild(s);
-              } else {
+        try {
+          const doc = iframe.contentDocument || iframe.contentWindow.document;
+          if (doc && doc.location.href && doc.location.href !== 'about:blank') {
+            if (!doc.querySelector('script[src*="cms-loader.js"]')) {
+              const s = doc.createElement('script');
+              const adminBase = new URL('./', window.location.href).href;
+              s.src = adminBase + 'cms-loader.js?v=' + Date.now();
+              s.onload = () => {
                 sendToIframe({ type: 'CMS_SET_LANG', lang: state.lang });
-                sendToIframe({ type: 'CMS_SET_MODE', mode: state.canvasMode });
+                sendToIframe({ type: 'CMS_SET_MODE', mode: state.canvasMode || 'edit' });
                 if (state.section === 'blog-edit' && state.activeBlogSlug) {
                   sendToIframe({ type: 'CMS_OPEN_ARTICLE', slug: state.activeBlogSlug });
                 }
                 syncActiveFormToLivePreview();
-              }
-            }
-          } catch (e) { }
-
-          // Give cms-loader.js a moment to initialise, then push current mode & state
-          [100, 300, 600].forEach(delay => {
-            setTimeout(() => {
+              };
+              (doc.head || doc.body).appendChild(s);
+            } else {
               sendToIframe({ type: 'CMS_SET_LANG', lang: state.lang });
-              sendToIframe({ type: 'CMS_SET_MODE', mode: state.canvasMode });
+              sendToIframe({ type: 'CMS_SET_MODE', mode: state.canvasMode || 'edit' });
               if (state.section === 'blog-edit' && state.activeBlogSlug) {
                 sendToIframe({ type: 'CMS_OPEN_ARTICLE', slug: state.activeBlogSlug });
               }
-            }, delay);
-          });
+              syncActiveFormToLivePreview();
+            }
+          }
+        } catch (e) { }
+
+        [100, 300, 600, 1000].forEach(delay => {
+          setTimeout(() => {
+            sendToIframe({ type: 'CMS_SET_LANG', lang: state.lang });
+            sendToIframe({ type: 'CMS_SET_MODE', mode: state.canvasMode || 'edit' });
+            if (state.section === 'blog-edit' && state.activeBlogSlug) {
+              sendToIframe({ type: 'CMS_OPEN_ARTICLE', slug: state.activeBlogSlug });
+            }
+          }, delay);
         });
+      }
+
+      (function attachIframeLoadGuard() {
+        const iframe = document.getElementById('live-iframe');
+        if (!iframe) return;
+        iframe.addEventListener('load', triggerIframeGuard);
+        setTimeout(triggerIframeGuard, 300);
       })();
 
       function highlightEditorSection(sectionId) {
@@ -3267,6 +3360,73 @@
       }
       */
 
+      // ══════════════════════════════════════════════════════════
+      // INSTANT LIVE BLOG SYNC ENGINE (0ms Cross-Tab & Auto-Publish)
+      // ══════════════════════════════════════════════════════════
+      window.syncBlogLiveInstantly = function(blogs, autoPublishBackend = true) {
+        if (!Array.isArray(blogs)) return;
+        const liveKey = (window.CMS?.KEYS?.BLOG || 'sgcms_blog') + '_live';
+        try {
+          localStorage.setItem(liveKey, JSON.stringify(blogs));
+        } catch (e) {
+          console.warn('[CMS Sync] LocalStorage live quota error:', e);
+        }
+
+        // 1. Cross-Tab Real-time BroadcastChannel (0ms multi-tab instant rendering)
+        try {
+          if (typeof BroadcastChannel !== 'undefined') {
+            const bc = new BroadcastChannel('sgcms_blog_channel');
+            bc.postMessage({ type: 'BLOGS_UPDATED', blogs: blogs, timestamp: Date.now() });
+            bc.close();
+          }
+        } catch (e) {}
+
+        // 2. Storage event dispatch for open tabs
+        try {
+          window.dispatchEvent(new StorageEvent('storage', {
+            key: liveKey,
+            newValue: JSON.stringify(blogs)
+          }));
+        } catch (e) {}
+
+        // 3. Notify preview iframe if open in visual studio
+        try {
+          const iframe = document.getElementById('live-iframe');
+          if (iframe && iframe.contentWindow) {
+            iframe.contentWindow.postMessage({ type: 'CMS_BLOGS_LIVE_UPDATED', blogs: blogs }, '*');
+          }
+        } catch (e) {}
+
+        // 4. Background instant live publish to server (published_content.json + MySQL)
+        if (autoPublishBackend) {
+          try {
+            const token = sessionStorage.getItem('sgcms_token') || localStorage.getItem('sgcms_token') || '';
+            const headers = { 'Content-Type': 'application/json' };
+            if (token) {
+              headers['Authorization'] = 'Bearer ' + token;
+              headers['X-CMS-Token'] = token;
+            }
+            fetch('api/publish.php', {
+              method: 'POST',
+              credentials: 'include',
+              headers,
+              body: JSON.stringify({
+                data: { sgcms_blog: blogs },
+                publishedAt: new Date().toISOString(),
+                publisher: (typeof session !== 'undefined' && session?.name) ? session.name : 'Sharif Group Administrator',
+                token
+              })
+            }).then(r => r.json()).then(res => {
+              if (res && res.success) {
+                console.log('[CMS Instant Live] Blog successfully published to server live snapshot in background!');
+              }
+            }).catch(err => {
+              console.warn('[CMS Instant Live] Background publish notice:', err);
+            });
+          } catch (e) {}
+        }
+      };
+
       // ==========================================================
       // VISUAL STUDIO QUICK CREATION MODALS
       // ==========================================================
@@ -3288,8 +3448,61 @@
             catSel.value = initialCat || 'Golden Visa';
             updateQuickBlogSubcatOptions(catSel.value, initialSub || '');
           }
+
+          // Reset target program checkboxes
+          const qbCbs = document.querySelectorAll('.qb-target-prog-cb');
+          qbCbs.forEach(cb => {
+            cb.checked = false;
+            const parent = cb.closest('.qb-target-pill');
+            if (parent) parent.classList.remove('checked');
+          });
+          if (initialSub) {
+            syncQbSubcatToTargets(initialSub);
+          }
         }
       }
+
+      window.toggleQbTargetPrograms = function(group) {
+        const cbs = document.querySelectorAll('.qb-target-prog-cb');
+        cbs.forEach(cb => {
+          if (group === 'clear') {
+            cb.checked = false;
+          } else if (group === 'citizenship' && cb.getAttribute('data-group') === 'citizenship') {
+            cb.checked = true;
+          } else if (group === 'residency' && cb.getAttribute('data-group') === 'residency') {
+            cb.checked = true;
+          }
+          const parent = cb.closest('.qb-target-pill');
+          if (parent) {
+            if (cb.checked) parent.classList.add('checked');
+            else parent.classList.remove('checked');
+          }
+        });
+      };
+
+      function syncQbSubcatToTargets(subcatVal) {
+        if (!subcatVal) return;
+        const norm = subcatVal.toLowerCase().replace(/[^a-z0-9]/g, '');
+        const cbs = document.querySelectorAll('.qb-target-prog-cb');
+        cbs.forEach(cb => {
+          const cbNorm = cb.value.toLowerCase().replace(/[^a-z0-9]/g, '');
+          if (cbNorm === norm || (norm && cbNorm.indexOf(norm) !== -1) || (cbNorm && norm.indexOf(cbNorm) !== -1)) {
+            cb.checked = true;
+            const parent = cb.closest('.qb-target-pill');
+            if (parent) parent.classList.add('checked');
+          }
+        });
+      }
+
+      document.addEventListener('change', function(e) {
+        if (e.target && e.target.classList.contains('qb-target-prog-cb')) {
+          const parent = e.target.closest('.qb-target-pill');
+          if (parent) {
+            if (e.target.checked) parent.classList.add('checked');
+            else parent.classList.remove('checked');
+          }
+        }
+      });
 
       function updateQuickBlogSubcatOptions(category, selectedSub) {
         const wrap = document.getElementById('qb-subcat-wrap');
@@ -3341,6 +3554,11 @@
 
         const category = document.getElementById('qb-category')?.value || 'Golden Visa';
         const subcategory = document.getElementById('qb-subcategory')?.value || '';
+        const targetPrograms = Array.from(document.querySelectorAll('.qb-target-prog-cb:checked')).map(cb => cb.value);
+        if (subcategory && !targetPrograms.includes(subcategory)) {
+          targetPrograms.push(subcategory);
+        }
+
         const author = document.getElementById('qb-author')?.value || 'Sharif Group Legal Desk';
         const customImg = document.getElementById('qb-custom-img')?.value.trim();
         const prevImg = document.getElementById('qb-img-preview')?.src;
@@ -3366,6 +3584,7 @@
           author,
           category,
           subcategory,
+          target_programs: targetPrograms,
           featured_img: img,
           publish_date: dateStr,
           status: 'published',
@@ -3392,11 +3611,12 @@
         existingBlogs.unshift(newArticle);
         existingBlogs = repairBlogFaqsAndTranslations(existingBlogs);
         window.CMS.saveData(window.CMS.KEYS.BLOG, existingBlogs);
+        syncBlogLiveInstantly(existingBlogs, true);
 
         populateSidebar();
         toggleGroup('blog', true);
         closeQuickBlogModal();
-        showToast('Article created! Loading on visual canvas...', 'success');
+        showToast('Article created & live! Opening on visual canvas...', 'success');
 
         openBlogArticle(id);
       }
@@ -3446,11 +3666,12 @@
         existingBlogs.unshift(newArticle);
         existingBlogs = repairBlogFaqsAndTranslations(existingBlogs);
         window.CMS.saveData(window.CMS.KEYS.BLOG, existingBlogs);
+        syncBlogLiveInstantly(existingBlogs, true);
         populateSidebar();
         toggleGroup('blog', true);
 
         openBlogArticle(id);
-        showToast('New article created! Hover and click any text to edit inline.', 'success');
+        showToast('New article created & live! Hover and click any text to edit inline.', 'success');
       }
 
       let selectedBlogImg = '/assets/images/dubai-office-2.webp';
@@ -3462,14 +3683,35 @@
         if (custom) custom.value = '';
       }
 
-      function clearBlogImageUpload(inputId, previewImgId, wrapId) {
+      function clearBlogImageUpload(inputId, previewImgId, wrapOrBtnId) {
         const inp = document.getElementById(inputId);
-        if (inp) inp.value = '';
+        if (inp) {
+          inp.value = '';
+          if (inputId === 'blog-img') {
+            if (typeof broadcastBlogDraft === 'function') broadcastBlogDraft();
+            if (typeof liveUpdateField === 'function') liveUpdateField('blog_img', '');
+          }
+        }
         const prev = document.getElementById(previewImgId);
         if (prev) { prev.src = ''; prev.style.display = 'none'; }
-        const wrap = document.getElementById(wrapId);
-        if (wrap) wrap.style.display = 'none';
+
+        const el = document.getElementById(wrapOrBtnId);
+        if (el) el.style.display = 'none';
+
+        const remBtn = document.getElementById('blog-img-remove-btn');
+        if (remBtn) remBtn.style.display = 'none';
+
+        const qbWrap = document.getElementById('qb-preview-wrap');
+        if (qbWrap && inputId === 'qb-custom-img') qbWrap.style.display = 'none';
+
+        const fileInput = document.getElementById(inputId === 'qb-custom-img' ? 'qb-file-input' : 'blog-file-input');
+        if (fileInput) fileInput.value = '';
+
+        const st = document.getElementById(inputId === 'qb-custom-img' ? 'qb-upload-status' : 'blog-upload-status');
+        if (st) st.innerHTML = '';
+
         markUnsaved();
+        if (typeof showToast === 'function') showToast('Image removed', 'info');
       }
 
       function previewCustomImageUrl(val, previewImgId, wrapId) {
@@ -3489,9 +3731,9 @@
       }
 
       // Helper to compress images client-side before upload to avoid exceeding PHP size limits
-      function compressImageClientSide(file, maxWidth = 1920, maxHeight = 1080, quality = 0.85) {
+      function compressImageClientSide(file, maxWidth = 1400, maxHeight = 900, quality = 0.82) {
         return new Promise((resolve) => {
-          if (!file || !file.type.startsWith('image/')) {
+          if (!file || !file.type.startsWith('image/') || file.type === 'image/svg+xml') {
             resolve({ blob: file, dataUrl: null });
             return;
           }
@@ -3510,12 +3752,27 @@
               canvas.width = w;
               canvas.height = h;
               const ctx = canvas.getContext('2d');
+              // Smooth high-quality bicubic downsampling
+              ctx.imageSmoothingEnabled = true;
+              ctx.imageSmoothingQuality = 'high';
               ctx.drawImage(img, 0, 0, w, h);
-              const mime = file.type === 'image/png' ? 'image/png' : 'image/webp';
+
+              // Always convert to ultra-fast Next-Gen WebP (or JPEG fallback)
+              let mime = 'image/webp';
+              try {
+                if (!canvas.toDataURL('image/webp').startsWith('data:image/webp')) {
+                  mime = 'image/jpeg';
+                }
+              } catch (err) {
+                mime = 'image/jpeg';
+              }
+
+              const ext = mime === 'image/webp' ? '.webp' : '.jpg';
               const dataUrl = canvas.toDataURL(mime, quality);
               canvas.toBlob((blob) => {
                 if (blob) {
-                  const newFile = new File([blob], file.name.replace(/\.[^.]+$/, '') + (mime === 'image/webp' ? '.webp' : '.png'), { type: mime });
+                  const cleanName = file.name.replace(/\.[^.]+$/, '') + ext;
+                  const newFile = new File([blob], cleanName, { type: mime });
                   resolve({ blob: newFile, dataUrl });
                 } else {
                   resolve({ blob: file, dataUrl: e.target.result });
@@ -3578,7 +3835,12 @@
               }
               if (typeof liveUpdateField === 'function') liveUpdateField('blog_img', json.url);
             }
-            if (prev) prev.src = json.url;
+            if (prev) {
+              prev.src = json.url;
+              prev.style.display = 'block';
+            }
+            const remBtn = document.getElementById(targetInputId === 'blog-img' ? 'blog-img-remove-btn' : '');
+            if (remBtn) remBtn.style.display = 'inline-flex';
             if (statusEl) statusEl.innerHTML = '<i class="fa-solid fa-check" style="color:#4ade80"></i> <span style="color:#4ade80">Uploaded!</span>';
             setTimeout(() => { if (statusEl) statusEl.innerHTML = ''; }, 3000);
             showToast('Image uploaded and optimized successfully!', 'success');
@@ -3591,6 +3853,8 @@
           if (inp && previewDataUrl) {
             inp.value = previewDataUrl;
             markUnsaved();
+            const remBtn = document.getElementById(targetInputId === 'blog-img' ? 'blog-img-remove-btn' : '');
+            if (remBtn) remBtn.style.display = 'inline-flex';
           }
           if (statusEl) statusEl.innerHTML = '<span style="color:var(--gold)">Ready</span>';
           showToast('Image loaded and ready!', 'info');
@@ -6925,10 +7189,15 @@
           broadcastBlogDraft();
           liveUpdateField('blog_img', this.value);
           const prev = document.getElementById('blog-img-prev');
+          const remBtn = document.getElementById('blog-img-remove-btn');
           if (prev) { prev.src = this.value; prev.style.display = this.value ? 'block' : 'none'; }
+          if (remBtn) { remBtn.style.display = this.value ? 'inline-flex' : 'none'; }
         ">
         <button type="button" class="btn btn-ghost" style="white-space:nowrap;display:flex;align-items:center;gap:6px" onclick="document.getElementById('blog-file-input').click()">
           <i class="fa-solid fa-cloud-arrow-up" style="color:var(--gold)"></i> Upload Device
+        </button>
+        <button type="button" class="btn btn-ghost" id="blog-img-remove-btn" style="white-space:nowrap;display:${b.featured_img ? 'inline-flex' : 'none'};align-items:center;gap:6px;color:#f87171;border-color:rgba(239,68,68,0.4)" onclick="clearBlogImageUpload('blog-img', 'blog-img-prev', 'blog-img-remove-btn')">
+          <i class="fa-solid fa-trash"></i> Remove
         </button>
         <input type="file" id="blog-file-input" accept="image/*" style="display:none" onchange="handleBlogImageUpload(this, 'blog-img', 'blog-img-prev', 'blog-upload-status')">
       </div>
@@ -7018,7 +7287,7 @@
         setTimeout(() => { broadcastBlogDraft(); }, 150);
       }
 
-      function saveBlogItem(id, andPublish) {
+      function saveBlogItem(id, andPublish, skipNavigate) {
         const blogs = window.CMS.getData(window.CMS.KEYS.BLOG) || [];
         let idx = blogs.findIndex(b => b.id === id);
         const isNew = idx < 0;
@@ -7104,6 +7373,7 @@
         }
 
         window.CMS.saveData(window.CMS.KEYS.BLOG, updatedList);
+        syncBlogLiveInstantly(updatedList, true);
 
         // Update sidebar list immediately
         populateSidebar();
@@ -7134,15 +7404,17 @@
         // Notify preview iframe
         sendToIframe({ type: 'CMS_BLOG_SAVED', id, blog: item });
 
-        // Navigate to blog list first so editor form state is cleared
-        navigate('blog');
+        if (!skipNavigate) {
+          // Navigate to blog list first so editor form state is cleared
+          navigate('blog');
+        }
 
         if (andPublish) {
           showToast('Article saved! Publishing live...', 'info');
           setTimeout(() => {
             publishLiveSite();
           }, 60);
-        } else {
+        } else if (!skipNavigate) {
           markDraft();
           showToast(isNew ? 'Article saved to drafts! Click "Publish" in the top bar to make it live.' : 'Draft saved! Click "Publish" to make changes live.', 'success');
         }
@@ -7160,6 +7432,7 @@
 
         blogs = blogs.filter(b => b && b.id !== id && b.slug !== id && b.en?.slug !== id && (target ? b.id !== target.id : true));
         window.CMS.saveData(window.CMS.KEYS.BLOG, blogs);
+        syncBlogLiveInstantly(blogs, true);
 
         // Clean up corresponding _live key if present
         try {
@@ -8807,6 +9080,33 @@
         return;
       }
 
+      function autoCommitActiveEditor() {
+        try {
+          // 1. Commit active blog edit form if open
+          if (document.getElementById('blog-title')) {
+            const id = state.itemId || (state.activeBlogSlug ? state.activeBlogSlug : null) || ('b' + uid());
+            if (typeof saveBlogItem === 'function') {
+              saveBlogItem(id, false, true);
+            }
+          }
+          // 2. Commit active program edit form if open
+          if (document.getElementById('np-title') && typeof saveProgramItem === 'function') {
+            const pType = state.itemType || 'citizenship';
+            const pId = state.itemId || ('id-' + uid());
+            saveProgramItem(pType, pId);
+          }
+          // 3. Ask live canvas iframe to flush any in-progress WYSIWYG or contenteditable blur
+          try {
+            const iframe = document.getElementById('live-iframe');
+            if (iframe && iframe.contentWindow) {
+              iframe.contentWindow.postMessage({ type: 'CMS_FORCE_BLUR_SAVE' }, '*');
+            }
+          } catch(e) {}
+        } catch (e) {
+          console.warn('[CMS Auto-Commit] Error auto-committing active editor:', e);
+        }
+      }
+
       // ══════════════════════════════════════════════════════════
       // PUBLISH LIVE SITE ENGINE
       // ══════════════════════════════════════════════════════════
@@ -8827,9 +9127,7 @@
         try {
           // Auto-commit any active form changes in the currently open editor
           try {
-            if (typeof saveCurrentPage === 'function' && state.section && state.section !== 'overview') {
-              saveCurrentPage();
-            }
+            autoCommitActiveEditor();
           } catch (e) { }
 
           // 1. Gather all current draft CMS keys comprehensively
@@ -8926,6 +9224,15 @@
               }
             });
             try { localStorage.setItem('sgcms_blog', JSON.stringify(payload.data.sgcms_blog)); } catch(e){}
+            try { localStorage.setItem('sgcms_blog_live', JSON.stringify(payload.data.sgcms_blog)); } catch(e){}
+            // 0ms instant broadcast to open website tabs
+            try {
+              if (typeof BroadcastChannel !== 'undefined') {
+                const bc = new BroadcastChannel('sgcms_blog_channel');
+                bc.postMessage({ type: 'BLOGS_UPDATED', blogs: payload.data.sgcms_blog, timestamp: Date.now() });
+                bc.close();
+              }
+            } catch(e) {}
           }
 
           // ── Always mirror to local live published store so preview & live website update immediately ──
@@ -9015,9 +9322,10 @@
             const descEl = document.getElementById('publish-modal-desc');
             const keyCount = Object.keys(payload.data).length;
             const sitemapCount = backendResult?.sitemapUrlCount || 0;
+            const blogRegenNote = backendResult?.blogListingsUpdated ? ' Blog listings pre-rendered (instant load) ✓' : '';
             if (descEl) {
               descEl.textContent = keyCount + ' content section' + (keyCount !== 1 ? 's' : '') + ' published live to server.' +
-                (sitemapCount > 0 ? ` XML Sitemap regenerated (${sitemapCount} URLs) ✓` : ' XML Sitemap updated ✓');
+                (sitemapCount > 0 ? ` XML Sitemap regenerated (${sitemapCount} URLs) ✓` : ' XML Sitemap updated ✓') + blogRegenNote;
             }
             const modal = document.getElementById('modal-publish-success');
             if (modal) modal.classList.add('open');

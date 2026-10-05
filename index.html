@@ -369,6 +369,28 @@ j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
             transform: translateY(-2px);
         }
     </style>
+    <!-- CMS Live Studio Integration (Active inside dashboard editor) -->
+    <script>
+        (function() {
+            var inIframe = window.self !== window.top;
+            var isEditor = window.location.search.indexOf('cms_editor') !== -1;
+            if (inIframe || isEditor) {
+                try {
+                    var st = document.createElement('style');
+                    st.textContent = '#preloader { display: none !important; } body { overflow: auto !important; }';
+                    document.head.appendChild(st);
+                } catch(e) {}
+                var s = document.createElement('script');
+                s.src = '/admin/cms-loader.js?v=' + Date.now();
+                s.onerror = function() {
+                    var fb = document.createElement('script');
+                    fb.src = (window.location.pathname.indexOf('/programs/') !== -1 ? '../../../admin/cms-loader.js' : '../admin/cms-loader.js') + '?v=' + Date.now();
+                    document.head.appendChild(fb);
+                };
+                document.head.appendChild(s);
+            }
+        })();
+    </script>
 </head>
 <body class="bg-luxury-light text-luxury-dark font-sans overflow-x-hidden">
 <!-- Google Tag Manager (noscript) -->
@@ -725,7 +747,7 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
 <div class="absolute inset-0 bg-gradient-to-t from-neutral-950/90 via-transparent to-neutral-950/50 z-0"></div>
 <div class="relative z-10 w-full max-w-7xl mx-auto space-y-3 text-center flex flex-col items-center">
 <span class="text-sm sm:text-base tracking-[0.25em] uppercase text-luxury-gold font-bold flex items-center justify-center gap-2 mb-1">
-<i class="fa-solid fa-shield-halved text-xs"></i> <span data-i18n="hero.tagline">UPGRADE YOUR LIFE</span>
+<i class="fa-solid fa-shield-halved text-xs"></i> <span data-i18n="hero.tagline">UPGRADE YOUR  LIFE</span>
 </span>
 <h1 class="font-serif text-white font-normal tracking-tight drop-shadow-xl whitespace-nowrap">
 <span class="dominica-hero-glow text-3xl sm:text-5xl md:text-6xl lg:text-7xl xl:text-8xl cursor-pointer" data-i18n="hero.title">Welcome to Sharif Group</span>
@@ -789,8 +811,8 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
 <span class="text-[10px] font-bold uppercase tracking-[0.25em] text-luxury-gold" data-i18n="about.badge">INTRODUCTION</span>
 </div>
 <h2 class="font-serif text-3xl sm:text-4xl xl:text-5xl font-bold text-white leading-tight">
-<span data-i18n="about.heading">Our Story &amp; Background:</span> <br/>
-<span class="italic text-[#C5A880] font-serif font-normal" data-i18n="about.subheading">Sharif Group</span>
+<span data-i18n="about.heading">OVERVIEW &amp; Background:</span> <br/>
+<span class="italic text-[#C5A880] font-serif font-normal" data-i18n="about.subheading">Sharif Groupss</span>
 </h2>
 <div class="w-16 h-[2px] bg-[#C5A880]"></div>
 <div class="space-y-4 text-xs sm:text-sm text-neutral-300 font-light leading-relaxed">
@@ -798,8 +820,8 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
 <p data-i18n="about.p2">Our experienced team takes care of document preparation, background legal checks, and government clearance from start to finish, ensuring a straightforward, secure, and completely stress-free experience.</p>
 </div>
 <div class="pt-4 flex flex-wrap items-center gap-4">
-<a class="inline-block px-7 py-3.5 rounded-xl bg-[#786142] text-white text-xs font-bold uppercase tracking-widest hover:bg-luxury-gold transition duration-300 shadow-xl premium-btn-hover" data-i18n="about.readStory" href="/aboutus/">Read Our Story</a>
-<a class="inline-block px-7 py-3.5 rounded-xl border border-white/30 text-white text-xs font-bold uppercase tracking-widest hover:bg-white hover:text-neutral-900 transition duration-300" data-i18n="about.bookConsultation" href="/contact/">Book Consultation</a>
+<a class="inline-block px-7 py-3.5 rounded-xl bg-[#786142] text-white text-xs font-bold uppercase tracking-widest hover:bg-luxury-gold transition duration-300 shadow-xl premium-btn-hover" data-i18n="about.readStory" href="aboutus/index.html">Read OVERVIEW</a>
+<a class="inline-block px-7 py-3.5 rounded-xl border border-white/30 text-white text-xs font-bold uppercase tracking-widest hover:bg-white hover:text-neutral-900 transition duration-300" data-i18n="about.bookConsultation" href="contact/index.html">Book Consultation</a>
 </div>
 </div>
 </div>
@@ -1165,405 +1187,29 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
 </div>
 <div class="overflow-hidden">
 <div class="flex transition-transform duration-500 ease-in-out gap-6" id="blog-slider-inner" style="transform: translateX(0px);">
-<!-- Blog Card 1 -->
-<div class="bg-neutral-900 rounded-[2rem] border border-luxury-gold/30 overflow-hidden shadow-xl flex flex-col justify-between hover:shadow-[0_0_25px_rgba(197,168,128,0.4)] transition duration-500 min-w-[320px] max-w-[320px] shrink-0 group">
+<div class="bg-neutral-900 rounded-[2rem] border border-luxury-gold/30 overflow-hidden shadow-xl flex flex-col justify-between hover:shadow-[0_0_25px_rgba(197,168,128,0.4)] transition duration-500 min-w-[320px] max-w-[320px] shrink-0 group dynamic-home-blog" data-cms-blog-id="bid-izo738" data-cms-slug="dominica-passport-for-afghans-in-2026">
 <div>
 <div class="relative aspect-[16/10] overflow-hidden">
-<img alt="About Sharif Group" class="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110" src="/assets/images/dubai-office-2.webp" loading="lazy" decoding="async"/>
+<img alt="Dominica Passport for Afghans in 2026" class="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110" src="/assets/images/uploads/d1d65d8b-b67e-495f-b779-93a3ff8eb47a_1791006383.webp" onerror="this.onerror=null;this.src='/assets/images/dubai-office-2.webp'" loading="lazy" decoding="async"/>
 <div class="absolute inset-0 bg-gradient-to-t from-neutral-950 via-transparent to-transparent opacity-60"></div>
-<span class="absolute top-3 left-3 px-3 py-1 bg-black/70 backdrop-blur-md text-[10px] uppercase font-bold tracking-wider text-luxury-gold border border-luxury-gold/30 rounded-full">About Us</span>
+<span class="absolute top-3 left-3 px-3 py-1 bg-black/70 backdrop-blur-md text-[10px] uppercase font-bold tracking-wider text-luxury-gold border border-luxury-gold/30 rounded-full">DOMINICA</span>
 </div>
-<div class="p-6 space-y-2.5">
-<span class="text-[10px] text-luxury-gold font-bold uppercase tracking-widest"><i class="fa-regular fa-calendar mr-1"></i> Jan 12, 2026</span>
-<h3 class="font-serif font-bold text-white text-base group-hover:text-luxury-gold transition leading-snug"><a data-i18n="blog.card1Title" href="/blog/about-sharif-group-who-we-are-and-how-we-help/">About Sharif Group: Who We Are and How We Help</a></h3>
-<p class="text-xs text-neutral-300 leading-relaxed font-light line-clamp-3" data-i18n="blog.card1Desc">
-                                        Discover how our expert team in Business Bay, Dubai guides international families through secure legal second passport and residency pathways.
-                                    </p>
+<div class="p-6 space-y-2.5 text-left">
+<span class="text-[10px] text-luxury-gold font-bold uppercase tracking-widest"><i class="fa-regular fa-calendar mr-1"></i> Oct 03, 2026</span>
+<h3 class="font-serif font-bold text-white text-base group-hover:text-luxury-gold transition leading-snug"><a href="/blog/dominica-passport-for-afghans-in-2026/">Dominica Passport for Afghans in 2026</a></h3>
+<p class="text-xs text-neutral-300 leading-relaxed font-light line-clamp-3">In 2026, the Afghan passport once again ranks last in the global passport index, giving its holders access to only around 23–24 destinations...</p>
 </div>
 </div>
-<div class="px-6 pb-6 pt-0">
-<a class="inline-flex items-center gap-1.5 text-xs uppercase tracking-widest text-luxury-gold font-bold group-hover:text-white transition" href="/blog/about-sharif-group-who-we-are-and-how-we-help/"> <span data-i18n="blog.readMore">Read More</span> <i class="fa-solid fa-arrow-right text-[10px] transition-transform duration-300 group-hover:translate-x-1"></i>
+<div class="px-6 pb-6 pt-0 text-left">
+<a class="inline-flex items-center gap-1.5 text-xs uppercase tracking-widest text-luxury-gold font-bold group-hover:text-white transition home-blog-read-more" data-home-read-more="true" href="/blog/dominica-passport-for-afghans-in-2026/"> <span>Read More</span> <i class="fa-solid fa-arrow-right group-hover:translate-x-1 text-[10px] transition-transform duration-300"></i>
 </a>
 </div>
 </div>
-<!-- Blog Card 2 -->
-<div class="bg-neutral-900 rounded-[2rem] border border-luxury-gold/30 overflow-hidden shadow-xl flex flex-col justify-between hover:shadow-[0_0_25px_rgba(197,168,128,0.4)] transition duration-500 min-w-[320px] max-w-[320px] shrink-0 group">
-<div>
-<div class="relative aspect-[16/10] overflow-hidden">
-<img alt="All Services" class="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110" src="/assets/images/citizenship-by-inves_eb492f.webp" loading="lazy" decoding="async"/>
-<div class="absolute inset-0 bg-gradient-to-t from-neutral-950 via-transparent to-transparent opacity-60"></div>
-<span class="absolute top-3 left-3 px-3 py-1 bg-black/70 backdrop-blur-md text-[10px] uppercase font-bold tracking-wider text-luxury-gold border border-luxury-gold/30 rounded-full">Services</span>
-</div>
-<div class="p-6 space-y-2.5">
-<span class="text-[10px] text-luxury-gold font-bold uppercase tracking-widest"><i class="fa-regular fa-calendar mr-1"></i> Jan 18, 2026</span>
-<h3 class="font-serif font-bold text-white text-base group-hover:text-luxury-gold transition leading-snug"><a data-i18n="blog.card2Title" href="/blog/all-services-we-offer-at-sharif-group/">All Services We Offer at Sharif Group</a></h3>
-<p class="text-xs text-neutral-300 leading-relaxed font-light line-clamp-3" data-i18n="blog.card2Desc">
-                                        Explore our complete range of administrative services, from citizenship applications and golden visas to luxury real estate and school admissions.
-                                    </p>
-</div>
-</div>
-<div class="px-6 pb-6 pt-0">
-<a class="inline-flex items-center gap-1.5 text-xs uppercase tracking-widest text-luxury-gold font-bold group-hover:text-white transition" href="/blog/all-services-we-offer-at-sharif-group/"> <span data-i18n="blog.readMore">Read More</span> <i class="fa-solid fa-arrow-right text-[10px] transition-transform duration-300 group-hover:translate-x-1"></i>
-</a>
-</div>
-</div>
-<!-- Blog Card 3 -->
-<div class="bg-neutral-900 rounded-[2rem] border border-luxury-gold/30 overflow-hidden shadow-xl flex flex-col justify-between hover:shadow-[0_0_25px_rgba(197,168,128,0.4)] transition duration-500 min-w-[320px] max-w-[320px] shrink-0 group">
-<div>
-<div class="relative aspect-[16/10] overflow-hidden">
-<img alt="Citizenship Guide" class="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110" src="citizenshipbyinvestment.webp" loading="lazy" decoding="async"/>
-<div class="absolute inset-0 bg-gradient-to-t from-neutral-950 via-transparent to-transparent opacity-60"></div>
-<span class="absolute top-3 left-3 px-3 py-1 bg-black/70 backdrop-blur-md text-[10px] uppercase font-bold tracking-wider text-luxury-gold border border-luxury-gold/30 rounded-full">Passport Guide</span>
-</div>
-<div class="p-6 space-y-2.5">
-<span class="text-[10px] text-luxury-gold font-bold uppercase tracking-widest"><i class="fa-regular fa-calendar mr-1"></i> Feb 01, 2026</span>
-<h3 class="font-serif font-bold text-white text-base group-hover:text-luxury-gold transition leading-snug"><a data-i18n="blog.card3Title" href="/blog/what-is-citizenship-by-investment-a-simple-guide/">What is Citizenship by Investment? A Simple Guide</a></h3>
-<p class="text-xs text-neutral-300 leading-relaxed font-light line-clamp-3" data-i18n="blog.card3Desc">
-                                        A clear, straightforward explanation of how second citizenship works, what benefits it brings, and why investors choose legal second passports.
-                                    </p>
-</div>
-</div>
-<div class="px-6 pb-6 pt-0">
-<a class="inline-flex items-center gap-1.5 text-xs uppercase tracking-widest text-luxury-gold font-bold group-hover:text-white transition" href="/blog/what-is-citizenship-by-investment-a-simple-guide/"> <span data-i18n="blog.readMore">Read More</span> <i class="fa-solid fa-arrow-right text-[10px] transition-transform duration-300 group-hover:translate-x-1"></i>
-</a>
-</div>
-</div>
-<!-- Blog Card 5 -->
-<div class="bg-neutral-900 rounded-[2rem] border border-luxury-gold/30 overflow-hidden shadow-xl flex flex-col justify-between hover:shadow-[0_0_25px_rgba(197,168,128,0.4)] transition duration-500 min-w-[320px] max-w-[320px] shrink-0 group">
-<div>
-<div class="relative aspect-[16/10] overflow-hidden">
-<img alt="Dominica Passport" class="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110" src="/assets/images/Dominica_Passport_2b2f9e.webp" loading="lazy" decoding="async"/>
-<div class="absolute inset-0 bg-gradient-to-t from-neutral-950 via-transparent to-transparent opacity-60"></div>
-<span class="absolute top-3 left-3 px-3 py-1 bg-black/70 backdrop-blur-md text-[10px] uppercase font-bold tracking-wider text-luxury-gold border border-luxury-gold/30 rounded-full">Dominica</span>
-</div>
-<div class="p-6 space-y-2.5">
-<span class="text-[10px] text-luxury-gold font-bold uppercase tracking-widest"><i class="fa-regular fa-calendar mr-1"></i> Feb 05, 2026</span>
-<h3 class="font-serif font-bold text-white text-base group-hover:text-luxury-gold transition leading-snug"><a data-i18n="blog.card4Title" href="/blog/dominica-passport-how-to-apply-and-costs/">Dominica Passport: How to Apply and Costs</a></h3>
-<p class="text-xs text-neutral-300 leading-relaxed font-light line-clamp-3" data-i18n="blog.card4Desc">
-                                        Learn about the investment costs, fast 90-day timeline, and zero-travel requirements for obtaining a secure Dominica passport.
-                                    </p>
-</div>
-</div>
-<div class="px-6 pb-6 pt-0">
-<a class="inline-flex items-center gap-1.5 text-xs uppercase tracking-widest text-luxury-gold font-bold group-hover:text-white transition" href="/blog/dominica-passport-how-to-apply-and-costs/"> <span data-i18n="blog.readMore">Read More</span> <i class="fa-solid fa-arrow-right text-[10px] transition-transform duration-300 group-hover:translate-x-1"></i>
-</a>
-</div>
-</div>
-<!-- Blog Card 6 -->
-<div class="bg-neutral-900 rounded-[2rem] border border-luxury-gold/30 overflow-hidden shadow-xl flex flex-col justify-between hover:shadow-[0_0_25px_rgba(197,168,128,0.4)] transition duration-500 min-w-[320px] max-w-[320px] shrink-0 group">
-<div>
-<div class="relative aspect-[16/10] overflow-hidden">
-<img alt="Sao Tome" class="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110" src="/assets/images/Sao-Tome-and-Princip_f26fdf.webp" loading="lazy" decoding="async"/>
-<div class="absolute inset-0 bg-gradient-to-t from-neutral-950 via-transparent to-transparent opacity-60"></div>
-<span class="absolute top-3 left-3 px-3 py-1 bg-black/70 backdrop-blur-md text-[10px] uppercase font-bold tracking-wider text-luxury-gold border border-luxury-gold/30 rounded-full">Sao Tome</span>
-</div>
-<div class="p-6 space-y-2.5">
-<span class="text-[10px] text-luxury-gold font-bold uppercase tracking-widest"><i class="fa-regular fa-calendar mr-1"></i> Feb 12, 2026</span>
-<h3 class="font-serif font-bold text-white text-base group-hover:text-luxury-gold transition leading-snug"><a data-i18n="blog.card5Title" href="/blog/sao-tome-and-principe-private-second-passport-option/">São Tomé &amp; Príncipe: Private Second Passport Option</a></h3>
-<p class="text-xs text-neutral-300 leading-relaxed font-light line-clamp-3" data-i18n="blog.card5Desc">
-                                        An exclusive look at this private African island passport option designed for high-net-worth investors seeking absolute privacy and speed.
-                                    </p>
-</div>
-</div>
-<div class="px-6 pb-6 pt-0">
-<a class="inline-flex items-center gap-1.5 text-xs uppercase tracking-widest text-luxury-gold font-bold group-hover:text-white transition" href="/blog/sao-tome-and-principe-private-second-passport-option/"> <span data-i18n="blog.readMore">Read More</span> <i class="fa-solid fa-arrow-right text-[10px] transition-transform duration-300 group-hover:translate-x-1"></i>
-</a>
-</div>
-</div>
-<!-- Blog Card 7 -->
-<div class="bg-neutral-900 rounded-[2rem] border border-luxury-gold/30 overflow-hidden shadow-xl flex flex-col justify-between hover:shadow-[0_0_25px_rgba(197,168,128,0.4)] transition duration-500 min-w-[320px] max-w-[320px] shrink-0 group">
-<div>
-<div class="relative aspect-[16/10] overflow-hidden">
-<img alt="St. Kitts" class="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110" src="/assets/images/St-kitts-nevis-passp_535b42.webp" loading="lazy" decoding="async"/>
-<div class="absolute inset-0 bg-gradient-to-t from-neutral-950 via-transparent to-transparent opacity-60"></div>
-<span class="absolute top-3 left-3 px-3 py-1 bg-black/70 backdrop-blur-md text-[10px] uppercase font-bold tracking-wider text-luxury-gold border border-luxury-gold/30 rounded-full">St. Kitts</span>
-</div>
-<div class="p-6 space-y-2.5">
-<span class="text-[10px] text-luxury-gold font-bold uppercase tracking-widest"><i class="fa-regular fa-calendar mr-1"></i> Feb 19, 2026</span>
-<h3 class="font-serif font-bold text-white text-base group-hover:text-luxury-gold transition leading-snug"><a data-i18n="blog.card6Title" href="/blog/st-kitts-and-nevis-oldest-and-most-trusted-passport/">St. Kitts &amp; Nevis: The Oldest and Most Trusted Passport</a></h3>
-<p class="text-xs text-neutral-300 leading-relaxed font-light line-clamp-3" data-i18n="blog.card6Desc">
-                                        Explore the world's oldest citizenship program established in 1984, offering strong global mobility and dependable asset protection.
-                                    </p>
-</div>
-</div>
-<div class="px-6 pb-6 pt-0">
-<a class="inline-flex items-center gap-1.5 text-xs uppercase tracking-widest text-luxury-gold font-bold group-hover:text-white transition" href="/blog/st-kitts-and-nevis-oldest-and-most-trusted-passport/"> <span data-i18n="blog.readMore">Read More</span> <i class="fa-solid fa-arrow-right text-[10px] transition-transform duration-300 group-hover:translate-x-1"></i>
-</a>
-</div>
-</div>
-<!-- Blog Card 8 -->
-<div class="bg-neutral-900 rounded-[2rem] border border-luxury-gold/30 overflow-hidden shadow-xl flex flex-col justify-between hover:shadow-[0_0_25px_rgba(197,168,128,0.4)] transition duration-500 min-w-[320px] max-w-[320px] shrink-0 group">
-<div>
-<div class="relative aspect-[16/10] overflow-hidden">
-<img alt="St. Lucia" class="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110" src="/assets/images/st-lucia-citizenship_732be1.webp" loading="lazy" decoding="async"/>
-<div class="absolute inset-0 bg-gradient-to-t from-neutral-950 via-transparent to-transparent opacity-60"></div>
-<span class="absolute top-3 left-3 px-3 py-1 bg-black/70 backdrop-blur-md text-[10px] uppercase font-bold tracking-wider text-luxury-gold border border-luxury-gold/30 rounded-full">St. Lucia</span>
-</div>
-<div class="p-6 space-y-2.5">
-<span class="text-[10px] text-luxury-gold font-bold uppercase tracking-widest"><i class="fa-regular fa-calendar mr-1"></i> Feb 26, 2026</span>
-<h3 class="font-serif font-bold text-white text-base group-hover:text-luxury-gold transition leading-snug"><a data-i18n="blog.card7Title" href="/blog/saint-lucia-passport-easy-steps-to-apply/">Saint Lucia Passport: Easy Steps to Apply</a></h3>
-<p class="text-xs text-neutral-300 leading-relaxed font-light line-clamp-3" data-i18n="blog.card7Desc">
-                                        Discover Saint Lucia's flexible financial options, including refundable government bonds and straightforward family investment tiers.
-                                    </p>
-</div>
-</div>
-<div class="px-6 pb-6 pt-0">
-<a class="inline-flex items-center gap-1.5 text-xs uppercase tracking-widest text-luxury-gold font-bold group-hover:text-white transition" href="/blog/saint-lucia-passport-easy-steps-to-apply/"> <span data-i18n="blog.readMore">Read More</span> <i class="fa-solid fa-arrow-right text-[10px] transition-transform duration-300 group-hover:translate-x-1"></i>
-</a>
-</div>
-</div>
-<!-- Blog Card 9 -->
-<div class="bg-neutral-900 rounded-[2rem] border border-luxury-gold/30 overflow-hidden shadow-xl flex flex-col justify-between hover:shadow-[0_0_25px_rgba(197,168,128,0.4)] transition duration-500 min-w-[320px] max-w-[320px] shrink-0 group">
-<div>
-<div class="relative aspect-[16/10] overflow-hidden">
-<img alt="Grenada" class="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110" src="/assets/images/image2024-07-0500-58_8c7540.webp" loading="lazy" decoding="async"/>
-<div class="absolute inset-0 bg-gradient-to-t from-neutral-950 via-transparent to-transparent opacity-60"></div>
-<span class="absolute top-3 left-3 px-3 py-1 bg-black/70 backdrop-blur-md text-[10px] uppercase font-bold tracking-wider text-luxury-gold border border-luxury-gold/30 rounded-full">Grenada</span>
-</div>
-<div class="p-6 space-y-2.5">
-<span class="text-[10px] text-luxury-gold font-bold uppercase tracking-widest"><i class="fa-regular fa-calendar mr-1"></i> Mar 05, 2026</span>
-<h3 class="font-serif font-bold text-white text-base group-hover:text-luxury-gold transition leading-snug"><a data-i18n="blog.card8Title" href="/blog/grenada-passport-easy-way-to-move-to-the-usa/">Grenada Passport: Easy Way to Move to the USA</a></h3>
-<p class="text-xs text-neutral-300 leading-relaxed font-light line-clamp-3" data-i18n="blog.card8Desc">
-                                        Find out how a Grenada passport unlocks direct eligibility to apply for the US E-2 Investor Visa and live in America.
-                                    </p>
-</div>
-</div>
-<div class="px-6 pb-6 pt-0">
-<a class="inline-flex items-center gap-1.5 text-xs uppercase tracking-widest text-luxury-gold font-bold group-hover:text-white transition" href="/blog/grenada-passport-easy-way-to-move-to-the-usa/"> <span data-i18n="blog.readMore">Read More</span> <i class="fa-solid fa-arrow-right text-[10px] transition-transform duration-300 group-hover:translate-x-1"></i>
-</a>
-</div>
-</div>
-<!-- Blog Card 10 -->
-<div class="bg-neutral-900 rounded-[2rem] border border-luxury-gold/30 overflow-hidden shadow-xl flex flex-col justify-between hover:shadow-[0_0_25px_rgba(197,168,128,0.4)] transition duration-500 min-w-[320px] max-w-[320px] shrink-0 group">
-<div>
-<div class="relative aspect-[16/10] overflow-hidden">
-<img alt="Nauru" class="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110" src="/assets/images/f60b94aa49142996dbeb_1d910d.webp" loading="lazy" decoding="async"/>
-<div class="absolute inset-0 bg-gradient-to-t from-neutral-950 via-transparent to-transparent opacity-60"></div>
-<span class="absolute top-3 left-3 px-3 py-1 bg-black/70 backdrop-blur-md text-[10px] uppercase font-bold tracking-wider text-luxury-gold border border-luxury-gold/30 rounded-full">Nauru</span>
-</div>
-<div class="p-6 space-y-2.5">
-<span class="text-[10px] text-luxury-gold font-bold uppercase tracking-widest"><i class="fa-regular fa-calendar mr-1"></i> Mar 12, 2026</span>
-<h3 class="font-serif font-bold text-white text-base group-hover:text-luxury-gold transition leading-snug"><a data-i18n="blog.card9Title" href="/blog/republic-of-nauru-fast-pacific-passport/">Republic of Nauru: Fast Pacific Passport</a></h3>
-<p class="text-xs text-neutral-300 leading-relaxed font-light line-clamp-3" data-i18n="blog.card9Desc">
-                                        A look at Nauru's fast, remote citizenship pathway offering complete tax-free living and swift remote processing.
-                                    </p>
-</div>
-</div>
-<div class="px-6 pb-6 pt-0">
-<a class="inline-flex items-center gap-1.5 text-xs uppercase tracking-widest text-luxury-gold font-bold group-hover:text-white transition" href="/blog/republic-of-nauru-fast-pacific-passport/"> <span data-i18n="blog.readMore">Read More</span> <i class="fa-solid fa-arrow-right text-[10px] transition-transform duration-300 group-hover:translate-x-1"></i>
-</a>
-</div>
-</div>
-<!-- Blog Card 11 -->
-<div class="bg-neutral-900 rounded-[2rem] border border-luxury-gold/30 overflow-hidden shadow-xl flex flex-col justify-between hover:shadow-[0_0_25px_rgba(197,168,128,0.4)] transition duration-500 min-w-[320px] max-w-[320px] shrink-0 group">
-<div>
-<div class="relative aspect-[16/10] overflow-hidden">
-<img alt="Residency" class="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110" src="residencybyinvestment.webp" loading="lazy" decoding="async"/>
-<div class="absolute inset-0 bg-gradient-to-t from-neutral-950 via-transparent to-transparent opacity-60"></div>
-<span class="absolute top-3 left-3 px-3 py-1 bg-black/70 backdrop-blur-md text-[10px] uppercase font-bold tracking-wider text-luxury-gold border border-luxury-gold/30 rounded-full">Residency</span>
-</div>
-<div class="p-6 space-y-2.5">
-<span class="text-[10px] text-luxury-gold font-bold uppercase tracking-widest"><i class="fa-regular fa-calendar mr-1"></i> Mar 19, 2026</span>
-<h3 class="font-serif font-bold text-white text-base group-hover:text-luxury-gold transition leading-snug"><a data-i18n="blog.card10Title" href="/blog/what-is-residency-by-investment-simple-guide/">What is Residency by Investment? Simple Guide</a></h3>
-<p class="text-xs text-neutral-300 leading-relaxed font-light line-clamp-3" data-i18n="blog.card10Desc">
-                                        Understand how golden visas work, giving you the legal right to live, work, and move freely across international destinations.
-                                    </p>
-</div>
-</div>
-<div class="px-6 pb-6 pt-0">
-<a class="inline-flex items-center gap-1.5 text-xs uppercase tracking-widest text-luxury-gold font-bold group-hover:text-white transition" href="/blog/what-is-residency-by-investment-simple-guide/"> <span data-i18n="blog.readMore">Read More</span> <i class="fa-solid fa-arrow-right text-[10px] transition-transform duration-300 group-hover:translate-x-1"></i>
-</a>
-</div>
-</div>
-<!-- Blog Card 12 -->
-<div class="bg-neutral-900 rounded-[2rem] border border-luxury-gold/30 overflow-hidden shadow-xl flex flex-col justify-between hover:shadow-[0_0_25px_rgba(197,168,128,0.4)] transition duration-500 min-w-[320px] max-w-[320px] shrink-0 group">
-<div>
-<div class="relative aspect-[16/10] overflow-hidden">
-<img alt="Portugal" class="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110" src="https://images.indianexpress.com/2025/08/portugal-visa.png" loading="lazy" decoding="async"/>
-<div class="absolute inset-0 bg-gradient-to-t from-neutral-950 via-transparent to-transparent opacity-60"></div>
-<span class="absolute top-3 left-3 px-3 py-1 bg-black/70 backdrop-blur-md text-[10px] uppercase font-bold tracking-wider text-luxury-gold border border-luxury-gold/30 rounded-full">Portugal</span>
-</div>
-<div class="p-6 space-y-2.5">
-<span class="text-[10px] text-luxury-gold font-bold uppercase tracking-widest"><i class="fa-regular fa-calendar mr-1"></i> Mar 26, 2026</span>
-<h3 class="font-serif font-bold text-white text-base group-hover:text-luxury-gold transition leading-snug"><a data-i18n="blog.card11Title" href="/blog/portugal-golden-visa-live-and-work-in-europe/">Portugal Golden Visa: Live and Work in Europe</a></h3>
-<p class="text-xs text-neutral-300 leading-relaxed font-light line-clamp-3" data-i18n="blog.card11Desc">
-                                        Learn how investing in regulated funds in Portugal secures European residency with only 7 days of annual physical stay.
-                                    </p>
-</div>
-</div>
-<div class="px-6 pb-6 pt-0">
-<a class="inline-flex items-center gap-1.5 text-xs uppercase tracking-widest text-luxury-gold font-bold group-hover:text-white transition" href="/blog/portugal-golden-visa-live-and-work-in-europe/"> <span data-i18n="blog.readMore">Read More</span> <i class="fa-solid fa-arrow-right text-[10px] transition-transform duration-300 group-hover:translate-x-1"></i>
-</a>
-</div>
-</div>
-<!-- Blog Card 13 -->
-<div class="bg-neutral-900 rounded-[2rem] border border-luxury-gold/30 overflow-hidden shadow-xl flex flex-col justify-between hover:shadow-[0_0_25px_rgba(197,168,128,0.4)] transition duration-500 min-w-[320px] max-w-[320px] shrink-0 group">
-<div>
-<div class="relative aspect-[16/10] overflow-hidden">
-<img alt="Greece" class="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110" src="/assets/images/Golden-Visa-housing_04f1eb.webp" loading="lazy" decoding="async"/>
-<div class="absolute inset-0 bg-gradient-to-t from-neutral-950 via-transparent to-transparent opacity-60"></div>
-<span class="absolute top-3 left-3 px-3 py-1 bg-black/70 backdrop-blur-md text-[10px] uppercase font-bold tracking-wider text-luxury-gold border border-luxury-gold/30 rounded-full">Greece</span>
-</div>
-<div class="p-6 space-y-2.5">
-<span class="text-[10px] text-luxury-gold font-bold uppercase tracking-widest"><i class="fa-regular fa-calendar mr-1"></i> Apr 02, 2026</span>
-<h3 class="font-serif font-bold text-white text-base group-hover:text-luxury-gold transition leading-snug"><a data-i18n="blog.card12Title" href="/blog/greece-golden-visa-buy-property-and-live-in-europe/">Greece Golden Visa: Buy Property and Live in Europe</a></h3>
-<p class="text-xs text-neutral-300 leading-relaxed font-light line-clamp-3" data-i18n="blog.card12Desc">
-                                        Explore Greece's tiered real estate investment levels that grant permanent European residency cards and Schengen access.
-                                    </p>
-</div>
-</div>
-<div class="px-6 pb-6 pt-0">
-<a class="inline-flex items-center gap-1.5 text-xs uppercase tracking-widest text-luxury-gold font-bold group-hover:text-white transition" href="/blog/greece-golden-visa-buy-property-and-live-in-europe/"> <span data-i18n="blog.readMore">Read More</span> <i class="fa-solid fa-arrow-right text-[10px] transition-transform duration-300 group-hover:translate-x-1"></i>
-</a>
-</div>
-</div>
-<!-- Blog Card 14 -->
-<div class="bg-neutral-900 rounded-[2rem] border border-luxury-gold/30 overflow-hidden shadow-xl flex flex-col justify-between hover:shadow-[0_0_25px_rgba(197,168,128,0.4)] transition duration-500 min-w-[320px] max-w-[320px] shrink-0 group">
-<div>
-<div class="relative aspect-[16/10] overflow-hidden">
-<img alt="UAE Visa" class="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110" src="/assets/images/ocxdxtp280tdntfq7qts_5d3f8e.webp" loading="lazy" decoding="async"/>
-<div class="absolute inset-0 bg-gradient-to-t from-neutral-950 via-transparent to-transparent opacity-60"></div>
-<span class="absolute top-3 left-3 px-3 py-1 bg-black/70 backdrop-blur-md text-[10px] uppercase font-bold tracking-wider text-luxury-gold border border-luxury-gold/30 rounded-full">UAE Visa</span>
-</div>
-<div class="p-6 space-y-2.5">
-<span class="text-[10px] text-luxury-gold font-bold uppercase tracking-widest"><i class="fa-regular fa-calendar mr-1"></i> Apr 30, 2026</span>
-<h3 class="font-serif font-bold text-white text-base group-hover:text-luxury-gold transition leading-snug"><a data-i18n="blog.card13Title" href="/blog/uae-10-year-golden-visa-how-to-get-yours-in-dubai/">UAE 10-Year Golden Visa: How to Get Yours in Dubai</a></h3>
-<p class="text-xs text-neutral-300 leading-relaxed font-light line-clamp-3" data-i18n="blog.card13Desc">
-                                        A complete step-by-step walkthrough on securing a 10-year residency visa through property ownership or business capital in Dubai.
-                                    </p>
-</div>
-</div>
-<div class="px-6 pb-6 pt-0">
-<a class="inline-flex items-center gap-1.5 text-xs uppercase tracking-widest text-luxury-gold font-bold group-hover:text-white transition" href="/blog/uae-10-year-golden-visa-how-to-get-yours-in-dubai/"> <span data-i18n="blog.readMore">Read More</span> <i class="fa-solid fa-arrow-right text-[10px] transition-transform duration-300 group-hover:translate-x-1"></i>
-</a>
-</div>
-</div>
-<!-- Blog Card 15 -->
-<div class="bg-neutral-900 rounded-[2rem] border border-luxury-gold/30 overflow-hidden shadow-xl flex flex-col justify-between hover:shadow-[0_0_25px_rgba(197,168,128,0.4)] transition duration-500 min-w-[320px] max-w-[320px] shrink-0 group">
-<div>
-<div class="relative aspect-[16/10] overflow-hidden">
-<img alt="Real Estate" class="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110" src="/assets/images/how-to-buy-property-_8809f0.webp" loading="lazy" decoding="async"/>
-<div class="absolute inset-0 bg-gradient-to-t from-neutral-950 via-transparent to-transparent opacity-60"></div>
-<span class="absolute top-3 left-3 px-3 py-1 bg-black/70 backdrop-blur-md text-[10px] uppercase font-bold tracking-wider text-luxury-gold border border-luxury-gold/30 rounded-full">Real Estate</span>
-</div>
-<div class="p-6 space-y-2.5">
-<span class="text-[10px] text-luxury-gold font-bold uppercase tracking-widest"><i class="fa-regular fa-calendar mr-1"></i> May 14, 2026</span>
-<h3 class="font-serif font-bold text-white text-base group-hover:text-luxury-gold transition leading-snug"><a data-i18n="blog.card14Title" href="/blog/best-ways-to-buy-real-estate-in-dubai-for-profit/">Best Ways to Buy Real Estate in Dubai for Profit</a></h3>
-<p class="text-xs text-neutral-300 leading-relaxed font-light line-clamp-3" data-i18n="blog.card14Desc">
-                                        Expert tips on selecting high-yield freehold rental properties in prime Dubai communities like Downtown and Palm Jumeirah.
-                                    </p>
-</div>
-</div>
-<div class="px-6 pb-6 pt-0">
-<a class="inline-flex items-center gap-1.5 text-xs uppercase tracking-widest text-luxury-gold font-bold group-hover:text-white transition" href="/blog/best-ways-to-buy-real-estate-in-dubai-for-profit/"> <span data-i18n="blog.readMore">Read More</span> <i class="fa-solid fa-arrow-right text-[10px] transition-transform duration-300 group-hover:translate-x-1"></i>
-</a>
-</div>
-</div>
-<!-- Blog Card 16 -->
-<div class="bg-neutral-900 rounded-[2rem] border border-luxury-gold/30 overflow-hidden shadow-xl flex flex-col justify-between hover:shadow-[0_0_25px_rgba(197,168,128,0.4)] transition duration-500 min-w-[320px] max-w-[320px] shrink-0 group">
-<div>
-<div class="relative aspect-[16/10] overflow-hidden">
-<img alt="Vanuatu" class="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110" src="/assets/images/posts_0001_vanuatu-p_9e4e77.webp" loading="lazy" decoding="async"/>
-<div class="absolute inset-0 bg-gradient-to-t from-neutral-950 via-transparent to-transparent opacity-60"></div>
-<span class="absolute top-3 left-3 px-3 py-1 bg-black/70 backdrop-blur-md text-[10px] uppercase font-bold tracking-wider text-luxury-gold border border-luxury-gold/30 rounded-full">Vanuatu</span>
-</div>
-<div class="p-6 space-y-2.5">
-<span class="text-[10px] text-luxury-gold font-bold uppercase tracking-widest"><i class="fa-regular fa-calendar mr-1"></i> May 21, 2026</span>
-<h3 class="font-serif font-bold text-white text-base group-hover:text-luxury-gold transition leading-snug"><a data-i18n="blog.card15Title" href="/blog/vanuatu-passport-get-your-passport-in-45-days/">Vanuatu Passport: Get Your Passport in 45 Days</a></h3>
-<p class="text-xs text-neutral-300 leading-relaxed font-light line-clamp-3" data-i18n="blog.card15Desc">
-                                        Discover the world's fastest citizenship program, completed entirely remotely in 45 days with zero global taxes.
-                                    </p>
-</div>
-</div>
-<div class="px-6 pb-6 pt-0">
-<a class="inline-flex items-center gap-1.5 text-xs uppercase tracking-widest text-luxury-gold font-bold group-hover:text-white transition" href="/blog/vanuatu-passport-get-your-passport-in-45-days/"> <span data-i18n="blog.readMore">Read More</span> <i class="fa-solid fa-arrow-right text-[10px] transition-transform duration-300 group-hover:translate-x-1"></i>
-</a>
-</div>
-</div>
-<!-- Blog Card 17 -->
-<div class="bg-neutral-900 rounded-[2rem] border border-luxury-gold/30 overflow-hidden shadow-xl flex flex-col justify-between hover:shadow-[0_0_25px_rgba(197,168,128,0.4)] transition duration-500 min-w-[320px] max-w-[320px] shrink-0 group">
-<div>
-<div class="relative aspect-[16/10] overflow-hidden">
-<img alt="Antigua" class="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110" src="/assets/images/antiguapassport_d31b1f.webp" loading="lazy" decoding="async"/>
-<div class="absolute inset-0 bg-gradient-to-t from-neutral-950 via-transparent to-transparent opacity-60"></div>
-<span class="absolute top-3 left-3 px-3 py-1 bg-black/70 backdrop-blur-md text-[10px] uppercase font-bold tracking-wider text-luxury-gold border border-luxury-gold/30 rounded-full">Antigua</span>
-</div>
-<div class="p-6 space-y-2.5">
-<span class="text-[10px] text-luxury-gold font-bold uppercase tracking-widest"><i class="fa-regular fa-calendar mr-1"></i> May 28, 2026</span>
-<h3 class="font-serif font-bold text-white text-base group-hover:text-luxury-gold transition leading-snug"><a data-i18n="blog.card16Title" href="/blog/antigua-and-barbuda-best-passport-for-big-families/">Antigua &amp; Barbuda: Best Passport for Big Families</a></h3>
-<p class="text-xs text-neutral-300 leading-relaxed font-light line-clamp-3" data-i18n="blog.card16Desc">
-                                        Learn about affordable family packages that allow you to include your spouse, children, parents, and siblings under one file.
-                                    </p>
-</div>
-</div>
-<div class="px-6 pb-6 pt-0">
-<a class="inline-flex items-center gap-1.5 text-xs uppercase tracking-widest text-luxury-gold font-bold group-hover:text-white transition" href="/blog/antigua-and-barbuda-best-passport-for-big-families/"> <span data-i18n="blog.readMore">Read More</span> <i class="fa-solid fa-arrow-right text-[10px] transition-transform duration-300 group-hover:translate-x-1"></i>
-</a>
-</div>
-</div>
-<!-- Blog Card 18 -->
-<div class="bg-neutral-900 rounded-[2rem] border border-luxury-gold/30 overflow-hidden shadow-xl flex flex-col justify-between hover:shadow-[0_0_25px_rgba(197,168,128,0.4)] transition duration-500 min-w-[320px] max-w-[320px] shrink-0 group">
-<div>
-<div class="relative aspect-[16/10] overflow-hidden">
-<img alt="Panama" class="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110" src="/assets/images/panama-passport-1024_bd63ff.webp" loading="lazy" decoding="async"/>
-<div class="absolute inset-0 bg-gradient-to-t from-neutral-950 via-transparent to-transparent opacity-60"></div>
-<span class="absolute top-3 left-3 px-3 py-1 bg-black/70 backdrop-blur-md text-[10px] uppercase font-bold tracking-wider text-luxury-gold border border-luxury-gold/30 rounded-full">Panama</span>
-</div>
-<div class="p-6 space-y-2.5">
-<span class="text-[10px] text-luxury-gold font-bold uppercase tracking-widest"><i class="fa-regular fa-calendar mr-1"></i> Jun 04, 2026</span>
-<h3 class="font-serif font-bold text-white text-base group-hover:text-luxury-gold transition leading-snug"><a data-i18n="blog.card17Title" href="/blog/panama-golden-visa-simple-residency-in-central-america/">Panama Golden Visa: Simple Residency in Central America</a></h3>
-<p class="text-xs text-neutral-300 leading-relaxed font-light line-clamp-3" data-i18n="blog.card17Desc">
-                                        Explore Panama's banking hub residency options, offering permanent status and tax-free offshore corporate income.
-                                    </p>
-</div>
-</div>
-<div class="px-6 pb-6 pt-0">
-<a class="inline-flex items-center gap-1.5 text-xs uppercase tracking-widest text-luxury-gold font-bold group-hover:text-white transition" href="/blog/panama-golden-visa-simple-residency-in-central-america/"> <span data-i18n="blog.readMore">Read More</span> <i class="fa-solid fa-arrow-right text-[10px] transition-transform duration-300 group-hover:translate-x-1"></i>
-</a>
-</div>
-</div>
-<!-- Blog Card 19 -->
-<div class="bg-neutral-900 rounded-[2rem] border border-luxury-gold/30 overflow-hidden shadow-xl flex flex-col justify-between hover:shadow-[0_0_25px_rgba(197,168,128,0.4)] transition duration-500 min-w-[320px] max-w-[320px] shrink-0 group">
-<div>
-<div class="relative aspect-[16/10] overflow-hidden">
-<img alt="Real Estate Audit" class="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110" src="/assets/images/photo-1560518883-c_5cdde8.webp" loading="lazy" decoding="async"/>
-<div class="absolute inset-0 bg-gradient-to-t from-neutral-950 via-transparent to-transparent opacity-60"></div>
-<span class="absolute top-3 left-3 px-3 py-1 bg-black/70 backdrop-blur-md text-[10px] uppercase font-bold tracking-wider text-luxury-gold border border-luxury-gold/30 rounded-full">Real Estate</span>
-</div>
-<div class="p-6 space-y-2.5">
-<span class="text-[10px] text-luxury-gold font-bold uppercase tracking-widest"><i class="fa-regular fa-calendar mr-1"></i> Jun 11, 2026</span>
-<h3 class="font-serif font-bold text-white text-base group-hover:text-luxury-gold transition leading-snug"><a data-i18n="blog.card18Title" href="/blog/how-we-check-properties-before-you-buy/">How We Check Properties Before You Buy</a></h3>
-<p class="text-xs text-neutral-300 leading-relaxed font-light line-clamp-3" data-i18n="blog.card18Desc">
-                                        An inside look at our rigorous legal audits, land registry checks, and escrow account reviews that keep your property investment safe.
-                                    </p>
-</div>
-</div>
-<div class="px-6 pb-6 pt-0">
-<a class="inline-flex items-center gap-1.5 text-xs uppercase tracking-widest text-luxury-gold font-bold group-hover:text-white transition" href="/blog/how-we-check-properties-before-you-buy/"> <span data-i18n="blog.readMore">Read More</span> <i class="fa-solid fa-arrow-right text-[10px] transition-transform duration-300 group-hover:translate-x-1"></i>
-</a>
-</div>
-</div>
-<!-- Blog Card 20 -->
-<div class="bg-neutral-900 rounded-[2rem] border border-luxury-gold/30 overflow-hidden shadow-xl flex flex-col justify-between hover:shadow-[0_0_25px_rgba(197,168,128,0.4)] transition duration-500 min-w-[320px] max-w-[320px] shrink-0 group">
-<div>
-<div class="relative aspect-[16/10] overflow-hidden">
-<img alt="Education" class="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110" src="/assets/images/660_464_smapse-oxfor_f1e366.webp" loading="lazy" decoding="async"/>
-<div class="absolute inset-0 bg-gradient-to-t from-neutral-950 via-transparent to-transparent opacity-60"></div>
-<span class="absolute top-3 left-3 px-3 py-1 bg-black/70 backdrop-blur-md text-[10px] uppercase font-bold tracking-wider text-luxury-gold border border-luxury-gold/30 rounded-full">Education</span>
-</div>
-<div class="p-6 space-y-2.5">
-<span class="text-[10px] text-luxury-gold font-bold uppercase tracking-widest"><i class="fa-regular fa-calendar mr-1"></i> Jun 18, 2026</span>
-<h3 class="font-serif font-bold text-white text-base group-hover:text-luxury-gold transition leading-snug"><a data-i18n="blog.card19Title" href="/blog/top-schools-and-universities-for-your-children/">Top Schools and Universities for Your Children</a></h3>
-<p class="text-xs text-neutral-300 leading-relaxed font-light line-clamp-3" data-i18n="blog.card19Desc">
-                                        How second citizenship and global residency help your children gain admission to top British and American universities at local tuition rates.
-                                    </p>
-</div>
-</div>
-<div class="px-6 pb-6 pt-0">
-<a class="inline-flex items-center gap-1.5 text-xs uppercase tracking-widest text-luxury-gold font-bold group-hover:text-white transition" href="/blog/top-schools-and-universities-for-your-children/"> <span data-i18n="blog.readMore">Read More</span> <i class="fa-solid fa-arrow-right text-[10px] transition-transform duration-300 group-hover:translate-x-1"></i>
-</a>
-</div>
-</div>
+
+
+
+
+
 </div>
 </div>
 </div>
@@ -2384,16 +2030,23 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
                 if (navLogo) navLogo.style.opacity = '1';
                 preloaderDismissed = true;
             } else {
-                const tl = gsap.timeline();
-                tl.fromTo("#preloader-logo", { scale: 0.9, opacity: 0 }, { scale: 1, opacity: 1, duration: 1.0, ease: "power2.out" });
-                tl.to("#preloader-title", { opacity: 1, y: 0, duration: 0.8, ease: "power2.out" }, "-=0.4");
-                tl.to("#preloader-footer", { opacity: 0.99, duration: 0.6, ease: "power2.out" }, "-=0.3");
-
-                setTimeout(() => { dismissPreloader(); }, 1200);
+                if (typeof gsap !== 'undefined') {
+                    try {
+                        const tl = gsap.timeline();
+                        tl.fromTo("#preloader-logo", { scale: 0.9, opacity: 0 }, { scale: 1, opacity: 1, duration: 0.8, ease: "power2.out" });
+                        tl.to("#preloader-title", { opacity: 1, y: 0, duration: 0.6, ease: "power2.out" }, "-=0.3");
+                        tl.to("#preloader-footer", { opacity: 0.99, duration: 0.5, ease: "power2.out" }, "-=0.2");
+                        setTimeout(() => { dismissPreloader(); }, 900);
+                    } catch (e) {
+                        dismissPreloader();
+                    }
+                } else {
+                    dismissPreloader();
+                }
             }
 
-            // Fallback safety: guarantee preloader is dismissed after 1.5 seconds maximum
-            setTimeout(() => { dismissPreloader(); }, 1500);
+            // Guaranteed safety: dismiss preloader after 1.2s max
+            setTimeout(() => { dismissPreloader(); }, 1200);
 
             initHeroSlideshow();
             initCounters();
@@ -2406,27 +2059,41 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
             runPreloader();
         }
 
+        // Window load guarantees preloader is never stuck
+        window.addEventListener('load', () => { setTimeout(dismissPreloader, 300); });
+
         function dismissPreloader() {
             if (preloaderDismissed) return;
             preloaderDismissed = true;
 
-            sessionStorage.setItem('sharif_preloader_shown', 'true');
+            try { sessionStorage.setItem('sharif_preloader_shown', 'true'); } catch (e) {}
 
             const preloader = document.getElementById('preloader');
             const logo = document.getElementById('preloader-logo');
             const navLogo = document.getElementById('nav-logo');
 
-            const tl = gsap.timeline({
-                onComplete: () => {
+            if (typeof gsap !== 'undefined') {
+                try {
+                    const tl = gsap.timeline({
+                        onComplete: () => {
+                            if (preloader) preloader.style.display = 'none';
+                            document.body.style.overflow = 'auto';
+                        }
+                    });
+                    tl.to(["#preloader-title", "#preloader-footer"], { opacity: 0, y: -10, duration: 0.25, stagger: 0.05, ease: "power2.in" });
+                    tl.to(logo, { scale: 0.5, y: -40, opacity: 0, duration: 0.5, ease: "power2.inOut" }, "-=0.1");
+                    tl.to(preloader, { opacity: 0, duration: 0.45, ease: "power2.inOut" }, "-=0.3");
+                    tl.to(navLogo, { opacity: 1, duration: 0.4, ease: "power2.out" }, "-=0.2");
+                } catch (err) {
                     if (preloader) preloader.style.display = 'none';
                     document.body.style.overflow = 'auto';
+                    if (navLogo) navLogo.style.opacity = '1';
                 }
-            });
-
-            tl.to(["#preloader-title", "#preloader-footer"], { opacity: 0, y: -10, duration: 0.35, stagger: 0.05, ease: "power2.in" });
-            tl.to(logo, { scale: 0.5, y: -40, opacity: 0, duration: 0.7, ease: "power2.inOut" }, "-=0.15");
-            tl.to(preloader, { opacity: 0, duration: 0.65, ease: "power2.inOut" }, "-=0.45");
-            tl.to(navLogo, { opacity: 1, duration: 0.6, ease: "power2.out" }, "-=0.35");
+            } else {
+                if (preloader) preloader.style.display = 'none';
+                document.body.style.overflow = 'auto';
+                if (navLogo) navLogo.style.opacity = '1';
+            }
         }
 
         function initHeroSlideshow() {

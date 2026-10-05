@@ -4,7 +4,7 @@
  * 
  * Automatically detects what content changed in English and translates only the
  * modified fields into Arabic (ar), Farsi (fa), and Chinese (zh).
- * Works seamlessly with OpenRouter, Gemini, or zero-config Google Translate fallback.
+ * Works seamlessly with zero-config Google Translate (dict-chrome-ex / at) or AI keys.
  */
 
 if (!function_exists('translateTextServer')) {
@@ -23,6 +23,9 @@ if (!function_exists('translateTextServer')) {
      * @return string
      */
     function translateTextServer($text, $targetLang = 'ar', $sourceLang = 'en') {
+        if (!is_scalar($text)) {
+            return '';
+        }
         $text = trim((string)$text);
         if ($text === '') {
             return '';
@@ -53,14 +56,14 @@ if (!function_exists('translateTextServer')) {
                     }
                 }
             } catch (Exception $e) {
-                // Fallback to Google GTX
+                // Fallback to Google Translate
             }
         }
 
         // Sanitize incoming text before translation
         $cleanSource = str_replace(['\\u0026amp;', '&amp;', 'ΓÇô', 'ΓÇó', '\\u0027', '\\\"'], ['&', '&', '–', '•', "'", '"'], $text);
 
-        // Fallback: Free Google Translate GTX service (always available, ultra-fast, no key required)
+        // Fallback: Free Google Translate service (official Chrome client, zero rate-limit 429)
         if (empty($translated)) {
             $translated = callGoogleGtxTranslate($cleanSource, $targetLang, $sourceLang);
         }
@@ -81,7 +84,7 @@ if (!function_exists('translateTextServer')) {
     }
 
     /**
-     * Free Google Translate GTX HTTP endpoint
+     * Free Google Translate HTTP endpoint using official dict-chrome-ex / at client
      */
     function callGoogleGtxTranslate($text, $targetLang, $sourceLang = 'en') {
         $cleanTarget = strtolower($targetLang);
@@ -91,30 +94,51 @@ if (!function_exists('translateTextServer')) {
             $cleanTarget = 'zh-CN';
         }
 
-        $url = 'https://translate.googleapis.com/translate_a/single?client=gtx&sl=' . urlencode($sourceLang) . '&tl=' . urlencode($cleanTarget) . '&dt=t&q=' . urlencode($text);
+        $clients = ['dict-chrome-ex', 'at'];
+        foreach ($clients as $client) {
+            $url = 'https://translate.googleapis.com/translate_a/single?client=' . urlencode($client) . '&sl=' . urlencode($sourceLang) . '&tl=' . urlencode($cleanTarget) . '&dt=t&q=' . urlencode($text);
 
-        $ch = curl_init($url);
-        curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
-        curl_setopt($ch, CURLOPT_TIMEOUT, 8);
-        curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, false);
-        curl_setopt($ch, CURLOPT_SSL_VERIFYHOST, false);
-        curl_setopt($ch, CURLOPT_USERAGENT, 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36');
+            $response = null;
+            $httpCode = 0;
 
-        $response = curl_exec($ch);
-        $httpCode = curl_getinfo($ch, CURLINFO_HTTP_CODE);
-        curl_close($ch);
-
-        if ($httpCode === 200 && !empty($response)) {
-            $data = json_decode($response, true);
-            if (is_array($data) && isset($data[0]) && is_array($data[0])) {
-                $result = '';
-                foreach ($data[0] as $segment) {
-                    if (is_array($segment) && isset($segment[0])) {
-                        $result .= $segment[0];
-                    }
+            if (function_exists('curl_init')) {
+                $ch = curl_init($url);
+                curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+                curl_setopt($ch, CURLOPT_TIMEOUT, 8);
+                curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, false);
+                curl_setopt($ch, CURLOPT_SSL_VERIFYHOST, false);
+                curl_setopt($ch, CURLOPT_USERAGENT, 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36');
+                $response = curl_exec($ch);
+                $httpCode = curl_getinfo($ch, CURLINFO_HTTP_CODE);
+            } else {
+                $ctx = stream_context_create([
+                    'http' => [
+                        'timeout' => 8,
+                        'user_agent' => 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36'
+                    ],
+                    'ssl' => [
+                        'verify_peer' => false,
+                        'verify_peer_name' => false
+                    ]
+                ]);
+                $response = @file_get_contents($url, false, $ctx);
+                if ($response !== false) {
+                    $httpCode = 200;
                 }
-                if ($result !== '') {
-                    return $result;
+            }
+
+            if ($httpCode === 200 && !empty($response)) {
+                $data = json_decode($response, true);
+                if (is_array($data) && isset($data[0]) && is_array($data[0])) {
+                    $result = '';
+                    foreach ($data[0] as $segment) {
+                        if (is_array($segment) && isset($segment[0])) {
+                            $result .= $segment[0];
+                        }
+                    }
+                    if ($result !== '') {
+                        return $result;
+                    }
                 }
             }
         }
@@ -122,7 +146,7 @@ if (!function_exists('translateTextServer')) {
     }
 
     /**
-     * Retrieve AI configuration from database
+     * Retrieve AI configuration from database if available
      */
     function getAiCredentials() {
         static $cached = null;
@@ -181,7 +205,6 @@ if (!function_exists('translateTextServer')) {
 
         $res = curl_exec($ch);
         $code = curl_getinfo($ch, CURLINFO_HTTP_CODE);
-        curl_close($ch);
 
         if ($code === 200 && $res) {
             $data = json_decode($res, true);
@@ -213,7 +236,6 @@ if (!function_exists('translateTextServer')) {
 
         $res = curl_exec($ch);
         $code = curl_getinfo($ch, CURLINFO_HTTP_CODE);
-        curl_close($ch);
 
         if ($code === 200 && $res) {
             $data = json_decode($res, true);
@@ -233,8 +255,70 @@ if (!function_exists('translateTextServer')) {
      */
     function hasNonLatinChars($str) {
         if (!is_string($str) || trim($str) === '') return false;
-        // Arabic / Persian block: \x{0600}-\x{06FF}, Chinese: \x{4E00}-\x{9FFF}
-        return preg_match('/[\x{0600}-\x{06FF}\x{4E00}-\x{9FFF}]/u', $str) === 1;
+        return preg_match('/[\x{0600}-\x{06FF}\x{0750}-\x{077F}\x{08A0}-\x{08FF}\x{FB50}-\x{FDFF}\x{FE70}-\x{FEFF}\x{4E00}-\x{9FFF}]/u', $str) === 1;
+    }
+
+    /**
+     * Evaluates if a given string requires translation
+     */
+    function shouldTranslateField($newEn, $oldEn, $currTarget, $targetLang) {
+        if (!is_scalar($newEn) || is_bool($newEn)) return false;
+        $newEn = trim((string)$newEn);
+        if ($newEn === '') return false;
+
+        // Skip non-translatable values: URLs, file paths, phone, numbers, image links
+        if (preg_match('~^(https?://|/|\.\./|#|mailto:|tel:|\+?[0-9\s\-()]+$|[a-z0-9_\-\.\/]+\.(webp|jpg|jpeg|png|svg|ico|pdf|html|mp4))$~i', $newEn)) {
+            return false;
+        }
+        if (preg_match('~^(fa-|fa[srbld]\s)~i', $newEn)) {
+            return false;
+        }
+
+        $currTarget = (!is_scalar($currTarget) || is_bool($currTarget)) ? '' : trim((string)$currTarget);
+        $oldEn = (!is_scalar($oldEn) || is_bool($oldEn)) ? '' : trim((string)$oldEn);
+
+        // 1. Missing or corrupted target
+        if ($currTarget === '' || isMojibake($currTarget)) {
+            return true;
+        }
+
+        // 2. English text changed vs old version
+        if ($oldEn !== '' && $newEn !== $oldEn) {
+            return true;
+        }
+
+        // 3. Target language contains English text (legacy untranslated fallback)
+        if ($targetLang !== 'en' && strlen($newEn) > 3) {
+            $hasNonLatin = hasNonLatinChars($currTarget);
+            $isAscii = (bool)preg_match('~^[A-Za-z0-9\s.,:;!?\'"()&/\-]+$~', $currTarget);
+            if (!$hasNonLatin && $isAscii) {
+                return true;
+            }
+        }
+
+        return false;
+    }
+
+    /**
+     * Helper to translate a single field inside target langs
+     */
+    function syncSingleField(&$container, $field, $newEn, $oldEn = '') {
+        $newEn = trim((string)$newEn);
+        if ($newEn === '') return;
+
+        $targetLangs = ['ar', 'fa', 'zh'];
+        foreach ($targetLangs as $lang) {
+            if (!isset($container[$lang]) || !is_array($container[$lang])) {
+                $container[$lang] = [];
+            }
+            $currVal = $container[$lang][$field] ?? '';
+            if (shouldTranslateField($newEn, $oldEn, $currVal, $lang)) {
+                $trans = translateTextServer($newEn, $lang, 'en');
+                if (!empty($trans)) {
+                    $container[$lang][$field] = $trans;
+                }
+            }
+        }
     }
 
     /**
@@ -255,9 +339,9 @@ if (!function_exists('translateTextServer')) {
         // 1. HOMEPAGE (sgcms_homepage)
         // ══════════════════════════════════════════════════════════════
         if ($contentKey === 'sgcms_homepage') {
-            $heroEn = $newData['hero']['en'] ?? [];
-            $oldHeroEn = $oldData['hero']['en'] ?? [];
-
+            // A. Hero
+            $heroEn = $newData['hero']['en'] ?? ($newData['hero'] ?? []);
+            $oldHeroEn = $oldData['hero']['en'] ?? ($oldData['hero'] ?? []);
             $heroFields = [
                 'tagline', 'headline', 'subheadline',
                 'cta_primary', 'cta_secondary',
@@ -269,98 +353,150 @@ if (!function_exists('translateTextServer')) {
                 if (!isset($newData['hero'][$lang]) || !is_array($newData['hero'][$lang])) {
                     $newData['hero'][$lang] = [];
                 }
-
                 foreach ($heroFields as $field) {
                     $newVal = trim((string)($heroEn[$field] ?? ''));
                     if ($newVal === '') continue;
-
                     $oldVal = trim((string)($oldHeroEn[$field] ?? ''));
-                    $currTargetVal = trim((string)($newData['hero'][$lang][$field] ?? ''));
+                    $currVal = trim((string)($newData['hero'][$lang][$field] ?? ''));
 
-                    // Trigger translation if:
-                    // 1. English text changed vs old database text, OR
-                    // 2. Target language text is empty/missing, OR
-                    // 3. Target language contains mojibake box drawing chars, OR
-                    // 4. Target language text is identical to English (untranslated) AND it's not a proper name
-                    $needsTranslate = ($oldVal !== '' && $newVal !== $oldVal)
-                        || ($currTargetVal === '')
-                        || isMojibake($currTargetVal)
-                        || ($currTargetVal === $newVal && strlen($newVal) > 4 && !hasNonLatinChars($currTargetVal));
-
-                    if ($needsTranslate) {
-                        $translated = translateTextServer($newVal, $lang, 'en');
-                        if (!empty($translated)) {
-                            $newData['hero'][$lang][$field] = $translated;
-                        }
+                    if (shouldTranslateField($newVal, $oldVal, $currVal, $lang)) {
+                        $trans = translateTextServer($newVal, $lang, 'en');
+                        if (!empty($trans)) $newData['hero'][$lang][$field] = $trans;
                     }
                 }
-
-                // Preserve links
                 if (isset($heroEn['cta_primary_link'])) $newData['hero'][$lang]['cta_primary_link'] = $heroEn['cta_primary_link'];
                 if (isset($heroEn['cta_secondary_link'])) $newData['hero'][$lang]['cta_secondary_link'] = $heroEn['cta_secondary_link'];
             }
 
-            // About section
-            $aboutEn = $newData['about']['en'] ?? [];
-            $oldAboutEn = $oldData['about']['en'] ?? [];
+            // B. About section
+            $aboutEn = $newData['about']['en'] ?? ($newData['about'] ?? []);
+            $oldAboutEn = $oldData['about']['en'] ?? ($oldData['about'] ?? []);
             $aboutFields = ['badge', 'heading', 'subheading', 'p1', 'p2', 'btn1_text', 'btn2_text'];
 
             foreach ($targetLangs as $lang) {
                 if (!isset($newData['about'][$lang]) || !is_array($newData['about'][$lang])) {
                     $newData['about'][$lang] = [];
                 }
-
                 foreach ($aboutFields as $field) {
                     $newVal = trim((string)($aboutEn[$field] ?? ''));
                     if ($newVal === '') continue;
-
                     $oldVal = trim((string)($oldAboutEn[$field] ?? ''));
-                    $currTargetVal = trim((string)($newData['about'][$lang][$field] ?? ''));
+                    $currVal = trim((string)($newData['about'][$lang][$field] ?? ''));
 
-                    $needsTranslate = ($oldVal !== '' && $newVal !== $oldVal)
-                        || ($currTargetVal === '')
-                        || isMojibake($currTargetVal)
-                        || ($currTargetVal === $newVal && strlen($newVal) > 4 && !hasNonLatinChars($currTargetVal));
-
-                    if ($needsTranslate) {
-                        $translated = translateTextServer($newVal, $lang, 'en');
-                        if (!empty($translated)) {
-                            $newData['about'][$lang][$field] = $translated;
-                        }
+                    if (shouldTranslateField($newVal, $oldVal, $currVal, $lang)) {
+                        $trans = translateTextServer($newVal, $lang, 'en');
+                        if (!empty($trans)) $newData['about'][$lang][$field] = $trans;
                     }
                 }
-
                 if (isset($aboutEn['btn1_link'])) $newData['about'][$lang]['btn1_link'] = $aboutEn['btn1_link'];
                 if (isset($aboutEn['btn2_link'])) $newData['about'][$lang]['btn2_link'] = $aboutEn['btn2_link'];
             }
 
-            // Stats
+            // C. Stats
             if (isset($newData['stats']) && is_array($newData['stats'])) {
                 foreach ($newData['stats'] as $i => &$stat) {
-                    $labelEn = trim((string)($stat['label_en'] ?? $stat['label_en'] ?? ''));
+                    $labelEn = trim((string)($stat['label_en'] ?? ''));
                     if ($labelEn === '') continue;
-
                     $oldStat = $oldData['stats'][$i] ?? [];
                     $oldLabelEn = trim((string)($oldStat['label_en'] ?? ''));
 
                     foreach ($targetLangs as $lang) {
                         $targetKey = 'label_' . $lang;
                         $currVal = trim((string)($stat[$targetKey] ?? ''));
-
-                        $needsTranslate = ($oldLabelEn !== '' && $labelEn !== $oldLabelEn)
-                            || ($currVal === '')
-                            || isMojibake($currVal)
-                            || ($currVal === $labelEn && !hasNonLatinChars($currVal));
-
-                        if ($needsTranslate) {
+                        if (shouldTranslateField($labelEn, $oldLabelEn, $currVal, $lang)) {
                             $trans = translateTextServer($labelEn, $lang, 'en');
-                            if (!empty($trans)) {
-                                $stat[$targetKey] = $trans;
-                            }
+                            if (!empty($trans)) $stat[$targetKey] = $trans;
                         }
                     }
                 }
                 unset($stat);
+            }
+
+            // D. Services & Pillars
+            if (isset($newData['services']) && is_array($newData['services'])) {
+                $srvEn = $newData['services']['en'] ?? $newData['services'];
+                $oldSrvEn = $oldData['services']['en'] ?? ($oldData['services'] ?? []);
+                $srvFields = ['badge', 'heading', 'heading_italic', 'description'];
+
+                foreach ($targetLangs as $lang) {
+                    if (!isset($newData['services'][$lang]) || !is_array($newData['services'][$lang])) {
+                        $newData['services'][$lang] = [];
+                    }
+                    foreach ($srvFields as $f) {
+                        $newVal = trim((string)($srvEn[$f] ?? ''));
+                        if ($newVal === '') continue;
+                        $oldVal = trim((string)($oldSrvEn[$f] ?? ''));
+                        $currVal = trim((string)($newData['services'][$lang][$f] ?? ''));
+                        if (shouldTranslateField($newVal, $oldVal, $currVal, $lang)) {
+                            $trans = translateTextServer($newVal, $lang, 'en');
+                            if (!empty($trans)) $newData['services'][$lang][$f] = $trans;
+                        }
+                    }
+
+                    // Pillars
+                    $pillars = ['pillar_cbi', 'pillar_rbi', 'pillar_uae', 'pillar_realestate', 'pillar_education'];
+                    foreach ($pillars as $pilKey) {
+                        if (isset($srvEn[$pilKey]) && is_array($srvEn[$pilKey])) {
+                            if (!isset($newData['services'][$lang][$pilKey]) || !is_array($newData['services'][$lang][$pilKey])) {
+                                $newData['services'][$lang][$pilKey] = [];
+                            }
+                            $pilEn = $srvEn[$pilKey];
+                            $oldPilEn = $oldSrvEn[$pilKey] ?? [];
+                            foreach (['pillar_badge', 'title', 'p1', 'p2'] as $pf) {
+                                $newVal = trim((string)($pilEn[$pf] ?? ''));
+                                if ($newVal === '') continue;
+                                $oldVal = trim((string)($oldPilEn[$pf] ?? ''));
+                                $currVal = trim((string)($newData['services'][$lang][$pilKey][$pf] ?? ''));
+                                if (shouldTranslateField($newVal, $oldVal, $currVal, $lang)) {
+                                    $trans = translateTextServer($newVal, $lang, 'en');
+                                    if (!empty($trans)) $newData['services'][$lang][$pilKey][$pf] = $trans;
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+
+            // E. Social Responsibility
+            if (isset($newData['social_responsibility']) && is_array($newData['social_responsibility'])) {
+                $srEn = $newData['social_responsibility']['en'] ?? $newData['social_responsibility'];
+                $oldSrEn = $oldData['social_responsibility']['en'] ?? ($oldData['social_responsibility'] ?? []);
+                foreach ($targetLangs as $lang) {
+                    if (!isset($newData['social_responsibility'][$lang]) || !is_array($newData['social_responsibility'][$lang])) {
+                        $newData['social_responsibility'][$lang] = [];
+                    }
+                    foreach (['badge', 'heading', 'description', 'btn_text'] as $sf) {
+                        $newVal = trim((string)($srEn[$sf] ?? ''));
+                        if ($newVal === '') continue;
+                        $oldVal = trim((string)($oldSrEn[$sf] ?? ''));
+                        $currVal = trim((string)($newData['social_responsibility'][$lang][$sf] ?? ''));
+                        if (shouldTranslateField($newVal, $oldVal, $currVal, $lang)) {
+                            $trans = translateTextServer($newVal, $lang, 'en');
+                            if (!empty($trans)) $newData['social_responsibility'][$lang][$sf] = $trans;
+                        }
+                    }
+                }
+            }
+
+            // F. Reviews
+            if (isset($newData['reviews']) && is_array($newData['reviews'])) {
+                $revEn = $newData['reviews']['en'] ?? $newData['reviews'];
+                $oldRevEn = $oldData['reviews']['en'] ?? ($oldData['reviews'] ?? []);
+                foreach ($targetLangs as $lang) {
+                    if (!isset($newData['reviews'][$lang]) || !is_array($newData['reviews'][$lang])) {
+                        $newData['reviews'][$lang] = [];
+                    }
+                    foreach (['badge', 'heading'] as $rf) {
+                        $newVal = trim((string)($revEn[$rf] ?? ''));
+                        if ($newVal === '') continue;
+                        $oldVal = trim((string)($oldRevEn[$rf] ?? ''));
+                        $currVal = trim((string)($newData['reviews'][$lang][$rf] ?? ''));
+                        if (shouldTranslateField($newVal, $oldVal, $currVal, $lang)) {
+                            $trans = translateTextServer($newVal, $lang, 'en');
+                            if (!empty($trans)) $newData['reviews'][$lang][$rf] = $trans;
+                        }
+                    }
+                }
             }
         }
 
@@ -387,7 +523,6 @@ if (!function_exists('translateTextServer')) {
                 if (!is_array($prog) || !isset($prog['id'])) continue;
                 $pId = $prog['id'];
                 $oldProg = $oldMap[$pId] ?? [];
-
                 $enData = $prog['en'] ?? [];
                 $oldEnData = $oldProg['en'] ?? [];
 
@@ -399,24 +534,29 @@ if (!function_exists('translateTextServer')) {
                     foreach ($progFields as $f) {
                         $newVal = trim((string)($enData[$f] ?? ''));
                         if ($newVal === '') continue;
-
                         $oldVal = trim((string)($oldEnData[$f] ?? ''));
                         $currVal = trim((string)($prog[$lang][$f] ?? ''));
 
-                        $needsTranslate = ($oldVal !== '' && $newVal !== $oldVal)
-                            || ($currVal === '')
-                            || isMojibake($currVal)
-                            || ($currVal === $newVal && strlen($newVal) > 4 && !hasNonLatinChars($currVal));
-
-                        if ($needsTranslate) {
+                        if (shouldTranslateField($newVal, $oldVal, $currVal, $lang)) {
                             $trans = translateTextServer($newVal, $lang, 'en');
-                            if (!empty($trans)) {
-                                $prog[$lang][$f] = $trans;
-                            }
+                            if (!empty($trans)) $prog[$lang][$f] = $trans;
                         }
                     }
 
-                    // Translate FAQs if modified
+                    // Benefits
+                    if (!empty($enData['benefits']) && is_array($enData['benefits'])) {
+                        $oldBenefits = $oldEnData['benefits'] ?? [];
+                        $currBenefits = $prog[$lang]['benefits'] ?? [];
+                        if (empty($currBenefits) || count($currBenefits) !== count($enData['benefits']) || json_encode($enData['benefits']) !== json_encode($oldBenefits)) {
+                            $transBen = [];
+                            foreach ($enData['benefits'] as $b) {
+                                $transBen[] = translateTextServer($b, $lang, 'en');
+                            }
+                            $prog[$lang]['benefits'] = $transBen;
+                        }
+                    }
+
+                    // FAQs
                     if (!empty($enData['faqs']) && is_array($enData['faqs'])) {
                         $oldFaqs = $oldEnData['faqs'] ?? [];
                         $currFaqs = $prog[$lang]['faqs'] ?? [];
@@ -437,32 +577,26 @@ if (!function_exists('translateTextServer')) {
         }
 
         // ══════════════════════════════════════════════════════════════
-        // 3. BLOG (sgcms_blog)
-        // ══════════════════════════════════════════════════════════════
-        elseif ($contentKey === 'sgcms_blog') {
-            // Blogs use 100% manual translation: preserve user-written drafts in all languages
-        }
-
-        // ══════════════════════════════════════════════════════════════
-        // 4. ABOUT US (sgcms_aboutus)
+        // 3. ABOUT US (sgcms_aboutus)
         // ══════════════════════════════════════════════════════════════
         elseif ($contentKey === 'sgcms_aboutus') {
-            $heroEn = $newData['hero']['en'] ?? [];
-            $oldHeroEn = $oldData['hero']['en'] ?? [];
-            $overviewEn = $newData['overview']['en'] ?? [];
-            $oldOverviewEn = $oldData['overview']['en'] ?? [];
+            $heroEn = $newData['hero']['en'] ?? ($newData['hero'] ?? []);
+            $oldHeroEn = $oldData['hero']['en'] ?? ($oldData['hero'] ?? []);
+            $overviewEn = $newData['overview']['en'] ?? ($newData['overview'] ?? []);
+            $oldOverviewEn = $oldData['overview']['en'] ?? ($oldData['overview'] ?? []);
 
             foreach ($targetLangs as $lang) {
                 if (!isset($newData['hero'][$lang])) $newData['hero'][$lang] = [];
                 if (!isset($newData['overview'][$lang])) $newData['overview'][$lang] = [];
 
-                foreach (['title', 'subtitle'] as $f) {
+                foreach (['badge', 'title', 'subtitle'] as $f) {
                     $newVal = trim((string)($heroEn[$f] ?? ''));
                     if ($newVal === '') continue;
                     $oldVal = trim((string)($oldHeroEn[$f] ?? ''));
                     $currVal = trim((string)($newData['hero'][$lang][$f] ?? ''));
-                    if (($oldVal !== '' && $newVal !== $oldVal) || $currVal === '' || isMojibake($currVal) || ($currVal === $newVal && !hasNonLatinChars($currVal))) {
-                        $newData['hero'][$lang][$f] = translateTextServer($newVal, $lang, 'en');
+                    if (shouldTranslateField($newVal, $oldVal, $currVal, $lang)) {
+                        $trans = translateTextServer($newVal, $lang, 'en');
+                        if (!empty($trans)) $newData['hero'][$lang][$f] = $trans;
                     }
                 }
 
@@ -471,11 +605,83 @@ if (!function_exists('translateTextServer')) {
                     if ($newVal === '') continue;
                     $oldVal = trim((string)($oldOverviewEn[$f] ?? ''));
                     $currVal = trim((string)($newData['overview'][$lang][$f] ?? ''));
-                    if (($oldVal !== '' && $newVal !== $oldVal) || $currVal === '' || isMojibake($currVal) || ($currVal === $newVal && !hasNonLatinChars($currVal))) {
-                        $newData['overview'][$lang][$f] = translateTextServer($newVal, $lang, 'en');
+                    if (shouldTranslateField($newVal, $oldVal, $currVal, $lang)) {
+                        $trans = translateTextServer($newVal, $lang, 'en');
+                        if (!empty($trans)) $newData['overview'][$lang][$f] = $trans;
                     }
                 }
             }
         }
+
+        // ══════════════════════════════════════════════════════════════
+        // 4. CONTACT (sgcms_contact)
+        // ══════════════════════════════════════════════════════════════
+        elseif ($contentKey === 'sgcms_contact') {
+            $ctEn = $newData['en'] ?? $newData;
+            $oldCtEn = $oldData['en'] ?? ($oldData ?? []);
+            foreach ($targetLangs as $lang) {
+                if (!isset($newData[$lang]) || !is_array($newData[$lang])) {
+                    $newData[$lang] = [];
+                }
+                foreach (['badge', 'heading', 'sub'] as $f) {
+                    $newVal = trim((string)($ctEn[$f] ?? ''));
+                    if ($newVal === '') continue;
+                    $oldVal = trim((string)($oldCtEn[$f] ?? ''));
+                    $currVal = trim((string)($newData[$lang][$f] ?? ''));
+                    if (shouldTranslateField($newVal, $oldVal, $currVal, $lang)) {
+                        $trans = translateTextServer($newVal, $lang, 'en');
+                        if (!empty($trans)) $newData[$lang][$f] = $trans;
+                    }
+                }
+            }
+        }
+
+        // ══════════════════════════════════════════════════════════════
+        // 5. DOM OVERRIDES (sgcms_dom_overrides)
+        // ══════════════════════════════════════════════════════════════
+        elseif ($contentKey === 'sgcms_dom_overrides') {
+            foreach ($newData as $pageSlug => &$pageLangs) {
+                if (!is_array($pageLangs)) continue;
+                $enOv = $pageLangs['en'] ?? [];
+                if (!is_array($enOv) || empty($enOv)) continue;
+
+                foreach ($targetLangs as $lang) {
+                    if (!isset($pageLangs[$lang]) || !is_array($pageLangs[$lang])) {
+                        $pageLangs[$lang] = [];
+                    }
+                    foreach ($enOv as $sel => $val) {
+                        $enText = is_array($val) ? ($val['text'] ?? '') : (string)$val;
+                        if (!trim($enText)) continue;
+                        $currTarget = is_array($pageLangs[$lang][$sel] ?? null) ? ($pageLangs[$lang][$sel]['text'] ?? '') : ($pageLangs[$lang][$sel] ?? '');
+                        if (shouldTranslateField($enText, '', $currTarget, $lang)) {
+                            $trans = translateTextServer($enText, $lang, 'en');
+                            if (!empty($trans)) {
+                                if (is_array($val)) {
+                                    $pageLangs[$lang][$sel] = array_merge($val, ['text' => $trans]);
+                                } else {
+                                    $pageLangs[$lang][$sel] = $trans;
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+            unset($pageLangs);
+        }
+    }
+
+    /**
+     * Complete Database & JSON Snapshot Sweep: Translates any remaining untranslated
+     * English strings in Arabic, Farsi, and Chinese across all content keys.
+     */
+    function syncAllUntranslatedContent(&$snapshot) {
+        if (!is_array($snapshot)) return 0;
+        $keys = array_keys($snapshot);
+        $translatedCount = 0;
+        foreach ($keys as $k) {
+            if ($k === 'sgcms_blog' || $k === 'sgcms_deleted_slugs' || $k === 'sgcms_settings') continue;
+            autoTranslateChangedData($k, $snapshot[$k], null);
+        }
+        return count($keys);
     }
 }

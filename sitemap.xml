@@ -152,7 +152,7 @@
     </url>
     <url>
         <loc>https://sharifgroup.ae/blog/</loc>
-        <lastmod>2026-09-28</lastmod>
+        <lastmod>2026-10-04</lastmod>
         <changefreq>daily</changefreq>
         <priority>0.9</priority>
         <xhtml:link rel="alternate" hreflang="x-default" href="https://sharifgroup.ae/blog/" />
@@ -1470,6 +1470,17 @@
         <xhtml:link rel="alternate" hreflang="ar" href="https://sharifgroup.ae/ar/blog/your-7-step-roadmap-to-panama-permanent-residency/" />
         <xhtml:link rel="alternate" hreflang="zh" href="https://sharifgroup.ae/zh/blog/your-7-step-roadmap-to-panama-permanent-residency/" />
     </url>
+    <url>
+        <loc>https://sharifgroup.ae/blog/sample/</loc>
+        <lastmod>2026-10-04</lastmod>
+        <changefreq>weekly</changefreq>
+        <priority>0.80</priority>
+        <xhtml:link rel="alternate" hreflang="x-default" href="https://sharifgroup.ae/blog/sample/" />
+        <xhtml:link rel="alternate" hreflang="en" href="https://sharifgroup.ae/blog/sample/" />
+        <xhtml:link rel="alternate" hreflang="fa" href="https://sharifgroup.ae/fa/blog/sample/" />
+        <xhtml:link rel="alternate" hreflang="ar" href="https://sharifgroup.ae/ar/blog/sample/" />
+        <xhtml:link rel="alternate" hreflang="zh" href="https://sharifgroup.ae/zh/blog/sample/" />
+    </url>
 
     <!-- ==================== FA PAGES ==================== -->
     <url>
@@ -1617,7 +1628,7 @@
     </url>
     <url>
         <loc>https://sharifgroup.ae/fa/blog/</loc>
-        <lastmod>2026-09-28</lastmod>
+        <lastmod>2026-10-04</lastmod>
         <changefreq>daily</changefreq>
         <priority>0.9</priority>
         <xhtml:link rel="alternate" hreflang="x-default" href="https://sharifgroup.ae/blog/" />
@@ -2935,6 +2946,17 @@
         <xhtml:link rel="alternate" hreflang="ar" href="https://sharifgroup.ae/ar/blog/your-7-step-roadmap-to-panama-permanent-residency/" />
         <xhtml:link rel="alternate" hreflang="zh" href="https://sharifgroup.ae/zh/blog/your-7-step-roadmap-to-panama-permanent-residency/" />
     </url>
+    <url>
+        <loc>https://sharifgroup.ae/fa/blog/sample/</loc>
+        <lastmod>2026-10-04</lastmod>
+        <changefreq>weekly</changefreq>
+        <priority>0.80</priority>
+        <xhtml:link rel="alternate" hreflang="x-default" href="https://sharifgroup.ae/blog/sample/" />
+        <xhtml:link rel="alternate" hreflang="en" href="https://sharifgroup.ae/blog/sample/" />
+        <xhtml:link rel="alternate" hreflang="fa" href="https://sharifgroup.ae/fa/blog/sample/" />
+        <xhtml:link rel="alternate" hreflang="ar" href="https://sharifgroup.ae/ar/blog/sample/" />
+        <xhtml:link rel="alternate" hreflang="zh" href="https://sharifgroup.ae/zh/blog/sample/" />
+    </url>
 
     <!-- ==================== AR PAGES ==================== -->
     <url>
@@ -3082,7 +3104,7 @@
     </url>
     <url>
         <loc>https://sharifgroup.ae/ar/blog/</loc>
-        <lastmod>2026-09-28</lastmod>
+        <lastmod>2026-10-04</lastmod>
         <changefreq>daily</changefreq>
         <priority>0.9</priority>
         <xhtml:link rel="alternate" hreflang="x-default" href="https://sharifgroup.ae/blog/" />
@@ -4400,6 +4422,17 @@
         <xhtml:link rel="alternate" hreflang="ar" href="https://sharifgroup.ae/ar/blog/your-7-step-roadmap-to-panama-permanent-residency/" />
         <xhtml:link rel="alternate" hreflang="zh" href="https://sharifgroup.ae/zh/blog/your-7-step-roadmap-to-panama-permanent-residency/" />
     </url>
+    <url>
+        <loc>https://sharifgroup.ae/ar/blog/sample/</loc>
+        <lastmod>2026-10-04</lastmod>
+        <changefreq>weekly</changefreq>
+        <priority>0.80</priority>
+        <xhtml:link rel="alternate" hreflang="x-default" href="https://sharifgroup.ae/blog/sample/" />
+        <xhtml:link rel="alternate" hreflang="en" href="https://sharifgroup.ae/blog/sample/" />
+        <xhtml:link rel="alternate" hreflang="fa" href="https://sharifgroup.ae/fa/blog/sample/" />
+        <xhtml:link rel="alternate" hreflang="ar" href="https://sharifgroup.ae/ar/blog/sample/" />
+        <xhtml:link rel="alternate" hreflang="zh" href="https://sharifgroup.ae/zh/blog/sample/" />
+    </url>
 
     <!-- ==================== ZH PAGES ==================== -->
     <url>
@@ -4547,7 +4580,7 @@
     </url>
     <url>
         <loc>https://sharifgroup.ae/zh/blog/</loc>
-        <lastmod>2026-09-28</lastmod>
+        <lastmod>2026-10-04</lastmod>
         <changefreq>daily</changefreq>
         <priority>0.9</priority>
         <xhtml:link rel="alternate" hreflang="x-default" href="https://sharifgroup.ae/blog/" />
@@ -5864,5 +5897,16 @@
         <xhtml:link rel="alternate" hreflang="fa" href="https://sharifgroup.ae/fa/blog/your-7-step-roadmap-to-panama-permanent-residency/" />
         <xhtml:link rel="alternate" hreflang="ar" href="https://sharifgroup.ae/ar/blog/your-7-step-roadmap-to-panama-permanent-residency/" />
         <xhtml:link rel="alternate" hreflang="zh" href="https://sharifgroup.ae/zh/blog/your-7-step-roadmap-to-panama-permanent-residency/" />
+    </url>
+    <url>
+        <loc>https://sharifgroup.ae/zh/blog/sample/</loc>
+        <lastmod>2026-10-04</lastmod>
+        <changefreq>weekly</changefreq>
+        <priority>0.80</priority>
+        <xhtml:link rel="alternate" hreflang="x-default" href="https://sharifgroup.ae/blog/sample/" />
+        <xhtml:link rel="alternate" hreflang="en" href="https://sharifgroup.ae/blog/sample/" />
+        <xhtml:link rel="alternate" hreflang="fa" href="https://sharifgroup.ae/fa/blog/sample/" />
+        <xhtml:link rel="alternate" hreflang="ar" href="https://sharifgroup.ae/ar/blog/sample/" />
+        <xhtml:link rel="alternate" hreflang="zh" href="https://sharifgroup.ae/zh/blog/sample/" />
     </url>
 </urlset>
