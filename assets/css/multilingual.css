@@ -1177,3 +1177,116 @@ main[class*="pt-28"],
     pointer-events: none !important;
     z-index: -100 !important;
 }
+
+/* ==========================================================================
+   HEADER ANTI-COLLISION & RESPONSIVE DESKTOP NAVIGATION
+   Fix: Prevents "Webinars [New]" from colliding with "Eligibility Checker" / right buttons
+   ========================================================================== */
+
+/* Universal styling for the Webinars "New" badge */
+.nav-new-badge,
+#main-header [data-i18n="nav.newBadge"] {
+    display: inline-flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+    font-size: 7.5px !important;
+    line-height: 1 !important;
+    padding: 2px 4.5px !important;
+    border-radius: 9999px !important;
+    background-color: #786142 !important;
+    color: #ffffff !important;
+    font-weight: 700 !important;
+    letter-spacing: 0 !important;
+    margin-left: 3px !important;
+    margin-right: 0 !important;
+    vertical-align: middle !important;
+    flex-shrink: 0 !important;
+    white-space: nowrap !important;
+}
+
+[dir="rtl"] .nav-new-badge,
+[dir="rtl"] #main-header [data-i18n="nav.newBadge"] {
+    margin-left: 0 !important;
+    margin-right: 3px !important;
+}
+
+/* Ensure header container scales properly and does not overflow */
+#main-header > div {
+    max-width: 1600px !important;
+    width: 100% !important;
+}
+
+/* Laptop Viewports (1100px - 1440px) */
+@media (min-width: 1100px) and (max-width: 1440px) {
+    #main-header nav {
+        gap: 0.25rem 0.45rem !important;
+    }
+    #main-header nav > * {
+        letter-spacing: 0.04em !important;
+        font-size: 10px !important;
+    }
+    #main-header nav span.text-neutral-300,
+    #main-header span.text-neutral-300 {
+        margin: 0 1px !important;
+        opacity: 0.35 !important;
+    }
+    #main-header [data-i18n="nav.eligibilityChecker"],
+    #main-header [data-i18n="nav.bookConsultation"],
+    #main-header a[href*="eligibilitychecker"],
+    #main-header a[href*="contact"] {
+        padding: 0.45rem 0.8rem !important;
+        font-size: 9.5px !important;
+        letter-spacing: 0.05em !important;
+    }
+    #main-header #nav-logo {
+        height: 2.75rem !important;
+    }
+    #main-header .lang-switcher-wrapper button,
+    #main-header #lang-switcher-btn {
+        padding: 0.35rem 0.6rem !important;
+        font-size: 10px !important;
+    }
+}
+
+/* Compact Laptop Viewports (1100px - 1260px) */
+@media (min-width: 1100px) and (max-width: 1260px) {
+    #main-header nav {
+        gap: 0.15rem 0.3rem !important;
+    }
+    #main-header nav > * {
+        letter-spacing: 0.02em !important;
+        font-size: 9px !important;
+    }
+    #main-header [data-i18n="nav.eligibilityChecker"],
+    #main-header [data-i18n="nav.bookConsultation"],
+    #main-header a[href*="eligibilitychecker"],
+    #main-header a[href*="contact"] {
+        padding: 0.35rem 0.6rem !important;
+        font-size: 8.5px !important;
+        letter-spacing: 0.03em !important;
+    }
+}
+
+/* Below 1100px: Switch cleanly to Mobile Drawer Navigation to avoid horizontal crowding */
+@media (max-width: 1100px) {
+    #main-header nav,
+    #main-header .hidden.lg\:flex:not(.lang-switcher-wrapper),
+    #main-header div.hidden.lg\:flex {
+        display: none !important;
+    }
+    #main-header button[onclick*="toggleMobileMenu"],
+    #main-header button[aria-label="Toggle Menu"],
+    #main-header .xl\:hidden,
+    #main-header .lg\:hidden {
+        display: flex !important;
+    }
+}
+
+/* RTL Script Preservations */
+html[lang="ar"] #main-header nav > *,
+html[lang="fa"] #main-header nav > *,
+[dir="rtl"] #main-header nav > *,
+[dir="rtl"] #main-header [data-i18n="nav.eligibilityChecker"],
+[dir="rtl"] #main-header [data-i18n="nav.bookConsultation"] {
+    letter-spacing: 0 !important;
+}
