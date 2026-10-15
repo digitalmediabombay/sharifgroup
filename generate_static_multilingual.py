@@ -304,7 +304,7 @@ def main():
     english_files = []
     for root, dirs, files in os.walk(BASE_DIR):
         parts = root.split(os.sep)
-        if any(p in parts for p in ["admin", "scratch", ".git", "fa", "ar", "zh"]):
+        if any(p in parts for p in ["admin", "scratch", ".git", "fa", "ar", "zh", "webinars", "Sharif-Webinars-Demo_1"]):
             continue
         for f in files:
             if f == "index.html":

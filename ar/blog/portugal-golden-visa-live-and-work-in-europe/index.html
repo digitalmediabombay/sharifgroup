@@ -12,22 +12,25 @@
 <meta charset="utf-8"/>
 <meta content="width=device-width, initial-scale=1.0" name="viewport"/>
 <script>
-        (function() {
-            try {
-                var l = localStorage.getItem('sharif_lang') || localStorage.getItem('sharif_preferred_lang') || 'en';
-                if (l === 'ar' || l === 'fa') {
-                    document.documentElement.dir = 'rtl';
-                    document.documentElement.lang = l;
-                } else if (l === 'zh') {
-                    document.documentElement.dir = 'ltr';
-                    document.documentElement.lang = 'zh';
-                }
-                if (l !== 'en') {
-                    document.documentElement.classList.add('i18n-pending');
-                }
-            } catch(e) {}
-        })();
-    </script>
+    (function() {
+        try {
+            var p = (window.location && window.location.pathname) ? window.location.pathname : '';
+            var segs = p.split('/').filter(Boolean);
+            var first = segs.length > 0 ? segs[0].toLowerCase() : '';
+            if (first === 'ar' || first === 'fa') {
+                document.documentElement.dir = 'rtl';
+                document.documentElement.lang = first;
+            } else if (first === 'zh') {
+                document.documentElement.dir = 'ltr';
+                document.documentElement.lang = 'zh';
+            } else {
+                document.documentElement.dir = 'ltr';
+                document.documentElement.lang = 'en';
+                document.documentElement.classList.remove('i18n-pending');
+            }
+        } catch(e) {}
+    })();
+</script>
 <!-- Favicon & App Icons -->
 <link href="/assets/images/Group-427321463.svg" rel="icon" type="image/svg+xml"/>
 <link href="/assets/images/shariftrip-logo-1.svg" rel="alternate icon" type="image/svg+xml"/>
@@ -780,8 +783,8 @@
 <section class="py-20 bg-[#FDFCFB] border-t border-neutral-200/80" id="related-articles-section">
 <div class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 space-y-8">
 <div class="text-center space-y-2">
-<span class="text-xs font-bold uppercase tracking-[0.25em] text-luxury-gold" data-i18n="blog.recommendedReading">Recommended Reading</span>
-<h2 class="font-serif text-2xl sm:text-3xl font-bold text-neutral-900" data-i18n="blog.relatedGuides">Related Advisory Guides</h2>
+<span class="text-xs font-bold uppercase tracking-[0.25em] text-luxury-gold" data-i18n="blog.recommendedReading">قراءات موصى بها</span>
+<h2 class="font-serif text-2xl sm:text-3xl font-bold text-neutral-900" data-i18n="blog.relatedGuides">أدلة استشارية ذات صلة</h2>
 </div>
 <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
 <article class="space-y-4 text-left flex flex-col justify-between blog-item bg-white p-5 rounded-2xl border border-neutral-200/70 shadow-sm neon-card-hover">

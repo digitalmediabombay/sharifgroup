@@ -1,4 +1,4 @@
-﻿<!DOCTYPE html>
+<!DOCTYPE html>
 
 <html class="scroll-smooth" dir="rtl" lang="fa">
 <head>
@@ -12,22 +12,25 @@
 <meta charset="utf-8"/>
 <meta content="width=device-width, initial-scale=1.0" name="viewport"/>
 <script>
-        (function () {
-            try {
-                var l = localStorage.getItem('sharif_lang') || localStorage.getItem('sharif_preferred_lang') || 'en';
-                if (l === 'ar' || l === 'fa') {
-                    document.documentElement.dir = 'rtl';
-                    document.documentElement.lang = l;
-                } else if (l === 'zh') {
-                    document.documentElement.dir = 'ltr';
-                    document.documentElement.lang = 'zh';
-                }
-                if (l !== 'en') {
-                    document.documentElement.classList.add('i18n-pending');
-                }
-            } catch (e) { }
-        })();
-    </script>
+    (function() {
+        try {
+            var p = (window.location && window.location.pathname) ? window.location.pathname : '';
+            var segs = p.split('/').filter(Boolean);
+            var first = segs.length > 0 ? segs[0].toLowerCase() : '';
+            if (first === 'ar' || first === 'fa') {
+                document.documentElement.dir = 'rtl';
+                document.documentElement.lang = first;
+            } else if (first === 'zh') {
+                document.documentElement.dir = 'ltr';
+                document.documentElement.lang = 'zh';
+            } else {
+                document.documentElement.dir = 'ltr';
+                document.documentElement.lang = 'en';
+                document.documentElement.classList.remove('i18n-pending');
+            }
+        } catch(e) {}
+    })();
+</script>
 <!-- Core Search Engine Optimization (Google, Bing, Yahoo, Yandex) -->
 <title>Ali Sharif | Founder &amp; CEO of Sharif Group Dubai</title>
 <meta content="Meet Ali Sharif, Founder &amp; CEO of Sharif Group Dubai. Certified advisor for second citizenship, UAE Golden Visas, and real estate. Connect with Ali today." name="description"/>
@@ -292,6 +295,28 @@
         }
     </style>
 <link href="../assets/css/multilingual.css?v=5" rel="stylesheet"/>
+<!-- CMS Live Studio Integration (Active inside dashboard editor) -->
+<script>
+        (function() {
+            var inIframe = window.self !== window.top;
+            var isEditor = window.location.search.indexOf('cms_editor') !== -1;
+            if (inIframe || isEditor) {
+                try {
+                    var st = document.createElement('style');
+                    st.textContent = '#preloader { display: none !important; } body { overflow: auto !important; }';
+                    document.head.appendChild(st);
+                } catch(e) {}
+                var s = document.createElement('script');
+                s.src = '/admin/cms-loader.js?v=' + Date.now();
+                s.onerror = function() {
+                    var fb = document.createElement('script');
+                    fb.src = (window.location.pathname.indexOf('/programs/') !== -1 ? '../../../admin/cms-loader.js' : '../admin/cms-loader.js') + '?v=' + Date.now();
+                    document.head.appendChild(fb);
+                };
+                document.head.appendChild(s);
+            }
+        })();
+    </script>
 </head>
 <body class="bg-luxury-light text-luxury-dark font-sans overflow-x-hidden">
 <!-- Google Tag Manager (noscript) -->
@@ -1087,7 +1112,7 @@
 </div>
 <!-- Card 3: UAE Golden Visa Integration -->
 <div class="relative overflow-hidden p-5 sm:p-6 rounded-3xl bg-[#091222] border border-[#C5A880]/40 lg:border-white/10 shadow-[0_0_20px_rgba(197,168,128,0.25)] lg:shadow-xl transition-all duration-500 hover:border-[#C5A880] hover:shadow-[0_0_35px_rgba(197,168,128,0.5),inset_0_0_15px_rgba(197,168,128,0.15)] hover:-translate-y-1 group cursor-pointer">
-<div class="absolute inset-0 bg-cover bg-center opacity-25 lg:opacity-20 transition-all duration-700 group-hover:opacity-40 group-hover:scale-105 pointer-events-none" style="background-image: url('https://sharifgroup.ae/wp-content/uploads/2026/05/photo_2026-05-09_22-14-58.jpg.webp');">
+<div class="absolute inset-0 bg-cover bg-center opacity-25 lg:opacity-20 transition-all duration-700 group-hover:opacity-40 group-hover:scale-105 pointer-events-none" style="background-image: url('/assets/images/UAE-golden-visa.webp');">
 </div>
 <div class="absolute inset-0 bg-gradient-to-r from-[#050B14]/95 via-[#091222]/85 to-[#050B14]/60 pointer-events-none">
 </div>

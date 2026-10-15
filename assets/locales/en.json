@@ -25,7 +25,9 @@
     "home": "Home",
     "corporateIdentity": "Corporate Identity",
     "otherServices": "Other Services",
-    "readMore": "Read More"
+    "readMore": "Read More",
+    "webinars": "Webinars",
+    "newBadge": "New"
   },
   "blog": {
     "badge": "INSIGHTS & MARKET INTELLIGENCE",
@@ -447,7 +449,9 @@
     "socialResponsibility": "Social Responsibility",
     "insightsBlog": "Insights & Blog",
     "contactUs": "Contact Us",
-    "bookConsultation": "Book Consultation"
+    "bookConsultation": "Book Consultation",
+    "webinars": "Webinars",
+    "newBadge": "New"
   },
   "hero": {
     "tagline": "UPGRADE YOUR LIFE",
@@ -647,7 +651,8 @@
     "cookiePolicy": "Cookie Policy",
     "allRightsReserved": "© 2026 Sharif Group. All Rights Reserved.",
     "designedBy": "Designed and Developed by",
-    "address": "116, The Binary Tower, Business Bay, Dubai, United Arab Emirates"
+    "address": "116, The Binary Tower, Business Bay, Dubai, United Arab Emirates",
+    "webinars": "Webinars"
   },
   "langSwitcher": {
     "label": "English",
@@ -6771,5 +6776,10 @@
       "partnership_years": "Years",
       "partnership_projects": "Projects"
     }
+  },
+  "webinarBanner": {
+    "title": "Next live session: A Second Passport for Afghans: Introducing the Dominica Programme",
+    "meta": "Thursday 29 October · 20:00 Kabul / 19:30 Dubai · Free · Persian (Dari)",
+    "btn": "Details & Join"
   }
 }

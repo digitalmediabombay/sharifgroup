@@ -12,38 +12,41 @@
 <meta charset="utf-8"/>
 <meta content="width=device-width, initial-scale=1.0" name="viewport"/>
 <script>
-        (function() {
-            try {
-                var l = localStorage.getItem('sharif_lang') || localStorage.getItem('sharif_preferred_lang') || 'en';
-                if (l === 'ar' || l === 'fa') {
-                    document.documentElement.dir = 'rtl';
-                    document.documentElement.lang = l;
-                } else if (l === 'zh') {
-                    document.documentElement.dir = 'ltr';
-                    document.documentElement.lang = 'zh';
-                }
-                if (l !== 'en') {
-                    document.documentElement.classList.add('i18n-pending');
-                }
-            } catch(e) {}
-        })();
-    </script>
+    (function() {
+        try {
+            var p = (window.location && window.location.pathname) ? window.location.pathname : '';
+            var segs = p.split('/').filter(Boolean);
+            var first = segs.length > 0 ? segs[0].toLowerCase() : '';
+            if (first === 'ar' || first === 'fa') {
+                document.documentElement.dir = 'rtl';
+                document.documentElement.lang = first;
+            } else if (first === 'zh') {
+                document.documentElement.dir = 'ltr';
+                document.documentElement.lang = 'zh';
+            } else {
+                document.documentElement.dir = 'ltr';
+                document.documentElement.lang = 'en';
+                document.documentElement.classList.remove('i18n-pending');
+            }
+        } catch(e) {}
+    })();
+</script>
 <!-- Favicon & App Icons -->
 <link href="/assets/images/Group-427321463.svg" rel="icon" type="image/svg+xml"/>
 <link href="/assets/images/shariftrip-logo-1.svg" rel="alternate icon" type="image/svg+xml"/>
 <link href="/assets/images/shariftrip-logo-1.svg" rel="alternate icon" type="image/svg+xml"/>
 <link href="/assets/images/Group-427321463.svg" rel="apple-touch-icon" sizes="180x180"/>
 <!-- Primary SEO & AEO Meta Tags -->
-<title>2026 年阿富汗人获得多米尼克护照 | 谢里夫集团</title>
-<meta name="title" content="2026 年阿富汗人获得多米尼克护照 | 谢里夫集团"/>
-<meta name="description" content="2026 年，阿富汗 护照再次在全球护照指数中排名垫底，为其持有者提供了便利 无需事先签证，仅可前往约 23-24 个目的地。对于许多阿富汗人来说 家庭，这意味着每次签证都要等待数月，错失商机 以及取决于单一签证印章的未来。多米尼克护照是 阿富汗公民获得第二本护照的合法途径之一 改变这种状况。基于官方消息来源"/>
+<title>Dominica Passport for Afghans in 2026 | Sharif Group</title>
+<meta content="Dominica Passport for Afghans in 2026 | Sharif Group" name="title"/>
+<meta content="Strategic legal insights and investment parameters prepared by Sharif Group advisory desk." name="description"/>
 <meta content="Sharif Group Advisory Desk" name="author"/>
-<link rel="canonical" href="https://sharifgroup.ae/zh/blog/dominica-passport-for-afghans-in-2026/" />
-    <link rel="alternate" hreflang="x-default" href="https://sharifgroup.ae/blog/dominica-passport-for-afghans-in-2026/" />
-    <link rel="alternate" hreflang="en" href="https://sharifgroup.ae/blog/dominica-passport-for-afghans-in-2026/" />
-    <link rel="alternate" hreflang="fa" href="https://sharifgroup.ae/fa/blog/dominica-passport-for-afghans-in-2026/" />
-    <link rel="alternate" hreflang="ar" href="https://sharifgroup.ae/ar/blog/dominica-passport-for-afghans-in-2026/" />
-    <link rel="alternate" hreflang="zh" href="https://sharifgroup.ae/zh/blog/dominica-passport-for-afghans-in-2026/" />
+<link href="https://sharifgroup.ae/zh/blog/dominica-passport-for-afghans-in-2026/" rel="canonical"/>
+<link href="https://sharifgroup.ae/blog/dominica-passport-for-afghans-in-2026/" hreflang="x-default" rel="alternate"/>
+<link href="https://sharifgroup.ae/blog/dominica-passport-for-afghans-in-2026/" hreflang="en" rel="alternate"/>
+<link href="https://sharifgroup.ae/fa/blog/dominica-passport-for-afghans-in-2026/" hreflang="fa" rel="alternate"/>
+<link href="https://sharifgroup.ae/ar/blog/dominica-passport-for-afghans-in-2026/" hreflang="ar" rel="alternate"/>
+<link href="https://sharifgroup.ae/zh/blog/dominica-passport-for-afghans-in-2026/" hreflang="zh" rel="alternate"/>
 <meta content="index, follow, max-image-preview:large, max-snippet:-1, max-video-preview:-1" name="robots"/>
 <!-- Geo Meta Tags -->
 <meta content="AE-DU" name="geo.region"/>
@@ -54,18 +57,18 @@
 <meta content="article" property="og:type"/>
 <meta content="zh_CN" property="og:locale"/>
 <meta content="Sharif Group Dubai" property="og:site_name"/>
-<meta content="什么是多米尼克投资入籍？ | 谢里夫集团" property="og:title"/>
-<meta content="多米尼克投资入籍计划是全球历史悠久、信誉良好且法律保障完善的经济入籍项目之一。该项目于1993年根据多米尼克国宪法第七章第101条及相关公民法设立，符合条件的国际投资者及其家属可以通过向国家进行符合要求的经济贡献，直接获得永久性多米尼克公民身份。" property="og:description"/>
-<meta content="https://sharifgroup.ae/zh/blog/what-is-dominica-citizenship-by-investment/" property="og:url"/>
-<meta content="https://www.commonwealthlawyers.com/wp-content/uploads/2023/11/Dominica-Americas-Hub.png" property="og:image"/>
+<meta content="Dominica Passport for Afghans in 2026 | Sharif Group" property="og:title"/>
+<meta content="Strategic legal insights and investment parameters prepared by Sharif Group advisory desk." property="og:description"/>
+<meta content="https://sharifgroup.ae/zh/blog/dominica-passport-for-afghans-in-2026/" property="og:url"/>
+<meta content="https://sharifgroup.ae/assets/images/uploads/d1d65d8b-b67e-495f-b779-93a3ff8eb47a_1791006383.webp" property="og:image"/>
 <meta content="2026-01-15T00:00:00+04:00" property="article:published_time"/>
 <meta content="2026-08-20T00:00:00+04:00" property="article:modified_time"/>
 <meta content="Citizenship by Investment" property="article:section"/>
 <!-- Twitter Card -->
 <meta content="summary_large_image" name="twitter:card"/>
-<meta content="什么是多米尼克投资入籍？ | 谢里夫集团" name="twitter:title"/>
-<meta content="多米尼克投资入籍计划是全球历史悠久、信誉良好且法律保障完善的经济入籍项目之一。该项目于1993年根据多米尼克国宪法第七章第101条及相关公民法设立，符合条件的国际投资者及其家属可以通过向国家进行符合要求的经济贡献，直接获得永久性多米尼克公民身份。" name="twitter:description"/>
-<meta content="https://www.commonwealthlawyers.com/wp-content/uploads/2023/11/Dominica-Americas-Hub.png" name="twitter:image"/>
+<meta content="Dominica Passport for Afghans in 2026 | Sharif Group" name="twitter:title"/>
+<meta content="Strategic legal insights and investment parameters prepared by Sharif Group advisory desk." name="twitter:description"/>
+<meta content="https://sharifgroup.ae/assets/images/uploads/d1d65d8b-b67e-495f-b779-93a3ff8eb47a_1791006383.webp" name="twitter:image"/>
 <!-- Structured Data: Article + FAQPage + BreadcrumbList -->
 <script type="application/ld+json">
     {
@@ -338,19 +341,19 @@
 <i class="fa-solid fa-chevron-down text-[8px] text-neutral-400 transition-transform duration-200" id="lang-arrow-icon"></i>
 </button>
 <div class="hidden absolute right-0 mt-2 w-44 bg-white/95 rounded-2xl shadow-2xl border border-neutral-200/80 py-2 z-50 overflow-hidden" id="lang-dropdown-menu">
-<a href="/blog/dominica-passport-for-afghans-in-2026/" class="lang-option" data-lang="en" onclick="switchLanguage('en', event)">
-<span data-i18n="langSwitcher.en">English</span>
+<a class="lang-option" data-lang="en" href="/blog/dominica-passport-for-afghans-in-2026/" onclick="switchLanguage('en', event)">
+<span data-i18n="langSwitcher.en">英语</span>
 <span class="text-[10px] text-neutral-400">EN</span>
 </a>
-<a href="/ar/blog/dominica-passport-for-afghans-in-2026/" class="lang-option" data-lang="ar" onclick="switchLanguage('ar', event)">
-<span class="font-medium" data-i18n="langSwitcher.ar">العربية</span>
+<a class="lang-option" data-lang="ar" href="/ar/blog/dominica-passport-for-afghans-in-2026/" onclick="switchLanguage('ar', event)">
+<span class="font-medium" data-i18n="langSwitcher.ar">阿拉伯语</span>
 <span class="text-[10px] text-neutral-400">AR</span>
 </a>
-<a href="/fa/blog/dominica-passport-for-afghans-in-2026/" class="lang-option" data-lang="fa" onclick="switchLanguage('fa', event)">
-<span class="font-medium" data-i18n="langSwitcher.fa">فارسی</span>
+<a class="lang-option" data-lang="fa" href="/fa/blog/dominica-passport-for-afghans-in-2026/" onclick="switchLanguage('fa', event)">
+<span class="font-medium" data-i18n="langSwitcher.fa">波斯语</span>
 <span class="text-[10px] text-neutral-400">FA</span>
 </a>
-<a href="/zh/blog/dominica-passport-for-afghans-in-2026/" class="lang-option active-lang" data-lang="zh" onclick="switchLanguage('zh', event)">
+<a class="lang-option active-lang" data-lang="zh" href="/zh/blog/dominica-passport-for-afghans-in-2026/" onclick="switchLanguage('zh', event)">
 <span class="font-medium" data-i18n="langSwitcher.zh">中文</span>
 <span class="text-[10px] text-neutral-400">ZH</span>
 </a>
@@ -374,10 +377,10 @@
 <i class="fa-solid fa-globe text-luxury-gold"></i>
 </div>
 <div class="mobile-lang-grid">
-<a href="/blog/dominica-passport-for-afghans-in-2026/" class="lang-option" data-lang="en" onclick="switchLanguage('en', event)">English</a>
-<a href="/ar/blog/dominica-passport-for-afghans-in-2026/" class="lang-option" data-lang="ar" onclick="switchLanguage('ar', event)">العربية</a>
-<a href="/fa/blog/dominica-passport-for-afghans-in-2026/" class="lang-option" data-lang="fa" onclick="switchLanguage('fa', event)">فارسی</a>
-<a href="/zh/blog/dominica-passport-for-afghans-in-2026/" class="lang-option active-lang" data-lang="zh" onclick="switchLanguage('zh', event)">中文</a>
+<a class="lang-option" data-lang="en" href="/blog/dominica-passport-for-afghans-in-2026/" onclick="switchLanguage('en', event)">English</a>
+<a class="lang-option" data-lang="ar" href="/ar/blog/dominica-passport-for-afghans-in-2026/" onclick="switchLanguage('ar', event)">العربية</a>
+<a class="lang-option" data-lang="fa" href="/fa/blog/dominica-passport-for-afghans-in-2026/" onclick="switchLanguage('fa', event)">فارسی</a>
+<a class="lang-option active-lang" data-lang="zh" href="/zh/blog/dominica-passport-for-afghans-in-2026/" onclick="switchLanguage('zh', event)">中文</a>
 </div>
 </div>
 <div class="pt-2 pb-4">
@@ -607,12 +610,12 @@
 <span>/</span>
 <a class="hover:text-neutral-900" href="/zh/blog/">Blog</a>
 <span>/</span>
-<span class="text-luxury-gold truncate max-w-[200px] sm:max-w-xs">2026 年阿富汗人获得多米尼克护照</span>
+<span class="text-luxury-gold truncate max-w-[200px] sm:max-w-xs">Dominica Passport for Afghans in 2026</span>
 </nav>
 </div>
 <!-- Hero Header of Article -->
 <div class="space-y-4">
-<h1 class="font-serif text-3xl sm:text-4xl md:text-5xl font-bold text-neutral-900 leading-tight">2026 年阿富汗人获得多米尼克护照</h1>
+<h1 class="font-serif text-3xl sm:text-4xl md:text-5xl font-bold text-neutral-900 leading-tight">Dominica Passport for Afghans in 2026</h1>
 <div class="flex flex-wrap items-center gap-4 sm:gap-6 text-xs text-neutral-500 pt-2 border-t border-neutral-100 font-light">
 <span class="flex items-center gap-1.5"><i class="fa-solid fa-user-tie text-luxury-gold"></i> <span>Sharif Group Legal Desk</span></span>
 <span class="flex items-center gap-1.5"><i class="fa-solid fa-calendar text-luxury-gold"></i> <span>October 2026</span></span>
@@ -621,435 +624,305 @@
 </div>
 <!-- Featured Image -->
 <div class="aspect-video w-full rounded-2xl overflow-hidden shadow-xl border border-neutral-200 bg-neutral-100">
-                <img alt="2026 年阿富汗人获得多米尼克护照" class="w-full h-full object-cover" src="/assets/images/uploads/d1d65d8b-b67e-495f-b779-93a3ff8eb47a_1791006383.webp" onerror="this.onerror=null;this.src='/assets/images/dubai-office-2.webp'"/>
-            </div>
+<img alt="Dominica Passport for Afghans in 2026" class="w-full h-full object-cover" onerror="this.onerror=null;this.src='/assets/images/dubai-office-2.webp'" src="/assets/images/uploads/d1d65d8b-b67e-495f-b779-93a3ff8eb47a_1791006383.webp"/>
+</div>
 <!-- Article Content Body (Raw HTML Pre-rendered) -->
 <div class="article-content space-y-6 text-sm sm:text-base text-neutral-700 leading-relaxed font-light">
-<h2><span style="color: rgb(55, 65, 81); font-size: 1.025rem; background-color:透明; font-weight: 300; font-family: Inter, sans-serif;">2026 年，阿富汗
-护照再次在全球护照指数中排名垫底，为其持有者提供了便利
-无需事先签证，仅可前往约 23-24 个目的地。对于许多阿富汗人来说
-家庭，这意味着每次签证都要等待数月，错失商机
-以及取决于单一签证印章的未来。</span></h2><p><span>多米尼克护照是
-阿富汗公民获得第二本护照的合法途径之一
-改变这种状况。基于官方消息来源和谢里夫的经验
-集团阿富汗团队，本指南解释阿富汗公民是否可以申请
-以及该流程如何运作，从第一步到收到护照。</span></p><h2>阿富汗人多米尼克护照概览</h2><p><span>2026 年的状态：</span></p><p><span>•<span>  </span><b>阿富汗国民的资格：</b> 是
-（阿富汗不在限制名单上）</span></p><p><span>•<span>  </span><b>处理时间：</b>大约6-9
-月</span></p><p><span>•<span>  </span><b>要求在多米尼克居住：</b>否</span></p><p><span>•<span>  </span><b>双重国籍：</b>允许；你保留
-您的阿富汗公民身份</span></p><p><span>•<span>  </span><b>面试：</b> 在线面试，必须参加
-年满 16 岁的所有人</span></p><p><span>•<span>  </span><b>免签证或落地签证旅行：</b>
-约 145 个国家/地区</span></p><p><span>•<span>  </span><b>家庭成员：</b> 配偶、受抚养人
-30 岁以下的儿童，55 岁以上的父母</span></p><p> </p><h2>多米尼克对阿富汗人的护照要求：你真的可以申请吗？</h2><p><span>多米尼克的公民身份
-投资部门（CBIU）最近更新了其限制国籍名单
-2026 年 3 月。在此列表下，来自白俄罗斯、俄罗斯、伊拉克北部的申请
-不接受来自也门的申请人，而来自伊朗、朝鲜和苏丹的申请人
-仅在非常有限的条件下才被接受。阿富汗不属于这两个国家
-</span></p><p><span>但是，有两个
-您应该了解的事情：</span></p><p><span>•<span>  </span><b>加强尽职调查：</b>根据
-在同一官方页面上，任何申请人都可能受到加强的尽职调查
-支票，费用自理。</span></p><p><span>•<span>  </span><b>如果您曾居住在伊朗：</b>
-官方限制适用于伊朗国民，而不是阿富汗人。然而，你的
-在伊朗的居住历史、资产和金融活动将受到审查
-在背景调查期间。如果您在伊朗生活或工作过很多年
-年，在付款前请顾问评估您的案件。</span></p><h2>阿富汗公民有哪些变化？</h2><p><span>•<span>  </span><b>免签证或落地签证旅行：</b>
-持有阿富汗护照，可前往约 23-24 个目的地；持有多米尼克护照，
-约 145 个国家/地区</span></p><p><span>•<span>  </span><b>申根区（欧洲）：</b> 与阿富汗人
-护照，需要签证；持有多米尼克护照，目前免签证</span></p><p><span>•<span>  </span><b>全球排名（2026 年）：</b> 阿富汗
-护照排名最后；多米尼克护照排名第 29 位左右</span></p><p><span>•<span>  </span><b>继承税、财富税和资本利得税
-多米尼克：</b>无</span></p><p> </p><p><span>实际上，多米尼克
-公民身份赋予阿富汗公民商务和家庭旅行的自由
-无需等待数月的签证，能够为孩子的未来做好规划
-未来，以及不取决于政治局势的第二国籍
-任何一个国家的护照。</span></p><h2>多米尼克签证与多米尼克护照</h2><p><span>•<span>  </span><b>多米尼克签证：</b>短期许可
-访问多米尼克本身。根据全球护照指数数据，阿富汗
-护照持有人短期访问多米尼克无需提前申请签证。
-然而，到达多米尼克通常需要经过其他国家，
-可能需要过境签证。</span></p><p><span>•<span>  </span><b>多米尼克护照：</b> 永久多米尼加
-公民身份和护照，可打开通往约 145 个国家/地区的大门。谢里夫
-集团专门从事多米尼克公民身份申请并为您提供支持
-从咨询、初步案例评估到文件准备的每个阶段
-并领取护照。</span></p><h2>经济多元化基金 (EDF) 还是房地产？</h2><p><span>•<span>  </span><b>经济多元化基金 (EDF)：</b> A
-对多米尼克经济多元化基金的不可退还捐款。它是
-对于大多数家庭来说，更简单、更快捷，也是更具成本效益的选择。</span></p><p><span>•<span>  </span><b>房地产：</b> 最低投资
-政府批准的项目 20 万美元，另加政府费用。的
-财产必须持有几年，之后才能出售。</span></p><p><span>正确的选择取决于
-家庭规模、预算和目标。</span></p><h2>阿富汗申请人所需文件</h2><p><span>•<span>  </span><b>护照和 Tazkira：</b> 有效护照
-以及每个家庭的 Tazkira（阿富汗国民身份证，电子或纸质）
-申请中包含的会员</span></p><p><span>•<span>  </span><b>驾驶执照</b></span></p><p><span>•<span>  </span><b>Nikah（结婚证书）：</b>
-配偶；以及（如适用）离婚证明</span></p><p><span>•<span>  </span><b>无犯罪记录证明：</b>对于所有
-16 岁及以上的家庭成员</span></p><p><span>•<span>  </span><b>过去 12 个月的银行对账单，或
-银行开户信</b></span></p><p><span>•<span>  </span><b>所有就业文件</b></span></p><p><span>•<span>  </span><b>教育证书</b></span></p><p><span>•<span>  </span><b>房产证或租赁协议
-针对您的居住地</b></span></p><p><span>•<span>  </span><b>医学检查：</b> 尿液分析，完成
-血细胞计数 (CBC) 和 HIV 检测</span></p><p><span>•<span>  </span><b>八张护照尺寸照片</b></span></p><p><span>所有文件均未包含在
-英语必须由经过认证的翻译人员翻译成英语，并且
-经过正式认证，大多数文件不得超过三个月
-提交时间。</span></p><p><span>已完成更多
-来自阿富汗各地、喀布尔和赫拉特的超过 250 份成功申请
-对马扎里沙里夫和其他省份来说，谢里夫集团的顾问很熟悉
-拥有阿富汗文件和行政程序，并将支持您收集、
-在您的每个阶段翻译、证明和准备您的文件
-</span></p><h2>为什么选择Sharif Group？</h2><p><span>拥有超过10年的经验
-丰富的经验和 1,000 多个成功申请，Sharif Group 支持
-阿富汗家庭获得第二本护照的每一步，从最初的
-评估领取护照。我们的团队专注于阿富汗
-市场四年多来，已成功完成 250 多个项目
-来自阿富汗各地城市和省份的客户的申请，
-喀布尔和赫拉特到马扎里沙里夫及更远的地方。这项工作由 Ali Sharif 领导，
-谢里夫集团创始人兼首席执行官、投资移民成员
-国际投资移民专业机构IMC（IMC）
-行业。您可以在我们的迪拜办事处或在线咨询。</span></p><h2>常见问题</h2><p><b><span>阿富汗人可以获得
-2026年多米尼克护照？ </span></b><span>是的。阿富汗不在官方限制国籍名单上，
-但背景调查很严格。</span></p><p><b><span>如果我住在伊朗，
-对伊朗人的限制适用于我吗？ </span></b><span>官方限制适用于
-伊朗申请人。但是，您在伊朗的居住和金融活动将
-在背景调查期间接受审查。</span></p><p><b><span>我必须放弃吗
-我的阿富汗国籍？ </span></b><span>没有。多米尼克允许双重国籍。</span></p><p><b><span>我可以将哪些人纳入其中
-我的申请？ </span></b><span>你的
-配偶、30 岁以下的受抚养子女以及受抚养父母和祖父母
-超过 55。</span></p><p><b><span>有多少个国家可以
-我持多米尼克护照无需签证即可前往吗？ </span></b><span>约 145 个国家免签或
-持有落地签证，具体取决于来源。</span></p><h2>与 Sharif Group 交谈</h2><p><span>开始您的第二次旅行
-今天的护照之旅。在免费咨询中，我们的顾问将审查您的
-达里语、普什图语或波斯语，并在您出发之前确定最适合您的路线
-进行任何付款。</span></p><p dir="ltr" style="direction: ltr; text-align: left;">
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-</p><p>WhatsApp：+971 4 357
-8737 | 8737 
-联系@sharifgroup.ae</p>
-            </div>
-
-            <!-- FAQ ACCORDION SECTION (Split: 6 Left, 6 Right) -->
-<div class="space-y-6 pt-12 border-t border-neutral-200">
-    <div class="text-center space-y-3 mb-8">
-        <span class="text-xs font-bold uppercase tracking-[0.25em] text-luxury-gold flex items-center justify-center gap-2">
-            <i class="fa-regular fa-circle-question"></i> 专家解答
-        </span>
-        <h2 class="font-serif text-3xl sm:text-4xl font-bold text-neutral-900">项目合规与常见问题解答</h2>
-        <p class="text-xs text-neutral-500">关于合规审查、办理周期及法律保障的常见问题解答。</p>
-    </div>
-    <div class="grid grid-cols-1 lg:grid-cols-2 gap-x-12 gap-y-0 text-start items-start">
-        <div class="flex flex-col">
-        <div class="border-b border-neutral-200 py-3.5">
-            <button onclick="toggleBlogFAQ('faq-dyn-0')" class="w-full flex justify-between items-center focus:outline-none group text-left">
-                <span class="text-xs uppercase tracking-wider font-bold text-neutral-800 group-hover:text-luxury-gold transition pr-3">
-                    申请该项目的核心资格条件是什么？
-                </span>
-                <span class="text-neutral-400 transition-transform duration-300 shrink-0" id="icon-faq-dyn-0">
-                    <i class="fa-solid fa-chevron-down text-[10px]"></i>
-                </span>
-            </button>
-            <div id="content-faq-dyn-0" class="max-h-0 overflow-hidden transition-all duration-500 ease-in-out">
-                <p class="text-xs text-neutral-600 leading-relaxed mt-2.5 font-light">
-                    申请人须具备良好的无犯罪背景记录，通过严格的多层级反洗钱合规审查，并完成指定的官方投资额度。
-                </p>
-            </div>
-        </div>
-        <div class="border-b border-neutral-200 py-3.5">
-            <button onclick="toggleBlogFAQ('faq-dyn-1')" class="w-full flex justify-between items-center focus:outline-none group text-left">
-                <span class="text-xs uppercase tracking-wider font-bold text-neutral-800 group-hover:text-luxury-gold transition pr-3">
-                    直系亲属及年长受抚养人可以一并随行申请吗？
-                </span>
-                <span class="text-neutral-400 transition-transform duration-300 shrink-0" id="icon-faq-dyn-1">
-                    <i class="fa-solid fa-chevron-down text-[10px]"></i>
-                </span>
-            </button>
-            <div id="content-faq-dyn-1" class="max-h-0 overflow-hidden transition-all duration-500 ease-in-out">
-                <p class="text-xs text-neutral-600 leading-relaxed mt-2.5 font-light">
-                    可以。主申请人可随同申请配偶、30周岁以下的经济依附子女，以及55周岁以上的受抚养父母或祖父母。
-                </p>
-            </div>
-        </div>
-        <div class="border-b border-neutral-200 py-3.5">
-            <button onclick="toggleBlogFAQ('faq-dyn-2')" class="w-full flex justify-between items-center focus:outline-none group text-left">
-                <span class="text-xs uppercase tracking-wider font-bold text-neutral-800 group-hover:text-luxury-gold transition pr-3">
-                    申请期间是否要求在迪拜或目标国实际居住或登陆？
-                </span>
-                <span class="text-neutral-400 transition-transform duration-300 shrink-0" id="icon-faq-dyn-2">
-                    <i class="fa-solid fa-chevron-down text-[10px]"></i>
-                </span>
-            </button>
-            <div id="content-faq-dyn-2" class="max-h-0 overflow-hidden transition-all duration-500 ease-in-out">
-                <p class="text-xs text-neutral-600 leading-relaxed mt-2.5 font-light">
-                    办理过程中无强制居住要求。所有政府背景背调及公证海牙认证均由我们迪拜总部合规团队远程协助办理完毕。
-                </p>
-            </div>
-        </div>
-        <div class="border-b border-neutral-200 py-3.5">
-            <button onclick="toggleBlogFAQ('faq-dyn-3')" class="w-full flex justify-between items-center focus:outline-none group text-left">
-                <span class="text-xs uppercase tracking-wider font-bold text-neutral-800 group-hover:text-luxury-gold transition pr-3">
-                    从正式递交到获得政府批准通常需要多长时间？
-                </span>
-                <span class="text-neutral-400 transition-transform duration-300 shrink-0" id="icon-faq-dyn-3">
-                    <i class="fa-solid fa-chevron-down text-[10px]"></i>
-                </span>
-            </button>
-            <div id="content-faq-dyn-3" class="max-h-0 overflow-hidden transition-all duration-500 ease-in-out">
-                <p class="text-xs text-neutral-600 leading-relaxed mt-2.5 font-light">
-                    在我们的优先法律通道协助下，官方审批流程高效推进，通常仅需60至90个工作日。
-                </p>
-            </div>
-        </div>
-        <div class="border-b border-neutral-200 py-3.5">
-            <button onclick="toggleBlogFAQ('faq-dyn-4')" class="w-full flex justify-between items-center focus:outline-none group text-left">
-                <span class="text-xs uppercase tracking-wider font-bold text-neutral-800 group-hover:text-luxury-gold transition pr-3">
-                    如何确保家族财富及隐私信息的绝对保密安全？
-                </span>
-                <span class="text-neutral-400 transition-transform duration-300 shrink-0" id="icon-faq-dyn-4">
-                    <i class="fa-solid fa-chevron-down text-[10px]"></i>
-                </span>
-            </button>
-            <div id="content-faq-dyn-4" class="max-h-0 overflow-hidden transition-all duration-500 ease-in-out">
-                <p class="text-xs text-neutral-600 leading-relaxed mt-2.5 font-light">
-                    谢里夫集团严格恪守国际顶级保密协议与全球私人客户专属合规标准，确保客户资产与身份信息滴水不漏。
-                </p>
-            </div>
-        </div>
-        <div class="border-b border-neutral-200 py-3.5">
-            <button onclick="toggleBlogFAQ('faq-dyn-5')" class="w-full flex justify-between items-center focus:outline-none group text-left">
-                <span class="text-xs uppercase tracking-wider font-bold text-neutral-800 group-hover:text-luxury-gold transition pr-3">
-                    获得身份后享有哪些免签及全球通行便利？
-                </span>
-                <span class="text-neutral-400 transition-transform duration-300 shrink-0" id="icon-faq-dyn-5">
-                    <i class="fa-solid fa-chevron-down text-[10px]"></i>
-                </span>
-            </button>
-            <div id="content-faq-dyn-5" class="max-h-0 overflow-hidden transition-all duration-500 ease-in-out">
-                <p class="text-xs text-neutral-600 leading-relaxed mt-2.5 font-light">
-                    成功持有者可享有免签或落地签前往全球重要金融中心、欧洲申根区以及英联邦等多个国家和地区的通行便利。
-                </p>
-            </div>
-        </div>
-        </div>
-        <div class="flex flex-col">
-        <div class="border-b border-neutral-200 py-3.5">
-            <button onclick="toggleBlogFAQ('faq-dyn-6')" class="w-full flex justify-between items-center focus:outline-none group text-left">
-                <span class="text-xs uppercase tracking-wider font-bold text-neutral-800 group-hover:text-luxury-gold transition pr-3">
-                    是否对全球收入或资本利得征收所得税？
-                </span>
-                <span class="text-neutral-400 transition-transform duration-300 shrink-0" id="icon-faq-dyn-6">
-                    <i class="fa-solid fa-chevron-down text-[10px]"></i>
-                </span>
-            </button>
-            <div id="content-faq-dyn-6" class="max-h-0 overflow-hidden transition-all duration-500 ease-in-out">
-                <p class="text-xs text-neutral-600 leading-relaxed mt-2.5 font-light">
-                    绝大多数主权项目实行属地税制或零税率政策，海外经营所得、分红派息以及家族传承资产均免除本土税负。
-                </p>
-            </div>
-        </div>
-        <div class="border-b border-neutral-200 py-3.5">
-            <button onclick="toggleBlogFAQ('faq-dyn-7')" class="w-full flex justify-between items-center focus:outline-none group text-left">
-                <span class="text-xs uppercase tracking-wider font-bold text-neutral-800 group-hover:text-luxury-gold transition pr-3">
-                    申请过程中需要提供哪些官方无犯罪记录及合规证明？
-                </span>
-                <span class="text-neutral-400 transition-transform duration-300 shrink-0" id="icon-faq-dyn-7">
-                    <i class="fa-solid fa-chevron-down text-[10px]"></i>
-                </span>
-            </button>
-            <div id="content-faq-dyn-7" class="max-h-0 overflow-hidden transition-all duration-500 ease-in-out">
-                <p class="text-xs text-neutral-600 leading-relaxed mt-2.5 font-light">
-                    申请人须提供国籍国以及过去居住满六个月以上国家所开具的正规无犯罪记录公证书及官方海牙认证文件。
-                </p>
-            </div>
-        </div>
-        <div class="border-b border-neutral-200 py-3.5">
-            <button onclick="toggleBlogFAQ('faq-dyn-8')" class="w-full flex justify-between items-center focus:outline-none group text-left">
-                <span class="text-xs uppercase tracking-wider font-bold text-neutral-800 group-hover:text-luxury-gold transition pr-3">
-                    是否承认双重国籍或允许多重合法居留身份？
-                </span>
-                <span class="text-neutral-400 transition-transform duration-300 shrink-0" id="icon-faq-dyn-8">
-                    <i class="fa-solid fa-chevron-down text-[10px]"></i>
-                </span>
-            </button>
-            <div id="content-faq-dyn-8" class="max-h-0 overflow-hidden transition-all duration-500 ease-in-out">
-                <p class="text-xs text-neutral-600 leading-relaxed mt-2.5 font-light">
-                    完全允许。绝大多数主权法案在法律层面上充分认可双重或多重国籍，无需申请人放弃原有的国籍或护照。
-                </p>
-            </div>
-        </div>
-        <div class="border-b border-neutral-200 py-3.5">
-            <button onclick="toggleBlogFAQ('faq-dyn-9')" class="w-full flex justify-between items-center focus:outline-none group text-left">
-                <span class="text-xs uppercase tracking-wider font-bold text-neutral-800 group-hover:text-luxury-gold transition pr-3">
-                    官方投资款项及政府规费如何确保资金安全监管？
-                </span>
-                <span class="text-neutral-400 transition-transform duration-300 shrink-0" id="icon-faq-dyn-9">
-                    <i class="fa-solid fa-chevron-down text-[10px]"></i>
-                </span>
-            </button>
-            <div id="content-faq-dyn-9" class="max-h-0 overflow-hidden transition-all duration-500 ease-in-out">
-                <p class="text-xs text-neutral-600 leading-relaxed mt-2.5 font-light">
-                    所有指定投资资金均直接存入官方指定的政府监管信托托管账户（Escrow）或受中央银行监管的专属资金池中。
-                </p>
-            </div>
-        </div>
-        <div class="border-b border-neutral-200 py-3.5">
-            <button onclick="toggleBlogFAQ('faq-dyn-10')" class="w-full flex justify-between items-center focus:outline-none group text-left">
-                <span class="text-xs uppercase tracking-wider font-bold text-neutral-800 group-hover:text-luxury-gold transition pr-3">
-                    所投资的合规房产或金融资产后续是否可以转让退出？
-                </span>
-                <span class="text-neutral-400 transition-transform duration-300 shrink-0" id="icon-faq-dyn-10">
-                    <i class="fa-solid fa-chevron-down text-[10px]"></i>
-                </span>
-            </button>
-            <div id="content-faq-dyn-10" class="max-h-0 overflow-hidden transition-all duration-500 ease-in-out">
-                <p class="text-xs text-neutral-600 leading-relaxed mt-2.5 font-light">
-                    在满足法定的持有年限要求后（通常为3至5年），投资者可自由转让变现房产或债券，且已获得的合法主权权益继续保留。
-                </p>
-            </div>
-        </div>
-        <div class="border-b border-neutral-200 py-3.5">
-            <button onclick="toggleBlogFAQ('faq-dyn-11')" class="w-full flex justify-between items-center focus:outline-none group text-left">
-                <span class="text-xs uppercase tracking-wider font-bold text-neutral-800 group-hover:text-luxury-gold transition pr-3">
-                    谢里夫集团如何通过官方通道代表投资者跟进审批？
-                </span>
-                <span class="text-neutral-400 transition-transform duration-300 shrink-0" id="icon-faq-dyn-11">
-                    <i class="fa-solid fa-chevron-down text-[10px]"></i>
-                </span>
-            </button>
-            <div id="content-faq-dyn-11" class="max-h-0 overflow-hidden transition-all duration-500 ease-in-out">
-                <p class="text-xs text-neutral-600 leading-relaxed mt-2.5 font-light">
-                    谢里夫集团总部设立于迪拜商业湾，作为官方认可的专业咨询机构，直接对接审批部门并提供全流程法务公证与加急递交服务。
-                </p>
-            </div>
-        </div>
-        </div>
-    </div>
+<h2><span style="color: rgb(55, 65, 81); font-size: 1.025rem; background-color: transparent; font-weight: 300; font-family: Inter, sans-serif;">In 2026, the Afghan
+passport once again ranks last in the global passport index, giving its holders
+access to only around 23–24 destinations without a prior visa. For many Afghan
+families, this means months of waiting for every visa, missed business opportunities
+and a future that depends on a single visa stamp.</span></h2><p><span>The Dominica passport is
+one of the legal routes for Afghan citizens to obtain a second passport and
+change this situation. Based on official sources and the experience of Sharif
+Group’s Afghanistan team, this guide explains whether Afghan citizens can apply
+and how the process works, from the first step to receiving your passport.</span></p><h2>Dominica Passport for Afghans at a Glance</h2><p><span>Status in 2026:</span></p><p><span>•<span>  </span><b>Eligibility for Afghan nationals:</b> Yes
+(Afghanistan is not on the restricted list)</span></p><p><span>•<span>  </span><b>Processing time:</b> Approximately 6–9
+months</span></p><p><span>•<span>  </span><b>Residence in Dominica required:</b> No</span></p><p><span>•<span>  </span><b>Dual citizenship:</b> Permitted; you keep
+your Afghan citizenship</span></p><p><span>•<span>  </span><b>Interview:</b> Online and mandatory for
+everyone aged 16 and over</span></p><p><span>•<span>  </span><b>Visa-free or visa-on-arrival travel:</b>
+Around 145 countries</span></p><p><span>•<span>  </span><b>Family members:</b> Spouse, dependent
+children up to age 30, parents over 55</span></p><p> </p><h2>Dominica Passport Requirements for Afghans: Can You Really Apply?</h2><p><span>Dominica’s Citizenship by
+Investment Unit (CBIU) last updated its list of restricted nationalities in
+March 2026. Under this list, applications from Belarus, Russia, Northern Iraq
+and Yemen are not accepted, while applicants from Iran, North Korea and Sudan
+are accepted only under very limited conditions. Afghanistan is in neither
+group.</span></p><p><span>However, there are two
+things you should know:</span></p><p><span>•<span>  </span><b>Enhanced due diligence:</b> According to
+the same official page, any applicant may be subject to enhanced due diligence
+checks, at their own expense.</span></p><p><span>•<span>  </span><b>If you have lived in Iran:</b> The
+official restriction applies to Iranian nationals, not Afghans. However, your
+residence history, assets and financial activity in Iran will be reviewed
+during background checks. If you have lived or worked in Iran for several
+years, have your case assessed by an adviser before making any payment.</span></p><h2>What Changes for an Afghan Citizen?</h2><p><span>•<span>  </span><b>Visa-free or visa-on-arrival travel:</b>
+With an Afghan passport, around 23–24 destinations; with a Dominica passport,
+around 145 countries</span></p><p><span>•<span>  </span><b>Schengen Area (Europe):</b> With an Afghan
+passport, a visa is required; with a Dominica passport, currently visa-free</span></p><p><span>•<span>  </span><b>Global ranking (2026):</b> The Afghan
+passport ranks last; the Dominica passport ranks around 29th</span></p><p><span>•<span>  </span><b>Inheritance, wealth and capital gains tax
+in Dominica:</b> None</span></p><p> </p><p><span>In practice, Dominica
+citizenship gives Afghan citizens the freedom to travel for business and family
+without waiting months for visas, the ability to plan for their children’s
+future, and a second nationality that does not depend on the political situation
+of any one country.</span></p><h2>Dominica Visa vs. Dominica Passport</h2><p><span>•<span>  </span><b>Dominica visa:</b> Permission for a short
+visit to Dominica itself. According to global passport index data, Afghan
+passport holders do not need a visa in advance for a short visit to Dominica.
+However, reaching Dominica usually involves transiting through other countries,
+which may require a transit visa.</span></p><p><span>•<span>  </span><b>Dominica passport:</b> Permanent Dominican
+citizenship and a passport that opens the door to around 145 countries. Sharif
+Group specialises in Dominica citizenship applications and supports you at
+every stage, from consultation and initial case assessment to document preparation
+and receiving your passport.</span></p><h2>Economic Diversification Fund (EDF) or Real Estate?</h2><p><span>•<span>  </span><b>Economic Diversification Fund (EDF):</b> A
+non-refundable contribution to Dominica’s Economic Diversification Fund. It is
+simpler, faster and, for most families, the more cost-effective option.</span></p><p><span>•<span>  </span><b>Real estate:</b> A minimum investment of
+US0,000 in a government-approved project, plus separate government fees. The
+property must be held for several years, after which it can be sold.</span></p><p><span>The right choice depends
+on the size of your family, your budget and your goals.</span></p><h2>Required Documents for Afghan Applicants</h2><p><span>•<span>  </span><b>Passport and Tazkira:</b> A valid passport
+and Tazkira (Afghan national ID card, electronic or paper) for every family
+member included in the application</span></p><p><span>•<span>  </span><b>Driving licence</b></span></p><p><span>•<span>  </span><b>Nikah (marriage certificate):</b> For your
+spouse; and, where applicable, a divorce certificate</span></p><p><span>•<span>  </span><b>Police clearance certificate:</b> For all
+family members aged 16 and over</span></p><p><span>•<span>  </span><b>Bank statements for the last 12 months, or
+a bank account opening letter</b></span></p><p><span>•<span>  </span><b>All employment documents</b></span></p><p><span>•<span>  </span><b>Educational certificates</b></span></p><p><span>•<span>  </span><b>Property title deed or rental agreement
+for your place of residence</b></span></p><p><span>•<span>  </span><b>Medical tests:</b> Urinalysis, complete
+blood count (CBC) and HIV test</span></p><p><span>•<span>  </span><b>Eight passport-size photographs</b></span></p><p><span>All documents not in
+English must be translated into English by a certified translator and
+officially attested, and most documents must be no older than three months at
+the time of submission.</span></p><p><span>Having completed more
+than 250 successful applications from across Afghanistan, from Kabul and Herat
+to Mazar-i-Sharif and other provinces, Sharif Group’s advisers are familiar
+with Afghan documents and administrative procedures, and will support you in collecting,
+translating, attesting and preparing your documents at every stage of your
+application.</span></p><h2>Why Choose Sharif Group?</h2><p><span>With more than 10 years
+of experience and over 1,000 successful applications, Sharif Group supports
+Afghan families through every step of obtaining a second passport, from initial
+assessment to receiving the passport. Our team has specialised in the Afghan
+market for more than four years and has successfully completed over 250
+applications for clients from cities and provinces across Afghanistan, from
+Kabul and Herat to Mazar-i-Sharif and beyond. This work is led by Ali Sharif,
+Founder and CEO of Sharif Group and a member of the Investment Migration
+Council (IMC), the international professional body of the investment migration
+industry. Consultations are available at our Dubai office or online.</span></p><h2>Frequently Asked Questions</h2><p><b><span>Can Afghans get a
+Dominica passport in 2026? </span></b><span>Yes. Afghanistan is not on the official list of restricted nationalities,
+but background checks are strict.</span></p><p><b><span>If I live in Iran,
+does the restriction on Iranians apply to me? </span></b><span>The official restriction applies to
+Iranian applicants. However, your residence and financial activity in Iran will
+be reviewed during background checks.</span></p><p><b><span>Do I have to give up
+my Afghan citizenship? </span></b><span>No. Dominica permits dual citizenship.</span></p><p><b><span>Who can I include in
+my application? </span></b><span>Your
+spouse, dependent children up to age 30, and dependent parents and grandparents
+over 55.</span></p><p><b><span>How many countries can
+I visit without a visa on a Dominica passport? </span></b><span>Around 145 countries visa-free or
+with a visa on arrival, depending on the source.</span></p><h2>Speak to Sharif Group</h2><p><span>Start your second
+passport journey today. In a free consultation, our advisers will review your
+case in Dari, Pashto or Farsi and identify the best route for you before you
+make any payment.</span></p><p dir="ltr" style="direction: ltr; text-align: left;">
+</p><p>WhatsApp: +971 4 357
+8737  | 
+contact@sharifgroup.ae</p>
 </div>
-
-            </div>
+<!-- FAQ ACCORDION SECTION (Split: 6 Left, 6 Right) -->
+<div class="space-y-6 pt-12 border-t border-neutral-200">
+<div class="text-center space-y-3 mb-8">
+<span class="text-xs font-bold uppercase tracking-[0.25em] text-luxury-gold flex items-center justify-center gap-2">
+<i class="fa-regular fa-circle-question"></i> Desk Answers
+        </span>
+<h2 class="font-serif text-3xl sm:text-4xl font-bold text-neutral-900">Program Integrity &amp; FAQs</h2>
+<p class="text-xs text-neutral-500">Common questions regarding compliance, processing times, and legal safeguards.</p>
+</div>
+<div class="grid grid-cols-1 lg:grid-cols-2 gap-x-12 gap-y-0 text-start items-start">
+<div class="flex flex-col">
+<div class="border-b border-neutral-200 py-3.5">
+<button class="w-full flex justify-between items-center focus:outline-none group text-left" onclick="toggleBlogFAQ('faq-dyn-0')">
+<span class="text-xs uppercase tracking-wider font-bold text-neutral-800 group-hover:text-luxury-gold transition pr-3">
+                    What are the sovereign eligibility criteria for this pathway?
+                </span>
+<span class="text-neutral-400 transition-transform duration-300 shrink-0" id="icon-faq-dyn-0">
+<i class="fa-solid fa-chevron-down text-[10px]"></i>
+</span>
+</button>
+<div class="max-h-0 overflow-hidden transition-all duration-500 ease-in-out" id="content-faq-dyn-0">
+<p class="text-xs text-neutral-600 leading-relaxed mt-2.5 font-light">
+                    Applicants must possess a pristine background, pass strict multi-tier AML compliance, and fulfill the designated capital allocation.
+                </p>
+</div>
+</div>
+<div class="border-b border-neutral-200 py-3.5">
+<button class="w-full flex justify-between items-center focus:outline-none group text-left" onclick="toggleBlogFAQ('faq-dyn-1')">
+<span class="text-xs uppercase tracking-wider font-bold text-neutral-800 group-hover:text-luxury-gold transition pr-3">
+                    Can immediate family and senior dependents be included?
+                </span>
+<span class="text-neutral-400 transition-transform duration-300 shrink-0" id="icon-faq-dyn-1">
+<i class="fa-solid fa-chevron-down text-[10px]"></i>
+</span>
+</button>
+<div class="max-h-0 overflow-hidden transition-all duration-500 ease-in-out" id="content-faq-dyn-1">
+<p class="text-xs text-neutral-600 leading-relaxed mt-2.5 font-light">
+                    Yes. The principal investor may include their spouse, dependent children under 30, and dependent parents or grandparents above 55.
+                </p>
+</div>
+</div>
+<div class="border-b border-neutral-200 py-3.5">
+<button class="w-full flex justify-between items-center focus:outline-none group text-left" onclick="toggleBlogFAQ('faq-dyn-2')">
+<span class="text-xs uppercase tracking-wider font-bold text-neutral-800 group-hover:text-luxury-gold transition pr-3">
+                    Is physical presence or relocation required in Dubai or the host state?
+                </span>
+<span class="text-neutral-400 transition-transform duration-300 shrink-0" id="icon-faq-dyn-2">
+<i class="fa-solid fa-chevron-down text-[10px]"></i>
+</span>
+</button>
+<div class="max-h-0 overflow-hidden transition-all duration-500 ease-in-out" id="content-faq-dyn-2">
+<p class="text-xs text-neutral-600 leading-relaxed mt-2.5 font-light">
+                    No mandatory residency requirements apply during processing. All government vetting and apostilles are finalized remotely through our Dubai headquarters.
+                </p>
+</div>
+</div>
+<div class="border-b border-neutral-200 py-3.5">
+<button class="w-full flex justify-between items-center focus:outline-none group text-left" onclick="toggleBlogFAQ('faq-dyn-3')">
+<span class="text-xs uppercase tracking-wider font-bold text-neutral-800 group-hover:text-luxury-gold transition pr-3">
+                    What are the processing timelines from submission to approval?
+                </span>
+<span class="text-neutral-400 transition-transform duration-300 shrink-0" id="icon-faq-dyn-3">
+<i class="fa-solid fa-chevron-down text-[10px]"></i>
+</span>
+</button>
+<div class="max-h-0 overflow-hidden transition-all duration-500 ease-in-out" id="content-faq-dyn-3">
+<p class="text-xs text-neutral-600 leading-relaxed mt-2.5 font-light">
+                    Official government clearance is expedited under our legal protocol, typically taking between 60 to 90 business days.
+                </p>
+</div>
+</div>
+<div class="border-b border-neutral-200 py-3.5">
+<button class="w-full flex justify-between items-center focus:outline-none group text-left" onclick="toggleBlogFAQ('faq-dyn-4')">
+<span class="text-xs uppercase tracking-wider font-bold text-neutral-800 group-hover:text-luxury-gold transition pr-3">
+                    How is confidential wealth and asset protection guaranteed?
+                </span>
+<span class="text-neutral-400 transition-transform duration-300 shrink-0" id="icon-faq-dyn-4">
+<i class="fa-solid fa-chevron-down text-[10px]"></i>
+</span>
+</button>
+<div class="max-h-0 overflow-hidden transition-all duration-500 ease-in-out" id="content-faq-dyn-4">
+<p class="text-xs text-neutral-600 leading-relaxed mt-2.5 font-light">
+                    Sharif Group operates under strict non-disclosure legal mandates and international private client confidentiality standards.
+                </p>
+</div>
+</div>
+<div class="border-b border-neutral-200 py-3.5">
+<button class="w-full flex justify-between items-center focus:outline-none group text-left" onclick="toggleBlogFAQ('faq-dyn-5')">
+<span class="text-xs uppercase tracking-wider font-bold text-neutral-800 group-hover:text-luxury-gold transition pr-3">
+                    What are the visa-free mobility advantages granted?
+                </span>
+<span class="text-neutral-400 transition-transform duration-300 shrink-0" id="icon-faq-dyn-5">
+<i class="fa-solid fa-chevron-down text-[10px]"></i>
+</span>
+</button>
+<div class="max-h-0 overflow-hidden transition-all duration-500 ease-in-out" id="content-faq-dyn-5">
+<p class="text-xs text-neutral-600 leading-relaxed mt-2.5 font-light">
+                    Successful holders gain visa-free or visa-on-arrival access across key international business hubs, Schengen states, and Commonwealth jurisdictions.
+                </p>
+</div>
+</div>
+</div>
+<div class="flex flex-col">
+<div class="border-b border-neutral-200 py-3.5">
+<button class="w-full flex justify-between items-center focus:outline-none group text-left" onclick="toggleBlogFAQ('faq-dyn-6')">
+<span class="text-xs uppercase tracking-wider font-bold text-neutral-800 group-hover:text-luxury-gold transition pr-3">
+                    Are taxes levied on worldwide income or capital gains?
+                </span>
+<span class="text-neutral-400 transition-transform duration-300 shrink-0" id="icon-faq-dyn-6">
+<i class="fa-solid fa-chevron-down text-[10px]"></i>
+</span>
+</button>
+<div class="max-h-0 overflow-hidden transition-all duration-500 ease-in-out" id="content-faq-dyn-6">
+<p class="text-xs text-neutral-600 leading-relaxed mt-2.5 font-light">
+                    Most sovereign pathways feature territorial or zero tax regimes, shielding offshore income, dividends, and inherited assets from local taxation.
+                </p>
+</div>
+</div>
+<div class="border-b border-neutral-200 py-3.5">
+<button class="w-full flex justify-between items-center focus:outline-none group text-left" onclick="toggleBlogFAQ('faq-dyn-7')">
+<span class="text-xs uppercase tracking-wider font-bold text-neutral-800 group-hover:text-luxury-gold transition pr-3">
+                    What official compliance and police clearances are needed?
+                </span>
+<span class="text-neutral-400 transition-transform duration-300 shrink-0" id="icon-faq-dyn-7">
+<i class="fa-solid fa-chevron-down text-[10px]"></i>
+</span>
+</button>
+<div class="max-h-0 overflow-hidden transition-all duration-500 ease-in-out" id="content-faq-dyn-7">
+<p class="text-xs text-neutral-600 leading-relaxed mt-2.5 font-light">
+                    Applicants must supply certified police clearance certificates from their country of citizenship and any jurisdiction where they resided for over six months.
+                </p>
+</div>
+</div>
+<div class="border-b border-neutral-200 py-3.5">
+<button class="w-full flex justify-between items-center focus:outline-none group text-left" onclick="toggleBlogFAQ('faq-dyn-8')">
+<span class="text-xs uppercase tracking-wider font-bold text-neutral-800 group-hover:text-luxury-gold transition pr-3">
+                    Is dual citizenship or multiple legal residency permitted?
+                </span>
+<span class="text-neutral-400 transition-transform duration-300 shrink-0" id="icon-faq-dyn-8">
+<i class="fa-solid fa-chevron-down text-[10px]"></i>
+</span>
+</button>
+<div class="max-h-0 overflow-hidden transition-all duration-500 ease-in-out" id="content-faq-dyn-8">
+<p class="text-xs text-neutral-600 leading-relaxed mt-2.5 font-light">
+                    Yes. Most host jurisdictions legally recognize dual or multiple citizenships without requiring you to renounce your original passport.
+                </p>
+</div>
+</div>
+<div class="border-b border-neutral-200 py-3.5">
+<button class="w-full flex justify-between items-center focus:outline-none group text-left" onclick="toggleBlogFAQ('faq-dyn-9')">
+<span class="text-xs uppercase tracking-wider font-bold text-neutral-800 group-hover:text-luxury-gold transition pr-3">
+                    How are government fees and investment funds held securely?
+                </span>
+<span class="text-neutral-400 transition-transform duration-300 shrink-0" id="icon-faq-dyn-9">
+<i class="fa-solid fa-chevron-down text-[10px]"></i>
+</span>
+</button>
+<div class="max-h-0 overflow-hidden transition-all duration-500 ease-in-out" id="content-faq-dyn-9">
+<p class="text-xs text-neutral-600 leading-relaxed mt-2.5 font-light">
+                    All capital allocations are deposited into regulated sovereign escrow accounts or authorized central bank facilities under institutional oversight.
+                </p>
+</div>
+</div>
+<div class="border-b border-neutral-200 py-3.5">
+<button class="w-full flex justify-between items-center focus:outline-none group text-left" onclick="toggleBlogFAQ('faq-dyn-10')">
+<span class="text-xs uppercase tracking-wider font-bold text-neutral-800 group-hover:text-luxury-gold transition pr-3">
+                    Can investment properties or capital assets be liquidated later?
+                </span>
+<span class="text-neutral-400 transition-transform duration-300 shrink-0" id="icon-faq-dyn-10">
+<i class="fa-solid fa-chevron-down text-[10px]"></i>
+</span>
+</button>
+<div class="max-h-0 overflow-hidden transition-all duration-500 ease-in-out" id="content-faq-dyn-10">
+<p class="text-xs text-neutral-600 leading-relaxed mt-2.5 font-light">
+                    Depending on the statutory holding period (typically 3 to 5 years), qualifying real estate or bonds can be liquidated while retaining acquired sovereign rights.
+                </p>
+</div>
+</div>
+<div class="border-b border-neutral-200 py-3.5">
+<button class="w-full flex justify-between items-center focus:outline-none group text-left" onclick="toggleBlogFAQ('faq-dyn-11')">
+<span class="text-xs uppercase tracking-wider font-bold text-neutral-800 group-hover:text-luxury-gold transition pr-3">
+                    How does Sharif Group represent investors through official channels?
+                </span>
+<span class="text-neutral-400 transition-transform duration-300 shrink-0" id="icon-faq-dyn-11">
+<i class="fa-solid fa-chevron-down text-[10px]"></i>
+</span>
+</button>
+<div class="max-h-0 overflow-hidden transition-all duration-500 ease-in-out" id="content-faq-dyn-11">
+<p class="text-xs text-neutral-600 leading-relaxed mt-2.5 font-light">
+                    Sharif Group acts as an accredited advisory firm in Business Bay, Dubai, managing direct liaison, government apostilles, and expedited legal filing.
+                </p>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
 </main>
 <!-- RELATED ARTICLES -->
 <section class="py-20 bg-[#FDFCFB] border-t border-neutral-200/80" id="related-articles-section">
 <div class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 space-y-8">
 <div class="text-center space-y-2">
-<span class="text-xs font-bold uppercase tracking-[0.25em] text-luxury-gold" data-i18n="blog.recommendedReading">Recommended Reading</span>
-<h2 class="font-serif text-2xl sm:text-3xl font-bold text-neutral-900" data-i18n="blog.relatedGuides">Related Advisory Guides</h2>
+<span class="text-xs font-bold uppercase tracking-[0.25em] text-luxury-gold" data-i18n="blog.recommendedReading">推荐阅读</span>
+<h2 class="font-serif text-2xl sm:text-3xl font-bold text-neutral-900" data-i18n="blog.relatedGuides">相关咨询指南</h2>
 </div>
 <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
 <article class="space-y-4 text-left flex flex-col justify-between blog-item bg-white p-5 rounded-2xl border border-neutral-200/70 shadow-sm neon-card-hover">

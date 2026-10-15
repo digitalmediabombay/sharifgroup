@@ -7,16 +7,19 @@
 <script>
     (function() {
         try {
-            var l = localStorage.getItem('sharif_lang') || localStorage.getItem('sharif_preferred_lang') || 'en';
-            if (l === 'ar' || l === 'fa') {
+            var p = (window.location && window.location.pathname) ? window.location.pathname : '';
+            var segs = p.split('/').filter(Boolean);
+            var first = segs.length > 0 ? segs[0].toLowerCase() : '';
+            if (first === 'ar' || first === 'fa') {
                 document.documentElement.dir = 'rtl';
-                document.documentElement.lang = l;
-            } else if (l === 'zh') {
+                document.documentElement.lang = first;
+            } else if (first === 'zh') {
                 document.documentElement.dir = 'ltr';
                 document.documentElement.lang = 'zh';
-            }
-            if (l !== 'en') {
-                document.documentElement.classList.add('i18n-pending');
+            } else {
+                document.documentElement.dir = 'ltr';
+                document.documentElement.lang = 'en';
+                document.documentElement.classList.remove('i18n-pending');
             }
         } catch(e) {}
     })();
@@ -339,8 +342,8 @@
         }
     </style>
 <link href="../assets/css/multilingual.css?v=5" rel="stylesheet"/>
-    <!-- CMS Live Studio Integration (Active inside dashboard editor) -->
-    <script>
+<!-- CMS Live Studio Integration (Active inside dashboard editor) -->
+<script>
         (function() {
             var inIframe = window.self !== window.top;
             var isEditor = window.location.search.indexOf('cms_editor') !== -1;
@@ -391,6 +394,11 @@
 <a class="hover:text-luxury-gold transition duration-200 py-2" data-i18n="nav.contact" href="/zh/contact/" onmouseenter="closeAllMegaMenus()">联系我们</a>
 <span class="text-neutral-300 font-light">|</span>
 <a class="hover:text-luxury-gold transition duration-200 py-2" data-i18n="nav.blog" href="/zh/blog/" onmouseenter="closeAllMegaMenus()">博客</a>
+<span class="text-neutral-300 font-light">|</span>
+<a class="hover:text-luxury-gold transition duration-200 py-2 inline-flex items-center gap-1.5" href="/zh/webinars/" onmouseenter="closeAllMegaMenus()">
+<span data-i18n="nav.webinars">网络研讨会</span>
+<span class="inline-block text-[8px] leading-none px-1.5 py-0.5 rounded-full bg-[#786142] text-white tracking-wider font-bold" data-i18n="nav.newBadge">最新</span>
+</a>
 </nav>
 </div>
 <!-- Right Action Pill Buttons -->
@@ -498,6 +506,7 @@
 <a class="block text-neutral-800 hover:text-[#C5A880] pl-3" data-i18n="megaMenu.aboutFounder" href="/zh/about-founder/" onclick="toggleMobileMenu()">关于创始人 | 阿里·谢里夫</a>
 <a class="block text-neutral-800 hover:text-[#C5A880] pl-3" data-i18n="megaMenu.socialResponsibility" href="/zh/socialresponsibility/" onclick="toggleMobileMenu()">社会责任</a>
 <a class="block text-neutral-800 hover:text-[#C5A880] pl-3" data-i18n="megaMenu.insights" href="/zh/blog/" onclick="toggleMobileMenu()">洞察与博客</a>
+<a class="flex items-center justify-between text-neutral-800 hover:text-[#C5A880] pl-3 py-0.5" href="/zh/webinars/" onclick="toggleMobileMenu()"><span data-i18n="mobileMenu.webinars">网络研讨会</span><span class="inline-block text-[8px] leading-none px-1.5 py-0.5 rounded-full bg-[#786142] text-white tracking-wider font-bold" data-i18n="nav.newBadge">最新</span></a>
 <a class="block text-neutral-800 hover:text-[#C5A880] pl-3" data-i18n="nav.contact" href="/zh/contact/" onclick="toggleMobileMenu()">联系我们</a>
 </div>
 </nav>
@@ -716,7 +725,7 @@
 </div>
 <span class="text-[10px] font-bold uppercase tracking-[0.25em] text-luxury-gold" data-i18n="pages.aboutUs.about_overview_item1">我们是谁</span>
 </div>
-<h2 class="font-serif text-3xl sm:text-4xl xl:text-5xl font-bold text-white leading-tight" data-i18n-html="pages.aboutUs.about_overview_item2">企业概览：<br/><span class="italic text-[#C5A880] font-serif font-normal">谢里夫集团</span></h2>
+<h2 class="font-serif text-3xl sm:text-4xl xl:text-5xl font-bold text-white leading-tight" data-i18n-html="pages.aboutUs.about_overview_item2">公司概况：<br/> <span class="italic text-[#C5A880] font-serif font-normal" data-i18n="pages.aboutUs.overviewSub">谢里夫集团</span></h2>
 <div class="w-16 h-[2px] bg-[#C5A880]"></div>
 <div class="space-y-3 text-xs sm:text-sm text-neutral-300 font-light leading-relaxed">
 <p data-i18n="pages.aboutUs.about_overview_item3">谢里夫集团 是一家总部位于迪拜商业湾的专业私人咨询公司。我们为国际客户及家庭提供合法第二护照、居留签证、高端房地产投资以及世界顶尖国际大学学生申请与安置服务。</p>
@@ -1572,6 +1581,7 @@
 <li><a class="hover:text-luxury-gold transition" data-i18n="megaMenu.educationalAdvisory" href="/zh/educationaladvisory/">教育咨询</a></li>
 <li><a class="hover:text-luxury-gold transition" data-i18n="nav.contact" href="/zh/contact/">联系我们</a></li>
 <li><a class="hover:text-luxury-gold transition" data-i18n="megaMenu.insights" href="/zh/blog/">洞察与博客</a></li>
+<li><a class="hover:text-luxury-gold transition inline-flex items-center gap-1.5" href="/zh/webinars/"><span data-i18n="footer.webinars">网络研讨会</span> <span class="inline-block text-[8px] leading-none px-1.5 py-0.5 rounded-full bg-[#786142] text-white tracking-wider font-bold" data-i18n="nav.newBadge">最新</span></a></li>
 <li><a class="hover:text-luxury-gold transition" data-i18n="nav.eligibilityChecker" href="/zh/eligibilitychecker/">资格检查</a></li>
 </ul>
 </div>

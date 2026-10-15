@@ -12,22 +12,25 @@
 <meta charset="utf-8"/>
 <meta content="width=device-width, initial-scale=1.0" name="viewport"/>
 <script>
-        (function() {
-            try {
-                var l = localStorage.getItem('sharif_lang') || localStorage.getItem('sharif_preferred_lang') || 'en';
-                if (l === 'ar' || l === 'fa') {
-                    document.documentElement.dir = 'rtl';
-                    document.documentElement.lang = l;
-                } else if (l === 'zh') {
-                    document.documentElement.dir = 'ltr';
-                    document.documentElement.lang = 'zh';
-                }
-                if (l !== 'en') {
-                    document.documentElement.classList.add('i18n-pending');
-                }
-            } catch(e) {}
-        })();
-    </script>
+    (function() {
+        try {
+            var p = (window.location && window.location.pathname) ? window.location.pathname : '';
+            var segs = p.split('/').filter(Boolean);
+            var first = segs.length > 0 ? segs[0].toLowerCase() : '';
+            if (first === 'ar' || first === 'fa') {
+                document.documentElement.dir = 'rtl';
+                document.documentElement.lang = first;
+            } else if (first === 'zh') {
+                document.documentElement.dir = 'ltr';
+                document.documentElement.lang = 'zh';
+            } else {
+                document.documentElement.dir = 'ltr';
+                document.documentElement.lang = 'en';
+                document.documentElement.classList.remove('i18n-pending');
+            }
+        } catch(e) {}
+    })();
+</script>
 <!-- Favicon & App Icons -->
 <link href="/assets/images/Group-427321463.svg" rel="icon" type="image/svg+xml"/>
 <link href="/assets/images/shariftrip-logo-1.svg" rel="alternate icon" type="image/svg+xml"/>
@@ -338,20 +341,20 @@
 <i class="fa-solid fa-chevron-down text-[8px] text-neutral-400 transition-transform duration-200" id="lang-arrow-icon"></i>
 </button>
 <div class="hidden absolute right-0 mt-2 w-44 bg-white/95 rounded-2xl shadow-2xl border border-neutral-200/80 py-2 z-50 overflow-hidden" id="lang-dropdown-menu">
-<a href="/blog/what-is-dominica-citizenship-by-investment/" class="lang-option" data-lang="en" onclick="switchLanguage('en', event)">
-<span data-i18n="langSwitcher.en">English</span>
+<a class="lang-option" data-lang="en" href="/blog/what-is-dominica-citizenship-by-investment/" onclick="switchLanguage('en', event)">
+<span data-i18n="langSwitcher.en">الإنجليزية</span>
 <span class="text-[10px] text-neutral-400">EN</span>
 </a>
-<a href="/ar/blog/what-is-dominica-citizenship-by-investment/" class="lang-option active-lang" data-lang="ar" onclick="switchLanguage('ar', event)">
+<a class="lang-option active-lang" data-lang="ar" href="/ar/blog/what-is-dominica-citizenship-by-investment/" onclick="switchLanguage('ar', event)">
 <span class="font-medium" data-i18n="langSwitcher.ar">العربية</span>
 <span class="text-[10px] text-neutral-400">AR</span>
 </a>
-<a href="/fa/blog/what-is-dominica-citizenship-by-investment/" class="lang-option" data-lang="fa" onclick="switchLanguage('fa', event)">
-<span class="font-medium" data-i18n="langSwitcher.fa">فارسی</span>
+<a class="lang-option" data-lang="fa" href="/fa/blog/what-is-dominica-citizenship-by-investment/" onclick="switchLanguage('fa', event)">
+<span class="font-medium" data-i18n="langSwitcher.fa">الفارسية</span>
 <span class="text-[10px] text-neutral-400">FA</span>
 </a>
-<a href="/zh/blog/what-is-dominica-citizenship-by-investment/" class="lang-option" data-lang="zh" onclick="switchLanguage('zh', event)">
-<span class="font-medium" data-i18n="langSwitcher.zh">中文</span>
+<a class="lang-option" data-lang="zh" href="/zh/blog/what-is-dominica-citizenship-by-investment/" onclick="switchLanguage('zh', event)">
+<span class="font-medium" data-i18n="langSwitcher.zh">الصينية</span>
 <span class="text-[10px] text-neutral-400">ZH</span>
 </a>
 </div>
@@ -374,10 +377,10 @@
 <i class="fa-solid fa-globe text-luxury-gold"></i>
 </div>
 <div class="mobile-lang-grid">
-<a href="/blog/what-is-dominica-citizenship-by-investment/" class="lang-option" data-lang="en" onclick="switchLanguage('en', event)">English</a>
-<a href="/ar/blog/what-is-dominica-citizenship-by-investment/" class="lang-option active-lang" data-lang="ar" onclick="switchLanguage('ar', event)">العربية</a>
-<a href="/fa/blog/what-is-dominica-citizenship-by-investment/" class="lang-option" data-lang="fa" onclick="switchLanguage('fa', event)">فارسی</a>
-<a href="/zh/blog/what-is-dominica-citizenship-by-investment/" class="lang-option" data-lang="zh" onclick="switchLanguage('zh', event)">中文</a>
+<a class="lang-option" data-lang="en" href="/blog/what-is-dominica-citizenship-by-investment/" onclick="switchLanguage('en', event)">English</a>
+<a class="lang-option active-lang" data-lang="ar" href="/ar/blog/what-is-dominica-citizenship-by-investment/" onclick="switchLanguage('ar', event)">العربية</a>
+<a class="lang-option" data-lang="fa" href="/fa/blog/what-is-dominica-citizenship-by-investment/" onclick="switchLanguage('fa', event)">فارسی</a>
+<a class="lang-option" data-lang="zh" href="/zh/blog/what-is-dominica-citizenship-by-investment/" onclick="switchLanguage('zh', event)">中文</a>
 </div>
 </div>
 <div class="pt-2 pb-4">
@@ -656,10 +659,10 @@
 <div class="space-y-6 pt-12 border-t border-neutral-200">
 <div class="text-center space-y-3 mb-8">
 <span class="text-xs font-bold uppercase tracking-[0.25em] text-luxury-gold flex items-center justify-center gap-2">
-<i class="fa-regular fa-circle-question"></i> إجابات الخبراء
+<i class="fa-regular fa-circle-question"></i> Desk Answers
                     </span>
-<h2 class="font-serif text-3xl sm:text-4xl font-bold text-neutral-900">النزاهة والأسئلة الشائعة للبرنامج</h2>
-<p class="text-xs text-neutral-500">أسئلة شائعة حول الامتثال، والمدد الزمنية للمعالجة، والضمانات القانونية.</p>
+<h2 class="font-serif text-3xl sm:text-4xl font-bold text-neutral-900">Program Integrity &amp; FAQs</h2>
+<p class="text-xs text-neutral-500">Clear and comprehensive answers regarding legal, investment, and residency parameters</p>
 </div>
 <div class="grid grid-cols-1 lg:grid-cols-2 gap-x-12 gap-y-0 text-start items-start">
 <div class="flex flex-col">
@@ -796,8 +799,8 @@
 <section class="py-20 bg-[#FDFCFB] border-t border-neutral-200/80" id="related-articles-section">
 <div class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 space-y-8">
 <div class="text-center space-y-2">
-<span class="text-xs font-bold uppercase tracking-[0.25em] text-luxury-gold" data-i18n="blog.recommendedReading">Recommended Reading</span>
-<h2 class="font-serif text-2xl sm:text-3xl font-bold text-neutral-900" data-i18n="blog.relatedGuides">Related Advisory Guides</h2>
+<span class="text-xs font-bold uppercase tracking-[0.25em] text-luxury-gold" data-i18n="blog.recommendedReading">قراءات موصى بها</span>
+<h2 class="font-serif text-2xl sm:text-3xl font-bold text-neutral-900" data-i18n="blog.relatedGuides">أدلة استشارية ذات صلة</h2>
 </div>
 <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
 <article class="space-y-4 text-left flex flex-col justify-between blog-item bg-white p-5 rounded-2xl border border-neutral-200/70 shadow-sm neon-card-hover">
