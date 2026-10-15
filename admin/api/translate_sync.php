@@ -247,7 +247,11 @@ if (!function_exists('translateTextServer')) {
 
     function isMojibake($str) {
         if (!is_string($str) || trim($str) === '') return false;
-        return preg_match('/[\x{2500}-\x{259F}\x{FFFD}]|ΓÇô|ΓÇó|u0026amp;/u', $str) === 1;
+        if (preg_match('/[\x{2500}-\x{259F}\x{FFFD}]|ΓÇ[ôöòóõô–•]|u0026amp;/u', $str)) return true;
+        if (preg_match('/[ØÙ][\x80-\xFF]/', $str) && !preg_match('/[\x{0600}-\x{06FF}]/u', $str)) return true;
+        if (preg_match('/(?:æ[¬¢\x80-\xFF]|è[¿Ž°\x80-\xFF]|å[ˆ°«\x80-\xFF]|ç[º»\x80-\xFF]|é[\x80-\xFF]|ä[\x80-\xFF])/', $str) && !preg_match('/[\x{4E00}-\x{9FFF}]/u', $str)) return true;
+        if (preg_match('/(?:O\s*U,|AE\+|[A-Za-z]\s*[¿Ž°ˆ¬¢]|A["”][A-Za-z"”]+)/', $str)) return true;
+        return false;
     }
 
     /**

@@ -32,7 +32,12 @@ if ($mode === 'draft') {
  */
 function isMojibakeString($raw) {
     if (!is_string($raw) || trim($raw) === '') return false;
-    return preg_match('/[\x{2500}-\x{259F}\x{FFFD}]|ΓÇô|ΓÇó|u0026amp;/u', $raw) === 1;
+    if (preg_match('/[\x{2500}-\x{259F}\x{FFFD}]|ΓÇ[ôöòóõô–•]|u0026amp;/u', $raw)) return true;
+    if (preg_match('/[ØÙ][\x80-\xFF]/', $raw) && !preg_match('/[\x{0600}-\x{06FF}]/u', $raw)) return true;
+    if (preg_match('/(?:æ[•™\x80-\xFF]|è[‚²¯¢¿Ž°\x80-\xFF]|å[’¨ˆ°«\x80-\xFF]|ç[º»\x80-\xFF]|é[\x80-\xFF]|ä[\x80-\xFF])/', $raw) && !preg_match('/[\x{4E00}-\x{9FFF}]/u', $raw)) return true;
+    if (preg_match('/[äåæçèéêëìíîï][\x{0080}-\x{00FF}\x{201A}-\x{2026}\x{2018}-\x{201D}\x{2122}\x{0152}\x{0153}\x{0160}\x{0161}\x{0178}\x{017E}\x{02C6}\x{02DC}]/u', $raw) && !preg_match('/[\x{4E00}-\x{9FFF}]/u', $raw)) return true;
+    if (preg_match('/(?:O\s*U,|AE\+|[A-Za-z]\s*[¿Ž°ˆ¬¢]|A["”][A-Za-z"”]+)/', $raw)) return true;
+    return false;
 }
 
 /**

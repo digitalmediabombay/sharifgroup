@@ -15,16 +15,19 @@ j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
 <script>
     (function() {
         try {
-            var l = localStorage.getItem('sharif_lang') || localStorage.getItem('sharif_preferred_lang') || 'en';
-            if (l === 'ar' || l === 'fa') {
+            var p = (window.location && window.location.pathname) ? window.location.pathname : '';
+            var segs = p.split('/').filter(Boolean);
+            var first = segs.length > 0 ? segs[0].toLowerCase() : '';
+            if (first === 'ar' || first === 'fa') {
                 document.documentElement.dir = 'rtl';
-                document.documentElement.lang = l;
-            } else if (l === 'zh') {
+                document.documentElement.lang = first;
+            } else if (first === 'zh') {
                 document.documentElement.dir = 'ltr';
                 document.documentElement.lang = 'zh';
-            }
-            if (l !== 'en') {
-                document.documentElement.classList.add('i18n-pending');
+            } else {
+                document.documentElement.dir = 'ltr';
+                document.documentElement.lang = 'en';
+                document.documentElement.classList.remove('i18n-pending');
             }
         } catch(e) {}
     })();
@@ -1699,7 +1702,7 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
 <div class="space-y-2">
 <div class="border-b border-neutral-200 py-4">
 <button class="w-full flex justify-between items-center text-left focus:outline-none group" onclick="toggleFAQ('p-1')">
-<span class="text-xs uppercase tracking-wider font-bold text-neutral-800 group-hover:text-luxury-gold transition-colors duration-200" data-i18n="programs.greece.faqQ1">Question 1</span>
+<span class="text-xs uppercase tracking-wider font-bold text-neutral-800 group-hover:text-luxury-gold transition-colors duration-200" data-i18n="programs.greece.faqQ1">What is the minimum investment for the Greece Golden Visa?</span>
 <span id="icon-p-1" class="text-xs text-neutral-400 group-hover:text-luxury-gold transition-transform duration-200 flex-shrink-0 ml-3"><i class="fa-solid fa-chevron-down text-xs"></i></span>
 </button>
 <div class="max-h-0 overflow-hidden transition-all duration-500 ease-in-out" id="content-p-1">
@@ -1708,7 +1711,7 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
 </div>
 <div class="border-b border-neutral-200 py-4">
 <button class="w-full flex justify-between items-center text-left focus:outline-none group" onclick="toggleFAQ('p-2')">
-<span class="text-xs uppercase tracking-wider font-bold text-neutral-800 group-hover:text-luxury-gold transition-colors duration-200" data-i18n="programs.greece.faqQ2">Question 2</span>
+<span class="text-xs uppercase tracking-wider font-bold text-neutral-800 group-hover:text-luxury-gold transition-colors duration-200" data-i18n="programs.greece.faqQ2">How long does the application process take?</span>
 <span id="icon-p-2" class="text-xs text-neutral-400 group-hover:text-luxury-gold transition-transform duration-200 flex-shrink-0 ml-3"><i class="fa-solid fa-chevron-down text-xs"></i></span>
 </button>
 <div class="max-h-0 overflow-hidden transition-all duration-500 ease-in-out" id="content-p-2">
@@ -1717,7 +1720,7 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
 </div>
 <div class="border-b border-neutral-200 py-4">
 <button class="w-full flex justify-between items-center text-left focus:outline-none group" onclick="toggleFAQ('p-3')">
-<span class="text-xs uppercase tracking-wider font-bold text-neutral-800 group-hover:text-luxury-gold transition-colors duration-200" data-i18n="programs.greece.faqQ3">Question 3</span>
+<span class="text-xs uppercase tracking-wider font-bold text-neutral-800 group-hover:text-luxury-gold transition-colors duration-200" data-i18n="programs.greece.faqQ3">Do I need to live in Greece to keep my residency?</span>
 <span id="icon-p-3" class="text-xs text-neutral-400 group-hover:text-luxury-gold transition-transform duration-200 flex-shrink-0 ml-3"><i class="fa-solid fa-chevron-down text-xs"></i></span>
 </button>
 <div class="max-h-0 overflow-hidden transition-all duration-500 ease-in-out" id="content-p-3">
@@ -1726,7 +1729,7 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
 </div>
 <div class="border-b border-neutral-200 py-4">
 <button class="w-full flex justify-between items-center text-left focus:outline-none group" onclick="toggleFAQ('p-4')">
-<span class="text-xs uppercase tracking-wider font-bold text-neutral-800 group-hover:text-luxury-gold transition-colors duration-200" data-i18n="programs.greece.faqQ4">Question 4</span>
+<span class="text-xs uppercase tracking-wider font-bold text-neutral-800 group-hover:text-luxury-gold transition-colors duration-200" data-i18n="programs.greece.faqQ4">Can I travel visa-free across Europe with this visa?</span>
 <span id="icon-p-4" class="text-xs text-neutral-400 group-hover:text-luxury-gold transition-transform duration-200 flex-shrink-0 ml-3"><i class="fa-solid fa-chevron-down text-xs"></i></span>
 </button>
 <div class="max-h-0 overflow-hidden transition-all duration-500 ease-in-out" id="content-p-4">
@@ -1735,7 +1738,7 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
 </div>
 <div class="border-b border-neutral-200 py-4">
 <button class="w-full flex justify-between items-center text-left focus:outline-none group" onclick="toggleFAQ('p-5')">
-<span class="text-xs uppercase tracking-wider font-bold text-neutral-800 group-hover:text-luxury-gold transition-colors duration-200" data-i18n="programs.greece.faqQ5">Question 5</span>
+<span class="text-xs uppercase tracking-wider font-bold text-neutral-800 group-hover:text-luxury-gold transition-colors duration-200" data-i18n="programs.greece.faqQ5">Which family members can I include in my application?</span>
 <span id="icon-p-5" class="text-xs text-neutral-400 group-hover:text-luxury-gold transition-transform duration-200 flex-shrink-0 ml-3"><i class="fa-solid fa-chevron-down text-xs"></i></span>
 </button>
 <div class="max-h-0 overflow-hidden transition-all duration-500 ease-in-out" id="content-p-5">
@@ -1744,7 +1747,7 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
 </div>
 <div class="border-b border-neutral-200 py-4">
 <button class="w-full flex justify-between items-center text-left focus:outline-none group" onclick="toggleFAQ('p-6')">
-<span class="text-xs uppercase tracking-wider font-bold text-neutral-800 group-hover:text-luxury-gold transition-colors duration-200" data-i18n="programs.greece.faqQ6">Question 6</span>
+<span class="text-xs uppercase tracking-wider font-bold text-neutral-800 group-hover:text-luxury-gold transition-colors duration-200" data-i18n="programs.greece.faqQ6">Can I rent out my Greek property to make an income?</span>
 <span id="icon-p-6" class="text-xs text-neutral-400 group-hover:text-luxury-gold transition-transform duration-200 flex-shrink-0 ml-3"><i class="fa-solid fa-chevron-down text-xs"></i></span>
 </button>
 <div class="max-h-0 overflow-hidden transition-all duration-500 ease-in-out" id="content-p-6">
@@ -1753,7 +1756,7 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
 </div>
 <div class="border-b border-neutral-200 py-4">
 <button class="w-full flex justify-between items-center text-left focus:outline-none group" onclick="toggleFAQ('p-7')">
-<span class="text-xs uppercase tracking-wider font-bold text-neutral-800 group-hover:text-luxury-gold transition-colors duration-200" data-i18n="programs.greece.faqQ7">Question 7</span>
+<span class="text-xs uppercase tracking-wider font-bold text-neutral-800 group-hover:text-luxury-gold transition-colors duration-200" data-i18n="programs.greece.faqQ7">How long is the residence permit valid before renewal?</span>
 <span id="icon-p-7" class="text-xs text-neutral-400 group-hover:text-luxury-gold transition-transform duration-200 flex-shrink-0 ml-3"><i class="fa-solid fa-chevron-down text-xs"></i></span>
 </button>
 <div class="max-h-0 overflow-hidden transition-all duration-500 ease-in-out" id="content-p-7">
@@ -1762,7 +1765,7 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
 </div>
 <div class="border-b border-neutral-200 py-4">
 <button class="w-full flex justify-between items-center text-left focus:outline-none group" onclick="toggleFAQ('p-8')">
-<span class="text-xs uppercase tracking-wider font-bold text-neutral-800 group-hover:text-luxury-gold transition-colors duration-200" data-i18n="programs.greece.faqQ8">Question 8</span>
+<span class="text-xs uppercase tracking-wider font-bold text-neutral-800 group-hover:text-luxury-gold transition-colors duration-200" data-i18n="programs.greece.faqQ8">Can I apply for Greek and European citizenship later?</span>
 <span id="icon-p-8" class="text-xs text-neutral-400 group-hover:text-luxury-gold transition-transform duration-200 flex-shrink-0 ml-3"><i class="fa-solid fa-chevron-down text-xs"></i></span>
 </button>
 <div class="max-h-0 overflow-hidden transition-all duration-500 ease-in-out" id="content-p-8">
@@ -1771,7 +1774,7 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
 </div>
 <div class="border-b border-neutral-200 py-4">
 <button class="w-full flex justify-between items-center text-left focus:outline-none group" onclick="toggleFAQ('p-9')">
-<span class="text-xs uppercase tracking-wider font-bold text-neutral-800 group-hover:text-luxury-gold transition-colors duration-200" data-i18n="programs.greece.faqQ9">Question 9</span>
+<span class="text-xs uppercase tracking-wider font-bold text-neutral-800 group-hover:text-luxury-gold transition-colors duration-200" data-i18n="programs.greece.faqQ9">Do I need to speak Greek to qualify for the Golden Visa?</span>
 <span id="icon-p-9" class="text-xs text-neutral-400 group-hover:text-luxury-gold transition-transform duration-200 flex-shrink-0 ml-3"><i class="fa-solid fa-chevron-down text-xs"></i></span>
 </button>
 <div class="max-h-0 overflow-hidden transition-all duration-500 ease-in-out" id="content-p-9">
@@ -1780,7 +1783,7 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
 </div>
 <div class="border-b border-neutral-200 py-4">
 <button class="w-full flex justify-between items-center text-left focus:outline-none group" onclick="toggleFAQ('p-10')">
-<span class="text-xs uppercase tracking-wider font-bold text-neutral-800 group-hover:text-luxury-gold transition-colors duration-200" data-i18n="programs.greece.faqQ10">Question 10</span>
+<span class="text-xs uppercase tracking-wider font-bold text-neutral-800 group-hover:text-luxury-gold transition-colors duration-200" data-i18n="programs.greece.faqQ10">Can I complete the entire application process from Dubai?</span>
 <span id="icon-p-10" class="text-xs text-neutral-400 group-hover:text-luxury-gold transition-transform duration-200 flex-shrink-0 ml-3"><i class="fa-solid fa-chevron-down text-xs"></i></span>
 </button>
 <div class="max-h-0 overflow-hidden transition-all duration-500 ease-in-out" id="content-p-10">
@@ -1792,7 +1795,7 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
 <div class="space-y-2 lg:pl-6">
 <div class="border-b border-neutral-200 py-4">
 <button class="w-full flex justify-between items-center text-left focus:outline-none group" onclick="toggleFAQ('p-11')">
-<span class="text-xs uppercase tracking-wider font-bold text-neutral-800 group-hover:text-luxury-gold transition-colors duration-200" data-i18n="programs.greece.faqQ11">Question 11</span>
+<span class="text-xs uppercase tracking-wider font-bold text-neutral-800 group-hover:text-luxury-gold transition-colors duration-200" data-i18n="programs.greece.faqQ11">What are the main property investment tiers in Greece?</span>
 <span id="icon-p-11" class="text-xs text-neutral-400 group-hover:text-luxury-gold transition-transform duration-200 flex-shrink-0 ml-3"><i class="fa-solid fa-chevron-down text-xs"></i></span>
 </button>
 <div class="max-h-0 overflow-hidden transition-all duration-500 ease-in-out" id="content-p-11">
@@ -1801,7 +1804,7 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
 </div>
 <div class="border-b border-neutral-200 py-4">
 <button class="w-full flex justify-between items-center text-left focus:outline-none group" onclick="toggleFAQ('p-12')">
-<span class="text-xs uppercase tracking-wider font-bold text-neutral-800 group-hover:text-luxury-gold transition-colors duration-200" data-i18n="programs.greece.faqQ12">Question 12</span>
+<span class="text-xs uppercase tracking-wider font-bold text-neutral-800 group-hover:text-luxury-gold transition-colors duration-200" data-i18n="programs.greece.faqQ12">Can I sell my property later and keep my residency?</span>
 <span id="icon-p-12" class="text-xs text-neutral-400 group-hover:text-luxury-gold transition-transform duration-200 flex-shrink-0 ml-3"><i class="fa-solid fa-chevron-down text-xs"></i></span>
 </button>
 <div class="max-h-0 overflow-hidden transition-all duration-500 ease-in-out" id="content-p-12">
@@ -1810,7 +1813,7 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
 </div>
 <div class="border-b border-neutral-200 py-4">
 <button class="w-full flex justify-between items-center text-left focus:outline-none group" onclick="toggleFAQ('p-13')">
-<span class="text-xs uppercase tracking-wider font-bold text-neutral-800 group-hover:text-luxury-gold transition-colors duration-200" data-i18n="programs.greece.faqQ13">Question 13</span>
+<span class="text-xs uppercase tracking-wider font-bold text-neutral-800 group-hover:text-luxury-gold transition-colors duration-200" data-i18n="programs.greece.faqQ13">What taxes apply to real estate owners in Greece?</span>
 <span id="icon-p-13" class="text-xs text-neutral-400 group-hover:text-luxury-gold transition-transform duration-200 flex-shrink-0 ml-3"><i class="fa-solid fa-chevron-down text-xs"></i></span>
 </button>
 <div class="max-h-0 overflow-hidden transition-all duration-500 ease-in-out" id="content-p-13">
@@ -1819,7 +1822,7 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
 </div>
 <div class="border-b border-neutral-200 py-4">
 <button class="w-full flex justify-between items-center text-left focus:outline-none group" onclick="toggleFAQ('p-14')">
-<span class="text-xs uppercase tracking-wider font-bold text-neutral-800 group-hover:text-luxury-gold transition-colors duration-200" data-i18n="programs.greece.faqQ14">Question 14</span>
+<span class="text-xs uppercase tracking-wider font-bold text-neutral-800 group-hover:text-luxury-gold transition-colors duration-200" data-i18n="programs.greece.faqQ14">Is a Greek tax number (AFM) mandatory?</span>
 <span id="icon-p-14" class="text-xs text-neutral-400 group-hover:text-luxury-gold transition-transform duration-200 flex-shrink-0 ml-3"><i class="fa-solid fa-chevron-down text-xs"></i></span>
 </button>
 <div class="max-h-0 overflow-hidden transition-all duration-500 ease-in-out" id="content-p-14">
@@ -1828,7 +1831,7 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
 </div>
 <div class="border-b border-neutral-200 py-4">
 <button class="w-full flex justify-between items-center text-left focus:outline-none group" onclick="toggleFAQ('p-15')">
-<span class="text-xs uppercase tracking-wider font-bold text-neutral-800 group-hover:text-luxury-gold transition-colors duration-200" data-i18n="programs.greece.faqQ15">Question 15</span>
+<span class="text-xs uppercase tracking-wider font-bold text-neutral-800 group-hover:text-luxury-gold transition-colors duration-200" data-i18n="programs.greece.faqQ15">Are children automatically covered as dependents?</span>
 <span id="icon-p-15" class="text-xs text-neutral-400 group-hover:text-luxury-gold transition-transform duration-200 flex-shrink-0 ml-3"><i class="fa-solid fa-chevron-down text-xs"></i></span>
 </button>
 <div class="max-h-0 overflow-hidden transition-all duration-500 ease-in-out" id="content-p-15">
@@ -1837,7 +1840,7 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
 </div>
 <div class="border-b border-neutral-200 py-4">
 <button class="w-full flex justify-between items-center text-left focus:outline-none group" onclick="toggleFAQ('p-16')">
-<span class="text-xs uppercase tracking-wider font-bold text-neutral-800 group-hover:text-luxury-gold transition-colors duration-200" data-i18n="programs.greece.faqQ16">Question 16</span>
+<span class="text-xs uppercase tracking-wider font-bold text-neutral-800 group-hover:text-luxury-gold transition-colors duration-200" data-i18n="programs.greece.faqQ16">Do my parents need to prove financial dependency?</span>
 <span id="icon-p-16" class="text-xs text-neutral-400 group-hover:text-luxury-gold transition-transform duration-200 flex-shrink-0 ml-3"><i class="fa-solid fa-chevron-down text-xs"></i></span>
 </button>
 <div class="max-h-0 overflow-hidden transition-all duration-500 ease-in-out" id="content-p-16">
@@ -1846,7 +1849,7 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
 </div>
 <div class="border-b border-neutral-200 py-4">
 <button class="w-full flex justify-between items-center text-left focus:outline-none group" onclick="toggleFAQ('p-17')">
-<span class="text-xs uppercase tracking-wider font-bold text-neutral-800 group-hover:text-luxury-gold transition-colors duration-200" data-i18n="programs.greece.faqQ17">Question 17</span>
+<span class="text-xs uppercase tracking-wider font-bold text-neutral-800 group-hover:text-luxury-gold transition-colors duration-200" data-i18n="programs.greece.faqQ17">When do I need to visit Greece for biometrics?</span>
 <span id="icon-p-17" class="text-xs text-neutral-400 group-hover:text-luxury-gold transition-transform duration-200 flex-shrink-0 ml-3"><i class="fa-solid fa-chevron-down text-xs"></i></span>
 </button>
 <div class="max-h-0 overflow-hidden transition-all duration-500 ease-in-out" id="content-p-17">
@@ -1855,7 +1858,7 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
 </div>
 <div class="border-b border-neutral-200 py-4">
 <button class="w-full flex justify-between items-center text-left focus:outline-none group" onclick="toggleFAQ('p-18')">
-<span class="text-xs uppercase tracking-wider font-bold text-neutral-800 group-hover:text-luxury-gold transition-colors duration-200" data-i18n="programs.greece.faqQ18">Question 18</span>
+<span class="text-xs uppercase tracking-wider font-bold text-neutral-800 group-hover:text-luxury-gold transition-colors duration-200" data-i18n="programs.greece.faqQ18">What documents are required to get started?</span>
 <span id="icon-p-18" class="text-xs text-neutral-400 group-hover:text-luxury-gold transition-transform duration-200 flex-shrink-0 ml-3"><i class="fa-solid fa-chevron-down text-xs"></i></span>
 </button>
 <div class="max-h-0 overflow-hidden transition-all duration-500 ease-in-out" id="content-p-18">
@@ -1864,7 +1867,7 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
 </div>
 <div class="border-b border-neutral-200 py-4">
 <button class="w-full flex justify-between items-center text-left focus:outline-none group" onclick="toggleFAQ('p-19')">
-<span class="text-xs uppercase tracking-wider font-bold text-neutral-800 group-hover:text-luxury-gold transition-colors duration-200" data-i18n="programs.greece.faqQ19">Question 19</span>
+<span class="text-xs uppercase tracking-wider font-bold text-neutral-800 group-hover:text-luxury-gold transition-colors duration-200" data-i18n="programs.greece.faqQ19">Can I work or start a business in Greece?</span>
 <span id="icon-p-19" class="text-xs text-neutral-400 group-hover:text-luxury-gold transition-transform duration-200 flex-shrink-0 ml-3"><i class="fa-solid fa-chevron-down text-xs"></i></span>
 </button>
 <div class="max-h-0 overflow-hidden transition-all duration-500 ease-in-out" id="content-p-19">
@@ -1873,7 +1876,7 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
 </div>
 <div class="border-b border-neutral-200 py-4">
 <button class="w-full flex justify-between items-center text-left focus:outline-none group" onclick="toggleFAQ('p-20')">
-<span class="text-xs uppercase tracking-wider font-bold text-neutral-800 group-hover:text-luxury-gold transition-colors duration-200" data-i18n="programs.greece.faqQ20">Question 20</span>
+<span class="text-xs uppercase tracking-wider font-bold text-neutral-800 group-hover:text-luxury-gold transition-colors duration-200" data-i18n="programs.greece.faqQ20">Why choose Sharif Group for my Greece Golden Visa?</span>
 <span id="icon-p-20" class="text-xs text-neutral-400 group-hover:text-luxury-gold transition-transform duration-200 flex-shrink-0 ml-3"><i class="fa-solid fa-chevron-down text-xs"></i></span>
 </button>
 <div class="max-h-0 overflow-hidden transition-all duration-500 ease-in-out" id="content-p-20">

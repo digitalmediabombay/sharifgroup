@@ -1,5 +1,5 @@
-﻿<!DOCTYPE html>
-<html class="scroll-smooth" lang="en">
+<!DOCTYPE html>
+<html class="scroll-smooth" dir="ltr" lang="en">
 <head>
     <!-- Google Tag Manager -->
     <script>(function(w,d,s,l,i){w[l]=w[l]||[];w[l].push({'gtm.start':
@@ -12,27 +12,30 @@
     <meta charset="utf-8"/>
     <meta content="width=device-width, initial-scale=1.0" name="viewport"/>
     <script>
-        (function() {
-            try {
-                var l = localStorage.getItem('sharif_lang') || localStorage.getItem('sharif_preferred_lang') || 'en';
-                if (l === 'ar' || l === 'fa') {
-                    document.documentElement.dir = 'rtl';
-                    document.documentElement.lang = l;
-                } else if (l === 'zh') {
-                    document.documentElement.dir = 'ltr';
-                    document.documentElement.lang = 'zh';
-                }
-                if (l !== 'en') {
-                    document.documentElement.classList.add('i18n-pending');
-                }
-            } catch(e) {}
-        })();
-    </script>
+    (function() {
+        try {
+            var p = (window.location && window.location.pathname) ? window.location.pathname : '';
+            var segs = p.split('/').filter(Boolean);
+            var first = segs.length > 0 ? segs[0].toLowerCase() : '';
+            if (first === 'ar' || first === 'fa') {
+                document.documentElement.dir = 'rtl';
+                document.documentElement.lang = first;
+            } else if (first === 'zh') {
+                document.documentElement.dir = 'ltr';
+                document.documentElement.lang = 'zh';
+            } else {
+                document.documentElement.dir = 'ltr';
+                document.documentElement.lang = 'en';
+                document.documentElement.classList.remove('i18n-pending');
+            }
+        } catch(e) {}
+    })();
+</script>
 
     <!-- Favicon & App Icons -->
     <link href="/assets/images/Group-427321463.svg" rel="icon" type="image/svg+xml"/>
     <link href="/assets/images/shariftrip-logo-1.svg" rel="alternate icon" type="image/svg+xml"/>
-    <link href="../../assets/images/shariftrip-logo-1.svg" rel="alternate icon" type="image/svg+xml"/>
+    <link href="/assets/images/shariftrip-logo-1.svg" rel="alternate icon" type="image/svg+xml"/>
     <link href="/assets/images/Group-427321463.svg" rel="apple-touch-icon" sizes="180x180"/>
 
     <!-- Primary SEO & AEO Meta Tags -->
@@ -41,11 +44,11 @@
     <meta name="description" content="Strategic legal insights and investment parameters prepared by Sharif Group advisory desk."/>
     <meta name="author" content="Sharif Group Advisory Desk"/>
     <link rel="canonical" href="https://sharifgroup.ae/blog/dominica-passport-for-afghans-in-2026/" />
-<link rel="alternate" hreflang="x-default" href="https://sharifgroup.ae/blog/dominica-passport-for-afghans-in-2026/" />
-<link rel="alternate" hreflang="en" href="https://sharifgroup.ae/blog/dominica-passport-for-afghans-in-2026/" />
-<link rel="alternate" hreflang="fa" href="https://sharifgroup.ae/fa/blog/dominica-passport-for-afghans-in-2026/" />
-<link rel="alternate" hreflang="ar" href="https://sharifgroup.ae/ar/blog/dominica-passport-for-afghans-in-2026/" />
-<link rel="alternate" hreflang="zh" href="https://sharifgroup.ae/zh/blog/dominica-passport-for-afghans-in-2026/" />
+    <link rel="alternate" hreflang="x-default" href="https://sharifgroup.ae/blog/dominica-passport-for-afghans-in-2026/" />
+    <link rel="alternate" hreflang="en" href="https://sharifgroup.ae/blog/dominica-passport-for-afghans-in-2026/" />
+    <link rel="alternate" hreflang="fa" href="https://sharifgroup.ae/fa/blog/dominica-passport-for-afghans-in-2026/" />
+    <link rel="alternate" hreflang="ar" href="https://sharifgroup.ae/ar/blog/dominica-passport-for-afghans-in-2026/" />
+    <link rel="alternate" hreflang="zh" href="https://sharifgroup.ae/zh/blog/dominica-passport-for-afghans-in-2026/" />
     <meta name="robots" content="index, follow, max-image-preview:large, max-snippet:-1, max-video-preview:-1"/>
 
     <!-- Geo Meta Tags -->
@@ -241,8 +244,8 @@
     </script>
 
     <!-- Compiled Tailwind Production CSS (Zero Runtime Compiler) -->
-    <link rel="stylesheet" href="../../assets/css/tailwind.min.css?v=20260920_v1" />
-    <link rel="stylesheet" href="../../assets/css/multilingual.css?v=7" />
+    <link rel="stylesheet" href="/assets/css/tailwind.min.css?v=20260920_v1" />
+    <link rel="stylesheet" href="/assets/css/multilingual.css?v=7" />
 
     <!-- Google Fonts & Icon Libraries -->
     <link href="https://fonts.googleapis.com" rel="preconnect"/>
@@ -353,19 +356,19 @@
 <i class="fa-solid fa-chevron-down text-[8px] text-neutral-400 transition-transform duration-200" id="lang-arrow-icon"></i>
 </button>
 <div class="hidden absolute right-0 mt-2 w-44 bg-white/95 rounded-2xl shadow-2xl border border-neutral-200/80 py-2 z-50 overflow-hidden" id="lang-dropdown-menu">
-<a href="/blog/what-is-dominica-citizenship-by-investment/" class="lang-option active-lang" data-lang="en" onclick="switchLanguage('en', event)">
+<a href="/blog/dominica-passport-for-afghans-in-2026/" class="lang-option active-lang" data-lang="en" onclick="switchLanguage('en', event)">
 <span data-i18n="langSwitcher.en">English</span>
 <span class="text-[10px] text-neutral-400">EN</span>
 </a>
-<a href="/ar/blog/what-is-dominica-citizenship-by-investment/" class="lang-option" data-lang="ar" onclick="switchLanguage('ar', event)">
+<a href="/ar/blog/dominica-passport-for-afghans-in-2026/" class="lang-option" data-lang="ar" onclick="switchLanguage('ar', event)">
 <span class="font-medium" data-i18n="langSwitcher.ar">العربية</span>
 <span class="text-[10px] text-neutral-400">AR</span>
 </a>
-<a href="/fa/blog/what-is-dominica-citizenship-by-investment/" class="lang-option" data-lang="fa" onclick="switchLanguage('fa', event)">
+<a href="/fa/blog/dominica-passport-for-afghans-in-2026/" class="lang-option" data-lang="fa" onclick="switchLanguage('fa', event)">
 <span class="font-medium" data-i18n="langSwitcher.fa">فارسی</span>
 <span class="text-[10px] text-neutral-400">FA</span>
 </a>
-<a href="/zh/blog/what-is-dominica-citizenship-by-investment/" class="lang-option" data-lang="zh" onclick="switchLanguage('zh', event)">
+<a href="/zh/blog/dominica-passport-for-afghans-in-2026/" class="lang-option" data-lang="zh" onclick="switchLanguage('zh', event)">
 <span class="font-medium" data-i18n="langSwitcher.zh">中文</span>
 <span class="text-[10px] text-neutral-400">ZH</span>
 </a>
@@ -389,10 +392,10 @@
 <i class="fa-solid fa-globe text-luxury-gold"></i>
 </div>
 <div class="mobile-lang-grid">
-<a href="/blog/what-is-dominica-citizenship-by-investment/" class="lang-option active-lang" data-lang="en" onclick="switchLanguage('en', event)">English</a>
-<a href="/ar/blog/what-is-dominica-citizenship-by-investment/" class="lang-option" data-lang="ar" onclick="switchLanguage('ar', event)">العربية</a>
-<a href="/fa/blog/what-is-dominica-citizenship-by-investment/" class="lang-option" data-lang="fa" onclick="switchLanguage('fa', event)">فارسی</a>
-<a href="/zh/blog/what-is-dominica-citizenship-by-investment/" class="lang-option" data-lang="zh" onclick="switchLanguage('zh', event)">中文</a>
+<a href="/blog/dominica-passport-for-afghans-in-2026/" class="lang-option active-lang" data-lang="en" onclick="switchLanguage('en', event)">English</a>
+<a href="/ar/blog/dominica-passport-for-afghans-in-2026/" class="lang-option" data-lang="ar" onclick="switchLanguage('ar', event)">العربية</a>
+<a href="/fa/blog/dominica-passport-for-afghans-in-2026/" class="lang-option" data-lang="fa" onclick="switchLanguage('fa', event)">فارسی</a>
+<a href="/zh/blog/dominica-passport-for-afghans-in-2026/" class="lang-option" data-lang="zh" onclick="switchLanguage('zh', event)">中文</a>
 </div>
 </div>
 <div class="pt-2 pb-4">
@@ -653,7 +656,7 @@
 
             <!-- Featured Image -->
             <div class="aspect-video w-full rounded-2xl overflow-hidden shadow-xl border border-neutral-200 bg-neutral-100">
-                <img alt="Dominica Passport for Afghans in 2026" class="w-full h-full object-cover" src="/assets/images/uploads/d1d65d8b-b67e-495f-b779-93a3ff8eb47a_1791006383.webp" onerror="this.src='/assets/images/dubai-office-2.webp'"/>
+                <img alt="Dominica Passport for Afghans in 2026" class="w-full h-full object-cover" src="/assets/images/uploads/d1d65d8b-b67e-495f-b779-93a3ff8eb47a_1791006383.webp" onerror="this.onerror=null;this.src='/assets/images/dubai-office-2.webp'"/>
             </div>
 
             <!-- Article Content Body (Raw HTML Pre-rendered) -->
@@ -879,20 +882,20 @@ contact@sharifgroup.ae</p>
             </div>
 
             <!-- FAQ ACCORDION SECTION (Split: 6 Left, 6 Right) -->
-            <div class="space-y-6 pt-12 border-t border-neutral-200">
-                <div class="text-center space-y-3 mb-8">
-                    <span class="text-xs font-bold uppercase tracking-[0.25em] text-luxury-gold flex items-center justify-center gap-2">
-                        <i class="fa-regular fa-circle-question"></i> Desk Answers
-                    </span>
-                    <h2 class="font-serif text-3xl sm:text-4xl font-bold text-neutral-900">Program Integrity &amp; FAQs</h2>
-                    <p class="text-xs text-neutral-500">Clear and comprehensive answers regarding legal, investment, and residency parameters</p>
-                </div>
-                <div class="grid grid-cols-1 lg:grid-cols-2 gap-x-12 gap-y-0 text-start items-start">
-                    <div class="flex flex-col">
+<div class="space-y-6 pt-12 border-t border-neutral-200">
+    <div class="text-center space-y-3 mb-8">
+        <span class="text-xs font-bold uppercase tracking-[0.25em] text-luxury-gold flex items-center justify-center gap-2">
+            <i class="fa-regular fa-circle-question"></i> Desk Answers
+        </span>
+        <h2 class="font-serif text-3xl sm:text-4xl font-bold text-neutral-900">Program Integrity &amp; FAQs</h2>
+        <p class="text-xs text-neutral-500">Common questions regarding compliance, processing times, and legal safeguards.</p>
+    </div>
+    <div class="grid grid-cols-1 lg:grid-cols-2 gap-x-12 gap-y-0 text-start items-start">
+        <div class="flex flex-col">
         <div class="border-b border-neutral-200 py-3.5">
             <button onclick="toggleBlogFAQ('faq-dyn-0')" class="w-full flex justify-between items-center focus:outline-none group text-left">
                 <span class="text-xs uppercase tracking-wider font-bold text-neutral-800 group-hover:text-luxury-gold transition pr-3">
-                    Is Dominica citizenship permanent for life?
+                    What are the sovereign eligibility criteria for this pathway?
                 </span>
                 <span class="text-neutral-400 transition-transform duration-300 shrink-0" id="icon-faq-dyn-0">
                     <i class="fa-solid fa-chevron-down text-[10px]"></i>
@@ -900,13 +903,14 @@ contact@sharifgroup.ae</p>
             </button>
             <div id="content-faq-dyn-0" class="max-h-0 overflow-hidden transition-all duration-500 ease-in-out">
                 <p class="text-xs text-neutral-600 leading-relaxed mt-2.5 font-light">
-                    Yes. Citizenship is granted for life and is legally protected by the Constitution of the Commonwealth of Dominica.
+                    Applicants must possess a pristine background, pass strict multi-tier AML compliance, and fulfill the designated capital allocation.
                 </p>
             </div>
-        </div>        <div class="border-b border-neutral-200 py-3.5">
+        </div>
+        <div class="border-b border-neutral-200 py-3.5">
             <button onclick="toggleBlogFAQ('faq-dyn-1')" class="w-full flex justify-between items-center focus:outline-none group text-left">
                 <span class="text-xs uppercase tracking-wider font-bold text-neutral-800 group-hover:text-luxury-gold transition pr-3">
-                    Do I need to visit or live in Dominica to get citizenship?
+                    Can immediate family and senior dependents be included?
                 </span>
                 <span class="text-neutral-400 transition-transform duration-300 shrink-0" id="icon-faq-dyn-1">
                     <i class="fa-solid fa-chevron-down text-[10px]"></i>
@@ -914,13 +918,14 @@ contact@sharifgroup.ae</p>
             </button>
             <div id="content-faq-dyn-1" class="max-h-0 overflow-hidden transition-all duration-500 ease-in-out">
                 <p class="text-xs text-neutral-600 leading-relaxed mt-2.5 font-light">
-                    No. There are no residency or physical stay requirements before, during, or after obtaining your passport.
+                    Yes. The principal investor may include their spouse, dependent children under 30, and dependent parents or grandparents above 55.
                 </p>
             </div>
-        </div>        <div class="border-b border-neutral-200 py-3.5">
+        </div>
+        <div class="border-b border-neutral-200 py-3.5">
             <button onclick="toggleBlogFAQ('faq-dyn-2')" class="w-full flex justify-between items-center focus:outline-none group text-left">
                 <span class="text-xs uppercase tracking-wider font-bold text-neutral-800 group-hover:text-luxury-gold transition pr-3">
-                    Does Dominica allow dual citizenship?
+                    Is physical presence or relocation required in Dubai or the host state?
                 </span>
                 <span class="text-neutral-400 transition-transform duration-300 shrink-0" id="icon-faq-dyn-2">
                     <i class="fa-solid fa-chevron-down text-[10px]"></i>
@@ -928,13 +933,14 @@ contact@sharifgroup.ae</p>
             </button>
             <div id="content-faq-dyn-2" class="max-h-0 overflow-hidden transition-all duration-500 ease-in-out">
                 <p class="text-xs text-neutral-600 leading-relaxed mt-2.5 font-light">
-                    Yes. Dominica fully recognizes dual citizenship without requiring you to surrender your native nationality.
+                    No mandatory residency requirements apply during processing. All government vetting and apostilles are finalized remotely through our Dubai headquarters.
                 </p>
             </div>
-        </div>        <div class="border-b border-neutral-200 py-3.5">
+        </div>
+        <div class="border-b border-neutral-200 py-3.5">
             <button onclick="toggleBlogFAQ('faq-dyn-3')" class="w-full flex justify-between items-center focus:outline-none group text-left">
                 <span class="text-xs uppercase tracking-wider font-bold text-neutral-800 group-hover:text-luxury-gold transition pr-3">
-                    What is the minimum investment for a single applicant?
+                    What are the processing timelines from submission to approval?
                 </span>
                 <span class="text-neutral-400 transition-transform duration-300 shrink-0" id="icon-faq-dyn-3">
                     <i class="fa-solid fa-chevron-down text-[10px]"></i>
@@ -942,13 +948,14 @@ contact@sharifgroup.ae</p>
             </button>
             <div id="content-faq-dyn-3" class="max-h-0 overflow-hidden transition-all duration-500 ease-in-out">
                 <p class="text-xs text-neutral-600 leading-relaxed mt-2.5 font-light">
-                    The minimum contribution to the Economic Diversification Fund (EDF) is $200,000 USD for a single applicant.
+                    Official government clearance is expedited under our legal protocol, typically taking between 60 to 90 business days.
                 </p>
             </div>
-        </div>        <div class="border-b border-neutral-200 py-3.5">
+        </div>
+        <div class="border-b border-neutral-200 py-3.5">
             <button onclick="toggleBlogFAQ('faq-dyn-4')" class="w-full flex justify-between items-center focus:outline-none group text-left">
                 <span class="text-xs uppercase tracking-wider font-bold text-neutral-800 group-hover:text-luxury-gold transition pr-3">
-                    How long does the citizenship process take?
+                    How is confidential wealth and asset protection guaranteed?
                 </span>
                 <span class="text-neutral-400 transition-transform duration-300 shrink-0" id="icon-faq-dyn-4">
                     <i class="fa-solid fa-chevron-down text-[10px]"></i>
@@ -956,13 +963,14 @@ contact@sharifgroup.ae</p>
             </button>
             <div id="content-faq-dyn-4" class="max-h-0 overflow-hidden transition-all duration-500 ease-in-out">
                 <p class="text-xs text-neutral-600 leading-relaxed mt-2.5 font-light">
-                    The entire legal process is typically completed within 3 to 5 months from document submission to passport receipt.
+                    Sharif Group operates under strict non-disclosure legal mandates and international private client confidentiality standards.
                 </p>
             </div>
-        </div>        <div class="border-b border-neutral-200 py-3.5">
+        </div>
+        <div class="border-b border-neutral-200 py-3.5">
             <button onclick="toggleBlogFAQ('faq-dyn-5')" class="w-full flex justify-between items-center focus:outline-none group text-left">
                 <span class="text-xs uppercase tracking-wider font-bold text-neutral-800 group-hover:text-luxury-gold transition pr-3">
-                    Can I include my family members in the application?
+                    What are the visa-free mobility advantages granted?
                 </span>
                 <span class="text-neutral-400 transition-transform duration-300 shrink-0" id="icon-faq-dyn-5">
                     <i class="fa-solid fa-chevron-down text-[10px]"></i>
@@ -970,16 +978,16 @@ contact@sharifgroup.ae</p>
             </button>
             <div id="content-faq-dyn-5" class="max-h-0 overflow-hidden transition-all duration-500 ease-in-out">
                 <p class="text-xs text-neutral-600 leading-relaxed mt-2.5 font-light">
-                    Yes. You can include your spouse, dependent children up to age 30, and dependent parents and grandparents aged 65 and older.
+                    Successful holders gain visa-free or visa-on-arrival access across key international business hubs, Schengen states, and Commonwealth jurisdictions.
                 </p>
             </div>
         </div>
-                    </div>
-                    <div class="flex flex-col">
+        </div>
+        <div class="flex flex-col">
         <div class="border-b border-neutral-200 py-3.5">
             <button onclick="toggleBlogFAQ('faq-dyn-6')" class="w-full flex justify-between items-center focus:outline-none group text-left">
                 <span class="text-xs uppercase tracking-wider font-bold text-neutral-800 group-hover:text-luxury-gold transition pr-3">
-                    Does Dominica tax foreign income earned abroad?
+                    Are taxes levied on worldwide income or capital gains?
                 </span>
                 <span class="text-neutral-400 transition-transform duration-300 shrink-0" id="icon-faq-dyn-6">
                     <i class="fa-solid fa-chevron-down text-[10px]"></i>
@@ -987,13 +995,14 @@ contact@sharifgroup.ae</p>
             </button>
             <div id="content-faq-dyn-6" class="max-h-0 overflow-hidden transition-all duration-500 ease-in-out">
                 <p class="text-xs text-neutral-600 leading-relaxed mt-2.5 font-light">
-                    No. Non-resident Dominican citizens are subject to 0% tax on foreign-sourced income, capital gains, and inheritance.
+                    Most sovereign pathways feature territorial or zero tax regimes, shielding offshore income, dividends, and inherited assets from local taxation.
                 </p>
             </div>
-        </div>        <div class="border-b border-neutral-200 py-3.5">
+        </div>
+        <div class="border-b border-neutral-200 py-3.5">
             <button onclick="toggleBlogFAQ('faq-dyn-7')" class="w-full flex justify-between items-center focus:outline-none group text-left">
                 <span class="text-xs uppercase tracking-wider font-bold text-neutral-800 group-hover:text-luxury-gold transition pr-3">
-                    Is an in-person interview required for Dominica citizenship?
+                    What official compliance and police clearances are needed?
                 </span>
                 <span class="text-neutral-400 transition-transform duration-300 shrink-0" id="icon-faq-dyn-7">
                     <i class="fa-solid fa-chevron-down text-[10px]"></i>
@@ -1001,13 +1010,14 @@ contact@sharifgroup.ae</p>
             </button>
             <div id="content-faq-dyn-7" class="max-h-0 overflow-hidden transition-all duration-500 ease-in-out">
                 <p class="text-xs text-neutral-600 leading-relaxed mt-2.5 font-light">
-                    Applicants aged 16 and older participate in a brief, secure virtual interview conducted online by government verifiers.
+                    Applicants must supply certified police clearance certificates from their country of citizenship and any jurisdiction where they resided for over six months.
                 </p>
             </div>
-        </div>        <div class="border-b border-neutral-200 py-3.5">
+        </div>
+        <div class="border-b border-neutral-200 py-3.5">
             <button onclick="toggleBlogFAQ('faq-dyn-8')" class="w-full flex justify-between items-center focus:outline-none group text-left">
                 <span class="text-xs uppercase tracking-wider font-bold text-neutral-800 group-hover:text-luxury-gold transition pr-3">
-                    What is the mandatory holding period for real estate?
+                    Is dual citizenship or multiple legal residency permitted?
                 </span>
                 <span class="text-neutral-400 transition-transform duration-300 shrink-0" id="icon-faq-dyn-8">
                     <i class="fa-solid fa-chevron-down text-[10px]"></i>
@@ -1015,13 +1025,14 @@ contact@sharifgroup.ae</p>
             </button>
             <div id="content-faq-dyn-8" class="max-h-0 overflow-hidden transition-all duration-500 ease-in-out">
                 <p class="text-xs text-neutral-600 leading-relaxed mt-2.5 font-light">
-                    Approved real estate must be held for 3 years, or 5 years if reselling to a subsequent citizenship applicant.
+                    Yes. Most host jurisdictions legally recognize dual or multiple citizenships without requiring you to renounce your original passport.
                 </p>
             </div>
-        </div>        <div class="border-b border-neutral-200 py-3.5">
+        </div>
+        <div class="border-b border-neutral-200 py-3.5">
             <button onclick="toggleBlogFAQ('faq-dyn-9')" class="w-full flex justify-between items-center focus:outline-none group text-left">
                 <span class="text-xs uppercase tracking-wider font-bold text-neutral-800 group-hover:text-luxury-gold transition pr-3">
-                    Can newborn children be registered as citizens later?
+                    How are government fees and investment funds held securely?
                 </span>
                 <span class="text-neutral-400 transition-transform duration-300 shrink-0" id="icon-faq-dyn-9">
                     <i class="fa-solid fa-chevron-down text-[10px]"></i>
@@ -1029,13 +1040,14 @@ contact@sharifgroup.ae</p>
             </button>
             <div id="content-faq-dyn-9" class="max-h-0 overflow-hidden transition-all duration-500 ease-in-out">
                 <p class="text-xs text-neutral-600 leading-relaxed mt-2.5 font-light">
-                    Yes. Newborn children can be registered as Dominican citizens by descent at any time after approval.
+                    All capital allocations are deposited into regulated sovereign escrow accounts or authorized central bank facilities under institutional oversight.
                 </p>
             </div>
-        </div>        <div class="border-b border-neutral-200 py-3.5">
+        </div>
+        <div class="border-b border-neutral-200 py-3.5">
             <button onclick="toggleBlogFAQ('faq-dyn-10')" class="w-full flex justify-between items-center focus:outline-none group text-left">
                 <span class="text-xs uppercase tracking-wider font-bold text-neutral-800 group-hover:text-luxury-gold transition pr-3">
-                    What due diligence checks are carried out?
+                    Can investment properties or capital assets be liquidated later?
                 </span>
                 <span class="text-neutral-400 transition-transform duration-300 shrink-0" id="icon-faq-dyn-10">
                     <i class="fa-solid fa-chevron-down text-[10px]"></i>
@@ -1043,13 +1055,14 @@ contact@sharifgroup.ae</p>
             </button>
             <div id="content-faq-dyn-10" class="max-h-0 overflow-hidden transition-all duration-500 ease-in-out">
                 <p class="text-xs text-neutral-600 leading-relaxed mt-2.5 font-light">
-                    The CBIU conducts comprehensive international background screenings, Interpol checks, and source-of-funds verifications.
+                    Depending on the statutory holding period (typically 3 to 5 years), qualifying real estate or bonds can be liquidated while retaining acquired sovereign rights.
                 </p>
             </div>
-        </div>        <div class="border-b border-neutral-200 py-3.5">
+        </div>
+        <div class="border-b border-neutral-200 py-3.5">
             <button onclick="toggleBlogFAQ('faq-dyn-11')" class="w-full flex justify-between items-center focus:outline-none group text-left">
                 <span class="text-xs uppercase tracking-wider font-bold text-neutral-800 group-hover:text-luxury-gold transition pr-3">
-                    How are the physical passports delivered to Dubai?
+                    How does Sharif Group represent investors through official channels?
                 </span>
                 <span class="text-neutral-400 transition-transform duration-300 shrink-0" id="icon-faq-dyn-11">
                     <i class="fa-solid fa-chevron-down text-[10px]"></i>
@@ -1057,14 +1070,15 @@ contact@sharifgroup.ae</p>
             </button>
             <div id="content-faq-dyn-11" class="max-h-0 overflow-hidden transition-all duration-500 ease-in-out">
                 <p class="text-xs text-neutral-600 leading-relaxed mt-2.5 font-light">
-                    Passports and original Naturalization Certificates are delivered directly to the Sharif Group Dubai office via secure courier.
+                    Sharif Group acts as an accredited advisory firm in Business Bay, Dubai, managing direct liaison, government apostilles, and expedited legal filing.
                 </p>
             </div>
         </div>
-                    </div>
-                </div>
-            </div>
         </div>
+    </div>
+</div>
+
+            </div>
     </main>
 
     <!-- RELATED ARTICLES -->
@@ -1305,10 +1319,10 @@ contact@sharifgroup.ae</p>
 <div class="absolute inset-0 z-0 overflow-hidden pointer-events-none">
 <canvas class="absolute inset-0 w-full h-full object-cover" id="footer-seamless-canvas"></canvas>
 <video class="hidden" id="footer-hidden-video" muted="" playsinline="" preload="none">
-<source src="../../assets/videos/footer_bg_e58bba71.mp4" type="video/mp4"/>
+<source src="/assets/videos/footer_bg_e58bba71.mp4" type="video/mp4"/>
 </video>
 <video class="hidden" id="footer-hidden-video-2" muted="" playsinline="" preload="none">
-<source src="../../assets/videos/footer_bg_e58bba71.mp4" type="video/mp4"/>
+<source src="/assets/videos/footer_bg_e58bba71.mp4" type="video/mp4"/>
 </video>
 <div class="absolute inset-0 bg-gradient-to-b from-black/30 via-black/45 to-black/75"></div>
 </div>
@@ -1316,7 +1330,7 @@ contact@sharifgroup.ae</p>
 <!-- Col 1: Brand Info (Clickable Logo & Text redirecting to Top Hero Section) -->
 <div class="flex flex-col space-y-6 lg:col-span-1">
 <a class="flex items-center space-x-4 group cursor-pointer" href="/" onclick="sessionStorage.setItem('sharif_preloader_shown', 'true');">
-<img alt="Sharif Group Logo" class="h-14 w-auto" src="../../assets/images/vector_2d09c4bb.svg"/>
+<img alt="Sharif Group Logo" class="h-14 w-auto" src="/assets/images/vector_2d09c4bb.svg"/>
 <div class="flex items-center space-x-4 translate-y-1.5">
 <div class="h-10 w-[1px] bg-neutral-500/50"></div>
 <div class="flex flex-col justify-center font-serif text-white tracking-[0.2em] font-bold leading-tight group-hover:text-luxury-gold transition">
@@ -1531,8 +1545,8 @@ contact@sharifgroup.ae</p>
             }
         }
     </script>
-    <script src="../../assets/js/language-switcher.js"></script>
-    <script src="../../assets/js/blog-translator.js"></script>
-    <script src="../../assets/js/forms.js"></script>
+    <script src="/assets/js/language-switcher.js"></script>
+    <script src="/assets/js/blog-translator.js"></script>
+    <script src="/assets/js/forms.js"></script>
 </body>
 </html>

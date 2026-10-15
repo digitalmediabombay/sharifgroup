@@ -17,22 +17,25 @@
     <meta charset="utf-8" />
     <meta content="width=device-width, initial-scale=1.0" name="viewport" />
     <script>
-        (function () {
-            try {
-                var l = localStorage.getItem('sharif_lang') || localStorage.getItem('sharif_preferred_lang') || 'en';
-                if (l === 'ar' || l === 'fa') {
-                    document.documentElement.dir = 'rtl';
-                    document.documentElement.lang = l;
-                } else if (l === 'zh') {
-                    document.documentElement.dir = 'ltr';
-                    document.documentElement.lang = 'zh';
-                }
-                if (l !== 'en') {
-                    document.documentElement.classList.add('i18n-pending');
-                }
-            } catch (e) { }
-        })();
-    </script>
+    (function() {
+        try {
+            var p = (window.location && window.location.pathname) ? window.location.pathname : '';
+            var segs = p.split('/').filter(Boolean);
+            var first = segs.length > 0 ? segs[0].toLowerCase() : '';
+            if (first === 'ar' || first === 'fa') {
+                document.documentElement.dir = 'rtl';
+                document.documentElement.lang = first;
+            } else if (first === 'zh') {
+                document.documentElement.dir = 'ltr';
+                document.documentElement.lang = 'zh';
+            } else {
+                document.documentElement.dir = 'ltr';
+                document.documentElement.lang = 'en';
+                document.documentElement.classList.remove('i18n-pending');
+            }
+        } catch(e) {}
+    })();
+</script>
 
     <!-- Primary Meta Tags (Search Engine & LLM Search Optimization) -->
     <title>São Tomé and Príncipe Citizenship by Investment | Sharif Group Dubai</title>
@@ -3013,7 +3016,7 @@
                                 onclick="toggleFAQ('p-1')">
                                 <span
                                     class="text-xs uppercase tracking-wider font-bold text-neutral-800 group-hover:text-luxury-gold transition-colors duration-200"
-                                    data-i18n="programs.saotome.faqQ1">Question 1</span>
+                                    data-i18n="programs.saotome.faqQ1">What is the minimum cost for São Tomé &amp; Príncipe citizenship?</span>
                                 <span id="icon-p-1"
                                     class="text-xs text-neutral-400 group-hover:text-luxury-gold transition-transform duration-200 flex-shrink-0 ml-3"><i
                                         class="fa-solid fa-chevron-down text-xs"></i></span>
@@ -3031,7 +3034,7 @@
                                 onclick="toggleFAQ('p-2')">
                                 <span
                                     class="text-xs uppercase tracking-wider font-bold text-neutral-800 group-hover:text-luxury-gold transition-colors duration-200"
-                                    data-i18n="programs.saotome.faqQ2">Question 2</span>
+                                    data-i18n="programs.saotome.faqQ2">How long does the citizenship application process take?</span>
                                 <span id="icon-p-2"
                                     class="text-xs text-neutral-400 group-hover:text-luxury-gold transition-transform duration-200 flex-shrink-0 ml-3"><i
                                         class="fa-solid fa-chevron-down text-xs"></i></span>
@@ -3049,7 +3052,7 @@
                                 onclick="toggleFAQ('p-3')">
                                 <span
                                     class="text-xs uppercase tracking-wider font-bold text-neutral-800 group-hover:text-luxury-gold transition-colors duration-200"
-                                    data-i18n="programs.saotome.faqQ3">Question 3</span>
+                                    data-i18n="programs.saotome.faqQ3">Do I need to visit or live in São Tomé &amp; Príncipe?</span>
                                 <span id="icon-p-3"
                                     class="text-xs text-neutral-400 group-hover:text-luxury-gold transition-transform duration-200 flex-shrink-0 ml-3"><i
                                         class="fa-solid fa-chevron-down text-xs"></i></span>
@@ -3067,7 +3070,7 @@
                                 onclick="toggleFAQ('p-4')">
                                 <span
                                     class="text-xs uppercase tracking-wider font-bold text-neutral-800 group-hover:text-luxury-gold transition-colors duration-200"
-                                    data-i18n="programs.saotome.faqQ4">Question 4</span>
+                                    data-i18n="programs.saotome.faqQ4">What is the National Transformation Fund (NTF)?</span>
                                 <span id="icon-p-4"
                                     class="text-xs text-neutral-400 group-hover:text-luxury-gold transition-transform duration-200 flex-shrink-0 ml-3"><i
                                         class="fa-solid fa-chevron-down text-xs"></i></span>
@@ -3085,7 +3088,7 @@
                                 onclick="toggleFAQ('p-5')">
                                 <span
                                     class="text-xs uppercase tracking-wider font-bold text-neutral-800 group-hover:text-luxury-gold transition-colors duration-200"
-                                    data-i18n="programs.saotome.faqQ5">Question 5</span>
+                                    data-i18n="programs.saotome.faqQ5">Which family members can I include in my application?</span>
                                 <span id="icon-p-5"
                                     class="text-xs text-neutral-400 group-hover:text-luxury-gold transition-transform duration-200 flex-shrink-0 ml-3"><i
                                         class="fa-solid fa-chevron-down text-xs"></i></span>
@@ -3103,7 +3106,7 @@
                                 onclick="toggleFAQ('p-6')">
                                 <span
                                     class="text-xs uppercase tracking-wider font-bold text-neutral-800 group-hover:text-luxury-gold transition-colors duration-200"
-                                    data-i18n="programs.saotome.faqQ6">Question 6</span>
+                                    data-i18n="programs.saotome.faqQ6">Does São Tomé &amp; Príncipe allow dual citizenship?</span>
                                 <span id="icon-p-6"
                                     class="text-xs text-neutral-400 group-hover:text-luxury-gold transition-transform duration-200 flex-shrink-0 ml-3"><i
                                         class="fa-solid fa-chevron-down text-xs"></i></span>
@@ -3121,7 +3124,7 @@
                                 onclick="toggleFAQ('p-7')">
                                 <span
                                     class="text-xs uppercase tracking-wider font-bold text-neutral-800 group-hover:text-luxury-gold transition-colors duration-200"
-                                    data-i18n="programs.saotome.faqQ7">Question 7</span>
+                                    data-i18n="programs.saotome.faqQ7">What government fees apply in addition to the donation?</span>
                                 <span id="icon-p-7"
                                     class="text-xs text-neutral-400 group-hover:text-luxury-gold transition-transform duration-200 flex-shrink-0 ml-3"><i
                                         class="fa-solid fa-chevron-down text-xs"></i></span>
@@ -3139,7 +3142,7 @@
                                 onclick="toggleFAQ('p-8')">
                                 <span
                                     class="text-xs uppercase tracking-wider font-bold text-neutral-800 group-hover:text-luxury-gold transition-colors duration-200"
-                                    data-i18n="programs.saotome.faqQ8">Question 8</span>
+                                    data-i18n="programs.saotome.faqQ8">Can I add family members after receiving approval?</span>
                                 <span id="icon-p-8"
                                     class="text-xs text-neutral-400 group-hover:text-luxury-gold transition-transform duration-200 flex-shrink-0 ml-3"><i
                                         class="fa-solid fa-chevron-down text-xs"></i></span>
@@ -3157,7 +3160,7 @@
                                 onclick="toggleFAQ('p-9')">
                                 <span
                                     class="text-xs uppercase tracking-wider font-bold text-neutral-800 group-hover:text-luxury-gold transition-colors duration-200"
-                                    data-i18n="programs.saotome.faqQ9">Question 9</span>
+                                    data-i18n="programs.saotome.faqQ9">Are there any language tests or educational rules?</span>
                                 <span id="icon-p-9"
                                     class="text-xs text-neutral-400 group-hover:text-luxury-gold transition-transform duration-200 flex-shrink-0 ml-3"><i
                                         class="fa-solid fa-chevron-down text-xs"></i></span>
@@ -3175,7 +3178,7 @@
                                 onclick="toggleFAQ('p-10')">
                                 <span
                                     class="text-xs uppercase tracking-wider font-bold text-neutral-800 group-hover:text-luxury-gold transition-colors duration-200"
-                                    data-i18n="programs.saotome.faqQ10">Question 10</span>
+                                    data-i18n="programs.saotome.faqQ10">What are the main tax benefits available?</span>
                                 <span id="icon-p-10"
                                     class="text-xs text-neutral-400 group-hover:text-luxury-gold transition-transform duration-200 flex-shrink-0 ml-3"><i
                                         class="fa-solid fa-chevron-down text-xs"></i></span>
@@ -3196,7 +3199,7 @@
                                 onclick="toggleFAQ('p-11')">
                                 <span
                                     class="text-xs uppercase tracking-wider font-bold text-neutral-800 group-hover:text-luxury-gold transition-colors duration-200"
-                                    data-i18n="programs.saotome.faqQ11">Question 11</span>
+                                    data-i18n="programs.saotome.faqQ11">How many countries can I visit visa-free?</span>
                                 <span id="icon-p-11"
                                     class="text-xs text-neutral-400 group-hover:text-luxury-gold transition-transform duration-200 flex-shrink-0 ml-3"><i
                                         class="fa-solid fa-chevron-down text-xs"></i></span>
@@ -3214,7 +3217,7 @@
                                 onclick="toggleFAQ('p-12')">
                                 <span
                                     class="text-xs uppercase tracking-wider font-bold text-neutral-800 group-hover:text-luxury-gold transition-colors duration-200"
-                                    data-i18n="programs.saotome.faqQ12">Question 12</span>
+                                    data-i18n="programs.saotome.faqQ12">When do I pay the primary investment contribution?</span>
                                 <span id="icon-p-12"
                                     class="text-xs text-neutral-400 group-hover:text-luxury-gold transition-transform duration-200 flex-shrink-0 ml-3"><i
                                         class="fa-solid fa-chevron-down text-xs"></i></span>
@@ -3232,7 +3235,7 @@
                                 onclick="toggleFAQ('p-13')">
                                 <span
                                     class="text-xs uppercase tracking-wider font-bold text-neutral-800 group-hover:text-luxury-gold transition-colors duration-200"
-                                    data-i18n="programs.saotome.faqQ13">Question 13</span>
+                                    data-i18n="programs.saotome.faqQ13">What background checks are conducted on applicants?</span>
                                 <span id="icon-p-13"
                                     class="text-xs text-neutral-400 group-hover:text-luxury-gold transition-transform duration-200 flex-shrink-0 ml-3"><i
                                         class="fa-solid fa-chevron-down text-xs"></i></span>
@@ -3250,7 +3253,7 @@
                                 onclick="toggleFAQ('p-14')">
                                 <span
                                     class="text-xs uppercase tracking-wider font-bold text-neutral-800 group-hover:text-luxury-gold transition-colors duration-200"
-                                    data-i18n="programs.saotome.faqQ14">Question 14</span>
+                                    data-i18n="programs.saotome.faqQ14">Can I apply directly without a licensed agency?</span>
                                 <span id="icon-p-14"
                                     class="text-xs text-neutral-400 group-hover:text-luxury-gold transition-transform duration-200 flex-shrink-0 ml-3"><i
                                         class="fa-solid fa-chevron-down text-xs"></i></span>
@@ -3268,7 +3271,7 @@
                                 onclick="toggleFAQ('p-15')">
                                 <span
                                     class="text-xs uppercase tracking-wider font-bold text-neutral-800 group-hover:text-luxury-gold transition-colors duration-200"
-                                    data-i18n="programs.saotome.faqQ15">Question 15</span>
+                                    data-i18n="programs.saotome.faqQ15">What identity documents are needed to start?</span>
                                 <span id="icon-p-15"
                                     class="text-xs text-neutral-400 group-hover:text-luxury-gold transition-transform duration-200 flex-shrink-0 ml-3"><i
                                         class="fa-solid fa-chevron-down text-xs"></i></span>
@@ -3286,7 +3289,7 @@
                                 onclick="toggleFAQ('p-16')">
                                 <span
                                     class="text-xs uppercase tracking-wider font-bold text-neutral-800 group-hover:text-luxury-gold transition-colors duration-200"
-                                    data-i18n="programs.saotome.faqQ16">Question 16</span>
+                                    data-i18n="programs.saotome.faqQ16">How lenient is the financial proof policy?</span>
                                 <span id="icon-p-16"
                                     class="text-xs text-neutral-400 group-hover:text-luxury-gold transition-transform duration-200 flex-shrink-0 ml-3"><i
                                         class="fa-solid fa-chevron-down text-xs"></i></span>
@@ -3304,7 +3307,7 @@
                                 onclick="toggleFAQ('p-17')">
                                 <span
                                     class="text-xs uppercase tracking-wider font-bold text-neutral-800 group-hover:text-luxury-gold transition-colors duration-200"
-                                    data-i18n="programs.saotome.faqQ17">Question 17</span>
+                                    data-i18n="programs.saotome.faqQ17">What health records must be provided?</span>
                                 <span id="icon-p-17"
                                     class="text-xs text-neutral-400 group-hover:text-luxury-gold transition-transform duration-200 flex-shrink-0 ml-3"><i
                                         class="fa-solid fa-chevron-down text-xs"></i></span>
@@ -3322,7 +3325,7 @@
                                 onclick="toggleFAQ('p-18')">
                                 <span
                                     class="text-xs uppercase tracking-wider font-bold text-neutral-800 group-hover:text-luxury-gold transition-colors duration-200"
-                                    data-i18n="programs.saotome.faqQ18">Question 18</span>
+                                    data-i18n="programs.saotome.faqQ18">How long is the passport valid before renewal?</span>
                                 <span id="icon-p-18"
                                     class="text-xs text-neutral-400 group-hover:text-luxury-gold transition-transform duration-200 flex-shrink-0 ml-3"><i
                                         class="fa-solid fa-chevron-down text-xs"></i></span>
@@ -3340,7 +3343,7 @@
                                 onclick="toggleFAQ('p-19')">
                                 <span
                                     class="text-xs uppercase tracking-wider font-bold text-neutral-800 group-hover:text-luxury-gold transition-colors duration-200"
-                                    data-i18n="programs.saotome.faqQ19">Question 19</span>
+                                    data-i18n="programs.saotome.faqQ19">Can citizenship be passed down to future generations?</span>
                                 <span id="icon-p-19"
                                     class="text-xs text-neutral-400 group-hover:text-luxury-gold transition-transform duration-200 flex-shrink-0 ml-3"><i
                                         class="fa-solid fa-chevron-down text-xs"></i></span>
@@ -3358,7 +3361,7 @@
                                 onclick="toggleFAQ('p-20')">
                                 <span
                                     class="text-xs uppercase tracking-wider font-bold text-neutral-800 group-hover:text-luxury-gold transition-colors duration-200"
-                                    data-i18n="programs.saotome.faqQ20">Question 20</span>
+                                    data-i18n="programs.saotome.faqQ20">Why choose Sharif Group for my application?</span>
                                 <span id="icon-p-20"
                                     class="text-xs text-neutral-400 group-hover:text-luxury-gold transition-transform duration-200 flex-shrink-0 ml-3"><i
                                         class="fa-solid fa-chevron-down text-xs"></i></span>

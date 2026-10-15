@@ -183,6 +183,7 @@
 
     # Static JSON Locales
     <FilesMatch "(ar|en|fa|zh)\.json$">
+        Header set Content-Type "application/json; charset=utf-8"
         Header set Cache-Control "max-age=604800, public, must-revalidate"
     </FilesMatch>
 
@@ -204,8 +205,10 @@
 
 # UTF-8 Charset Encoding
 AddDefaultCharset UTF-8
+AddCharset UTF-8 .json .js .css .html .php
 
-# XML & XSL Stylesheet MIME Types
+# MIME Types with UTF-8 Charsets
+AddType "application/json; charset=utf-8" .json
 AddType application/xml .xml .xsl
 AddType text/xml .xsl
 AddType image/x-icon .ico

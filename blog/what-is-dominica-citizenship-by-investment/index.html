@@ -1,4 +1,4 @@
-﻿<!DOCTYPE html>
+<!DOCTYPE html>
 <html class="scroll-smooth" lang="en">
 <head>
     <!-- Google Tag Manager -->
@@ -12,27 +12,30 @@
     <meta charset="utf-8"/>
     <meta content="width=device-width, initial-scale=1.0" name="viewport"/>
     <script>
-        (function() {
-            try {
-                var l = localStorage.getItem('sharif_lang') || localStorage.getItem('sharif_preferred_lang') || 'en';
-                if (l === 'ar' || l === 'fa') {
-                    document.documentElement.dir = 'rtl';
-                    document.documentElement.lang = l;
-                } else if (l === 'zh') {
-                    document.documentElement.dir = 'ltr';
-                    document.documentElement.lang = 'zh';
-                }
-                if (l !== 'en') {
-                    document.documentElement.classList.add('i18n-pending');
-                }
-            } catch(e) {}
-        })();
-    </script>
+    (function() {
+        try {
+            var p = (window.location && window.location.pathname) ? window.location.pathname : '';
+            var segs = p.split('/').filter(Boolean);
+            var first = segs.length > 0 ? segs[0].toLowerCase() : '';
+            if (first === 'ar' || first === 'fa') {
+                document.documentElement.dir = 'rtl';
+                document.documentElement.lang = first;
+            } else if (first === 'zh') {
+                document.documentElement.dir = 'ltr';
+                document.documentElement.lang = 'zh';
+            } else {
+                document.documentElement.dir = 'ltr';
+                document.documentElement.lang = 'en';
+                document.documentElement.classList.remove('i18n-pending');
+            }
+        } catch(e) {}
+    })();
+</script>
 
     <!-- Favicon & App Icons -->
     <link href="/assets/images/Group-427321463.svg" rel="icon" type="image/svg+xml"/>
     <link href="/assets/images/shariftrip-logo-1.svg" rel="alternate icon" type="image/svg+xml"/>
-    <link href="../../assets/images/shariftrip-logo-1.svg" rel="alternate icon" type="image/svg+xml"/>
+    <link href="/assets/images/shariftrip-logo-1.svg" rel="alternate icon" type="image/svg+xml"/>
     <link href="/assets/images/Group-427321463.svg" rel="apple-touch-icon" sizes="180x180"/>
 
     <!-- Primary SEO & AEO Meta Tags -->
@@ -241,8 +244,8 @@
     </script>
 
     <!-- Compiled Tailwind Production CSS (Zero Runtime Compiler) -->
-    <link rel="stylesheet" href="../../assets/css/tailwind.min.css?v=20260920_v1" />
-    <link rel="stylesheet" href="../../assets/css/multilingual.css?v=7" />
+    <link rel="stylesheet" href="/assets/css/tailwind.min.css?v=20260920_v1" />
+    <link rel="stylesheet" href="/assets/css/multilingual.css?v=7" />
 
     <!-- Google Fonts & Icon Libraries -->
     <link href="https://fonts.googleapis.com" rel="preconnect"/>
@@ -1122,10 +1125,10 @@
 <div class="absolute inset-0 z-0 overflow-hidden pointer-events-none">
 <canvas class="absolute inset-0 w-full h-full object-cover" id="footer-seamless-canvas"></canvas>
 <video class="hidden" id="footer-hidden-video" muted="" playsinline="" preload="none">
-<source src="../../assets/videos/footer_bg_e58bba71.mp4" type="video/mp4"/>
+<source src="/assets/videos/footer_bg_e58bba71.mp4" type="video/mp4"/>
 </video>
 <video class="hidden" id="footer-hidden-video-2" muted="" playsinline="" preload="none">
-<source src="../../assets/videos/footer_bg_e58bba71.mp4" type="video/mp4"/>
+<source src="/assets/videos/footer_bg_e58bba71.mp4" type="video/mp4"/>
 </video>
 <div class="absolute inset-0 bg-gradient-to-b from-black/30 via-black/45 to-black/75"></div>
 </div>
@@ -1133,7 +1136,7 @@
 <!-- Col 1: Brand Info (Clickable Logo & Text redirecting to Top Hero Section) -->
 <div class="flex flex-col space-y-6 lg:col-span-1">
 <a class="flex items-center space-x-4 group cursor-pointer" href="/" onclick="sessionStorage.setItem('sharif_preloader_shown', 'true');">
-<img alt="Sharif Group Logo" class="h-14 w-auto" src="../../assets/images/vector_2d09c4bb.svg"/>
+<img alt="Sharif Group Logo" class="h-14 w-auto" src="/assets/images/vector_2d09c4bb.svg"/>
 <div class="flex items-center space-x-4 translate-y-1.5">
 <div class="h-10 w-[1px] bg-neutral-500/50"></div>
 <div class="flex flex-col justify-center font-serif text-white tracking-[0.2em] font-bold leading-tight group-hover:text-luxury-gold transition">
@@ -1348,8 +1351,8 @@
             }
         }
     </script>
-    <script src="../../assets/js/language-switcher.js"></script>
-    <script src="../../assets/js/blog-translator.js"></script>
-    <script src="../../assets/js/forms.js"></script>
+    <script src="/assets/js/language-switcher.js"></script>
+    <script src="/assets/js/blog-translator.js"></script>
+    <script src="/assets/js/forms.js"></script>
 </body>
 </html>

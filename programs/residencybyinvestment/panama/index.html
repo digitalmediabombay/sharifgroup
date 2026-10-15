@@ -15,16 +15,19 @@ j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
 <script>
     (function() {
         try {
-            var l = localStorage.getItem('sharif_lang') || localStorage.getItem('sharif_preferred_lang') || 'en';
-            if (l === 'ar' || l === 'fa') {
+            var p = (window.location && window.location.pathname) ? window.location.pathname : '';
+            var segs = p.split('/').filter(Boolean);
+            var first = segs.length > 0 ? segs[0].toLowerCase() : '';
+            if (first === 'ar' || first === 'fa') {
                 document.documentElement.dir = 'rtl';
-                document.documentElement.lang = l;
-            } else if (l === 'zh') {
+                document.documentElement.lang = first;
+            } else if (first === 'zh') {
                 document.documentElement.dir = 'ltr';
                 document.documentElement.lang = 'zh';
-            }
-            if (l !== 'en') {
-                document.documentElement.classList.add('i18n-pending');
+            } else {
+                document.documentElement.dir = 'ltr';
+                document.documentElement.lang = 'en';
+                document.documentElement.classList.remove('i18n-pending');
             }
         } catch(e) {}
     })();
@@ -1943,7 +1946,7 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
 <div class="space-y-2">
 <div class="border-b border-neutral-200 py-4">
 <button class="w-full flex justify-between items-center text-left focus:outline-none group" onclick="toggleFAQ('p-1')">
-<span class="text-xs uppercase tracking-wider font-bold text-neutral-800 group-hover:text-luxury-gold transition-colors duration-200" data-i18n="programs.panama.faqQ1">Question 1</span>
+<span class="text-xs uppercase tracking-wider font-bold text-neutral-800 group-hover:text-luxury-gold transition-colors duration-200" data-i18n="programs.panama.faqQ1">What is the Panama Golden Visa?</span>
 <span id="icon-p-1" class="text-xs text-neutral-400 group-hover:text-luxury-gold transition-transform duration-200 flex-shrink-0 ml-3"><i class="fa-solid fa-chevron-down text-xs"></i></span>
 </button>
 <div class="max-h-0 overflow-hidden transition-all duration-500 ease-in-out" id="content-p-1">
@@ -1952,7 +1955,7 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
 </div>
 <div class="border-b border-neutral-200 py-4">
 <button class="w-full flex justify-between items-center text-left focus:outline-none group" onclick="toggleFAQ('p-2')">
-<span class="text-xs uppercase tracking-wider font-bold text-neutral-800 group-hover:text-luxury-gold transition-colors duration-200" data-i18n="programs.panama.faqQ2">Question 2</span>
+<span class="text-xs uppercase tracking-wider font-bold text-neutral-800 group-hover:text-luxury-gold transition-colors duration-200" data-i18n="programs.panama.faqQ2">How much investment is required to qualify?</span>
 <span id="icon-p-2" class="text-xs text-neutral-400 group-hover:text-luxury-gold transition-transform duration-200 flex-shrink-0 ml-3"><i class="fa-solid fa-chevron-down text-xs"></i></span>
 </button>
 <div class="max-h-0 overflow-hidden transition-all duration-500 ease-in-out" id="content-p-2">
@@ -1961,7 +1964,7 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
 </div>
 <div class="border-b border-neutral-200 py-4">
 <button class="w-full flex justify-between items-center text-left focus:outline-none group" onclick="toggleFAQ('p-3')">
-<span class="text-xs uppercase tracking-wider font-bold text-neutral-800 group-hover:text-luxury-gold transition-colors duration-200" data-i18n="programs.panama.faqQ3">Question 3</span>
+<span class="text-xs uppercase tracking-wider font-bold text-neutral-800 group-hover:text-luxury-gold transition-colors duration-200" data-i18n="programs.panama.faqQ3">How fast is the visa approved?</span>
 <span id="icon-p-3" class="text-xs text-neutral-400 group-hover:text-luxury-gold transition-transform duration-200 flex-shrink-0 ml-3"><i class="fa-solid fa-chevron-down text-xs"></i></span>
 </button>
 <div class="max-h-0 overflow-hidden transition-all duration-500 ease-in-out" id="content-p-3">
@@ -1970,7 +1973,7 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
 </div>
 <div class="border-b border-neutral-200 py-4">
 <button class="w-full flex justify-between items-center text-left focus:outline-none group" onclick="toggleFAQ('p-4')">
-<span class="text-xs uppercase tracking-wider font-bold text-neutral-800 group-hover:text-luxury-gold transition-colors duration-200" data-i18n="programs.panama.faqQ4">Question 4</span>
+<span class="text-xs uppercase tracking-wider font-bold text-neutral-800 group-hover:text-luxury-gold transition-colors duration-200" data-i18n="programs.panama.faqQ4">Do I need to live in Panama to keep my residency?</span>
 <span id="icon-p-4" class="text-xs text-neutral-400 group-hover:text-luxury-gold transition-transform duration-200 flex-shrink-0 ml-3"><i class="fa-solid fa-chevron-down text-xs"></i></span>
 </button>
 <div class="max-h-0 overflow-hidden transition-all duration-500 ease-in-out" id="content-p-4">
@@ -1979,7 +1982,7 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
 </div>
 <div class="border-b border-neutral-200 py-4">
 <button class="w-full flex justify-between items-center text-left focus:outline-none group" onclick="toggleFAQ('p-5')">
-<span class="text-xs uppercase tracking-wider font-bold text-neutral-800 group-hover:text-luxury-gold transition-colors duration-200" data-i18n="programs.panama.faqQ5">Question 5</span>
+<span class="text-xs uppercase tracking-wider font-bold text-neutral-800 group-hover:text-luxury-gold transition-colors duration-200" data-i18n="programs.panama.faqQ5">What are the tax benefits of Panama residency?</span>
 <span id="icon-p-5" class="text-xs text-neutral-400 group-hover:text-luxury-gold transition-transform duration-200 flex-shrink-0 ml-3"><i class="fa-solid fa-chevron-down text-xs"></i></span>
 </button>
 <div class="max-h-0 overflow-hidden transition-all duration-500 ease-in-out" id="content-p-5">
@@ -1988,7 +1991,7 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
 </div>
 <div class="border-b border-neutral-200 py-4">
 <button class="w-full flex justify-between items-center text-left focus:outline-none group" onclick="toggleFAQ('p-6')">
-<span class="text-xs uppercase tracking-wider font-bold text-neutral-800 group-hover:text-luxury-gold transition-colors duration-200" data-i18n="programs.panama.faqQ6">Question 6</span>
+<span class="text-xs uppercase tracking-wider font-bold text-neutral-800 group-hover:text-luxury-gold transition-colors duration-200" data-i18n="programs.panama.faqQ6">Can I include my family members?</span>
 <span id="icon-p-6" class="text-xs text-neutral-400 group-hover:text-luxury-gold transition-transform duration-200 flex-shrink-0 ml-3"><i class="fa-solid fa-chevron-down text-xs"></i></span>
 </button>
 <div class="max-h-0 overflow-hidden transition-all duration-500 ease-in-out" id="content-p-6">
@@ -1997,7 +2000,7 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
 </div>
 <div class="border-b border-neutral-200 py-4">
 <button class="w-full flex justify-between items-center text-left focus:outline-none group" onclick="toggleFAQ('p-7')">
-<span class="text-xs uppercase tracking-wider font-bold text-neutral-800 group-hover:text-luxury-gold transition-colors duration-200" data-i18n="programs.panama.faqQ7">Question 7</span>
+<span class="text-xs uppercase tracking-wider font-bold text-neutral-800 group-hover:text-luxury-gold transition-colors duration-200" data-i18n="programs.panama.faqQ7">Is there a path to Panama citizenship?</span>
 <span id="icon-p-7" class="text-xs text-neutral-400 group-hover:text-luxury-gold transition-transform duration-200 flex-shrink-0 ml-3"><i class="fa-solid fa-chevron-down text-xs"></i></span>
 </button>
 <div class="max-h-0 overflow-hidden transition-all duration-500 ease-in-out" id="content-p-7">
@@ -2006,7 +2009,7 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
 </div>
 <div class="border-b border-neutral-200 py-4">
 <button class="w-full flex justify-between items-center text-left focus:outline-none group" onclick="toggleFAQ('p-8')">
-<span class="text-xs uppercase tracking-wider font-bold text-neutral-800 group-hover:text-luxury-gold transition-colors duration-200" data-i18n="programs.panama.faqQ8">Question 8</span>
+<span class="text-xs uppercase tracking-wider font-bold text-neutral-800 group-hover:text-luxury-gold transition-colors duration-200" data-i18n="programs.panama.faqQ8">Can I manage the process from Dubai?</span>
 <span id="icon-p-8" class="text-xs text-neutral-400 group-hover:text-luxury-gold transition-transform duration-200 flex-shrink-0 ml-3"><i class="fa-solid fa-chevron-down text-xs"></i></span>
 </button>
 <div class="max-h-0 overflow-hidden transition-all duration-500 ease-in-out" id="content-p-8">
@@ -2015,7 +2018,7 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
 </div>
 <div class="border-b border-neutral-200 py-4">
 <button class="w-full flex justify-between items-center text-left focus:outline-none group" onclick="toggleFAQ('p-9')">
-<span class="text-xs uppercase tracking-wider font-bold text-neutral-800 group-hover:text-luxury-gold transition-colors duration-200" data-i18n="programs.panama.faqQ9">Question 9</span>
+<span class="text-xs uppercase tracking-wider font-bold text-neutral-800 group-hover:text-luxury-gold transition-colors duration-200" data-i18n="programs.panama.faqQ9">Do I need to visit Panama at all?</span>
 <span id="icon-p-9" class="text-xs text-neutral-400 group-hover:text-luxury-gold transition-transform duration-200 flex-shrink-0 ml-3"><i class="fa-solid fa-chevron-down text-xs"></i></span>
 </button>
 <div class="max-h-0 overflow-hidden transition-all duration-500 ease-in-out" id="content-p-9">
@@ -2024,7 +2027,7 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
 </div>
 <div class="border-b border-neutral-200 py-4">
 <button class="w-full flex justify-between items-center text-left focus:outline-none group" onclick="toggleFAQ('p-10')">
-<span class="text-xs uppercase tracking-wider font-bold text-neutral-800 group-hover:text-luxury-gold transition-colors duration-200" data-i18n="programs.panama.faqQ10">Question 10</span>
+<span class="text-xs uppercase tracking-wider font-bold text-neutral-800 group-hover:text-luxury-gold transition-colors duration-200" data-i18n="programs.panama.faqQ10">Are property investments secure in Panama?</span>
 <span id="icon-p-10" class="text-xs text-neutral-400 group-hover:text-luxury-gold transition-transform duration-200 flex-shrink-0 ml-3"><i class="fa-solid fa-chevron-down text-xs"></i></span>
 </button>
 <div class="max-h-0 overflow-hidden transition-all duration-500 ease-in-out" id="content-p-10">
@@ -2036,7 +2039,7 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
 <div class="space-y-2 lg:pl-6">
 <div class="border-b border-neutral-200 py-4">
 <button class="w-full flex justify-between items-center text-left focus:outline-none group" onclick="toggleFAQ('p-11')">
-<span class="text-xs uppercase tracking-wider font-bold text-neutral-800 group-hover:text-luxury-gold transition-colors duration-200" data-i18n="programs.panama.faqQ11">Question 11</span>
+<span class="text-xs uppercase tracking-wider font-bold text-neutral-800 group-hover:text-luxury-gold transition-colors duration-200" data-i18n="programs.panama.faqQ11">What basic documents are required to start?</span>
 <span id="icon-p-11" class="text-xs text-neutral-400 group-hover:text-luxury-gold transition-transform duration-200 flex-shrink-0 ml-3"><i class="fa-solid fa-chevron-down text-xs"></i></span>
 </button>
 <div class="max-h-0 overflow-hidden transition-all duration-500 ease-in-out" id="content-p-11">
@@ -2045,7 +2048,7 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
 </div>
 <div class="border-b border-neutral-200 py-4">
 <button class="w-full flex justify-between items-center text-left focus:outline-none group" onclick="toggleFAQ('p-12')">
-<span class="text-xs uppercase tracking-wider font-bold text-neutral-800 group-hover:text-luxury-gold transition-colors duration-200" data-i18n="programs.panama.faqQ12">Question 12</span>
+<span class="text-xs uppercase tracking-wider font-bold text-neutral-800 group-hover:text-luxury-gold transition-colors duration-200" data-i18n="programs.panama.faqQ12">When do I need to transfer my investment money?</span>
 <span id="icon-p-12" class="text-xs text-neutral-400 group-hover:text-luxury-gold transition-transform duration-200 flex-shrink-0 ml-3"><i class="fa-solid fa-chevron-down text-xs"></i></span>
 </button>
 <div class="max-h-0 overflow-hidden transition-all duration-500 ease-in-out" id="content-p-12">
@@ -2054,7 +2057,7 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
 </div>
 <div class="border-b border-neutral-200 py-4">
 <button class="w-full flex justify-between items-center text-left focus:outline-none group" onclick="toggleFAQ('p-13')">
-<span class="text-xs uppercase tracking-wider font-bold text-neutral-800 group-hover:text-luxury-gold transition-colors duration-200" data-i18n="programs.panama.faqQ13">Question 13</span>
+<span class="text-xs uppercase tracking-wider font-bold text-neutral-800 group-hover:text-luxury-gold transition-colors duration-200" data-i18n="programs.panama.faqQ13">Are there any language or education tests?</span>
 <span id="icon-p-13" class="text-xs text-neutral-400 group-hover:text-luxury-gold transition-transform duration-200 flex-shrink-0 ml-3"><i class="fa-solid fa-chevron-down text-xs"></i></span>
 </button>
 <div class="max-h-0 overflow-hidden transition-all duration-500 ease-in-out" id="content-p-13">
@@ -2063,7 +2066,7 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
 </div>
 <div class="border-b border-neutral-200 py-4">
 <button class="w-full flex justify-between items-center text-left focus:outline-none group" onclick="toggleFAQ('p-14')">
-<span class="text-xs uppercase tracking-wider font-bold text-neutral-800 group-hover:text-luxury-gold transition-colors duration-200" data-i18n="programs.panama.faqQ14">Question 14</span>
+<span class="text-xs uppercase tracking-wider font-bold text-neutral-800 group-hover:text-luxury-gold transition-colors duration-200" data-i18n="programs.panama.faqQ14">Can I sell my property after getting residency?</span>
 <span id="icon-p-14" class="text-xs text-neutral-400 group-hover:text-luxury-gold transition-transform duration-200 flex-shrink-0 ml-3"><i class="fa-solid fa-chevron-down text-xs"></i></span>
 </button>
 <div class="max-h-0 overflow-hidden transition-all duration-500 ease-in-out" id="content-p-14">
@@ -2072,7 +2075,7 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
 </div>
 <div class="border-b border-neutral-200 py-4">
 <button class="w-full flex justify-between items-center text-left focus:outline-none group" onclick="toggleFAQ('p-15')">
-<span class="text-xs uppercase tracking-wider font-bold text-neutral-800 group-hover:text-luxury-gold transition-colors duration-200" data-i18n="programs.panama.faqQ15">Question 15</span>
+<span class="text-xs uppercase tracking-wider font-bold text-neutral-800 group-hover:text-luxury-gold transition-colors duration-200" data-i18n="programs.panama.faqQ15">Does Panama recognize dual citizenship?</span>
 <span id="icon-p-15" class="text-xs text-neutral-400 group-hover:text-luxury-gold transition-transform duration-200 flex-shrink-0 ml-3"><i class="fa-solid fa-chevron-down text-xs"></i></span>
 </button>
 <div class="max-h-0 overflow-hidden transition-all duration-500 ease-in-out" id="content-p-15">
@@ -2081,7 +2084,7 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
 </div>
 <div class="border-b border-neutral-200 py-4">
 <button class="w-full flex justify-between items-center text-left focus:outline-none group" onclick="toggleFAQ('p-16')">
-<span class="text-xs uppercase tracking-wider font-bold text-neutral-800 group-hover:text-luxury-gold transition-colors duration-200" data-i18n="programs.panama.faqQ16">Question 16</span>
+<span class="text-xs uppercase tracking-wider font-bold text-neutral-800 group-hover:text-luxury-gold transition-colors duration-200" data-i18n="programs.panama.faqQ16">What are the extra government fees?</span>
 <span id="icon-p-16" class="text-xs text-neutral-400 group-hover:text-luxury-gold transition-transform duration-200 flex-shrink-0 ml-3"><i class="fa-solid fa-chevron-down text-xs"></i></span>
 </button>
 <div class="max-h-0 overflow-hidden transition-all duration-500 ease-in-out" id="content-p-16">
@@ -2090,7 +2093,7 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
 </div>
 <div class="border-b border-neutral-200 py-4">
 <button class="w-full flex justify-between items-center text-left focus:outline-none group" onclick="toggleFAQ('p-17')">
-<span class="text-xs uppercase tracking-wider font-bold text-neutral-800 group-hover:text-luxury-gold transition-colors duration-200" data-i18n="programs.panama.faqQ17">Question 17</span>
+<span class="text-xs uppercase tracking-wider font-bold text-neutral-800 group-hover:text-luxury-gold transition-colors duration-200" data-i18n="programs.panama.faqQ17">Can I open a bank account in Panama?</span>
 <span id="icon-p-17" class="text-xs text-neutral-400 group-hover:text-luxury-gold transition-transform duration-200 flex-shrink-0 ml-3"><i class="fa-solid fa-chevron-down text-xs"></i></span>
 </button>
 <div class="max-h-0 overflow-hidden transition-all duration-500 ease-in-out" id="content-p-17">
@@ -2099,7 +2102,7 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
 </div>
 <div class="border-b border-neutral-200 py-4">
 <button class="w-full flex justify-between items-center text-left focus:outline-none group" onclick="toggleFAQ('p-18')">
-<span class="text-xs uppercase tracking-wider font-bold text-neutral-800 group-hover:text-luxury-gold transition-colors duration-200" data-i18n="programs.panama.faqQ18">Question 18</span>
+<span class="text-xs uppercase tracking-wider font-bold text-neutral-800 group-hover:text-luxury-gold transition-colors duration-200" data-i18n="programs.panama.faqQ18">What happens if my application is delayed?</span>
 <span id="icon-p-18" class="text-xs text-neutral-400 group-hover:text-luxury-gold transition-transform duration-200 flex-shrink-0 ml-3"><i class="fa-solid fa-chevron-down text-xs"></i></span>
 </button>
 <div class="max-h-0 overflow-hidden transition-all duration-500 ease-in-out" id="content-p-18">
@@ -2108,7 +2111,7 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
 </div>
 <div class="border-b border-neutral-200 py-4">
 <button class="w-full flex justify-between items-center text-left focus:outline-none group" onclick="toggleFAQ('p-19')">
-<span class="text-xs uppercase tracking-wider font-bold text-neutral-800 group-hover:text-luxury-gold transition-colors duration-200" data-i18n="programs.panama.faqQ19">Question 19</span>
+<span class="text-xs uppercase tracking-wider font-bold text-neutral-800 group-hover:text-luxury-gold transition-colors duration-200" data-i18n="programs.panama.faqQ19">Can I work or start a business in Panama?</span>
 <span id="icon-p-19" class="text-xs text-neutral-400 group-hover:text-luxury-gold transition-transform duration-200 flex-shrink-0 ml-3"><i class="fa-solid fa-chevron-down text-xs"></i></span>
 </button>
 <div class="max-h-0 overflow-hidden transition-all duration-500 ease-in-out" id="content-p-19">
@@ -2117,7 +2120,7 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
 </div>
 <div class="border-b border-neutral-200 py-4">
 <button class="w-full flex justify-between items-center text-left focus:outline-none group" onclick="toggleFAQ('p-20')">
-<span class="text-xs uppercase tracking-wider font-bold text-neutral-800 group-hover:text-luxury-gold transition-colors duration-200" data-i18n="programs.panama.faqQ20">Question 20</span>
+<span class="text-xs uppercase tracking-wider font-bold text-neutral-800 group-hover:text-luxury-gold transition-colors duration-200" data-i18n="programs.panama.faqQ20">Why choose Sharif Group for my Panama application?</span>
 <span id="icon-p-20" class="text-xs text-neutral-400 group-hover:text-luxury-gold transition-transform duration-200 flex-shrink-0 ml-3"><i class="fa-solid fa-chevron-down text-xs"></i></span>
 </button>
 <div class="max-h-0 overflow-hidden transition-all duration-500 ease-in-out" id="content-p-20">

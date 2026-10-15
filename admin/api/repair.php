@@ -25,6 +25,11 @@ if (empty($cleanSnapshot)) {
     ], 500);
 }
 
+// Purge any accidental dom overrides with mojibake
+if (isset($cleanSnapshot['sgcms_dom_overrides']) && is_array($cleanSnapshot['sgcms_dom_overrides'])) {
+    $cleanSnapshot['sgcms_dom_overrides'] = (object)[];
+}
+
 // 2. Connect to MySQL
 $db = getDb(true);
 $repairedKeys = [];

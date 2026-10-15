@@ -7,15 +7,88 @@
 (function () {
     'use strict';
 
-    var currentLang = 'en';
+    // Immediate early execution: ensure document lang and dir strictly align with URL path
+    (function syncDocEarly() {
+        try {
+            var path = (window.location && window.location.pathname) ? window.location.pathname : '';
+            var segs = path.split('/').filter(Boolean);
+            var first = segs.length > 0 ? segs[0].toLowerCase() : '';
+            if (first === 'ar' || first === 'fa') {
+                document.documentElement.dir = 'rtl';
+                document.documentElement.lang = first;
+            } else if (first === 'zh') {
+                document.documentElement.dir = 'ltr';
+                document.documentElement.lang = 'zh';
+            } else {
+                document.documentElement.dir = 'ltr';
+                document.documentElement.lang = 'en';
+                document.documentElement.classList.remove('i18n-pending');
+            }
+        } catch (e) {}
+    })();
+
+    function normalizeLang(lang) {
+        if (!lang) return 'en';
+        var l = String(lang).toLowerCase().trim();
+        if (l === 'ar' || l === 'arabic') return 'ar';
+        if (l === 'fa' || l === 'persian') return 'fa';
+        if (l === 'zh' || l === 'chinese' || l === 'zh-hans' || l === 'zh-cn') return 'zh';
+        return 'en';
+    }
+
+    function getInitialLang() {
+        // 1. Check clean path prefix: /ar/, /fa/, /zh/, /en/
+        var pathname = (window.location && window.location.pathname) ? window.location.pathname : '';
+        var segments = pathname.split('/').filter(Boolean);
+        if (segments.length > 0) {
+            var first = segments[0].toLowerCase();
+            if (first === 'ar' || first === 'fa' || first === 'zh' || first === 'en') {
+                return normalizeLang(first);
+            }
+        }
+
+        // 2. Check query param: ?lang=ar / ?lang=fa / ?lang=zh (e.g. passed from dashboard iframe or manual test)
+        var urlParams = new URLSearchParams(window.location.search);
+        var urlLang = urlParams.get('lang');
+        if (urlLang) {
+            return normalizeLang(urlLang);
+        }
+
+        // 3. Inside CMS editor / admin preview iframe: check stored preference
+        var inIframe = false;
+        try { inIframe = (window.self !== window.top); } catch (e) { inIframe = true; }
+        var isEditor = inIframe || (window.location.search && (window.location.search.indexOf('cms_editor') !== -1 || window.location.search.indexOf('cms_preview') !== -1));
+        if (isEditor) {
+            try {
+                var stored = localStorage.getItem('sharif_lang') || localStorage.getItem('sharif_preferred_lang');
+                if (stored && ['ar', 'fa', 'zh', 'en'].indexOf(stored.toLowerCase().trim()) !== -1) {
+                    return normalizeLang(stored);
+                }
+            } catch (e) {}
+        }
+
+        // 4. On live public site: any page without /ar/, /fa/, /zh/ prefix is strictly English
+        return 'en';
+    }
+
+    var currentLang = getInitialLang();
     var translationsCache = {};
     var isTranslating = false;
 
+    window.setLanguage = function (lang) {
+        if (!lang) return;
+        currentLang = normalizeLang(lang);
+        try {
+            localStorage.setItem('sharif_lang', currentLang);
+            localStorage.setItem('sharif_preferred_lang', currentLang);
+        } catch (e) {}
+    };
+
     var LANG_CONFIG = {
-        'en': { code: 'en', dir: 'ltr', label: 'EN', name: 'English' },
-        'ar': { code: 'ar', dir: 'rtl', label: 'العربية', name: 'Arabic' },
-        'fa': { code: 'fa', dir: 'rtl', label: 'فارسی', name: 'Persian' },
-        'zh': { code: 'zh', dir: 'ltr', label: '中文', name: 'Chinese' }
+        'en': { code: 'en', dir: 'ltr', label: 'EN', badge: 'EN', name: 'English' },
+        'ar': { code: 'ar', dir: 'rtl', label: 'AR', badge: 'AR', name: 'Arabic' },
+        'fa': { code: 'fa', dir: 'rtl', label: 'FA', badge: 'FA', name: 'Persian' },
+        'zh': { code: 'zh', dir: 'ltr', label: 'ZH', badge: 'ZH', name: 'Chinese' }
     };
 
     var ARABIC_DIGITS = ['٠', '١', '٢', '٣', '٤', '٥', '٦', '٧', '٨', '٩'];
@@ -53,18 +126,38 @@
     }
     window.decodeHtmlEntities = decodeHtmlEntities;
 
+    function isMojibakeString(str) {
+        if (!str || typeof str !== 'string') return false;
+        if (/[\u2500-\u259F\uFFFD]|ΓÇ[ôöòóõô–•]|\\u0026amp;/i.test(str)) return true;
+        // Detect Windows-1252 / ISO-8859-1 Mojibake of UTF-8 multi-byte sequences (Chinese, Arabic, Persian)
+        if (/(?:æ[•™\x80-\xFF]|è[‚²¯¢¿Ž°\x80-\xFF]|å[’¨ˆ°«\x80-\xFF]|ç[º»\x80-\xFF]|é[\x80-\xFF]|ä[\x80-\xFF])/.test(str)) {
+            if (!/[\u4E00-\u9FFF]/.test(str)) return true;
+        }
+        if (/[äåæçèéêëìíîï][\u0080-\u00FF\u201A-\u2026\u2018-\u201D\u2122\u0152\u0153\u0160\u0161\u0178\u017E\u02C6\u02DC]/.test(str)) {
+            if (!/[\u4E00-\u9FFF]/.test(str)) return true;
+        }
+        if (/[ØÙ][\u0080-\u00FF]/.test(str)) {
+            if (!/[\u0600-\u06FF]/.test(str)) return true;
+        }
+        if (/(?:O\s*U,|AE\+|[A-Za-z]\s*[¿Ž°ˆ¬¢]|A["”][A-Za-z"”]+|É«)/.test(str)) return true;
+        return false;
+    }
+    window.isMojibakeString = isMojibakeString;
+
+    function hasAnyMojibake(val) {
+        if (typeof val === 'string') return isMojibakeString(val);
+        if (Array.isArray(val)) return val.some(hasAnyMojibake);
+        if (val && typeof val === 'object') return Object.values(val).some(hasAnyMojibake);
+        return false;
+    }
+    window.hasAnyMojibake = hasAnyMojibake;
+
     window.localizeNumbers = function (str, lang) {
         return localizeNumbers(str, lang || currentLang);
     };
 
     window.getCurrentLanguage = function () {
-        if (!currentLang || currentLang === 'en') {
-            var initial = getInitialLang();
-            if (initial && initial !== 'en') {
-                currentLang = initial;
-            }
-        }
-        return currentLang;
+        return currentLang || getInitialLang();
     };
 
     window.getTranslation = function (keyPath, lang) {
@@ -87,6 +180,7 @@
                 val = 'بلاگ';
             }
             if (val !== null && val !== undefined) {
+                if (isMojibakeString(val)) return; // Never render mojibake strings!
                 var localized = (l === 'ar' || l === 'fa') ? localizeNumbers(val, l) : val;
                 el.textContent = decodeHtmlEntities(localized);
             }
@@ -96,54 +190,13 @@
             var key = el.getAttribute('data-i18n-html');
             var val = getNestedValue(data, key);
             if (val !== null && val !== undefined) {
+                if (isMojibakeString(val)) return; // Never render mojibake strings!
                 el.innerHTML = val;
             }
         });
     };
 
-    function normalizeLang(lang) {
-        if (!lang) return 'en';
-        var l = String(lang).toLowerCase().trim();
-        if (l === 'ar' || l === 'arabic') return 'ar';
-        if (l === 'fa' || l === 'persian') return 'fa';
-        if (l === 'zh' || l === 'chinese' || l === 'zh-hans' || l === 'zh-cn') return 'zh';
-        return 'en';
-    }
 
-    function getInitialLang() {
-        // 1. Check clean path prefix: /ar/, /fa/, /zh/, /en/
-        var pathname = (window.location && window.location.pathname) ? window.location.pathname : '';
-        var segments = pathname.split('/').filter(Boolean);
-        if (segments.length > 0) {
-            var first = segments[0].toLowerCase();
-            if (first === 'ar' || first === 'fa' || first === 'zh' || first === 'en') {
-                return first;
-            }
-        }
-
-        // 2. Check query param: ?lang=ar
-        var urlParams = new URLSearchParams(window.location.search);
-        var urlLang = urlParams.get('lang');
-        if (urlLang) {
-            return normalizeLang(urlLang);
-        }
-
-        // 3. Document explicit lang attribute takes precedence over legacy stored preference
-        var docLang = (document.documentElement && document.documentElement.lang) ? document.documentElement.lang.toLowerCase().trim() : '';
-        if (docLang && ['ar', 'fa', 'zh', 'en'].indexOf(docLang) !== -1) {
-            return normalizeLang(docLang);
-        }
-
-        // 4. Check stored preference
-        try {
-            var stored = localStorage.getItem('sharif_lang') || localStorage.getItem('sharif_preferred_lang');
-            if (stored) {
-                return normalizeLang(stored);
-            }
-        } catch (e) {}
-
-        return 'en';
-    }
 
     function getNestedValue(obj, keyPath) {
         if (!obj || !keyPath) return null;
@@ -218,7 +271,7 @@
         }
     }
 
-    var I18N_VERSION = '20261006_v50';
+    var I18N_VERSION = '20261006_v101_clean';
 
     function loadTranslation(lang, callback) {
         var pathname = (window.location && window.location.pathname) ? window.location.pathname.toLowerCase() : '';
@@ -230,11 +283,15 @@
             translationsCache.fa.nav.blog = 'بلاگ';
         }
 
-        // 1. If already loaded in memory and has deep content
+        // 1. If already loaded in memory and has deep content with NO mojibake
         if (translationsCache[lang] && (translationsCache[lang].pages || translationsCache[lang].nav)) {
-            if (!isEligibilityChecker || (translationsCache[lang].pages && translationsCache[lang].pages.eligibilityChecker)) {
-                callback(translationsCache[lang]);
-                return;
+            if (!hasAnyMojibake(translationsCache[lang])) {
+                if (!isEligibilityChecker || (translationsCache[lang].pages && translationsCache[lang].pages.eligibilityChecker)) {
+                    callback(translationsCache[lang]);
+                    return;
+                }
+            } else {
+                delete translationsCache[lang];
             }
         }
 
@@ -245,12 +302,15 @@
 
         var storageKey = 'sharif_i18n_' + lang + '_' + I18N_VERSION;
 
-        // Proactively clean any outdated cache or stale blog entries
+        // Proactively clean any outdated cache, stale entries, or corrupted mojibake keys across localStorage
         try {
             for (var i = localStorage.length - 1; i >= 0; i--) {
                 var k = localStorage.key(i);
-                if (k && k.indexOf('sharif_i18n_') === 0 && k !== storageKey) {
-                    localStorage.removeItem(k);
+                if (k && k.indexOf('sharif_i18n_') === 0) {
+                    var rawVal = localStorage.getItem(k);
+                    if (k !== storageKey || isMojibakeString(rawVal)) {
+                        localStorage.removeItem(k);
+                    }
                 }
             }
         } catch (e) {}
@@ -260,16 +320,22 @@
             var cachedJson = localStorage.getItem(storageKey);
             if (cachedJson) {
                 var parsedData = JSON.parse(cachedJson);
-                if (parsedData && parsedData.nav && parsedData.nav.blog === 'وبلاگ') {
-                    parsedData.nav.blog = 'بلاگ';
-                }
-                if (isEligibilityChecker && (!parsedData.pages || !parsedData.pages.eligibilityChecker)) {
-                    // Stale cache missing eligibility checker translations: discard and re-fetch fresh!
-                } else if (parsedData && (parsedData.pages || parsedData.nav || parsedData.services || parsedData.footer)) {
-                    translationsCache[lang] = deepMerge(translationsCache[lang] || {}, parsedData);
-                    window.translationsCache = translationsCache;
-                    callback(translationsCache[lang]);
-                    return; // Return immediately from browser storage!
+                if (hasAnyMojibake(parsedData)) {
+                    // Stale cache contains mojibake: discard and purge immediately!
+                    try { localStorage.removeItem(storageKey); } catch (e) {}
+                    parsedData = null;
+                } else {
+                    if (parsedData && parsedData.nav && parsedData.nav.blog === 'وبلاگ') {
+                        parsedData.nav.blog = 'بلاگ';
+                    }
+                    if (isEligibilityChecker && (!parsedData.pages || !parsedData.pages.eligibilityChecker)) {
+                        // Stale cache missing eligibility checker translations: discard and re-fetch fresh!
+                    } else if (parsedData && (parsedData.pages || parsedData.nav || parsedData.services || parsedData.footer)) {
+                        translationsCache[lang] = deepMerge(translationsCache[lang] || {}, parsedData);
+                        window.translationsCache = translationsCache;
+                        callback(translationsCache[lang]);
+                        return; // Return immediately from browser storage!
+                    }
                 }
             }
         } catch (e) {
@@ -1358,6 +1424,9 @@
             localStorage.setItem('sharif_preferred_lang', lang);
         } catch (e) {}
 
+        // Immediately update button badge and dropdown UI so user gets instant visual confirmation
+        updateLanguageUI(lang);
+
         var inIframe = false;
         try { inIframe = (window.self !== window.top); } catch (e) { inIframe = true; }
         var isEditor = inIframe || (window.location.search && (window.location.search.indexOf('cms_editor') !== -1 || window.location.search.indexOf('cms_preview') !== -1));
@@ -1378,9 +1447,20 @@
         }
 
         // On live public website:
-        // Compute clean target URL to the dedicated physical pre-rendered localized page
+        // If the clicked link element has an explicit valid href, prioritize it
+        var explicitHref = '';
+        if (event && event.currentTarget && typeof event.currentTarget.getAttribute === 'function') {
+            explicitHref = (event.currentTarget.getAttribute('href') || '').trim();
+        } else if (event && event.target && event.target.closest) {
+            var clickedA = event.target.closest('a');
+            if (clickedA) explicitHref = (clickedA.getAttribute('href') || '').trim();
+        }
+
         var cleanPath = getCleanCurrentPath();
         var targetUrl = (lang === 'en') ? cleanPath : ('/' + lang + (cleanPath === '/' ? '/' : cleanPath));
+        if (explicitHref && explicitHref !== '#' && !explicitHref.startsWith('javascript:')) {
+            targetUrl = explicitHref;
+        }
 
         // If user clicked the language they are ALREADY on, just close the dropdown
         var currentClean = (window.location.pathname || '/').replace(/\/index\.html?$/i, '/');
@@ -1406,10 +1486,36 @@
         }
     });
 
+    function sanitizeLangDropdownLabels() {
+        var dropdown = document.getElementById('lang-dropdown-menu');
+        if (!dropdown) return;
+        var nativeLabels = {
+            'en': 'English',
+            'ar': 'العربية',
+            'fa': 'فارسی',
+            'zh': '中文'
+        };
+        var options = dropdown.querySelectorAll('.lang-option');
+        for (var i = 0; i < options.length; i++) {
+            var opt = options[i];
+            var langCode = opt.getAttribute('data-lang');
+            if (langCode && nativeLabels[langCode]) {
+                var span = opt.querySelector('span:first-child');
+                if (span) {
+                    var txt = (span.textContent || '').trim();
+                    if (txt.indexOf('?') !== -1 || isMojibakeString(txt) || !txt) {
+                        span.textContent = nativeLabels[langCode];
+                    }
+                }
+            }
+        }
+    }
+
     window.toggleLangDropdown = function (event) {
         if (event) {
             event.stopPropagation();
         }
+        sanitizeLangDropdownLabels();
         var dropdown = document.getElementById('lang-dropdown-menu');
         var arrow = document.getElementById('lang-arrow-icon');
         if (dropdown) {
@@ -1451,7 +1557,6 @@
 
     // Global RTL-aware carousel navigation for any page with dominica-blog-slider-inner
     var dominicaBlogSliderIndex = 0;
-    var dominicaBlogAutoScrollTimer = null;
 
     function updateDominicaBlogSliderGlobal() {
         var inner = document.getElementById('dominica-blog-slider-inner');
@@ -1474,46 +1579,11 @@
         }
     }
 
-    function nextDominicaBlogAutoGlobal() {
-        var inner = document.getElementById('dominica-blog-slider-inner');
-        if (!inner) return;
-        var visibleCards = window.innerWidth >= 1024 ? 3 : window.innerWidth >= 768 ? 2 : 1;
-        var totalCards = inner.children.length;
-        var maxIndex = Math.max(totalCards - visibleCards, 0);
-
-        if (dominicaBlogSliderIndex >= maxIndex) {
-            dominicaBlogSliderIndex = 0;
-        } else {
-            dominicaBlogSliderIndex++;
-        }
-        updateDominicaBlogSliderGlobal();
-    }
-
-    function startDominicaBlogAutoScrollGlobal() {
-        stopDominicaBlogAutoScrollGlobal();
-        dominicaBlogAutoScrollTimer = setInterval(nextDominicaBlogAutoGlobal, 3500);
-    }
-
-    function stopDominicaBlogAutoScrollGlobal() {
-        if (dominicaBlogAutoScrollTimer) {
-            clearInterval(dominicaBlogAutoScrollTimer);
-            dominicaBlogAutoScrollTimer = null;
-        }
-    }
-
-    function restartDominicaBlogAutoScrollGlobal() {
-        stopDominicaBlogAutoScrollGlobal();
-        startDominicaBlogAutoScrollGlobal();
-    }
-
-    function setupDominicaBlogHoverPauseGlobal() {
-        var container = document.getElementById('sec-dominica-blogs') || document.getElementById('dominica-blog-slider-inner');
-        if (!container) return;
-        container.addEventListener('mouseenter', stopDominicaBlogAutoScrollGlobal);
-        container.addEventListener('mouseleave', startDominicaBlogAutoScrollGlobal);
-        container.addEventListener('touchstart', stopDominicaBlogAutoScrollGlobal, { passive: true });
-        container.addEventListener('touchend', startDominicaBlogAutoScrollGlobal, { passive: true });
-    }
+    // Auto-scroll disabled per user request: navigation buttons only
+    function startDominicaBlogAutoScrollGlobal() {}
+    function stopDominicaBlogAutoScrollGlobal() {}
+    function restartDominicaBlogAutoScrollGlobal() {}
+    function setupDominicaBlogHoverPauseGlobal() {}
 
     function slideDominicaBlogsGlobal(direction) {
         var inner = document.getElementById('dominica-blog-slider-inner');
@@ -1543,7 +1613,6 @@
         }
 
         updateDominicaBlogSliderGlobal();
-        restartDominicaBlogAutoScrollGlobal();
     }
 
     try {
@@ -1572,7 +1641,6 @@
     window.addEventListener('languageChanged', function () {
         dominicaBlogSliderIndex = 0;
         updateDominicaBlogSliderGlobal();
-        restartDominicaBlogAutoScrollGlobal();
     });
 
     window.addEventListener('resize', function () {
@@ -1581,11 +1649,10 @@
 
     document.addEventListener('DOMContentLoaded', function () {
         updateDominicaBlogSliderGlobal();
-        setupDominicaBlogHoverPauseGlobal();
-        startDominicaBlogAutoScrollGlobal();
+        sanitizeLangDropdownLabels();
     });
     updateDominicaBlogSliderGlobal();
-    setupDominicaBlogHoverPauseGlobal();
+    sanitizeLangDropdownLabels();
     // Enforce standard Western digits in phone inputs on live typing/pasting
     document.addEventListener('input', function (e) {
         if (e.target && (e.target.type === 'tel' || e.target.getAttribute('type') === 'tel')) {
@@ -1663,15 +1730,11 @@
     }
 
     function getPageNativeLang() {
-        var htmlLang = (document.documentElement && document.documentElement.lang) ? document.documentElement.lang.toLowerCase().trim() : '';
-        if (htmlLang) {
-            return normalizeLang(htmlLang);
-        }
         var pathname = (window.location && window.location.pathname) ? window.location.pathname : '';
         var segments = pathname.split('/').filter(Boolean);
         if (segments.length > 0) {
             var first = segments[0].toLowerCase();
-            if (first === 'ar' || first === 'fa' || first === 'zh' || first === 'en') {
+            if (first === 'ar' || first === 'fa' || first === 'zh') {
                 return normalizeLang(first);
             }
         }
@@ -1685,8 +1748,31 @@
         var pageNativeLang = getPageNativeLang();
         currentLang = getInitialLang();
 
+        // Enforce correct HTML dir and lang based on resolved currentLang
+        if (currentLang === 'ar' || currentLang === 'fa') {
+            document.documentElement.dir = 'rtl';
+            document.documentElement.lang = currentLang;
+        } else {
+            document.documentElement.dir = 'ltr';
+            document.documentElement.lang = currentLang;
+        }
+
         // Safety: unmask immediately
         document.documentElement.classList.remove('i18n-pending');
+
+        // Heal stale localStorage if visitor was previously tested in Chinese/Arabic
+        try {
+            var inIframe = false;
+            try { inIframe = (window.self !== window.top); } catch (e) { inIframe = true; }
+            var isEditor = inIframe || (window.location.search && (window.location.search.indexOf('cms_editor') !== -1 || window.location.search.indexOf('cms_preview') !== -1));
+            if (!isEditor && currentLang === 'en') {
+                var stored = localStorage.getItem('sharif_lang');
+                if (stored && stored !== 'en') {
+                    localStorage.setItem('sharif_lang', 'en');
+                    localStorage.setItem('sharif_preferred_lang', 'en');
+                }
+            }
+        } catch (e) {}
 
         setupCounterInterceptor();
         localizeInternalLinks(currentLang);
@@ -1704,6 +1790,18 @@
                     applyNumberLocalization(currentLang);
                 }
                 translateConsultationForms(currentLang);
+                // Self-heal: If any [data-i18n] element has empty text, fill it from dictionary!
+                try {
+                    document.querySelectorAll('[data-i18n]').forEach(function (el) {
+                        if (!el.textContent.trim()) {
+                            var k = el.getAttribute('data-i18n');
+                            var val = getNestedValue(data, k);
+                            if (val && typeof val === 'string') {
+                                el.textContent = decodeHtmlEntities(val);
+                            }
+                        }
+                    });
+                } catch (e) {}
             }
         });
 

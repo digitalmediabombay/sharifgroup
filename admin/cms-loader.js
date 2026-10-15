@@ -15,8 +15,103 @@
   // ── Storage Helpers & Mojibake Shield ─────────────────────────────────────
   function isMojibakeString(str) {
     if (typeof str !== 'string' || !str) return false;
-    return /[\u2500-\u259F\uFFFD]|ΓÇ[ôöòóõ]|[\u0390-\u03C9]{2,}|\\u0026amp;/i.test(str);
+    if (/[\u2500-\u259F\uFFFD]|ΓÇ[ôöòóõô–•]|\\u0026amp;/i.test(str)) return true;
+    // Detect Windows-1252 / ISO-8859-1 Mojibake of UTF-8 multi-byte sequences (Chinese, Arabic, Persian)
+    if (/(?:æ[•™\x80-\xFF]|è[‚²¯¢¿Ž°\x80-\xFF]|å[’¨ˆ°«\x80-\xFF]|ç[º»\x80-\xFF]|é[\x80-\xFF]|ä[\x80-\xFF])/.test(str)) {
+      if (!/[\u4E00-\u9FFF]/.test(str)) return true;
+    }
+    if (/[äåæçèéêëìíîï][\u0080-\u00FF\u201A-\u2026\u2018-\u201D\u2122\u0152\u0153\u0160\u0161\u0178\u017E\u02C6\u02DC]/.test(str)) {
+      if (!/[\u4E00-\u9FFF]/.test(str)) return true;
+    }
+    if (/[ØÙ][\u0080-\u00FF]/.test(str)) {
+      if (!/[\u0600-\u06FF]/.test(str)) return true;
+    }
+    if (/(?:O\s*U,|AE\+|[A-Za-z]\s*[¿Ž°ˆ¬¢]|A["”][A-Za-z"”]+|É«)/.test(str)) return true;
+    return false;
   }
+  window.isMojibakeString = isMojibakeString;
+
+  function hasAnyMojibake(val) {
+    if (typeof val === 'string') return isMojibakeString(val);
+    if (Array.isArray(val)) return val.some(hasAnyMojibake);
+    if (val && typeof val === 'object') return Object.values(val).some(hasAnyMojibake);
+    return false;
+  }
+  window.hasAnyMojibake = hasAnyMojibake;
+
+  const CMS_HERO_DEFAULTS = {
+    en: {
+      headline: 'Welcome to Sharif Group',
+      tagline: 'UPGRADE YOUR LIFE',
+      pathway_citizenship: 'Citizenship',
+      pathway_residency: 'Residency',
+      pathway_realestate: 'Real Estate',
+      pathway_education: 'Educational Advisory'
+    },
+    ar: {
+      headline: 'مرحباً بكم في مجموعة شريف',
+      tagline: 'ارتقِ بحياتك',
+      pathway_citizenship: 'الجنسية',
+      pathway_residency: 'الإقامة',
+      pathway_realestate: 'العقارات',
+      pathway_education: 'الاستشارات التعليمية'
+    },
+    fa: {
+      headline: 'به شریف گروپ خوش آمدید',
+      tagline: 'زندگی خود را ارتقا دهید',
+      pathway_citizenship: 'شهروندی',
+      pathway_residency: 'اقامت',
+      pathway_realestate: 'املاک و مستغلات',
+      pathway_education: 'مشاوره تحصیلی'
+    },
+    zh: {
+      headline: '欢迎来到谢里夫集团',
+      tagline: '升级您的生活',
+      pathway_citizenship: '公民身份',
+      pathway_residency: '居留权',
+      pathway_realestate: '房地产投资',
+      pathway_education: '教育咨询'
+    }
+  };
+
+  const CMS_ABOUT_DEFAULTS = {
+    en: {
+      badge: 'INTRODUCTION',
+      heading: 'Our Story & Background:',
+      subheading: 'Sharif Group',
+      p1: 'Sharif Group is a trusted private consulting company based in Business Bay, Dubai. We help international clients and families secure legal second passports, residency visas, premium property investments, and student placements in top international universities.',
+      p2: 'Our experienced team takes care of document preparation, background legal checks, and government clearance from start to finish, ensuring a straightforward, secure, and completely stress-free experience.',
+      btn1_text: 'Read Our Story',
+      btn2_text: 'Book Consultation'
+    },
+    ar: {
+      badge: 'مقدمة',
+      heading: 'قصتنا وخبراتنا:',
+      subheading: 'مجموعة شريف',
+      p1: 'مجموعة شريف هي شركة استشارات خاصة موثوقة مقرها في الخليج التجاري، دبي. نساعد العملاء والعائلات الدولية في الحصول على جواز سفر ثانٍ قانوني وتأشيرات الإقامة والاستثمارات العقارية الفاخرة.',
+      p2: 'يتولى فريقنا ذو الخبرة إعداد المستندات والفحوصات القانونية والتخليص الحكومي من البداية إلى النهاية لضمان تجربة آمنة وسلسة تماماً.',
+      btn1_text: 'اقرأ قصتنا',
+      btn2_text: 'احجز استشارة'
+    },
+    fa: {
+      badge: 'معرفی',
+      heading: 'داستان و پیشینه ما:',
+      subheading: 'شریف گروپ',
+      p1: 'شریف گروپ یک شرکت مشاوره خصوصی معتبر مستقر در بیزینس بی دبی است. ما به مشتریان و خانواده‌های بین‌المللی در دریافت پاسپورت دوم قانونی، ویزای اقامت، سرمایه‌گذاری املاک لوکس و پذیرش دانشگاه‌های برتر کمک می‌کنیم.',
+      p2: 'تیم مجرب ما تمامی مراحل آماده‌سازی مدارک، بررسی‌های حقوقی و مجوزهای دولتی را از صفر تا صد با اطمینان کامل و بدون دغدغه به انجام می‌رساند.',
+      btn1_text: 'خواندن داستان ما',
+      btn2_text: 'رزرو مشاوره'
+    },
+    zh: {
+      badge: '关于我们',
+      heading: '我们的故事与背景：',
+      subheading: '谢里夫集团',
+      p1: '谢里夫集团是一家总部位于迪拜商业湾的知名专业咨询公司。我们协助全球客户及家庭合法获取第二本护照、居留签证、优质房产投资及世界顶级大学留学名额。',
+      p2: '我们经验丰富的团队全程负责文件整理、背景合规审查以及政府审批流程，确保全程透明、安全、省心。',
+      btn1_text: '了解我们的故事',
+      btn2_text: '预约咨询'
+    }
+  };
 
   function cleanMojibakeDeep(val) {
     if (typeof val === 'string') {
@@ -63,6 +158,19 @@
       }
       if (result === null) {
         result = safeParse(localStorage.getItem(key));
+      }
+      if (result === null && window._data && window._data[key] !== undefined) {
+        result = window._data[key];
+      }
+      if (result === null && key === 'sgcms_blog' && Array.isArray(window.__PRE_RENDERED_CMS_BLOGS)) {
+        result = window.__PRE_RENDERED_CMS_BLOGS;
+      }
+      if (result !== null && hasAnyMojibake(result)) {
+        try {
+          localStorage.removeItem(key);
+          localStorage.removeItem(key + '_live');
+        } catch (e) {}
+        result = null;
       }
       return cleanMojibakeDeep(result);
     } catch { return null; }
@@ -172,8 +280,10 @@
     if (urlLang && ['en', 'ar', 'fa', 'zh'].includes(urlLang.toLowerCase())) {
       return urlLang.toLowerCase();
     }
-    const raw = (document.documentElement.lang || localStorage.getItem('sharif_lang') || localStorage.getItem('sharif_preferred_lang') || 'en').split('-')[0].toLowerCase().trim();
-    if (['en', 'ar', 'fa', 'zh'].includes(raw)) return raw;
+    if (isEditor) {
+      const raw = (document.documentElement.lang || localStorage.getItem('sharif_lang') || localStorage.getItem('sharif_preferred_lang') || 'en').split('-')[0].toLowerCase().trim();
+      if (['en', 'ar', 'fa', 'zh'].includes(raw)) return raw;
+    }
     return 'en';
   }
 
@@ -299,6 +409,10 @@
 
   function extractSlug() {
     const urlParams = new URLSearchParams(window.location.search);
+    const blogParam = urlParams.get('article_slug') || urlParams.get('slug') || urlParams.get('article');
+    if (blogParam) {
+      try { return decodeURIComponent(blogParam).toLowerCase().replace(/^\/+|\/+$/g, ''); } catch (e) { return blogParam.toLowerCase(); }
+    }
     const progParam = urlParams.get('program_id') || urlParams.get('id') || urlParams.get('program');
     if (progParam) {
       try { return decodeURIComponent(progParam).toLowerCase(); } catch (e) { return progParam.toLowerCase(); }
@@ -499,13 +613,16 @@
     if (!['en', 'ar', 'fa', 'zh'].includes(lang)) return;
     _isSyncingLang = true;
 
+    try {
+      localStorage.setItem('sharif_lang', lang);
+      localStorage.setItem('sharif_preferred_lang', lang);
+    } catch(e) {}
+
     if (typeof window.switchLanguage === 'function') {
       try { window.switchLanguage(lang); } catch (e) { }
     } else {
       document.documentElement.lang = lang;
       document.documentElement.dir = (lang === 'ar' || lang === 'fa') ? 'rtl' : 'ltr';
-      localStorage.setItem('sharif_lang', lang);
-      localStorage.setItem('sharif_preferred_lang', lang);
     }
 
     runHydration(lang);
@@ -514,7 +631,8 @@
     // Re-render blog detail view if currently open so language changes take effect immediately
     const detailView = document.getElementById('blog-detail-view-container');
     const isDetailOpen = detailView && !detailView.classList.contains('hidden') && detailView.style.display !== 'none';
-    const activeSlug = window.currentActiveArticleSlug || extractSlug();
+    const urlParams = new URLSearchParams(window.location.search);
+    const activeSlug = window.currentActiveArticleSlug || urlParams.get('article_slug') || urlParams.get('slug') || extractSlug();
     if (isDetailOpen && activeSlug && typeof window.openBlogDetailBySlug === 'function') {
       try {
         window.openBlogDetailBySlug(activeSlug, true);
@@ -543,7 +661,9 @@
       window.parent.postMessage({ type: 'CMS_LANG_CHANGED', lang }, '*');
     }
 
-    setTimeout(() => { _isSyncingLang = false; }, 150);
+    // Hold _isSyncingLang true for 2.5s when parent initiated change to avoid echo bounces
+    const lockTime = (source === 'parent') ? 2500 : 300;
+    setTimeout(() => { _isSyncingLang = false; }, lockTime);
   }
 
   function updateWebsiteLangButtonsUI(lang) {
@@ -570,6 +690,23 @@
   // ── Universal DOM Overrides & Header Sanitization ───────
   function purgeCorruptedOverridesAndSanitizeHeader() {
     try {
+      // 0. Clean corrupted sgcms_ and sharif_ keys in localStorage
+      for (let i = localStorage.length - 1; i >= 0; i--) {
+        const k = localStorage.key(i);
+        if (!k) continue;
+        if (k.startsWith('sgcms_') || k.startsWith('sharif_i18n_')) {
+          const raw = localStorage.getItem(k);
+          if (raw) {
+            let parsed = null;
+            try { parsed = JSON.parse(raw); } catch (e) { }
+            if (hasAnyMojibake(parsed || raw)) {
+              localStorage.removeItem(k);
+              try { localStorage.removeItem(k + '_live'); } catch (e) { }
+            }
+          }
+        }
+      }
+
       // 1. Clean localStorage sgcms_dom_overrides and sgcms_dom_overrides_live
       ['sgcms_dom_overrides', 'sgcms_dom_overrides_live'].forEach(key => {
         const raw = localStorage.getItem(key);
@@ -585,11 +722,16 @@
               const val = group[sel];
               const strVal = typeof val === 'string' ? val : (val?.text || '');
               if (
+                isMojibakeString(strVal) ||
                 strVal.includes('naikhsn') ||
                 strVal.includes('Costs\nfor') ||
+                strVal.includes('æ•™') ||
+                strVal.includes('å’¨') ||
                 sel.includes('header') ||
                 sel.includes('nav') ||
                 sel.includes('logo') ||
+                sel.includes('blog-tab') ||
+                sel.includes('filter') ||
                 sel.includes('text-neutral-300') ||
                 sel.includes('detail-') ||
                 sel.includes('blog-detail') ||
@@ -620,6 +762,27 @@
         if (modified) {
           localStorage.setItem(key, JSON.stringify(obj));
         }
+      });
+
+      // 1b. Clean and heal sgcms_homepage pathway_education in localStorage
+      ['sgcms_homepage', 'sgcms_homepage_live'].forEach(key => {
+        const raw = localStorage.getItem(key);
+        if (!raw) return;
+        try {
+          let hp = JSON.parse(raw);
+          if (hp && hp.hero) {
+            let hpMod = false;
+            ['en', 'ar', 'fa', 'zh'].forEach(lCode => {
+              if (hp.hero[lCode] && hp.hero[lCode].pathway_education) {
+                if (isMojibakeString(hp.hero[lCode].pathway_education)) {
+                  hp.hero[lCode].pathway_education = CMS_HERO_DEFAULTS[lCode].pathway_education;
+                  hpMod = true;
+                }
+              }
+            });
+            if (hpMod) localStorage.setItem(key, JSON.stringify(hp));
+          }
+        } catch(e) {}
       });
 
       // 2. Clean sgcms_published_manifest if it contains corrupted DOM overrides
@@ -766,6 +929,8 @@
           selector.includes('header') ||
           selector.includes('nav') ||
           selector.includes('logo') ||
+          selector.includes('blog-tab') ||
+          selector.includes('filter') ||
           selector.includes('text-neutral-300') ||
           selector === 'span' ||
           selector.startsWith('div.flex')
@@ -775,11 +940,11 @@
 
         const item = pageOverrides[selector];
         const strVal = typeof item === 'string' ? item : (item?.text || '');
-        if (strVal.includes('naikhsn') || strVal.includes('Costs\nfor') || /[\u2500-\u259F\uFFFD]/.test(strVal)) continue;
+        if (strVal.includes('naikhsn') || strVal.includes('Costs\nfor') || strVal.includes('æ•™') || strVal.includes('å’¨') || isMojibakeString(strVal)) continue;
 
         const el = document.querySelector(selector);
         if (el) {
-          if (el.closest('header, nav, #main-header, #nav-logo, .mega-dropdown, #mobile-menu, #blog-detail-view-container')) {
+          if (el.closest('header, nav, #main-header, #nav-logo, .mega-dropdown, #mobile-menu, #blog-detail-view-container, .blog-tab-btn')) {
             continue;
           }
           const isOverviewHeading = selector.includes('overviewTitle') || (selector.includes('sec-overview') && selector.includes('h3'));
@@ -815,11 +980,13 @@
   }
 
   function saveDomOverride(selector, text, href) {
-    if (!selector || typeof selector !== 'string') return;
+    if (!selector || typeof selector !== 'string' || isMojibakeString(text)) return;
     if (
       selector.includes('header') ||
       selector.includes('nav') ||
       selector.includes('logo') ||
+      selector.includes('blog-tab') ||
+      selector.includes('filter') ||
       selector.includes('text-neutral-300') ||
       selector.includes('detail-') ||
       selector.includes('blog-detail') ||
@@ -846,30 +1013,28 @@
 
   // ── Page Hydration ──────────────────────────────────────
   function hydrateHomepage(lang) {
-    const data = store('sgcms_homepage');
-    if (!data) return;
+    const data = store('sgcms_homepage') || {};
     const l = lang || getLang();
 
     const isEn = (l === 'en');
+    const defHero = CMS_HERO_DEFAULTS[l] || CMS_HERO_DEFAULTS.en;
+    const defAbout = CMS_ABOUT_DEFAULTS[l] || CMS_ABOUT_DEFAULTS.en;
+
+    const getCleanField = (curr, def, targetLang) => {
+      if (curr && typeof curr === 'string' && curr.trim() && !isMojibakeString(curr) && (targetLang === 'en' || !isEnglishFallback(curr, targetLang))) {
+        return curr.trim();
+      }
+      return def || '';
+    };
 
     // 1. Hero
-    // For non-English languages, ONLY use localized CMS overrides if they exist.
-    // NEVER fall back to English (.en), because that would overwrite valid i18n translations!
     const hero = isEn ? (data.hero?.[l] || data.hero?.en || {}) : (data.hero?.[l] || null);
-    if (hero) {
-      if (hero.headline) {
-        const h = document.querySelectorAll('[data-cms="hero-headline"], [data-i18n="hero.title"]');
-        h.forEach(el => { el.textContent = hero.headline; });
-      }
-      if (hero.tagline) {
-        const tag = document.querySelectorAll('[data-cms="hero-tagline"], [data-i18n="hero.tagline"]');
-        tag.forEach(el => { el.textContent = hero.tagline; });
-      }
-      if (hero.pathway_citizenship) setText('[data-i18n="hero.citizenship"]', hero.pathway_citizenship);
-      if (hero.pathway_residency) setText('[data-i18n="hero.residency"]', hero.pathway_residency);
-      if (hero.pathway_realestate) setText('[data-i18n="hero.realEstate"]', hero.pathway_realestate);
-      if (hero.pathway_education) setText('[data-i18n="hero.educationalAdvisory"]', hero.pathway_education);
-    }
+    setText('[data-cms="hero-headline"], [data-i18n="hero.title"]', getCleanField(hero?.headline, defHero.headline, l), { all: true });
+    setText('[data-cms="hero-tagline"], [data-i18n="hero.tagline"]', getCleanField(hero?.tagline, defHero.tagline, l), { all: true });
+    setText('[data-i18n="hero.citizenship"]', getCleanField(hero?.pathway_citizenship, defHero.pathway_citizenship, l), { all: true });
+    setText('[data-i18n="hero.residency"]', getCleanField(hero?.pathway_residency, defHero.pathway_residency, l), { all: true });
+    setText('[data-i18n="hero.realEstate"]', getCleanField(hero?.pathway_realestate, defHero.pathway_realestate, l), { all: true });
+    setText('[data-i18n="hero.educationalAdvisory"]', getCleanField(hero?.pathway_education, defHero.pathway_education, l), { all: true });
 
     // 2. Stats
     if (data.stats && data.stats.length) {
@@ -885,7 +1050,7 @@
           const p = statBoxes[i].querySelector('p');
           if (p) {
             const lbl = stat['label_' + l] || (isEn ? stat.label_en : null);
-            if (lbl) p.textContent = lbl;
+            if (lbl && (isEn || !isEnglishFallback(lbl, l))) p.textContent = lbl;
           }
         }
       });
@@ -893,15 +1058,13 @@
 
     // 3. About Us Preview
     const about = isEn ? (data.about?.[l] || data.about?.en || {}) : (data.about?.[l] || null);
-    if (about) {
-      if (about.badge) setText('[data-i18n="about.badge"]', about.badge);
-      if (about.heading) setText('[data-i18n="about.heading"]', about.heading);
-      if (about.subheading) setText('[data-i18n="about.subheading"]', about.subheading);
-      if (about.p1) setText('[data-i18n="about.p1"]', about.p1);
-      if (about.p2) setText('[data-i18n="about.p2"]', about.p2);
-      if (about.btn1_text) setText('[data-i18n="about.readStory"]', about.btn1_text);
-      if (about.btn2_text) setText('[data-i18n="about.bookConsultation"]', about.btn2_text);
-    }
+    setText('[data-i18n="about.badge"]', getCleanField(about?.badge, defAbout.badge, l), { all: true });
+    setText('[data-i18n="about.heading"]', getCleanField(about?.heading, defAbout.heading, l), { all: true });
+    setText('[data-i18n="about.subheading"]', getCleanField(about?.subheading, defAbout.subheading, l), { all: true });
+    setText('[data-i18n="about.p1"]', getCleanField(about?.p1, defAbout.p1, l), { all: true });
+    setText('[data-i18n="about.p2"]', getCleanField(about?.p2, defAbout.p2, l), { all: true });
+    setText('[data-i18n="about.readStory"]', getCleanField(about?.btn1_text, defAbout.btn1_text, l), { all: true });
+    setText('[data-i18n="about.bookConsultation"]', getCleanField(about?.btn2_text, defAbout.btn2_text, l), { all: true });
 
     // 4. Services & Pathways (Only apply on English or if localized services object exists)
     if (isEn && data.services) {
@@ -1250,9 +1413,11 @@
     }
 
     // 10. FAQs
-    if (Array.isArray(ld.faqs)) {
-      ld.faqs.forEach((faq, i) => {
+    const progFaqsList = (Array.isArray(ld.faqs) && ld.faqs.length) ? ld.faqs : (prog.en && Array.isArray(prog.en.faqs) ? prog.en.faqs : []);
+    if (Array.isArray(progFaqsList)) {
+      progFaqsList.forEach((faq, i) => {
         if (!faq) return;
+        if (faq.q) setText(`[data-i18n*="faqQ${i + 1}"]`, faq.q);
         if (faq.a) setText(`[data-i18n*="faqA${i + 1}"]`, faq.a);
       });
     }
@@ -1307,7 +1472,8 @@
         const blogs = store('sgcms_blog') || [];
         const match = blogs.find(b => (draft.id && b.id === draft.id) || (draft.slug && b.slug === draft.slug));
         if (match) {
-          if (!title) title = (match.en && match.en.title) || match.title || '';
+          const curL = getLang();
+          if (!title) title = (match[curL] && match[curL].title) || (match.en && match.en.title) || match.title || '';
           if (!img) img = match.featured_img || '';
         }
       } catch (e) {}
@@ -1333,11 +1499,9 @@
       content: draft.body || (excerpt ? `<p>${excerpt}</p>` : '<p>Article content preview will appear here...</p>'),
       faqs: (draft.faqs && Array.isArray(draft.faqs) && draft.faqs.length) ? draft.faqs : []
     };
-    if (getLang() === 'en') {
-      window.articlesDatabase[slug] = draftArticleObj;
-      window.articlesDatabase['live-draft-preview'] = draftArticleObj;
-      if (draft.id) window.articlesDatabase[draft.id] = draftArticleObj;
-    }
+    window.articlesDatabase[slug] = draftArticleObj;
+    window.articlesDatabase['live-draft-preview'] = draftArticleObj;
+    if (draft.id) window.articlesDatabase[draft.id] = draftArticleObj;
 
     let card = document.getElementById('cms-live-draft-card');
     const isNewCard = !card;
@@ -2041,7 +2205,7 @@
 
   function isEnglishFallback(str, currentLang) {
     if (!str || typeof str !== 'string') return true;
-    if (/[\u2500-\u259F\uFFFD]/.test(str)) return true;
+    if (isMojibakeString(str)) return true;
     if (currentLang === 'en') return false;
     const trimmed = str.trim();
     const enPhrases = [
@@ -2064,13 +2228,11 @@
     if (enPhrases.includes(trimmed)) return true;
     if (currentLang === 'ar' || currentLang === 'fa') {
       const hasArabic = /[\u0600-\u06FF\u0750-\u077F\u08A0-\u08FF\uFB50-\uFDFF\uFE70-\uFEFF]/.test(trimmed);
-      const isAscii = /^[A-Za-z0-9\s.,:;!?'"()&/\-]+$/.test(trimmed);
-      if (!hasArabic && isAscii && trimmed.length > 3) return true;
+      if (!hasArabic && (trimmed.length > 2 || /^[A-Za-z0-9\s.,:;!?'"()&/\-]+$/.test(trimmed))) return true;
     }
     if (currentLang === 'zh') {
       const hasChinese = /[\u4E00-\u9FFF]/.test(trimmed);
-      const isAscii = /^[A-Za-z0-9\s.,:;!?'"()&/\-]+$/.test(trimmed);
-      if (!hasChinese && isAscii && trimmed.length > 3) return true;
+      if (!hasChinese && (trimmed.length > 2 || /^[A-Za-z0-9\s.,:;!?'"()&/\-]+$/.test(trimmed))) return true;
     }
     return false;
   }
@@ -4594,6 +4756,14 @@
       if (_isSyncingLang) return;
       const lang = e.detail?.lang;
       if (lang && ['en', 'ar', 'fa', 'zh'].includes(lang)) {
+        // Guard: if current user preference is a non-English language (ar, fa, zh), ignore stray 'en' events
+        try {
+          const pref = localStorage.getItem('sharif_lang') || localStorage.getItem('sharif_preferred_lang');
+          if (lang === 'en' && pref && pref !== 'en') {
+            return;
+          }
+        } catch (e) {}
+
         if (window.parent && window.parent !== window) {
           window.parent.postMessage({ type: 'CMS_LANG_CHANGED', lang }, '*');
         }

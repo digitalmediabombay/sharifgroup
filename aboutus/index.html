@@ -7,16 +7,19 @@
 <script>
     (function() {
         try {
-            var l = localStorage.getItem('sharif_lang') || localStorage.getItem('sharif_preferred_lang') || 'en';
-            if (l === 'ar' || l === 'fa') {
+            var p = (window.location && window.location.pathname) ? window.location.pathname : '';
+            var segs = p.split('/').filter(Boolean);
+            var first = segs.length > 0 ? segs[0].toLowerCase() : '';
+            if (first === 'ar' || first === 'fa') {
                 document.documentElement.dir = 'rtl';
-                document.documentElement.lang = l;
-            } else if (l === 'zh') {
+                document.documentElement.lang = first;
+            } else if (first === 'zh') {
                 document.documentElement.dir = 'ltr';
                 document.documentElement.lang = 'zh';
-            }
-            if (l !== 'en') {
-                document.documentElement.classList.add('i18n-pending');
+            } else {
+                document.documentElement.dir = 'ltr';
+                document.documentElement.lang = 'en';
+                document.documentElement.classList.remove('i18n-pending');
             }
         } catch(e) {}
     })();
@@ -1342,13 +1345,13 @@
 <h3 class="font-serif font-bold text-2xl text-white leading-tight" data-i18n="pages.aboutUs.certifications_item6">CEO — IMC Credential</h3>
 <p class="text-xs sm:text-sm text-neutral-300 font-light leading-relaxed" data-i18n="pages.aboutUs.certifications_item7">Our CEO holds official membership with the Investment Migration Council, ensuring adherence to global ethics and international regulatory standards.</p>
 <ul class="space-y-2.5 text-xs text-neutral-300 font-light pt-2">
-<li class="flex items-start gap-2.5"><i class="fa-solid fa-circle-check text-xs text-[#C5A880] mt-0.5"></i> <span data-i18n="pages.aboutUs.certifications_item8"><span></span></span></li>
-<li class="flex items-start gap-2.5"><i class="fa-solid fa-circle-check text-xs text-[#C5A880] mt-0.5"></i> <span data-i18n="pages.aboutUs.certifications_item9"><span></span></span></li>
-<li class="flex items-start gap-2.5"><i class="fa-solid fa-circle-check text-xs text-[#C5A880] mt-0.5"></i> <span data-i18n="pages.aboutUs.certifications_item10"><span></span></span></li>
+<li class="flex items-start gap-2.5"><i class="fa-solid fa-circle-check text-xs text-[#C5A880] mt-0.5"></i> <span data-i18n="pages.aboutUs.certifications_item8">Worldwide recognized ethical migration practice</span></li>
+<li class="flex items-start gap-2.5"><i class="fa-solid fa-circle-check text-xs text-[#C5A880] mt-0.5"></i> <span data-i18n="pages.aboutUs.certifications_item9">International regulatory compliance and benchmarks</span></li>
+<li class="flex items-start gap-2.5"><i class="fa-solid fa-circle-check text-xs text-[#C5A880] mt-0.5"></i> <span data-i18n="pages.aboutUs.certifications_item10">Direct member of global investment migration body</span></li>
 </ul>
 </div>
 <div class="pt-2">
-<a class="w-full sm:w-auto px-8 py-3.5 bg-luxury-gold text-white rounded-xl text-xs font-bold uppercase tracking-wider hover:bg-luxury-goldhover transition duration-300 shadow-lg inline-flex items-center justify-between gap-4" href="/about-founder/"><i class="fa-solid fa-arrow-right text-[10px] rtl:rotate-180"></i> <span data-i18n="pages.aboutUs.certifications_item11"><span></span></span></a>
+<a class="w-full sm:w-auto px-8 py-3.5 bg-luxury-gold text-white rounded-xl text-xs font-bold uppercase tracking-wider hover:bg-luxury-goldhover transition duration-300 shadow-lg inline-flex items-center justify-between gap-4" href="/about-founder/"><i class="fa-solid fa-arrow-right text-[10px] rtl:rotate-180"></i> <span data-i18n="pages.aboutUs.certifications_item11">View Credential Details</span></a>
 </div>
 </div>
 </div>
@@ -1364,13 +1367,13 @@
 <h3 class="font-serif font-bold text-2xl text-white leading-tight" data-i18n="pages.aboutUs.certifications_item14">São Tomé and Príncipe — Agent License</h3>
 <p class="text-xs sm:text-sm text-neutral-300 font-light leading-relaxed" data-i18n="pages.aboutUs.certifications_item15">Official marketing agent for the São Tomé and Príncipe Citizenship by Investment program, ensuring direct and authorized government submission.</p>
 <ul class="space-y-2.5 text-xs text-neutral-300 font-light pt-2">
-<li class="flex items-start gap-2.5"><i class="fa-solid fa-circle-check text-xs text-[#C5A880] mt-0.5"></i> <span data-i18n="pages.aboutUs.certifications_item16"><span></span></span></li>
-<li class="flex items-start gap-2.5"><i class="fa-solid fa-circle-check text-xs text-[#C5A880] mt-0.5"></i> <span data-i18n="pages.aboutUs.certifications_item17"><span></span></span></li>
-<li class="flex items-start gap-2.5"><i class="fa-solid fa-circle-check text-xs text-[#C5A880] mt-0.5"></i> <span data-i18n="pages.aboutUs.certifications_item18"><span></span></span></li>
+<li class="flex items-start gap-2.5"><i class="fa-solid fa-circle-check text-xs text-[#C5A880] mt-0.5"></i> <span data-i18n="pages.aboutUs.certifications_item16">Direct government citizenship file submission</span></li>
+<li class="flex items-start gap-2.5"><i class="fa-solid fa-circle-check text-xs text-[#C5A880] mt-0.5"></i> <span data-i18n="pages.aboutUs.certifications_item17">Authorized marketing license and official approval</span></li>
+<li class="flex items-start gap-2.5"><i class="fa-solid fa-circle-check text-xs text-[#C5A880] mt-0.5"></i> <span data-i18n="pages.aboutUs.certifications_item18">Fast-track second passport processing pathway</span></li>
 </ul>
 </div>
 <div class="pt-2">
-<a class="w-full sm:w-auto px-8 py-3.5 bg-luxury-gold text-white rounded-xl text-xs font-bold uppercase tracking-wider hover:bg-luxury-goldhover transition duration-300 shadow-lg inline-flex items-center justify-between gap-4" href="/contact/"><i class="fa-solid fa-arrow-right text-[10px] rtl:rotate-180"></i> <span data-i18n="pages.aboutUs.certifications_item19"><span></span></span></a>
+<a class="w-full sm:w-auto px-8 py-3.5 bg-luxury-gold text-white rounded-xl text-xs font-bold uppercase tracking-wider hover:bg-luxury-goldhover transition duration-300 shadow-lg inline-flex items-center justify-between gap-4" href="/contact/"><i class="fa-solid fa-arrow-right text-[10px] rtl:rotate-180"></i> <span data-i18n="pages.aboutUs.certifications_item19">Inquire About São Tomé and Príncipe</span></a>
 </div>
 </div>
 <!-- Full Aspect Certificate Display -->
@@ -1394,13 +1397,13 @@
 <h3 class="font-serif font-bold text-2xl text-white leading-tight" data-i18n="pages.aboutUs.certifications_item22">Nauru — Authorized Agent</h3>
 <p class="text-xs sm:text-sm text-neutral-300 font-light leading-relaxed" data-i18n="pages.aboutUs.certifications_item23">Registered and licensed under the Nauru Economic and Climate Resilience Citizenship Act to prepare and process citizenship applications.</p>
 <ul class="space-y-2.5 text-xs text-neutral-300 font-light pt-2">
-<li class="flex items-start gap-2.5"><i class="fa-solid fa-circle-check text-xs text-[#C5A880] mt-0.5"></i> <span data-i18n="pages.aboutUs.certifications_item24"><span></span></span></li>
-<li class="flex items-start gap-2.5"><i class="fa-solid fa-circle-check text-xs text-[#C5A880] mt-0.5"></i> <span data-i18n="pages.aboutUs.certifications_item25"><span></span></span></li>
-<li class="flex items-start gap-2.5"><i class="fa-solid fa-circle-check text-xs text-[#C5A880] mt-0.5"></i> <span data-i18n="pages.aboutUs.certifications_item26"><span></span></span></li>
+<li class="flex items-start gap-2.5"><i class="fa-solid fa-circle-check text-xs text-[#C5A880] mt-0.5"></i> <span data-i18n="pages.aboutUs.certifications_item24">Direct government statutory citizenship legislation</span></li>
+<li class="flex items-start gap-2.5"><i class="fa-solid fa-circle-check text-xs text-[#C5A880] mt-0.5"></i> <span data-i18n="pages.aboutUs.certifications_item25">Officially licensed Authorized Program Agent</span></li>
+<li class="flex items-start gap-2.5"><i class="fa-solid fa-circle-check text-xs text-[#C5A880] mt-0.5"></i> <span data-i18n="pages.aboutUs.certifications_item26">Dedicated case officer file management</span></li>
 </ul>
 </div>
 <div class="pt-2">
-<a class="w-full sm:w-auto px-8 py-3.5 bg-luxury-gold text-white rounded-xl text-xs font-bold uppercase tracking-wider hover:bg-luxury-goldhover transition duration-300 shadow-lg inline-flex items-center justify-between gap-4" href="/contact/"><i class="fa-solid fa-arrow-right text-[10px] rtl:rotate-180"></i> <span data-i18n="pages.aboutUs.certifications_item27"><span></span></span></a>
+<a class="w-full sm:w-auto px-8 py-3.5 bg-luxury-gold text-white rounded-xl text-xs font-bold uppercase tracking-wider hover:bg-luxury-goldhover transition duration-300 shadow-lg inline-flex items-center justify-between gap-4" href="/contact/"><i class="fa-solid fa-arrow-right text-[10px] rtl:rotate-180"></i> <span data-i18n="pages.aboutUs.certifications_item27">Inquire About Nauru</span></a>
 </div>
 </div>
 </div>
@@ -1416,9 +1419,9 @@
 <h3 class="font-serif font-bold text-2xl text-white leading-tight" data-i18n="pages.aboutUs.certifications_item30">Sharif Star — RERA License</h3>
 <p class="text-xs sm:text-sm text-neutral-300 font-light leading-relaxed" data-i18n="pages.aboutUs.certifications_item31">Licensed by the Dubai Land Department and Real Estate Regulatory Agency to conduct property transactions and structure UAE Golden Visa acquisitions.</p>
 <ul class="space-y-2.5 text-xs text-neutral-300 font-light pt-2">
-<li class="flex items-start gap-2.5"><i class="fa-solid fa-circle-check text-xs text-[#C5A880] mt-0.5"></i> <span data-i18n="pages.aboutUs.certifications_item32"><span></span></span></li>
-<li class="flex items-start gap-2.5"><i class="fa-solid fa-circle-check text-xs text-[#C5A880] mt-0.5"></i> <span data-i18n="pages.aboutUs.certifications_item33"><span></span></span></li>
-<li class="flex items-start gap-2.5"><i class="fa-solid fa-circle-check text-xs text-[#C5A880] mt-0.5"></i> <span data-i18n="pages.aboutUs.certifications_item34"><span></span></span></li>
+<li class="flex items-start gap-2.5"><i class="fa-solid fa-circle-check text-xs text-[#C5A880] mt-0.5"></i> <span data-i18n="pages.aboutUs.certifications_item32">Dubai Land Department and RERA certified brokerage</span></li>
+<li class="flex items-start gap-2.5"><i class="fa-solid fa-circle-check text-xs text-[#C5A880] mt-0.5"></i> <span data-i18n="pages.aboutUs.certifications_item33">10-Year UAE Golden Visa property structures</span></li>
+<li class="flex items-start gap-2.5"><i class="fa-solid fa-circle-check text-xs text-[#C5A880] mt-0.5"></i> <span data-i18n="pages.aboutUs.certifications_item34">Off-plan and luxury secondary market deals</span></li>
 </ul>
 </div>
 <div class="pt-2">

@@ -7,6 +7,9 @@
 
 require_once __DIR__ . '/db.php';
 
+@set_time_limit(120);
+@ignore_user_abort(true);
+
 if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
     jsonResponse(['error' => 'Method not allowed. Only POST is accepted.'], 405);
 }
@@ -27,7 +30,17 @@ if (!empty($payload['publisher'])) {
 }
 $publishedAt = isset($payload['publishedAt']) ? $payload['publishedAt'] : date('Y-m-d H:i:s');
 
-// Ensure no double-encoded JSON strings in published payload
+function isMojibakeString($raw) {
+    if (!is_string($raw) || trim($raw) === '') return false;
+    if (preg_match('/[\x{2500}-\x{259F}\x{FFFD}]|ΓÇ[ôöòóõô–•]|u0026amp;/u', $raw)) return true;
+    if (preg_match('/[ØÙ][\x80-\xFF]/', $raw) && !preg_match('/[\x{0600}-\x{06FF}]/u', $raw)) return true;
+    if (preg_match('/(?:æ[•™\x80-\xFF]|è[‚²¯¢¿Ž°\x80-\xFF]|å[’¨ˆ°«\x80-\xFF]|ç[º»\x80-\xFF]|é[\x80-\xFF]|ä[\x80-\xFF])/', $raw) && !preg_match('/[\x{4E00}-\x{9FFF}]/u', $raw)) return true;
+    if (preg_match('/[äåæçèéêëìíîï][\x{0080}-\x{00FF}\x{201A}-\x{2026}\x{2018}-\x{201D}\x{2122}\x{0152}\x{0153}\x{0160}\x{0161}\x{0178}\x{017E}\x{02C6}\x{02DC}]/u', $raw) && !preg_match('/[\x{4E00}-\x{9FFF}]/u', $raw)) return true;
+    if (preg_match('/(?:O\s*U,|AE\+|[A-Za-z]\s*[¿Ž°ˆ¬¢]|A["”][A-Za-z"”]+)/', $raw)) return true;
+    return false;
+}
+
+// Ensure no double-encoded JSON strings in published payload and filter corrupted DOM overrides
 foreach ($payload['data'] as $k => $v) {
     if (is_string($v)) {
         $trimmed = trim($v);
@@ -38,6 +51,22 @@ foreach ($payload['data'] as $k => $v) {
             }
         }
     }
+}
+
+if (!empty($payload['data']['sgcms_dom_overrides']) && is_array($payload['data']['sgcms_dom_overrides'])) {
+    foreach ($payload['data']['sgcms_dom_overrides'] as $pKey => &$langGroup) {
+        if (!is_array($langGroup)) continue;
+        foreach ($langGroup as $lKey => &$selectors) {
+            if (!is_array($selectors)) continue;
+            foreach ($selectors as $sel => $val) {
+                $strVal = is_string($val) ? $val : ($val['text'] ?? '');
+                if (isMojibakeString($strVal)) {
+                    unset($selectors[$sel]);
+                }
+            }
+        }
+    }
+    unset($langGroup);
 }
 
 // Maintain deleted slugs blacklist
@@ -108,21 +137,8 @@ if (isset($payload['data']['sgcms_blog']) && is_array($payload['data']['sgcms_bl
     $payload['data']['sgcms_blog'] = array_values($dedupedBlogs);
 }
 
-// 0b. AUTOMATIC MULTI-LANGUAGE TRANSLATION SYNC:
-// Detect any modified fields in English and automatically translate into Arabic, Farsi, and Chinese
-try {
-    require_once __DIR__ . '/translate_sync.php';
-    if (function_exists('autoTranslateChangedData')) {
-        $currentPublishedBefore = readPublishedSnapshot();
-        foreach ($payload['data'] as $k => &$sectionData) {
-            if ($k === 'sgcms_blog' || $k === 'sgcms_deleted_slugs' || $k === 'sgcms_settings') continue;
-            autoTranslateChangedData($k, $sectionData, $currentPublishedBefore[$k] ?? null);
-        }
-        unset($sectionData);
-    }
-} catch (Throwable $te) {
-    error_log('[SharifCMS Publish Translate Warning] ' . $te->getMessage());
-}
+// 0b. Publishing is dedicated to atomic live production promotion (translation happens in draft editor)
+// No blocking external HTTP requests permitted during live publish
 
 // 1. GUARANTEED LIVE UPDATE: Merge and write published snapshot directly to published_content.json
 $currentPublished = readPublishedSnapshot();

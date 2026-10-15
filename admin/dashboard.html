@@ -2558,8 +2558,28 @@
     <script>
       'use strict';
       // ══════════════════════════════════════════════════════════
-      // AUTH & SESSION
+      // AUTH & SESSION & MOJIBAKE STORAGE SHIELD
       // ══════════════════════════════════════════════════════════
+      (function sanitizeAllStorage() {
+        try {
+          for (let i = localStorage.length - 1; i >= 0; i--) {
+            const k = localStorage.key(i);
+            if (!k) continue;
+            if (k.startsWith('sgcms_') || k.startsWith('sharif_')) {
+              const raw = localStorage.getItem(k);
+              if (raw) {
+                let parsed = null;
+                try { parsed = JSON.parse(raw); } catch (e) { }
+                if (typeof hasAnyMojibake === 'function' && hasAnyMojibake(parsed || raw)) {
+                  localStorage.removeItem(k);
+                  try { localStorage.removeItem(k + '_live'); } catch (e) { }
+                }
+              }
+            }
+          }
+        } catch (e) { }
+      })();
+
       window.CMS.Auth.requireAuth();
       const session = window.CMS.Auth.getSession();
       if (!session) window.location.href = 'index.html';
@@ -2578,7 +2598,13 @@
       // STATE
       // ══════════════════════════════════════════════════════════
       const state = {
-        lang: 'en',
+        lang: (function() {
+          try {
+            const saved = localStorage.getItem('sharif_lang') || localStorage.getItem('sharif_preferred_lang');
+            if (saved && ['en', 'ar', 'fa', 'zh'].includes(saved)) return saved;
+          } catch(e) {}
+          return 'en';
+        })(),
         section: 'homepage',
         itemType: null,
         itemId: null,
@@ -2697,14 +2723,22 @@
       // ══════════════════════════════════════════════════════════
       // LANGUAGE SYNC (Dashboard ↔ iframe, no conflicts)
       // ══════════════════════════════════════════════════════════
+      let _lastUserLangChangeTime = 0;
       function setLang(lang) {
+        if (!['en', 'ar', 'fa', 'zh'].includes(lang)) return;
+        _lastUserLangChangeTime = Date.now();
         state.lang = lang;
         document.querySelectorAll('.lang-btn').forEach(b => b.classList.remove('active'));
         const lb = document.getElementById('lang-' + lang);
         if (lb) lb.classList.add('active');
-        localStorage.setItem('sharif_lang', lang);
-        localStorage.setItem('sharif_preferred_lang', lang);
+        try {
+          localStorage.setItem('sharif_lang', lang);
+          localStorage.setItem('sharif_preferred_lang', lang);
+        } catch(e) {}
         sendToIframe({ type: 'CMS_SET_LANG', lang });
+        if (state.section === 'blog-edit') {
+          broadcastBlogDraft();
+        }
         renderSection();
         showToast('Language: ' + lang.toUpperCase(), 'info');
       }
@@ -2815,7 +2849,7 @@
           url = PAGE_URLS.blog;
         }
         const sep = url.includes('?') ? '&' : '?';
-        const currentSrc = url + sep + 'cms_editor=1';
+        const currentSrc = url + sep + 'cms_editor=1&lang=' + encodeURIComponent(state.lang || 'en');
         let isAlreadyOnPage = false;
         try {
           if (iframe.src && iframe.src !== 'about:blank') {
@@ -3114,15 +3148,27 @@
             navigate(route.section, route.itemType, route.itemId);
           }
         } else if (msg.type === 'CMS_LANG_CHANGED') {
-          // FIX: Only sync dashboard UI — do NOT call renderSection()/loadPreviewPage()
-          // as that reloads the iframe causing an infinite loading loop.
-          // The iframe already applied the lang change internally.
-          state.lang = msg.lang;
-          document.querySelectorAll('.lang-btn').forEach(b => b.classList.remove('active'));
-          const lb2 = document.getElementById('lang-' + msg.lang);
-          if (lb2) lb2.classList.add('active');
-          // Only re-render the editor form fields (sidebar), not the preview iframe
-          renderSection();
+          // Guard 1: Ignore echoes if user recently clicked a language button in the dashboard
+          if (Date.now() - _lastUserLangChangeTime < 3500) {
+            return;
+          }
+          // Guard 2: If dashboard is in a non-English language (ar, fa, zh) and an unexpected 'en' arrives, reject it and reassert state.lang
+          if (state.lang !== 'en' && msg.lang === 'en') {
+            sendToIframe({ type: 'CMS_SET_LANG', lang: state.lang });
+            return;
+          }
+          if (['en', 'ar', 'fa', 'zh'].includes(msg.lang)) {
+            state.lang = msg.lang;
+            try {
+              localStorage.setItem('sharif_lang', msg.lang);
+              localStorage.setItem('sharif_preferred_lang', msg.lang);
+            } catch(e) {}
+            document.querySelectorAll('.lang-btn').forEach(b => b.classList.remove('active'));
+            const lb2 = document.getElementById('lang-' + msg.lang);
+            if (lb2) lb2.classList.add('active');
+            // Only re-render the editor form fields (sidebar), not the preview iframe
+            renderSection();
+          }
         } else if (msg.type === 'CMS_MODE_CHANGED') {
           setCanvasMode(msg.mode, true);
         } else if (msg.type === 'CMS_OPEN_SECTION_BUILDER') {
@@ -4146,7 +4192,7 @@
         closeEditorDrawer();
 
         const iframe = document.getElementById('live-iframe');
-        const targetUrl = '../blog/index.html?cms_editor=1&article_slug=' + encodeURIComponent(targetArticle.slug);
+        const targetUrl = '../blog/index.html?cms_editor=1&article_slug=' + encodeURIComponent(targetArticle.slug) + '&lang=' + encodeURIComponent(state.lang || 'en');
         iframe.src = targetUrl;
 
         setTimeout(() => {
@@ -5439,57 +5485,88 @@
       function renderHomepageEditor(l, rtl) {
         setPageTitle('Homepage', '100% full content & cards editor with live sync');
         const d = window.CMS.getData(window.CMS.KEYS.HOMEPAGE) || window.CMS.DEFAULTS.homepage;
-        const hero = d.hero?.[l] || d.hero?.en || {};
+        const defHero = window.CMS.DEFAULTS.homepage.hero[l] || window.CMS.DEFAULTS.homepage.hero.en || {};
+        const defAbout = window.CMS.DEFAULTS.homepage.about[l] || window.CMS.DEFAULTS.homepage.about.en || {};
+
+        const cleanVal = (val, fallback) => {
+          if (val && typeof val === 'string' && val.trim() && (typeof isMojibakeString !== 'function' || !isMojibakeString(val))) {
+            return val.trim();
+          }
+          return fallback || '';
+        };
+
+        const hero = d.hero?.[l] || {};
+        const about = d.about?.[l] || {};
         const stats = d.stats || [];
-        const about = d.about?.[l] || d.about?.en || {};
         const srv = d.services || {};
         const sr = d.social_responsibility || {};
         const rev = d.reviews || {};
         const cb = d.contact_block || {};
         const dir = rtl ? 'dir="rtl"' : '';
 
+        // Clean resolved fields
+        const heroTagline = cleanVal(hero.tagline, defHero.tagline);
+        const heroHeadline = cleanVal(hero.headline, defHero.headline);
+        const heroSubheadline = cleanVal(hero.subheadline, defHero.subheadline);
+        const heroPathwayCitizenship = cleanVal(hero.pathway_citizenship, defHero.pathway_citizenship);
+        const heroPathwayResidency = cleanVal(hero.pathway_residency, defHero.pathway_residency);
+        const heroPathwayRealestate = cleanVal(hero.pathway_realestate, defHero.pathway_realestate);
+        const heroPathwayEducation = cleanVal(hero.pathway_education, defHero.pathway_education);
+        const heroCta1 = cleanVal(hero.cta_primary, defHero.cta_primary);
+        const heroCta1Link = cleanVal(hero.cta_primary_link, defHero.cta_primary_link);
+
+        const aboutBadge = cleanVal(about.badge, defAbout.badge);
+        const aboutSubheading = cleanVal(about.subheading, defAbout.subheading);
+        const aboutHeading = cleanVal(about.heading, defAbout.heading);
+        const aboutP1 = cleanVal(about.p1, defAbout.p1);
+        const aboutP2 = cleanVal(about.p2, defAbout.p2);
+        const aboutBtn1Text = cleanVal(about.btn1_text, defAbout.btn1_text);
+        const aboutBtn1Link = cleanVal(about.btn1_link, defAbout.btn1_link);
+        const aboutBtn2Text = cleanVal(about.btn2_text, defAbout.btn2_text);
+        const aboutBtn2Link = cleanVal(about.btn2_link, defAbout.btn2_link);
+
         // 1. Hero
         const heroBody = `
     <div class="form-group" style="margin-bottom:12px">
       <label class="form-label">Tagline Badge <span class="form-lang-tag">${l.toUpperCase()}</span></label>
-      <input class="form-input" ${dir} id="hero-tagline" value="${escH(hero.tagline)}" placeholder="e.g. UPGRADE YOUR LIFE" oninput="markUnsaved();liveUpdateField('tagline',this.value)">
+      <input class="form-input" ${dir} id="hero-tagline" value="${escH(heroTagline)}" placeholder="e.g. UPGRADE YOUR LIFE" oninput="markUnsaved();liveUpdateField('tagline',this.value)">
     </div>
     <div class="form-group" style="margin-bottom:12px">
       <label class="form-label">Main Headline / Title <span class="form-lang-tag">${l.toUpperCase()}</span></label>
-      <input class="form-input form-input-headline" ${dir} id="hero-headline" value="${escH(hero.headline)}" placeholder="Welcome to Sharif Group..." oninput="markUnsaved();liveUpdateField('headline',this.value)">
+      <input class="form-input form-input-headline" ${dir} id="hero-headline" value="${escH(heroHeadline)}" placeholder="Welcome to Sharif Group..." oninput="markUnsaved();liveUpdateField('headline',this.value)">
     </div>
     <div class="form-group" style="margin-bottom:12px">
       <label class="form-label">Hero Description <span class="form-lang-tag">${l.toUpperCase()}</span></label>
-      <textarea class="form-textarea" ${dir} id="hero-sub" oninput="markUnsaved();liveUpdateField('subheadline',this.value)">${escH(hero.subheadline)}</textarea>
+      <textarea class="form-textarea" ${dir} id="hero-sub" oninput="markUnsaved();liveUpdateField('subheadline',this.value)">${escH(heroSubheadline)}</textarea>
     </div>
     <div class="form-row form-row-2">
       <div class="form-group">
         <label class="form-label">Category 1: Citizenship Label</label>
-        <input class="form-input" ${dir} id="hero-cat-cbi" value="${escH(hero.pathway_citizenship || 'Citizenship')}" oninput="markUnsaved()">
+        <input class="form-input" ${dir} id="hero-cat-cbi" value="${escH(heroPathwayCitizenship)}" oninput="markUnsaved()">
       </div>
       <div class="form-group">
         <label class="form-label">Category 2: Residency Label</label>
-        <input class="form-input" ${dir} id="hero-cat-rbi" value="${escH(hero.pathway_residency || 'Residency')}" oninput="markUnsaved()">
+        <input class="form-input" ${dir} id="hero-cat-rbi" value="${escH(heroPathwayResidency)}" oninput="markUnsaved()">
       </div>
     </div>
     <div class="form-row form-row-2">
       <div class="form-group">
         <label class="form-label">Category 3: Real Estate Label</label>
-        <input class="form-input" ${dir} id="hero-cat-re" value="${escH(hero.pathway_realestate || 'Real Estate')}" oninput="markUnsaved()">
+        <input class="form-input" ${dir} id="hero-cat-re" value="${escH(heroPathwayRealestate)}" oninput="markUnsaved()">
       </div>
       <div class="form-group">
         <label class="form-label">Category 4: Educational Advisory Label</label>
-        <input class="form-input" ${dir} id="hero-cat-edu" value="${escH(hero.pathway_education || 'Educational Advisory')}" oninput="markUnsaved()">
+        <input class="form-input" ${dir} id="hero-cat-edu" value="${escH(heroPathwayEducation)}" oninput="markUnsaved()">
       </div>
     </div>
     <div class="form-row form-row-2">
       <div class="form-group">
         <label class="form-label">Primary CTA Button</label>
-        <input class="form-input" ${dir} id="hero-cta1" value="${escH(hero.cta_primary)}" oninput="markUnsaved();liveUpdateField('cta_primary',this.value)">
+        <input class="form-input" ${dir} id="hero-cta1" value="${escH(heroCta1)}" oninput="markUnsaved();liveUpdateField('cta_primary',this.value)">
       </div>
       <div class="form-group">
         <label class="form-label">Primary CTA Link</label>
-        <input class="form-input" id="hero-cta1-link" value="${escH(hero.cta_primary_link)}" placeholder="contact/index.html" oninput="markUnsaved()">
+        <input class="form-input" id="hero-cta1-link" value="${escH(heroCta1Link)}" placeholder="contact/index.html" oninput="markUnsaved()">
       </div>
     </div>`;
 
@@ -5510,43 +5587,43 @@
     <div class="form-row form-row-2">
       <div class="form-group">
         <label class="form-label">Section Badge</label>
-        <input class="form-input" ${dir} id="about-badge" value="${escH(about.badge || 'INTRODUCTION')}" oninput="markUnsaved();liveUpdateField('about_badge',this.value)">
+        <input class="form-input" ${dir} id="about-badge" value="${escH(aboutBadge)}" oninput="markUnsaved();liveUpdateField('about_badge',this.value)">
       </div>
       <div class="form-group">
         <label class="form-label">Subheading / Brand</label>
-        <input class="form-input" ${dir} id="about-subheading" value="${escH(about.subheading || 'Sharif Group')}" oninput="markUnsaved();liveUpdateField('about_subheading',this.value)">
+        <input class="form-input" ${dir} id="about-subheading" value="${escH(aboutSubheading)}" oninput="markUnsaved();liveUpdateField('about_subheading',this.value)">
       </div>
     </div>
     <div class="form-group" style="margin-bottom:12px">
       <label class="form-label">Heading</label>
-      <input class="form-input" ${dir} id="about-heading" value="${escH(about.heading || 'Our Story & Background:')}" oninput="markUnsaved();liveUpdateField('about_heading',this.value)">
+      <input class="form-input" ${dir} id="about-heading" value="${escH(aboutHeading)}" oninput="markUnsaved();liveUpdateField('about_heading',this.value)">
     </div>
     <div class="form-group" style="margin-bottom:12px">
       <label class="form-label">Paragraph 1</label>
-      <textarea class="form-textarea" style="min-height:80px" ${dir} id="about-p1" oninput="markUnsaved();liveUpdateField('about_p1',this.value)">${escH(about.p1)}</textarea>
+      <textarea class="form-textarea" style="min-height:80px" ${dir} id="about-p1" oninput="markUnsaved();liveUpdateField('about_p1',this.value)">${escH(aboutP1)}</textarea>
     </div>
     <div class="form-group" style="margin-bottom:12px">
       <label class="form-label">Paragraph 2</label>
-      <textarea class="form-textarea" style="min-height:80px" ${dir} id="about-p2" oninput="markUnsaved();liveUpdateField('about_p2',this.value)">${escH(about.p2)}</textarea>
+      <textarea class="form-textarea" style="min-height:80px" ${dir} id="about-p2" oninput="markUnsaved();liveUpdateField('about_p2',this.value)">${escH(aboutP2)}</textarea>
     </div>
     <div class="form-row form-row-2">
       <div class="form-group">
         <label class="form-label">Button 1 Text</label>
-        <input class="form-input" ${dir} id="about-btn1-text" value="${escH(about.btn1_text || 'Read Our Story')}" oninput="markUnsaved();liveUpdateField('about_btn1',this.value)">
+        <input class="form-input" ${dir} id="about-btn1-text" value="${escH(aboutBtn1Text)}" oninput="markUnsaved();liveUpdateField('about_btn1',this.value)">
       </div>
       <div class="form-group">
         <label class="form-label">Button 1 Link</label>
-        <input class="form-input" id="about-btn1-link" value="${escH(about.btn1_link || 'aboutus/index.html')}" oninput="markUnsaved()">
+        <input class="form-input" id="about-btn1-link" value="${escH(aboutBtn1Link)}" oninput="markUnsaved()">
       </div>
     </div>
     <div class="form-row form-row-2">
       <div class="form-group">
         <label class="form-label">Button 2 Text</label>
-        <input class="form-input" ${dir} id="about-btn2-text" value="${escH(about.btn2_text || 'Book Consultation')}" oninput="markUnsaved();liveUpdateField('about_btn2',this.value)">
+        <input class="form-input" ${dir} id="about-btn2-text" value="${escH(aboutBtn2Text)}" oninput="markUnsaved();liveUpdateField('about_btn2',this.value)">
       </div>
       <div class="form-group">
         <label class="form-label">Button 2 Link</label>
-        <input class="form-input" id="about-btn2-link" value="${escH(about.btn2_link || 'contact/index.html')}" oninput="markUnsaved()">
+        <input class="form-input" id="about-btn2-link" value="${escH(aboutBtn2Link)}" oninput="markUnsaved()">
       </div>
     </div>`;
 
@@ -5846,11 +5923,30 @@
           { month: 'MONTH 6', title: 'Naturalization Certificate & Passport Delivery', desc: 'Take oath of allegiance, receive certificate of naturalization, and biometric passport handover.', note: 'Secure VIP courier delivery to your address or handover at our Dubai office.' }
         ];
 
-        const defaultFaqs = (ld.faqs && ld.faqs.length) ? ld.faqs : [
-          { q: 'How long does the citizenship application process take?', a: 'The complete process typically takes 6 to 9 months from initial document collation to passport delivery.' },
-          { q: 'Do I need to visit or reside in the country?', a: 'No, the entire process is conducted 100% remotely. No physical residency or visit is required before or after approval.' },
-          { q: 'Can I include my family members in the same file?', a: 'Yes, you can include your spouse, dependent children under 30, and dependent parents above 65 in one file.' }
-        ];
+        const progFaqsByLang = {
+          en: [
+            { q: 'How long does the citizenship application process take?', a: 'The complete process typically takes 6 to 9 months from initial document collation to passport delivery.' },
+            { q: 'Do I need to visit or reside in the country?', a: 'No, the entire process is conducted 100% remotely. No physical residency or visit is required before or after approval.' },
+            { q: 'Can I include my family members in the same file?', a: 'Yes, you can include your spouse, dependent children under 30, and dependent parents above 65 in one file.' }
+          ],
+          ar: [
+            { q: 'كم من الوقت تستغرق إجراءات تقديم الطلب؟', a: 'تستغرق الإجراءات الكاملة عادةً من 6 إلى 9 أشهر من تجهيز المستندات وحتى استلام جواز السفر أو بطاقة الإقامة.' },
+            { q: 'هل يلزمني زيارة الدولة أو الإقامة فيها؟', a: 'لا، تتم جميع الإجراءات بنسبة 100% عن بُعد دون الحاجة للسفر أو الإقامة الفعلية قبل أو بعد الموافقة.' },
+            { q: 'هل يمكنني تضمين أفراد أسرتي في نفس الطلب؟', a: 'نعم، يمكنك تضمين الزوج/الزوجة والأبناء المعالين والوالدين المؤهلين ضمن نفس الملف.' }
+          ],
+          fa: [
+            { q: 'مراحل ثبت پرونده و اخذ تابعیت چقدر زمان می‌برد؟', a: 'فرآیند کامل معمولاً بین ۶ تا ۹ ماه از زمان جمع‌آوری مدارک اولیه تا تحویل پاسپورت یا کارت اقامت به طول می‌انجامد.' },
+            { q: 'آیا نیاز به سفر یا اقامت در کشور مقصد وجود دارد؟', a: 'خیر، کلیه مراحل به صورت ۱۰۰٪ غیرحضوری انجام می‌شود و نیازی به حضور فیزیکی قبل یا بعد از اخذ وضعیت نیست.' },
+            { q: 'آیا امکان اضافه کردن اعضای خانواده در پرونده وجود دارد؟', a: 'بله، سرمایه‌گذار می‌تواند همسر، فرزندان وابسته و والدین واجد شرایط را در یک پرونده مشترک بگنجاند.' }
+          ],
+          zh: [
+            { q: '递交申请到最终获批需要多长时间？', a: '从前期文件整理公证到正式签发护照或居留卡，整体周期通常为6至9个月。' },
+            { q: '申请期间是否需要登陆或在当地实际居住？', a: '无需登陆或居住。所有合规审批与海牙认证均可全程100%远程协助办理完毕。' },
+            { q: '主申请人可以携同哪些家庭成员一同申请？', a: '可以。主申请人可在同一份申请中携同合法配偶、经济依附的子女以及符合条件的父母。' }
+          ]
+        };
+
+        const defaultFaqs = (ld.faqs && ld.faqs.length) ? ld.faqs : (progFaqsByLang[l] || progFaqsByLang.en);
 
         // 1. Identity & Navigation Settings
         const sectionsForEditor = (typeof PortfolioManager !== 'undefined') ? PortfolioManager.getSections(itemType) : [];
@@ -6869,27 +6965,31 @@
         let excerpt = document.getElementById('blog-excerpt')?.value || '';
         let body = document.getElementById('blog-body')?.value || '';
 
-        // If form elements are not in the DOM (e.g. drawer is closed and user is editing visually),
-        // pull from the stored article in CMS rather than broadcasting empty strings!
-        if (!formTitle && state.section === 'blog-edit') {
+        // If in visual blog edit mode, pull strictly from the stored localized article in CMS
+        // so drawer form inputs or other language fallbacks never leak into the visual canvas!
+        if (state.section === 'blog-edit') {
           const blogs = window.CMS.getData(window.CMS.KEYS.BLOG) || [];
           const b = blogs.find(x => x.id === state.itemId || x.slug === state.activeBlogSlug);
-          if (!b) return;
-          const ld = b[state.lang] || (state.lang === 'en' ? (b.en || b) : {});
-          title = ld.title || (state.lang === 'en' ? (b.title || (b.en && b.en.title) || '') : '');
-          slug = b.slug || ld.slug || state.activeBlogSlug || '';
-          category = b.category || category;
-          subcategory = b.subcategory || subcategory;
-          target_programs = b.target_programs || target_programs;
-          status = b.status_en || status;
-          featured = !!b.featured;
-          author = b.author || author;
-          authorTitle = b.author_title || authorTitle;
-          date = b.publish_date || date;
-          readTime = b.read_time || readTime;
-          img = b.featured_img || '';
-          excerpt = ld.excerpt || (state.lang === 'en' ? (b.excerpt || '') : '');
-          body = ld.body || (state.lang === 'en' ? (b.body || (b.en && b.en.body) || '') : '');
+          if (b) {
+            const curL = state.lang || 'en';
+            const ld = b[curL] || (curL === 'en' ? (b.en || b) : {});
+            title = ld.title || (curL === 'en' ? (b.title || (b.en && b.en.title) || '') : (b.en?.title || b.title || ''));
+            slug = b.slug || ld.slug || state.activeBlogSlug || '';
+            category = b.category || category;
+            subcategory = b.subcategory || subcategory;
+            target_programs = b.target_programs || target_programs;
+            status = b['status_' + curL] || b.status_en || status;
+            featured = !!b.featured;
+            author = b.author || author;
+            authorTitle = b.author_title || authorTitle;
+            date = b.publish_date || date;
+            readTime = b.read_time || readTime;
+            img = b.featured_img || '';
+            excerpt = ld.excerpt || (curL === 'en' ? (b.excerpt || '') : '');
+            body = (ld.body !== undefined && ld.body !== null && String(ld.body).trim())
+              ? ld.body
+              : (curL === 'en' ? (b.body || (b.en && b.en.body) || '') : '');
+          }
         }
 
         sendToIframe({
@@ -8802,7 +8902,9 @@
       async function triggerAI(targetLang) {
         document.getElementById('ai-menu').classList.remove('open');
         const key = window.CMS.Settings.getAiKey();
-        if (!key) { showToast('Add your OpenRouter or Gemini API key in Settings first!', 'error'); navigate('settings'); return; }
+        if (!key) {
+          showToast('Translating with high-speed built-in translation engine…', 'info');
+        }
 
         const langs = targetLang === 'all' ? ['ar', 'fa', 'zh'] : [targetLang];
         const overlay = document.getElementById('ai-overlay');
@@ -9395,7 +9497,7 @@
         const apiPublishUrl = apiBase + 'api/publish.php';
 
         const controller = new AbortController();
-        const timeoutId = setTimeout(() => controller.abort(), 30000); // 30s timeout
+        const timeoutId = setTimeout(() => controller.abort(), 90000); // 90s timeout for complete server SSG regeneration
         let res;
         try {
           res = await fetch(apiPublishUrl, {
@@ -9411,7 +9513,7 @@
           return {
             _failed: true,
             _networkFail: true,
-            error: isTimeout ? 'Server publish timed out (30s). Please check server connection.' : networkErr.message
+            error: isTimeout ? 'Server publish timed out (90s). Please check server connection.' : networkErr.message
           };
         }
         clearTimeout(timeoutId);
@@ -9567,6 +9669,35 @@
           } catch (e) { }
         }
 
+        ['sgcms_homepage', 'sgcms_aboutus', 'sgcms_citizenship', 'sgcms_residency', 'sgcms_contact', 'sgcms_team', 'sgcms_offices'].forEach(k => {
+          const raw = localStorage.getItem(k);
+          if (raw && isMojibakeString(raw)) {
+            localStorage.removeItem(k);
+          }
+        });
+
+        // Heal pathway_education in sgcms_homepage if present
+        ['sgcms_homepage', 'sgcms_homepage_live'].forEach(k => {
+          const raw = localStorage.getItem(k);
+          if (!raw) return;
+          try {
+            let hp = JSON.parse(raw);
+            if (hp && hp.hero) {
+              let hpMod = false;
+              const defEd = { en: 'Educational Advisory', ar: 'الاستشارات التعليمية', fa: 'مشاوره تحصیلی', zh: '教育咨询' };
+              ['en', 'ar', 'fa', 'zh'].forEach(lCode => {
+                if (hp.hero[lCode] && hp.hero[lCode].pathway_education) {
+                  if (isMojibakeString(hp.hero[lCode].pathway_education) || hp.hero[lCode].pathway_education.includes('æ•™')) {
+                    hp.hero[lCode].pathway_education = defEd[lCode];
+                    hpMod = true;
+                  }
+                }
+              });
+              if (hpMod) localStorage.setItem(k, JSON.stringify(hp));
+            }
+          } catch(e) {}
+        });
+
         ['sgcms_dom_overrides', 'sgcms_dom_overrides_live'].forEach(k => {
           const raw = localStorage.getItem(k);
           if (!raw) return;
@@ -9578,11 +9709,16 @@
                 const val = obj[pKey][lKey][sel];
                 const str = typeof val === 'string' ? val : (val?.text || '');
                 if (
+                  isMojibakeString(str) ||
                   str.includes('naikhsn') ||
                   str.includes('Costs\nfor') ||
+                  str.includes('æ•™') ||
+                  str.includes('å’¨') ||
                   sel.includes('header') ||
                   sel.includes('nav') ||
                   sel.includes('logo') ||
+                  sel.includes('blog-tab') ||
+                  sel.includes('filter') ||
                   sel.includes('text-neutral-300') ||
                   sel === 'span' ||
                   sel.startsWith('div.flex')
@@ -9611,6 +9747,9 @@
 
       updatePublishStatusUI();
       populateSidebar();
+      document.querySelectorAll('.lang-btn').forEach(b => b.classList.remove('active'));
+      const initLb = document.getElementById('lang-' + (state.lang || 'en'));
+      if (initLb) initLb.classList.add('active');
       navigate('homepage', null, null, true);
       setCanvasMode(state.canvasMode, true);
 

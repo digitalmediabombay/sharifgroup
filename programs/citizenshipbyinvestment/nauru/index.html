@@ -14,22 +14,25 @@
     <meta charset="utf-8" />
     <meta content="width=device-width, initial-scale=1.0" name="viewport" />
     <script>
-        (function () {
-            try {
-                var l = localStorage.getItem('sharif_lang') || localStorage.getItem('sharif_preferred_lang') || 'en';
-                if (l === 'ar' || l === 'fa') {
-                    document.documentElement.dir = 'rtl';
-                    document.documentElement.lang = l;
-                } else if (l === 'zh') {
-                    document.documentElement.dir = 'ltr';
-                    document.documentElement.lang = 'zh';
-                }
-                if (l !== 'en') {
-                    document.documentElement.classList.add('i18n-pending');
-                }
-            } catch (e) { }
-        })();
-    </script>
+    (function() {
+        try {
+            var p = (window.location && window.location.pathname) ? window.location.pathname : '';
+            var segs = p.split('/').filter(Boolean);
+            var first = segs.length > 0 ? segs[0].toLowerCase() : '';
+            if (first === 'ar' || first === 'fa') {
+                document.documentElement.dir = 'rtl';
+                document.documentElement.lang = first;
+            } else if (first === 'zh') {
+                document.documentElement.dir = 'ltr';
+                document.documentElement.lang = 'zh';
+            } else {
+                document.documentElement.dir = 'ltr';
+                document.documentElement.lang = 'en';
+                document.documentElement.classList.remove('i18n-pending');
+            }
+        } catch(e) {}
+    })();
+</script>
     
     <!-- Primary Search & Meta Tags -->
     <title>Nauru Citizenship by Investment | Sharif Group Dubai</title>
@@ -3085,7 +3088,7 @@
                                 onclick="toggleFAQ('p-1')">
                                 <span
                                     class="text-xs uppercase tracking-wider font-bold text-neutral-800 group-hover:text-luxury-gold transition-colors duration-200"
-                                    data-i18n="programs.nauru.faqQ1">Question 1</span>
+                                    data-i18n="programs.nauru.faqQ1">What is the minimum cost for Republic of Nauru citizenship?</span>
                                 <span id="icon-p-1"
                                     class="text-xs text-neutral-400 group-hover:text-luxury-gold transition-transform duration-200 flex-shrink-0 ml-3"><i
                                         class="fa-solid fa-chevron-down text-xs"></i></span>
@@ -3103,7 +3106,7 @@
                                 onclick="toggleFAQ('p-2')">
                                 <span
                                     class="text-xs uppercase tracking-wider font-bold text-neutral-800 group-hover:text-luxury-gold transition-colors duration-200"
-                                    data-i18n="programs.nauru.faqQ2">Question 2</span>
+                                    data-i18n="programs.nauru.faqQ2">How long does the application process take?</span>
                                 <span id="icon-p-2"
                                     class="text-xs text-neutral-400 group-hover:text-luxury-gold transition-transform duration-200 flex-shrink-0 ml-3"><i
                                         class="fa-solid fa-chevron-down text-xs"></i></span>
@@ -3121,7 +3124,7 @@
                                 onclick="toggleFAQ('p-3')">
                                 <span
                                     class="text-xs uppercase tracking-wider font-bold text-neutral-800 group-hover:text-luxury-gold transition-colors duration-200"
-                                    data-i18n="programs.nauru.faqQ3">Question 3</span>
+                                    data-i18n="programs.nauru.faqQ3">Do I need to travel to Nauru to apply?</span>
                                 <span id="icon-p-3"
                                     class="text-xs text-neutral-400 group-hover:text-luxury-gold transition-transform duration-200 flex-shrink-0 ml-3"><i
                                         class="fa-solid fa-chevron-down text-xs"></i></span>
@@ -3139,7 +3142,7 @@
                                 onclick="toggleFAQ('p-4')">
                                 <span
                                     class="text-xs uppercase tracking-wider font-bold text-neutral-800 group-hover:text-luxury-gold transition-colors duration-200"
-                                    data-i18n="programs.nauru.faqQ4">Question 4</span>
+                                    data-i18n="programs.nauru.faqQ4">Is there any physical residency rule after approval?</span>
                                 <span id="icon-p-4"
                                     class="text-xs text-neutral-400 group-hover:text-luxury-gold transition-transform duration-200 flex-shrink-0 ml-3"><i
                                         class="fa-solid fa-chevron-down text-xs"></i></span>
@@ -3157,7 +3160,7 @@
                                 onclick="toggleFAQ('p-5')">
                                 <span
                                     class="text-xs uppercase tracking-wider font-bold text-neutral-800 group-hover:text-luxury-gold transition-colors duration-200"
-                                    data-i18n="programs.nauru.faqQ5">Question 5</span>
+                                    data-i18n="programs.nauru.faqQ5">What family members can I include in one application?</span>
                                 <span id="icon-p-5"
                                     class="text-xs text-neutral-400 group-hover:text-luxury-gold transition-transform duration-200 flex-shrink-0 ml-3"><i
                                         class="fa-solid fa-chevron-down text-xs"></i></span>
@@ -3174,7 +3177,7 @@
                                 onclick="toggleFAQ('p-6')">
                                 <span
                                     class="text-xs uppercase tracking-wider font-bold text-neutral-800 group-hover:text-luxury-gold transition-colors duration-200"
-                                    data-i18n="programs.nauru.faqQ6">Question 6</span>
+                                    data-i18n="programs.nauru.faqQ6">What is the Nauru Treasury Fund?</span>
                                 <span id="icon-p-6"
                                     class="text-xs text-neutral-400 group-hover:text-luxury-gold transition-transform duration-200 flex-shrink-0 ml-3"><i
                                         class="fa-solid fa-chevron-down text-xs"></i></span>
@@ -3192,7 +3195,7 @@
                                 onclick="toggleFAQ('p-7')">
                                 <span
                                     class="text-xs uppercase tracking-wider font-bold text-neutral-800 group-hover:text-luxury-gold transition-colors duration-200"
-                                    data-i18n="programs.nauru.faqQ7">Question 7</span>
+                                    data-i18n="programs.nauru.faqQ7">Does Nauru permit dual citizenship?</span>
                                 <span id="icon-p-7"
                                     class="text-xs text-neutral-400 group-hover:text-luxury-gold transition-transform duration-200 flex-shrink-0 ml-3"><i
                                         class="fa-solid fa-chevron-down text-xs"></i></span>
@@ -3210,7 +3213,7 @@
                                 onclick="toggleFAQ('p-8')">
                                 <span
                                     class="text-xs uppercase tracking-wider font-bold text-neutral-800 group-hover:text-luxury-gold transition-colors duration-200"
-                                    data-i18n="programs.nauru.faqQ8">Question 8</span>
+                                    data-i18n="programs.nauru.faqQ8">What are the main tax benefits of Nauru citizenship?</span>
                                 <span id="icon-p-8"
                                     class="text-xs text-neutral-400 group-hover:text-luxury-gold transition-transform duration-200 flex-shrink-0 ml-3"><i
                                         class="fa-solid fa-chevron-down text-xs"></i></span>
@@ -3228,7 +3231,7 @@
                                 onclick="toggleFAQ('p-9')">
                                 <span
                                     class="text-xs uppercase tracking-wider font-bold text-neutral-800 group-hover:text-luxury-gold transition-colors duration-200"
-                                    data-i18n="programs.nauru.faqQ9">Question 9</span>
+                                    data-i18n="programs.nauru.faqQ9">Are there any language or history tests required?</span>
                                 <span id="icon-p-9"
                                     class="text-xs text-neutral-400 group-hover:text-luxury-gold transition-transform duration-200 flex-shrink-0 ml-3"><i
                                         class="fa-solid fa-chevron-down text-xs"></i></span>
@@ -3246,7 +3249,7 @@
                                 onclick="toggleFAQ('p-10')">
                                 <span
                                     class="text-xs uppercase tracking-wider font-bold text-neutral-800 group-hover:text-luxury-gold transition-colors duration-200"
-                                    data-i18n="programs.nauru.faqQ10">Question 10</span>
+                                    data-i18n="programs.nauru.faqQ10">How many countries can I access visa-free?</span>
                                 <span id="icon-p-10"
                                     class="text-xs text-neutral-400 group-hover:text-luxury-gold transition-transform duration-200 flex-shrink-0 ml-3"><i
                                         class="fa-solid fa-chevron-down text-xs"></i></span>
@@ -3267,7 +3270,7 @@
                                 onclick="toggleFAQ('p-11')">
                                 <span
                                     class="text-xs uppercase tracking-wider font-bold text-neutral-800 group-hover:text-luxury-gold transition-colors duration-200"
-                                    data-i18n="programs.nauru.faqQ11">Question 11</span>
+                                    data-i18n="programs.nauru.faqQ11">When do I need to transfer the investment funds?</span>
                                 <span id="icon-p-11"
                                     class="text-xs text-neutral-400 group-hover:text-luxury-gold transition-transform duration-200 flex-shrink-0 ml-3"><i
                                         class="fa-solid fa-chevron-down text-xs"></i></span>
@@ -3285,7 +3288,7 @@
                                 onclick="toggleFAQ('p-12')">
                                 <span
                                     class="text-xs uppercase tracking-wider font-bold text-neutral-800 group-hover:text-luxury-gold transition-colors duration-200"
-                                    data-i18n="programs.nauru.faqQ12">Question 12</span>
+                                    data-i18n="programs.nauru.faqQ12">Is a background interview part of the process?</span>
                                 <span id="icon-p-12"
                                     class="text-xs text-neutral-400 group-hover:text-luxury-gold transition-transform duration-200 flex-shrink-0 ml-3"><i
                                         class="fa-solid fa-chevron-down text-xs"></i></span>
@@ -3303,7 +3306,7 @@
                                 onclick="toggleFAQ('p-13')">
                                 <span
                                     class="text-xs uppercase tracking-wider font-bold text-neutral-800 group-hover:text-luxury-gold transition-colors duration-200"
-                                    data-i18n="programs.nauru.faqQ13">Question 13</span>
+                                    data-i18n="programs.nauru.faqQ13">Can I apply independently without an authorized agent?</span>
                                 <span id="icon-p-13"
                                     class="text-xs text-neutral-400 group-hover:text-luxury-gold transition-transform duration-200 flex-shrink-0 ml-3"><i
                                         class="fa-solid fa-chevron-down text-xs"></i></span>
@@ -3321,7 +3324,7 @@
                                 onclick="toggleFAQ('p-14')">
                                 <span
                                     class="text-xs uppercase tracking-wider font-bold text-neutral-800 group-hover:text-luxury-gold transition-colors duration-200"
-                                    data-i18n="programs.nauru.faqQ14">Question 14</span>
+                                    data-i18n="programs.nauru.faqQ14">What due diligence fees apply to the application?</span>
                                 <span id="icon-p-14"
                                     class="text-xs text-neutral-400 group-hover:text-luxury-gold transition-transform duration-200 flex-shrink-0 ml-3"><i
                                         class="fa-solid fa-chevron-down text-xs"></i></span>
@@ -3339,7 +3342,7 @@
                                 onclick="toggleFAQ('p-15')">
                                 <span
                                     class="text-xs uppercase tracking-wider font-bold text-neutral-800 group-hover:text-luxury-gold transition-colors duration-200"
-                                    data-i18n="programs.nauru.faqQ15">Question 15</span>
+                                    data-i18n="programs.nauru.faqQ15">How long is the Nauru passport valid for before renewal?</span>
                                 <span id="icon-p-15"
                                     class="text-xs text-neutral-400 group-hover:text-luxury-gold transition-transform duration-200 flex-shrink-0 ml-3"><i
                                         class="fa-solid fa-chevron-down text-xs"></i></span>
@@ -3357,7 +3360,7 @@
                                 onclick="toggleFAQ('p-16')">
                                 <span
                                     class="text-xs uppercase tracking-wider font-bold text-neutral-800 group-hover:text-luxury-gold transition-colors duration-200"
-                                    data-i18n="programs.nauru.faqQ16">Question 16</span>
+                                    data-i18n="programs.nauru.faqQ16">Can future children inherit my Nauru citizenship?</span>
                                 <span id="icon-p-16"
                                     class="text-xs text-neutral-400 group-hover:text-luxury-gold transition-transform duration-200 flex-shrink-0 ml-3"><i
                                         class="fa-solid fa-chevron-down text-xs"></i></span>
@@ -3375,7 +3378,7 @@
                                 onclick="toggleFAQ('p-17')">
                                 <span
                                     class="text-xs uppercase tracking-wider font-bold text-neutral-800 group-hover:text-luxury-gold transition-colors duration-200"
-                                    data-i18n="programs.nauru.faqQ17">Question 17</span>
+                                    data-i18n="programs.nauru.faqQ17">What initial documents are needed to start?</span>
                                 <span id="icon-p-17"
                                     class="text-xs text-neutral-400 group-hover:text-luxury-gold transition-transform duration-200 flex-shrink-0 ml-3"><i
                                         class="fa-solid fa-chevron-down text-xs"></i></span>
@@ -3393,7 +3396,7 @@
                                 onclick="toggleFAQ('p-18')">
                                 <span
                                     class="text-xs uppercase tracking-wider font-bold text-neutral-800 group-hover:text-luxury-gold transition-colors duration-200"
-                                    data-i18n="programs.nauru.faqQ18">Question 18</span>
+                                    data-i18n="programs.nauru.faqQ18">Are sibling additions permitted in the application?</span>
                                 <span id="icon-p-18"
                                     class="text-xs text-neutral-400 group-hover:text-luxury-gold transition-transform duration-200 flex-shrink-0 ml-3"><i
                                         class="fa-solid fa-chevron-down text-xs"></i></span>
@@ -3411,7 +3414,7 @@
                                 onclick="toggleFAQ('p-19')">
                                 <span
                                     class="text-xs uppercase tracking-wider font-bold text-neutral-800 group-hover:text-luxury-gold transition-colors duration-200"
-                                    data-i18n="programs.nauru.faqQ19">Question 19</span>
+                                    data-i18n="programs.nauru.faqQ19">What is the role of Sharif Group during the process?</span>
                                 <span id="icon-p-19"
                                     class="text-xs text-neutral-400 group-hover:text-luxury-gold transition-transform duration-200 flex-shrink-0 ml-3"><i
                                         class="fa-solid fa-chevron-down text-xs"></i></span>
@@ -3429,7 +3432,7 @@
                                 onclick="toggleFAQ('p-20')">
                                 <span
                                     class="text-xs uppercase tracking-wider font-bold text-neutral-800 group-hover:text-luxury-gold transition-colors duration-200"
-                                    data-i18n="programs.nauru.faqQ20">Question 20</span>
+                                    data-i18n="programs.nauru.faqQ20">How do I schedule my initial consultation?</span>
                                 <span id="icon-p-20"
                                     class="text-xs text-neutral-400 group-hover:text-luxury-gold transition-transform duration-200 flex-shrink-0 ml-3"><i
                                         class="fa-solid fa-chevron-down text-xs"></i></span>

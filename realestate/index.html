@@ -1,4 +1,4 @@
-﻿<!DOCTYPE html>
+<!DOCTYPE html>
 
 <html class="scroll-smooth" lang="en">
 <head>
@@ -15,16 +15,19 @@ j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
 <script>
     (function() {
         try {
-            var l = localStorage.getItem('sharif_lang') || localStorage.getItem('sharif_preferred_lang') || 'en';
-            if (l === 'ar' || l === 'fa') {
+            var p = (window.location && window.location.pathname) ? window.location.pathname : '';
+            var segs = p.split('/').filter(Boolean);
+            var first = segs.length > 0 ? segs[0].toLowerCase() : '';
+            if (first === 'ar' || first === 'fa') {
                 document.documentElement.dir = 'rtl';
-                document.documentElement.lang = l;
-            } else if (l === 'zh') {
+                document.documentElement.lang = first;
+            } else if (first === 'zh') {
                 document.documentElement.dir = 'ltr';
                 document.documentElement.lang = 'zh';
-            }
-            if (l !== 'en') {
-                document.documentElement.classList.add('i18n-pending');
+            } else {
+                document.documentElement.dir = 'ltr';
+                document.documentElement.lang = 'en';
+                document.documentElement.classList.remove('i18n-pending');
             }
         } catch(e) {}
     })();
@@ -2483,36 +2486,14 @@ You can easily book a free consultation by filling out our online inquiry form o
             updateDominicaBlogSlider();
         }
 
-        function startDominicaBlogAutoScroll() {
-            stopDominicaBlogAutoScroll();
-            dominicaBlogAutoScrollTimer = setInterval(nextDominicaBlogAuto, 3500);
-        }
-
-        function stopDominicaBlogAutoScroll() {
-            if (dominicaBlogAutoScrollTimer) {
-                clearInterval(dominicaBlogAutoScrollTimer);
-                dominicaBlogAutoScrollTimer = null;
-            }
-        }
-
-        function restartDominicaBlogAutoScroll() {
-            stopDominicaBlogAutoScroll();
-            startDominicaBlogAutoScroll();
-        }
-
-        function setupDominicaBlogHoverPause() {
-            const container = document.getElementById('sec-dominica-blogs');
-            if (!container) return;
-            container.addEventListener('mouseenter', stopDominicaBlogAutoScroll);
-            container.addEventListener('mouseleave', startDominicaBlogAutoScroll);
-            container.addEventListener('touchstart', stopDominicaBlogAutoScroll, { passive: true });
-            container.addEventListener('touchend', startDominicaBlogAutoScroll, { passive: true });
-        }
+        function startDominicaBlogAutoScroll() {}
+        function stopDominicaBlogAutoScroll() {}
+        function restartDominicaBlogAutoScroll() {}
+        function setupDominicaBlogHoverPause() {}
 
         window.addEventListener('languageChanged', () => {
             dominicaBlogSliderIndex = 0;
             updateDominicaBlogSlider();
-            restartDominicaBlogAutoScroll();
         });
 
         window.addEventListener('resize', () => {
@@ -2521,8 +2502,6 @@ You can easily book a free consultation by filling out our online inquiry form o
 
         document.addEventListener('DOMContentLoaded', () => {
             updateDominicaBlogSlider();
-            setupDominicaBlogHoverPause();
-            startDominicaBlogAutoScroll();
         });
 
         // Country Dial Code Pickers (Comprehensive Global List)

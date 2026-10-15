@@ -1,0 +1,334 @@
+{
+  "nav": {
+    "webinars": "Webinars"
+  },
+  "footer": {
+    "webinars": "Webinars",
+    "upcoming": "Upcoming sessions"
+  },
+  "webinars": {
+    "common": {
+      "demoStrong": "Demo",
+      "demoText": "Preview for the web team — nothing is sent or saved outside this browser.",
+      "skip": "Skip to content",
+      "isNew": "New",
+      "free": "Free",
+      "min": "{n} min",
+      "sample": "Sample date — pending approval",
+      "copy": "Copy link",
+      "copied": "Link copied",
+      "close": "Close",
+      "lang": "Persian (Dari)",
+      "online": "Online",
+      "seats": "{n} seats",
+      "sessionN": "Session {n}",
+      "of": "of"
+    },
+    "cd": {
+      "d": "Days",
+      "h": "Hours",
+      "m": "Minutes",
+      "s": "Seconds"
+    },
+    "tz": {
+      "kabul": "Kabul",
+      "dubai": "Dubai",
+      "istanbul": "Istanbul",
+      "you": "Your time"
+    },
+    "status": {
+      "upcoming": "Upcoming",
+      "live": "Live now",
+      "ended": "Held",
+      "postponed": "Postponed",
+      "cancelled": "Cancelled",
+      "regOpen": "Registration open",
+      "soon": "Coming soon",
+      "publicLink": "Public link"
+    },
+    "list": {
+      "eyebrow": "Live Sessions & Insights",
+      "title": "Webinars",
+      "sub": "SHARIF GROUP DUBAI",
+      "lede": "Free, live online sessions where our specialists explain citizenship and residency pathways clearly — and answer your questions.",
+      "nextEyebrow": "Next live session",
+      "join": "Join the webinar",
+      "remind": "Get WhatsApp reminder",
+      "details": "Full details",
+      "startsIn": "Starts in",
+      "whenTitle": "Date & time",
+      "noInstall": "No app needed",
+      "phoneOk": "Works on mobile",
+      "upTitle": "Upcoming <em>Sessions</em>",
+      "seriesTag": "Series 01 · Dominica",
+      "seriesTitle": "Dominica Pilot Series",
+      "seriesText": "Three sessions, two weeks apart — from the basics to documents and your own questions. Every session is free and in Persian (Dari).",
+      "sessionCta": "Details",
+      "howEyebrow": "Before you join",
+      "howTitle": "How to <em>join</em>",
+      "steps": [
+        {
+          "t": "Open the link",
+          "d": "Tap “Join the webinar” on this page from your phone or computer. No app to install."
+        },
+        {
+          "t": "Enter any name",
+          "d": "You can join with any name. Your camera and microphone stay off."
+        },
+        {
+          "t": "Weak internet?",
+          "d": "Choose “audio only”. The voice is the heart of the session; slides are simple."
+        },
+        {
+          "t": "Ask in the chat",
+          "d": "Type your question in the chat. The host reads it out without your name."
+        }
+      ],
+      "privacyTitle": "Your privacy is protected",
+      "privacyText": "Nobody sees who attended. The recording shows only the speakers and slides — never participants' names or images.",
+      "ctaTitle": "Prefer a private conversation?",
+      "ctaText": "Book a confidential consultation with our team in Business Bay, Dubai — in person, by phone or online.",
+      "ctaBtn": "Book Consultation"
+    },
+    "detail": {
+      "recapTitle": "Session summary",
+      "home": "Home",
+      "about": "About this session",
+      "learn": "What you will learn",
+      "agenda": "Session agenda",
+      "speakers": "Speakers",
+      "agendaItems": [
+        {
+          "t": "0–5",
+          "l": "Welcome in Dari and a short poll",
+          "w": "Host"
+        },
+        {
+          "t": "5–10",
+          "l": "About Sharif Group and the speaker",
+          "w": "Host"
+        },
+        {
+          "t": "10–40",
+          "l": "Main content",
+          "w": "Speaker"
+        },
+        {
+          "t": "40–45",
+          "l": "Next step: free private consultation and checklist",
+          "w": "Speaker"
+        },
+        {
+          "t": "45–63",
+          "l": "Live Q&A",
+          "w": "Host & speaker"
+        },
+        {
+          "t": "63–65",
+          "l": "Summary and next session",
+          "w": "Host"
+        }
+      ],
+      "minutes": "min",
+      "expertName": "Senior Citizenship Specialist",
+      "expertRole": "Sharif Group, Dubai",
+      "hostName": "Dari-speaking host",
+      "hostRole": "Moderates questions and chat",
+      "tbd": "Name to be announced",
+      "privacy": "Privacy during the session",
+      "privacyItems": [
+        "Join with any name — camera and microphone are off by default.",
+        "The recording shows only the speakers and slides.",
+        "The host never reads out the name of the person asking.",
+        "You can send your question privately to the host."
+      ],
+      "faq": "Frequently asked questions",
+      "faqs": [
+        {
+          "q": "Do I need to install an app?",
+          "a": "No. The link opens in your phone or computer browser. Chrome works best."
+        },
+        {
+          "q": "Where is the joining link?",
+          "a": "On this page — it is open to everyone. It is posted shortly before the session and the room opens 10 minutes before the start. If you register, we also send it to you on WhatsApp."
+        },
+        {
+          "q": "Will others see my name or face?",
+          "a": "No. You can use any name, your camera and microphone are off, and the recording only shows the speakers and slides."
+        },
+        {
+          "q": "What if my internet is weak?",
+          "a": "Choose “audio only”. The voice is the heart of the session and the slides are simple."
+        },
+        {
+          "q": "Is it free?",
+          "a": "Yes, attending is completely free."
+        },
+        {
+          "q": "Can I ask about my personal situation?",
+          "a": "General questions are answered live. For personal or financial matters, book a private consultation."
+        }
+      ],
+      "joinTitle": "Join this session",
+      "joinPublic": "The link is open to everyone — no registration needed.",
+      "joinBtn": "Join the webinar",
+      "joinNow": "Join now — live",
+      "roomOpens": "Room opens {time} (Kabul), 10 minutes before the start.",
+      "lockedTitle": "Link sent after registration",
+      "lockedText": "For this session the joining link is sent by WhatsApp to registered participants, 24 hours and 1 hour before the start.",
+      "shareWa": "Share on WhatsApp",
+      "addCal": "Add to calendar",
+      "liveBanner": "This session is live now",
+      "linkSoon": "Link will be posted soon",
+      "linkSoonNote": "The joining link will appear here before the session starts. Register to get it on WhatsApp too.",
+      "heldTitle": "This session has been held",
+      "heldText": "Thank you to everyone who joined. The next session of this series is listed below.",
+      "consultTitle": "Free private consultation",
+      "consultText": "A 15–20 minute confidential call for participants of this session.",
+      "consultBtn": "Book a consultation",
+      "notOpen": "Registration for this session opens after Session {n}.",
+      "other": "Other sessions in this series",
+      "soonCta": "Notify me"
+    },
+    "form": {
+      "title": "Get reminders & checklist",
+      "subPublic": "Optional — receive the link and reminders on WhatsApp, plus the Dari document checklist after the session.",
+      "subPrivate": "Register to receive the joining link and reminders on WhatsApp.",
+      "name": "Name",
+      "nameHint": "Doesn't have to be your real name.",
+      "wa": "WhatsApp number",
+      "waHint": "We send the link and reminders here.",
+      "email": "Email",
+      "optional": "optional",
+      "country": "Where do you live?",
+      "choose": "Select…",
+      "countries": {
+        "AF": "Afghanistan",
+        "AE": "United Arab Emirates",
+        "TR": "Turkey",
+        "IR": "Iran",
+        "other": "Other"
+      },
+      "question": "Your question for the specialist",
+      "questionHint": "Please don't write personal or financial details.",
+      "newsletter": "Send me news about future webinars",
+      "submit": "Register — free",
+      "sending": "Registering…",
+      "privacy": "Your information is used only to inform you about this webinar and to answer your consultation request, and is never shared with anyone else.",
+      "errName": "Please enter a name (at least 2 characters).",
+      "errPhone": "Please enter a valid WhatsApp number.",
+      "errEmail": "This email address doesn't look right.",
+      "errCountry": "Please choose where you live.",
+      "errQuestion": "Please keep your question under 500 characters.",
+      "alert": "Please correct the highlighted fields.",
+      "closed": "Registration for this session is closed."
+    },
+    "thanks": {
+      "eyebrow": "Registration confirmed",
+      "title": "You're registered!",
+      "text": "Thank you, {name}. Your place is saved. Here is everything you need for the session.",
+      "already": "This WhatsApp number was already registered for this session — here are your details.",
+      "ref": "Reference",
+      "next": "What happens next",
+      "steps": [
+        {
+          "t": "Now",
+          "d": "Confirmation (and email, if you added one)."
+        },
+        {
+          "t": "3 days before",
+          "d": "WhatsApp reminder — send us your question."
+        },
+        {
+          "t": "24 hours & 1 hour before",
+          "d": "The joining link on WhatsApp and email."
+        },
+        {
+          "t": "Within 24 hours after",
+          "d": "Thank-you message, short summary, checklist and consultation link."
+        }
+      ],
+      "back": "Back to webinars"
+    },
+    "demo": {
+      "fab": "Demo controls",
+      "title": "Demo controls",
+      "intro": "Switch states to preview every version of the page. These controls are not part of the production design.",
+      "state": "Session 1 state",
+      "visibility": "Who sees the link",
+      "public": "Public on page",
+      "registrants": "Registrants only",
+      "pages": "Preview pages",
+      "list": "Webinars list",
+      "detail": "Session 1 page",
+      "thanks": "Thank-you page",
+      "admin": "Admin & registrations",
+      "integration": "Site integration",
+      "reset": "Reset demo data",
+      "resetDone": "Demo data reset",
+      "sampleLink": "Sample link — the real meeting link is set in the admin panel.",
+      "linkState": "Link status",
+      "linkSoon": "Coming soon",
+      "linkSet": "Link ready"
+    },
+    "admin": {
+      "title": "Admin preview",
+      "intro": "What the marketing team needs in the existing CMS (like Blog posts) and what the registration export looks like.",
+      "warn": "Demo only: in production this page sits behind the existing admin login and the data comes from the CRM / Google Sheet.",
+      "tabContent": "Webinar fields",
+      "tabRegs": "Registrations",
+      "pick": "Webinar",
+      "status": "Event status",
+      "regOpen": "Registration open",
+      "start": "Start (Kabul time)",
+      "confirmed": "Date confirmed",
+      "vis": "Joining link visibility",
+      "url": "Meeting room link (leave empty = “coming soon”)",
+      "cap": "Capacity",
+      "titleFa": "Title — Persian",
+      "titleEn": "Title — English",
+      "save": "Save (demo)",
+      "saved": "Saved — preview updated",
+      "kRegs": "Registrations",
+      "kAF": "Living in Afghanistan",
+      "kNews": "Newsletter opt-ins",
+      "kQ": "Questions received",
+      "export": "Export CSV (Excel)",
+      "none": "No registrations yet — submit the form on the session page to see a row here.",
+      "cols": {
+        "id": "Reference",
+        "at": "Registered (UTC)",
+        "name": "Name",
+        "wa": "WhatsApp",
+        "email": "Email",
+        "country": "Country",
+        "q": "Question",
+        "news": "Newsletter",
+        "src": "utm_source",
+        "lang": "Language"
+      }
+    },
+    "int": {
+      "title": "Site integration",
+      "intro": "Where the new section connects to the existing website. All components below are live and follow the selected language.",
+      "nav": "1 · Main menu — “Webinars” next to Blog",
+      "home": "2 · Homepage — slim banner under the stats band",
+      "homeT": "Free live webinar: {title}",
+      "homeD": "{date} · {time} Kabul",
+      "homeBtn": "Details & join",
+      "blog": "3 · End of related blog posts",
+      "blogEyebrow": "Live webinar",
+      "urls": "4 · URL map",
+      "urlCols": [
+        "Page",
+        "English",
+        "Persian / Arabic / Chinese"
+      ],
+      "urlRows": [
+        "Webinars list",
+        "Session page",
+        "Thank-you page (noindex)"
+      ]
+    }
+  }
+}

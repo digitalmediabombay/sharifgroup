@@ -1,4 +1,4 @@
-﻿<!DOCTYPE html>
+<!DOCTYPE html>
 
 <html class="scroll-smooth" dir="ltr" lang="zh">
 <head>
@@ -2426,36 +2426,14 @@ j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
             updateDominicaBlogSlider();
         }
 
-        function startDominicaBlogAutoScroll() {
-            stopDominicaBlogAutoScroll();
-            dominicaBlogAutoScrollTimer = setInterval(nextDominicaBlogAuto, 3500);
-        }
-
-        function stopDominicaBlogAutoScroll() {
-            if (dominicaBlogAutoScrollTimer) {
-                clearInterval(dominicaBlogAutoScrollTimer);
-                dominicaBlogAutoScrollTimer = null;
-            }
-        }
-
-        function restartDominicaBlogAutoScroll() {
-            stopDominicaBlogAutoScroll();
-            startDominicaBlogAutoScroll();
-        }
-
-        function setupDominicaBlogHoverPause() {
-            const container = document.getElementById('sec-dominica-blogs');
-            if (!container) return;
-            container.addEventListener('mouseenter', stopDominicaBlogAutoScroll);
-            container.addEventListener('mouseleave', startDominicaBlogAutoScroll);
-            container.addEventListener('touchstart', stopDominicaBlogAutoScroll, { passive: true });
-            container.addEventListener('touchend', startDominicaBlogAutoScroll, { passive: true });
-        }
+        function startDominicaBlogAutoScroll() {}
+        function stopDominicaBlogAutoScroll() {}
+        function restartDominicaBlogAutoScroll() {}
+        function setupDominicaBlogHoverPause() {}
 
         window.addEventListener('languageChanged', () => {
             dominicaBlogSliderIndex = 0;
             updateDominicaBlogSlider();
-            restartDominicaBlogAutoScroll();
         });
 
         window.addEventListener('resize', () => {
@@ -2464,8 +2442,6 @@ j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
 
         document.addEventListener('DOMContentLoaded', () => {
             updateDominicaBlogSlider();
-            setupDominicaBlogHoverPause();
-            startDominicaBlogAutoScroll();
         });
 
         // Country Dial Code Pickers (Comprehensive Global List)

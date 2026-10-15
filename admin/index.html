@@ -513,6 +513,13 @@ if (window.CMS && window.CMS.Auth && window.CMS.Auth.isAuthenticated()) {
   window.location.href = getDashboardUrl();
 }
 
+function fillDemoCreds() {
+  const emailInput = document.getElementById('login-email');
+  const pwdInput = document.getElementById('login-password');
+  if (emailInput) emailInput.value = 'admin@sharifgroup.ae';
+  if (pwdInput) pwdInput.value = 'SharifCMS@2026';
+}
+
 // Password Reveal Toggle
 function togglePassword() {
   const pwdInput = document.getElementById('login-password');

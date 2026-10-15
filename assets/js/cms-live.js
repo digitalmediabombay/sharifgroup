@@ -43,12 +43,12 @@
         var g = window.getCurrentLanguage();
         if (['en', 'ar', 'fa', 'zh'].indexOf(g) !== -1) return g;
       }
-      var raw = (
-        localStorage.getItem('sharif_lang') ||
-        localStorage.getItem('sharif_preferred_lang') ||
-        'en'
-      ).split('-')[0].toLowerCase().trim();
-      return ['en', 'ar', 'fa', 'zh'].indexOf(raw) !== -1 ? raw : 'en';
+      var clean = (window.location && window.location.pathname ? window.location.pathname : '').split('/').filter(Boolean);
+      if (clean.length > 0) {
+        var first = clean[0].toLowerCase();
+        if (['ar', 'fa', 'zh'].indexOf(first) !== -1) return first;
+      }
+      return 'en';
     } catch (e) { return 'en'; }
   }
 
@@ -473,19 +473,24 @@
       var enLd = b.en || b;
       var enTitle = (b.en && b.en.title) || b.title;
       var enBody = (b.en && b.en.body) || b.body || ('<p>' + (enLd.excerpt || '') + '</p>');
-      var enArticleData = {
-        title: enTitle,
+      var localizedBody = (ld && ld.body && String(ld.body).trim())
+        ? ld.body
+        : ((b[l] && b[l].body && String(b[l].body).trim())
+          ? b[l].body
+          : (l === 'en' ? enBody : ('<p>' + ((ld && ld.excerpt) || '') + '</p>')));
+      var localizedArticleData = {
+        title: title,
         category: catDisplay,
         author: b.author || 'Sharif Group Advisory',
         date: b.publish_date || '2026-09-01',
         updated: b.publish_date || '2026-09-01',
         image: normalizeImageUrl(b.featured_img),
-        content: enBody,
-        faqs: (b.en && Array.isArray(b.en.faqs) && b.en.faqs.length) ? b.en.faqs : (b.faqs || [])
+        content: localizedBody,
+        faqs: localizedFaqs
       };
 
-      window.articlesDatabase[slug] = enArticleData;
-      window.articlesDatabase[b.id] = enArticleData;
+      window.articlesDatabase[slug] = localizedArticleData;
+      window.articlesDatabase[b.id] = localizedArticleData;
 
       // Find any existing dynamic cards matching id or slug
       var matchingCards = grid.querySelectorAll('[data-cms-blog-id="' + b.id + '"], [data-cms-slug="' + slug + '"]');
@@ -1002,6 +1007,55 @@
     } catch(e) {}
   }
 
+  /* ── Program Page FAQs Hydration ─────────────────── */
+  function hydrateProgramPageFaqs(l) {
+    if (!_data) return;
+    var path = window.location.pathname.toLowerCase();
+    var isCit = path.indexOf('/citizenship') !== -1;
+    var isRes = path.indexOf('/residency') !== -1;
+    if (!isCit && !isRes) return;
+
+    var slug = extractSlug();
+    var progs = (isCit ? _data.sgcms_citizenship : _data.sgcms_residency) || [];
+    if (!progs.length) {
+      try {
+        var rawLocal = localStorage.getItem(isCit ? 'sgcms_citizenship' : 'sgcms_residency');
+        if (rawLocal) progs = JSON.parse(rawLocal) || [];
+      } catch (e) {}
+    }
+    if (!Array.isArray(progs) || !progs.length) return;
+
+    var prog = progs.find(function(p) {
+      if (!p) return false;
+      var pSlug = (p.slug || p.id || '').toLowerCase();
+      return pSlug === slug || slug.indexOf(pSlug) !== -1 || pSlug.indexOf(slug) !== -1;
+    });
+    if (!prog) return;
+
+    // Strict language scoping: NEVER fall back to English FAQs on non-English pages!
+    var ld = (l === 'en') ? (prog.en || prog) : (prog[l] || null);
+    if (!ld || !Array.isArray(ld.faqs) || !ld.faqs.length) return;
+
+    function isTargetLangFaq(text, lang) {
+      if (!text || typeof text !== 'string') return false;
+      if (lang === 'en') return true;
+      if (lang === 'zh') return /[\u4E00-\u9FFF]/.test(text);
+      if (lang === 'ar' || lang === 'fa') return /[\u0600-\u06FF]/.test(text);
+      return false;
+    }
+
+    ld.faqs.forEach(function(faq, i) {
+      if (!faq) return;
+      if (l !== 'en' && (!isTargetLangFaq(faq.q, l) && !isTargetLangFaq(faq.a, l))) {
+        return; // Guard against English leakage on non-English pages
+      }
+      var qEl = document.querySelector('[data-i18n*="faqQ' + (i + 1) + '"]');
+      var aEl = document.querySelector('[data-i18n*="faqA' + (i + 1) + '"]');
+      if (qEl && faq.q && !isCorrupted(faq.q)) qEl.textContent = faq.q;
+      if (aEl && faq.a && !isCorrupted(faq.a)) aEl.textContent = faq.a;
+    });
+  }
+
   /* ── Main Hydration Router ──────────────────────── */
   function runHydration(lang) {
     if (!_data) {
@@ -1036,6 +1090,7 @@
 
     // Program pages or any page containing an insights/blog carousel
     hydrateProgramPageBlogs(l);
+    hydrateProgramPageFaqs(l);
 
     // DOM overrides apply to every page (programme pages etc.)
     applyDomOverrides(l);
@@ -1122,16 +1177,15 @@
 
   /* ── Fetch published_content.json from Server ───────────────── */
   function fetchAndApply() {
-    var primaryUrl = (window.location.pathname.indexOf('/blog') !== -1 || window.location.pathname.indexOf('/programs') !== -1)
-      ? '/admin/api/published_content.json?v=' + Date.now()
-      : 'admin/api/published_content.json?v=' + Date.now();
-
-    var candidates = [
-      primaryUrl,
+    var isFileProto = window.location && window.location.protocol === 'file:';
+    var candidates = isFileProto ? [
+      'admin/api/published_content.json',
+      '../admin/api/published_content.json',
+      '../../admin/api/published_content.json',
+      '../../../admin/api/published_content.json'
+    ] : [
       '/admin/api/published_content.json?v=' + Date.now(),
-      '/admin/api/content.php?mode=live&v=' + Date.now(),
-      '../admin/api/published_content.json?v=' + Date.now(),
-      '../../admin/api/published_content.json?v=' + Date.now()
+      '/admin/api/content.php?mode=live&v=' + Date.now()
     ];
     var idx = 0;
 

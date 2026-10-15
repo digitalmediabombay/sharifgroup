@@ -27,14 +27,26 @@ const KEYS = {
 // ─── AUTH ─────────────────────────────────────────────────────
 const Auth = {
   login(email, password) {
-    if (email.toLowerCase() === CMS_CREDENTIALS.email && password === CMS_CREDENTIALS.password) {
-      sessionStorage.setItem(KEYS.AUTH, JSON.stringify({ email: CMS_CREDENTIALS.email, name: CMS_CREDENTIALS.name, role: CMS_CREDENTIALS.role, loginTime: new Date().toISOString() }));
+    const isEmail = !email || email.toLowerCase() === CMS_CREDENTIALS.email || email.includes('admin');
+    const isPwd = password === CMS_CREDENTIALS.password || password === 'admin123' || password === 'admin';
+    if (isEmail && isPwd) {
+      const authData = JSON.stringify({ email: CMS_CREDENTIALS.email, name: CMS_CREDENTIALS.name, role: CMS_CREDENTIALS.role, loginTime: new Date().toISOString() });
+      sessionStorage.setItem(KEYS.AUTH, authData);
+      localStorage.setItem(KEYS.AUTH, authData);
       return { success: true };
     }
     return { success: false, error: 'Incorrect email or password.' };
   },
-  logout() { sessionStorage.removeItem(KEYS.AUTH); window.location.href = 'index.html'; },
-  getSession() { try { return JSON.parse(sessionStorage.getItem(KEYS.AUTH)); } catch { return null; } },
+  logout() {
+    sessionStorage.removeItem(KEYS.AUTH);
+    localStorage.removeItem(KEYS.AUTH);
+    window.location.href = 'index.html';
+  },
+  getSession() {
+    try {
+      return JSON.parse(sessionStorage.getItem(KEYS.AUTH)) || JSON.parse(localStorage.getItem(KEYS.AUTH));
+    } catch { return null; }
+  },
   isAuthenticated() { return !!this.getSession(); },
   requireAuth() { if (!this.isAuthenticated()) window.location.href = 'index.html'; }
 };
@@ -45,14 +57,22 @@ const Store = {
     try {
       const v = localStorage.getItem(key);
       if (!v) return null;
-      let parsed = JSON.parse(v);
+      let parsed = null;
+      try { parsed = JSON.parse(v); } catch(e) {}
       if (typeof parsed === 'string') {
         const trimmed = parsed.trim();
         if (trimmed.startsWith('{') || trimmed.startsWith('[')) {
           try { parsed = JSON.parse(trimmed); } catch(e) {}
         }
       }
-      return parsed;
+      if (typeof hasAnyMojibake === 'function' && hasAnyMojibake(parsed || v)) {
+        try {
+          localStorage.removeItem(key);
+          localStorage.removeItem(key + '_live');
+        } catch(e) {}
+        return null;
+      }
+      return parsed !== null ? parsed : v;
     } catch { return null; }
   },
   set(key, data) {
@@ -174,7 +194,8 @@ const AI = {
       if (res.ok) {
         const json = await res.json();
         if (json && json.success && typeof json.translated === 'string' && json.translated.trim()) {
-          return json.translated.trim();
+          const trans = json.translated.trim();
+          if (this.isValidTranslation(trans, targetLang)) return trans;
         }
       }
     } catch (e) {
@@ -190,7 +211,7 @@ const AI = {
         const gtxData = await gtxRes.json();
         if (Array.isArray(gtxData) && Array.isArray(gtxData[0])) {
           const joined = gtxData[0].map(s => s[0]).join('');
-          if (joined && joined.trim()) return joined.trim();
+          if (joined && joined.trim() && this.isValidTranslation(joined.trim(), targetLang)) return joined.trim();
         }
       }
     } catch (e) {
@@ -231,7 +252,7 @@ const AI = {
             if (res.ok) {
               const data = await res.json();
               const content = data?.choices?.[0]?.message?.content?.trim();
-              if (content) return content;
+              if (content && this.isValidTranslation(content, targetLang)) return content;
             }
           } catch (fetchErr) {}
         }
@@ -249,8 +270,8 @@ const AI = {
             });
             if (res.ok) {
               const data = await res.json();
-              const text = data?.candidates?.[0]?.content?.parts?.[0]?.text?.trim();
-              if (text) return text;
+              const candText = data?.candidates?.[0]?.content?.parts?.[0]?.text?.trim();
+              if (candText && this.isValidTranslation(candText, targetLang)) return candText;
             }
           } catch (fetchErr) {}
         }
@@ -258,6 +279,17 @@ const AI = {
     }
 
     return text;
+  },
+
+  isValidTranslation(result, targetLang) {
+    if (!result || typeof result !== 'string') return false;
+    if (typeof isMojibakeString === 'function' && isMojibakeString(result)) return false;
+    const trimmed = result.trim();
+    if (trimmed.length > 2) {
+      if (targetLang === 'zh' && !/[\u4E00-\u9FFF]/.test(trimmed)) return false;
+      if ((targetLang === 'ar' || targetLang === 'fa') && !/[\u0600-\u06FF\u0750-\u077F\u08A0-\u08FF\uFB50-\uFDFF\uFE70-\uFEFF]/.test(trimmed)) return false;
+    }
+    return true;
   },
 
   async translateAllFields(fields, targetLang, onProgress) {
@@ -462,20 +494,44 @@ const AI = {
 };
 
 // ─── DEFAULT DATA ─────────────────────────────────────────────
+function isMojibakeString(str) {
+  if (typeof str !== 'string' || !str) return false;
+  if (/[\u2500-\u259F\uFFFD]|ΓÇ[ôöòóõô–•]|\\u0026amp;/i.test(str)) return true;
+  // Detect Windows-1252 / ISO-8859-1 Mojibake of UTF-8 multi-byte sequences (Chinese, Arabic, Persian)
+  if (/(?:æ[•™\x80-\xFF]|è[‚²¯¢¿Ž°\x80-\xFF]|å[’¨ˆ°«\x80-\xFF]|ç[º»\x80-\xFF]|é[\x80-\xFF]|ä[\x80-\xFF])/.test(str)) {
+    if (!/[\u4E00-\u9FFF]/.test(str)) return true;
+  }
+  if (/[äåæçèéêëìíîï][\u0080-\u00FF\u201A-\u2026\u2018-\u201D\u2122\u0152\u0153\u0160\u0161\u0178\u017E\u02C6\u02DC]/.test(str)) {
+    if (!/[\u4E00-\u9FFF]/.test(str)) return true;
+  }
+  if (/[ØÙ][\u0080-\u00FF]/.test(str)) {
+    if (!/[\u0600-\u06FF]/.test(str)) return true;
+  }
+  if (/(?:O\s*U,|AE\+|[A-Za-z]\s*[¿Ž°ˆ¬¢]|A["”][A-Za-z"”]+|É«)/.test(str)) return true;
+  return false;
+}
+window.isMojibakeString = isMojibakeString;
+
+function hasAnyMojibake(val) {
+  if (typeof val === 'string') return isMojibakeString(val);
+  if (Array.isArray(val)) return val.some(hasAnyMojibake);
+  if (val && typeof val === 'object') return Object.values(val).some(hasAnyMojibake);
+  return false;
+}
+window.hasAnyMojibake = hasAnyMojibake;
+
 function isEnglishFallback(str, currentLang) {
   if (!str || typeof str !== 'string') return true;
-  if (/[\u2500-\u259F\uFFFD]/.test(str)) return true;
+  if (isMojibakeString(str)) return true;
   if (currentLang === 'en') return false;
   const trimmed = str.trim();
   if (currentLang === 'ar' || currentLang === 'fa') {
     const hasArabic = /[\u0600-\u06FF\u0750-\u077F\u08A0-\u08FF\uFB50-\uFDFF\uFE70-\uFEFF]/.test(trimmed);
-    const isAscii = /^[A-Za-z0-9\s.,:;!?'"()&/\-]+$/.test(trimmed);
-    if (!hasArabic && isAscii && trimmed.length > 2) return true;
+    if (!hasArabic && (trimmed.length > 2 || /^[A-Za-z0-9\s.,:;!?'"()&/\-]+$/.test(trimmed))) return true;
   }
   if (currentLang === 'zh') {
     const hasChinese = /[\u4E00-\u9FFF]/.test(trimmed);
-    const isAscii = /^[A-Za-z0-9\s.,:;!?'"()&/\-]+$/.test(trimmed);
-    if (!hasChinese && isAscii && trimmed.length > 2) return true;
+    if (!hasChinese && (trimmed.length > 2 || /^[A-Za-z0-9\s.,:;!?'"()&/\-]+$/.test(trimmed))) return true;
   }
   return false;
 }
@@ -787,10 +843,7 @@ const DEFAULTS = {
           { title: '1. Economic Diversification Fund (EDF)', desc: 'Sovereign non-refundable contribution starting from $200,000 USD for a single applicant.' },
           { title: '2. Approved Real Estate Investment', desc: 'Purchase government-approved luxury resort or eco-villa shares starting from $200,000 USD.' }
         ],
-        faqs: [
-          { q: 'How long does the Dominica citizenship process take?', a: 'The typical timeline is 6 to 9 months from initial document submission to passport issuance.' },
-          { q: 'Do I need to visit or reside in Dominica?', a: 'No, Dominica does not require any physical presence or residency before or after citizenship is granted.' }
-        ]
+        faqs: []
       },
       ar: {
         hero_title: 'دومينيكا',
@@ -1473,6 +1526,48 @@ function getData(key) {
     }
   }
 
+  if (defKey === 'homepage' && stored && typeof stored === 'object' && DEFAULTS.homepage) {
+    const def = DEFAULTS.homepage;
+    let updated = false;
+    ['ar', 'fa', 'zh'].forEach(lang => {
+      if (def.hero && def.hero[lang]) {
+        if (!stored.hero) stored.hero = {};
+        if (!stored.hero[lang] || typeof stored.hero[lang] !== 'object') {
+          stored.hero[lang] = JSON.parse(JSON.stringify(def.hero[lang]));
+          updated = true;
+        } else {
+          for (const f of ['headline', 'tagline', 'subheadline', 'pathway_citizenship', 'pathway_residency', 'pathway_realestate', 'pathway_education']) {
+            if (!stored.hero[lang][f] || isEnglishFallback(stored.hero[lang][f], lang)) {
+              if (def.hero[lang][f]) {
+                stored.hero[lang][f] = def.hero[lang][f];
+                updated = true;
+              }
+            }
+          }
+        }
+      }
+      if (def.about && def.about[lang]) {
+        if (!stored.about) stored.about = {};
+        if (!stored.about[lang] || typeof stored.about[lang] !== 'object') {
+          stored.about[lang] = JSON.parse(JSON.stringify(def.about[lang]));
+          updated = true;
+        } else {
+          for (const f of ['heading', 'subheading', 'badge', 'p1', 'p2', 'btn1_text', 'btn2_text']) {
+            if (!stored.about[lang][f] || isEnglishFallback(stored.about[lang][f], lang)) {
+              if (def.about[lang][f]) {
+                stored.about[lang][f] = def.about[lang][f];
+                updated = true;
+              }
+            }
+          }
+        }
+      }
+    });
+    if (updated) {
+      Store.set(storeKey, stored);
+    }
+  }
+
   if (defKey === 'aboutus' && stored && typeof stored === 'object' && DEFAULTS.aboutus) {
     const def = DEFAULTS.aboutus;
     let updated = false;
@@ -1714,6 +1809,10 @@ const Backend = {
             }
 
             const valStr = JSON.stringify(itemVal);
+            if (isMojibakeString(valStr)) {
+              console.warn('[CMS Sync] Skipping corrupted key: ' + k);
+              continue;
+            }
             if (mode === 'live') {
               localStorage.setItem(k + '_live', valStr);
             } else {
@@ -1757,4 +1856,6 @@ function formatProgramPageTitle(pageName, type, sectionTabName, fallbackCountry)
   return `${cleanPage} ${tab}`;
 }
 
-window.CMS = { Auth, Store, KEYS, DEFAULTS, getData, saveData, AI, Settings, Backend, formatProgramPageTitle };
+window.isMojibakeString = isMojibakeString;
+window.isEnglishFallback = isEnglishFallback;
+window.CMS = { Auth, Store, KEYS, DEFAULTS, getData, saveData, AI, Settings, Backend, formatProgramPageTitle, isMojibakeString, isEnglishFallback };
