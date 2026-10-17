@@ -6781,5 +6781,32 @@
     "title": "Next live session: A Second Passport for Afghans: Introducing the Dominica Programme",
     "meta": "Thursday 29 October · 20:00 Kabul / 19:30 Dubai · Free · Persian (Dari)",
     "btn": "Details & Join"
+  },
+  "homeWebinar": {
+    "badge": "LIVE WEBINARS",
+    "heading": "Upcoming Live",
+    "headingItalic": "Webinar",
+    "subtitle": "Free, live interactive online sessions led by our licensed citizenship specialists — practical insights, real timelines, and open Q&A.",
+    "status": "Registration Open",
+    "seriesTag": "Series 01 · Dominica Pilot",
+    "freeBadge": "Free Online",
+    "title": "A Second Passport for Afghans: Introducing the Dominica Programme",
+    "desc": "A free online session in Persian (Dari): what Dominica's citizenship programme is, why it matters for Afghans, 2026 regulatory changes, investment options, and passport delivery timelines.",
+    "dateTime": "Thursday 29 October · 20:00 Kabul / 19:30 Dubai",
+    "lang": "Language: Persian (Dari)",
+    "duration": "Duration: 65 Minutes + Live Q&A",
+    "access": "Join via Phone or PC · No App Needed",
+    "joinBtn": "View & Register",
+    "allBtn": "All Sessions",
+    "startsIn": "Session Starts In",
+    "cdDays": "Days",
+    "cdHours": "Hours",
+    "cdMins": "Minutes",
+    "cdSecs": "Seconds",
+    "tzTitle": "Live Starting Times",
+    "tzKabul": "Kabul",
+    "tzDubai": "Dubai",
+    "tzIstanbul": "Istanbul",
+    "privacyNote": "Camera & mic off · Anonymous participation permitted"
   }
 }
