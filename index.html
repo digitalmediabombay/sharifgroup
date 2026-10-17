@@ -2784,6 +2784,16 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
         var cdContainer = document.getElementById('home-webinar-countdown');
         if (!cdContainer) return;
         var startUtc = cdContainer.getAttribute('data-cd') || '2026-10-29T15:30:00Z';
+        try {
+            var rawSch = localStorage.getItem('sgcms_webinar_schedule');
+            if (rawSch) {
+                var sch = JSON.parse(rawSch);
+                var actNo = Number(sch.active_session_no) || 1;
+                if (sch.sessions && sch.sessions[actNo] && sch.sessions[actNo].start_utc) {
+                    startUtc = sch.sessions[actNo].start_utc;
+                }
+            }
+        } catch(e) {}
         var targetDate = new Date(startUtc);
         var targetTime = targetDate.getTime();
         
