@@ -2672,6 +2672,16 @@
     </script>
     <script>
       'use strict';
+      // Anti-nesting guardrail: Dashboard must NEVER run inside an iframe
+      if (window.self !== window.top) {
+        console.warn('Dashboard embedded in iframe detected. Preventing nested dashboard recursion.');
+        try {
+          var _p = window.location.pathname || '';
+          var _aIdx = _p.indexOf('/admin');
+          var _b = (_aIdx !== -1) ? _p.substring(0, _aIdx) : '';
+          window.location.replace((_b || '') + '/index.html');
+        } catch(e) {}
+      }
       // ══════════════════════════════════════════════════════════
       // AUTH & SESSION & MOJIBAKE STORAGE SHIELD
       // ══════════════════════════════════════════════════════════
@@ -2837,34 +2847,54 @@
         { q: '谢里夫集团如何通过官方通道代表投资者跟进审批？', a: '谢里夫集团总部设立于迪拜商业湾，作为官方认可的专业咨询机构，直接对接审批部门并提供全流程法务公证与加急递交服务。' }
       ];
 
+      // Site Root URL Resolver (handles trailing-slash /admin/dashboard/, subfolders, and file://)
+      function getSiteBase() {
+        if (window.location.protocol === 'file:') {
+          const p = window.location.pathname || '';
+          return /\/dashboard\/?$/i.test(p) ? '../../' : '../';
+        }
+        const p = window.location.pathname || '';
+        const adminIdx = p.indexOf('/admin');
+        if (adminIdx !== -1) {
+          return p.substring(0, adminIdx); // e.g. "" if hosted at root, or "/sharifgrp" if subpath
+        }
+        return '';
+      }
+
+      function siteUrl(path) {
+        const base = getSiteBase();
+        const cleanPath = path.startsWith('/') ? path : '/' + path;
+        return (base + cleanPath) || '/';
+      }
+
       // Page URL map for preview
       const PAGE_URLS = {
-        homepage: '../index.html',
-        citizenship: '../citizenshipbyinvestment/index.html',
-        residency: '../residencybyinvestment/index.html',
-        blog: '../blog/index.html',
-        webinars: '../webinars/index.html',
-        contact: '../contact/index.html',
-        aboutus: '../aboutus/index.html',
-        founder: '../about-founder/index.html',
-        cookiepolicy: '../cookiepolicy/index.html',
-        legal: '../privacypolicy/index.html'
+        homepage: siteUrl('/index.html'),
+        citizenship: siteUrl('/citizenshipbyinvestment/index.html'),
+        residency: siteUrl('/residencybyinvestment/index.html'),
+        blog: siteUrl('/blog/index.html'),
+        webinars: siteUrl('/webinars/index.html'),
+        contact: siteUrl('/contact/index.html'),
+        aboutus: siteUrl('/aboutus/index.html'),
+        founder: siteUrl('/about-founder/index.html'),
+        cookiepolicy: siteUrl('/cookiepolicy/index.html'),
+        legal: siteUrl('/privacypolicy/index.html')
       };
 
       // Program specific URLs
       const PROGRAM_URLS = {
-        dominica: '../programs/citizenshipbyinvestment/dominica/index.html',
-        stkitts: '../programs/citizenshipbyinvestment/stkitts/index.html',
-        antigua: '../programs/citizenshipbyinvestment/antiguaandbarbuda/index.html',
-        grenada: '../programs/citizenshipbyinvestment/grenada/index.html',
-        vanuatu: '../programs/citizenshipbyinvestment/vanuatu/index.html',
-        stlucia: '../programs/citizenshipbyinvestment/stlucia/index.html',
-        nauru: '../programs/citizenshipbyinvestment/nauru/index.html',
-        saotome: '../programs/citizenshipbyinvestment/sao-tome-and-principe/index.html',
-        portugal: '../programs/residencybyinvestment/portugal/index.html',
-        greece: '../programs/residencybyinvestment/greece/index.html',
-        uae: '../programs/residencybyinvestment/uae/index.html',
-        panama: '../programs/residencybyinvestment/panama/index.html'
+        dominica: siteUrl('/programs/citizenshipbyinvestment/dominica/index.html'),
+        stkitts: siteUrl('/programs/citizenshipbyinvestment/stkitts/index.html'),
+        antigua: siteUrl('/programs/citizenshipbyinvestment/antiguaandbarbuda/index.html'),
+        grenada: siteUrl('/programs/citizenshipbyinvestment/grenada/index.html'),
+        vanuatu: siteUrl('/programs/citizenshipbyinvestment/vanuatu/index.html'),
+        stlucia: siteUrl('/programs/citizenshipbyinvestment/stlucia/index.html'),
+        nauru: siteUrl('/programs/citizenshipbyinvestment/nauru/index.html'),
+        saotome: siteUrl('/programs/citizenshipbyinvestment/sao-tome-and-principe/index.html'),
+        portugal: siteUrl('/programs/residencybyinvestment/portugal/index.html'),
+        greece: siteUrl('/programs/residencybyinvestment/greece/index.html'),
+        uae: siteUrl('/programs/residencybyinvestment/uae/index.html'),
+        panama: siteUrl('/programs/residencybyinvestment/panama/index.html')
       };
 
       // ══════════════════════════════════════════════════════════
@@ -2964,16 +2994,16 @@
             url = PROGRAM_URLS[state.itemId];
           } else {
             const base = (state.itemType === 'residency')
-              ? (PROGRAM_URLS.portugal || '../programs/residencybyinvestment/portugal/index.html')
-              : (PROGRAM_URLS.dominica || '../programs/citizenshipbyinvestment/dominica/index.html');
+              ? (PROGRAM_URLS.portugal || siteUrl('/programs/residencybyinvestment/portugal/index.html'))
+              : (PROGRAM_URLS.dominica || siteUrl('/programs/citizenshipbyinvestment/dominica/index.html'));
             url = base + '?program_id=' + encodeURIComponent(state.itemId);
           }
         } else if (state.section === 'new-program') {
           // Dynamically show the exact live template for the program being created!
           if (state.itemType === 'residency') {
-            url = PROGRAM_URLS.portugal || '../programs/residencybyinvestment/portugal/index.html';
+            url = PROGRAM_URLS.portugal || siteUrl('/programs/residencybyinvestment/portugal/index.html');
           } else {
-            url = PROGRAM_URLS.dominica || '../programs/citizenshipbyinvestment/dominica/index.html';
+            url = PROGRAM_URLS.dominica || siteUrl('/programs/citizenshipbyinvestment/dominica/index.html');
           }
         } else if (state.section === 'category-hub') {
           url = (state.itemType === 'residency') ? PAGE_URLS.residency : PAGE_URLS.citizenship;
@@ -3038,8 +3068,8 @@
             url = PROGRAM_URLS[state.itemId];
           } else {
             const base = (state.itemType === 'residency')
-              ? (PROGRAM_URLS.portugal || '../programs/residencybyinvestment/portugal/index.html')
-              : (PROGRAM_URLS.dominica || '../programs/citizenshipbyinvestment/dominica/index.html');
+              ? (PROGRAM_URLS.portugal || siteUrl('/programs/residencybyinvestment/portugal/index.html'))
+              : (PROGRAM_URLS.dominica || siteUrl('/programs/citizenshipbyinvestment/dominica/index.html'));
             url = base + '?program_id=' + encodeURIComponent(state.itemId);
           }
         }
@@ -4342,7 +4372,7 @@
         closeEditorDrawer();
 
         const iframe = document.getElementById('live-iframe');
-        const targetUrl = '../blog/index.html?cms_editor=1&article_slug=' + encodeURIComponent(targetArticle.slug) + '&lang=' + encodeURIComponent(state.lang || 'en');
+        const targetUrl = siteUrl('/blog/index.html') + '?cms_editor=1&article_slug=' + encodeURIComponent(targetArticle.slug) + '&lang=' + encodeURIComponent(state.lang || 'en');
         iframe.src = targetUrl;
 
         setTimeout(() => {
@@ -5048,9 +5078,9 @@
 
       function openLiveSiteFromModal() {
         closePublishModal();
-        let target = '../index.html';
+        let target = siteUrl('/index.html');
         if (state.section === 'program' && state.itemId) {
-          target = (PROGRAM_URLS[state.itemId] || '../index.html');
+          target = (PROGRAM_URLS[state.itemId] || siteUrl('/index.html'));
         } else if (state.section === 'contact') {
           target = PAGE_URLS.contact;
         } else if (state.section === 'cookiepolicy' || state.section === 'cookies') {

@@ -508,8 +508,8 @@ function getDashboardUrl() {
   return '/admin/dashboard.html';
 }
 
-// Redirect if already authed
-if (window.CMS && window.CMS.Auth && window.CMS.Auth.isAuthenticated()) {
+// Redirect if already authed (only when loaded in top-level window, never inside preview iframe)
+if (window.self === window.top && window.CMS && window.CMS.Auth && window.CMS.Auth.isAuthenticated()) {
   window.location.href = getDashboardUrl();
 }
 
