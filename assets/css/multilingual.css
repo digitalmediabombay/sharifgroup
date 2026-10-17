@@ -1415,3 +1415,94 @@ html[lang="fa"] #main-header nav a,
 [dir="rtl"] #main-header a[data-i18n="nav.bookConsultation"] {
     letter-spacing: 0 !important;
 }
+
+/* ==========================================================================
+   WEBINAR COUNTDOWN & TIMEZONE COMPONENT (MATCHES WEBINAR PAGE)
+   ========================================================================== */
+.side-label {
+    font-size: 11px !important;
+    color: #C5A880 !important;
+    font-weight: 700 !important;
+    letter-spacing: 0.14em !important;
+    text-transform: uppercase !important;
+}
+html[lang="fa"] .side-label,
+html[lang="ar"] .side-label {
+    font-size: 12.5px !important;
+    letter-spacing: 0 !important;
+}
+.date-line {
+    font-size: 20px !important;
+    font-weight: 700 !important;
+    color: #ffffff !important;
+    line-height: 1.3 !important;
+}
+.countdown {
+    display: grid !important;
+    grid-template-columns: repeat(4, 1fr) !important;
+    gap: 8px !important;
+    width: 100% !important;
+}
+.cd-cell {
+    background: rgba(255, 255, 255, 0.05) !important;
+    border: 1px solid rgba(255, 255, 255, 0.1) !important;
+    border-radius: 14px !important;
+    padding: 13px 4px 9px !important;
+    text-align: center !important;
+    min-width: 0 !important;
+}
+.cd-num {
+    font-family: 'Playfair Display', Georgia, serif !important;
+    font-size: 30px !important;
+    font-weight: 700 !important;
+    color: #C5A880 !important;
+    line-height: 1.1 !important;
+    font-variant-numeric: tabular-nums !important;
+}
+@media (max-width: 480px) {
+    .cd-num {
+        font-size: 22px !important;
+    }
+    .countdown {
+        gap: 5px !important;
+    }
+    .cd-cell {
+        padding: 10px 2px 7px !important;
+    }
+}
+.cd-lbl {
+    font-size: 10px !important;
+    color: #a3a3a3 !important;
+    margin-top: 4px !important;
+}
+html[lang="fa"] .cd-lbl,
+html[lang="ar"] .cd-lbl {
+    font-size: 11.5px !important;
+}
+.tz-list {
+    display: grid !important;
+    gap: 0 !important;
+    border-top: 1px solid rgba(255, 255, 255, 0.12) !important;
+    width: 100% !important;
+}
+.tz-row {
+    display: flex !important;
+    justify-content: space-between !important;
+    align-items: baseline !important;
+    gap: 12px !important;
+    padding: 11px 0 !important;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.12) !important;
+    font-size: 13.5px !important;
+}
+.tz-row .tz-city {
+    color: #bdbdbd !important;
+}
+.tz-row .tz-time {
+    font-weight: 700 !important;
+    color: #ffffff !important;
+    font-variant-numeric: tabular-nums !important;
+}
+.tz-row.is-you .tz-city {
+    color: #C5A880 !important;
+    font-weight: 600 !important;
+}
