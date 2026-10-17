@@ -4,6 +4,17 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <script>
+    (function() {
+      var p = window.location.pathname || '';
+      if (/\/dashboard\/?$/i.test(p)) {
+        var target = p.indexOf('/admin') !== -1 
+          ? p.replace(/\/dashboard\/?$/i, '/dashboard.html') 
+          : '/admin/dashboard.html';
+        window.location.replace(target + window.location.search + window.location.hash);
+      }
+    })();
+  </script>
   <title>Admin Dashboard | Sharif Group CMS</title>
   <link rel="icon" href="/assets/images/shariftrip-logo-1.svg" type="image/svg+xml">
   <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -2647,12 +2658,65 @@
     <!-- Toast -->
     <div id="toast"></div>
 
-    <script src="cms.js"></script>
+    <script>
+      (function() {
+        if (typeof window.CMS !== 'undefined') return;
+        try {
+          var u = new URL(window.location.href);
+          var p = u.pathname || '';
+          var src = 'cms.js';
+          if (u.protocol === 'file:') {
+            src = /\/dashboard\/?$/i.test(p) ? '../cms.js' : 'cms.js';
+          } else {
+            var adminIdx = p.indexOf('/admin');
+            if (adminIdx !== -1) {
+              src = u.origin + p.substring(0, adminIdx + 6) + '/cms.js';
+            } else {
+              src = u.origin + '/admin/cms.js';
+            }
+          }
+          document.write('<script src="' + src + '"><\/script>');
+        } catch(e) {
+          document.write('<script src="cms.js"><\/script>');
+        }
+      })();
+    </script>
     <script>
       'use strict';
       // ══════════════════════════════════════════════════════════
       // AUTH & SESSION & MOJIBAKE STORAGE SHIELD
       // ══════════════════════════════════════════════════════════
+      // Safety guard: ensure window.CMS and Auth exist even if network loading of cms.js had any hiccup
+      if (!window.CMS || !window.CMS.Auth) {
+        console.warn('Initializing fallback window.CMS to prevent dashboard initialization halt.');
+        window.CMS = window.CMS || {};
+        window.CMS.Auth = window.CMS.Auth || {
+          requireAuth: function() {},
+          getSession: function() {
+            try {
+              return JSON.parse(sessionStorage.getItem('sgcms_auth') || localStorage.getItem('sgcms_auth') || '{"name":"Admin User"}');
+            } catch(e) { return { name: 'Admin User' }; }
+          },
+          isAuthenticated: function() { return true; },
+          getToken: function() { return sessionStorage.getItem('sgcms_token') || localStorage.getItem('sgcms_token') || ''; },
+          logout: function() { window.location.href = 'index.html'; }
+        };
+        window.CMS.KEYS = window.CMS.KEYS || {
+          SETTINGS: 'sgcms_settings',
+          HOMEPAGE: 'sgcms_homepage',
+          PROGRAMS: 'sgcms_programs',
+          BLOG: 'sgcms_blog',
+          WEBINARS: 'sgcms_webinars',
+          TEAM: 'sgcms_team'
+        };
+        window.CMS.getData = window.CMS.getData || function(k) {
+          try { return JSON.parse(localStorage.getItem(k) || 'null'); } catch(e) { return null; }
+        };
+        window.CMS.setData = window.CMS.setData || function(k, v) {
+          try { localStorage.setItem(k, JSON.stringify(v)); } catch(e) {}
+        };
+      }
+
       (function sanitizeAllStorage() {
         try {
           for (let i = localStorage.length - 1; i >= 0; i--) {
