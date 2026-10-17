@@ -2678,6 +2678,27 @@
     <!-- Toast -->
     <div id="toast"></div>
 
+    <!-- Load Webinars Catalog Data -->
+    <script>
+      (function() {
+        if (typeof window.SGCMS_WEBINARS !== 'undefined') return;
+        try {
+          var u = new URL(window.location.href);
+          var p = u.pathname || '';
+          var src = '../assets/js/webinars-data.js';
+          if (u.protocol !== 'file:') {
+            var adminIdx = p.indexOf('/admin');
+            var base = adminIdx !== -1 ? p.substring(0, adminIdx) : '';
+            src = u.origin + base + '/assets/js/webinars-data.js';
+          }
+          document.write('<script src="' + src + '"><\/script>');
+        } catch(e) {
+          document.write('<script src="../assets/js/webinars-data.js"><\/script>');
+        }
+      })();
+    </script>
+
+    <!-- Load CMS Core Engine -->
     <script>
       (function() {
         if (typeof window.CMS !== 'undefined') return;
@@ -8822,6 +8843,78 @@
         selectedNo: null
       };
 
+      const BASELINE_WEBINAR_SESSIONS = [
+        {
+          id: "WEB01",
+          session_no: 1,
+          slug: "dominica-second-passport-for-afghans",
+          start_utc: "2026-10-29T15:30:00Z",
+          duration_min: 65,
+          en: {
+            title: "A Second Passport for Afghans: Introducing the Dominica Programme",
+            excerpt: "A free online session in Persian (Dari): what Dominica's citizenship programme is, why it matters for Afghans and who can apply."
+          },
+          fa: {
+            title: "پاسپورت دوم برای افغان‌ها: آشنایی با برنامه دومینیکا",
+            excerpt: "جلسه آنلاین و رایگان به فارسی (دری): برنامه شهروندی دومینیکا چیست، چرا برای افغان‌ها مهم است و چه کسانی می‌توانند درخواست بدهند."
+          },
+          ar: {
+            title: "جواز سفر ثانٍ للأفغان: التعريف ببرنامج دومينيكا",
+            excerpt: "جلسة مجانية عبر الإنترنت باللغة الفارسية (الدرية): ما هو برنامج جنسية دومينیکا، ولماذا يهم الأفغان، ومن يحق له التقديم."
+          },
+          zh: {
+            title: "阿富汗人的第二本护照：多米尼克入籍项目介绍",
+            excerpt: "免费在线讲座（波斯语／达利语）：多米尼克投资入籍项目是什么、为何对阿富汗人重要、哪些人可以申请。"
+          }
+        },
+        {
+          id: "WEB02",
+          session_no: 2,
+          slug: "dominica-from-decision-to-passport",
+          start_utc: "2026-11-12T15:30:00Z",
+          duration_min: 65,
+          en: {
+            title: "From Decision to Passport: Steps, Documents and Source of Funds",
+            excerpt: "The application steps, required documents (Tazkira, passport, financial records), proving and transferring source of funds, interview preparation and a full cost breakdown."
+          },
+          fa: {
+            title: "از تصمیم تا پاسپورت: مراحل، مدارک و منشأ پول",
+            excerpt: "مراحل پرونده، مدارک لازم (تذکره، پاسپورت، اسناد مالی)، اثبات و انتقال منشأ پول، آمادگی برای مصاحبه و ریز هزینه‌های کامل."
+          },
+          ar: {
+            title: "من القرار إلى الجواز: الخطوات والمستندات ومصدر الأموال",
+            excerpt: "مراحل الملف، والمستندات المطلوبة (التذكرة والجواز والسجلات المالية)، وإثبات مصدر الأموال وتحويلها، والاستعداد للمقابلة، وتفصيل كامل للتكاليف."
+          },
+          zh: {
+            title: "从决定到护照：流程、材料与资金来源",
+            excerpt: "申请流程、所需材料（身份证Tazkira、护照、财务文件）、资金来源证明与转账、面试准备及完整费用明细。"
+          }
+        },
+        {
+          id: "WEB03",
+          session_no: 3,
+          slug: "dominica-your-questions-answered",
+          start_utc: "2026-11-26T15:30:00Z",
+          duration_min: 65,
+          en: {
+            title: "Your Questions, Our Answers",
+            excerpt: "Answers to the questions collected in earlier sessions and the registration form: life after the passport, travel, banking and family."
+          },
+          fa: {
+            title: "پرسش‌های شما، پاسخ‌های ما",
+            excerpt: "پاسخ به پرسش‌هایی که در جلسات قبل و فرم ثبت‌نام جمع شده: زندگی بعد از پاسپورت، سفر، بانک و خانواده."
+          },
+          ar: {
+            title: "أسئلتكم، وإجاباتنا",
+            excerpt: "إجابات عن الأسئلة التي جُمعت في الجلسات السابقة ونموذج التسجيل: الحياة بعد الجواز، والسفر، والبنوك، والعائلة."
+          },
+          zh: {
+            title: "您的问题，我们来解答",
+            excerpt: "解答往期讲座及报名表中收集的问题：入籍后的生活、出行、银行与家庭。"
+          }
+        }
+      ];
+
       function getWebinarScheduleData() {
         try {
           const raw = localStorage.getItem('sgcms_webinar_schedule');
@@ -8835,22 +8928,45 @@
         const ed = document.getElementById('editor');
         if (!ed) return;
 
-        let allSessions = [];
+        const curLang = state.lang || 'en';
+
+        // 1. Start with the 3 authoritative sessions from the live site catalog
+        let allSessions = JSON.parse(JSON.stringify(BASELINE_WEBINAR_SESSIONS));
+
+        // 2. Merge data from window.SGCMS_WEBINARS if loaded
+        if (typeof window.SGCMS_WEBINARS !== 'undefined' && Array.isArray(window.SGCMS_WEBINARS) && window.SGCMS_WEBINARS.length) {
+          window.SGCMS_WEBINARS.forEach(ws => {
+            const match = allSessions.find(s => Number(s.session_no) === Number(ws.session_no));
+            if (match) {
+              ['en', 'fa', 'ar', 'zh'].forEach(lg => {
+                if (ws[lg] && ws[lg].title && ws[lg].title.trim()) match[lg] = ws[lg];
+              });
+              if (ws.start_utc) match.start_utc = ws.start_utc;
+              if (ws.join_url) match.join_url = ws.join_url;
+            } else {
+              allSessions.push(ws);
+            }
+          });
+        }
+
+        // 3. Merge custom edits from CMS storage
         try {
           if (window.CMS && window.CMS.Webinars) {
-            allSessions = window.CMS.Webinars.get() || [];
+            const cmsList = window.CMS.Webinars.get();
+            if (Array.isArray(cmsList)) {
+              cmsList.forEach(cs => {
+                const match = allSessions.find(s => Number(s.session_no) === Number(cs.session_no));
+                if (match) {
+                  ['en', 'fa', 'ar', 'zh'].forEach(lg => {
+                    if (cs[lg] && cs[lg].title && cs[lg].title.trim()) match[lg] = cs[lg];
+                  });
+                  if (cs.start_utc) match.start_utc = cs.start_utc;
+                  if (cs.join_url) match.join_url = cs.join_url;
+                }
+              });
+            }
           }
         } catch(e) {}
-        if (!allSessions.length && typeof window.SGCMS_WEBINARS !== 'undefined' && Array.isArray(window.SGCMS_WEBINARS)) {
-          allSessions = window.SGCMS_WEBINARS;
-        }
-        if (!allSessions.length) {
-          allSessions = [
-            { session_no: 1, title: 'A Second Passport for Afghans: Introducing the Dominica Programme', start_utc: '2026-10-29T15:30:00Z', duration_min: 65, join_url: '' },
-            { session_no: 2, title: 'Caribbean Real Estate vs Government Fund: Which Option Fits You?', start_utc: '2026-11-12T15:30:00Z', duration_min: 65, join_url: '' },
-            { session_no: 3, title: 'Document Verification, Family Inclusions & Safe Bank Transfers', start_utc: '2026-11-26T15:30:00Z', duration_min: 65, join_url: '' }
-          ];
-        }
 
         const schedule = getWebinarScheduleData();
         const activeNo = Number(schedule.active_session_no) || 1;
@@ -8862,7 +8978,8 @@
         const selSession = allSessions.find(s => Number(s.session_no) === selNo) || allSessions[0] || { session_no: 1 };
         const selData = (schedule.sessions && schedule.sessions[selNo]) ? schedule.sessions[selNo] : {};
 
-        const title = (selSession.en && selSession.en.title) || selSession.title || ('Session ' + selNo);
+        const title = (selSession[curLang] && selSession[curLang].title) || (selSession.en && selSession.en.title) || selSession.title || ('Session ' + selNo);
+        const excerpt = (selSession[curLang] && selSession[curLang].excerpt) || (selSession.en && selSession.en.excerpt) || selSession.excerpt || '';
         
         // Start datetime
         const startUtc = selData.start_utc || selSession.start_utc || '2026-10-29T15:30:00Z';
@@ -8920,7 +9037,7 @@
                   Select Session
                 </div>
                 <div style="font-size:11px;color:var(--muted)">
-                  Click any session to configure its time/link or promote it to Next Live Session
+                  Click any session below to edit its time/link or promote it to Next Live Session
                 </div>
               </div>
 
@@ -8930,7 +9047,7 @@
                   const sNo = Number(s.session_no);
                   const isSel = (sNo === selNo);
                   const isActiveOnWeb = (sNo === activeNo);
-                  const sTitle = (s.en && s.en.title) || s.title || ('Session ' + sNo);
+                  const sTitle = (s[curLang] && s[curLang].title) || (s.en && s.en.title) || s.title || ('Session ' + sNo);
                   const sSch = (schedule.sessions && schedule.sessions[sNo]) || {};
                   const sLink = (typeof sSch.join_url === 'string') ? sSch.join_url : (s.join_url || '');
                   return `
