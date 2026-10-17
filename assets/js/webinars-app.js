@@ -127,8 +127,42 @@
     }
     sourceList = sourceList || [];
 
+    // Read schedule & active session selection from storage
+    let schedule = null;
+    try {
+      const schStr = localStorage.getItem('sgcms_webinar_schedule');
+      if (schStr) schedule = JSON.parse(schStr);
+    } catch (e) {}
+
+    const now = Date.now();
+    const TWO_HOURS = 2 * 60 * 60 * 1000;
     const edits = store.get(K.edits, {});
+
     const list = JSON.parse(JSON.stringify(sourceList)).map(w => {
+      // 1. Apply overrides from CRM schedule if present
+      if (schedule && schedule.sessions && schedule.sessions[w.session_no]) {
+        const sData = schedule.sessions[w.session_no];
+        if (sData.start_utc) w.start_utc = sData.start_utc;
+        if (typeof sData.join_url === 'string') w.join_url = sData.join_url.trim();
+        if (typeof sData.duration_min !== 'undefined') w.duration_min = sData.duration_min;
+      }
+
+      // 2. Compute dynamic time status & 2-Hour Auto-Expiry Lifecycle
+      const startMs = Date.parse(w.start_utc);
+      if (!isNaN(startMs)) {
+        if (now > (startMs + TWO_HOURS)) {
+          // Rule: After 2 hours, link is automatically removed from public website
+          w.event_status = 'ended';
+          w.join_url = '';
+        } else if (now >= startMs && now <= (startMs + TWO_HOURS)) {
+          // Rule: During 2-hour window, session is live
+          w.event_status = 'live';
+        } else {
+          // Upcoming
+          w.event_status = 'upcoming';
+        }
+      }
+
       const e = edits[w.id];
       if (e) {
         ['event_status', 'registration_open', 'start_utc', 'date_confirmed', 'join_visibility', 'join_url', 'capacity'].forEach(k => { if (k in e) w[k] = e[k]; });
@@ -137,7 +171,8 @@
       }
       return w;
     });
-    if (DEMO && list.length) {
+
+    if (DEMO && list.length && !schedule) {
       const w1 = list[0];
       w1.event_status = demo.status;
       w1.join_visibility = demo.visibility;
@@ -148,11 +183,32 @@
     return list;
   }
   const byslug = s => webinars().find(w => w.slug === s || (w.id && w.id.toLowerCase() === String(s).toLowerCase()) || ('session-' + w.session_no) === s);
-  /* held | locked | soon | ready */
-  const linkState = w => w.event_status === 'ended' ? 'held' : (w.join_visibility !== 'public' ? 'locked' : (w.join_url ? 'ready' : 'soon'));
+  
+  /* held (ended) | locked | soon | ready */
+  const linkState = w => {
+    const now = Date.now();
+    const stTime = startOf(w).getTime();
+    const TWO_HOURS = 2 * 60 * 60 * 1000;
+    if (w.event_status === 'ended' || (!isNaN(stTime) && now > (stTime + TWO_HOURS))) return 'held';
+    if (w.join_visibility !== 'public' && Number(w.session_no) > 1) return 'locked';
+    return (w.join_url && String(w.join_url).trim()) ? 'ready' : 'soon';
+  };
   const C = w => w[lang] || w.en;
   const startOf = w => new Date(w.start_utc);
-  const featured = () => webinars().find(w => w.event_status !== 'ended') || webinars()[0];
+
+  /* featured(): Returns whichever session admin marked active in CRM, defaulting to first upcoming */
+  const featured = () => {
+    let activeNo = 1;
+    try {
+      const schStr = localStorage.getItem('sgcms_webinar_schedule');
+      if (schStr) {
+        const sch = JSON.parse(schStr);
+        if (sch.active_session_no) activeNo = Number(sch.active_session_no);
+      }
+    } catch (e) {}
+    const all = webinars();
+    return all.find(w => Number(w.session_no) === activeNo) || all.find(w => w.event_status !== 'ended') || all[0];
+  };
 
   /* ---------- shell: header / footer ---------- */
   function navItems() {
@@ -779,14 +835,21 @@
             ${f.join_visibility === 'public' ? `<span class="chip">${I.link}${esc(t('status.publicLink'))}</span>` : ''}
           </div>
           <div class="btn-row">
-            ${st === 'ready' ? `<a class="btn btn--bronze" href="${esc(f.join_url)}" data-join target="_blank" rel="noopener">${I.video}${esc(live ? t('detail.joinNow') : t('list.join'))}</a>` : ''}
-            ${st === 'soon' ? `<span class="btn btn--soon btn--soon-light" role="status">${I.clock}${esc(t('detail.linkSoon'))}</span>` : ''}
+            ${st === 'held' ? `<span class="btn btn--soon btn--soon-light" style="border-color:rgba(239,68,68,0.3);color:#ef4444;background:rgba(239,68,68,0.08)" role="status"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" style="display:inline-block;vertical-align:middle;margin-right:4px"><circle cx="12" cy="12" r="10"/><line x1="15" y1="9" x2="9" y2="15"/><line x1="9" y1="9" x2="15" y2="15"/></svg>${esc(t('detail.heldTitle') || 'Session Ended')}</span>` : ''}
+            ${st === 'ready' ? `<a class="btn btn--bronze" href="${esc(f.join_url)}" data-join target="_blank" rel="noopener">${I.video}${esc(live ? (t('detail.joinNow') || 'Join Live Session Now') : (t('list.join') || 'Join Live Session'))}</a>` : ''}
+            ${st === 'soon' ? `<span class="btn btn--soon btn--soon-light" role="status">${I.clock}${esc(t('detail.linkSoon') || 'Link will be posted soon')}</span>` : ''}
             <a class="btn ${st === 'ready' || st === 'soon' ? 'btn--ghost' : 'btn--bronze'}" href="#/webinars/${f.slug}">${esc(t('list.details'))}${I.arrow}</a>
           </div>
         </div>
         <aside class="feature-side">
           <div><div class="side-label caps">${esc(t('list.whenTitle'))}</div>${dateLine(f)}</div>
-          ${live ? `<div><span class="badge badge--live"><span class="dot"></span>${esc(t('detail.liveBanner'))}</span></div>` : `<div><div class="side-label caps" style="margin-bottom:10px">${esc(t('list.startsIn'))}</div>${countdownHTML(f)}</div>`}
+          ${st === 'held'
+            ? `<div style="background:rgba(239,68,68,0.08);border:1px solid rgba(239,68,68,0.25);border-radius:10px;padding:12px 14px;margin:8px 0 14px"><div class="side-label caps" style="margin-bottom:4px;color:#ef4444;font-weight:700">${esc(t('detail.heldTitle') || 'Session Ended')}</div><p style="font-size:12px;opacity:0.85;margin:0;line-height:1.4">${esc(t('detail.heldText') || 'This session has concluded.')}</p></div>`
+            : (live
+                ? `<div><span class="badge badge--live"><span class="dot"></span>${esc(t('detail.liveBanner'))}</span></div>`
+                : `<div><div class="side-label caps" style="margin-bottom:10px">${esc(t('list.startsIn'))}</div>${countdownHTML(f)}</div>`
+              )
+          }
           ${tzHTML(f)}
         </aside>
       </article>
@@ -1259,7 +1322,7 @@
   window.addEventListener('hashchange', () => { $('#drawer').classList.remove('open'); route(); $('#main').focus({ preventScroll: true }); });
   window.addEventListener('popstate', () => { $('#drawer').classList.remove('open'); route(); });
   window.addEventListener('storage', e => {
-    if (e.key === 'sgcms_webinars' || e.key === 'sgcms_webinars_live' || e.key === 'sgcms_webinars_data') {
+    if (e.key === 'sgcms_webinars' || e.key === 'sgcms_webinars_live' || e.key === 'sgcms_webinars_data' || e.key === 'sgcms_webinar_schedule') {
       route();
     }
   });
