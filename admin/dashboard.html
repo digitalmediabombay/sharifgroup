@@ -9215,6 +9215,17 @@
         schedule.updated_at = new Date().toISOString();
         
         localStorage.setItem('sgcms_webinar_schedule', JSON.stringify(schedule));
+        // Clear any old legacy drafts that might truncate live sessions
+        try {
+          const rawOld = localStorage.getItem('sgcms_webinars');
+          if (rawOld) {
+            const pOld = JSON.parse(rawOld);
+            if (!Array.isArray(pOld) || pOld.length < 3 || !pOld[0].en || !pOld[0].en.title) {
+              localStorage.removeItem('sgcms_webinars');
+              localStorage.removeItem('sgcms_webinars_live');
+            }
+          }
+        } catch(e) {}
         window.dispatchEvent(new StorageEvent('storage', { key: 'sgcms_webinar_schedule' }));
 
         // Sync to backend save.php

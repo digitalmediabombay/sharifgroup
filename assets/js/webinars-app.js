@@ -110,24 +110,132 @@
   const demoDefaults = { status: 'upcoming', visibility: 'public', link: 'soon' };
   const SAMPLE_URL = 'https://meet.example/sharif-WEB01';
   let demo = Object.assign({}, demoDefaults, store.get(K.demo, {}));
+
+  // Clean up any stale partial draft in localStorage so official sessions are never truncated
+  try {
+    const rawOld = localStorage.getItem('sgcms_webinars');
+    if (rawOld) {
+      const pOld = JSON.parse(rawOld);
+      if (!Array.isArray(pOld) || pOld.length < 3 || !pOld[0].en || !pOld[0].en.title) {
+        localStorage.removeItem('sgcms_webinars');
+        localStorage.removeItem('sgcms_webinars_live');
+      }
+    }
+  } catch(e) {}
+
+  const BASELINE_SESSIONS = [
+    {
+      id: "WEB01",
+      slug: "dominica-second-passport-for-afghans",
+      series: "dominica-pilot",
+      session_no: 1,
+      category: "Citizenship",
+      start_utc: "2026-10-29T15:30:00Z",
+      duration_min: 65,
+      event_status: "upcoming",
+      registration_open: true,
+      join_visibility: "public",
+      join_url: "",
+      en: {
+        title: "A Second Passport for Afghans: Introducing the Dominica Programme",
+        excerpt: "A free online session in Persian (Dari): what Dominica's citizenship programme is, why it matters for Afghans and who can apply."
+      },
+      fa: {
+        title: "پاسپورت دوم برای افغان‌ها: آشنایی با برنامه دومینیکا",
+        excerpt: "جلسه آنلاین و رایگان به فارسی (دری): برنامه شهروندی دومینیکا چیست، چرا برای افغان‌ها مهم است و چه کسانی می‌توانند درخواست بدهند."
+      },
+      ar: {
+        title: "جواز سفر ثانٍ للأفغان: التعريف ببرنامج دومينيكا",
+        excerpt: "جلسة مجانية عبر الإنترنت باللغة الفارسية (الدرية): ما هو برنامج جنسية دومينیکا، ولماذا يهم الأفغان، ومن يحق له التقديم."
+      },
+      zh: {
+        title: "阿富汗人的第二本护照：多米尼克入籍项目介绍",
+        excerpt: "免费在线讲座（波斯语／达利语）：多米尼克投资入籍项目是什么、为何对阿富汗人重要、哪些人可以申请。"
+      }
+    },
+    {
+      id: "WEB02",
+      slug: "dominica-from-decision-to-passport",
+      series: "dominica-pilot",
+      session_no: 2,
+      category: "Citizenship",
+      start_utc: "2026-11-12T15:30:00Z",
+      duration_min: 65,
+      event_status: "upcoming",
+      registration_open: false,
+      join_visibility: "registrants",
+      join_url: "",
+      en: {
+        title: "From Decision to Passport: Steps, Documents and Source of Funds",
+        excerpt: "The application steps, required documents (Tazkira, passport, financial records), proving and transferring source of funds, interview preparation and a full cost breakdown."
+      },
+      fa: {
+        title: "از تصمیم تا پاسپورت: مراحل، مدارک و منشأ پول",
+        excerpt: "مراحل پرونده، مدارک لازم (تذکره، پاسپورت، اسناد مالی)، اثبات و انتقال منشأ پول، آمادگی برای مصاحبه و ریز هزینه‌های کامل."
+      },
+      ar: {
+        title: "من القرار إلى الجواز: الخطوات والمستندات ومصدر الأموال",
+        excerpt: "مراحل الملف، والمستندات المطلوبة (التذكرة والجواز والسجلات المالية)، وإثبات مصدر الأموال وتحويلها، والاستعداد للمقابلة، وتفصيل كامل للتكاليف."
+      },
+      zh: {
+        title: "从决定到护照：流程、材料与资金来源",
+        excerpt: "申请流程、所需材料（身份证Tazkira、护照、财务文件）、资金来源证明与转账、面试准备及完整费用明细。"
+      }
+    },
+    {
+      id: "WEB03",
+      slug: "dominica-your-questions-answered",
+      series: "dominica-pilot",
+      session_no: 3,
+      category: "Citizenship",
+      start_utc: "2026-11-26T15:30:00Z",
+      duration_min: 65,
+      event_status: "upcoming",
+      registration_open: false,
+      join_visibility: "registrants",
+      join_url: "",
+      en: {
+        title: "Your Questions, Our Answers",
+        excerpt: "Answers to the questions collected in earlier sessions and the registration form: life after the passport, travel, banking and family."
+      },
+      fa: {
+        title: "پرسش‌های شما، پاسخ‌های ما",
+        excerpt: "پاسخ به پرسش‌هایی که در جلسات قبل و فرم ثبت‌نام جمع شده: زندگی بعد از پاسپورت، سفر، بانک و خانواده."
+      },
+      ar: {
+        title: "أسئلتكم، وإجاباتنا",
+        excerpt: "إجابات عن الأسئلة التي جُمعت في الجلسات السابقة ونموذج التسجيل: الحياة بعد الجواز، والسفر، والبنوك، والعائلة."
+      },
+      zh: {
+        title: "您的问题，我们来解答",
+        excerpt: "解答往期讲座及报名表中收集的问题：入籍后的生活、出行、银行与家庭。"
+      }
+    }
+  ];
+
   function webinars() {
     let sourceList = null;
-    try {
-      const liveStr = localStorage.getItem('sgcms_webinars_live') || localStorage.getItem('sgcms_webinars');
-      if (liveStr) {
-        const parsed = JSON.parse(liveStr);
-        if (Array.isArray(parsed) && parsed.length) sourceList = parsed;
-      }
-    } catch (e) {}
-    if (!sourceList && typeof window.SGCMS_WEBINARS !== 'undefined' && Array.isArray(window.SGCMS_WEBINARS) && window.SGCMS_WEBINARS.length) {
+    if (typeof window.SGCMS_WEBINARS !== 'undefined' && Array.isArray(window.SGCMS_WEBINARS) && window.SGCMS_WEBINARS.length >= 3) {
       sourceList = window.SGCMS_WEBINARS;
-    }
-    if (!sourceList && Array.isArray(BASE) && BASE.length) {
+    } else if (Array.isArray(BASE) && BASE.length >= 3) {
       sourceList = BASE;
     }
-    sourceList = sourceList || [];
+    if (!sourceList) {
+      try {
+        const liveStr = localStorage.getItem('sgcms_webinars_live') || localStorage.getItem('sgcms_webinars');
+        if (liveStr) {
+          const parsed = JSON.parse(liveStr);
+          if (Array.isArray(parsed) && parsed.length >= 3 && parsed[0].en && parsed[0].en.title) {
+            sourceList = parsed;
+          }
+        }
+      } catch (e) {}
+    }
+    if (!sourceList || !sourceList.length) {
+      sourceList = BASELINE_SESSIONS;
+    }
 
-    // Read schedule & active session selection from storage
+    // Read ONLY schedule overrides (date/time & link) from sgcms_webinar_schedule
     let schedule = null;
     try {
       const schStr = localStorage.getItem('sgcms_webinar_schedule');
@@ -136,10 +244,9 @@
 
     const now = Date.now();
     const TWO_HOURS = 2 * 60 * 60 * 1000;
-    const edits = store.get(K.edits, {});
 
     const list = JSON.parse(JSON.stringify(sourceList)).map(w => {
-      // 1. Apply overrides from CRM schedule if present
+      // 1. Apply overrides from CRM schedule if present (only time and link)
       if (schedule && schedule.sessions && schedule.sessions[w.session_no]) {
         const sData = schedule.sessions[w.session_no];
         if (sData.start_utc) w.start_utc = sData.start_utc;
@@ -163,23 +270,9 @@
         }
       }
 
-      const e = edits[w.id];
-      if (e) {
-        ['event_status', 'registration_open', 'start_utc', 'date_confirmed', 'join_visibility', 'join_url', 'capacity'].forEach(k => { if (k in e) w[k] = e[k]; });
-        if (e.title_fa && w.fa) w.fa.title = e.title_fa;
-        if (e.title_en && w.en) w.en.title = e.title_en;
-      }
       return w;
     });
 
-    if (DEMO && list.length && !schedule) {
-      const w1 = list[0];
-      w1.event_status = demo.status;
-      w1.join_visibility = demo.visibility;
-      if (!(edits.WEB01 && 'join_url' in edits.WEB01)) w1.join_url = demo.link === 'set' ? SAMPLE_URL : '';
-      if (demo.status === 'ended' && list[1]) { list[1].registration_open = true; w1.registration_open = false; }
-      if (demo.status === 'live') w1.registration_open = false;
-    }
     return list;
   }
   const byslug = s => webinars().find(w => w.slug === s || (w.id && w.id.toLowerCase() === String(s).toLowerCase()) || ('session-' + w.session_no) === s);
@@ -193,7 +286,18 @@
     if (w.join_visibility !== 'public' && Number(w.session_no) > 1) return 'locked';
     return (w.join_url && String(w.join_url).trim()) ? 'ready' : 'soon';
   };
-  const C = w => w[lang] || w.en;
+  const C = w => {
+    if (!w) return { title: '', excerpt: '', series_tag: '' };
+    const cur = w[lang] || {};
+    const en = w.en || {};
+    return {
+      title: cur.title || en.title || w.title || ('Session ' + w.session_no),
+      excerpt: cur.excerpt || en.excerpt || w.excerpt || '',
+      series_tag: cur.series_tag || en.series_tag || w.series_tag || '',
+      body: cur.body || en.body || [],
+      outcomes: cur.outcomes || en.outcomes || []
+    };
+  };
   const startOf = w => new Date(w.start_utc);
 
   /* featured(): Returns whichever session admin marked active in CRM, defaulting to first upcoming */
