@@ -73,6 +73,37 @@
       grid-template-columns: var(--sb-w) var(--drawer-w, 520px) 1fr
     }
 
+    /* ═══ WEBINARS FULL-FORM WORKFLOW (NO WEBSITE PREVIEW) ═══ */
+    #app.webinars-full-mode {
+      grid-template-columns: var(--sb-w) 1fr 0px !important;
+    }
+    #app.sidebar-collapsed.webinars-full-mode {
+      grid-template-columns: 0px 1fr 0px !important;
+    }
+    #app.webinars-full-mode #ed {
+      display: flex !important;
+      border-right: none !important;
+      box-shadow: none !important;
+      width: 100% !important;
+      max-width: 100% !important;
+      background: #F8FAFC !important;
+    }
+    #app.webinars-full-mode #pv {
+      display: none !important;
+    }
+    #app.webinars-full-mode #ed-resizer {
+      display: none !important;
+    }
+    #app.webinars-full-mode #ed-drawer-topbar {
+      display: none !important;
+    }
+    #app.webinars-full-mode #editor {
+      max-width: 1180px;
+      width: 100%;
+      margin: 0 auto;
+      padding: 24px 28px 80px;
+    }
+
     /* ═══ HEADER ═════════════════════════════ */
     #hd {
       grid-area: hd;
@@ -2948,6 +2979,7 @@
       }
 
       function closeEditorDrawer() {
+        if (state.section === 'webinars') return; // Webinars is full-form view
         const app = document.getElementById('app');
         if (app) app.classList.remove('drawer-open');
         const ed = document.getElementById('ed');
@@ -2986,6 +3018,9 @@
       }
 
       function loadPreviewPage() {
+        if (state.section === 'webinars') {
+          return; // No website preview needed for webinars - direct full-page form workflow
+        }
         const iframe = document.getElementById('live-iframe');
         let url = PAGE_URLS.homepage;
 
@@ -5013,16 +5048,23 @@
         renderSection();
         setActiveSidebarItem(section === 'program' ? (itemId || '') : (section === 'blog-edit' ? (itemId || 'blog') : (section === 'category-hub' ? itemType : section.replace('-new', '').replace('-edit', ''))));
 
-        // Form-only drawer sections vs. Visual Live Canvas sections
-        const formOnlySections = ['settings', 'team-new', 'new-program', 'webinars'];
-        const isVisualPreviewSection = ['aboutus', 'team', 'contact', 'legal', 'cookiepolicy', 'cookies', 'homepage', 'category-hub', 'program', 'blog', 'blog-edit', 'blog-new'].includes(section);
-        if (formOnlySections.includes(section)) {
+        // Form-only drawer sections vs. Visual Live Canvas sections vs. Webinars full-form
+        const app = document.getElementById('app');
+        if (section === 'webinars') {
+          if (app) app.classList.add('webinars-full-mode');
           openEditorDrawer();
-        } else if (isVisualPreviewSection) {
-          closeEditorDrawer();
+        } else {
+          if (app) app.classList.remove('webinars-full-mode');
+          const formOnlySections = ['settings', 'team-new', 'new-program'];
+          const isVisualPreviewSection = ['aboutus', 'team', 'contact', 'legal', 'cookiepolicy', 'cookies', 'homepage', 'category-hub', 'program', 'blog', 'blog-edit', 'blog-new'].includes(section);
+          if (formOnlySections.includes(section)) {
+            openEditorDrawer();
+          } else if (isVisualPreviewSection) {
+            closeEditorDrawer();
+          }
         }
 
-        if (!deferIframe) {
+        if (!deferIframe && section !== 'webinars') {
           loadPreviewPage();
         }
       }
@@ -7882,7 +7924,31 @@
         const langMeta = window.CMS.Webinars.LANG_META;
 
         ed.innerHTML = `
-          <div style="padding:16px 20px">
+          <div style="padding:4px 0 30px">
+
+            <!-- ═══ WEBINARS MASTER HEADER (FULL-FORM VIEW) ═══ -->
+            <div style="display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:14px;margin-bottom:20px;padding:16px 20px;background:var(--card);border:1px solid var(--border);border-radius:12px;box-shadow:0 1px 3px rgba(0,0,0,0.03)">
+              <div style="display:flex;align-items:center;gap:14px">
+                <div style="width:42px;height:42px;border-radius:10px;background:rgba(197,168,128,0.15);display:flex;align-items:center;justify-content:center;color:var(--gold);font-size:20px">
+                  <i class="fa-solid fa-video"></i>
+                </div>
+                <div>
+                  <h1 style="font-size:18px;font-weight:700;color:var(--text);margin:0 0 2px">Webinars & Masterclasses Management Studio</h1>
+                  <p style="font-size:12px;color:var(--muted);margin:0">4-Language Session Content, Series Counts, Schedule Timings & Direct Participant Registration Controls</p>
+                </div>
+              </div>
+              <div style="display:flex;align-items:center;gap:10px">
+                <button type="button" class="btn btn-secondary" style="font-size:12px;padding:8px 14px" onclick="window.open(siteUrl('/webinars/'),'_blank')">
+                  <i class="fa-solid fa-arrow-up-right-from-square"></i> Open Live Website
+                </button>
+                <button type="button" class="btn btn-secondary" style="font-size:12px;padding:8px 14px" onclick="saveWebinarsCurrentState(false)">
+                  <i class="fa-solid fa-floppy-disk"></i> Save Draft
+                </button>
+                <button type="button" class="btn btn-primary" style="font-size:12px;padding:8px 16px;background:linear-gradient(135deg,#10b981,#059669);color:#fff;border:none;box-shadow:0 2px 6px rgba(16,185,129,0.3)" onclick="saveWebinarsCurrentState(true)">
+                  <i class="fa-solid fa-cloud-arrow-up"></i> Save & Publish Live
+                </button>
+              </div>
+            </div>
 
             <!-- ═══ TOP 4-LANGUAGE TOGGLE BAR ═══ -->
             <div class="webinar-lang-toolbar" style="background:var(--card);border:1px solid var(--border);border-radius:12px;padding:14px 16px;margin-bottom:18px;box-shadow:0 2px 8px rgba(0,0,0,0.03)">
@@ -8340,12 +8406,9 @@
                   <i class="fa-solid fa-cloud-arrow-up"></i> Save & Publish Live
                 </button>
               </div>
-              <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px">
-                <button type="button" class="btn btn-secondary" style="justify-content:center;font-size:11px" onclick="closeEditorDrawer()">
-                  <i class="fa-solid fa-expand"></i> Fullscreen Live Canvas
-                </button>
-                <button type="button" class="btn btn-secondary" style="justify-content:center;font-size:11px" onclick="window.open('../webinars/','_blank')">
-                  <i class="fa-solid fa-arrow-up-right-from-square"></i> Open Live /webinars/
+              <div style="display:grid;grid-template-columns:1fr;gap:8px">
+                <button type="button" class="btn btn-secondary" style="justify-content:center;font-size:12px;padding:10px" onclick="window.open(siteUrl('/webinars/'),'_blank')">
+                  <i class="fa-solid fa-arrow-up-right-from-square"></i> Open Live Website (/webinars/) in New Tab
                 </button>
               </div>
             </div>
