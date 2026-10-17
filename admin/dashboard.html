@@ -73,7 +73,7 @@
       grid-template-columns: var(--sb-w) var(--drawer-w, 520px) 1fr
     }
 
-    /* ═══ WEBINARS FULL-FORM WORKFLOW (COMMENTED OUT) ═══
+    /* ═══ WEBINARS FULL-FORM WORKFLOW ═══ */
     #app.webinars-full-mode {
       grid-template-columns: var(--sb-w) 1fr 0px !important;
     }
@@ -103,7 +103,6 @@
       margin: 0 auto;
       padding: 24px 28px 80px;
     }
-    */
 
     /* ═══ HEADER ═════════════════════════════ */
     #hd {
@@ -2095,17 +2094,16 @@
               </button>
             </div>
           </div>
-        <!-- Webinars (commented out per user request)
+        <!-- Webinar Scheduler -->
         <div class="sb-group">
           <div class="sb-group-header">
             <button class="sb-group-btn" id="sb-webinars" onclick="navigate('webinars')">
               <i class="fa-solid fa-video sb-ico"></i>
-              <span class="sb-lbl">Webinars</span>
-              <span style="margin-left:auto;font-size:9px;background:#dc2626;color:#fff;padding:2px 7px;border-radius:10px;font-weight:700;letter-spacing:0.04em">LIVE</span>
+              <span class="sb-lbl">Webinar Scheduler</span>
+              <span style="margin-left:auto;font-size:9px;background:#10b981;color:#fff;padding:2px 7px;border-radius:10px;font-weight:700;letter-spacing:0.04em">LIVE</span>
             </button>
           </div>
         </div>
-        -->
 
         <!-- About Us -->
         <div class="sb-group">
@@ -2981,6 +2979,7 @@
       }
 
       function closeEditorDrawer() {
+        if (state.section === 'webinars') return; // Webinars is full-form view
         const app = document.getElementById('app');
         if (app) app.classList.remove('drawer-open');
         const ed = document.getElementById('ed');
@@ -3019,6 +3018,9 @@
       }
 
       function loadPreviewPage() {
+        if (state.section === 'webinars') {
+          return; // No website preview needed for webinars - direct full-page form workflow
+        }
         const iframe = document.getElementById('live-iframe');
         let url = PAGE_URLS.homepage;
 
@@ -5046,16 +5048,23 @@
         renderSection();
         setActiveSidebarItem(section === 'program' ? (itemId || '') : (section === 'blog-edit' ? (itemId || 'blog') : (section === 'category-hub' ? itemType : section.replace('-new', '').replace('-edit', ''))));
 
-        // Form-only drawer sections vs. Visual Live Canvas sections
-        const formOnlySections = ['settings', 'team-new', 'new-program'];
-        const isVisualPreviewSection = ['aboutus', 'team', 'contact', 'legal', 'cookiepolicy', 'cookies', 'homepage', 'category-hub', 'program', 'blog', 'blog-edit', 'blog-new'].includes(section);
-        if (formOnlySections.includes(section)) {
+        // Form-only drawer sections vs. Visual Live Canvas sections vs. Webinars full-form
+        const app = document.getElementById('app');
+        if (section === 'webinars') {
+          if (app) app.classList.add('webinars-full-mode');
           openEditorDrawer();
-        } else if (isVisualPreviewSection) {
-          closeEditorDrawer();
+        } else {
+          if (app) app.classList.remove('webinars-full-mode');
+          const formOnlySections = ['settings', 'team-new', 'new-program'];
+          const isVisualPreviewSection = ['aboutus', 'team', 'contact', 'legal', 'cookiepolicy', 'cookies', 'homepage', 'category-hub', 'program', 'blog', 'blog-edit', 'blog-new'].includes(section);
+          if (formOnlySections.includes(section)) {
+            openEditorDrawer();
+          } else if (isVisualPreviewSection) {
+            closeEditorDrawer();
+          }
         }
 
-        if (!deferIframe) {
+        if (!deferIframe && section !== 'webinars') {
           loadPreviewPage();
         }
       }
@@ -5531,7 +5540,7 @@
           case 'blog': renderBlogEditor(l, rtl); break;
           case 'blog-new': renderNewBlogView(); break;
           case 'blog-edit': renderVisualBlogGuide(itemId); break;
-          // case 'webinars': renderWebinarsEditor(l, rtl); break;
+          case 'webinars': renderWebinarScheduler(); break;
           case 'team': renderVisualLiveStudioGuide('Team & Leadership', 'Live visual editor for Team & Leadership', PAGE_URLS.aboutus); break;
           case 'team-new': createTeamMember(); break;
           case 'aboutus': renderVisualLiveStudioGuide('About Us Page', 'Live visual editor for About Us page', PAGE_URLS.aboutus); break;
@@ -8805,6 +8814,321 @@
         }
       }
       */
+
+      // ──────────────────────────────────────────────────────────
+      // STREAMLINED WEBINAR SCHEDULER & LIVE LINK MANAGER
+      // ──────────────────────────────────────────────────────────
+      window.webinarSchedulerState = window.webinarSchedulerState || {
+        selectedNo: null
+      };
+
+      function getWebinarScheduleData() {
+        try {
+          const raw = localStorage.getItem('sgcms_webinar_schedule');
+          if (raw) return JSON.parse(raw);
+        } catch (e) {}
+        return { active_session_no: 1, sessions: {} };
+      }
+
+      function renderWebinarScheduler() {
+        setPageTitle('Webinar Live Scheduler', 'Manage active session, start time, and meeting join links');
+        const ed = document.getElementById('editor');
+        if (!ed) return;
+
+        let allSessions = [];
+        try {
+          if (window.CMS && window.CMS.Webinars) {
+            allSessions = window.CMS.Webinars.get() || [];
+          }
+        } catch(e) {}
+        if (!allSessions.length && typeof window.SGCMS_WEBINARS !== 'undefined' && Array.isArray(window.SGCMS_WEBINARS)) {
+          allSessions = window.SGCMS_WEBINARS;
+        }
+        if (!allSessions.length) {
+          allSessions = [
+            { session_no: 1, title: 'A Second Passport for Afghans: Introducing the Dominica Programme', start_utc: '2026-10-29T15:30:00Z', duration_min: 65, join_url: '' },
+            { session_no: 2, title: 'Caribbean Real Estate vs Government Fund: Which Option Fits You?', start_utc: '2026-11-12T15:30:00Z', duration_min: 65, join_url: '' },
+            { session_no: 3, title: 'Document Verification, Family Inclusions & Safe Bank Transfers', start_utc: '2026-11-26T15:30:00Z', duration_min: 65, join_url: '' }
+          ];
+        }
+
+        const schedule = getWebinarScheduleData();
+        const activeNo = Number(schedule.active_session_no) || 1;
+        
+        if (!webinarSchedulerState.selectedNo) {
+          webinarSchedulerState.selectedNo = activeNo;
+        }
+        const selNo = Number(webinarSchedulerState.selectedNo);
+        const selSession = allSessions.find(s => Number(s.session_no) === selNo) || allSessions[0] || { session_no: 1 };
+        const selData = (schedule.sessions && schedule.sessions[selNo]) ? schedule.sessions[selNo] : {};
+
+        const title = (selSession.en && selSession.en.title) || selSession.title || ('Session ' + selNo);
+        
+        // Start datetime
+        const startUtc = selData.start_utc || selSession.start_utc || '2026-10-29T15:30:00Z';
+        const joinUrl = (typeof selData.join_url === 'string') ? selData.join_url : (selSession.join_url || '');
+
+        let dtLocalVal = '2026-10-29T19:30';
+        try {
+          const dObj = new Date(startUtc);
+          if (!isNaN(dObj.getTime())) {
+            const pad = (n) => String(n).padStart(2, '0');
+            dtLocalVal = dObj.getFullYear() + '-' + pad(dObj.getMonth() + 1) + '-' + pad(dObj.getDate()) + 'T' + pad(dObj.getHours()) + ':' + pad(dObj.getMinutes());
+          }
+        } catch (e) {}
+
+        const now = Date.now();
+        const startMs = Date.parse(startUtc);
+        const TWO_HOURS = 2 * 60 * 60 * 1000;
+        let statusBadgeHtml = '';
+        if (now > (startMs + TWO_HOURS)) {
+          statusBadgeHtml = `<span style="display:inline-flex;align-items:center;gap:6px;padding:4px 12px;border-radius:20px;font-size:11px;font-weight:700;background:rgba(239,68,68,0.12);color:#ef4444;border:1px solid rgba(239,68,68,0.25)"><i class="fa-solid fa-circle-stop"></i> Session Ended (Link Expired)</span>`;
+        } else if (now >= startMs && now <= (startMs + TWO_HOURS)) {
+          statusBadgeHtml = `<span style="display:inline-flex;align-items:center;gap:6px;padding:4px 12px;border-radius:20px;font-size:11px;font-weight:700;background:rgba(16,185,129,0.15);color:#059669;border:1px solid rgba(16,185,129,0.3)"><span style="width:8px;height:8px;border-radius:50%;background:#10b981"></span> Live Now (Join Button Active on Website)</span>`;
+        } else {
+          statusBadgeHtml = `<span style="display:inline-flex;align-items:center;gap:6px;padding:4px 12px;border-radius:20px;font-size:11px;font-weight:700;background:rgba(197,168,128,0.15);color:#b38e5d;border:1px solid rgba(197,168,128,0.3)"><i class="fa-solid fa-clock"></i> Upcoming (Countdown Active)</span>`;
+        }
+
+        const isCurrentlyActive = (selNo === activeNo);
+
+        ed.innerHTML = `
+          <div style="padding:4px 0 40px">
+            
+            <!-- ═══ HEADER BAR ═══ -->
+            <div style="display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:14px;margin-bottom:24px;padding:18px 24px;background:var(--card);border:1px solid var(--border);border-radius:14px;box-shadow:0 2px 8px rgba(0,0,0,0.03)">
+              <div style="display:flex;align-items:center;gap:14px">
+                <div style="width:44px;height:44px;border-radius:12px;background:linear-gradient(135deg,rgba(197,168,128,0.25),rgba(179,142,93,0.15));display:flex;align-items:center;justify-content:center;color:var(--gold);font-size:22px">
+                  <i class="fa-solid fa-video"></i>
+                </div>
+                <div>
+                  <h1 style="font-size:20px;font-weight:700;color:var(--text);margin:0 0 3px">Webinar Live Session & Link Manager</h1>
+                  <p style="font-size:12px;color:var(--muted);margin:0">Select which session is featured on the live website, update its countdown time, and paste the meeting link.</p>
+                </div>
+              </div>
+              <div>
+                <button type="button" class="btn btn-secondary" style="font-size:12px;padding:9px 16px" onclick="window.open(siteUrl('/webinars/'),'_blank')">
+                  <i class="fa-solid fa-arrow-up-right-from-square"></i> Open Live /webinars/
+                </button>
+              </div>
+            </div>
+
+            <!-- ═══ STEP 1: SELECT SESSION ═══ -->
+            <div style="margin-bottom:24px">
+              <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:12px">
+                <div style="font-size:13px;font-weight:700;color:var(--text);letter-spacing:0.04em;text-transform:uppercase">
+                  <span style="display:inline-flex;align-items:center;justify-content:center;width:22px;height:22px;border-radius:50%;background:var(--gold);color:#fff;font-size:11px;margin-right:8px">1</span>
+                  Select Session
+                </div>
+                <div style="font-size:11px;color:var(--muted)">
+                  Click any session to configure its time/link or promote it to Next Live Session
+                </div>
+              </div>
+
+              <!-- Session Cards Grid -->
+              <div style="display:grid;grid-template-columns:repeat(auto-fill, minmax(280px, 1fr));gap:14px">
+                ${allSessions.map(s => {
+                  const sNo = Number(s.session_no);
+                  const isSel = (sNo === selNo);
+                  const isActiveOnWeb = (sNo === activeNo);
+                  const sTitle = (s.en && s.en.title) || s.title || ('Session ' + sNo);
+                  const sSch = (schedule.sessions && schedule.sessions[sNo]) || {};
+                  const sLink = (typeof sSch.join_url === 'string') ? sSch.join_url : (s.join_url || '');
+                  return `
+                    <div onclick="selectWebinarSchedulerSession(${sNo})" style="cursor:pointer;border-radius:12px;padding:16px;border:2px solid ${isSel ? 'var(--gold)' : (isActiveOnWeb ? '#10b981' : 'var(--border)')};background:${isSel ? 'rgba(197,168,128,0.06)' : 'var(--card)'};box-shadow:${isSel ? '0 4px 14px rgba(197,168,128,0.18)' : '0 1px 3px rgba(0,0,0,0.03)'};transition:all 0.2s">
+                      <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:8px">
+                        <span style="font-size:11px;font-weight:800;color:${isSel ? 'var(--gold)' : 'var(--muted)'};letter-spacing:0.06em;text-transform:uppercase">
+                          SESSION ${String(sNo).padStart(2, '0')}
+                        </span>
+                        ${isActiveOnWeb ? `
+                          <span style="font-size:9px;font-weight:800;padding:2px 8px;border-radius:10px;background:#10b981;color:#fff;letter-spacing:0.04em">
+                            ● LIVE ON WEBPAGE
+                          </span>
+                        ` : ''}
+                      </div>
+                      <div style="font-size:13px;font-weight:700;color:var(--text);line-height:1.35;margin-bottom:10px;min-height:36px">
+                        ${escH(sTitle)}
+                      </div>
+                      <div style="display:flex;align-items:center;justify-content:space-between;font-size:11px;color:var(--muted);padding-top:10px;border-top:1px solid var(--border)">
+                        <span>${sLink ? '<span style="color:#10b981"><i class="fa-solid fa-link"></i> Link Ready</span>' : '<span style="opacity:0.65"><i class="fa-regular fa-clock"></i> Link Pending</span>'}</span>
+                        <span style="font-weight:600;color:${isSel ? 'var(--gold)' : 'var(--text)'}">${isSel ? 'Selected →' : 'Select'}</span>
+                      </div>
+                    </div>
+                  `;
+                }).join('')}
+              </div>
+            </div>
+
+            <!-- ═══ STEP 2 & 3: SCHEDULE & MEETING LINK PANEL ═══ -->
+            <div style="background:var(--card);border:1px solid var(--border);border-radius:14px;padding:22px 24px;box-shadow:0 2px 10px rgba(0,0,0,0.03);margin-bottom:24px">
+              
+              <!-- Session Header & Activation Toggle -->
+              <div style="display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:12px;padding-bottom:16px;border-bottom:1px solid var(--border);margin-bottom:20px">
+                <div>
+                  <div style="font-size:11px;font-weight:800;color:var(--gold);letter-spacing:0.06em;text-transform:uppercase;margin-bottom:4px">
+                    CONFIGURING SESSION ${String(selNo).padStart(2, '0')}
+                  </div>
+                  <h2 style="font-size:17px;font-weight:700;color:var(--text);margin:0 0 6px">
+                    ${escH(title)}
+                  </h2>
+                  <div style="display:flex;align-items:center;gap:10px">
+                    ${statusBadgeHtml}
+                  </div>
+                </div>
+
+                <div>
+                  ${isCurrentlyActive ? `
+                    <div style="display:flex;align-items:center;gap:8px;background:rgba(16,185,129,0.1);border:1px solid rgba(16,185,129,0.3);color:#059669;padding:9px 18px;border-radius:10px;font-size:12px;font-weight:700">
+                      <i class="fa-solid fa-circle-check"></i> Featured as Next Live Session on Webpage
+                    </div>
+                  ` : `
+                    <button type="button" class="btn btn-secondary" style="border-color:#10b981;color:#10b981;font-size:12px;font-weight:700;padding:9px 18px" onclick="setWebinarActiveSessionOnWeb(${selNo})">
+                      <i class="fa-solid fa-star" style="color:#10b981"></i> Feature this Session on Main Webpage
+                    </button>
+                  `}
+                </div>
+              </div>
+
+              <!-- Input Fields -->
+              <div style="display:grid;grid-template-columns:1fr 1fr;gap:20px;margin-bottom:20px">
+                
+                <!-- Date & Time Picker -->
+                <div class="form-group">
+                  <label class="form-label" style="font-size:12px;font-weight:700;margin-bottom:8px">
+                    <i class="fa-regular fa-calendar-days" style="color:var(--gold);margin-right:6px"></i>
+                    Webinar Start Date & Time (Countdown Target)
+                  </label>
+                  <input type="datetime-local" class="form-input" id="wsch-datetime" value="${dtLocalVal}" style="font-size:13px;padding:10px 14px">
+                  <div style="font-size:11px;color:var(--muted);margin-top:6px">
+                    Powers the live countdown timer on the main Hero Card & Homepage.
+                  </div>
+                </div>
+
+                <!-- Meeting Link Paste Box -->
+                <div class="form-group">
+                  <label class="form-label" style="font-size:12px;font-weight:700;margin-bottom:8px">
+                    <i class="fa-solid fa-video" style="color:var(--gold);margin-right:6px"></i>
+                    Live Meeting Link (Zoom / Google Meet / Teams)
+                  </label>
+                  <div style="display:flex;gap:8px">
+                    <input type="url" class="form-input" id="wsch-link" value="${escH(joinUrl)}" placeholder="https://zoom.us/j/... or Google Meet URL" style="font-size:13px;padding:10px 14px">
+                    <button type="button" class="btn btn-secondary" onclick="pasteClipboardToWebinarLink()" title="Paste from clipboard" style="padding:0 14px">
+                      <i class="fa-solid fa-paste"></i> Paste
+                    </button>
+                  </div>
+                  <div style="font-size:11px;color:var(--muted);margin-top:6px">
+                    Paste here ~5 minutes before webinar starts. Link auto-expires 2 hours after start time.
+                  </div>
+                </div>
+
+              </div>
+
+              <!-- Save & Update Website Action -->
+              <div style="display:flex;align-items:center;justify-content:space-between;padding-top:18px;border-top:1px solid var(--border)">
+                <div style="font-size:12px;color:var(--muted)">
+                  <i class="fa-solid fa-shield-halved" style="color:var(--gold);margin-right:6px"></i>
+                  Clicking Update Website instantly refreshes the live website and countdown timer.
+                </div>
+                <div style="display:flex;gap:10px">
+                  <button type="button" class="btn btn-primary" style="font-size:13px;padding:11px 26px;background:linear-gradient(135deg,#10b981,#059669);color:#fff;border:none;box-shadow:0 2px 8px rgba(16,185,129,0.3)" onclick="saveWebinarScheduleData()">
+                    <i class="fa-solid fa-cloud-arrow-up"></i> Update Website Now
+                  </button>
+                </div>
+              </div>
+
+            </div>
+
+          </div>
+        `;
+      }
+
+      function selectWebinarSchedulerSession(sessionNo) {
+        window.webinarSchedulerState.selectedNo = Number(sessionNo);
+        renderWebinarScheduler();
+      }
+
+      function setWebinarActiveSessionOnWeb(sessionNo) {
+        const schedule = getWebinarScheduleData();
+        schedule.active_session_no = Number(sessionNo);
+        if (!schedule.sessions) schedule.sessions = {};
+        if (!schedule.sessions[sessionNo]) schedule.sessions[sessionNo] = {};
+        
+        localStorage.setItem('sgcms_webinar_schedule', JSON.stringify(schedule));
+        window.dispatchEvent(new StorageEvent('storage', { key: 'sgcms_webinar_schedule' }));
+        
+        // Sync to backend save.php
+        try {
+          fetch('api/save.php', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({
+              key: 'sgcms_webinar_schedule',
+              data: schedule,
+              token: (window.CMS && window.CMS.Auth) ? window.CMS.Auth.getToken() : ''
+            })
+          }).catch(() => {});
+        } catch(e) {}
+
+        showToast(`Session ${sessionNo} is now set as the Next Live Session on the website!`, 'success');
+        window.webinarSchedulerState.selectedNo = Number(sessionNo);
+        renderWebinarScheduler();
+      }
+
+      function saveWebinarScheduleData() {
+        const schedule = getWebinarScheduleData();
+        const selNo = Number(window.webinarSchedulerState.selectedNo) || 1;
+        
+        const dtInput = document.getElementById('wsch-datetime');
+        const linkInput = document.getElementById('wsch-link');
+        
+        let startUtc = '';
+        if (dtInput && dtInput.value) {
+          try {
+            startUtc = new Date(dtInput.value).toISOString();
+          } catch(e) {}
+        }
+        
+        const joinUrl = linkInput ? linkInput.value.trim() : '';
+        
+        if (!schedule.sessions) schedule.sessions = {};
+        schedule.sessions[selNo] = {
+          start_utc: startUtc,
+          join_url: joinUrl,
+          duration_min: 65
+        };
+        schedule.updated_at = new Date().toISOString();
+        
+        localStorage.setItem('sgcms_webinar_schedule', JSON.stringify(schedule));
+        window.dispatchEvent(new StorageEvent('storage', { key: 'sgcms_webinar_schedule' }));
+
+        // Sync to backend save.php
+        try {
+          fetch('api/save.php', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({
+              key: 'sgcms_webinar_schedule',
+              data: schedule,
+              token: (window.CMS && window.CMS.Auth) ? window.CMS.Auth.getToken() : ''
+            })
+          }).catch(() => {});
+        } catch(e) {}
+
+        showToast(`Session ${selNo} schedule & link updated on the live website!`, 'success');
+        renderWebinarScheduler();
+      }
+
+      async function pasteClipboardToWebinarLink() {
+        try {
+          const text = await navigator.clipboard.readText();
+          const el = document.getElementById('wsch-link');
+          if (el && text) {
+            el.value = text.trim();
+            showToast('Meeting link pasted!', 'info');
+          }
+        } catch(e) {
+          showToast('Clipboard access denied. Please paste manually.', 'warning');
+        }
+      }
 
       // ──────────────────────────────────────────────────────────
       // TEAM EDITOR
