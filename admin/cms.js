@@ -244,7 +244,8 @@ const Webinars = {
 
   get() {
     let webinars = Store.get(KEYS.WEBINARS);
-    if (!webinars || !Array.isArray(webinars) || webinars.length === 0) {
+    const hasFullCatalog = Array.isArray(webinars) && webinars.length >= 3 && webinars[0] && (webinars[0].title || (webinars[0].en && webinars[0].en.title));
+    if (!hasFullCatalog) {
       if (typeof window.SGCMS_WEBINARS !== 'undefined' && Array.isArray(window.SGCMS_WEBINARS) && window.SGCMS_WEBINARS.length) {
         webinars = window.SGCMS_WEBINARS;
       }
