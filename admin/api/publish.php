@@ -178,6 +178,19 @@ try {
     error_log('[SharifCMS Publish Homepage Regen Warning] ' . $hre->getMessage());
 }
 
+// 1b-3. SSG PRE-RENDER WEBINARS & WEBINARS DATA JS: Update webinars-data.js, locales, and home countdown
+$webinarsUpdated = false;
+$webinarsCount = 0;
+try {
+    require_once __DIR__ . '/webinars-regen.php';
+    if (function_exists('regenerateWebinars')) {
+        $wRes = regenerateWebinars(realpath(dirname(__DIR__, 2)), $currentPublished);
+        $webinarsUpdated = $wRes['success'] ?? false;
+        $webinarsCount = $wRes['count'] ?? 0;
+    }
+} catch (Throwable $wre) {
+    error_log('[SharifCMS Publish Webinars Regen Warning] ' . $wre->getMessage());
+}
 
 // Also update draft snapshot
 try {

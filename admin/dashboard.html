@@ -1802,6 +1802,90 @@
       color: var(--muted);
       line-height: 1.35;
     }
+
+    /* ═══ WEBINAR MANAGER STYLES ═══ */
+    .wlang-tab-btn {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      padding: 8px 10px;
+      border-radius: 8px;
+      border: 1px solid var(--border);
+      background: var(--surface);
+      color: var(--muted);
+      cursor: pointer;
+      transition: all 0.2s ease;
+      position: relative;
+    }
+    .wlang-tab-btn:hover {
+      background: var(--gold-glow);
+      border-color: rgba(179, 142, 93, 0.4);
+      color: var(--text);
+    }
+    .wlang-tab-btn.active {
+      background: var(--gold-dim);
+      border-color: var(--gold);
+      color: var(--gold);
+      font-weight: 700;
+      box-shadow: 0 2px 6px rgba(179, 142, 93, 0.15);
+    }
+    .wlang-check {
+      margin-left: auto;
+      font-size: 11px;
+      font-weight: 700;
+      width: 18px;
+      height: 18px;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      background: var(--border2);
+      color: var(--muted2);
+      flex-shrink: 0;
+    }
+    .wlang-tab-btn.active .wlang-check {
+      background: var(--gold);
+      color: #fff;
+    }
+    .wlang-check.complete {
+      background: #16a34a !important;
+      color: #fff !important;
+    }
+    .session-card-box {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      padding: 12px 14px;
+      transition: all 0.2s ease;
+    }
+    .session-card-box:hover {
+      border-color: var(--gold);
+      box-shadow: 0 4px 12px rgba(0,0,0,0.04);
+    }
+    .session-card-box.active-session {
+      border-color: var(--gold);
+      background: rgba(179, 142, 93, 0.03);
+    }
+    .switch input:checked + .slider {
+      background-color: var(--gold) !important;
+    }
+    .switch input:focus + .slider {
+      box-shadow: 0 0 1px var(--gold);
+    }
+    .switch input:checked + .slider:before {
+      transform: translateX(20px);
+    }
+    .slider:before {
+      position: absolute;
+      content: "";
+      height: 18px;
+      width: 18px;
+      left: 3px;
+      bottom: 3px;
+      background-color: white;
+      transition: .3s;
+      border-radius: 50%;
+    }
   </style>
 </head>
 
@@ -1978,6 +2062,15 @@
                 <i class="fa-solid fa-plus"></i> Add New Article
               </button>
             </div>
+          </div>
+        <!-- Webinars -->
+        <div class="sb-group">
+          <div class="sb-group-header">
+            <button class="sb-group-btn" id="sb-webinars" onclick="navigate('webinars')">
+              <i class="fa-solid fa-video sb-ico"></i>
+              <span class="sb-lbl">Webinars</span>
+              <span style="margin-left:auto;font-size:9px;background:#dc2626;color:#fff;padding:2px 7px;border-radius:10px;font-weight:700;letter-spacing:0.04em">LIVE</span>
+            </button>
           </div>
         </div>
 
@@ -2697,6 +2790,7 @@
         citizenship: '../citizenshipbyinvestment/index.html',
         residency: '../residencybyinvestment/index.html',
         blog: '../blog/index.html',
+        webinars: '../webinars/index.html',
         contact: '../contact/index.html',
         aboutus: '../aboutus/index.html',
         founder: '../about-founder/index.html',
@@ -2845,6 +2939,8 @@
         } else if (state.section === 'blog-new' || state.section === 'blog-edit') {
           const bSlug = state.activeBlogSlug || state.itemId || 'about-sharif-group';
           url = PAGE_URLS.blog + '?article_slug=' + encodeURIComponent(bSlug);
+        } else if (state.section === 'webinars') {
+          url = PAGE_URLS.webinars;
         } else if (state.section === 'blog') {
           url = PAGE_URLS.blog;
         }
@@ -2903,6 +2999,7 @@
           const bSlug = state.activeBlogSlug || state.itemId || 'about-sharif-group';
           url = PAGE_URLS.blog + '?article_slug=' + encodeURIComponent(bSlug);
         }
+        else if (state.section === 'webinars') url = PAGE_URLS.webinars;
         else if (state.section === 'blog') url = PAGE_URLS.blog;
         const sep = url.includes('?') ? '&' : '?';
         window.open(url + sep + 'cms_preview=1', '_blank');
@@ -4834,7 +4931,7 @@
         setActiveSidebarItem(section === 'program' ? (itemId || '') : (section === 'blog-edit' ? (itemId || 'blog') : (section === 'category-hub' ? itemType : section.replace('-new', '').replace('-edit', ''))));
 
         // Form-only drawer sections vs. Visual Live Canvas sections
-        const formOnlySections = ['settings', 'team-new', 'new-program'];
+        const formOnlySections = ['settings', 'team-new', 'new-program', 'webinars'];
         const isVisualPreviewSection = ['aboutus', 'team', 'contact', 'legal', 'cookiepolicy', 'cookies', 'homepage', 'category-hub', 'program', 'blog', 'blog-edit', 'blog-new'].includes(section);
         if (formOnlySections.includes(section)) {
           openEditorDrawer();
@@ -5318,6 +5415,7 @@
           case 'blog': renderBlogEditor(l, rtl); break;
           case 'blog-new': renderNewBlogView(); break;
           case 'blog-edit': renderVisualBlogGuide(itemId); break;
+          case 'webinars': renderWebinarsEditor(l, rtl); break;
           case 'team': renderVisualLiveStudioGuide('Team & Leadership', 'Live visual editor for Team & Leadership', PAGE_URLS.aboutus); break;
           case 'team-new': createTeamMember(); break;
           case 'aboutus': renderVisualLiveStudioGuide('About Us Page', 'Live visual editor for About Us page', PAGE_URLS.aboutus); break;
@@ -7640,6 +7738,936 @@
       }
 
       // ──────────────────────────────────────────────────────────
+      // WEBINARS MANAGER (4-Language Workflow, Hero Card, Series, Detail Pages, Access Rules)
+      // ──────────────────────────────────────────────────────────
+      window.webinarState = window.webinarState || {
+        selectedSessionNo: 1,
+        lang: 'en',
+        countdownTimer: null
+      };
+
+      function renderWebinarsEditor(l, rtl) {
+        setPageTitle('Webinars & Masterclasses', 'Live webinar management with 4-language support');
+        const ed = document.getElementById('editor');
+        if (!ed) return;
+
+        const currentLang = l || webinarState.lang || state.lang || 'en';
+        webinarState.lang = currentLang;
+        const dir = (currentLang === 'fa' || currentLang === 'ar') ? 'dir="rtl"' : 'dir="ltr"';
+        const isRtlLang = (currentLang === 'fa' || currentLang === 'ar');
+
+        const allSessions = window.CMS.Webinars.get();
+        const featured = window.CMS.Webinars.getFeatured() || allSessions[0] || {};
+        
+        let selSession = allSessions.find(s => Number(s.session_no) === Number(webinarState.selectedSessionNo));
+        if (!selSession) {
+          selSession = allSessions[0] || {};
+          webinarState.selectedSessionNo = selSession.session_no || 1;
+        }
+
+        // Multilingual completion check
+        const comp = window.CMS.Webinars.getAllLanguagesCompletion(selSession);
+
+        const featL = featured[currentLang] || featured.en || {};
+        const selL = selSession[currentLang] || selSession.en || {};
+
+        // Calculate schedule times from featured start_utc
+        const startUtc = featured.start_utc || '2026-10-29T15:30:00Z';
+        const times = window.CMS.Webinars.formatScheduleTimes(startUtc) || { kabul: '20:00', dubai: '19:30', istanbul: '18:30', london: '16:30' };
+
+        // Convert startUtc to local input format: YYYY-MM-DDTHH:mm
+        let dtLocalVal = '2026-10-29T19:30';
+        try {
+          const dObj = new Date(startUtc);
+          if (!isNaN(dObj.getTime())) {
+            const pad = (n) => String(n).padStart(2, '0');
+            dtLocalVal = dObj.getFullYear() + '-' + pad(dObj.getMonth() + 1) + '-' + pad(dObj.getDate()) + 'T' + pad(dObj.getHours()) + ':' + pad(dObj.getMinutes());
+          }
+        } catch(e) {}
+
+        // Convert selSession start_utc to local datetime input format
+        const sessStartUtc = selSession.start_utc || featured.start_utc || '2026-10-29T15:30:00Z';
+        let dtSessVal = '2026-10-29T19:30';
+        try {
+          const dObj = new Date(sessStartUtc);
+          if (!isNaN(dObj.getTime())) {
+            const pad = (n) => String(n).padStart(2, '0');
+            dtSessVal = dObj.getFullYear() + '-' + pad(dObj.getMonth() + 1) + '-' + pad(dObj.getDate()) + 'T' + pad(dObj.getHours()) + ':' + pad(dObj.getMinutes());
+          }
+        } catch(e) {}
+
+        const langMeta = window.CMS.Webinars.LANG_META;
+
+        ed.innerHTML = `
+          <div style="padding:16px 20px">
+
+            <!-- ═══ TOP 4-LANGUAGE TOGGLE BAR ═══ -->
+            <div class="webinar-lang-toolbar" style="background:var(--card);border:1px solid var(--border);border-radius:12px;padding:14px 16px;margin-bottom:18px;box-shadow:0 2px 8px rgba(0,0,0,0.03)">
+              <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:8px">
+                <div style="display:flex;align-items:center;gap:8px">
+                  <i class="fa-solid fa-language" style="color:var(--gold);font-size:16px"></i>
+                  <span style="font-size:12px;font-weight:700;letter-spacing:0.04em;text-transform:uppercase;color:var(--text)">4-Language Content Workflow</span>
+                </div>
+                <span style="font-size:10px;font-weight:700;padding:2px 8px;border-radius:12px;background:rgba(22,163,74,0.12);color:#16a34a">
+                  Active: ${langMeta[currentLang]?.label || currentLang.toUpperCase()} (${isRtlLang ? 'RTL' : 'LTR'})
+                </span>
+              </div>
+              <p style="font-size:11px;color:var(--muted);line-height:1.45;margin:0 0 12px">
+                All 4 official languages must be completed. Click any language tab below to switch fields and review/input content in that language:
+              </p>
+              <div style="display:grid;grid-template-columns:repeat(4,1fr);gap:8px">
+                ${['en', 'fa', 'ar', 'zh'].map(langCode => {
+                  const m = langMeta[langCode] || {};
+                  const isActive = langCode === currentLang;
+                  const isDone = comp.perLang[langCode]?.isComplete;
+                  return `
+                    <button type="button" class="wlang-tab-btn ${isActive ? 'active' : ''}" onclick="switchWebinarLang('${langCode}')">
+                      <span style="font-size:14px">${m.flag || '🌐'}</span>
+                      <div style="display:flex;flex-direction:column;align-items:flex-start;line-height:1.15;overflow:hidden">
+                        <span style="font-weight:700;font-size:11px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis">${m.label}</span>
+                        <span style="font-size:9px;opacity:0.75">${m.short}</span>
+                      </div>
+                      <span class="wlang-check ${isDone ? 'complete' : ''}" title="${isDone ? 'All required fields completed' : 'Requires inputs'}">
+                        ${isDone ? '✓' : '·'}
+                      </span>
+                    </button>
+                  `;
+                }).join('')}
+              </div>
+            </div>
+
+            <!-- ═══ SECTION 1: HERO CARD & COUNTDOWN (REQUIREMENT 1 - IMAGE 1) ═══ -->
+            <div class="accordion open" style="margin-bottom:16px">
+              <div class="acc-header" onclick="toggleAcc(this)">
+                <div class="acc-title">
+                  <i class="fa-solid fa-bullhorn" style="color:var(--gold)"></i>
+                  <span>1. Next Live Session (Hero Card & Countdown)</span>
+                  <span class="form-lang-tag" style="margin-left:8px">${currentLang.toUpperCase()}</span>
+                </div>
+                <i class="fa-solid fa-chevron-down acc-chev"></i>
+              </div>
+              <div class="acc-body" style="display:block">
+                <div style="background:rgba(197,168,128,0.06);border:1px solid rgba(197,168,128,0.2);border-radius:10px;padding:12px;margin-bottom:14px">
+                  <div style="font-size:11px;color:var(--muted);margin-bottom:4px">
+                    <strong style="color:var(--text)">Featured Live Session:</strong> Automatically powers the master countdown card on Homepage and /webinars/.
+                  </div>
+                </div>
+
+                <div class="form-group" style="margin-bottom:12px">
+                  <label class="form-label">
+                    Live Session Title <span class="form-lang-tag">${currentLang.toUpperCase()}</span>
+                    <span style="font-size:10px;font-weight:400;color:var(--muted);margin-left:6px">(Image 1)</span>
+                  </label>
+                  <input class="form-input form-input-headline" ${dir} id="whero-title" value="${escH(featL.title || '')}"
+                    placeholder="e.g. A Second Passport for Afghans: Introducing the Dominica Programme" oninput="markUnsaved()">
+                </div>
+
+                <div class="form-group" style="margin-bottom:12px">
+                  <label class="form-label">
+                    Summary Paragraph <span class="form-lang-tag">${currentLang.toUpperCase()}</span>
+                    <span style="font-size:10px;font-weight:400;color:var(--muted);margin-left:6px">(Image 1)</span>
+                  </label>
+                  <textarea class="form-textarea" ${dir} id="whero-excerpt" style="min-height:75px"
+                    placeholder="A free online session in Persian (Dari): what Dominica's citizenship programme is, why it matters for Afghans and who can apply." oninput="markUnsaved()">${escH(featL.excerpt || '')}</textarea>
+                </div>
+
+                <div class="form-row form-row-2" style="margin-bottom:12px">
+                  <div class="form-group">
+                    <label class="form-label">Live Start Date & Time (Local / Picker)</label>
+                    <input type="datetime-local" class="form-input" id="whero-datetime" value="${dtLocalVal}" onchange="onWebinarDateChange(this.value)">
+                  </div>
+                  <div class="form-group">
+                    <label class="form-label">Duration (Minutes)</label>
+                    <input type="number" class="form-input" id="whero-duration" value="${Number(featured.duration_min) || 65}" min="15" max="300" oninput="markUnsaved()">
+                  </div>
+                </div>
+
+                <!-- Live Countdown Visual Preview Box -->
+                <div style="background:#0F172A;color:#fff;border-radius:10px;padding:12px 14px;margin-bottom:14px">
+                  <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:8px">
+                    <span style="font-size:10px;font-weight:700;letter-spacing:0.08em;color:#C5A880;text-transform:uppercase">
+                      <i class="fa-solid fa-clock"></i> Live Countdown Preview
+                    </span>
+                    <span id="whero-cd-status" style="font-size:10px;color:#94A3B8">Target: ${startUtc}</span>
+                  </div>
+                  <div id="whero-countdown-box" style="display:grid;grid-template-columns:repeat(4,1fr);gap:8px;text-align:center">
+                    <div style="background:rgba(255,255,255,0.08);padding:8px 4px;border-radius:6px">
+                      <div id="wcd-days" style="font-size:18px;font-weight:700;color:#F8FAFC">--</div>
+                      <div style="font-size:9px;color:#94A3B8;text-transform:uppercase">Days</div>
+                    </div>
+                    <div style="background:rgba(255,255,255,0.08);padding:8px 4px;border-radius:6px">
+                      <div id="wcd-hours" style="font-size:18px;font-weight:700;color:#F8FAFC">--</div>
+                      <div style="font-size:9px;color:#94A3B8;text-transform:uppercase">Hours</div>
+                    </div>
+                    <div style="background:rgba(255,255,255,0.08);padding:8px 4px;border-radius:6px">
+                      <div id="wcd-mins" style="font-size:18px;font-weight:700;color:#F8FAFC">--</div>
+                      <div style="font-size:9px;color:#94A3B8;text-transform:uppercase">Mins</div>
+                    </div>
+                    <div style="background:rgba(255,255,255,0.08);padding:8px 4px;border-radius:6px">
+                      <div id="wcd-secs" style="font-size:18px;font-weight:700;color:#F8FAFC">--</div>
+                      <div style="font-size:9px;color:#94A3B8;text-transform:uppercase">Secs</div>
+                    </div>
+                  </div>
+                </div>
+
+                <!-- Multi-city Schedule Times -->
+                <div style="background:var(--card2);border:1px solid var(--border);border-radius:10px;padding:12px;margin-bottom:14px">
+                  <div style="font-size:10px;font-weight:700;letter-spacing:0.06em;color:var(--muted);text-transform:uppercase;margin-bottom:8px">
+                    <i class="fa-solid fa-earth-americas"></i> Auto Multi-City Starting Times
+                  </div>
+                  <div style="display:grid;grid-template-columns:repeat(4,1fr);gap:6px;text-align:center">
+                    <div style="background:var(--surface);border:1px solid var(--border);border-radius:6px;padding:6px 4px">
+                      <div style="font-size:10px;color:var(--muted)">🇦🇫 Kabul</div>
+                      <div id="wtz-kabul" style="font-size:12px;font-weight:700;color:var(--text)">${times.kabul}</div>
+                    </div>
+                    <div style="background:var(--surface);border:1px solid var(--border);border-radius:6px;padding:6px 4px">
+                      <div style="font-size:10px;color:var(--muted)">🇦🇪 Dubai</div>
+                      <div id="wtz-dubai" style="font-size:12px;font-weight:700;color:var(--text)">${times.dubai}</div>
+                    </div>
+                    <div style="background:var(--surface);border:1px solid var(--border);border-radius:6px;padding:6px 4px">
+                      <div style="font-size:10px;color:var(--muted)">🇹🇷 Istanbul</div>
+                      <div id="wtz-istanbul" style="font-size:12px;font-weight:700;color:var(--text)">${times.istanbul}</div>
+                    </div>
+                    <div style="background:var(--surface);border:1px solid var(--border);border-radius:6px;padding:6px 4px">
+                      <div style="font-size:10px;color:var(--muted)">🇬🇧 London</div>
+                      <div id="wtz-london" style="font-size:12px;font-weight:700;color:var(--text)">${times.london}</div>
+                    </div>
+                  </div>
+                </div>
+
+                <!-- Registration Open Toggle -->
+                <div style="display:flex;align-items:center;justify-content:space-between;background:var(--surface);border:1px solid var(--border);border-radius:10px;padding:12px 14px">
+                  <div>
+                    <div style="font-weight:700;font-size:12px;color:var(--text)">Live Registration Status</div>
+                    <div style="font-size:11px;color:var(--muted)">Controls whether attendees can register or see Coming Soon</div>
+                  </div>
+                  <label class="switch" style="position:relative;display:inline-block;width:44px;height:24px;margin:0">
+                    <input type="checkbox" id="whero-reg-open" ${featured.registration_open ? 'checked' : ''} onchange="markUnsaved()">
+                    <span class="slider round" style="position:absolute;cursor:pointer;top:0;left:0;right:0;bottom:0;background-color:#ccc;transition:.3s;border-radius:24px"></span>
+                  </label>
+                </div>
+              </div>
+            </div>
+
+            <!-- ═══ SECTION 2: SERIES & UPCOMING SESSIONS (REQUIREMENT 2 - IMAGE 2) ═══ -->
+            <div class="accordion open" style="margin-bottom:16px">
+              <div class="acc-header" onclick="toggleAcc(this)">
+                <div class="acc-title">
+                  <i class="fa-solid fa-list-ol" style="color:var(--gold)"></i>
+                  <span>2. Series & Upcoming Sessions</span>
+                  <span class="form-lang-tag" style="margin-left:8px">${currentLang.toUpperCase()}</span>
+                </div>
+                <i class="fa-solid fa-chevron-down acc-chev"></i>
+              </div>
+              <div class="acc-body" style="display:block">
+                <div class="form-row form-row-2" style="margin-bottom:12px">
+                  <div class="form-group">
+                    <label class="form-label">
+                      Series Tag Label <span class="form-lang-tag">${currentLang.toUpperCase()}</span>
+                      <span style="font-size:10px;font-weight:400;color:var(--muted);margin-left:6px">(Image 2)</span>
+                    </label>
+                    <input class="form-input" ${dir} id="wseries-tag" value="${escH(featL.series_tag || (currentLang === 'fa' ? 'سری ۰۱ · دومینیکا' : (currentLang === 'ar' ? 'السلسلة 01 · دومينيكا' : (currentLang === 'zh' ? '第01系列 · 多米尼克' : 'Series 01 · Dominica'))))}"
+                      placeholder="e.g. Series 01 · Dominica" oninput="markUnsaved()">
+                  </div>
+                  <div class="form-group">
+                    <label class="form-label">Number of Sessions in Series</label>
+                    <div style="display:flex;gap:6px">
+                      <input type="number" class="form-input" id="wseries-count" value="${allSessions.length}" min="1" max="12" style="width:70px">
+                      <button type="button" class="btn btn-secondary" onclick="updateSeriesSessionCount()" style="font-size:11px;white-space:nowrap">
+                        <i class="fa-solid fa-arrows-rotate"></i> Set Count
+                      </button>
+                      <button type="button" class="btn btn-primary" onclick="addNewWebinarSession()" style="font-size:11px;white-space:nowrap">
+                        <i class="fa-solid fa-plus"></i> Add
+                      </button>
+                    </div>
+                  </div>
+                </div>
+
+                <!-- Session Cards List -->
+                <div style="display:flex;flex-direction:column;gap:10px;margin-top:12px">
+                  ${allSessions.map(s => {
+                    const sL = s[currentLang] || s.en || {};
+                    const sTitle = sL.title || s.title || `Session ${s.session_no}`;
+                    const isSelected = Number(s.session_no) === Number(webinarState.selectedSessionNo);
+                    const isSession1 = Number(s.session_no) === 1;
+                    const sComp = window.CMS.Webinars.getAllLanguagesCompletion(s);
+                    return `
+                      <div class="session-card-box ${isSelected ? 'active-session' : ''}" style="display:flex;flex-direction:column;gap:8px">
+                        <div style="display:flex;align-items:center;justify-content:space-between">
+                          <div style="display:flex;align-items:center;gap:8px">
+                            <span style="font-size:11px;font-weight:700;padding:2px 8px;border-radius:6px;background:${isSelected ? 'var(--gold)' : 'var(--border)'};color:${isSelected ? '#fff' : 'var(--text)'}">
+                              Session ${String(s.session_no).padStart(2, '0')}
+                            </span>
+                            <span style="font-weight:600;font-size:12px;color:var(--text);max-width:240px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis" title="${escH(sTitle)}">
+                              ${escH(sTitle)}
+                            </span>
+                          </div>
+                          <div style="display:flex;align-items:center;gap:4px">
+                            ${isSession1 ? `
+                              <span style="font-size:9px;font-weight:700;padding:2px 6px;border-radius:4px;background:rgba(22,163,74,0.12);color:#16a34a" title="Session 1 displays public join link on website">
+                                <i class="fa-solid fa-globe"></i> Public
+                              </span>
+                            ` : `
+                              <span style="font-size:9px;font-weight:700;padding:2px 6px;border-radius:4px;background:rgba(217,119,6,0.12);color:#d97706" title="Session 2+ join link strictly hidden on website">
+                                <i class="fa-solid fa-lock"></i> Private
+                              </span>
+                            `}
+                          </div>
+                        </div>
+
+                        <!-- 4-Language status pill -->
+                        <div style="display:flex;align-items:center;justify-content:space-between;padding-top:4px;border-top:1px dashed var(--border)">
+                          <div style="display:flex;align-items:center;gap:6px">
+                            <span style="font-size:10px;color:var(--muted)">Langs:</span>
+                            ${['en', 'fa', 'ar', 'zh'].map(lCode => {
+                              const done = sComp.perLang[lCode]?.isComplete;
+                              return `<span style="font-size:9px;font-weight:700;padding:1px 4px;border-radius:3px;background:${done ? '#16a34a' : 'var(--border)'};color:${done ? '#fff' : 'var(--muted)'}">${lCode.toUpperCase()}</span>`;
+                            }).join('')}
+                          </div>
+                          <div style="display:flex;align-items:center;gap:6px">
+                            <button type="button" class="btn ${isSelected ? 'btn-primary' : 'btn-secondary'}" style="padding:3px 8px;font-size:10px" onclick="selectWebinarSessionForEdit(${s.session_no})">
+                              <i class="fa-solid fa-file-lines"></i> ${isSelected ? 'Editing Now' : 'Edit Page'}
+                            </button>
+                            ${!isSession1 ? `
+                              <button type="button" class="btn btn-ghost" style="padding:3px 6px;font-size:10px;color:#f87171" onclick="deleteWebinarSession(${s.session_no})" title="Delete session">
+                                <i class="fa-solid fa-trash-can"></i>
+                              </button>
+                            ` : ''}
+                          </div>
+                        </div>
+                      </div>
+                    `;
+                  }).join('')}
+                </div>
+              </div>
+            </div>
+
+            <!-- ═══ SECTION 3: PER-SESSION DETAIL PAGE CONTENT (REQUIREMENT 3 - IMAGES 3 & 4) ═══ -->
+            <div class="accordion open" style="margin-bottom:16px">
+              <div class="acc-header" onclick="toggleAcc(this)">
+                <div class="acc-title">
+                  <i class="fa-solid fa-file-pen" style="color:var(--gold)"></i>
+                  <span>3. Detail Page Content (Session ${String(selSession.session_no).padStart(2, '0')})</span>
+                  <span class="form-lang-tag" style="margin-left:8px">${currentLang.toUpperCase()}</span>
+                </div>
+                <i class="fa-solid fa-chevron-down acc-chev"></i>
+              </div>
+              <div class="acc-body" style="display:block">
+                <div style="display:flex;align-items:center;gap:6px;margin-bottom:14px;overflow-x:auto;padding-bottom:4px">
+                  <span style="font-size:10px;font-weight:700;color:var(--muted);text-transform:uppercase;white-space:nowrap">Select Page:</span>
+                  ${allSessions.map(s => `
+                    <button type="button" class="btn ${Number(s.session_no) === Number(selSession.session_no) ? 'btn-primary' : 'btn-secondary'}"
+                      style="padding:3px 10px;font-size:11px;white-space:nowrap" onclick="selectWebinarSessionForEdit(${s.session_no})">
+                      Session ${String(s.session_no).padStart(2, '0')}
+                    </button>
+                  `).join('')}
+                </div>
+
+                <div class="form-group" style="margin-bottom:12px">
+                  <label class="form-label">
+                    Page Headline / Session Title <span class="form-lang-tag">${currentLang.toUpperCase()}</span>
+                    <span style="font-size:10px;font-weight:400;color:var(--muted);margin-left:6px">(Image 3)</span>
+                  </label>
+                  <input class="form-input form-input-headline" ${dir} id="wsess-title" value="${escH(selL.title || '')}"
+                    placeholder="Enter session title..." oninput="markUnsaved()">
+                </div>
+
+                <div class="form-group" style="margin-bottom:12px">
+                  <label class="form-label">
+                    Page Intro Excerpt <span class="form-lang-tag">${currentLang.toUpperCase()}</span>
+                  </label>
+                  <textarea class="form-textarea" ${dir} id="wsess-excerpt" style="min-height:60px"
+                    placeholder="Short introduction..." oninput="markUnsaved()">${escH(selL.excerpt || '')}</textarea>
+                </div>
+
+                <!-- Per-Session Timing, Duration & Custom Slug -->
+                <div class="form-row form-row-3" style="margin-bottom:12px">
+                  <div class="form-group">
+                    <label class="form-label">Session Date & Time (Local)</label>
+                    <input type="datetime-local" class="form-input" id="wsess-datetime" value="${dtSessVal}" oninput="markUnsaved()">
+                  </div>
+                  <div class="form-group">
+                    <label class="form-label">Duration (Minutes)</label>
+                    <input type="number" class="form-input" id="wsess-duration" value="${Number(selSession.duration_min) || 65}" min="15" max="300" oninput="markUnsaved()">
+                  </div>
+                  <div class="form-group">
+                    <label class="form-label">URL Slug (/webinars/{slug})</label>
+                    <input class="form-input" id="wsess-slug" value="${escH(selSession.slug || '')}" placeholder="e.g. session-${selSession.session_no}" oninput="markUnsaved()">
+                  </div>
+                </div>
+
+                <!-- Registration Open Toggle for THIS Session (Requirement 4) -->
+                <div style="display:flex;align-items:center;justify-content:space-between;background:var(--surface);border:1px solid var(--border);border-radius:10px;padding:12px 14px;margin-bottom:14px">
+                  <div>
+                    <div style="font-weight:700;font-size:12px;color:var(--text)">Session ${String(selSession.session_no).padStart(2, '0')} Registration Status</div>
+                    <div style="font-size:11px;color:var(--muted)">Controls whether attendees can register for this session or see "Coming soon"</div>
+                  </div>
+                  <label class="switch" style="position:relative;display:inline-block;width:44px;height:24px;margin:0">
+                    <input type="checkbox" id="wsess-reg-open" ${selSession.registration_open ? 'checked' : ''} onchange="markUnsaved()">
+                    <span class="slider round" style="position:absolute;cursor:pointer;top:0;left:0;right:0;bottom:0;background-color:#ccc;transition:.3s;border-radius:24px"></span>
+                  </label>
+                </div>
+
+                <!-- About this session paragraphs (Image 3) -->
+                <div class="form-group" style="margin-bottom:14px">
+                  <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:6px">
+                    <label class="form-label" style="margin:0">
+                      About This Session Paragraphs <span class="form-lang-tag">${currentLang.toUpperCase()}</span>
+                      <span style="font-size:10px;font-weight:400;color:var(--muted);margin-left:6px">(Image 3)</span>
+                    </label>
+                    <button type="button" class="btn btn-secondary" style="padding:2px 8px;font-size:10px" onclick="addWebinarAboutParagraph()">
+                      <i class="fa-solid fa-plus"></i> Add Paragraph
+                    </button>
+                  </div>
+                  <div id="wsess-body-list" style="display:flex;flex-direction:column;gap:8px">
+                    ${(Array.isArray(selL.body) && selL.body.length ? selL.body : ['']).map((p, pIdx) => `
+                      <div class="wsess-body-item" style="display:flex;gap:6px;align-items:flex-start">
+                        <textarea class="form-textarea" ${dir} style="min-height:65px;flex:1" placeholder="Paragraph ${pIdx + 1}..." oninput="markUnsaved()">${escH(p)}</textarea>
+                        <button type="button" class="btn btn-ghost" style="color:#f87171;padding:6px 8px" onclick="removeWebinarBodyItem(this)" title="Remove paragraph">
+                          <i class="fa-solid fa-trash-can"></i>
+                        </button>
+                      </div>
+                    `).join('')}
+                  </div>
+                </div>
+
+                <!-- What you will learn (Outcomes) (Image 4) -->
+                <div class="form-group" style="margin-bottom:14px">
+                  <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:6px">
+                    <label class="form-label" style="margin:0">
+                      What You Will Learn (Key Takeaways) <span class="form-lang-tag">${currentLang.toUpperCase()}</span>
+                      <span style="font-size:10px;font-weight:400;color:var(--muted);margin-left:6px">(Image 4)</span>
+                    </label>
+                    <button type="button" class="btn btn-secondary" style="padding:2px 8px;font-size:10px" onclick="addWebinarOutcomeItem()">
+                      <i class="fa-solid fa-plus"></i> Add Takeaway
+                    </button>
+                  </div>
+                  <div id="wsess-outcomes-list" style="display:flex;flex-direction:column;gap:6px">
+                    ${(Array.isArray(selL.outcomes) && selL.outcomes.length ? selL.outcomes : ['']).map((o, oIdx) => `
+                      <div class="wsess-outcome-item" style="display:flex;gap:6px;align-items:center">
+                        <span style="font-size:10px;color:var(--gold);font-weight:700;width:18px">✓</span>
+                        <input class="form-input" ${dir} style="flex:1" value="${escH(o)}" placeholder="e.g. Investment options and overview of costs..." oninput="markUnsaved()">
+                        <button type="button" class="btn btn-ghost" style="color:#f87171;padding:6px 8px" onclick="removeWebinarOutcomeItem(this)" title="Remove takeaway">
+                          <i class="fa-solid fa-trash-can"></i>
+                        </button>
+                      </div>
+                    `).join('')}
+                  </div>
+                </div>
+
+                <!-- Session Agenda Builder (Image 4) -->
+                <div class="form-group" style="margin-bottom:14px">
+                  <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:6px">
+                    <label class="form-label" style="margin:0">
+                      Session Agenda <span class="form-lang-tag">${currentLang.toUpperCase()}</span>
+                      <span style="font-size:10px;font-weight:400;color:var(--muted);margin-left:6px">(Image 4)</span>
+                    </label>
+                    <button type="button" class="btn btn-secondary" style="padding:2px 8px;font-size:10px" onclick="addWebinarAgendaItem()">
+                      <i class="fa-solid fa-plus"></i> Add Agenda Slot
+                    </button>
+                  </div>
+                  <div id="wsess-agenda-list" style="display:flex;flex-direction:column;gap:6px">
+                    ${(Array.isArray(selL.agenda) && selL.agenda.length ? selL.agenda : [
+                      { time: '00:00 - 00:10', topic: 'Welcome & Introduction to Programme', speaker: 'Host' },
+                      { time: '00:10 - 00:45', topic: 'Citizenship Requirements, Routes & Legal Updates', speaker: 'Lead Specialist' },
+                      { time: '00:45 - 01:05', topic: 'Live Open Q&A Session', speaker: 'All Panelists' }
+                    ]).map(ag => `
+                      <div class="wsess-agenda-item" style="display:grid;grid-template-columns:110px 1fr 100px 32px;gap:6px;align-items:center;background:var(--bg2);padding:6px;border-radius:6px;border:1px solid var(--border)">
+                        <input class="form-input" value="${escH(ag.time || '')}" placeholder="e.g. 00:00 - 00:15" style="font-size:11px" oninput="markUnsaved()">
+                        <input class="form-input" ${dir} value="${escH(ag.topic || '')}" placeholder="Topic headline..." style="font-size:11px" oninput="markUnsaved()">
+                        <input class="form-input" ${dir} value="${escH(ag.speaker || '')}" placeholder="Speaker" style="font-size:11px" oninput="markUnsaved()">
+                        <button type="button" class="btn btn-ghost" style="color:#f87171;padding:4px" onclick="removeWebinarAgendaItem(this)">
+                          <i class="fa-solid fa-trash-can"></i>
+                        </button>
+                      </div>
+                    `).join('')}
+                  </div>
+                </div>
+
+                <!-- Speakers & Hosts Builder (Image 4) -->
+                <div class="form-group" style="margin-bottom:14px">
+                  <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:6px">
+                    <label class="form-label" style="margin:0">
+                      Speakers & Hosts <span class="form-lang-tag">${currentLang.toUpperCase()}</span>
+                      <span style="font-size:10px;font-weight:400;color:var(--muted);margin-left:6px">(Image 4)</span>
+                    </label>
+                    <button type="button" class="btn btn-secondary" style="padding:2px 8px;font-size:10px" onclick="addWebinarSpeakerItem()">
+                      <i class="fa-solid fa-plus"></i> Add Speaker
+                    </button>
+                  </div>
+                  <div id="wsess-speakers-list" style="display:flex;flex-direction:column;gap:8px">
+                    ${(Array.isArray(selL.speakers) && selL.speakers.length ? selL.speakers : [
+                      { title: 'Senior Citizenship Specialist', affiliation: 'Sharif Group, Dubai', note: 'Name to be announced' },
+                      { title: 'Dari-speaking host', affiliation: 'Moderates questions and chat', note: 'Name to be announced' }
+                    ]).map(sp => `
+                      <div class="wsess-speaker-item" style="display:grid;grid-template-columns:1fr 1fr 130px 32px;gap:6px;align-items:center;background:var(--bg2);padding:8px;border-radius:8px;border:1px solid var(--border)">
+                        <div>
+                          <div style="font-size:9px;color:var(--muted);margin-bottom:2px">Role / Title</div>
+                          <input class="form-input" ${dir} value="${escH(sp.title || sp.name || '')}" placeholder="e.g. Senior Specialist" style="font-size:11px" oninput="markUnsaved()">
+                        </div>
+                        <div>
+                          <div style="font-size:9px;color:var(--muted);margin-bottom:2px">Affiliation / Description</div>
+                          <input class="form-input" ${dir} value="${escH(sp.affiliation || sp.role || '')}" placeholder="e.g. Sharif Group, Dubai" style="font-size:11px" oninput="markUnsaved()">
+                        </div>
+                        <div>
+                          <div style="font-size:9px;color:var(--muted);margin-bottom:2px">Status / Note</div>
+                          <input class="form-input" ${dir} value="${escH(sp.note || '')}" placeholder="e.g. To be announced" style="font-size:11px" oninput="markUnsaved()">
+                        </div>
+                        <div style="align-self:end">
+                          <button type="button" class="btn btn-ghost" style="color:#f87171;padding:6px;margin-bottom:2px" onclick="removeWebinarSpeakerItem(this)">
+                            <i class="fa-solid fa-trash-can"></i>
+                          </button>
+                        </div>
+                      </div>
+                    `).join('')}
+                  </div>
+                </div>
+
+                <!-- ═══ SECTION 4: ACCESS RULE & REGISTRATION CONTROLS (REQUIREMENT 4) ═══ -->
+                <div style="background:var(--card2);border:1px solid var(--border);border-radius:10px;padding:12px;margin-bottom:12px">
+                  <div style="font-size:11px;font-weight:700;color:var(--text);margin-bottom:8px">
+                    <i class="fa-solid fa-shield-halved" style="color:var(--gold)"></i> Access & Meeting Link Controls
+                  </div>
+
+                  <div class="form-group" style="margin-bottom:10px">
+                    <label class="form-label">Meeting Join URL (Zoom / Teams / Live link)</label>
+                    <input class="form-input" id="wsess-join-url" value="${escH(selSession.join_url || '')}" placeholder="https://zoom.us/j/... or meeting URL" oninput="markUnsaved()">
+                  </div>
+
+                  ${Number(selSession.session_no) === 1 ? `
+                    <div style="background:rgba(22,163,74,0.08);border:1px solid rgba(22,163,74,0.25);border-radius:8px;padding:10px 12px;font-size:11px;color:#16a34a;line-height:1.5">
+                      <i class="fa-solid fa-circle-check"></i> <strong>Session 01 Public Rule:</strong> This meeting link and the Join Button will be shown on the public website.
+                    </div>
+                  ` : `
+                    <div style="background:rgba(217,119,6,0.08);border:1px solid rgba(217,119,6,0.25);border-radius:8px;padding:10px 12px;font-size:11px;color:#d97706;line-height:1.5">
+                      <i class="fa-solid fa-lock"></i> <strong>Session 02+ Strict Privacy Rule:</strong> Meeting link is strictly hidden on the public website. Attendees will see: <em>"Join link will be sent to registered participants via Email & WhatsApp."</em>
+                    </div>
+                  `}
+                </div>
+              </div>
+            </div>
+
+            <!-- ═══ SAVE & PUBLISH BUTTONS ═══ -->
+            <div style="display:flex;flex-direction:column;gap:8px;margin-top:20px;padding-top:14px;border-top:1px solid var(--border)">
+              <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px">
+                <button type="button" class="btn btn-secondary" style="justify-content:center;font-size:12px" onclick="saveWebinarsCurrentState(false)">
+                  <i class="fa-solid fa-floppy-disk"></i> Save Draft
+                </button>
+                <button type="button" class="btn btn-primary" style="justify-content:center;font-size:12px;background:linear-gradient(135deg,#10b981,#059669);color:#fff" onclick="saveWebinarsCurrentState(true)">
+                  <i class="fa-solid fa-cloud-arrow-up"></i> Save & Publish Live
+                </button>
+              </div>
+              <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px">
+                <button type="button" class="btn btn-secondary" style="justify-content:center;font-size:11px" onclick="closeEditorDrawer()">
+                  <i class="fa-solid fa-expand"></i> Fullscreen Live Canvas
+                </button>
+                <button type="button" class="btn btn-secondary" style="justify-content:center;font-size:11px" onclick="window.open('../webinars/','_blank')">
+                  <i class="fa-solid fa-arrow-up-right-from-square"></i> Open Live /webinars/
+                </button>
+              </div>
+            </div>
+
+          </div>
+        `;
+
+        // Initialize active live countdown tick in the editor preview box
+        initWebinarEditorCountdown(startUtc);
+      }
+
+      function switchWebinarLang(newLang) {
+        if (!window.CMS.Webinars.LANGS.includes(newLang)) return;
+        // Save current form inputs into memory before switching
+        captureWebinarFormToMemory();
+        webinarState.lang = newLang;
+        setLang(newLang);
+        renderWebinarsEditor(newLang, isRtl(newLang));
+        showToast('Switched editor to ' + (window.CMS.Webinars.LANG_META[newLang]?.label || newLang.toUpperCase()), 'info');
+      }
+
+      function selectWebinarSessionForEdit(sessionNo) {
+        captureWebinarFormToMemory();
+        webinarState.selectedSessionNo = sessionNo;
+        renderWebinarsEditor(webinarState.lang, isRtl(webinarState.lang));
+      }
+
+      function onWebinarDateChange(val) {
+        markUnsaved();
+        if (!val) return;
+        try {
+          const d = new Date(val);
+          if (!isNaN(d.getTime())) {
+            const utcIso = d.toISOString();
+            const times = window.CMS.Webinars.formatScheduleTimes(utcIso);
+            if (times) {
+              const elKabul = document.getElementById('wtz-kabul');
+              const elDubai = document.getElementById('wtz-dubai');
+              const elIstanbul = document.getElementById('wtz-istanbul');
+              const elLondon = document.getElementById('wtz-london');
+              if (elKabul) elKabul.textContent = times.kabul;
+              if (elDubai) elDubai.textContent = times.dubai;
+              if (elIstanbul) elIstanbul.textContent = times.istanbul;
+              if (elLondon) elLondon.textContent = times.london;
+            }
+            const cdSt = document.getElementById('whero-cd-status');
+            if (cdSt) cdSt.textContent = 'Target: ' + utcIso;
+            initWebinarEditorCountdown(utcIso);
+          }
+        } catch(e) {}
+      }
+
+      function initWebinarEditorCountdown(utcTarget) {
+        if (webinarState.countdownTimer) clearInterval(webinarState.countdownTimer);
+        const updateTick = () => {
+          try {
+            const targetMs = new Date(utcTarget).getTime();
+            const nowMs = Date.now();
+            let diff = targetMs - nowMs;
+            if (isNaN(diff) || diff < 0) diff = 0;
+
+            const days = Math.floor(diff / 86400000);
+            const hours = Math.floor((diff % 86400000) / 3600000);
+            const mins = Math.floor((diff % 3600000) / 60000);
+            const secs = Math.floor((diff % 60000) / 1000);
+
+            const elD = document.getElementById('wcd-days');
+            const elH = document.getElementById('wcd-hours');
+            const elM = document.getElementById('wcd-mins');
+            const elS = document.getElementById('wcd-secs');
+
+            if (elD) elD.textContent = String(days).padStart(2, '0');
+            if (elH) elH.textContent = String(hours).padStart(2, '0');
+            if (elM) elM.textContent = String(mins).padStart(2, '0');
+            if (elS) elS.textContent = String(secs).padStart(2, '0');
+          } catch(e) {}
+        };
+        updateTick();
+        webinarState.countdownTimer = setInterval(updateTick, 1000);
+      }
+
+      function updateSeriesSessionCount() {
+        captureWebinarFormToMemory();
+        const input = document.getElementById('wseries-count');
+        if (!input) return;
+        const targetCount = Math.max(1, Math.min(12, parseInt(input.value, 10) || 1));
+        const list = window.CMS.Webinars.get();
+
+        if (targetCount > list.length) {
+          for (let i = list.length + 1; i <= targetCount; i++) {
+            list.push(window.CMS.Webinars.createEmptySession('dominica-pilot', i));
+          }
+        } else if (targetCount < list.length) {
+          if (!confirm(`Are you sure you want to reduce from ${list.length} sessions to ${targetCount} sessions? Higher-numbered sessions will be removed.`)) {
+            input.value = list.length;
+            return;
+          }
+          list.splice(targetCount);
+          if (webinarState.selectedSessionNo > targetCount) {
+            webinarState.selectedSessionNo = 1;
+          }
+        }
+        window.CMS.Webinars.save(list);
+        markUnsaved();
+        renderWebinarsEditor(webinarState.lang, isRtl(webinarState.lang));
+        showToast(`Series updated to ${list.length} sessions`, 'success');
+      }
+
+      function addNewWebinarSession() {
+        captureWebinarFormToMemory();
+        const list = window.CMS.Webinars.get();
+        const nextNo = list.length + 1;
+        const newSession = window.CMS.Webinars.createEmptySession('dominica-pilot', nextNo);
+        list.push(newSession);
+        window.CMS.Webinars.save(list);
+        webinarState.selectedSessionNo = nextNo;
+        markUnsaved();
+        renderWebinarsEditor(webinarState.lang, isRtl(webinarState.lang));
+        showToast(`Added Session ${nextNo}`, 'success');
+      }
+
+      function deleteWebinarSession(sessionNo) {
+        if (Number(sessionNo) === 1) {
+          showToast('Cannot delete Session 01 (Primary master session)', 'warning');
+          return;
+        }
+        if (!confirm(`Delete Session ${sessionNo}?`)) return;
+        captureWebinarFormToMemory();
+        let list = window.CMS.Webinars.get();
+        list = list.filter(s => Number(s.session_no) !== Number(sessionNo));
+        // Re-index remaining sessions
+        list.forEach((s, idx) => {
+          s.session_no = idx + 1;
+        });
+        window.CMS.Webinars.save(list);
+        webinarState.selectedSessionNo = 1;
+        markUnsaved();
+        renderWebinarsEditor(webinarState.lang, isRtl(webinarState.lang));
+        showToast('Session deleted', 'info');
+      }
+
+      function addWebinarAboutParagraph() {
+        const c = document.getElementById('wsess-body-list');
+        if (!c) return;
+        const div = document.createElement('div');
+        div.className = 'wsess-body-item';
+        div.style.cssText = 'display:flex;gap:6px;align-items:flex-start';
+        div.innerHTML = `
+          <textarea class="form-textarea" style="min-height:65px;flex:1" placeholder="New paragraph..." oninput="markUnsaved()"></textarea>
+          <button type="button" class="btn btn-ghost" style="color:#f87171;padding:6px 8px" onclick="removeWebinarBodyItem(this)">
+            <i class="fa-solid fa-trash-can"></i>
+          </button>
+        `;
+        c.appendChild(div);
+        markUnsaved();
+      }
+
+      function removeWebinarBodyItem(btn) {
+        const item = btn.closest('.wsess-body-item');
+        if (item) { item.remove(); markUnsaved(); }
+      }
+
+      function addWebinarOutcomeItem() {
+        const c = document.getElementById('wsess-outcomes-list');
+        if (!c) return;
+        const div = document.createElement('div');
+        div.className = 'wsess-outcome-item';
+        div.style.cssText = 'display:flex;gap:6px;align-items:center';
+        div.innerHTML = `
+          <span style="font-size:10px;color:var(--gold);font-weight:700;width:18px">✓</span>
+          <input class="form-input" style="flex:1" placeholder="New learning takeaway..." oninput="markUnsaved()">
+          <button type="button" class="btn btn-ghost" style="color:#f87171;padding:6px 8px" onclick="removeWebinarOutcomeItem(this)">
+            <i class="fa-solid fa-trash-can"></i>
+          </button>
+        `;
+        c.appendChild(div);
+        markUnsaved();
+      }
+
+      function removeWebinarOutcomeItem(btn) {
+        const item = btn.closest('.wsess-outcome-item');
+        if (item) { item.remove(); markUnsaved(); }
+      }
+
+      function addWebinarAgendaItem() {
+        const c = document.getElementById('wsess-agenda-list');
+        if (!c) return;
+        const div = document.createElement('div');
+        div.className = 'wsess-agenda-item';
+        div.style.cssText = 'display:grid;grid-template-columns:110px 1fr 100px 32px;gap:6px;align-items:center;background:var(--bg2);padding:6px;border-radius:6px;border:1px solid var(--border)';
+        div.innerHTML = `
+          <input class="form-input" placeholder="e.g. 00:00 - 00:15" style="font-size:11px" oninput="markUnsaved()">
+          <input class="form-input" placeholder="Topic headline..." style="font-size:11px" oninput="markUnsaved()">
+          <input class="form-input" placeholder="Speaker" style="font-size:11px" oninput="markUnsaved()">
+          <button type="button" class="btn btn-ghost" style="color:#f87171;padding:4px" onclick="removeWebinarAgendaItem(this)">
+            <i class="fa-solid fa-trash-can"></i>
+          </button>
+        `;
+        c.appendChild(div);
+        markUnsaved();
+      }
+
+      function removeWebinarAgendaItem(btn) {
+        const item = btn.closest('.wsess-agenda-item');
+        if (item) { item.remove(); markUnsaved(); }
+      }
+
+      function addWebinarSpeakerItem() {
+        const c = document.getElementById('wsess-speakers-list');
+        if (!c) return;
+        const currentLang = webinarState.lang || 'en';
+        const dir = (currentLang === 'fa' || currentLang === 'ar') ? 'dir="rtl"' : 'dir="ltr"';
+        const div = document.createElement('div');
+        div.className = 'wsess-speaker-item';
+        div.style.cssText = 'display:grid;grid-template-columns:1fr 1fr 130px 32px;gap:6px;align-items:center;background:var(--bg2);padding:8px;border-radius:8px;border:1px solid var(--border)';
+        div.innerHTML = `
+          <div>
+            <div style="font-size:9px;color:var(--muted);margin-bottom:2px">Role / Title</div>
+            <input class="form-input" ${dir} placeholder="e.g. Senior Specialist" style="font-size:11px" oninput="markUnsaved()">
+          </div>
+          <div>
+            <div style="font-size:9px;color:var(--muted);margin-bottom:2px">Affiliation / Description</div>
+            <input class="form-input" ${dir} placeholder="e.g. Sharif Group, Dubai" style="font-size:11px" oninput="markUnsaved()">
+          </div>
+          <div>
+            <div style="font-size:9px;color:var(--muted);margin-bottom:2px">Status / Note</div>
+            <input class="form-input" ${dir} placeholder="e.g. Name to be announced" style="font-size:11px" oninput="markUnsaved()">
+          </div>
+          <div style="align-self:end">
+            <button type="button" class="btn btn-ghost" style="color:#f87171;padding:6px;margin-bottom:2px" onclick="removeWebinarSpeakerItem(this)">
+              <i class="fa-solid fa-trash-can"></i>
+            </button>
+          </div>
+        `;
+        c.appendChild(div);
+        markUnsaved();
+      }
+
+      function removeWebinarSpeakerItem(btn) {
+        const item = btn.closest('.wsess-speaker-item');
+        if (item) { item.remove(); markUnsaved(); }
+      }
+
+      function captureWebinarFormToMemory() {
+        const currentLang = webinarState.lang || 'en';
+        const allSessions = window.CMS.Webinars.get();
+        if (!allSessions.length) return;
+
+        // 1. Featured Session (Session 1 or active)
+        const featured = window.CMS.Webinars.getFeatured() || allSessions[0];
+        const elHeroTitle = document.getElementById('whero-title');
+        const elHeroExcerpt = document.getElementById('whero-excerpt');
+        const elHeroDt = document.getElementById('whero-datetime');
+        const elHeroDur = document.getElementById('whero-duration');
+        const elHeroReg = document.getElementById('whero-reg-open');
+        const elSeriesTag = document.getElementById('wseries-tag');
+
+        if (featured) {
+          if (!featured[currentLang]) featured[currentLang] = {};
+          if (elHeroTitle) featured[currentLang].title = elHeroTitle.value.trim();
+          if (elHeroExcerpt) featured[currentLang].excerpt = elHeroExcerpt.value.trim();
+          if (elSeriesTag) featured[currentLang].series_tag = elSeriesTag.value.trim();
+
+          if (elHeroDt && elHeroDt.value) {
+            try {
+              const d = new Date(elHeroDt.value);
+              if (!isNaN(d.getTime())) {
+                featured.start_utc = d.toISOString();
+              }
+            } catch(e) {}
+          }
+          if (elHeroDur) featured.duration_min = Number(elHeroDur.value) || 65;
+          if (elHeroReg) featured.registration_open = !!elHeroReg.checked;
+        }
+
+        // 2. Selected Detail Session
+        const selSession = allSessions.find(s => Number(s.session_no) === Number(webinarState.selectedSessionNo));
+        if (selSession) {
+          if (!selSession[currentLang]) selSession[currentLang] = {};
+          const elSessTitle = document.getElementById('wsess-title');
+          const elSessExcerpt = document.getElementById('wsess-excerpt');
+          const elSessDt = document.getElementById('wsess-datetime');
+          const elSessDur = document.getElementById('wsess-duration');
+          const elSessSlug = document.getElementById('wsess-slug');
+          const elSessReg = document.getElementById('wsess-reg-open');
+          const elJoinUrl = document.getElementById('wsess-join-url');
+
+          if (elSessTitle) selSession[currentLang].title = elSessTitle.value.trim();
+          if (elSessExcerpt) selSession[currentLang].excerpt = elSessExcerpt.value.trim();
+          if (elJoinUrl) selSession.join_url = elJoinUrl.value.trim();
+
+          if (elSessDt && elSessDt.value) {
+            try {
+              const d = new Date(elSessDt.value);
+              if (!isNaN(d.getTime())) {
+                selSession.start_utc = d.toISOString();
+              }
+            } catch(e) {}
+          }
+          if (elSessDur) selSession.duration_min = Number(elSessDur.value) || 65;
+          if (elSessSlug && elSessSlug.value.trim()) selSession.slug = elSessSlug.value.trim();
+          if (elSessReg) selSession.registration_open = !!elSessReg.checked;
+
+          // Body paragraphs (Image 3)
+          const pList = [...document.querySelectorAll('#wsess-body-list textarea')].map(t => t.value.trim()).filter(Boolean);
+          if (pList.length) selSession[currentLang].body = pList;
+
+          // Outcomes / Key takeaways (Image 4)
+          const oList = [...document.querySelectorAll('#wsess-outcomes-list input')].map(i => i.value.trim()).filter(Boolean);
+          if (oList.length) selSession[currentLang].outcomes = oList;
+
+          // Agenda (Image 4)
+          const agRows = [...document.querySelectorAll('#wsess-agenda-list .wsess-agenda-item')];
+          if (agRows.length) {
+            selSession[currentLang].agenda = agRows.map(row => {
+              const inputs = row.querySelectorAll('input');
+              return {
+                time: inputs[0]?.value.trim() || '',
+                topic: inputs[1]?.value.trim() || '',
+                speaker: inputs[2]?.value.trim() || ''
+              };
+            }).filter(ag => ag.topic || ag.time);
+          }
+
+          // Speakers (Image 4)
+          const spRows = [...document.querySelectorAll('#wsess-speakers-list .wsess-speaker-item')];
+          if (spRows.length) {
+            selSession[currentLang].speakers = spRows.map(row => {
+              const inputs = row.querySelectorAll('input');
+              return {
+                title: inputs[0]?.value.trim() || '',
+                affiliation: inputs[1]?.value.trim() || '',
+                note: inputs[2]?.value.trim() || ''
+              };
+            }).filter(sp => sp.title || sp.affiliation);
+          }
+
+          // If selSession is also featured/Session 1, keep featured synced
+          if (Number(selSession.session_no) === Number(featured?.session_no)) {
+            featured.start_utc = selSession.start_utc;
+            featured.duration_min = selSession.duration_min;
+            featured.registration_open = selSession.registration_open;
+            if (selSession[currentLang].title) featured[currentLang].title = selSession[currentLang].title;
+            if (selSession[currentLang].excerpt) featured[currentLang].excerpt = selSession[currentLang].excerpt;
+          }
+        }
+
+        window.CMS.Webinars.save(allSessions);
+        try {
+          window.postMessage({ type: 'CMS_WEBINARS_UPDATED', webinars: allSessions }, '*');
+        } catch(e) {}
+      }
+
+      async function saveWebinarsCurrentState(andPublish) {
+        captureWebinarFormToMemory();
+        const allSessions = window.CMS.Webinars.get();
+        window.CMS.Webinars.save(allSessions);
+
+        markDraft();
+        markSaved();
+
+        if (window.CMS && window.CMS.Backend) {
+          await window.CMS.Backend.syncToDb(andPublish ? 'live' : 'draft');
+        }
+
+        if (andPublish) {
+          showToast('Publishing webinars live across all 4 languages...', 'info');
+          try {
+            const token = sessionStorage.getItem('sgcms_token') || localStorage.getItem('sgcms_token') || '';
+            const headers = { 'Content-Type': 'application/json' };
+            if (token) {
+              headers['Authorization'] = 'Bearer ' + token;
+              headers['X-CMS-Token'] = token;
+            }
+
+            const pubData = {
+              sgcms_webinars: allSessions
+            };
+            const res = await fetch('api/publish.php', {
+              method: 'POST',
+              credentials: 'include',
+              headers,
+              body: JSON.stringify({
+                data: pubData,
+                publisher: 'Sharif Group Administrator',
+                version: '3.1.0'
+              })
+            });
+            const d = await res.json();
+            if (d && d.success) {
+              markLive();
+              showToast('Webinars published live successfully! All 4 languages & countdown updated.', 'success');
+              refreshPreview();
+            } else {
+              showToast('Saved to database, but publish returned: ' + (d.error || 'Check server logs'), 'warning');
+            }
+          } catch(e) {
+            showToast('Saved locally. Server offline or publishing in background.', 'info');
+          }
+        } else {
+          showToast('Webinars draft saved successfully', 'success');
+        }
+      }
+
+      // ──────────────────────────────────────────────────────────
       // TEAM EDITOR
       // ──────────────────────────────────────────────────────────
       function renderTeamEditor(l, rtl) {
@@ -8850,6 +9878,15 @@
             if (window.CMS && window.CMS.Backend) {
               window.CMS.Backend.syncToDb('draft');
             }
+            return;
+          } else if (section === 'webinars') {
+            saveWebinarsCurrentState(false);
+            markDraft();
+            markSaved();
+            if (window.CMS && window.CMS.Backend) {
+              window.CMS.Backend.syncToDb('draft');
+            }
+            showToast('Webinars saved as draft successfully', 'success');
             return;
           } else if (section === 'aboutus') {
             saveAboutUs();

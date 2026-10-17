@@ -85,7 +85,7 @@ try {
     if (function_exists('autoTranslateChangedData')) {
         $currentDraftBefore = readDraftSnapshot();
         foreach ($incomingData as $k => &$sectionData) {
-            if ($k === 'sgcms_blog' || $k === 'sgcms_deleted_slugs' || $k === 'sgcms_settings') continue;
+            if ($k === 'sgcms_blog' || $k === 'sgcms_deleted_slugs' || $k === 'sgcms_settings' || $k === 'sgcms_webinars') continue;
             autoTranslateChangedData($k, $sectionData, $currentDraftBefore[$k] ?? null);
         }
         unset($sectionData);

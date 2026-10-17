@@ -111,25 +111,43 @@
   const SAMPLE_URL = 'https://meet.example/sharif-WEB01';
   let demo = Object.assign({}, demoDefaults, store.get(K.demo, {}));
   function webinars() {
+    let sourceList = null;
+    try {
+      const liveStr = localStorage.getItem('sgcms_webinars_live') || localStorage.getItem('sgcms_webinars');
+      if (liveStr) {
+        const parsed = JSON.parse(liveStr);
+        if (Array.isArray(parsed) && parsed.length) sourceList = parsed;
+      }
+    } catch (e) {}
+    if (!sourceList && typeof window.SGCMS_WEBINARS !== 'undefined' && Array.isArray(window.SGCMS_WEBINARS) && window.SGCMS_WEBINARS.length) {
+      sourceList = window.SGCMS_WEBINARS;
+    }
+    if (!sourceList && Array.isArray(BASE) && BASE.length) {
+      sourceList = BASE;
+    }
+    sourceList = sourceList || [];
+
     const edits = store.get(K.edits, {});
-    const list = JSON.parse(JSON.stringify(BASE)).map(w => {
+    const list = JSON.parse(JSON.stringify(sourceList)).map(w => {
       const e = edits[w.id];
       if (e) {
         ['event_status', 'registration_open', 'start_utc', 'date_confirmed', 'join_visibility', 'join_url', 'capacity'].forEach(k => { if (k in e) w[k] = e[k]; });
-        if (e.title_fa) w.fa.title = e.title_fa;
-        if (e.title_en) w.en.title = e.title_en;
+        if (e.title_fa && w.fa) w.fa.title = e.title_fa;
+        if (e.title_en && w.en) w.en.title = e.title_en;
       }
       return w;
     });
-    const w1 = list[0];
-    w1.event_status = demo.status;
-    w1.join_visibility = demo.visibility;
-    if (!(edits.WEB01 && 'join_url' in edits.WEB01)) w1.join_url = demo.link === 'set' ? SAMPLE_URL : '';
-    if (demo.status === 'ended') { list[1].registration_open = true; w1.registration_open = false; }
-    if (demo.status === 'live') w1.registration_open = false;
+    if (DEMO && list.length) {
+      const w1 = list[0];
+      w1.event_status = demo.status;
+      w1.join_visibility = demo.visibility;
+      if (!(edits.WEB01 && 'join_url' in edits.WEB01)) w1.join_url = demo.link === 'set' ? SAMPLE_URL : '';
+      if (demo.status === 'ended' && list[1]) { list[1].registration_open = true; w1.registration_open = false; }
+      if (demo.status === 'live') w1.registration_open = false;
+    }
     return list;
   }
-  const byslug = s => webinars().find(w => w.slug === s);
+  const byslug = s => webinars().find(w => w.slug === s || (w.id && w.id.toLowerCase() === String(s).toLowerCase()) || ('session-' + w.session_no) === s);
   /* held | locked | soon | ready */
   const linkState = w => w.event_status === 'ended' ? 'held' : (w.join_visibility !== 'public' ? 'locked' : (w.join_url ? 'ready' : 'soon'));
   const C = w => w[lang] || w.en;
@@ -730,7 +748,8 @@
     const all = webinars(), f = featured(), fc = C(f), d = startOf(f);
     const st = linkState(f);
     const live = f.event_status === 'live';
-    const series = all.filter(w => w.series === 'dominica-pilot');
+    let series = all.filter(w => !w.series || w.series === f.series || w.series === 'dominica-pilot');
+    if (!series.length) series = all;
     document.title = L().meta.title;
     return `
     <section class="hero">
@@ -776,13 +795,13 @@
     <section class="section section--navy" style="margin-top:96px">
       <div class="container">
         <div class="section-head center">
-          <span class="eyebrow caps">${I.spark}${esc(t('list.seriesTag'))}</span>
+          <span class="eyebrow caps">${I.spark}${esc(fc.series_tag || t('list.seriesTag'))}</span>
           <h2 class="display h-lg">${t('list.upTitle')}</h2>
         </div>
         <div class="series-card">
           <div class="series-top">
             <div class="series-id"><div class="series-icon">${I.passport}</div>
-              <div><span class="series-tag caps">${esc(t('list.seriesTag'))}</span><h3 class="display h-sm">${esc(t('list.seriesTitle'))}</h3></div></div>
+              <div><span class="series-tag caps">${esc(fc.series_tag || t('list.seriesTag'))}</span><h3 class="display h-sm">${esc(t('list.seriesTitle'))}</h3></div></div>
             <span class="badge badge--gold caps">${esc(t('common.free'))} · ${esc(t('common.online'))}</span>
           </div>
           <p>${esc(t('list.seriesText'))}</p>
@@ -805,7 +824,7 @@
     const c = C(w), d = startOf(w);
     return `<div class="session-row">
       <span class="session-no">${pad2(w.session_no)}</span>
-      <div class="session-body"><h3>${esc(c.title)}</h3><p>${esc(c.excerpt)}</p>
+      <div class="session-body"><h3>${esc(c.title || ('Session ' + w.session_no))}</h3><p>${esc(c.excerpt || '')}</p>
         <div class="session-meta"><span>${esc(dShort(d, TZ.kabul))} · ${tm(d, TZ.kabul)} ${esc(t('tz.kabul'))}</span><span>${esc(t('common.min', { n: n(w.duration_min) }))}</span></div></div>
       <div class="session-actions">${statusBadge(w)}<a class="btn btn--bronze btn--sm caps" href="#/webinars/${w.slug}">${esc(t('list.sessionCta'))}${I.arrow}</a></div>
     </div>`;
@@ -820,17 +839,22 @@
     const w = byslug(slug);
     if (!w) return viewNotFound();
     const c = C(w), d = startOf(w);
-    const isFirst = w.session_no === 1;
-    document.title = `${c.title} | ${L().nav.webinars} | Sharif Group`;
-    const others = webinars().filter(x => x.series === w.series && x.id !== w.id);
+    const isFirst = Number(w.session_no) === 1;
+    document.title = `${c.title || ('Session ' + w.session_no)} | ${L().nav.webinars} | Sharif Group`;
+    const others = webinars().filter(x => (x.series === w.series || !x.series) && x.id !== w.id);
+    const bodyParas = (Array.isArray(c.body) ? c.body : (typeof c.body === 'string' ? [c.body] : [])).filter(Boolean);
+    const outcomeItems = (Array.isArray(c.outcomes) ? c.outcomes : (typeof c.outcomes === 'string' ? [c.outcomes] : [])).filter(Boolean);
+    const agendaList = (Array.isArray(c.agenda) && c.agenda.length) ? c.agenda : (t('detail.agendaItems') || []);
+    const speakersList = (Array.isArray(c.speakers) && c.speakers.length) ? c.speakers : [['expert', I.user], ['host', I.mic]];
+
     return `
     <section class="hero hero--detail">
       <img class="hero-mark mark-white" src="${LOGO}" alt="" aria-hidden="true">
       <div class="container hero-inner">
         <nav class="crumbs" aria-label="Breadcrumb"><a href="${SITE + prefix()}">${esc(t('detail.home'))}</a>${I.crumb}<a href="#/webinars">${esc(L().nav.webinars)}</a>${I.crumb}<span aria-current="page">${esc(t('common.sessionN', { n: pad2(w.session_no) }))}</span></nav>
-        <div class="btn-row" style="gap:8px;align-items:center"><span class="eyebrow caps">${esc(t('list.seriesTag'))} · ${esc(t('common.sessionN', { n: pad2(w.session_no) }))}</span>${statusBadge(w)}</div>
-        <h1 class="display h-lg">${esc(c.title)}</h1>
-        <p class="lede">${esc(c.excerpt)}</p>
+        <div class="btn-row" style="gap:8px;align-items:center"><span class="eyebrow caps">${esc(c.series_tag || t('list.seriesTag'))} · ${esc(t('common.sessionN', { n: pad2(w.session_no) }))}</span>${statusBadge(w)}</div>
+        <h1 class="display h-lg">${esc(c.title || ('Session ' + w.session_no))}</h1>
+        <p class="lede">${esc(c.excerpt || '')}</p>
         <div class="hero-meta">
           <span>${I.cal}${esc(dLong(d, TZ.kabul))}</span>
           <span>${I.clock}${tm(d, TZ.kabul)} ${esc(t('tz.kabul'))} · ${tm(d, TZ.dubai)} ${esc(t('tz.dubai'))}</span>
@@ -842,11 +866,17 @@
     <div class="container"><div class="detail">
       <div class="d-join">${joinCard(w)}</div>
       <div class="d-main">
-        <section class="block"><h2 class="block-title">${esc(t('detail.about'))}</h2><div class="prose">${c.body.map(p => `<p>${esc(p)}</p>`).join('')}</div></section>
-        <section class="block"><h2 class="block-title">${esc(t('detail.learn'))}</h2><ul class="learn">${c.outcomes.map(o => `<li>${I.check}<span>${esc(o)}</span></li>`).join('')}</ul></section>
-        <section class="block"><h2 class="block-title">${esc(t('detail.agenda'))}</h2><ol class="agenda">${t('detail.agendaItems').map(a => `<li><span class="ag-time">${esc(a.t)} ${esc(t('detail.minutes'))}</span><span class="ag-label">${esc(a.l)}<span class="ag-who">${esc(a.w)}</span></span></li>`).join('')}</ol></section>
+        <section class="block"><h2 class="block-title">${esc(t('detail.about'))}</h2><div class="prose">${bodyParas.length ? bodyParas.map(p => `<p>${esc(p)}</p>`).join('') : `<p>${esc(c.excerpt || '')}</p>`}</div></section>
+        <section class="block"><h2 class="block-title">${esc(t('detail.learn'))}</h2><ul class="learn">${outcomeItems.length ? outcomeItems.map(o => `<li>${I.check}<span>${esc(o)}</span></li>`).join('') : `<li>${I.check}<span>${esc(t('common.free'))}</span></li>`}</ul></section>
+        <section class="block"><h2 class="block-title">${esc(t('detail.agenda'))}</h2><ol class="agenda">${agendaList.map(a => `<li><span class="ag-time">${esc(a.time || a.t || '')}</span><span class="ag-label">${esc(a.topic || a.l || '')}<span class="ag-who">${esc(a.speaker || a.w || '')}</span></span></li>`).join('')}</ol></section>
         <section class="block"><h2 class="block-title">${esc(t('detail.speakers'))}</h2><div class="speakers">
-          ${[['expert', I.user], ['host', I.mic]].map(([k, ic]) => `<div class="speaker"><div class="avatar">${ic}</div><div><h4>${esc(t('detail.' + k + 'Name'))}</h4><p>${esc(t('detail.' + k + 'Role'))}</p><span class="tbd">${esc(t('detail.tbd'))}</span></div></div>`).join('')}
+          ${speakersList.map(sp => {
+            if (Array.isArray(sp)) {
+              const [k, ic] = sp;
+              return `<div class="speaker"><div class="avatar">${ic}</div><div><h4>${esc(t('detail.' + k + 'Name'))}</h4><p>${esc(t('detail.' + k + 'Role'))}</p><span class="tbd">${esc(t('detail.tbd'))}</span></div></div>`;
+            }
+            return `<div class="speaker"><div class="avatar">${I.user}</div><div><h4>${esc(sp.title || sp.name || t('detail.expertName'))}</h4><p>${esc(sp.affiliation || sp.role || t('detail.expertRole'))}</p><span class="tbd">${esc(sp.note || t('detail.tbd'))}</span></div></div>`;
+          }).join('')}
         </div></section>
         <section class="block"><h2 class="block-title">${esc(t('detail.privacy'))}</h2><ul class="privacy-list">${t('detail.privacyItems').map(p => `<li>${I.shield}<span>${esc(p)}</span></li>`).join('')}</ul></section>
         <section class="block faq"><h2 class="block-title">${esc(t('detail.faq'))}</h2>${t('detail.faqs').map((f, i) => `<details${i === 0 ? ' open' : ''}><summary>${esc(f.q)}${I.plus}</summary><p>${esc(f.a)}</p></details>`).join('')}</section>
@@ -1228,6 +1258,16 @@
   function route() { render(); window.scrollTo({ top: 0, left: 0, behavior: 'instant' }); }
   window.addEventListener('hashchange', () => { $('#drawer').classList.remove('open'); route(); $('#main').focus({ preventScroll: true }); });
   window.addEventListener('popstate', () => { $('#drawer').classList.remove('open'); route(); });
+  window.addEventListener('storage', e => {
+    if (e.key === 'sgcms_webinars' || e.key === 'sgcms_webinars_live' || e.key === 'sgcms_webinars_data') {
+      route();
+    }
+  });
+  window.addEventListener('message', e => {
+    if (e.data && (e.data.type === 'CMS_WEBINARS_UPDATED' || e.data.type === 'CMS_PREVIEW_RELOAD')) {
+      route();
+    }
+  });
 
   renderShell();
   route();

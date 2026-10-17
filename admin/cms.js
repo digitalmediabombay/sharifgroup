@@ -21,7 +21,8 @@ const KEYS = {
   NAV: 'sgcms_navigation',
   LEGAL: 'sgcms_legal',
   SETTINGS: 'sgcms_settings',
-  ABOUTUS: 'sgcms_aboutus'
+  ABOUTUS: 'sgcms_aboutus',
+  WEBINARS: 'sgcms_webinars'
 };
 
 // ─── AUTH ─────────────────────────────────────────────────────
@@ -161,6 +162,241 @@ const Settings = {
     if (this.getOpenRouterKey()) return 'openrouter';
     if (this.getGeminiKey()) return 'gemini';
     return this.get().ai_provider || 'openrouter';
+  }
+};
+
+// ─── WEBINARS ─────────────────────────────────────────────────
+const Webinars = {
+  LANGS: ['en', 'ar', 'fa', 'zh'],
+
+  LANG_META: {
+    en: { code: 'en', label: 'English', short: 'EN', dir: 'ltr', flag: '🇬🇧' },
+    ar: { code: 'ar', label: 'العربية', short: 'AR', dir: 'rtl', flag: '🇦🇪' },
+    fa: { code: 'fa', label: 'فارسی', short: 'FA', dir: 'rtl', flag: '🇮🇷' },
+    zh: { code: 'zh', label: '中文', short: 'ZH', dir: 'ltr', flag: '🇨🇳' }
+  },
+
+  _activeLang: 'en',
+
+  getActiveLang() {
+    return this._activeLang || 'en';
+  },
+
+  setActiveLang(lang) {
+    if (this.LANGS.includes(lang)) {
+      this._activeLang = lang;
+      return true;
+    }
+    return false;
+  },
+
+  /**
+   * Normalizes a webinar session object, ensuring root settings and all 4 language dictionaries exist.
+   */
+  normalizeSession(s, idx) {
+    if (!s || typeof s !== 'object') s = {};
+    const session_no = Number(s.session_no) || ((idx !== undefined ? idx : 0) + 1);
+    const out = {
+      id: s.id || ('WEB' + String(session_no).padStart(2, '0')),
+      slug: s.slug || (session_no === 1 ? 'dominica-second-passport-for-afghans' : (session_no === 2 ? 'dominica-from-decision-to-passport' : (session_no === 3 ? 'dominica-your-questions-answered' : ('session-' + session_no)))),
+      series: s.series || 'dominica-pilot',
+      session_no: session_no,
+      category: s.category || 'Citizenship',
+      subcategory: s.subcategory || 'dominica',
+      start_utc: s.start_utc || '2026-10-29T15:30:00Z',
+      date_confirmed: s.date_confirmed !== undefined ? !!s.date_confirmed : false,
+      duration_min: Number(s.duration_min) || 65,
+      room_opens_min_before: Number(s.room_opens_min_before) || 10,
+      event_status: s.event_status || 'upcoming',
+      registration_open: s.registration_open !== undefined ? !!s.registration_open : true,
+      capacity: Number(s.capacity) || 100,
+      // RULE: Session 01 is public, Session 02+ is registrants only
+      join_visibility: session_no === 1 ? 'public' : 'registrants',
+      join_url: s.join_url || '',
+      speakers: Array.isArray(s.speakers) && s.speakers.length ? s.speakers : [
+        { key: 'expert', photo: '' },
+        { key: 'host', photo: '' }
+      ]
+    };
+
+    const defaultSeriesTags = {
+      en: 'Series 01 · Dominica',
+      ar: 'السلسلة 01 · دومينيكا',
+      fa: 'سری ۰۱ · دومینیکا',
+      zh: '第01系列 · 多米尼克'
+    };
+
+    this.LANGS.forEach(lang => {
+      const cur = s[lang] && typeof s[lang] === 'object' ? s[lang] : {};
+      out[lang] = {
+        title: cur.title || (lang === 'en' ? (s.title || '') : ''),
+        excerpt: cur.excerpt || (lang === 'en' ? (s.excerpt || '') : ''),
+        series_tag: cur.series_tag || s.series_tag || defaultSeriesTags[lang],
+        body: Array.isArray(cur.body) ? cur.body : (typeof cur.body === 'string' && cur.body ? [cur.body] : []),
+        outcomes: Array.isArray(cur.outcomes) ? cur.outcomes : (typeof cur.outcomes === 'string' && cur.outcomes ? [cur.outcomes] : []),
+        agenda: Array.isArray(cur.agenda) ? cur.agenda : [],
+        speakers: Array.isArray(cur.speakers) ? cur.speakers : []
+      };
+    });
+
+    return out;
+  },
+
+  get() {
+    let webinars = Store.get(KEYS.WEBINARS);
+    if (!webinars || !Array.isArray(webinars) || webinars.length === 0) {
+      if (typeof window.SGCMS_WEBINARS !== 'undefined' && Array.isArray(window.SGCMS_WEBINARS) && window.SGCMS_WEBINARS.length) {
+        webinars = window.SGCMS_WEBINARS;
+      }
+    }
+    if (!Array.isArray(webinars)) webinars = [];
+    return webinars.map((w, idx) => this.normalizeSession(w, idx));
+  },
+
+  save(data) {
+    if (!Array.isArray(data)) data = [];
+    const normalized = data.map((w, idx) => this.normalizeSession(w, idx));
+    Store.set(KEYS.WEBINARS, normalized);
+    try { saveData(KEYS.WEBINARS, normalized); } catch (e) {}
+    return true;
+  },
+
+  getFeatured() {
+    const list = this.get();
+    if (!list.length) return null;
+    const upcoming = list.find(w => w && (w.event_status === 'upcoming' || w.event_status === 'live'));
+    return upcoming || list[0];
+  },
+
+  getSession(idOrNo) {
+    const list = this.get();
+    if (!list.length) return null;
+    return list.find(w => String(w.id).toLowerCase() === String(idOrNo).toLowerCase() || Number(w.session_no) === Number(idOrNo)) || null;
+  },
+
+  getSessionLang(session, lang) {
+    lang = lang || this.getActiveLang();
+    if (!session || typeof session !== 'object') return null;
+    const norm = this.normalizeSession(session);
+    return norm[lang] || norm.en || {};
+  },
+
+  updateSessionLang(idOrNo, lang, patch) {
+    lang = lang || this.getActiveLang();
+    const list = this.get();
+    const idx = list.findIndex(w => String(w.id).toLowerCase() === String(idOrNo).toLowerCase() || Number(w.session_no) === Number(idOrNo));
+    if (idx === -1) return false;
+    const session = list[idx];
+    if (!session[lang]) session[lang] = {};
+    Object.assign(session[lang], patch);
+    list[idx] = this.normalizeSession(session, idx);
+    return this.save(list);
+  },
+
+  updateSessionCommon(idOrNo, patch) {
+    const list = this.get();
+    const idx = list.findIndex(w => String(w.id).toLowerCase() === String(idOrNo).toLowerCase() || Number(w.session_no) === Number(idOrNo));
+    if (idx === -1) return false;
+    const session = list[idx];
+    Object.assign(session, patch);
+    // Enforce access rule: Session 01 is public; Session 02+ is registrants only
+    if (Number(session.session_no) === 1) {
+      session.join_visibility = 'public';
+    } else {
+      session.join_visibility = 'registrants';
+    }
+    list[idx] = this.normalizeSession(session, idx);
+    return this.save(list);
+  },
+
+  createEmptySession(seriesId, sessionNo) {
+    sessionNo = Number(sessionNo) || 1;
+    const padded = String(sessionNo).padStart(2, '0');
+    return this.normalizeSession({
+      id: 'WEB' + padded,
+      slug: 'session-' + sessionNo,
+      series: seriesId || 'dominica-pilot',
+      session_no: sessionNo,
+      category: 'Citizenship',
+      subcategory: 'dominica',
+      start_utc: new Date(Date.now() + 7 * 86400000 * sessionNo).toISOString().replace(/\.\d{3}Z$/, 'Z'),
+      duration_min: 65,
+      room_opens_min_before: 10,
+      event_status: 'upcoming',
+      registration_open: true,
+      join_visibility: sessionNo === 1 ? 'public' : 'registrants',
+      join_url: '',
+      en: { title: '', excerpt: '', series_tag: `Series 01 · Session ${padded}`, body: [], outcomes: [], agenda: [], speakers: [] },
+      ar: { title: '', excerpt: '', series_tag: `السلسلة 01 · الجلسة ${padded}`, body: [], outcomes: [], agenda: [], speakers: [] },
+      fa: { title: '', excerpt: '', series_tag: `سری ۰۱ · جلسه ${padded}`, body: [], outcomes: [], agenda: [], speakers: [] },
+      zh: { title: '', excerpt: '', series_tag: `第01系列 · 第${padded}场`, body: [], outcomes: [], agenda: [], speakers: [] }
+    });
+  },
+
+  /**
+   * Evaluates completion of a specific language for a session.
+   * Useful for showing badges (e.g. green checkmark vs orange dot) in the top language toggle.
+   */
+  getLanguageCompletion(session, lang) {
+    if (!session) return { lang, isComplete: false, missing: ['session'] };
+    const lData = session[lang] || {};
+    const missing = [];
+    if (!lData.title || !String(lData.title).trim()) missing.push('title');
+    if (!lData.excerpt || !String(lData.excerpt).trim()) missing.push('excerpt');
+    if (!Array.isArray(lData.body) || lData.body.length === 0 || !lData.body[0] || !String(lData.body[0]).trim()) missing.push('body');
+    if (!Array.isArray(lData.outcomes) || lData.outcomes.length === 0 || !lData.outcomes[0] || !String(lData.outcomes[0]).trim()) missing.push('outcomes');
+
+    const totalFields = 4;
+    const completedFields = totalFields - missing.length;
+    return {
+      lang,
+      isComplete: missing.length === 0,
+      missing,
+      hasTitle: !missing.includes('title'),
+      hasExcerpt: !missing.includes('excerpt'),
+      percentage: Math.round((completedFields / totalFields) * 100)
+    };
+  },
+
+  /**
+   * Evaluates all 4 languages completion status for a session.
+   */
+  getAllLanguagesCompletion(session) {
+    const result = { perLang: {}, allComplete: true, completedCount: 0, total: 4 };
+    this.LANGS.forEach(lang => {
+      const c = this.getLanguageCompletion(session, lang);
+      result.perLang[lang] = c;
+      if (c.isComplete) {
+        result.completedCount++;
+      } else {
+        result.allComplete = false;
+      }
+    });
+    result.percentage = Math.round((result.completedCount / 4) * 100);
+    return result;
+  },
+
+  /**
+   * Computes multi-city schedule times from a start_utc ISO string.
+   */
+  formatScheduleTimes(startUtcIso) {
+    try {
+      const d = new Date(startUtcIso);
+      if (isNaN(d.getTime())) return null;
+      const getH = (offsetMin) => {
+        const utcMs = d.getTime() + (d.getTimezoneOffset() * 60000);
+        const cityDate = new Date(utcMs + (offsetMin * 60000));
+        return cityDate.getHours().toString().padStart(2, '0') + ':' + cityDate.getMinutes().toString().padStart(2, '0');
+      };
+      return {
+        kabul: getH(270),    // UTC+4:30
+        dubai: getH(240),    // UTC+4:00
+        istanbul: getH(180), // UTC+3:00
+        london: getH(60)     // UTC+1:00 (BST) / UTC+0
+      };
+    } catch (e) {
+      return null;
+    }
   }
 };
 
@@ -1623,6 +1859,28 @@ function getData(key) {
       Store.set(storeKey, stored);
     }
   }
+  if (defKey === 'webinars') {
+    if (!stored || !Array.isArray(stored) || stored.length === 0) {
+      if (typeof window.SGCMS_WEBINARS !== 'undefined' && Array.isArray(window.SGCMS_WEBINARS) && window.SGCMS_WEBINARS.length) {
+        stored = JSON.parse(JSON.stringify(window.SGCMS_WEBINARS));
+      } else if (DEFAULTS.webinars && Array.isArray(DEFAULTS.webinars)) {
+        stored = JSON.parse(JSON.stringify(DEFAULTS.webinars));
+      } else {
+        stored = [];
+      }
+      if (stored.length) Store.set(storeKey, stored);
+    }
+    if (Array.isArray(stored)) {
+      let updated = false;
+      stored = stored.map((item, idx) => {
+        const norm = Webinars.normalizeSession(item, idx);
+        if (JSON.stringify(norm) !== JSON.stringify(item)) updated = true;
+        return norm;
+      });
+      if (updated) Store.set(storeKey, stored);
+    }
+  }
+
   return stored;
 }
 
@@ -1858,4 +2116,4 @@ function formatProgramPageTitle(pageName, type, sectionTabName, fallbackCountry)
 
 window.isMojibakeString = isMojibakeString;
 window.isEnglishFallback = isEnglishFallback;
-window.CMS = { Auth, Store, KEYS, DEFAULTS, getData, saveData, AI, Settings, Backend, formatProgramPageTitle, isMojibakeString, isEnglishFallback };
+window.CMS = { Auth, Store, KEYS, DEFAULTS, getData, saveData, AI, Settings, Webinars, Backend, formatProgramPageTitle, isMojibakeString, isEnglishFallback };
