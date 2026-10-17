@@ -4,17 +4,6 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <script>
-    (function() {
-      var p = window.location.pathname || '';
-      if (/\/dashboard\/?$/i.test(p)) {
-        var target = p.indexOf('/admin') !== -1 
-          ? p.replace(/\/dashboard\/?$/i, '/dashboard.html') 
-          : '/admin/dashboard.html';
-        window.location.replace(target + window.location.search + window.location.hash);
-      }
-    })();
-  </script>
   <title>Admin Dashboard | Sharif Group CMS</title>
   <link rel="icon" href="/assets/images/shariftrip-logo-1.svg" type="image/svg+xml">
   <link rel="preconnect" href="https://fonts.googleapis.com">
