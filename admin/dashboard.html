@@ -73,7 +73,7 @@
       grid-template-columns: var(--sb-w) var(--drawer-w, 520px) 1fr
     }
 
-    /* ═══ WEBINARS FULL-FORM WORKFLOW (NO WEBSITE PREVIEW) ═══ */
+    /* ═══ WEBINARS FULL-FORM WORKFLOW (COMMENTED OUT) ═══
     #app.webinars-full-mode {
       grid-template-columns: var(--sb-w) 1fr 0px !important;
     }
@@ -103,6 +103,7 @@
       margin: 0 auto;
       padding: 24px 28px 80px;
     }
+    */
 
     /* ═══ HEADER ═════════════════════════════ */
     #hd {
@@ -2094,7 +2095,7 @@
               </button>
             </div>
           </div>
-        <!-- Webinars -->
+        <!-- Webinars (commented out per user request)
         <div class="sb-group">
           <div class="sb-group-header">
             <button class="sb-group-btn" id="sb-webinars" onclick="navigate('webinars')">
@@ -2104,6 +2105,7 @@
             </button>
           </div>
         </div>
+        -->
 
         <!-- About Us -->
         <div class="sb-group">
@@ -2979,7 +2981,6 @@
       }
 
       function closeEditorDrawer() {
-        if (state.section === 'webinars') return; // Webinars is full-form view
         const app = document.getElementById('app');
         if (app) app.classList.remove('drawer-open');
         const ed = document.getElementById('ed');
@@ -3018,9 +3019,6 @@
       }
 
       function loadPreviewPage() {
-        if (state.section === 'webinars') {
-          return; // No website preview needed for webinars - direct full-page form workflow
-        }
         const iframe = document.getElementById('live-iframe');
         let url = PAGE_URLS.homepage;
 
@@ -5048,23 +5046,16 @@
         renderSection();
         setActiveSidebarItem(section === 'program' ? (itemId || '') : (section === 'blog-edit' ? (itemId || 'blog') : (section === 'category-hub' ? itemType : section.replace('-new', '').replace('-edit', ''))));
 
-        // Form-only drawer sections vs. Visual Live Canvas sections vs. Webinars full-form
-        const app = document.getElementById('app');
-        if (section === 'webinars') {
-          if (app) app.classList.add('webinars-full-mode');
+        // Form-only drawer sections vs. Visual Live Canvas sections
+        const formOnlySections = ['settings', 'team-new', 'new-program'];
+        const isVisualPreviewSection = ['aboutus', 'team', 'contact', 'legal', 'cookiepolicy', 'cookies', 'homepage', 'category-hub', 'program', 'blog', 'blog-edit', 'blog-new'].includes(section);
+        if (formOnlySections.includes(section)) {
           openEditorDrawer();
-        } else {
-          if (app) app.classList.remove('webinars-full-mode');
-          const formOnlySections = ['settings', 'team-new', 'new-program'];
-          const isVisualPreviewSection = ['aboutus', 'team', 'contact', 'legal', 'cookiepolicy', 'cookies', 'homepage', 'category-hub', 'program', 'blog', 'blog-edit', 'blog-new'].includes(section);
-          if (formOnlySections.includes(section)) {
-            openEditorDrawer();
-          } else if (isVisualPreviewSection) {
-            closeEditorDrawer();
-          }
+        } else if (isVisualPreviewSection) {
+          closeEditorDrawer();
         }
 
-        if (!deferIframe && section !== 'webinars') {
+        if (!deferIframe) {
           loadPreviewPage();
         }
       }
@@ -5540,7 +5531,7 @@
           case 'blog': renderBlogEditor(l, rtl); break;
           case 'blog-new': renderNewBlogView(); break;
           case 'blog-edit': renderVisualBlogGuide(itemId); break;
-          case 'webinars': renderWebinarsEditor(l, rtl); break;
+          // case 'webinars': renderWebinarsEditor(l, rtl); break;
           case 'team': renderVisualLiveStudioGuide('Team & Leadership', 'Live visual editor for Team & Leadership', PAGE_URLS.aboutus); break;
           case 'team-new': createTeamMember(); break;
           case 'aboutus': renderVisualLiveStudioGuide('About Us Page', 'Live visual editor for About Us page', PAGE_URLS.aboutus); break;
@@ -7862,8 +7853,9 @@
         }
       }
 
+      /*
       // ──────────────────────────────────────────────────────────
-      // WEBINARS MANAGER (4-Language Workflow, Hero Card, Series, Detail Pages, Access Rules)
+      // WEBINARS MANAGER (COMMENTED OUT PER USER REQUEST)
       // ──────────────────────────────────────────────────────────
       window.webinarState = window.webinarState || {
         selectedSessionNo: 1,
@@ -8812,6 +8804,7 @@
           showToast('Webinars draft saved successfully', 'success');
         }
       }
+      */
 
       // ──────────────────────────────────────────────────────────
       // TEAM EDITOR
@@ -10025,6 +10018,7 @@
               window.CMS.Backend.syncToDb('draft');
             }
             return;
+          /*
           } else if (section === 'webinars') {
             saveWebinarsCurrentState(false);
             markDraft();
@@ -10034,6 +10028,7 @@
             }
             showToast('Webinars saved as draft successfully', 'success');
             return;
+          */
           } else if (section === 'aboutus') {
             saveAboutUs();
             markDraft();
