@@ -791,20 +791,58 @@ html[lang="fa"] .block-title, html[lang="ar"] .block-title { font-size: 22px; fo
 .timeline span { font-size: 13px; color: var(--muted); }
 .ref { font-family: ui-monospace, SFMono-Regular, Menlo, monospace; font-size: 12px; background: var(--cream); padding: 2px 8px; border-radius: 6px; direction: ltr; display: inline-block; }
 
-/* ---------- Luxury Dark Footer (Matching Live Site) ---------- */
+/* ---------- Luxury Dark Footer with Seamless Video Canvas (Matching Live Site) ---------- */
 .site-footer {
+  position: relative;
+  overflow: hidden;
   background: #050b14;
-  background: linear-gradient(180deg, #070e1a 0%, #050b14 100%);
-  border-top: 1px solid rgba(255, 255, 255, 0.08);
-  padding: 80px 0 32px;
+  padding: 120px 0 32px;
   font-size: 12.5px;
   color: #d4d4d4;
-  position: relative;
   z-index: 10;
 }
-.site-footer .container {
-  max-width: var(--container);
+
+.footer-top-fade {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 120px;
+  background: linear-gradient(180deg, #FAF6EE 0%, rgba(250, 246, 238, 0.6) 40%, transparent 100%);
+  z-index: 2;
+  pointer-events: none;
 }
+
+.footer-video-layer {
+  position: absolute;
+  inset: 0;
+  z-index: 0;
+  overflow: hidden;
+  pointer-events: none;
+}
+
+#footer-seamless-canvas {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.footer-video-overlay {
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(180deg, rgba(0, 0, 0, 0.3) 0%, rgba(0, 0, 0, 0.45) 50%, rgba(0, 0, 0, 0.78) 100%);
+  z-index: 1;
+}
+
+.site-footer .container {
+  position: relative;
+  z-index: 5;
+  max-width: var(--container);
+  text-shadow: 0 1px 3px rgba(0, 0, 0, 0.85);
+}
+
 .foot-grid {
   display: grid;
   grid-template-columns: 1.35fr 1fr 1fr 1fr 0.9fr;
@@ -852,22 +890,33 @@ html[lang="fa"] .foot-grid h4, html[lang="ar"] .foot-grid h4 {
 .foot-logo-link {
   display: inline-flex;
   align-items: center;
-  gap: 12px;
+  gap: 14px;
   text-decoration: none;
   color: #fff;
   transition: opacity 0.2s;
 }
 .foot-logo-link:hover {
-  opacity: 0.9;
+  opacity: 0.92;
 }
-.foot-logo-link img {
-  height: 52px;
+.foot-logo-img {
+  height: 56px;
   width: auto;
+  object-fit: contain;
+  transition: transform 0.3s ease;
+}
+.foot-logo-link:hover .foot-logo-img {
+  transform: scale(1.05);
+}
+.foot-logo-text-wrap {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  transform: translateY(2px);
 }
 .foot-logo-divider {
   width: 1px;
   height: 40px;
-  background: rgba(255, 255, 255, 0.25);
+  background: rgba(255, 255, 255, 0.35);
 }
 .foot-logo-text {
   display: flex;
@@ -875,7 +924,7 @@ html[lang="fa"] .foot-grid h4, html[lang="ar"] .foot-grid h4 {
   font-family: var(--font-serif);
   font-weight: 700;
   letter-spacing: 0.2em;
-  line-height: 1.1;
+  line-height: 1.15;
   font-size: 15px;
   color: #fff;
 }
@@ -925,8 +974,8 @@ html[lang="fa"] .foot-grid h4, html[lang="ar"] .foot-grid h4 {
   width: 34px;
   height: 34px;
   border-radius: 50%;
-  background: rgba(255, 255, 255, 0.08);
-  border: 1px solid rgba(255, 255, 255, 0.18);
+  background: rgba(255, 255, 255, 0.1);
+  border: 1px solid rgba(255, 255, 255, 0.2);
   color: #fff;
   display: inline-flex;
   align-items: center;
@@ -938,15 +987,15 @@ html[lang="fa"] .foot-grid h4, html[lang="ar"] .foot-grid h4 {
   height: 15px;
 }
 .foot-socials a:hover {
-  background: var(--bronze);
-  border-color: var(--bronze);
+  background: var(--gold);
+  border-color: var(--gold);
   transform: translateY(-2px);
   color: #fff;
 }
 .foot-bottom {
   margin-top: 56px;
   padding-top: 24px;
-  border-top: 1px solid rgba(255, 255, 255, 0.1);
+  border-top: 1px solid rgba(255, 255, 255, 0.15);
   display: flex;
   justify-content: space-between;
   align-items: center;
@@ -974,9 +1023,20 @@ html[lang="fa"] .foot-grid h4, html[lang="ar"] .foot-grid h4 {
 .dmb-gold {
   color: #e4aa25;
 }
-.foot-new {
-  color: var(--gold) !important;
-  font-weight: 600;
+.foot-new-row {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+}
+.foot-new-row:hover .foot-new-text {
+  color: var(--gold);
+}
+[dir="rtl"] .foot-logo-text-wrap {
+  flex-direction: row-reverse;
+}
+[dir="rtl"] .foot-new-row .nav-new-badge {
+  margin-left: 0 !important;
+  margin-right: 5px !important;
 }
 
 @media (max-width: 1100px) {

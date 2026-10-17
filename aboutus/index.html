@@ -161,7 +161,7 @@
     }
     </script>
 <!-- Tailwind CSS -->
-<link rel="stylesheet" href="../assets/css/tailwind.min.css?v=20260920_v1" />
+<link rel="stylesheet" href="../assets/css/tailwind.min.css?v=20261017_v2" />
 <!-- Google Fonts & Icon Libraries -->
 <link href="https://fonts.googleapis.com" rel="preconnect"/>
 <link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect"/>
@@ -340,8 +340,87 @@
             box-shadow: 0 0 20px rgba(197, 168, 128, 0.85);
             transform: scale(1.15) rotate(10deg);
         }
+    
+/* ==========================================================================
+   NAVIGATION ANTI-COLLISION & RESPONSIVE HEADER
+   ========================================================================== */
+.nav-new-badge {
+    display: inline-flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+    font-size: 7.5px !important;
+    line-height: 1 !important;
+    padding: 2px 4.5px !important;
+    border-radius: 9999px !important;
+    background-color: #786142 !important;
+    color: #ffffff !important;
+    font-weight: 700 !important;
+    letter-spacing: 0 !important;
+    margin-left: 4px !important;
+    margin-right: 0 !important;
+    vertical-align: middle !important;
+    flex-shrink: 0 !important;
+    white-space: nowrap !important;
+}
+[dir="rtl"] .nav-new-badge {
+    margin-left: 0 !important;
+    margin-right: 4px !important;
+}
+@media (max-width: 1535px) {
+    #main-header .nav-sep {
+        display: none !important;
+    }
+    #main-header nav {
+        gap: 0.25rem 0.65rem !important;
+    }
+    #main-header nav > * {
+        letter-spacing: 0.05em !important;
+        font-size: 10px !important;
+    }
+    #main-header a[data-i18n="nav.eligibilityChecker"],
+    #main-header a[data-i18n="nav.bookConsultation"] {
+        padding: 0.45rem 0.85rem !important;
+        font-size: 9.5px !important;
+        letter-spacing: 0.06em !important;
+    }
+}
+@media (max-width: 1280px) {
+    #main-header nav {
+        gap: 0.2rem 0.45rem !important;
+    }
+    #main-header nav > * {
+        letter-spacing: 0.03em !important;
+        font-size: 9.5px !important;
+    }
+    #main-header a[data-i18n="nav.eligibilityChecker"],
+    #main-header a[data-i18n="nav.bookConsultation"] {
+        padding: 0.35rem 0.7rem !important;
+        font-size: 9px !important;
+        letter-spacing: 0.04em !important;
+    }
+}
+@media (max-width: 1150px) {
+    #main-header nav,
+    #main-header div.hidden.lg\:flex {
+        display: none !important;
+    }
+    #main-header button[onclick*="toggleMobileMenu"],
+    #main-header button[aria-label="Toggle Menu"],
+    #main-header .lg\:hidden,
+    #main-header .xl\:hidden {
+        display: flex !important;
+    }
+}
+html[lang="ar"] #main-header nav > *,
+html[lang="fa"] #main-header nav > *,
+[dir="rtl"] #main-header nav > *,
+[dir="rtl"] #main-header a[data-i18n="nav.eligibilityChecker"],
+[dir="rtl"] #main-header a[data-i18n="nav.bookConsultation"] {
+    letter-spacing: 0 !important;
+}
+
     </style>
-<link href="../assets/css/multilingual.css?v=5" rel="stylesheet"/>
+<link href="../assets/css/multilingual.css?v=20261017_v2" rel="stylesheet"/>
     <!-- CMS Live Studio Integration (Active inside dashboard editor) -->
     <script>
         (function() {
@@ -378,26 +457,26 @@
 <div class="relative py-2" onmouseenter="openMegaMenu('citizenship-menu')">
 <a class="hover:text-luxury-gold transition duration-200 flex items-center gap-1.5" href="/citizenshipbyinvestment/"><span data-i18n="nav.citizenship">Citizenship</span> <i class="fa-solid fa-chevron-down text-[8px] transition-transform duration-300" id="arrow-citizenship-menu"></i></a>
 </div>
-<span class="text-neutral-300 font-light">|</span>
+<span class="nav-sep text-neutral-300 font-light">|</span>
 <div class="relative py-2" onmouseenter="openMegaMenu('residency-menu')">
 <a class="hover:text-luxury-gold transition duration-200 flex items-center gap-1.5" href="/residencybyinvestment/"><span data-i18n="nav.residency">Residency</span> <i class="fa-solid fa-chevron-down text-[8px] transition-transform duration-300" id="arrow-residency-menu"></i></a>
 </div>
-<span class="text-neutral-300 font-light">|</span>
+<span class="nav-sep text-neutral-300 font-light">|</span>
 <div class="relative py-2" onmouseenter="openMegaMenu('services-menu')">
 <a class="hover:text-luxury-gold transition duration-200 flex items-center gap-1.5" href="/realestate/"><span data-i18n="nav.moreServices">Other Services</span> <i class="fa-solid fa-chevron-down text-[8px] transition-transform duration-300" id="arrow-services-menu"></i></a>
 </div>
-<span class="text-neutral-300 font-light">|</span>
+<span class="nav-sep text-neutral-300 font-light">|</span>
 <div class="relative py-2" onmouseenter="openMegaMenu('about-menu')">
 <a class="hover:text-luxury-gold transition duration-200 flex items-center gap-1.5" href="/"><span data-i18n="nav.aboutUs">About Us</span> <i class="fa-solid fa-chevron-down text-[8px] transition-transform duration-300" id="arrow-about-menu"></i></a>
 </div>
-<span class="text-neutral-300 font-light">|</span>
+<span class="nav-sep text-neutral-300 font-light">|</span>
 <a class="hover:text-luxury-gold transition duration-200 py-2" data-i18n="nav.contact" href="/contact/" onmouseenter="closeAllMegaMenus()">Contact Us</a>
-<span class="text-neutral-300 font-light">|</span>
+<span class="nav-sep text-neutral-300 font-light">|</span>
 <a class="hover:text-luxury-gold transition duration-200 py-2" data-i18n="nav.blog" href="/blog/" onmouseenter="closeAllMegaMenus()">Blog</a>
-<span class="text-neutral-300 font-light">|</span>
+<span class="nav-sep text-neutral-300 font-light">|</span>
 <a class="hover:text-luxury-gold transition duration-200 py-2 inline-flex items-center" href="/webinars/" onmouseenter="closeAllMegaMenus()">
 <span data-i18n="nav.webinars">Webinars</span>
-<span class="nav-new-badge" data-i18n="nav.newBadge">New</span>
+<span class="nav-new-badge ml-1.5 px-1.5 py-0.5 rounded-full bg-[#786142] text-white text-[7.5px] font-bold leading-none inline-flex items-center justify-center shrink-0" style="margin-left: 5px; background-color: #786142; color: #ffffff; border-radius: 9999px; padding: 2px 5px; font-size: 7.5px; font-weight: 700; line-height: 1; display: inline-flex; align-items: center; white-space: nowrap;" data-i18n="nav.newBadge">New</span>
 </a>
 </nav>
 </div>

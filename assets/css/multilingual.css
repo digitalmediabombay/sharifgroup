@@ -1217,26 +1217,27 @@ main[class*="pt-28"],
 }
 
 /* Laptop Viewports (1100px - 1440px) */
-@media (min-width: 1100px) and (max-width: 1440px) {
-    #main-header nav {
-        gap: 0.25rem 0.45rem !important;
-    }
-    #main-header nav > * {
-        letter-spacing: 0.04em !important;
-        font-size: 10px !important;
-    }
+/* Laptop & Desktop Viewports (Hide faint dividers below 1535px to free 150px+ space) */
+@media (max-width: 1535px) {
+    #main-header .nav-sep,
     #main-header nav span.text-neutral-300,
     #main-header span.text-neutral-300 {
-        margin: 0 1px !important;
-        opacity: 0.35 !important;
+        display: none !important;
+    }
+    #main-header nav {
+        gap: 0.25rem 0.65rem !important;
+    }
+    #main-header nav > * {
+        letter-spacing: 0.05em !important;
+        font-size: 10px !important;
     }
     #main-header [data-i18n="nav.eligibilityChecker"],
     #main-header [data-i18n="nav.bookConsultation"],
     #main-header a[href*="eligibilitychecker"],
     #main-header a[href*="contact"] {
-        padding: 0.45rem 0.8rem !important;
+        padding: 0.45rem 0.85rem !important;
         font-size: 9.5px !important;
-        letter-spacing: 0.05em !important;
+        letter-spacing: 0.06em !important;
     }
     #main-header #nav-logo {
         height: 2.75rem !important;
@@ -1248,27 +1249,27 @@ main[class*="pt-28"],
     }
 }
 
-/* Compact Laptop Viewports (1100px - 1260px) */
-@media (min-width: 1100px) and (max-width: 1260px) {
+/* Compact Laptop Viewports (1150px - 1280px) */
+@media (max-width: 1280px) {
     #main-header nav {
-        gap: 0.15rem 0.3rem !important;
+        gap: 0.2rem 0.45rem !important;
     }
     #main-header nav > * {
-        letter-spacing: 0.02em !important;
-        font-size: 9px !important;
+        letter-spacing: 0.03em !important;
+        font-size: 9.5px !important;
     }
     #main-header [data-i18n="nav.eligibilityChecker"],
     #main-header [data-i18n="nav.bookConsultation"],
     #main-header a[href*="eligibilitychecker"],
     #main-header a[href*="contact"] {
-        padding: 0.35rem 0.6rem !important;
-        font-size: 8.5px !important;
-        letter-spacing: 0.03em !important;
+        padding: 0.35rem 0.7rem !important;
+        font-size: 9px !important;
+        letter-spacing: 0.04em !important;
     }
 }
 
-/* Below 1100px: Switch cleanly to Mobile Drawer Navigation to avoid horizontal crowding */
-@media (max-width: 1100px) {
+/* Below 1150px: Switch cleanly to Mobile Drawer Navigation to avoid horizontal crowding */
+@media (max-width: 1150px) {
     #main-header nav,
     #main-header .hidden.lg\:flex:not(.lang-switcher-wrapper),
     #main-header div.hidden.lg\:flex {

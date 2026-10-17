@@ -160,7 +160,7 @@ j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
 <link href="/assets/images/shariftrip-logo-1.svg" rel="alternate icon" type="image/x-icon"/>
 <link href="/assets/images/Group-427321463.svg" rel="apple-touch-icon" sizes="180x180"/>
 <!-- Tailwind CSS -->
-<link href="/assets/css/tailwind.min.css?v=20260920_v1" rel="stylesheet"/>
+<link href="/assets/css/tailwind.min.css?v=20261017_v2" rel="stylesheet"/>
 <!-- Google Fonts & Icon Libraries -->
 <link href="https://fonts.googleapis.com" rel="preconnect"/>
 <link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect"/>
@@ -169,7 +169,7 @@ j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
 <!-- GSAP (GreenSock Animation Platform) -->
 <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js"></script>
 <!-- Multilingual & RTL Support -->
-<link href="assets/css/multilingual.css?v=5" rel="stylesheet"/>
+<link href="assets/css/multilingual.css?v=20261017_v2" rel="stylesheet"/>
 <script defer="" src="assets/js/language-switcher.js"></script>
 <style>
         
@@ -364,6 +364,85 @@ j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
             background: rgba(12, 20, 36, 0.95);
             transform: translateY(-2px);
         }
+    
+/* ==========================================================================
+   NAVIGATION ANTI-COLLISION & RESPONSIVE HEADER
+   ========================================================================== */
+.nav-new-badge {
+    display: inline-flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+    font-size: 7.5px !important;
+    line-height: 1 !important;
+    padding: 2px 4.5px !important;
+    border-radius: 9999px !important;
+    background-color: #786142 !important;
+    color: #ffffff !important;
+    font-weight: 700 !important;
+    letter-spacing: 0 !important;
+    margin-left: 4px !important;
+    margin-right: 0 !important;
+    vertical-align: middle !important;
+    flex-shrink: 0 !important;
+    white-space: nowrap !important;
+}
+[dir="rtl"] .nav-new-badge {
+    margin-left: 0 !important;
+    margin-right: 4px !important;
+}
+@media (max-width: 1535px) {
+    #main-header .nav-sep {
+        display: none !important;
+    }
+    #main-header nav {
+        gap: 0.25rem 0.65rem !important;
+    }
+    #main-header nav > * {
+        letter-spacing: 0.05em !important;
+        font-size: 10px !important;
+    }
+    #main-header a[data-i18n="nav.eligibilityChecker"],
+    #main-header a[data-i18n="nav.bookConsultation"] {
+        padding: 0.45rem 0.85rem !important;
+        font-size: 9.5px !important;
+        letter-spacing: 0.06em !important;
+    }
+}
+@media (max-width: 1280px) {
+    #main-header nav {
+        gap: 0.2rem 0.45rem !important;
+    }
+    #main-header nav > * {
+        letter-spacing: 0.03em !important;
+        font-size: 9.5px !important;
+    }
+    #main-header a[data-i18n="nav.eligibilityChecker"],
+    #main-header a[data-i18n="nav.bookConsultation"] {
+        padding: 0.35rem 0.7rem !important;
+        font-size: 9px !important;
+        letter-spacing: 0.04em !important;
+    }
+}
+@media (max-width: 1150px) {
+    #main-header nav,
+    #main-header div.hidden.lg\:flex {
+        display: none !important;
+    }
+    #main-header button[onclick*="toggleMobileMenu"],
+    #main-header button[aria-label="Toggle Menu"],
+    #main-header .lg\:hidden,
+    #main-header .xl\:hidden {
+        display: flex !important;
+    }
+}
+html[lang="ar"] #main-header nav > *,
+html[lang="fa"] #main-header nav > *,
+[dir="rtl"] #main-header nav > *,
+[dir="rtl"] #main-header a[data-i18n="nav.eligibilityChecker"],
+[dir="rtl"] #main-header a[data-i18n="nav.bookConsultation"] {
+    letter-spacing: 0 !important;
+}
+
     </style>
 <!-- CMS Live Studio Integration (Active inside dashboard editor) -->
 <script>
@@ -422,32 +501,32 @@ j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
 <span data-i18n="nav.citizenship">شهروندی</span> <i class="fa-solid fa-chevron-down text-[8px] transition-transform duration-200 group-hover:rotate-180 text-neutral-400 group-hover:text-luxury-gold"></i>
 </a>
 </div>
-<span class="text-neutral-300 font-light">|</span>
+<span class="nav-sep text-neutral-300 font-light">|</span>
 <div class="relative group py-2" data-menu="residency-menu">
 <a class="hover:text-luxury-gold transition duration-200 cursor-pointer flex items-center gap-1.5" href="/fa/residencybyinvestment/">
 <span data-i18n="nav.residency">اقامت</span> <i class="fa-solid fa-chevron-down text-[8px] transition-transform duration-200 group-hover:rotate-180 text-neutral-400 group-hover:text-luxury-gold"></i>
 </a>
 </div>
-<span class="text-neutral-300 font-light">|</span>
+<span class="nav-sep text-neutral-300 font-light">|</span>
 <div class="relative group py-2" data-menu="services-menu">
 <a class="hover:text-luxury-gold transition duration-200 cursor-pointer flex items-center gap-1.5" href="/fa/realestate/">
 <span data-i18n="nav.moreServices">سایر خدمات</span> <i class="fa-solid fa-chevron-down text-[8px] transition-transform duration-200 group-hover:rotate-180 text-neutral-400 group-hover:text-luxury-gold"></i>
 </a>
 </div>
-<span class="text-neutral-300 font-light">|</span>
+<span class="nav-sep text-neutral-300 font-light">|</span>
 <div class="relative group py-2" data-menu="about-menu">
 <a class="hover:text-luxury-gold transition duration-200 cursor-pointer flex items-center gap-1.5" href="/fa/aboutus/">
 <span data-i18n="nav.aboutUs">درباره ما</span> <i class="fa-solid fa-chevron-down text-[8px] transition-transform duration-200 group-hover:rotate-180 text-neutral-400 group-hover:text-luxury-gold"></i>
 </a>
 </div>
-<span class="text-neutral-300 font-light">|</span>
+<span class="nav-sep text-neutral-300 font-light">|</span>
 <a class="hover:text-luxury-gold transition duration-200 py-2" data-i18n="nav.contact" href="/fa/contact/">تماس با ما</a>
-<span class="text-neutral-300 font-light">|</span>
+<span class="nav-sep text-neutral-300 font-light">|</span>
 <a class="hover:text-luxury-gold transition duration-200 py-2" data-i18n="nav.blog" href="/fa/blog/">بلاگ</a>
-<span class="text-neutral-300 font-light">|</span>
+<span class="nav-sep text-neutral-300 font-light">|</span>
 <a class="hover:text-luxury-gold transition duration-200 py-2 inline-flex items-center" href="/fa/webinars/">
 <span data-i18n="nav.webinars">وبینارها</span>
-<span class="nav-new-badge" data-i18n="nav.newBadge">جدید</span>
+<span class="nav-new-badge ml-1.5 px-1.5 py-0.5 rounded-full bg-[#786142] text-white text-[7.5px] font-bold leading-none inline-flex items-center justify-center shrink-0" data-i18n="nav.newBadge" style="margin-left: 5px; background-color: #786142; color: #ffffff; border-radius: 9999px; padding: 2px 5px; font-size: 7.5px; font-weight: 700; line-height: 1; display: inline-flex; align-items: center; white-space: nowrap;">جدید</span>
 </a>
 </nav>
 </div>

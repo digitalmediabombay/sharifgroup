@@ -10,7 +10,9 @@
 (() => {
   'use strict';
 
-  const DEMO = true;
+  const urlParams = new URLSearchParams(window.location.search);
+  const DEMO = urlParams.get('demo') === '1';
+  const CRM_WEBHOOK_URL = "https://script.google.com/macros/s/AKfycbx1htojc2xrudJ3i9eRepORLmAXqh6vk2IoBy6bUrtPqlcpODqI5XVdgUpXWYbgpCXOvg/exec";
   const LANGS = ['fa', 'en', 'ar', 'zh'];
   const SITE = window.location.protocol === 'file:' ? 'https://www.sharifgroup.ae/' : '/';
   const TZ = { kabul: 'Asia/Kabul', dubai: 'Asia/Dubai', istanbul: 'Europe/Istanbul' };
@@ -36,8 +38,10 @@
   const K = { lang: 'sgw.lang', demo: 'sgw.demo', edits: 'sgw.edits', regs: 'sgw.registrations', last: 'sgw.last' };
 
   /* ---------- language ---------- */
-  const urlLang = new URLSearchParams(location.search).get('lang');
-  let lang = LANGS.includes(urlLang) ? urlLang : (LANGS.includes(store.get(K.lang)) ? store.get(K.lang) : 'fa');
+  const pathParts = window.location.pathname.replace(/^\/+/, '').split('/');
+  const pathLang = LANGS.includes(pathParts[0]) ? pathParts[0] : null;
+  const urlLang = urlParams.get('lang');
+  let lang = pathLang || (LANGS.includes(urlLang) ? urlLang : 'en');
   const L = () => I18N[lang];
   const W = () => I18N[lang].webinars;
   function t(path, vars) {
@@ -94,8 +98,13 @@
     linkedin: '<svg viewBox="0 0 24 24" fill="currentColor"><path d="M19 3a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h14m-.5 15.5v-5.3a3.26 3.26 0 0 0-3.26-3.26c-.85 0-1.84.52-2.28 1.3v-1.11h-2.79v8.37h2.79v-4.93c0-.77.62-1.4 1.39-1.4a1.4 1.4 0 0 1 1.4 1.4v4.93h2.75M6.88 8.56a1.68 1.68 0 0 0 1.68-1.68c0-.93-.75-1.69-1.68-1.69a1.69 1.69 0 0 0-1.69 1.69c0 .93.76 1.68 1.69 1.68m1.39 9.94v-8.37H5.5v8.37h2.77z"/></svg>',
     instagram: '<svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 2.163c3.204 0 3.584.012 4.85.07 3.252.148 4.771 1.691 4.919 4.919.058 1.265.069 1.645.069 4.849 0 3.205-.012 3.584-.069 4.849-.149 3.225-1.664 4.771-4.919 4.919-1.266.058-1.644.07-4.85.07-3.204 0-3.584-.012-4.849-.07-3.26-.149-4.771-1.699-4.919-4.92-.058-1.265-.07-1.644-.07-4.849 0-3.204.013-3.583.07-4.849.149-3.227 1.664-4.771 4.919-4.919 1.266-.057 1.645-.069 4.849-.069zm0-2.163c-3.259 0-3.667.014-4.947.072-4.358.2-6.78 2.618-6.98 6.98-.059 1.281-.073 1.689-.073 4.948 0 3.259.014 3.668.072 4.948.2 4.358 2.618 6.78 6.98 6.98 1.281.058 1.689.072 4.948.072 3.259 0 3.668-.014 4.948-.072 4.354-.2 6.782-2.618 6.979-6.98.059-1.28.073-1.689.073-4.948 0-3.259-.014-3.667-.072-4.947-.196-4.354-2.617-6.78-6.979-6.98-1.281-.059-1.69-.073-4.949-.073zm0 5.838c-3.403 0-6.162 2.759-6.162 6.162s2.759 6.163 6.162 6.163 6.162-2.759 6.162-6.163c0-3.403-2.759-6.162-6.162-6.162zm0 10.162c-2.209 0-4-1.79-4-4 0-2.209 1.791-4 4-4s4 1.791 4 4c0 2.21-1.791 4-4 4zm6.406-11.845c-.796 0-1.441.645-1.441 1.44s.645 1.44 1.441 1.44c.795 0 1.439-.645 1.439-1.44s-.644-1.44-1.439-1.44z"/></svg>'
   };
-  const LOGO = 'assets/images/logo.svg';
-  const IMC_LOGO = 'assets/images/imclogo.webp';
+  const isFile = window.location.protocol === 'file:';
+  const ROOT_PATH = isFile ? (window.location.pathname.includes('/webinars') ? '../' : '') : '/';
+  const LOGO = isFile ? (window.location.pathname.includes('/webinars') ? '../assets/images/logo.svg' : 'assets/images/logo.svg') : '/assets/images/logo.svg';
+  const FOOTER_LOGO = ROOT_PATH + 'assets/images/vector_2d09c4bb.svg';
+  const IMC_LOGO = ROOT_PATH + 'imclogo.webp';
+  const FOOTER_VIDEO = ROOT_PATH + 'assets/videos/footer_bg_e58bba71.mp4';
+  const imgRel = path => (window.location.protocol === 'file:' ? 'assets/images/' : '/assets/images/') + path;
 
   /* ---------- data (CMS + admin edits + demo state) ---------- */
   const demoDefaults = { status: 'upcoming', visibility: 'public', link: 'soon' };
@@ -219,17 +228,17 @@
               </div>
               <div class="mm-cards-grid">
                 <a class="mm-card" href="${SITE + p}realestate/">
-                  <img src="assets/images/isdubairealestateago_3194a5.webp" alt="Real Estate">
+                  <img src="${imgRel('isdubairealestateago_3194a5.webp')}" alt="Real Estate">
                   <div class="mm-card-overlay"></div>
                   <span class="mm-card-title caps">${esc(N.realEstate)}</span>
                 </a>
                 <a class="mm-card" href="${SITE + p}educationaladvisory/">
-                  <img src="assets/images/photo-154133990719_46b647.webp" alt="Educational Advisory">
+                  <img src="${imgRel('photo-154133990719_46b647.webp')}" alt="Educational Advisory">
                   <div class="mm-card-overlay"></div>
                   <span class="mm-card-title caps">${esc(N.education)}</span>
                 </a>
                 <a class="mm-card" href="${SITE + p}socialresponsibility/">
-                  <img src="assets/images/photo-148852178799_7302db.webp" alt="Social Responsibility">
+                  <img src="${imgRel('photo-148852178799_7302db.webp')}" alt="Social Responsibility">
                   <div class="mm-card-overlay"></div>
                   <span class="mm-card-title caps">${esc(N.socialResp)}</span>
                 </a>
@@ -250,17 +259,17 @@
               </div>
               <div class="mm-cards-grid">
                 <a class="mm-card" href="${SITE + p}aboutus/">
-                  <img src="assets/images/dubai-office-2.webp" alt="Sharif Group">
+                  <img src="${imgRel('dubai-office-2.webp')}" alt="Sharif Group">
                   <div class="mm-card-overlay"></div>
                   <span class="mm-card-title caps">${esc(N.aboutSharif)}</span>
                 </a>
                 <a class="mm-card" href="${SITE + p}about-founder/">
-                  <img src="assets/images/founder-ali-sharif.webp" alt="Ali Sharif">
+                  <img src="${imgRel('founder-ali-sharif.webp')}" alt="Ali Sharif">
                   <div class="mm-card-overlay"></div>
                   <span class="mm-card-title caps">${esc(N.aboutFounder)}</span>
                 </a>
                 <a class="mm-card" href="${SITE + p}socialresponsibility/">
-                  <img src="assets/images/photo-148852178799_7302db.webp" alt="Social Responsibility">
+                  <img src="${imgRel('photo-148852178799_7302db.webp')}" alt="Social Responsibility">
                   <div class="mm-card-overlay"></div>
                   <span class="mm-card-title caps">${esc(N.socialResp)}</span>
                 </a>
@@ -288,12 +297,224 @@
         <button class="burger" type="button" aria-label="Menu" aria-expanded="false"${staticCopy ? '' : ' id="burger"'}>${I.menu}</button>
       </div></div>`;
   }
+  /* ---------- footer with seamless video canvas crossfade ---------- */
+  let footerCanvasAnimId = null;
+  function initFooterCanvas() {
+    if (footerCanvasAnimId) {
+      cancelAnimationFrame(footerCanvasAnimId);
+      footerCanvasAnimId = null;
+    }
+    const v1 = document.getElementById("footer-hidden-video");
+    const v2 = document.getElementById("footer-hidden-video-2");
+    const canvas = document.getElementById("footer-seamless-canvas");
+    if (!v1 || !v2 || !canvas) return;
+    const ctx = canvas.getContext("2d", { alpha: false });
+
+    let activeVideo = v1;
+    let standbyVideo = v2;
+    let crossfadeAlpha = 0;
+    let isFading = false;
+    let isFooterVisible = false;
+
+    function resizeCanvas() {
+      if (!canvas || !canvas.offsetWidth) return;
+      const dpr = Math.min(window.devicePixelRatio || 1, 1.5);
+      canvas.width = Math.floor(canvas.offsetWidth * dpr);
+      canvas.height = Math.floor(canvas.offsetHeight * dpr);
+    }
+    window.removeEventListener("resize", resizeCanvas);
+    window.addEventListener("resize", resizeCanvas, { passive: true });
+    resizeCanvas();
+
+    function renderFrame() {
+      if (!isFooterVisible) return;
+      if (activeVideo.duration && activeVideo.currentTime >= activeVideo.duration - 1.2 && !isFading) {
+        isFading = true;
+        standbyVideo.currentTime = 0;
+        standbyVideo.play().catch(() => {});
+      }
+      if (isFading) {
+        crossfadeAlpha += 0.04;
+        if (crossfadeAlpha >= 1) {
+          crossfadeAlpha = 1;
+          activeVideo.pause();
+          let temp = activeVideo;
+          activeVideo = standbyVideo;
+          standbyVideo = temp;
+          isFading = false;
+          crossfadeAlpha = 0;
+        }
+      }
+      ctx.globalAlpha = 1;
+      if (activeVideo.readyState >= 2) {
+        ctx.drawImage(activeVideo, 0, 0, canvas.width, canvas.height);
+      }
+      if (isFading && standbyVideo.readyState >= 2) {
+        ctx.globalAlpha = crossfadeAlpha;
+        ctx.drawImage(standbyVideo, 0, 0, canvas.width, canvas.height);
+      }
+      footerCanvasAnimId = requestAnimationFrame(renderFrame);
+    }
+
+    if ('IntersectionObserver' in window) {
+      const observer = new IntersectionObserver((entries) => {
+        entries.forEach((entry) => {
+          isFooterVisible = entry.isIntersecting;
+          if (isFooterVisible) {
+            activeVideo.play().catch(() => {});
+            if (!footerCanvasAnimId) renderFrame();
+          } else {
+            activeVideo.pause();
+            standbyVideo.pause();
+            if (footerCanvasAnimId) {
+              cancelAnimationFrame(footerCanvasAnimId);
+              footerCanvasAnimId = null;
+            }
+          }
+        });
+      }, { rootMargin: '250px' });
+      observer.observe(canvas.parentElement || canvas);
+    } else {
+      isFooterVisible = true;
+      activeVideo.play().catch(() => {});
+      renderFrame();
+    }
+  }
+
+  function footerHTML() {
+    const F = L().footer, p = prefix();
+    return `
+      <!-- TOP GRADIENT FADE (CREAM INTO VIDEO) -->
+      <div class="footer-top-fade"></div>
+
+      <!-- VIDEO BACKGROUND WITH SEAMLESS CANVAS CROSSFADE -->
+      <div class="footer-video-layer">
+        <canvas id="footer-seamless-canvas"></canvas>
+        <video id="footer-hidden-video" style="display:none" muted playsinline preload="auto">
+          <source src="${FOOTER_VIDEO}" type="video/mp4"/>
+        </video>
+        <video id="footer-hidden-video-2" style="display:none" muted playsinline preload="auto">
+          <source src="${FOOTER_VIDEO}" type="video/mp4"/>
+        </video>
+        <div class="footer-video-overlay"></div>
+      </div>
+
+      <!-- FOOTER CONTENT OVERLAY -->
+      <div class="container footer-content-wrap">
+        <div class="foot-grid">
+          <!-- Col 1: Brand Info -->
+          <div class="foot-brand">
+            <a class="foot-logo-link" href="${SITE + p}">
+              <img src="${FOOTER_LOGO}" alt="Sharif Group Logo" width="56" height="60" class="foot-logo-img">
+              <div class="foot-logo-text-wrap">
+                <div class="foot-logo-divider"></div>
+                <div class="foot-logo-text">
+                  <span>SHARIF</span>
+                  <span>GROUP</span>
+                </div>
+              </div>
+            </a>
+            <div class="foot-imc">
+              <img src="${IMC_LOGO}" alt="Investment Migration Council" width="130" height="38">
+            </div>
+            <div class="foot-contact">
+              <p><span class="foot-ico">${I.pin}</span><span>${esc(F.address)}</span></p>
+              <p><span class="foot-ico">${I.phone}</span><a class="ltr" href="tel:+97143578737">+971 4 357 8737</a></p>
+              <p><span class="foot-ico">${I.mail}</span><a class="ltr" href="mailto:contact@sharifgroup.ae">contact@sharifgroup.ae</a></p>
+            </div>
+            <div class="foot-socials">
+              <a href="https://www.linkedin.com/company/sharif-group-uae/" target="_blank" rel="noopener noreferrer" aria-label="LinkedIn">${I.linkedin}</a>
+              <a href="https://www.instagram.com/sharifgroup.uae" target="_blank" rel="noopener noreferrer" aria-label="Instagram">${I.instagram}</a>
+              <a href="https://api.whatsapp.com/send?phone=97143578737" target="_blank" rel="noopener noreferrer" aria-label="WhatsApp">${I.wa}</a>
+              <a href="mailto:contact@sharifgroup.ae" aria-label="Email">${I.mail}</a>
+            </div>
+          </div>
+
+          <!-- Col 2: Quick Links -->
+          <div>
+            <h4 class="caps">${esc(F.quickLinks)}</h4>
+            <ul class="foot-links">
+              <li><a href="${SITE + p}">${esc(F.home)}</a></li>
+              <li><a href="${SITE + p}aboutus/">${esc(F.aboutSharif)}</a></li>
+              <li><a href="${SITE + p}about-founder/">${esc(F.aboutAli)}</a></li>
+              <li><a href="${SITE + p}socialresponsibility/">${esc(F.socialResp)}</a></li>
+              <li><a href="${SITE + p}citizenshipbyinvestment/">${esc(F.citizenshipPrograms)}</a></li>
+              <li><a href="${SITE + p}residencybyinvestment/">${esc(F.residencyPrograms)}</a></li>
+              <li><a href="${SITE + p}realestate/">${esc(F.realEstate)}</a></li>
+              <li><a href="${SITE + p}educationaladvisory/">${esc(F.educationalAdvisory)}</a></li>
+              <li><a href="${SITE + p}contact/">${esc(F.contactUs)}</a></li>
+              <li><a href="${SITE + p}blog/">${esc(F.insightsBlog)}</a></li>
+              <li><a class="foot-new-row" href="${SITE + p}webinars/"><span class="foot-new-text">${esc(F.webinars)}</span> <span class="nav-new-badge ml-1.5 px-1.5 py-0.5 rounded-full bg-[#786142] text-white text-[7.5px] font-bold leading-none inline-flex items-center justify-center shrink-0" style="margin-left: 5px; background-color: #786142; color: #ffffff; border-radius: 9999px; padding: 2px 5px; font-size: 7.5px; font-weight: 700; line-height: 1; display: inline-flex; align-items: center; white-space: nowrap;">${esc(t('common.isNew') || 'New')}</span></a></li>
+              <li><a href="${SITE + p}eligibilitychecker/">${esc(F.eligibilityChecker)}</a></li>
+            </ul>
+          </div>
+
+          <!-- Col 3: Citizenship Programs -->
+          <div>
+            <h4 class="caps">${esc(F.citizenshipProgramsCol)}</h4>
+            <ul class="foot-links">
+              <li><a href="${SITE + p}programs/citizenshipbyinvestment/dominica/">${esc(F.cbi?.dominica || 'Dominica | Passport')}</a></li>
+              <li><a href="${SITE + p}programs/citizenshipbyinvestment/stkitts/">${esc(F.cbi?.kitts || 'St. Kitts & Nevis | Passport')}</a></li>
+              <li><a href="${SITE + p}programs/citizenshipbyinvestment/antiguaandbarbuda/">${esc(F.cbi?.antigua || 'Antigua & Barbuda | Passport')}</a></li>
+              <li><a href="${SITE + p}programs/citizenshipbyinvestment/stlucia/">${esc(F.cbi?.lucia || 'Saint Lucia | Passport')}</a></li>
+              <li><a href="${SITE + p}programs/citizenshipbyinvestment/grenada/">${esc(F.cbi?.grenada || 'Grenada | Passport')}</a></li>
+              <li><a href="${SITE + p}programs/citizenshipbyinvestment/vanuatu/">${esc(F.cbi?.vanuatu || 'Vanuatu | Passport')}</a></li>
+              <li><a href="${SITE + p}programs/citizenshipbyinvestment/sao-tome-and-principe/">${esc(F.cbi?.saotome || 'São Tomé and Príncipe | Passport')}</a></li>
+              <li><a href="${SITE + p}programs/citizenshipbyinvestment/nauru/">${esc(F.cbi?.nauru || 'Republic of Nauru | Passport')}</a></li>
+            </ul>
+          </div>
+
+          <!-- Col 4: Residency & Other Services -->
+          <div>
+            <h4 class="caps">${esc(F.residencyProgramsCol)}</h4>
+            <ul class="foot-links">
+              <li><a href="${SITE + p}programs/residencybyinvestment/portugal/">${esc(F.rbi?.portugal || 'Portugal | Golden Visa')}</a></li>
+              <li><a href="${SITE + p}programs/residencybyinvestment/greece/">${esc(F.rbi?.greece || 'Greece | Golden Visa')}</a></li>
+              <li><a href="${SITE + p}programs/residencybyinvestment/panama/">${esc(F.rbi?.panama || 'Panama | Golden Visa')}</a></li>
+              <li><a href="${SITE + p}programs/residencybyinvestment/uae/">${esc(F.rbi?.uae || 'United Arab Emirates | Golden Visa')}</a></li>
+            </ul>
+            <h4 class="caps foot-subheading">${esc(F.otherServices)}</h4>
+            <ul class="foot-links">
+              <li><a href="${SITE + p}realestate/">${esc(F.realEstate)}</a></li>
+              <li><a href="${SITE + p}educationaladvisory/">${esc(F.educationalAdvisory)}</a></li>
+            </ul>
+          </div>
+
+          <!-- Col 5: Legal Frameworks -->
+          <div>
+            <h4 class="caps">${esc(F.legalFrameworks)}</h4>
+            <ul class="foot-links">
+              <li><a href="${SITE + p}privacypolicy/">${esc(F.privacyPolicy)}</a></li>
+              <li><a href="${SITE + p}termsofuse/">${esc(F.termsOfUse)}</a></li>
+              <li><a href="${SITE + p}cookiepolicy/">${esc(F.cookiePolicy)}</a></li>
+            </ul>
+          </div>
+        </div>
+
+        <!-- Foot Bottom Bar -->
+        <div class="foot-bottom">
+          <p>${esc(F.allRightsReserved)}</p>
+          <p class="foot-credit">
+            <span>${esc(F.designedBy)}</span>
+            <a class="dmb-link" href="https://www.digitalmediabombay.com" target="_blank" rel="noopener noreferrer">Digital Media <span class="dmb-gold">Bombay</span></a>
+          </p>
+        </div>
+      </div>`;
+  }
+
   function renderShell() {
     const M = L().meta, F = L().footer, N = L().nav, p = prefix();
     document.documentElement.lang = lang;
     document.documentElement.dir = M.dir;
     document.body.className = 'lang-' + lang;
-    $('#demoBar').innerHTML = `<strong>${esc(t('common.demoStrong'))}</strong>${esc(t('common.demoText'))}`;
+    if ($('#demoBar')) {
+      if (DEMO) {
+        $('#demoBar').style.display = 'block';
+        $('#demoBar').innerHTML = `<strong>${esc(t('common.demoStrong'))}</strong>${esc(t('common.demoText'))}`;
+      } else {
+        $('#demoBar').style.display = 'none';
+      }
+    }
     $('.skip').textContent = t('common.skip');
     $('#siteHeader').innerHTML = headerHTML(false);
     $('#drawer').innerHTML = `
@@ -377,104 +598,11 @@
       <div class="drawer-contact-info">
         <p>+971 4 357 8737 • contact@sharifgroup.ae</p>
       </div>`;
-    $('#siteFooter').innerHTML = `<div class="container">
-      <div class="foot-grid">
-        <!-- Col 1: Brand Info -->
-        <div class="foot-brand">
-          <a class="foot-logo-link" href="${SITE + p}">
-            <img src="${LOGO}" alt="Sharif Group Logo" width="56" height="60">
-            <div class="foot-logo-divider"></div>
-            <div class="foot-logo-text">
-              <span>SHARIF</span>
-              <span>GROUP</span>
-            </div>
-          </a>
-          <div class="foot-imc">
-            <img src="${IMC_LOGO}" alt="Investment Migration Council" width="130" height="38">
-          </div>
-          <div class="foot-contact">
-            <p><span class="foot-ico">${I.pin}</span><span>${esc(F.address)}</span></p>
-            <p><span class="foot-ico">${I.phone}</span><a class="ltr" href="tel:+97143578737">+971 4 357 8737</a></p>
-            <p><span class="foot-ico">${I.mail}</span><a class="ltr" href="mailto:contact@sharifgroup.ae">contact@sharifgroup.ae</a></p>
-          </div>
-          <div class="foot-socials">
-            <a href="https://www.linkedin.com/company/sharif-group-uae/" target="_blank" rel="noopener noreferrer" aria-label="LinkedIn">${I.linkedin}</a>
-            <a href="https://www.instagram.com/sharifgroup.uae" target="_blank" rel="noopener noreferrer" aria-label="Instagram">${I.instagram}</a>
-            <a href="https://api.whatsapp.com/send?phone=97143578737" target="_blank" rel="noopener noreferrer" aria-label="WhatsApp">${I.wa}</a>
-            <a href="mailto:contact@sharifgroup.ae" aria-label="Email">${I.mail}</a>
-          </div>
-        </div>
-
-        <!-- Col 2: Quick Links -->
-        <div>
-          <h4 class="caps">${esc(F.quickLinks)}</h4>
-          <ul class="foot-links">
-            <li><a href="${SITE + p}">${esc(F.home)}</a></li>
-            <li><a href="${SITE + p}aboutus/">${esc(F.aboutSharif)}</a></li>
-            <li><a href="${SITE + p}about-founder/">${esc(F.aboutAli)}</a></li>
-            <li><a href="${SITE + p}socialresponsibility/">${esc(F.socialResp)}</a></li>
-            <li><a href="${SITE + p}citizenshipbyinvestment/">${esc(F.citizenshipPrograms)}</a></li>
-            <li><a href="${SITE + p}residencybyinvestment/">${esc(F.residencyPrograms)}</a></li>
-            <li><a href="${SITE + p}realestate/">${esc(F.realEstate)}</a></li>
-            <li><a href="${SITE + p}educationaladvisory/">${esc(F.educationalAdvisory)}</a></li>
-            <li><a href="${SITE + p}contact/">${esc(F.contactUs)}</a></li>
-            <li><a href="${SITE + p}blog/">${esc(F.insightsBlog)}</a></li>
-            <li><a href="${SITE + p}eligibilitychecker/">${esc(F.eligibilityChecker)}</a></li>
-            <li><a class="foot-new" href="#/webinars">${esc(F.webinars)} <span class="nav-new">${esc(t('common.isNew'))}</span></a></li>
-          </ul>
-        </div>
-
-        <!-- Col 3: Citizenship Programs -->
-        <div>
-          <h4 class="caps">${esc(F.citizenshipProgramsCol)}</h4>
-          <ul class="foot-links">
-            <li><a href="${SITE + p}programs/citizenshipbyinvestment/dominica/">${esc(F.cbi?.dominica || 'Dominica | Passport')}</a></li>
-            <li><a href="${SITE + p}programs/citizenshipbyinvestment/stkitts/">${esc(F.cbi?.kitts || 'St. Kitts & Nevis | Passport')}</a></li>
-            <li><a href="${SITE + p}programs/citizenshipbyinvestment/antiguaandbarbuda/">${esc(F.cbi?.antigua || 'Antigua & Barbuda | Passport')}</a></li>
-            <li><a href="${SITE + p}programs/citizenshipbyinvestment/stlucia/">${esc(F.cbi?.lucia || 'Saint Lucia | Passport')}</a></li>
-            <li><a href="${SITE + p}programs/citizenshipbyinvestment/grenada/">${esc(F.cbi?.grenada || 'Grenada | Passport')}</a></li>
-            <li><a href="${SITE + p}programs/citizenshipbyinvestment/vanuatu/">${esc(F.cbi?.vanuatu || 'Vanuatu | Passport')}</a></li>
-            <li><a href="${SITE + p}programs/citizenshipbyinvestment/sao-tome-and-principe/">${esc(F.cbi?.saotome || 'São Tomé and Príncipe | Passport')}</a></li>
-            <li><a href="${SITE + p}programs/citizenshipbyinvestment/nauru/">${esc(F.cbi?.nauru || 'Republic of Nauru | Passport')}</a></li>
-          </ul>
-        </div>
-
-        <!-- Col 4: Residency & Other Services -->
-        <div>
-          <h4 class="caps">${esc(F.residencyProgramsCol)}</h4>
-          <ul class="foot-links">
-            <li><a href="${SITE + p}programs/residencybyinvestment/portugal/">${esc(F.rbi?.portugal || 'Portugal | Golden Visa')}</a></li>
-            <li><a href="${SITE + p}programs/residencybyinvestment/greece/">${esc(F.rbi?.greece || 'Greece | Golden Visa')}</a></li>
-            <li><a href="${SITE + p}programs/residencybyinvestment/panama/">${esc(F.rbi?.panama || 'Panama | Golden Visa')}</a></li>
-            <li><a href="${SITE + p}programs/residencybyinvestment/uae/">${esc(F.rbi?.uae || 'United Arab Emirates | Golden Visa')}</a></li>
-          </ul>
-          <h4 class="caps foot-subheading">${esc(F.otherServices)}</h4>
-          <ul class="foot-links">
-            <li><a href="${SITE + p}realestate/">${esc(F.realEstate)}</a></li>
-            <li><a href="${SITE + p}educationaladvisory/">${esc(F.educationalAdvisory)}</a></li>
-          </ul>
-        </div>
-
-        <!-- Col 5: Legal Frameworks -->
-        <div>
-          <h4 class="caps">${esc(F.legalFrameworks)}</h4>
-          <ul class="foot-links">
-            <li><a href="${SITE + p}privacypolicy/">${esc(F.privacyPolicy)}</a></li>
-            <li><a href="${SITE + p}termsofuse/">${esc(F.termsOfUse)}</a></li>
-            <li><a href="${SITE + p}cookiepolicy/">${esc(F.cookiePolicy)}</a></li>
-          </ul>
-        </div>
-      </div>
-
-      <!-- Foot Bottom Bar -->
-      <div class="foot-bottom">
-        <p>${esc(F.allRightsReserved)}</p>
-        <p class="foot-credit">
-          <span>${esc(F.designedBy)}</span>
-          <a class="dmb-link" href="https://www.digitalmediabombay.com" target="_blank" rel="noopener noreferrer">Digital Media <span class="dmb-gold">Bombay</span></a>
-        </p>
-      </div>
-    </div>`;
+    $('#siteFooter').innerHTML = footerHTML();
+    initFooterCanvas();
+    if (typeof window.updateWhatsAppWidget === 'function') {
+      try { window.updateWhatsAppWidget(); } catch (e) {}
+    }
     document.title = (routeName() === 'list' ? M.title : document.title);
     $('meta[name="description"]').setAttribute('content', M.description);
     bindShell();
@@ -544,8 +672,18 @@
   function setLang(c) {
     if (!LANGS.includes(c)) return;
     lang = c; store.set(K.lang, c);
-    const u = new URL(location.href); u.searchParams.set('lang', c); history.replaceState(null, '', u);
-    renderShell(); route();
+    if (window.location.protocol === 'file:') {
+      const u = new URL(location.href); u.searchParams.set('lang', c); history.replaceState(null, '', u);
+      renderShell(); route();
+    } else {
+      const r = parseRoute();
+      let targetPath = (c === 'en' ? '' : '/' + c) + '/webinars/';
+      if (r.slug) {
+        targetPath += r.slug + '/';
+        if (r.page === 'thanks') targetPath += 'thanks/';
+      }
+      window.location.href = targetPath + (DEMO ? '?demo=1' : '');
+    }
   }
 
   /* ---------- shared components ---------- */
@@ -800,6 +938,10 @@
       });
       $('#formAlert').classList.toggle('show', !!first);
       if (first) { first.focus(); return; }
+      if (fd.get('company')) {
+        console.warn('Honeypot hit');
+        return;
+      }
       const w = webinars().find(x => x.id === form.dataset.id);
       const e164 = dial + local;
       const regs = store.get(K.regs, []);
@@ -809,26 +951,40 @@
       const src = params.get('utm_source');
       const btn = $('button[type="submit"]', form);
       btn.disabled = true; btn.textContent = t('form.sending');
+
+      let rec = dup;
+      if (!dup) {
+        rec = {
+          form_id: 'webinar-registration',
+          registration_id: 'REG-' + w.id + '-' + Date.now().toString(36).toUpperCase().slice(-6),
+          webinar_id: w.id, webinar_slug: w.slug, webinar_start_utc: w.start_utc,
+          fullName: name, dialCode: dial, phone: `${dial} ${local}`, whatsapp_e164: e164,
+          email, residence_country: country, question,
+          newsletter_optin: fd.get('newsletter_optin') === 'yes' ? 'yes' : 'no',
+          utm_source: allowedSrc.includes(src) ? src : (src ? 'unknown' : 'website'),
+          utm_campaign: params.get('utm_campaign') || w.utm_campaign,
+          lang, registered_at_utc: new Date().toISOString(),
+          source: pageUrl(w), page: `/${prefix()}webinars/${w.slug}/`
+        };
+        regs.push(rec); store.set(K.regs, regs);
+      }
+      store.set(K.last, { id: rec.registration_id, dup: !!dup });
+
+      if (CRM_WEBHOOK_URL) {
+        fetch(CRM_WEBHOOK_URL, {
+          method: 'POST',
+          mode: 'no-cors',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify(rec)
+        }).catch(err => console.warn('CRM sync error:', err));
+      }
+
       setTimeout(() => {
-        let rec = dup;
-        if (!dup) {
-          rec = {
-            form_id: 'webinar-registration',
-            registration_id: 'REG-' + w.id + '-' + Date.now().toString(36).toUpperCase().slice(-6),
-            webinar_id: w.id, webinar_slug: w.slug, webinar_start_utc: w.start_utc,
-            fullName: name, dialCode: dial, phone: `${dial} ${local}`, whatsapp_e164: e164,
-            email, residence_country: country, question,
-            newsletter_optin: fd.get('newsletter_optin') === 'yes' ? 'yes' : 'no',
-            utm_source: allowedSrc.includes(src) ? src : (src ? 'unknown' : 'website'),
-            utm_campaign: params.get('utm_campaign') || w.utm_campaign,
-            lang, registered_at_utc: new Date().toISOString(),
-            source: pageUrl(w), page: `/${prefix()}webinars/${w.slug}/`
-          };
-          regs.push(rec); store.set(K.regs, regs);
-          console.info('[Sharif webinars demo] Payload that production would POST to CRM_WEBHOOK_URL (forms.js):', rec);
+        if (window.location.protocol === 'file:') {
+          location.hash = `#/webinars/${w.slug}/thanks`;
+        } else {
+          window.location.href = `${SITE}${prefix()}webinars/${w.slug}/thanks/` + (DEMO ? '?demo=1' : '');
         }
-        store.set(K.last, { id: rec.registration_id, dup: !!dup });
-        location.hash = `#/webinars/${w.slug}/thanks`;
       }, 550);
     });
   }
@@ -857,7 +1013,7 @@
             <ol class="timeline">${t('thanks.steps').map((s, i) => `<li class="${i === 0 ? 'done' : ''}"><strong>${esc(s.t)}</strong><span>${esc(s.d)}</span></li>`).join('')}</ol></div>
         </div>
       </div>
-      <div class="btn-row" style="margin-top:28px"><a class="btn btn--dark" href="#/webinars">${esc(t('thanks.back'))}</a><a class="btn btn--ghost" href="${SITE + prefix()}contact/">${esc(L().nav.bookConsultation)}</a></div>
+      <div class="btn-row" style="margin-top:28px"><a class="btn btn--dark" href="${SITE + prefix()}webinars/">${esc(t('thanks.back'))}</a><a class="btn btn--ghost" href="${SITE + prefix()}contact/">${esc(L().nav.bookConsultation)}</a></div>
     </div></div>`;
   }
 
@@ -956,6 +1112,12 @@
 
   /* ---------- demo panel ---------- */
   function renderDemoPanel() {
+    if (!DEMO) {
+      if ($('#demoFab')) $('#demoFab').style.display = 'none';
+      if ($('#demoPanel')) $('#demoPanel').style.display = 'none';
+      return;
+    }
+    if ($('#demoFab')) $('#demoFab').style.display = 'inline-flex';
     const D = k => esc(t('demo.' + k));
     const seg = (key, vals) => `<div class="seg">${vals.map(([v, l]) => `<button type="button" data-demo="${key}" data-v="${v}" aria-pressed="${demo[key] === v}">${esc(l)}</button>`).join('')}</div>`;
     const w1 = BASE[0].slug;
@@ -1020,23 +1182,52 @@
   }
 
   /* ---------- router ---------- */
-  function parts() { return location.hash.replace(/^#\/?/, '').split('/').filter(Boolean); }
-  function routeName() { const p = parts(); if (!p.length || (p[0] === 'webinars' && p.length === 1)) return 'list'; return p[0]; }
+  function parseRoute() {
+    // 1. Hash support
+    if (location.hash && location.hash.length > 1) {
+      const p = location.hash.replace(/^#\/?/, '').split('/').filter(Boolean);
+      if (p[0] === 'webinars') {
+        if (!p[1]) return { page: 'list', slug: null };
+        if (p[2] === 'thanks') return { page: 'thanks', slug: p[1] };
+        return { page: 'detail', slug: p[1] };
+      }
+      if (p[0] === 'admin') return { page: 'admin', slug: null };
+      if (p[0] === 'integration') return { page: 'integration', slug: null };
+    }
+    // 2. Pathname support
+    const path = location.pathname.replace(/^\/+|\/+$/g, '');
+    const segs = path.split('/').filter(Boolean);
+    const wIdx = segs.indexOf('webinars');
+    if (wIdx !== -1) {
+      const rest = segs.slice(wIdx + 1);
+      if (!rest.length || rest[0] === 'index.html' || rest[0] === 'index.php') {
+        return { page: 'list', slug: null };
+      }
+      if (rest[1] === 'thanks') {
+        return { page: 'thanks', slug: rest[0] };
+      }
+      return { page: 'detail', slug: rest[0] };
+    }
+    return { page: 'list', slug: null };
+  }
+  function routeName() { return parseRoute().page; }
   function render() {
-    const p = parts(); const main = $('#main');
+    const r = parseRoute();
+    const main = $('#main');
     let html;
-    if (!p.length || (p[0] === 'webinars' && !p[1])) html = viewList();
-    else if (p[0] === 'webinars' && p[2] === 'thanks') html = viewThanks(p[1]);
-    else if (p[0] === 'webinars') html = viewDetail(p[1]);
-    else if (p[0] === 'admin') html = viewAdmin();
-    else if (p[0] === 'integration') html = viewIntegration();
+    if (r.page === 'list') html = viewList();
+    else if (r.page === 'thanks') html = viewThanks(r.slug);
+    else if (r.page === 'detail') html = viewDetail(r.slug);
+    else if (r.page === 'admin' && DEMO) html = viewAdmin();
+    else if (r.page === 'integration' && DEMO) html = viewIntegration();
     else html = viewNotFound();
     main.innerHTML = html;
-    bindForm(); if (p[0] === 'admin') bindAdmin();
+    bindForm(); if (r.page === 'admin') bindAdmin();
     clearInterval(cdTimer); tickCountdowns(); if ($('[data-cd]')) cdTimer = setInterval(tickCountdowns, 1000);
   }
   function route() { render(); window.scrollTo({ top: 0, left: 0, behavior: 'instant' }); }
   window.addEventListener('hashchange', () => { $('#drawer').classList.remove('open'); route(); $('#main').focus({ preventScroll: true }); });
+  window.addEventListener('popstate', () => { $('#drawer').classList.remove('open'); route(); });
 
   renderShell();
   route();
