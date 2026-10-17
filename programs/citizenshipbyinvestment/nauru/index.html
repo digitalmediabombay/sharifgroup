@@ -160,7 +160,7 @@
     <link href="../../../assets/images/shariftrip-logo-1.svg" rel="alternate icon" type="image/x-icon" />
     <link href="../../../assets/images/shariftrip-logo-1.svg" rel="apple-touch-icon" sizes="180x180" />
     <!-- Tailwind CSS -->
-    <link rel="stylesheet" href="../../../assets/css/tailwind.min.css?v=20260920_v1" />
+    <link rel="stylesheet" href="../../../assets/css/tailwind.min.css?v=20261017_v3" />
     <!-- Google Fonts & Icon Libraries -->
     <link href="https://fonts.googleapis.com" rel="preconnect" />
     <link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect" />
@@ -362,13 +362,13 @@
         }
     
 
-/* Header Anti-Collision Responsive Rules */
+/* Header Universal Anti-Collision & Proportional Luxury Navigation */
 .nav-new-badge,
 #main-header [data-i18n="nav.newBadge"] {
     display: inline-flex !important;
     align-items: center !important;
     justify-content: center !important;
-    font-size: 7.5px !important;
+    font-size: 7px !important;
     line-height: 1 !important;
     padding: 2px 4.5px !important;
     border-radius: 9999px !important;
@@ -376,7 +376,7 @@
     color: #ffffff !important;
     font-weight: 700 !important;
     letter-spacing: 0 !important;
-    margin-left: 4px !important;
+    margin-left: 3.5px !important;
     margin-right: 0 !important;
     vertical-align: middle !important;
     flex-shrink: 0 !important;
@@ -385,50 +385,166 @@
 [dir="rtl"] .nav-new-badge,
 [dir="rtl"] #main-header [data-i18n="nav.newBadge"] {
     margin-left: 0 !important;
-    margin-right: 4px !important;
+    margin-right: 3.5px !important;
 }
-@media (max-width: 1535px) {
+#main-header {
+    width: 100% !important;
+}
+#main-header > div {
+    max-width: 1600px !important;
+    width: 100% !important;
+    margin-left: auto !important;
+    margin-right: auto !important;
+    padding-left: clamp(12px, 2vw, 32px) !important;
+    padding-right: clamp(12px, 2vw, 32px) !important;
+    display: flex !important;
+    align-items: center !important;
+    justify-content: space-between !important;
+    gap: 8px !important;
+}
+#main-header > div > div:first-child {
+    display: flex !important;
+    align-items: center !important;
+    gap: clamp(8px, 1.2vw, 18px) !important;
+    min-width: 0 !important;
+    flex-shrink: 1 !important;
+}
+#main-header > div > div:first-child > :not([hidden]) ~ :not([hidden]),
+#main-header nav > :not([hidden]) ~ :not([hidden]),
+#main-header nav > * {
+    margin-left: 0 !important;
+    margin-right: 0 !important;
+}
+#main-header #nav-logo {
+    height: 42px !important;
+    width: auto !important;
+    flex-shrink: 0 !important;
+}
+#main-header nav {
+    display: flex !important;
+    align-items: center !important;
+    gap: clamp(4px, 0.6vw, 10px) !important;
+    white-space: nowrap !important;
+    flex-wrap: nowrap !important;
+}
+#main-header nav a,
+#main-header nav > div > a {
+    font-size: 10px !important;
+    font-weight: 700 !important;
+    letter-spacing: 0.07em !important;
+    text-transform: uppercase !important;
+    color: #404040 !important;
+    padding: 6px clamp(3px, 0.4vw, 8px) !important;
+    transition: color 0.2s ease !important;
+    white-space: nowrap !important;
+    display: inline-flex !important;
+    align-items: center !important;
+}
+#main-header nav a:hover,
+#main-header nav > div > a:hover {
+    color: #c5a880 !important;
+}
+#main-header .nav-sep,
+#main-header nav span.text-neutral-300 {
+    font-size: 10px !important;
+    color: #d4d4d4 !important;
+    opacity: 0.65 !important;
+    padding: 0 1px !important;
+    margin: 0 !important;
+    user-select: none !important;
+}
+#main-header div.hidden.lg\:flex.shrink-0,
+#main-header > div > div:last-child {
+    display: flex !important;
+    align-items: center !important;
+    gap: clamp(6px, 0.8vw, 12px) !important;
+    flex-shrink: 0 !important;
+    margin-left: auto !important;
+}
+#main-header div.hidden.lg\:flex.shrink-0 > :not([hidden]) ~ :not([hidden]) {
+    margin-left: 0 !important;
+    margin-right: 0 !important;
+}
+#main-header a[data-i18n="nav.eligibilityChecker"],
+#main-header a[data-i18n="nav.bookConsultation"],
+#main-header a[href*="eligibilitychecker"],
+#main-header a[href*="contact"] {
+    height: 34px !important;
+    padding: 0 clamp(10px, 1vw, 16px) !important;
+    font-size: 10px !important;
+    font-weight: 700 !important;
+    letter-spacing: 0.07em !important;
+    text-transform: uppercase !important;
+    border-radius: 9999px !important;
+    white-space: nowrap !important;
+    display: inline-flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+    transition: all 0.25s ease !important;
+}
+#main-header .lang-switcher-wrapper button,
+#main-header #lang-switcher-btn {
+    height: 32px !important;
+    padding: 0 10px !important;
+    font-size: 10px !important;
+    font-weight: 700 !important;
+    letter-spacing: 0.05em !important;
+    border-radius: 9999px !important;
+    white-space: nowrap !important;
+    display: inline-flex !important;
+    align-items: center !important;
+    gap: 4px !important;
+}
+@media (max-width: 1480px) {
     #main-header .nav-sep,
     #main-header nav span.text-neutral-300,
-    #main-header span.text-neutral-300 {
+    #main-header > div > div:first-child > span.text-neutral-300 {
         display: none !important;
     }
     #main-header nav {
-        gap: 0.25rem 0.65rem !important;
+        gap: 0.25rem 0.45rem !important;
     }
-    #main-header nav > * {
+    #main-header nav a,
+    #main-header nav > div > a {
+        font-size: 9.5px !important;
         letter-spacing: 0.05em !important;
-        font-size: 10px !important;
+        padding: 4px 5px !important;
     }
     #main-header a[data-i18n="nav.eligibilityChecker"],
     #main-header a[data-i18n="nav.bookConsultation"],
     #main-header a[href*="eligibilitychecker"],
     #main-header a[href*="contact"] {
-        padding: 0.45rem 0.85rem !important;
+        height: 32px !important;
+        padding: 0 10px !important;
         font-size: 9.5px !important;
-        letter-spacing: 0.06em !important;
+        letter-spacing: 0.05em !important;
     }
 }
 @media (max-width: 1280px) {
     #main-header nav {
-        gap: 0.2rem 0.45rem !important;
+        gap: 0.2rem 0.35rem !important;
     }
-    #main-header nav > * {
+    #main-header nav a,
+    #main-header nav > div > a {
+        font-size: 9px !important;
         letter-spacing: 0.03em !important;
-        font-size: 9.5px !important;
+        padding: 4px 4px !important;
     }
     #main-header a[data-i18n="nav.eligibilityChecker"],
     #main-header a[data-i18n="nav.bookConsultation"],
     #main-header a[href*="eligibilitychecker"],
     #main-header a[href*="contact"] {
-        padding: 0.35rem 0.7rem !important;
+        height: 30px !important;
+        padding: 0 8px !important;
         font-size: 9px !important;
-        letter-spacing: 0.04em !important;
+        letter-spacing: 0.03em !important;
     }
 }
-@media (max-width: 1150px) {
+@media (max-width: 1140px) {
     #main-header nav,
-    #main-header div.hidden.lg\:flex {
+    #main-header div.hidden.lg\:flex.shrink-0 > a,
+    #main-header > div > div:last-child > a,
+    #main-header > div > div:first-child > span {
         display: none !important;
     }
     #main-header button[onclick*="toggleMobileMenu"],
@@ -439,16 +555,15 @@
         display: flex !important;
     }
 }
-html[lang="ar"] #main-header nav > *,
-html[lang="fa"] #main-header nav > *,
-[dir="rtl"] #main-header nav > *,
+html[lang="ar"] #main-header nav a,
+html[lang="fa"] #main-header nav a,
+[dir="rtl"] #main-header nav a,
 [dir="rtl"] #main-header a[data-i18n="nav.eligibilityChecker"],
 [dir="rtl"] #main-header a[data-i18n="nav.bookConsultation"] {
     letter-spacing: 0 !important;
 }
-
 </style>
-    <link href="../../../assets/css/multilingual.css?v=20261017_v2" rel="stylesheet" />
+    <link href="../../../assets/css/multilingual.css?v=20261017_v3" rel="stylesheet" />
     <!-- CMS Live Studio Integration (Active inside dashboard editor) -->
     <script>
         (function() {
