@@ -6798,7 +6798,7 @@
     "access": "Join via Phone or PC · No App Needed",
     "joinBtn": "View & Register",
     "allBtn": "All Sessions",
-    "startsIn": "Session Starts In",
+    "startsIn": "STARTS IN",
     "cdDays": "Days",
     "cdHours": "Hours",
     "cdMins": "Minutes",
@@ -6807,6 +6807,9 @@
     "tzKabul": "Kabul",
     "tzDubai": "Dubai",
     "tzIstanbul": "Istanbul",
-    "privacyNote": "Camera & mic off · Anonymous participation permitted"
+    "privacyNote": "Camera & mic off · Anonymous participation permitted",
+    "dateLabel": "DATE & TIME",
+    "dateValue": "Thursday, 29 October 2026",
+    "yourTime": "Your time"
   }
 }

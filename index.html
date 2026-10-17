@@ -1516,61 +1516,54 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
 
             <!-- Right Countdown Column -->
             <div class="lg:col-span-5">
-                <div class="rounded-3xl bg-neutral-900/90 border border-luxury-gold/30 p-6 sm:p-8 backdrop-blur-xl shadow-2xl relative">
-                    <div class="flex items-center justify-between mb-4">
-                        <span class="text-[10px] sm:text-xs uppercase tracking-[0.2em] text-luxury-gold font-bold flex items-center gap-2">
-                            <i class="fa-solid fa-hourglass-half text-luxury-gold text-xs"></i>
-                            <span data-i18n="homeWebinar.startsIn">Session Starts In</span>
-                        </span>
-                        <span class="text-[10px] text-neutral-400 font-mono tracking-wider">15:30 UTC</span>
+                <div class="rounded-3xl bg-[#0B111E] border border-white/10 p-6 sm:p-8 backdrop-blur-xl shadow-2xl relative">
+                    <!-- Date & Time Heading -->
+                    <div class="mb-5">
+                        <div class="text-[11px] font-bold text-[#C5A880] uppercase tracking-[0.14em] mb-1.5" data-i18n="homeWebinar.dateLabel">DATE &amp; TIME</div>
+                        <div class="text-xl sm:text-2xl font-bold text-white tracking-tight" data-i18n="homeWebinar.dateValue">Thursday, 29 October 2026</div>
                     </div>
+
+                    <!-- Starts In Heading -->
+                    <div class="text-[11px] font-bold text-[#C5A880] uppercase tracking-[0.14em] mb-2.5" data-i18n="homeWebinar.startsIn">STARTS IN</div>
 
                     <!-- 4-Box Countdown Timer -->
-                    <div class="grid grid-cols-4 gap-2 sm:gap-3 text-center" id="home-webinar-countdown" data-cd="2026-10-29T15:30:00Z">
-                        <div class="bg-white/5 border border-white/10 rounded-2xl p-2.5 sm:p-3.5 backdrop-blur-sm">
-                            <div class="font-serif text-2xl sm:text-3xl lg:text-4xl font-bold text-luxury-gold tracking-tight" id="hw-cd-days">--</div>
-                            <div class="text-[9px] sm:text-[10px] uppercase tracking-wider text-neutral-400 mt-1" data-i18n="homeWebinar.cdDays">Days</div>
+                    <div class="grid grid-cols-4 gap-2 sm:gap-2.5 text-center mb-6" id="home-webinar-countdown" data-cd="2026-10-29T15:30:00Z">
+                        <div class="bg-white/[0.04] border border-white/10 rounded-2xl py-3.5 px-1 sm:py-4 sm:px-2">
+                            <div class="font-serif text-2xl sm:text-3xl lg:text-[32px] font-bold text-[#C5A880] leading-none tracking-tight" id="hw-cd-days">--</div>
+                            <div class="text-[10px] sm:text-[11px] text-[#8E9BAE] mt-1.5" data-i18n="homeWebinar.cdDays">Days</div>
                         </div>
-                        <div class="bg-white/5 border border-white/10 rounded-2xl p-2.5 sm:p-3.5 backdrop-blur-sm">
-                            <div class="font-serif text-2xl sm:text-3xl lg:text-4xl font-bold text-luxury-gold tracking-tight" id="hw-cd-hours">--</div>
-                            <div class="text-[9px] sm:text-[10px] uppercase tracking-wider text-neutral-400 mt-1" data-i18n="homeWebinar.cdHours">Hours</div>
+                        <div class="bg-white/[0.04] border border-white/10 rounded-2xl py-3.5 px-1 sm:py-4 sm:px-2">
+                            <div class="font-serif text-2xl sm:text-3xl lg:text-[32px] font-bold text-[#C5A880] leading-none tracking-tight" id="hw-cd-hours">--</div>
+                            <div class="text-[10px] sm:text-[11px] text-[#8E9BAE] mt-1.5" data-i18n="homeWebinar.cdHours">Hours</div>
                         </div>
-                        <div class="bg-white/5 border border-white/10 rounded-2xl p-2.5 sm:p-3.5 backdrop-blur-sm">
-                            <div class="font-serif text-2xl sm:text-3xl lg:text-4xl font-bold text-luxury-gold tracking-tight" id="hw-cd-mins">--</div>
-                            <div class="text-[9px] sm:text-[10px] uppercase tracking-wider text-neutral-400 mt-1" data-i18n="homeWebinar.cdMins">Minutes</div>
+                        <div class="bg-white/[0.04] border border-white/10 rounded-2xl py-3.5 px-1 sm:py-4 sm:px-2">
+                            <div class="font-serif text-2xl sm:text-3xl lg:text-[32px] font-bold text-[#C5A880] leading-none tracking-tight" id="hw-cd-mins">--</div>
+                            <div class="text-[10px] sm:text-[11px] text-[#8E9BAE] mt-1.5" data-i18n="homeWebinar.cdMins">Minutes</div>
                         </div>
-                        <div class="bg-white/5 border border-white/10 rounded-2xl p-2.5 sm:p-3.5 backdrop-blur-sm">
-                            <div class="font-serif text-2xl sm:text-3xl lg:text-4xl font-bold text-luxury-gold tracking-tight" id="hw-cd-secs">--</div>
-                            <div class="text-[9px] sm:text-[10px] uppercase tracking-wider text-neutral-400 mt-1" data-i18n="homeWebinar.cdSecs">Seconds</div>
-                        </div>
-                    </div>
-
-                    <!-- Timezone Breakdown -->
-                    <div class="mt-5 pt-4 border-t border-white/10 space-y-2.5">
-                        <div class="text-[10px] sm:text-xs text-neutral-400 uppercase tracking-widest font-semibold flex items-center justify-between">
-                            <span data-i18n="homeWebinar.tzTitle">Live Starting Times</span>
-                            <span class="text-luxury-gold"><i class="fa-solid fa-earth-americas text-xs"></i></span>
-                        </div>
-                        <div class="grid grid-cols-3 gap-2 text-center text-xs">
-                            <div class="p-2 sm:p-2.5 rounded-xl bg-white/[0.04] border border-white/5">
-                                <span class="block text-[10px] text-neutral-400" data-i18n="homeWebinar.tzKabul">Kabul</span>
-                                <span class="font-bold text-white text-xs sm:text-sm">20:00</span>
-                            </div>
-                            <div class="p-2 sm:p-2.5 rounded-xl bg-luxury-gold/10 border border-luxury-gold/20">
-                                <span class="block text-[10px] text-luxury-gold font-medium" data-i18n="homeWebinar.tzDubai">Dubai</span>
-                                <span class="font-bold text-luxury-gold text-xs sm:text-sm">19:30</span>
-                            </div>
-                            <div class="p-2 sm:p-2.5 rounded-xl bg-white/[0.04] border border-white/5">
-                                <span class="block text-[10px] text-neutral-400" data-i18n="homeWebinar.tzIstanbul">Istanbul</span>
-                                <span class="font-bold text-white text-xs sm:text-sm">18:30</span>
-                            </div>
+                        <div class="bg-white/[0.04] border border-white/10 rounded-2xl py-3.5 px-1 sm:py-4 sm:px-2">
+                            <div class="font-serif text-2xl sm:text-3xl lg:text-[32px] font-bold text-[#C5A880] leading-none tracking-tight" id="hw-cd-secs">--</div>
+                            <div class="text-[10px] sm:text-[11px] text-[#8E9BAE] mt-1.5" data-i18n="homeWebinar.cdSecs">Seconds</div>
                         </div>
                     </div>
 
-                    <!-- Privacy & Anonymous Guarantee -->
-                    <div class="mt-4 pt-3 flex items-center gap-2 text-[10.5px] sm:text-[11px] text-neutral-400">
-                        <i class="fa-solid fa-user-shield text-luxury-gold text-xs shrink-0"></i>
-                        <span data-i18n="homeWebinar.privacyNote">Camera &amp; mic off · Anonymous participation permitted</span>
+                    <!-- Clean Timezone Row List -->
+                    <div class="border-t border-white/10 divide-y divide-white/10 text-[14px]">
+                        <div class="py-2.5 flex items-baseline justify-between" id="hw-tz-kabul">
+                            <span class="text-[#bdbdbd]" data-i18n="homeWebinar.tzKabul">Kabul</span>
+                            <span class="font-bold text-white tabular-nums">20:00</span>
+                        </div>
+                        <div class="py-2.5 flex items-baseline justify-between" id="hw-tz-dubai">
+                            <span class="text-[#bdbdbd]" data-i18n="homeWebinar.tzDubai">Dubai</span>
+                            <span class="font-bold text-white tabular-nums">19:30</span>
+                        </div>
+                        <div class="py-2.5 flex items-baseline justify-between" id="hw-tz-istanbul">
+                            <span class="text-[#bdbdbd]" data-i18n="homeWebinar.tzIstanbul">Istanbul</span>
+                            <span class="font-bold text-white tabular-nums">18:30</span>
+                        </div>
+                        <div class="py-2.5 flex items-baseline justify-between" id="hw-tz-local">
+                            <span class="text-[#C5A880] font-medium" id="hw-user-tz-label">Your time</span>
+                            <span class="font-bold text-white tabular-nums" id="hw-user-tz-time">--:--</span>
+                        </div>
                     </div>
                 </div>
             </div>
@@ -2726,21 +2719,25 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
         var cdContainer = document.getElementById('home-webinar-countdown');
         if (!cdContainer) return;
         var startUtc = cdContainer.getAttribute('data-cd') || '2026-10-29T15:30:00Z';
-        var targetTime = new Date(startUtc).getTime();
+        var targetDate = new Date(startUtc);
+        var targetTime = targetDate.getTime();
         
         var elD = document.getElementById('hw-cd-days');
         var elH = document.getElementById('hw-cd-hours');
         var elM = document.getElementById('hw-cd-mins');
         var elS = document.getElementById('hw-cd-secs');
 
+        var lang = (document.documentElement.lang || 'en').toLowerCase();
+        var isFa = lang === 'fa';
+        var isAr = lang === 'ar';
+
         function formatNum(num) {
             var str = num < 10 ? '0' + num : '' + num;
-            var lang = (document.documentElement.lang || 'en').toLowerCase();
-            if (lang === 'fa') {
+            if (isFa) {
                 var faDigits = ['۰','۱','۲','۳','۴','۵','۶','۷','۸','۹'];
                 return str.replace(/\d/g, function(d) { return faDigits[d]; });
             }
-            if (lang === 'ar') {
+            if (isAr) {
                 var arDigits = ['٠','١','٢','٣','٤','٥','٦','٧','٨','٩'];
                 return str.replace(/\d/g, function(d) { return arDigits[d]; });
             }
@@ -2763,6 +2760,42 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
 
         tick();
         setInterval(tick, 1000);
+
+        // Dynamic User Timezone detection & row display
+        try {
+            var userTZ = Intl.DateTimeFormat().resolvedOptions().timeZone || '';
+            var localRow = document.getElementById('hw-tz-local');
+            var localLabel = document.getElementById('hw-user-tz-label');
+            var localTime = document.getElementById('hw-user-tz-time');
+
+            var presetTZs = {
+                'Asia/Kabul': 'hw-tz-kabul',
+                'Asia/Dubai': 'hw-tz-dubai',
+                'Europe/Istanbul': 'hw-tz-istanbul'
+            };
+
+            if (presetTZs[userTZ]) {
+                var matchEl = document.getElementById(presetTZs[userTZ]);
+                if (matchEl) {
+                    var citySpan = matchEl.querySelector('span:first-child');
+                    if (citySpan) {
+                        citySpan.className = 'text-[#C5A880] font-medium';
+                        var youSuffix = isFa ? ' (به وقت شما)' : (isAr ? ' (توقيتك)' : (lang === 'zh' ? ' (您的当地时间)' : ' · Your time'));
+                        citySpan.textContent += youSuffix;
+                    }
+                }
+                if (localRow) localRow.style.display = 'none';
+            } else if (userTZ && localRow && localLabel && localTime) {
+                var rawCity = userTZ.split('/').pop().replace(/_/g, ' ');
+                var yourTimePrefix = isFa ? 'به وقت شما' : (isAr ? 'توقيتك المحلي' : (lang === 'zh' ? '您的当地时间' : 'Your time'));
+                localLabel.textContent = yourTimePrefix + ' (' + rawCity + ')';
+
+                var loc = isFa ? 'fa-AF-u-ca-gregory' : (isAr ? 'ar-AE' : (lang === 'zh' ? 'zh-CN' : 'en-GB'));
+                var timePart = new Intl.DateTimeFormat(loc, { hour: '2-digit', minute: '2-digit', hourCycle: 'h23', timeZone: userTZ }).format(targetDate);
+                var datePart = new Intl.DateTimeFormat(loc, { weekday: 'short', day: 'numeric', month: 'short', timeZone: userTZ }).format(targetDate);
+                localTime.textContent = timePart + ' · ' + datePart;
+            }
+        } catch(e) {}
     })();
 </script>
 </body>

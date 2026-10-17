@@ -6798,7 +6798,7 @@
     "access": "手机或电脑即可参会 · 无需下载安装应用",
     "joinBtn": "查看详情并报名",
     "allBtn": "全部研讨会",
-    "startsIn": "距离讲座开始还有",
+    "startsIn": "距开始还有",
     "cdDays": "天",
     "cdHours": "时",
     "cdMins": "分",
@@ -6807,6 +6807,9 @@
     "tzKabul": "喀布尔",
     "tzDubai": "迪拜",
     "tzIstanbul": "伊斯坦布尔",
-    "privacyNote": "默认关闭摄像头与麦克风 · 支持匿名参会"
+    "privacyNote": "默认关闭摄像头与麦克风 · 支持匿名参会",
+    "dateLabel": "讲座时间",
+    "dateValue": "2026年10月29日 星期四",
+    "yourTime": "您的当地时间"
   }
 }
