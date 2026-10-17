@@ -5,14 +5,16 @@
  * Instructions:
  * 1. Open your Google Spreadsheet (e.g. "Sharif Group CRM 2026").
  * 2. Click "Extensions" > "Apps Script".
- * 3. Replace all existing code with this script (or append if keeping custom functions).
- * 4. In Apps Script, go to Project Settings (gear icon) > Script Properties and add:
+ * 3. Replace all existing code with this script.
+ * 4. Google Mail (MailApp) handles confirmation emails automatically out-of-the-box
+ *    using your Google account. No external API keys or domain verifications required!
+ * 5. (Optional) If you ever want to use Resend API, add Script Properties:
  *    - RESEND_API_KEY : Your Resend API key (e.g. re_xxxxxxxxx)
- *    - SENDER_EMAIL   : webinars@sharifgroup.ae (or onboarding@resend.dev during testing)
- * 5. Click "Deploy" > "Manage Deployments" > "New Deployment" > Web App.
+ *    - SENDER_EMAIL   : webinars@sharifgroup.ae
+ * 6. Click "Deploy" > "Manage Deployments" > "New Deployment" > Web App.
  *    - Execute as: "Me"
  *    - Who has access: "Anyone"
- * 6. Copy the Web App URL and update CRM_WEBHOOK_URL in assets/js/webinars-app.js & forms.js.
+ * 7. Copy the Web App URL and set CRM_WEBHOOK_URL in assets/js/webinars-app.js.
  * ==============================================================================
  */
 
@@ -20,12 +22,16 @@
 const CONFIG = {
   WEBINAR_SHEET_NAME: "Webinar_Registrations",
   LEADS_SHEET_NAME: "Inquiries",
+  SENDER_NAME: "Sharif Group",
+  REPLY_TO_EMAIL: "contact@sharifgroup.ae",
   DEFAULT_SENDER: "Sharif Group <webinars@sharifgroup.ae>",
-  RESEND_API_URL: "https://api.resend.com/emails"
+  RESEND_API_URL: "https://api.resend.com/emails",
+  // Default to Google Mail (MailApp) as requested by client
+  PREFER_GOOGLE_MAIL: true
 };
 
 /**
- * Handle incoming POST requests from the website forms
+ * Handle incoming POST requests from website forms
  */
 function doPost(e) {
   var lock = LockService.getScriptLock();
@@ -75,7 +81,7 @@ function doPost(e) {
 }
 
 /**
- * Handle Webinar Registrations with Deduplication & Resend Email
+ * Handle Webinar Registrations with Deduplication & Google Mail Confirmation
  */
 function handleWebinarRegistration(data) {
   var ss = SpreadsheetApp.getActiveSpreadsheet();
@@ -99,28 +105,31 @@ function handleWebinarRegistration(data) {
       "Source URL",
       "Page Path",
       "Status",
-      "Email Status"
+      "Email Dispatch Status"
     ];
     sheet.appendRow(headers);
-    sheet.getRange(1, 1, 1, headers.length).setFontWeight("bold").setBackground("#FAF6EE");
+    sheet.getRange(1, 1, 1, headers.length)
+      .setFontWeight("bold")
+      .setBackground("#070E1A")
+      .setFontColor("#C5A880");
     sheet.setFrozenRows(1);
   }
 
   var nowUtc = new Date().toISOString();
-  var webinarId = (data.webinar_id || "WEB01").trim();
-  var webinarSlug = (data.webinar_slug || "dominica-second-passport-for-afghans").trim();
-  var fullName = (data.fullName || data.name || "").trim();
-  var dialCode = (data.dialCode || "+93").trim();
-  var rawPhone = (data.phone || "").replace(/[^\d+]/g, "").trim();
-  var email = (data.email || "").trim().toLowerCase();
-  var residence = (data.residenceCountry || "").trim();
-  var question = (data.question || "").trim();
-  var newsletter = data.newsletter ? "Yes" : "No";
-  var lang = (data.lang || "fa").trim();
-  var source = (data.source || "").trim();
-  var page = (data.page || "").trim();
+  var webinarId = data.webinar_id || "WEB01";
+  var webinarSlug = data.slug || "";
+  var fullName = data.fullName || data.name || "";
+  var dialCode = data.dialCode || "";
+  var rawPhone = data.whatsapp_e164 || data.phone || "";
+  var email = data.email || "";
+  var residence = data.residence_country || data.country || "";
+  var question = data.question || "";
+  var newsletter = data.newsletter_optin ? "Yes" : "No";
+  var lang = data.lang || "fa";
+  var source = data.source || "";
+  var page = data.page || "";
 
-  // Deduplication check: Check existing phone + webinar_id in sheet
+  // Check for duplicate registrations by (webinar_id + phone)
   var dataRange = sheet.getDataRange();
   var values = dataRange.getValues();
   var isDuplicate = false;
@@ -136,19 +145,19 @@ function handleWebinarRegistration(data) {
     }
   }
 
-  var emailStatus = "Not Sent (No Email)";
+  var emailStatus = "Not Sent (No Email Provided)";
 
-  // Send automatic confirmation email via Resend if email is provided
+  // Send automatic confirmation email via Google Mail (or Resend fallback)
   if (email && email.indexOf("@") !== -1) {
     try {
-      emailStatus = sendConfirmationEmailViaResend(email, fullName, webinarId, lang);
+      emailStatus = sendConfirmationEmail(email, fullName, webinarId, lang);
     } catch (mailErr) {
       emailStatus = "Failed: " + mailErr.toString();
     }
   }
 
   if (isDuplicate) {
-    // Note duplicate timestamp in existing row without adding duplicate spam entry
+    // Note duplicate timestamp in existing row without adding spam entry
     sheet.getRange(existingRowIndex, 14).setValue("Duplicate Re-registration: " + nowUtc);
     return { status: "success", duplicate: true, message: "Existing registration confirmed." };
   }
@@ -206,20 +215,79 @@ function handleStandardLead(data) {
 }
 
 /**
- * Resend.com Automated Confirmation Email Dispatcher
+ * Smart Confirmation Email Dispatcher (Google Mail + Resend Support)
  */
-function sendConfirmationEmailViaResend(recipientEmail, recipientName, webinarId, lang) {
+function sendConfirmationEmail(recipientEmail, recipientName, webinarId, lang) {
+  var subject = (lang === "fa")
+    ? "تاییدیه ثبت‌نام وبینار شریف گروپ | Sharif Group Webinar Confirmation"
+    : "Sharif Group Webinar Confirmation | تاییدیه ثبت‌نام وبینار شریف گروپ";
+  var htmlContent = getEmailTemplate(recipientName, lang);
+  var plainText = (lang === "fa")
+    ? "سلام " + (recipientName || "دوست گرامی") + "،\n\nثبت‌نام شما در وبینار شریف گروپ با موفقیت انجام شد.\nلینک ورود به جلسه قبل از شروع برای شما ارسال خواهد شد.\n\nشریف گروپ دبی"
+    : "Dear " + (recipientName || "Valued Client") + ",\n\nYour registration for the Sharif Group live webinar has been confirmed.\nThe direct joining link will be sent to you before the session starts.\n\nSharif Group Dubai";
+
   var scriptProperties = PropertiesService.getScriptProperties();
-  var apiKey = scriptProperties.getProperty("RESEND_API_KEY");
+  var resendApiKey = scriptProperties.getProperty("RESEND_API_KEY");
   var fromAddress = scriptProperties.getProperty("SENDER_EMAIL") || CONFIG.DEFAULT_SENDER;
 
-  if (!apiKey) {
-    return "Skipped (RESEND_API_KEY not configured in Script Properties)";
+  // 1. Primary: Use Google Mail (MailApp) directly (Zero setup required)
+  if (CONFIG.PREFER_GOOGLE_MAIL || !resendApiKey) {
+    try {
+      MailApp.sendEmail({
+        to: recipientEmail,
+        subject: subject,
+        body: plainText,
+        htmlBody: htmlContent,
+        name: CONFIG.SENDER_NAME,
+        replyTo: CONFIG.REPLY_TO_EMAIL
+      });
+      return "Sent via Google Mail (" + new Date().toISOString() + ")";
+    } catch (gmailErr) {
+      // If Google Mail hits daily quota and Resend key is set, fallback to Resend
+      if (resendApiKey) {
+        return sendViaResend(recipientEmail, subject, htmlContent, resendApiKey, fromAddress) + " (Google Mail failed: " + gmailErr.message + ")";
+      }
+      return "Google Mail Error: " + gmailErr.message;
+    }
   }
 
-  var subject = "Sharif Group Webinar Confirmation | تاییدیه ثبت‌نام وبینار شریف گروپ";
-  var htmlContent = getEmailTemplate(recipientName, lang);
+  // 2. If configured to try Resend first, attempt Resend with Google Mail fallback
+  try {
+    var resendStatus = sendViaResend(recipientEmail, subject, htmlContent, resendApiKey, fromAddress);
+    if (resendStatus.indexOf("Sent successfully") !== -1) {
+      return resendStatus;
+    }
+    // Fallback to Google Mail if Resend returns an error
+    MailApp.sendEmail({
+      to: recipientEmail,
+      subject: subject,
+      body: plainText,
+      htmlBody: htmlContent,
+      name: CONFIG.SENDER_NAME,
+      replyTo: CONFIG.REPLY_TO_EMAIL
+    });
+    return "Sent via Google Mail (Resend fallback: " + resendStatus + ")";
+  } catch (err) {
+    try {
+      MailApp.sendEmail({
+        to: recipientEmail,
+        subject: subject,
+        body: plainText,
+        htmlBody: htmlContent,
+        name: CONFIG.SENDER_NAME,
+        replyTo: CONFIG.REPLY_TO_EMAIL
+      });
+      return "Sent via Google Mail (Resend exception fallback)";
+    } catch (finalErr) {
+      return "Email Dispatch Error: " + finalErr.message;
+    }
+  }
+}
 
+/**
+ * Resend.com Dispatcher Helper
+ */
+function sendViaResend(recipientEmail, subject, htmlContent, apiKey, fromAddress) {
   var payload = {
     from: fromAddress,
     to: [recipientEmail],
@@ -249,7 +317,7 @@ function sendConfirmationEmailViaResend(recipientEmail, recipientName, webinarId
 }
 
 /**
- * Multilingual HTML Email Template
+ * Multilingual Branded HTML Email Template
  */
 function getEmailTemplate(name, lang) {
   var isFa = lang === "fa";
@@ -299,7 +367,7 @@ function getEmailTemplate(name, lang) {
 }
 
 /**
- * Add custom spreadsheet menu for quick Excel / CSV export
+ * Custom spreadsheet menu for stats
  */
 function onOpen() {
   var ui = SpreadsheetApp.getUi();

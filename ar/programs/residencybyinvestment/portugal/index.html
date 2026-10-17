@@ -311,8 +311,95 @@ j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
             box-shadow: 0 4px 12px rgba(0,0,0,0.1);
         }
         .custom-select-dropdown.active { display: block; }
-    </style>
-<link href="../../../assets/css/multilingual.css?v=4" rel="stylesheet"/>
+    
+
+/* Header Anti-Collision Responsive Rules */
+.nav-new-badge,
+#main-header [data-i18n="nav.newBadge"] {
+    display: inline-flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+    font-size: 7.5px !important;
+    line-height: 1 !important;
+    padding: 2px 4.5px !important;
+    border-radius: 9999px !important;
+    background-color: #786142 !important;
+    color: #ffffff !important;
+    font-weight: 700 !important;
+    letter-spacing: 0 !important;
+    margin-left: 4px !important;
+    margin-right: 0 !important;
+    vertical-align: middle !important;
+    flex-shrink: 0 !important;
+    white-space: nowrap !important;
+}
+[dir="rtl"] .nav-new-badge,
+[dir="rtl"] #main-header [data-i18n="nav.newBadge"] {
+    margin-left: 0 !important;
+    margin-right: 4px !important;
+}
+@media (max-width: 1535px) {
+    #main-header .nav-sep,
+    #main-header nav span.text-neutral-300,
+    #main-header span.text-neutral-300 {
+        display: none !important;
+    }
+    #main-header nav {
+        gap: 0.25rem 0.65rem !important;
+    }
+    #main-header nav > * {
+        letter-spacing: 0.05em !important;
+        font-size: 10px !important;
+    }
+    #main-header a[data-i18n="nav.eligibilityChecker"],
+    #main-header a[data-i18n="nav.bookConsultation"],
+    #main-header a[href*="eligibilitychecker"],
+    #main-header a[href*="contact"] {
+        padding: 0.45rem 0.85rem !important;
+        font-size: 9.5px !important;
+        letter-spacing: 0.06em !important;
+    }
+}
+@media (max-width: 1280px) {
+    #main-header nav {
+        gap: 0.2rem 0.45rem !important;
+    }
+    #main-header nav > * {
+        letter-spacing: 0.03em !important;
+        font-size: 9.5px !important;
+    }
+    #main-header a[data-i18n="nav.eligibilityChecker"],
+    #main-header a[data-i18n="nav.bookConsultation"],
+    #main-header a[href*="eligibilitychecker"],
+    #main-header a[href*="contact"] {
+        padding: 0.35rem 0.7rem !important;
+        font-size: 9px !important;
+        letter-spacing: 0.04em !important;
+    }
+}
+@media (max-width: 1150px) {
+    #main-header nav,
+    #main-header div.hidden.lg\:flex {
+        display: none !important;
+    }
+    #main-header button[onclick*="toggleMobileMenu"],
+    #main-header button[aria-label="Toggle Navigation Menu"],
+    #main-header button[aria-label="Toggle Menu"],
+    #main-header .lg\:hidden,
+    #main-header .xl\:hidden {
+        display: flex !important;
+    }
+}
+html[lang="ar"] #main-header nav > *,
+html[lang="fa"] #main-header nav > *,
+[dir="rtl"] #main-header nav > *,
+[dir="rtl"] #main-header a[data-i18n="nav.eligibilityChecker"],
+[dir="rtl"] #main-header a[data-i18n="nav.bookConsultation"] {
+    letter-spacing: 0 !important;
+}
+
+</style>
+<link href="../../../assets/css/multilingual.css?v=20261017_v2" rel="stylesheet"/>
 <!-- CMS Live Studio Integration (Active inside dashboard editor) -->
 <script>
         (function() {
@@ -342,7 +429,7 @@ j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
 <!-- End Google Tag Manager (noscript) -->
 <!-- HEADER COMPONENT -->
 <header class="fixed top-0 left-0 w-full z-[100] border-b border-neutral-200 transition-all duration-500 bg-white mega-blur" id="main-header">
-<div class="max-w-[1440px] mx-auto px-4 sm:px-8 h-20 flex items-center justify-between relative">
+<div class="max-w-[1600px] w-full mx-auto px-4 sm:px-8 h-20 flex items-center justify-between relative">
 <div class="flex items-center space-x-5">
 <a class="flex items-center shrink-0" href="/ar/" onclick="sessionStorage.setItem('sharif_preloader_shown', 'true');">
 <img alt="Sharif Group Logo" class="h-14 w-auto object-contain transition-all duration-500 opacity-100" id="nav-logo" src="../../../assets/images/vector_b5a81734.svg"/>
@@ -352,22 +439,27 @@ j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
 <div class="relative py-6" onmouseenter="openMegaMenu('citizenship-menu')">
 <a class="hover:text-luxury-gold transition duration-200 flex items-center gap-1.5" href="/ar/citizenshipbyinvestment/"><span data-i18n="nav.citizenship">الجنسية</span> <i class="fa-solid fa-chevron-down text-[8px] transition-transform duration-300" id="arrow-citizenship-menu"></i></a>
 </div>
-<span class="text-neutral-300 font-light">|</span>
+<span class="nav-sep text-neutral-300 font-light">|</span>
 <div class="relative py-6" onmouseenter="openMegaMenu('residency-menu')">
 <a class="hover:text-luxury-gold transition duration-200 flex items-center gap-1.5" href="/ar/residencybyinvestment/"><span data-i18n="nav.residency">الإقامة</span> <i class="fa-solid fa-chevron-down text-[8px] transition-transform duration-300" id="arrow-residency-menu"></i></a>
 </div>
-<span class="text-neutral-300 font-light">|</span>
+<span class="nav-sep text-neutral-300 font-light">|</span>
 <div class="relative py-6" onmouseenter="openMegaMenu('services-menu')">
 <a class="hover:text-luxury-gold transition duration-200 flex items-center gap-1.5" href="/ar/realestate/"><span data-i18n="nav.moreServices">خدمات أخرى</span> <i class="fa-solid fa-chevron-down text-[8px] transition-transform duration-300" id="arrow-services-menu"></i></a>
 </div>
-<span class="text-neutral-300 font-light">|</span>
+<span class="nav-sep text-neutral-300 font-light">|</span>
 <div class="relative py-6" onmouseenter="openMegaMenu('about-menu')">
 <a class="hover:text-luxury-gold transition duration-200 flex items-center gap-1.5" href="/ar/aboutus/"><span data-i18n="nav.aboutUs">من نحن</span> <i class="fa-solid fa-chevron-down text-[8px] transition-transform duration-300" id="arrow-about-menu"></i></a>
 </div>
-<span class="text-neutral-300 font-light">|</span>
+<span class="nav-sep text-neutral-300 font-light">|</span>
 <a class="hover:text-luxury-gold transition duration-200 py-6" data-i18n="nav.contact" href="/ar/contact/" onmouseenter="scheduleMenuClose()">اتصل بنا</a>
-<span class="text-neutral-300 font-light">|</span>
+<span class="nav-sep text-neutral-300 font-light">|</span>
 <a class="hover:text-luxury-gold transition duration-200 py-6" data-i18n="nav.blog" href="/ar/blog/" onmouseenter="scheduleMenuClose()">المدونة</a>
+<span class="nav-sep text-neutral-300 font-light">|</span>
+<a class="hover:text-luxury-gold transition duration-200 py-2 inline-flex items-center" href="/ar/webinars/" onmouseenter="typeof closeAllMegaMenus === 'function' ? closeAllMegaMenus() : (typeof scheduleMenuClose === 'function' ? scheduleMenuClose() : null)">
+<span data-i18n="nav.webinars">الندوات عبر الإنترنت</span>
+<span class="nav-new-badge ml-1.5 px-1.5 py-0.5 rounded-full bg-[#786142] text-white text-[7.5px] font-bold leading-none inline-flex items-center justify-center shrink-0" data-i18n="nav.newBadge" style="margin-left: 5px; background-color: #786142; color: #ffffff; border-radius: 9999px; padding: 2px 5px; font-size: 7.5px; font-weight: 700; line-height: 1; display: inline-flex; align-items: center; white-space: nowrap;">جديد</span>
+</a>
 </nav>
 </div>
 <!-- Right Action Pill Buttons -->
@@ -633,6 +725,12 @@ j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
 </div>
 <div>
 <a class="block py-2.5 border-b border-neutral-100 hover:text-luxury-gold transition" href="/ar/blog/">BLOG</a>
+</div>
+<div>
+<a class="py-2.5 border-b border-neutral-100 hover:text-luxury-gold transition flex items-center justify-between" href="/ar/webinars/" onclick="toggleMobileMenu()">
+<span data-i18n="mobileMenu.webinars">الندوات عبر الإنترنت</span>
+<span class="inline-block text-[8px] leading-none px-1.5 py-0.5 rounded-full bg-[#786142] text-white tracking-wider font-bold" data-i18n="nav.newBadge">جديد</span>
+</a>
 </div>
 </nav>
 <div class="pt-4 flex flex-col space-y-3 pb-8">
@@ -2214,6 +2312,7 @@ j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
 <li><a class="hover:text-luxury-gold transition" data-i18n="megaMenu.educationalAdvisory" href="/ar/educationaladvisory/">الاستشارات التعليمية</a></li>
 <li><a class="hover:text-luxury-gold transition" data-i18n="nav.contact" href="/ar/contact/">اتصل بنا</a></li>
 <li><a class="hover:text-luxury-gold transition" data-i18n="megaMenu.insights" href="/ar/blog/">الرؤى والمدونة</a></li>
+<li><a class="hover:text-luxury-gold transition inline-flex items-center gap-1.5" href="/ar/webinars/"><span data-i18n="footer.webinars">الندوات عبر الإنترنت</span> <span class="inline-block text-[8px] leading-none px-1.5 py-0.5 rounded-full bg-[#786142] text-white tracking-wider font-bold" data-i18n="nav.newBadge">جديد</span></a></li>
 <li><a class="hover:text-luxury-gold transition" data-i18n="nav.eligibilityChecker" href="/ar/eligibilitychecker/">التحقق من الأهلية</a></li>
 </ul>
 </div>

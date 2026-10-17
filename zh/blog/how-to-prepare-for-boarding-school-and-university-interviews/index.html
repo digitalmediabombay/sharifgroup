@@ -238,7 +238,7 @@
     </script>
 <!-- Compiled Tailwind Production CSS (Zero Runtime Compiler) -->
 <link href="../../assets/css/tailwind.min.css?v=20260920_v1" rel="stylesheet"/>
-<link href="../../assets/css/multilingual.css?v=7" rel="stylesheet"/>
+<link href="../../assets/css/multilingual.css?v=20261017_v2" rel="stylesheet"/>
 <!-- Google Fonts & Icon Libraries -->
 <link href="https://fonts.googleapis.com" rel="preconnect"/>
 <link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect"/>
@@ -294,14 +294,101 @@
         .country-list-container::-webkit-scrollbar { width: 5px; }
         .country-list-container::-webkit-scrollbar-track { background: #FDFCFB; }
         .country-list-container::-webkit-scrollbar-thumb { background: #C5A880; border-radius: 3px; }
-    </style>
+    
+
+/* Header Anti-Collision Responsive Rules */
+.nav-new-badge,
+#main-header [data-i18n="nav.newBadge"] {
+    display: inline-flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+    font-size: 7.5px !important;
+    line-height: 1 !important;
+    padding: 2px 4.5px !important;
+    border-radius: 9999px !important;
+    background-color: #786142 !important;
+    color: #ffffff !important;
+    font-weight: 700 !important;
+    letter-spacing: 0 !important;
+    margin-left: 4px !important;
+    margin-right: 0 !important;
+    vertical-align: middle !important;
+    flex-shrink: 0 !important;
+    white-space: nowrap !important;
+}
+[dir="rtl"] .nav-new-badge,
+[dir="rtl"] #main-header [data-i18n="nav.newBadge"] {
+    margin-left: 0 !important;
+    margin-right: 4px !important;
+}
+@media (max-width: 1535px) {
+    #main-header .nav-sep,
+    #main-header nav span.text-neutral-300,
+    #main-header span.text-neutral-300 {
+        display: none !important;
+    }
+    #main-header nav {
+        gap: 0.25rem 0.65rem !important;
+    }
+    #main-header nav > * {
+        letter-spacing: 0.05em !important;
+        font-size: 10px !important;
+    }
+    #main-header a[data-i18n="nav.eligibilityChecker"],
+    #main-header a[data-i18n="nav.bookConsultation"],
+    #main-header a[href*="eligibilitychecker"],
+    #main-header a[href*="contact"] {
+        padding: 0.45rem 0.85rem !important;
+        font-size: 9.5px !important;
+        letter-spacing: 0.06em !important;
+    }
+}
+@media (max-width: 1280px) {
+    #main-header nav {
+        gap: 0.2rem 0.45rem !important;
+    }
+    #main-header nav > * {
+        letter-spacing: 0.03em !important;
+        font-size: 9.5px !important;
+    }
+    #main-header a[data-i18n="nav.eligibilityChecker"],
+    #main-header a[data-i18n="nav.bookConsultation"],
+    #main-header a[href*="eligibilitychecker"],
+    #main-header a[href*="contact"] {
+        padding: 0.35rem 0.7rem !important;
+        font-size: 9px !important;
+        letter-spacing: 0.04em !important;
+    }
+}
+@media (max-width: 1150px) {
+    #main-header nav,
+    #main-header div.hidden.lg\:flex {
+        display: none !important;
+    }
+    #main-header button[onclick*="toggleMobileMenu"],
+    #main-header button[aria-label="Toggle Navigation Menu"],
+    #main-header button[aria-label="Toggle Menu"],
+    #main-header .lg\:hidden,
+    #main-header .xl\:hidden {
+        display: flex !important;
+    }
+}
+html[lang="ar"] #main-header nav > *,
+html[lang="fa"] #main-header nav > *,
+[dir="rtl"] #main-header nav > *,
+[dir="rtl"] #main-header a[data-i18n="nav.eligibilityChecker"],
+[dir="rtl"] #main-header a[data-i18n="nav.bookConsultation"] {
+    letter-spacing: 0 !important;
+}
+
+</style>
 </head>
 <body class="bg-[#FDFCFB] text-neutral-900 font-sans antialiased overflow-x-hidden selection:bg-luxury-gold selection:text-white">
 <!-- Google Tag Manager (noscript) -->
 <noscript><iframe height="0" src="https://www.googletagmanager.com/ns.html?id=GTM-WQV73SMP" style="display:none;visibility:hidden" width="0"></iframe></noscript>
 <!-- End Google Tag Manager (noscript) -->
 <header class="fixed top-0 left-0 w-full z-[100] border-b border-neutral-200 transition-all duration-500 bg-white mega-blur" id="main-header">
-<div class="max-w-[1440px] mx-auto px-4 sm:px-8 h-20 flex items-center justify-between relative">
+<div class="max-w-[1600px] w-full mx-auto px-4 sm:px-8 h-20 flex items-center justify-between relative">
 <div class="flex items-center space-x-5">
 <a class="flex items-center shrink-0" href="/zh/" onclick="sessionStorage.setItem('sharif_preloader_shown', 'true');">
 <img alt="Sharif Group Logo" class="h-14 w-auto object-contain transition-all duration-500 opacity-100" id="nav-logo" src="/assets/images/vector_b5a81734.svg"/>
@@ -311,22 +398,27 @@
 <div class="relative py-2" onmouseenter="openMegaMenu('citizenship-menu')">
 <a class="hover:text-luxury-gold transition duration-200 flex items-center gap-1.5" href="/zh/citizenshipbyinvestment/"><span data-i18n="nav.citizenship">公民身份</span> <i class="fa-solid fa-chevron-down text-[8px] transition-transform duration-300" id="arrow-citizenship-menu"></i></a>
 </div>
-<span class="text-neutral-300 font-light">|</span>
+<span class="nav-sep text-neutral-300 font-light">|</span>
 <div class="relative py-2" onmouseenter="openMegaMenu('residency-menu')">
 <a class="hover:text-luxury-gold transition duration-200 flex items-center gap-1.5" href="/zh/residencybyinvestment/"><span data-i18n="nav.residency">居留</span> <i class="fa-solid fa-chevron-down text-[8px] transition-transform duration-300" id="arrow-residency-menu"></i></a>
 </div>
-<span class="text-neutral-300 font-light">|</span>
+<span class="nav-sep text-neutral-300 font-light">|</span>
 <div class="relative py-2" onmouseenter="openMegaMenu('services-menu')">
 <a class="hover:text-luxury-gold transition duration-200 flex items-center gap-1.5" href="/zh/realestate/"><span data-i18n="nav.moreServices">其他服务</span> <i class="fa-solid fa-chevron-down text-[8px] transition-transform duration-300" id="arrow-services-menu"></i></a>
 </div>
-<span class="text-neutral-300 font-light">|</span>
+<span class="nav-sep text-neutral-300 font-light">|</span>
 <div class="relative py-2" onmouseenter="openMegaMenu('about-menu')">
 <a class="hover:text-luxury-gold transition duration-200 flex items-center gap-1.5" href="/zh/aboutus/"><span data-i18n="nav.aboutUs">关于我们</span> <i class="fa-solid fa-chevron-down text-[8px] transition-transform duration-300" id="arrow-about-menu"></i></a>
 </div>
-<span class="text-neutral-300 font-light">|</span>
+<span class="nav-sep text-neutral-300 font-light">|</span>
 <a class="hover:text-luxury-gold transition duration-200 py-2" data-i18n="nav.contact" href="/zh/contact/" onmouseenter="closeAllMegaMenus()">联系我们</a>
-<span class="text-neutral-300 font-light">|</span>
+<span class="nav-sep text-neutral-300 font-light">|</span>
 <a class="hover:text-luxury-gold transition duration-200 py-2" data-i18n="nav.blog" href="/zh/blog/" onmouseenter="closeAllMegaMenus()">博客</a>
+<span class="nav-sep text-neutral-300 font-light">|</span>
+<a class="hover:text-luxury-gold transition duration-200 py-2 inline-flex items-center" href="/zh/webinars/" onmouseenter="typeof closeAllMegaMenus === 'function' ? closeAllMegaMenus() : (typeof scheduleMenuClose === 'function' ? scheduleMenuClose() : null)">
+<span data-i18n="nav.webinars">网络研讨会</span>
+<span class="nav-new-badge ml-1.5 px-1.5 py-0.5 rounded-full bg-[#786142] text-white text-[7.5px] font-bold leading-none inline-flex items-center justify-center shrink-0" data-i18n="nav.newBadge" style="margin-left: 5px; background-color: #786142; color: #ffffff; border-radius: 9999px; padding: 2px 5px; font-size: 7.5px; font-weight: 700; line-height: 1; display: inline-flex; align-items: center; white-space: nowrap;">最新</span>
+</a>
 </nav>
 </div>
 <!-- Right Action Pill Buttons -->
@@ -434,6 +526,10 @@
 <a class="py-3 border-b border-neutral-200 hover:text-luxury-gold transition block" data-i18n="megaMenu.aboutFounder" href="/zh/about-founder/" onclick="toggleMobileMenu()">关于创始人 | 阿里·谢里夫</a>
 <a class="py-3 border-b border-neutral-200 hover:text-luxury-gold transition block" data-i18n="nav.socialResp" href="/zh/socialresponsibility/" onclick="toggleMobileMenu()">社会责任</a>
 <a class="py-3 border-b border-neutral-200 hover:text-luxury-gold transition block" data-i18n="nav.blog" href="/zh/blog/" onclick="toggleMobileMenu()">博客</a>
+<a class="py-3 border-b border-neutral-200 hover:text-luxury-gold transition flex items-center justify-between" href="/zh/webinars/" onclick="toggleMobileMenu()">
+<span data-i18n="mobileMenu.webinars">网络研讨会</span>
+<span class="inline-block text-[8px] leading-none px-1.5 py-0.5 rounded-full bg-[#786142] text-white tracking-wider font-bold" data-i18n="nav.newBadge">最新</span>
+</a>
 <a class="py-3 border-b border-neutral-200 text-[#C5A880] transition block" data-i18n="nav.contact" href="/zh/contact/" onclick="toggleMobileMenu()">联系我们</a>
 </nav>
 </div>
@@ -1068,6 +1164,7 @@
 <li><a class="hover:text-luxury-gold transition" data-i18n="megaMenu.educationalAdvisory" href="/zh/educationaladvisory/">教育咨询</a></li>
 <li><a class="hover:text-luxury-gold transition" data-i18n="nav.contact" href="/zh/contact/">联系我们</a></li>
 <li><a class="hover:text-luxury-gold transition" data-i18n="megaMenu.insights" href="/zh/blog/">洞察与博客</a></li>
+<li><a class="hover:text-luxury-gold transition inline-flex items-center gap-1.5" href="/zh/webinars/"><span data-i18n="footer.webinars">网络研讨会</span> <span class="inline-block text-[8px] leading-none px-1.5 py-0.5 rounded-full bg-[#786142] text-white tracking-wider font-bold" data-i18n="nav.newBadge">最新</span></a></li>
 <li><a class="hover:text-luxury-gold transition" data-i18n="nav.eligibilityChecker" href="/zh/eligibilitychecker/">资格检查</a></li>
 </ul>
 </div>
