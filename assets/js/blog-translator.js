@@ -1371,6 +1371,17 @@
             var newLang = (e.detail && e.detail.lang) || (window.getCurrentLanguage && window.getCurrentLanguage()) || 'en';
             translateStaticArticlePage(newLang);
         });
+
+        // Dynamic matching webinar floating banner
+        try {
+            if (!window.__sgWebinarBannerLoaded && document.querySelector) {
+                var isFile = window.location.protocol === 'file:';
+                var bScr = document.createElement('script');
+                bScr.src = isFile ? '../../assets/js/blog-webinar-banner.js' : '/assets/js/blog-webinar-banner.js';
+                bScr.async = true;
+                document.head.appendChild(bScr);
+            }
+        } catch(e) {}
     }
 
     if (document.readyState === 'loading') {
