@@ -827,14 +827,56 @@
         });
       });
     }
-    // Desktop hover & click handling for mega menus
+    // Desktop hover & click handling for mega menus with smooth grace period
+    let mmTimer = null;
+    const closeAllMegaMenus = () => {
+      clearTimeout(mmTimer);
+      $$('.has-dd').forEach(d => d.classList.remove('is-open'));
+    };
+
     $$('.has-dd').forEach(item => {
       const link = $('.nav-link', item);
+      const menu = $('.mega-menu', item);
+
+      // On mouseenter nav trigger
+      item.addEventListener('mouseenter', () => {
+        if (window.innerWidth >= 1024) {
+          clearTimeout(mmTimer);
+          $$('.has-dd').forEach(d => { if (d !== item) d.classList.remove('is-open'); });
+          item.classList.add('is-open');
+        }
+      });
+
+      // On mouseleave nav trigger -> wait 250ms before closing
+      item.addEventListener('mouseleave', () => {
+        if (window.innerWidth >= 1024) {
+          clearTimeout(mmTimer);
+          mmTimer = setTimeout(closeAllMegaMenus, 250);
+        }
+      });
+
+      // Keep menu open when mouse moves over the dropdown content
+      if (menu) {
+        menu.addEventListener('mouseenter', () => {
+          if (window.innerWidth >= 1024) {
+            clearTimeout(mmTimer);
+            item.classList.add('is-open');
+          }
+        });
+        menu.addEventListener('mouseleave', () => {
+          if (window.innerWidth >= 1024) {
+            clearTimeout(mmTimer);
+            mmTimer = setTimeout(closeAllMegaMenus, 250);
+          }
+        });
+      }
+
+      // Click to toggle on desktop
       if (link) {
         link.addEventListener('click', e => {
           if (window.innerWidth >= 1024) {
             const isOpen = item.classList.contains('is-open');
-            $$('.has-dd').forEach(d => { if (d !== item) d.classList.remove('is-open'); });
+            closeAllMegaMenus();
             if (!isOpen) {
               e.preventDefault();
               item.classList.add('is-open');
@@ -843,9 +885,10 @@
         });
       }
     });
+
     document.addEventListener('click', e => {
       if (!e.target.closest('.has-dd')) {
-        $$('.has-dd').forEach(d => d.classList.remove('is-open'));
+        closeAllMegaMenus();
       }
       if (box && !e.target.closest('#langBox')) {
         box.classList.remove('open');
