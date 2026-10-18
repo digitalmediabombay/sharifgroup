@@ -95,6 +95,7 @@ window.WEBINAR_I18N = {
         startsIn: "Starts in", whenTitle: "Date & time", noInstall: "No app needed", phoneOk: "Works on mobile",
         upTitle: "Upcoming <em>Sessions</em>", seriesTag: "Series 01 · Dominica", seriesTitle: "Dominica Pilot Series", seriesText: "Three sessions, two weeks apart — from the basics to documents and your own questions. Every session is free and in Persian (Dari).",
         sessionCta: "Details", howEyebrow: "Before you join", howTitle: "How to <em>join</em>",
+        howSub: "Follow these four simple steps to participate in any live session — no downloads, apps, or registration required.",
         steps: [
           { t: "Open the link", d: "Tap “Join the webinar” on this page from your phone or computer. No app to install." },
           { t: "Enter any name", d: "You can join with any name. Your camera and microphone stay off." },
@@ -256,6 +257,7 @@ window.WEBINAR_I18N = {
         startsIn: "زمان باقی‌مانده تا شروع", whenTitle: "تاریخ و ساعت", noInstall: "بدون نصب برنامه", phoneOk: "قابل استفاده با گوشی",
         upTitle: "جلسه‌های <em>پیش رو</em>", seriesTag: "مجموعه ۰۱ · دومینیکا", seriesTitle: "مجموعه آزمایشی دومینیکا", seriesText: "سه جلسه با فاصله دو هفته — از آشنایی کلی تا مدارک و پرسش‌های خود شما. همه جلسه‌ها رایگان و به فارسی (دری) است.",
         sessionCta: "جزئیات", howEyebrow: "پیش از ورود", howTitle: "چطور <em>وارد شویم</em>",
+        howSub: "چهار مرحله ساده برای ورود و مشارکت در جلسات زنده — بدون نیاز به نصب هیچ‌گونه اپلیکیشن.",
         steps: [
           { t: "لینک را باز کنید", d: "از گوشی یا کمپیوتر روی «ورود به وبینار» در همین صفحه بزنید. نیازی به نصب برنامه نیست." },
           { t: "با هر نامی وارد شوید", d: "می‌توانید با هر نامی وارد شوید. کمره و مایکروفون شما خاموش است." },
@@ -417,6 +419,7 @@ window.WEBINAR_I18N = {
         startsIn: "تبدأ بعد", whenTitle: "التاريخ والوقت", noInstall: "دون تثبيت تطبيق", phoneOk: "تعمل على الهاتف",
         upTitle: "الجلسات <em>القادمة</em>", seriesTag: "السلسلة 01 · دومينيكا", seriesTitle: "السلسلة التجريبية لدومينيكا", seriesText: "ثلاث جلسات بفاصل أسبوعين — من الأساسيات إلى المستندات وأسئلتكم الخاصة. جميع الجلسات مجانية وباللغة الفارسية (الدرية).",
         sessionCta: "التفاصيل", howEyebrow: "قبل الانضمام", howTitle: "كيف <em>تنضم</em>",
+        howSub: "أربع خطوات بسيطة للمشاركة في الجلسات المباشرة — دون الحاجة لتحميل أي تطبيقات.",
         steps: [
           { t: "افتح الرابط", d: "اضغط «الانضمام إلى الندوة» في هذه الصفحة من هاتفك أو حاسوبك. لا حاجة لتثبيت أي تطبيق." },
           { t: "ادخل بأي اسم", d: "يمكنك الانضمام بأي اسم. تبقى الكاميرا والميكروفون مغلقين." },
@@ -578,6 +581,7 @@ window.WEBINAR_I18N = {
         startsIn: "距离开始", whenTitle: "日期与时间", noInstall: "无需安装应用", phoneOk: "支持手机观看",
         upTitle: "即将<em>开讲</em>", seriesTag: "系列 01 · 多米尼克", seriesTitle: "多米尼克试点系列", seriesText: "共三场，每两周一场——从基础知识到申请材料，再到您的个人问题。全部免费，以波斯语（达利语）进行。",
         sessionCta: "详情", howEyebrow: "参加之前", howTitle: "如何<em>参加</em>",
+        howSub: "只需简单四步即可参与直播互动 — 无需下载任何应用程序。",
         steps: [
           { t: "打开链接", d: "用手机或电脑点击本页的“进入讲座”，无需安装任何应用。" },
           { t: "任意名字进入", d: "可使用任意名字进入，您的摄像头和麦克风保持关闭。" },

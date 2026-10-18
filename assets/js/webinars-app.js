@@ -1034,11 +1034,40 @@
       </div>
     </section>
 
-    <section class="section section--sand">
+    <section class="section section--sand how-to-join-sec">
       <div class="container">
-        <div class="section-head"><span class="eyebrow eyebrow--bronze caps">${I.phone}${esc(t('list.howEyebrow'))}</span><h2 class="display h-lg on-light">${t('list.howTitle')}</h2></div>
-        <div class="steps">${t('list.steps').map((s, i) => `<div class="step"><span class="step-num">${pad2(i + 1)}</span><div class="step-ico">${[I.link, I.user, I.wifi, I.chat][i]}</div><h3>${esc(s.t)}</h3><p>${esc(s.d)}</p></div>`).join('')}</div>
-        <div class="privacy-strip">${I.shield}<div><h3>${esc(t('list.privacyTitle'))}</h3><p>${esc(t('list.privacyText'))}</p></div></div>
+        <div class="section-head section-head--centered">
+          <span class="eyebrow caps"><i class="fa-solid fa-star text-[10px]"></i> <span>${esc(t('list.howEyebrow'))}</span></span>
+          <h2 class="display h-lg on-light">${t('list.howTitle')}</h2>
+          <div class="section-gold-line"></div>
+          <p class="section-sub">${esc(t('list.howSub'))}</p>
+        </div>
+        <div class="steps">
+          ${t('list.steps').map((s, i) => `
+            <div class="step group">
+              <div class="step-top">
+                <div class="step-ico">
+                  ${[
+                    `<i class="fa-solid fa-arrow-up-right-from-square"></i>`,
+                    `<i class="fa-solid fa-user-shield"></i>`,
+                    `<i class="fa-solid fa-headphones"></i>`,
+                    `<i class="fa-solid fa-comments"></i>`
+                  ][i]}
+                </div>
+                <span class="step-num">${pad2(i + 1)}</span>
+              </div>
+              <h3 class="step-title">${esc(s.t)}</h3>
+              <p class="step-desc">${esc(s.d)}</p>
+            </div>
+          `).join('')}
+        </div>
+        <div class="privacy-strip">
+          <div class="privacy-strip-ico"><i class="fa-solid fa-shield-halved"></i></div>
+          <div>
+            <h3>${esc(t('list.privacyTitle'))}</h3>
+            <p>${esc(t('list.privacyText'))}</p>
+          </div>
+        </div>
       </div>
     </section>
 
