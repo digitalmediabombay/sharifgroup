@@ -390,113 +390,113 @@
       <!-- VIDEO BACKGROUND WITH SEAMLESS CANVAS CROSSFADE -->
       <div class="footer-video-layer">
         <canvas id="footer-seamless-canvas"></canvas>
-        <video id="footer-hidden-video" style="display:none" muted playsinline preload="auto">
+        <video id="footer-hidden-video" style="display:none" muted playsinline preload="none">
           <source src="${FOOTER_VIDEO}" type="video/mp4"/>
         </video>
-        <video id="footer-hidden-video-2" style="display:none" muted playsinline preload="auto">
+        <video id="footer-hidden-video-2" style="display:none" muted playsinline preload="none">
           <source src="${FOOTER_VIDEO}" type="video/mp4"/>
         </video>
         <div class="footer-video-overlay"></div>
       </div>
 
-      <!-- FOOTER CONTENT OVERLAY -->
-      <div class="container footer-content-wrap">
-        <div class="foot-grid">
-          <!-- Col 1: Brand Info -->
-          <div class="foot-brand">
-            <a class="foot-logo-link" href="${SITE + p}">
-              <img src="${FOOTER_LOGO}" alt="Sharif Group Logo" width="56" height="60" class="foot-logo-img">
-              <div class="foot-logo-text-wrap">
-                <div class="foot-logo-divider"></div>
-                <div class="foot-logo-text">
-                  <span>SHARIF</span>
-                  <span>GROUP</span>
-                </div>
+      <!-- FOOTER CONTENT (MATCHING LIVE HOME PAGE FOOTER EXACTLY) -->
+      <div class="max-w-7xl mx-auto px-6 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-8 mb-16 relative z-30 [text-shadow:_0_1px_3px_rgb(0_0_0_/_80%)]">
+        <!-- Col 1: Brand Info -->
+        <div class="flex flex-col space-y-6 lg:col-span-1 foot-brand-col">
+          <a class="flex items-center space-x-2 group cursor-pointer foot-brand-link" href="${SITE + p}">
+            <img alt="Sharif Group Logo" class="h-14 w-auto group-hover:scale-105 transition-transform duration-300 foot-brand-logo" src="${FOOTER_LOGO}" loading="lazy" decoding="async"/>
+            <div class="flex items-center space-x-2 translate-y-1.5 foot-brand-text-wrap">
+              <div class="h-10 w-[1px] bg-neutral-500/50 foot-brand-divider"></div>
+              <div class="flex flex-col justify-center font-serif text-white tracking-[0.2em] font-bold leading-tight group-hover:text-luxury-gold transition foot-brand-text">
+                <span class="text-base uppercase">SHARIF</span>
+                <span class="text-base uppercase">GROUP</span>
               </div>
-            </a>
-            <div class="foot-imc">
-              <img src="${IMC_LOGO}" alt="Investment Migration Council" width="130" height="38">
             </div>
-            <div class="foot-contact">
-              <p><span class="foot-ico">${I.pin}</span><span>${esc(F.address)}</span></p>
-              <p><span class="foot-ico">${I.phone}</span><a class="ltr" href="tel:+97143578737">+971 4 357 8737</a></p>
-              <p><span class="foot-ico">${I.mail}</span><a class="ltr" href="mailto:contact@sharifgroup.ae">contact@sharifgroup.ae</a></p>
-            </div>
-            <div class="foot-socials">
-              <a href="https://www.linkedin.com/company/sharif-group-uae/" target="_blank" rel="noopener noreferrer" aria-label="LinkedIn">${I.linkedin}</a>
-              <a href="https://www.instagram.com/sharifgroup.uae" target="_blank" rel="noopener noreferrer" aria-label="Instagram">${I.instagram}</a>
-              <a href="https://api.whatsapp.com/send?phone=97143578737" target="_blank" rel="noopener noreferrer" aria-label="WhatsApp">${I.wa}</a>
-              <a href="mailto:contact@sharifgroup.ae" aria-label="Email">${I.mail}</a>
-            </div>
+          </a>
+          <div class="pt-2 foot-imc-wrap">
+            <img alt="Investment Migration Council" class="h-10 w-auto brightness-0 invert object-contain foot-imc-logo" src="${IMC_LOGO}" loading="lazy" decoding="async"/>
           </div>
-
-          <!-- Col 2: Quick Links -->
-          <div>
-            <h4 class="caps">${esc(F.quickLinks)}</h4>
-            <ul class="foot-links">
-              <li><a href="${SITE + p}">${esc(F.home)}</a></li>
-              <li><a href="${SITE + p}aboutus/">${esc(F.aboutSharif)}</a></li>
-              <li><a href="${SITE + p}about-founder/">${esc(F.aboutAli)}</a></li>
-              <li><a href="${SITE + p}socialresponsibility/">${esc(F.socialResp)}</a></li>
-              <li><a href="${SITE + p}citizenshipbyinvestment/">${esc(F.citizenshipPrograms)}</a></li>
-              <li><a href="${SITE + p}residencybyinvestment/">${esc(F.residencyPrograms)}</a></li>
-              <li><a href="${SITE + p}realestate/">${esc(F.realEstate)}</a></li>
-              <li><a href="${SITE + p}educationaladvisory/">${esc(F.educationalAdvisory)}</a></li>
-              <li><a href="${SITE + p}contact/">${esc(F.contactUs)}</a></li>
-              <li><a href="${SITE + p}blog/">${esc(F.insightsBlog)}</a></li>
-              <li><a class="foot-new-row" href="${SITE + p}webinars/"><span class="foot-new-text">${esc(F.webinars)}</span> <span class="nav-new-badge ml-1.5 px-1.5 py-0.5 rounded-full bg-[#786142] text-white text-[7.5px] font-bold leading-none inline-flex items-center justify-center shrink-0" style="margin-left: 5px; background-color: #786142; color: #ffffff; border-radius: 9999px; padding: 2px 5px; font-size: 7.5px; font-weight: 700; line-height: 1; display: inline-flex; align-items: center; white-space: nowrap;">${esc(t('common.isNew') || 'New')}</span></a></li>
-              <li><a href="${SITE + p}eligibilitychecker/">${esc(F.eligibilityChecker)}</a></li>
-            </ul>
+          <div class="text-xs text-neutral-300 space-y-3 pt-2 foot-contact-list">
+            <p class="flex items-start"><i class="fa-solid fa-location-dot mt-1 mr-3 text-luxury-gold text-sm foot-ico"></i> <span data-i18n="footer.address">${esc(F.address)}</span></p>
+            <p class="flex items-center"><i class="fa-solid fa-phone mr-3 text-luxury-gold text-sm foot-ico"></i> <a class="hover:text-white transition ltr" href="tel:+97143578737">+971 4 357 8737</a></p>
+            <p class="flex items-center"><i class="fa-solid fa-envelope mr-3 text-luxury-gold text-sm foot-ico"></i> <a class="hover:text-white transition ltr" href="mailto:contact@sharifgroup.ae">contact@sharifgroup.ae</a></p>
           </div>
-
-          <!-- Col 3: Citizenship Programs -->
-          <div>
-            <h4 class="caps">${esc(F.citizenshipProgramsCol)}</h4>
-            <ul class="foot-links">
-              <li><a href="${SITE + p}programs/citizenshipbyinvestment/dominica/">${esc(F.cbi?.dominica || 'Dominica | Passport')}</a></li>
-              <li><a href="${SITE + p}programs/citizenshipbyinvestment/stkitts/">${esc(F.cbi?.kitts || 'St. Kitts & Nevis | Passport')}</a></li>
-              <li><a href="${SITE + p}programs/citizenshipbyinvestment/antiguaandbarbuda/">${esc(F.cbi?.antigua || 'Antigua & Barbuda | Passport')}</a></li>
-              <li><a href="${SITE + p}programs/citizenshipbyinvestment/stlucia/">${esc(F.cbi?.lucia || 'Saint Lucia | Passport')}</a></li>
-              <li><a href="${SITE + p}programs/citizenshipbyinvestment/grenada/">${esc(F.cbi?.grenada || 'Grenada | Passport')}</a></li>
-              <li><a href="${SITE + p}programs/citizenshipbyinvestment/vanuatu/">${esc(F.cbi?.vanuatu || 'Vanuatu | Passport')}</a></li>
-              <li><a href="${SITE + p}programs/citizenshipbyinvestment/sao-tome-and-principe/">${esc(F.cbi?.saotome || 'São Tomé and Príncipe | Passport')}</a></li>
-              <li><a href="${SITE + p}programs/citizenshipbyinvestment/nauru/">${esc(F.cbi?.nauru || 'Republic of Nauru | Passport')}</a></li>
-            </ul>
-          </div>
-
-          <!-- Col 4: Residency & Other Services -->
-          <div>
-            <h4 class="caps">${esc(F.residencyProgramsCol)}</h4>
-            <ul class="foot-links">
-              <li><a href="${SITE + p}programs/residencybyinvestment/portugal/">${esc(F.rbi?.portugal || 'Portugal | Golden Visa')}</a></li>
-              <li><a href="${SITE + p}programs/residencybyinvestment/greece/">${esc(F.rbi?.greece || 'Greece | Golden Visa')}</a></li>
-              <li><a href="${SITE + p}programs/residencybyinvestment/panama/">${esc(F.rbi?.panama || 'Panama | Golden Visa')}</a></li>
-              <li><a href="${SITE + p}programs/residencybyinvestment/uae/">${esc(F.rbi?.uae || 'United Arab Emirates | Golden Visa')}</a></li>
-            </ul>
-            <h4 class="caps foot-subheading">${esc(F.otherServices)}</h4>
-            <ul class="foot-links">
-              <li><a href="${SITE + p}realestate/">${esc(F.realEstate)}</a></li>
-              <li><a href="${SITE + p}educationaladvisory/">${esc(F.educationalAdvisory)}</a></li>
-            </ul>
-          </div>
-
-          <!-- Col 5: Legal Frameworks -->
-          <div>
-            <h4 class="caps">${esc(F.legalFrameworks)}</h4>
-            <ul class="foot-links">
-              <li><a href="${SITE + p}privacypolicy/">${esc(F.privacyPolicy)}</a></li>
-              <li><a href="${SITE + p}termsofuse/">${esc(F.termsOfUse)}</a></li>
-              <li><a href="${SITE + p}cookiepolicy/">${esc(F.cookiePolicy)}</a></li>
-            </ul>
+          <!-- SOCIAL MEDIA LINKS BLOCK -->
+          <div class="flex items-center space-x-3 pt-2 foot-social-list">
+            <a class="w-8 h-8 rounded-full bg-white/10 border border-white/20 flex items-center justify-center text-white hover:bg-luxury-gold hover:border-luxury-gold transition foot-social-btn" href="https://www.linkedin.com/company/sharif-group-uae/" rel="noopener noreferrer" target="_blank" aria-label="LinkedIn"><i class="fa-brands fa-linkedin-in text-xs"></i></a>
+            <a class="w-8 h-8 rounded-full bg-white/10 border border-white/20 flex items-center justify-center text-white hover:bg-luxury-gold hover:border-luxury-gold transition foot-social-btn" href="https://www.instagram.com/sharifgroup.uae" rel="noopener noreferrer" target="_blank" aria-label="Instagram"><i class="fa-brands fa-instagram text-xs"></i></a>
+            <a class="w-8 h-8 rounded-full bg-white/10 border border-white/20 flex items-center justify-center text-white hover:bg-luxury-gold hover:border-luxury-gold transition foot-social-btn" href="https://api.whatsapp.com/send?phone=97143578737" rel="noopener noreferrer" target="_blank" aria-label="WhatsApp"><i class="fa-brands fa-whatsapp text-xs"></i></a>
+            <a class="w-8 h-8 rounded-full bg-white/10 border border-white/20 flex items-center justify-center text-white hover:bg-luxury-gold hover:border-luxury-gold transition foot-social-btn" href="mailto:contact@sharifgroup.ae" aria-label="Email"><i class="fa-solid fa-envelope text-xs"></i></a>
           </div>
         </div>
 
-        <!-- Foot Bottom Bar -->
-        <div class="foot-bottom">
-          <p>${esc(F.allRightsReserved)}</p>
-          <p class="foot-credit">
-            <span>${esc(F.designedBy)}</span>
-            <a class="dmb-link" href="https://www.digitalmediabombay.com" target="_blank" rel="noopener noreferrer">Digital Media <span class="dmb-gold">Bombay</span></a>
+        <!-- Col 2: Quick Links -->
+        <div class="foot-col">
+          <p class="text-[11px] uppercase tracking-[0.2em] text-luxury-gold font-bold mb-6 foot-col-title mb-6" data-i18n="footer.quickLinks">${esc(F.quickLinks)}</p>
+          <ul class="space-y-2.5 text-xs text-neutral-300 foot-link-list space-y-2.5">
+            <li><a class="hover:text-luxury-gold transition" data-i18n="footer.home" href="${SITE + p}">${esc(F.home)}</a></li>
+            <li><a class="hover:text-luxury-gold transition" data-i18n="footer.aboutSharif" href="${SITE + p}aboutus/">${esc(F.aboutSharif)}</a></li>
+            <li><a class="hover:text-luxury-gold transition" data-i18n="footer.aboutAli" href="${SITE + p}about-founder/">${esc(F.aboutAli)}</a></li>
+            <li><a class="hover:text-luxury-gold transition" data-i18n="footer.socialResp" href="${SITE + p}socialresponsibility/">${esc(F.socialResp)}</a></li>
+            <li><a class="hover:text-luxury-gold transition" data-i18n="footer.citizenshipPrograms" href="${SITE + p}citizenshipbyinvestment/">${esc(F.citizenshipPrograms)}</a></li>
+            <li><a class="hover:text-luxury-gold transition" data-i18n="footer.residencyPrograms" href="${SITE + p}residencybyinvestment/">${esc(F.residencyPrograms)}</a></li>
+            <li><a class="hover:text-luxury-gold transition" data-i18n="footer.realEstate" href="${SITE + p}realestate/">${esc(F.realEstate)}</a></li>
+            <li><a class="hover:text-luxury-gold transition" data-i18n="footer.educationalAdvisory" href="${SITE + p}educationaladvisory/">${esc(F.educationalAdvisory)}</a></li>
+            <li><a class="hover:text-luxury-gold transition" data-i18n="footer.contactUs" href="${SITE + p}contact/">${esc(F.contactUs)}</a></li>
+            <li><a class="hover:text-luxury-gold transition" data-i18n="footer.insightsBlog" href="${SITE + p}blog/">${esc(F.insightsBlog)}</a></li>
+            <li><a class="hover:text-luxury-gold transition inline-flex items-center gap-1.5 foot-new-row" href="${SITE + p}webinars/"><span data-i18n="footer.webinars">${esc(F.webinars)}</span> <span class="nav-new-badge ml-1.5 px-1.5 py-0.5 rounded-full bg-[#786142] text-white text-[8px] font-bold leading-none inline-flex items-center justify-center shrink-0 tracking-wider" data-i18n="nav.newBadge">${esc(t('common.isNew') || 'New')}</span></a></li>
+            <li><a class="hover:text-luxury-gold transition" data-i18n="footer.eligibilityChecker" href="${SITE + p}eligibilitychecker/">${esc(F.eligibilityChecker)}</a></li>
+          </ul>
+        </div>
+
+        <!-- Col 3: Citizenship Programs -->
+        <div class="foot-col">
+          <p class="text-[11px] uppercase tracking-[0.2em] text-luxury-gold font-bold mb-4 foot-col-title mb-4" data-i18n="footer.citizenshipProgramsCol">${esc(F.citizenshipProgramsCol)}</p>
+          <ul class="space-y-2 text-xs text-neutral-300 foot-link-list space-y-2">
+            <li><a class="hover:text-luxury-gold transition" data-i18n="services.cbi.dominica" href="${SITE + p}programs/citizenshipbyinvestment/dominica/">${esc(F.cbi?.dominica || 'Dominica | Passport')}</a></li>
+            <li><a class="hover:text-luxury-gold transition" data-i18n="services.cbi.kitts" href="${SITE + p}programs/citizenshipbyinvestment/stkitts/">${esc(F.cbi?.kitts || 'St. Kitts & Nevis | Passport')}</a></li>
+            <li><a class="hover:text-luxury-gold transition" data-i18n="services.cbi.antigua" href="${SITE + p}programs/citizenshipbyinvestment/antiguaandbarbuda/">${esc(F.cbi?.antigua || 'Antigua & Barbuda | Passport')}</a></li>
+            <li><a class="hover:text-luxury-gold transition" data-i18n="services.cbi.lucia" href="${SITE + p}programs/citizenshipbyinvestment/stlucia/">${esc(F.cbi?.lucia || 'Saint Lucia | Passport')}</a></li>
+            <li><a class="hover:text-luxury-gold transition" data-i18n="services.cbi.grenada" href="${SITE + p}programs/citizenshipbyinvestment/grenada/">${esc(F.cbi?.grenada || 'Grenada | Passport')}</a></li>
+            <li><a class="hover:text-luxury-gold transition" data-i18n="services.cbi.vanuatu" href="${SITE + p}programs/citizenshipbyinvestment/vanuatu/">${esc(F.cbi?.vanuatu || 'Vanuatu | Passport')}</a></li>
+            <li><a class="hover:text-luxury-gold transition" data-i18n="services.cbi.saotome" href="${SITE + p}programs/citizenshipbyinvestment/sao-tome-and-principe/">${esc(F.cbi?.saotome || 'São Tomé and Príncipe | Passport')}</a></li>
+            <li><a class="hover:text-luxury-gold transition" data-i18n="services.cbi.nauru" href="${SITE + p}programs/citizenshipbyinvestment/nauru/">${esc(F.cbi?.nauru || 'Republic of Nauru | Passport')}</a></li>
+          </ul>
+        </div>
+
+        <!-- Col 4: Residency & Other Services -->
+        <div class="foot-col">
+          <p class="text-[11px] uppercase tracking-[0.2em] text-luxury-gold font-bold mb-4 foot-col-title mb-4" data-i18n="footer.residencyProgramsCol">${esc(F.residencyProgramsCol)}</p>
+          <ul class="space-y-2 text-xs text-neutral-300 mb-6 foot-link-list space-y-2 mb-6">
+            <li><a class="hover:text-luxury-gold transition" data-i18n="services.rbi.portugal" href="${SITE + p}programs/residencybyinvestment/portugal/">${esc(F.rbi?.portugal || 'Portugal | Golden Visa')}</a></li>
+            <li><a class="hover:text-luxury-gold transition" data-i18n="services.rbi.greece" href="${SITE + p}programs/residencybyinvestment/greece/">${esc(F.rbi?.greece || 'Greece | Golden Visa')}</a></li>
+            <li><a class="hover:text-luxury-gold transition" data-i18n="services.rbi.panama" href="${SITE + p}programs/residencybyinvestment/panama/">${esc(F.rbi?.panama || 'Panama | Golden Visa')}</a></li>
+            <li><a class="hover:text-luxury-gold transition" data-i18n="services.rbi.uae" href="${SITE + p}programs/residencybyinvestment/uae/">${esc(F.rbi?.uae || 'United Arab Emirates | Golden Visa')}</a></li>
+          </ul>
+          <p class="text-[11px] uppercase tracking-[0.2em] text-luxury-gold font-bold mb-3 foot-col-title mb-3" data-i18n="footer.otherServices">${esc(F.otherServices)}</p>
+          <ul class="space-y-2 text-xs text-neutral-300 foot-link-list space-y-2">
+            <li><a class="hover:text-luxury-gold transition" data-i18n="footer.realEstate" href="${SITE + p}realestate/">${esc(F.realEstate)}</a></li>
+            <li><a class="hover:text-luxury-gold transition" data-i18n="footer.educationalAdvisory" href="${SITE + p}educationaladvisory/">${esc(F.educationalAdvisory)}</a></li>
+          </ul>
+        </div>
+
+        <!-- Col 5: Legal Frameworks -->
+        <div class="foot-col">
+          <p class="text-[11px] uppercase tracking-[0.2em] text-luxury-gold font-bold mb-6 foot-col-title mb-6" data-i18n="footer.legalFrameworks">${esc(F.legalFrameworks)}</p>
+          <ul class="space-y-3 text-xs text-neutral-300 foot-link-list space-y-3">
+            <li><a class="hover:text-luxury-gold transition" data-i18n="footer.privacyPolicy" href="${SITE + p}privacypolicy/">${esc(F.privacyPolicy)}</a></li>
+            <li><a class="hover:text-luxury-gold transition" data-i18n="footer.termsOfUse" href="${SITE + p}termsofuse/">${esc(F.termsOfUse)}</a></li>
+            <li><a class="hover:text-luxury-gold transition" data-i18n="footer.cookiePolicy" href="${SITE + p}cookiepolicy/">${esc(F.cookiePolicy)}</a></li>
+          </ul>
+        </div>
+      </div>
+
+      <!-- Foot Bottom Bar -->
+      <div class="max-w-7xl mx-auto px-6 pt-8 border-t border-neutral-700/50 text-[11px] text-neutral-400 font-light relative z-30 foot-bottom-bar">
+        <div class="flex flex-col md:flex-row justify-between items-center gap-4 foot-bottom-inner">
+          <p data-i18n="footer.allRightsReserved">${esc(F.allRightsReserved)}</p>
+          <p class="text-xs foot-credit">
+            <span data-i18n="footer.designedBy">${esc(F.designedBy)}</span> <a class="font-bold hover:underline text-white dmb-link" href="https://www.digitalmediabombay.com" target="_blank" rel="noopener noreferrer">Digital Media <span class="text-[#e4aa25]">Bombay</span></a>
           </p>
         </div>
       </div>`;
