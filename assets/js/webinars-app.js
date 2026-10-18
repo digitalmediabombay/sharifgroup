@@ -951,11 +951,11 @@
   function joinAction(w, light) {
     const st = linkState(w), live = w.event_status === 'live';
     const opens = new Date(startOf(w).getTime() - w.room_opens_min_before * 60000);
-    if (st === 'held') return `<div class="held${light ? ' held--light' : ''}">${I.checkCircle}<div><strong>${esc(t('detail.heldTitle'))}</strong><span>${esc(t('detail.heldText'))}</span></div></div>`;
-    if (st === 'locked') return `<div class="locked${light ? ' locked--light' : ''}">${I.lock}<div><strong>${esc(t('detail.lockedTitle'))}</strong><br>${esc(t('detail.lockedText'))}</div></div>`;
-    if (st === 'soon') return `<span class="btn btn--soon${light ? ' btn--soon-light' : ''} btn--block" role="status">${I.clock}${esc(t('detail.linkSoon'))}</span><p class="note">${I.link}<span>${esc(t('detail.linkSoonNote'))}</span></p>`;
-    return `<a class="btn btn--bronze btn--block" href="${esc(w.join_url)}" data-join target="_blank" rel="noopener">${I.video}${esc(live ? t('detail.joinNow') : t('detail.joinBtn'))}</a>
-      ${live ? '' : `<p class="note">${I.clock}<span>${esc(t('detail.roomOpens', { time: tm(opens, TZ.kabul) }))}</span></p>`}`;
+    if (st === 'held') return `<div class="held${light ? ' held--light' : ''}"><div class="notice-ico"><i class="fa-regular fa-circle-check"></i></div><div><strong>${esc(t('detail.heldTitle'))}</strong><p class="notice-desc">${esc(t('detail.heldText'))}</p></div></div>`;
+    if (st === 'locked') return `<div class="locked${light ? ' locked--light' : ''}"><div class="notice-ico"><i class="fa-solid fa-lock"></i></div><div><strong>${esc(t('detail.lockedTitle'))}</strong><p class="notice-desc">${esc(t('detail.lockedText'))}</p></div></div>`;
+    if (st === 'soon') return `<div class="soon-wrap"><span class="btn btn--soon${light ? ' btn--soon-light' : ''} btn--block" role="status"><i class="fa-regular fa-clock"></i><span>${esc(t('detail.linkSoon'))}</span></span><p class="note"><i class="fa-solid fa-link"></i><span>${esc(t('detail.linkSoonNote'))}</span></p></div>`;
+    return `<a class="btn btn--bronze btn--block" href="${esc(w.join_url)}" data-join target="_blank" rel="noopener"><i class="fa-solid fa-video"></i><span>${esc(live ? t('detail.joinNow') : t('detail.joinBtn'))}</span></a>
+      ${live ? '' : `<p class="note"><i class="fa-regular fa-clock"></i><span>${esc(t('detail.roomOpens', { time: tm(opens, TZ.kabul) }))}</span></p>`}`;
   }
   const pageUrl = w => `${SITE}${prefix()}webinars/${w.slug}/`;
   const waShare = w => `https://wa.me/?text=${encodeURIComponent(C(w).title + ' — ' + pageUrl(w))}`;

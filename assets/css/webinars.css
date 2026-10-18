@@ -1574,12 +1574,123 @@ html[lang="fa"] .form-card-title, html[lang="ar"] .form-card-title {
   transform: translateY(-2px);
 }
 
+/* Small lock, held & notice states in Join Card */
+.locked, .held {
+  display: flex;
+  gap: 14px;
+  align-items: flex-start;
+  padding: 16px 18px;
+  border-radius: 18px;
+  background: rgba(255, 255, 255, 0.04);
+  border: 1px solid rgba(197, 168, 128, 0.25);
+  font-size: 13px;
+  color: #e5e5e5;
+  line-height: 1.5;
+  margin: 16px 0;
+  text-align: start;
+}
+.locked--light, .held--light {
+  background: #fdfbf7;
+  border-color: rgba(197, 168, 128, 0.4);
+  color: #262626;
+}
+.notice-ico {
+  width: 36px;
+  height: 36px;
+  border-radius: 10px;
+  background: rgba(197, 168, 128, 0.15);
+  border: 1px solid rgba(197, 168, 128, 0.35);
+  color: #c5a880;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 15px;
+  flex-shrink: 0;
+  margin-top: 2px;
+}
+.locked strong, .held strong {
+  display: block;
+  font-size: 14px;
+  font-weight: 700;
+  color: #ffffff;
+  margin-bottom: 3px;
+}
+.locked--light strong, .held--light strong {
+  color: #111111;
+}
+.notice-desc {
+  margin: 0;
+  font-size: 12.5px;
+  color: #a3a3a3;
+  line-height: 1.55;
+  font-weight: 300;
+}
+.locked--light .notice-desc {
+  color: #525252;
+}
+
+/* Hard constrain any svgs in locked/held so they can NEVER blow up */
+.locked svg, .held svg {
+  width: 16px !important;
+  height: 16px !important;
+  max-width: 16px !important;
+  max-height: 16px !important;
+  flex-shrink: 0;
+  color: #c5a880;
+}
+
+/* Soon status badge button */
+.soon-wrap {
+  margin: 16px 0 12px;
+}
+.btn--soon {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  padding: 13px 20px;
+  border-radius: 14px;
+  background: rgba(197, 168, 128, 0.12);
+  border: 1px dashed rgba(197, 168, 128, 0.4);
+  color: #c5a880;
+  font-size: 13.5px;
+  font-weight: 600;
+  letter-spacing: 0.04em;
+}
+.btn--soon i {
+  font-size: 14px;
+}
+.btn--soon svg {
+  width: 14px !important;
+  height: 14px !important;
+  max-width: 14px !important;
+  max-height: 14px !important;
+}
+
+/* Small note with constrained icon */
 .note {
   font-size: 12.5px;
-  margin: 14px 0 0;
+  margin: 12px 0 0;
   display: flex;
   gap: 8px;
-  align-items: center;
+  align-items: flex-start;
+  line-height: 1.5;
+  text-align: start;
+}
+.note i {
+  color: #c5a880;
+  font-size: 13px;
+  flex-shrink: 0;
+  margin-top: 3px;
+}
+.note svg {
+  width: 14px !important;
+  height: 14px !important;
+  max-width: 14px !important;
+  max-height: 14px !important;
+  color: #c5a880;
+  flex-shrink: 0;
+  margin-top: 3px;
 }
 .join-card-luxury .note { color: #a3a3a3; }
 .card--form .note { color: #737373; }
@@ -1629,16 +1740,41 @@ html[lang="fa"] .form-card-title, html[lang="ar"] .form-card-title {
 .err { font-size: 12px; color: #b91c1c; display: none; font-weight: 500; }
 .field.has-err .err { display: block; }
 .counter { font-size: 11.5px; color: #9ca3af; text-align: end; }
+
+/* Clean Checkbox Alignment */
 .check {
   display: flex;
-  gap: 10px;
-  align-items: flex-start;
+  gap: 12px;
+  align-items: center;
   font-size: 13.5px;
   color: #374151;
   cursor: pointer;
-  line-height: 1.5;
+  line-height: 1.4;
+  margin: 4px 0 2px;
 }
-.check input { width: 18px; height: 18px; margin: 2px 0 0; accent-color: #786142; flex-shrink: 0; }
+.check input[type="checkbox"] {
+  width: 18px;
+  height: 18px;
+  margin: 0;
+  accent-color: #786142;
+  flex-shrink: 0;
+  cursor: pointer;
+  border-radius: 4px;
+}
+
+/* Honeypot Spam Field - Completely hidden */
+.hp {
+  display: none !important;
+  position: absolute !important;
+  inset-inline-start: -9999px !important;
+  width: 1px !important;
+  height: 1px !important;
+  overflow: hidden !important;
+  opacity: 0 !important;
+  visibility: hidden !important;
+  pointer-events: none !important;
+}
+
 .consent-note {
   font-size: 12px;
   color: #737373;
