@@ -339,9 +339,10 @@
     const langs = LANGS.map(c => `<button type="button" data-lang="${c}" aria-current="${c === lang}"><span lang="${c}">${esc(I18N[c].meta.name)}</span><small>${c.toUpperCase()}</small></button>`).join('');
 
     return `<div class="header-inner">
-      <a class="brand" href="${SITE + p}" aria-label="Sharif Group"><img src="${LOGO}" alt="Sharif Group" width="42" height="46"></a>
-      <span class="brand-sep" aria-hidden="true">|</span>
-      <nav class="main-nav" aria-label="Main">
+      <div class="brand-group">
+        <a class="brand" href="${SITE + p}" aria-label="Sharif Group"><img src="${LOGO}" alt="Sharif Group" width="50" height="56"></a>
+        <span class="brand-sep" aria-hidden="true">|</span>
+        <nav class="main-nav" aria-label="Main">
         <!-- Citizenship with Mega Menu -->
         <div class="nav-item has-dd" data-dd="cbi">
           <a class="nav-link caps" href="${SITE + p}citizenshipbyinvestment/">${esc(N.citizenship)} ${I.chev}</a>
@@ -471,6 +472,7 @@
         <span class="nav-sep" aria-hidden="true">|</span>
         <a class="nav-link caps is-active" href="#/webinars" aria-current="page">${esc(N.webinars)} <span class="nav-new">${esc(t('common.isNew'))}</span></a>
       </nav>
+      </div>
 
       <div class="header-actions">
         <a class="pill pill--bronze caps" href="${SITE + p}eligibilitychecker/">${esc(N.eligibilityChecker)}</a>
