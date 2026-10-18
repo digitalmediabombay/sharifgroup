@@ -85,6 +85,17 @@
         <xhtml:link rel="alternate" hreflang="zh" href="https://sharifgroup.ae/zh/aboutus/" />
     </url>
     <url>
+        <loc>https://sharifgroup.ae/partners/</loc>
+        <lastmod>2026-10-18</lastmod>
+        <changefreq>weekly</changefreq>
+        <priority>0.85</priority>
+        <xhtml:link rel="alternate" hreflang="x-default" href="https://sharifgroup.ae/partners/" />
+        <xhtml:link rel="alternate" hreflang="en" href="https://sharifgroup.ae/partners/" />
+        <xhtml:link rel="alternate" hreflang="fa" href="https://sharifgroup.ae/fa/partners/" />
+        <xhtml:link rel="alternate" hreflang="ar" href="https://sharifgroup.ae/ar/partners/" />
+        <xhtml:link rel="alternate" hreflang="zh" href="https://sharifgroup.ae/zh/partners/" />
+    </url>
+    <url>
         <loc>https://sharifgroup.ae/about-founder/</loc>
         <lastmod>2026-09-25</lastmod>
         <changefreq>monthly</changefreq>
@@ -1559,6 +1570,17 @@
         <xhtml:link rel="alternate" hreflang="fa" href="https://sharifgroup.ae/fa/aboutus/" />
         <xhtml:link rel="alternate" hreflang="ar" href="https://sharifgroup.ae/ar/aboutus/" />
         <xhtml:link rel="alternate" hreflang="zh" href="https://sharifgroup.ae/zh/aboutus/" />
+    </url>
+    <url>
+        <loc>https://sharifgroup.ae/fa/partners/</loc>
+        <lastmod>2026-10-18</lastmod>
+        <changefreq>weekly</changefreq>
+        <priority>0.85</priority>
+        <xhtml:link rel="alternate" hreflang="x-default" href="https://sharifgroup.ae/partners/" />
+        <xhtml:link rel="alternate" hreflang="en" href="https://sharifgroup.ae/partners/" />
+        <xhtml:link rel="alternate" hreflang="fa" href="https://sharifgroup.ae/fa/partners/" />
+        <xhtml:link rel="alternate" hreflang="ar" href="https://sharifgroup.ae/ar/partners/" />
+        <xhtml:link rel="alternate" hreflang="zh" href="https://sharifgroup.ae/zh/partners/" />
     </url>
     <url>
         <loc>https://sharifgroup.ae/fa/about-founder/</loc>
@@ -3037,6 +3059,17 @@
         <xhtml:link rel="alternate" hreflang="zh" href="https://sharifgroup.ae/zh/aboutus/" />
     </url>
     <url>
+        <loc>https://sharifgroup.ae/ar/partners/</loc>
+        <lastmod>2026-10-18</lastmod>
+        <changefreq>weekly</changefreq>
+        <priority>0.85</priority>
+        <xhtml:link rel="alternate" hreflang="x-default" href="https://sharifgroup.ae/partners/" />
+        <xhtml:link rel="alternate" hreflang="en" href="https://sharifgroup.ae/partners/" />
+        <xhtml:link rel="alternate" hreflang="fa" href="https://sharifgroup.ae/fa/partners/" />
+        <xhtml:link rel="alternate" hreflang="ar" href="https://sharifgroup.ae/ar/partners/" />
+        <xhtml:link rel="alternate" hreflang="zh" href="https://sharifgroup.ae/zh/partners/" />
+    </url>
+    <url>
         <loc>https://sharifgroup.ae/ar/about-founder/</loc>
         <lastmod>2026-09-25</lastmod>
         <changefreq>monthly</changefreq>
@@ -4511,6 +4544,17 @@
         <xhtml:link rel="alternate" hreflang="fa" href="https://sharifgroup.ae/fa/aboutus/" />
         <xhtml:link rel="alternate" hreflang="ar" href="https://sharifgroup.ae/ar/aboutus/" />
         <xhtml:link rel="alternate" hreflang="zh" href="https://sharifgroup.ae/zh/aboutus/" />
+    </url>
+    <url>
+        <loc>https://sharifgroup.ae/zh/partners/</loc>
+        <lastmod>2026-10-18</lastmod>
+        <changefreq>weekly</changefreq>
+        <priority>0.85</priority>
+        <xhtml:link rel="alternate" hreflang="x-default" href="https://sharifgroup.ae/partners/" />
+        <xhtml:link rel="alternate" hreflang="en" href="https://sharifgroup.ae/partners/" />
+        <xhtml:link rel="alternate" hreflang="fa" href="https://sharifgroup.ae/fa/partners/" />
+        <xhtml:link rel="alternate" hreflang="ar" href="https://sharifgroup.ae/ar/partners/" />
+        <xhtml:link rel="alternate" hreflang="zh" href="https://sharifgroup.ae/zh/partners/" />
     </url>
     <url>
         <loc>https://sharifgroup.ae/zh/about-founder/</loc>

@@ -21,6 +21,7 @@
 // Global Configuration
 const CONFIG = {
   WEBINAR_SHEET_NAME: "Webinar_Registrations",
+  PARTNER_SHEET_NAME: "Partner_Applications",
   LEADS_SHEET_NAME: "Inquiries",
   ADMIN_EMAIL: "mohammad@sharifgroup.ae",
   SENDER_NAME: "Sharif Group",
@@ -63,6 +64,12 @@ function doPost(e) {
       lock.releaseLock();
       return ContentService
         .createTextOutput(JSON.stringify(result))
+        .setMimeType(ContentService.MimeType.JSON);
+    } else if (formId === "partner-application") {
+      var partnerResult = handlePartnerApplication(data);
+      lock.releaseLock();
+      return ContentService
+        .createTextOutput(JSON.stringify(partnerResult))
         .setMimeType(ContentService.MimeType.JSON);
     } else {
       // Standard lead from contact or program forms
@@ -419,8 +426,9 @@ function getEmailTemplate(name, lang) {
  */
 function onOpen() {
   var ui = SpreadsheetApp.getUi();
-  ui.createMenu("Sharif Group Webinars")
-    .addItem("Refresh Registration Stats", "showRegistrationStats")
+  ui.createMenu("Sharif Group CRM")
+    .addItem("Refresh Partner Application Stats", "showPartnerStats")
+    .addItem("Refresh Webinar Stats", "showRegistrationStats")
     .addToUi();
 }
 
@@ -433,4 +441,320 @@ function showRegistrationStats() {
   }
   var count = Math.max(0, sheet.getLastRow() - 1);
   SpreadsheetApp.getUi().alert("Total Webinar Registrations: " + count);
+}
+
+function showPartnerStats() {
+  var ss = SpreadsheetApp.getActiveSpreadsheet();
+  var sheet = ss.getSheetByName(CONFIG.PARTNER_SHEET_NAME);
+  if (!sheet) {
+    SpreadsheetApp.getUi().alert("No partner applications sheet found yet.");
+    return;
+  }
+  var count = Math.max(0, sheet.getLastRow() - 1);
+  SpreadsheetApp.getUi().alert("Total Partner Applications: " + count);
+}
+
+/**
+ * ==============================================================================
+ * PARTNER APPLICATIONS CRM HANDLER & NOTIFICATIONS
+ * ==============================================================================
+ */
+
+/**
+ * Handle Partner Applications with Deduplication & Confirmation Email
+ */
+function handlePartnerApplication(data) {
+  var ss = SpreadsheetApp.getActiveSpreadsheet();
+  var sheet = ss.getSheetByName(CONFIG.PARTNER_SHEET_NAME);
+
+  // If sheet doesn't exist, create it with formatted headers
+  if (!sheet) {
+    sheet = ss.insertSheet(CONFIG.PARTNER_SHEET_NAME);
+    var headers = [
+      "Timestamp (UTC)",
+      "Application ID",
+      "Full Name",
+      "Partner Type",
+      "Company / Firm",
+      "Job Title",
+      "Country",
+      "City",
+      "Dial Code",
+      "Phone Number",
+      "Email Address",
+      "Website",
+      "Programmes of Interest",
+      "Estimated Referrals / Year",
+      "Heard From",
+      "Confidential Message",
+      "Language",
+      "Source URL",
+      "Status",
+      "Confirmation Email Status"
+    ];
+    sheet.appendRow(headers);
+    sheet.getRange(1, 1, 1, headers.length)
+      .setFontWeight("bold")
+      .setBackground("#070E1A")
+      .setFontColor("#C5A880");
+    sheet.setFrozenRows(1);
+  }
+
+  var nowUtc = new Date().toISOString();
+  var appId = data.application_id || ("PAR-" + Utilities.getUuid().slice(0, 8).toUpperCase());
+  var fullName = data.fullName || data.name || "";
+  var partnerType = data.partner_type || "";
+  var company = data.company || "";
+  var jobTitle = data.job_title || "";
+  var country = data.country || "";
+  var city = data.city || "";
+  var dialCode = data.dialCode || "";
+  var phone = data.whatsapp_e164 || data.phone || "";
+  var email = (data.email || "").toLowerCase().trim();
+  var website = data.website || "";
+  var programmes = data.programmes || "";
+  var referrals = data.referrals_per_year || "";
+  var heardFrom = data.heard_from || "";
+  var message = data.message || "";
+  var lang = data.lang || "en";
+  var source = data.source || "";
+
+  // Check for duplicate application by email
+  var dataRange = sheet.getDataRange();
+  var values = dataRange.getValues();
+  var isDuplicate = false;
+  var existingRowIndex = -1;
+
+  for (var i = 1; i < values.length; i++) {
+    var rowEmail = String(values[i][10] || "").toLowerCase().trim();
+    if (rowEmail && rowEmail === email) {
+      isDuplicate = true;
+      existingRowIndex = i + 1;
+      break;
+    }
+  }
+
+  var emailStatus = "Not Sent (No Email)";
+
+  // Send automatic confirmation email to applicant
+  if (email && email.indexOf("@") !== -1) {
+    try {
+      emailStatus = sendPartnerConfirmationEmail(email, fullName, appId, company, lang);
+    } catch (mailErr) {
+      emailStatus = "Failed: " + mailErr.toString();
+    }
+  }
+
+  if (isDuplicate) {
+    sheet.getRange(existingRowIndex, 19).setValue("Re-applied: " + nowUtc);
+    return { status: "success", duplicate: true, message: "Existing partner application confirmed." };
+  }
+
+  // Append new clean row
+  sheet.appendRow([
+    nowUtc,
+    appId,
+    fullName,
+    partnerType,
+    company,
+    jobTitle,
+    country,
+    city,
+    dialCode,
+    phone,
+    email,
+    website,
+    programmes,
+    referrals,
+    heardFrom,
+    message,
+    lang,
+    source,
+    "Pending Review",
+    emailStatus
+  ]);
+
+  // Dispatch instant admin alert to Mohammad
+  try {
+    MailApp.sendEmail({
+      to: CONFIG.ADMIN_EMAIL,
+      subject: "🤝 New Partner Application: " + fullName + (company ? " (" + company + ")" : ""),
+      body: "New Partner Application Received:\n\n" +
+            "• Application ID: " + appId + "\n" +
+            "• Full Name: " + fullName + "\n" +
+            "• Partner Type: " + partnerType + "\n" +
+            "• Company: " + (company || "N/A") + "\n" +
+            "• Job Title: " + (jobTitle || "N/A") + "\n" +
+            "• Email: " + email + "\n" +
+            "• Phone: " + phone + "\n" +
+            "• Country & City: " + country + (city ? " / " + city : "") + "\n" +
+            "• Website: " + (website || "N/A") + "\n" +
+            "• Programmes: " + (programmes || "All Programmes") + "\n" +
+            "• Est. Annual Referrals: " + referrals + "\n" +
+            "• Heard From: " + heardFrom + "\n" +
+            "• Confidential Notes: " + message + "\n" +
+            "• Language: " + lang + "\n" +
+            "• Timestamp: " + nowUtc + "\n\n" +
+            "View Applications in Google Sheet: " + ss.getUrl()
+    });
+  } catch (adminErr) {
+    Logger.log("Admin notify error: " + adminErr.message);
+  }
+
+  return { status: "success", duplicate: false, message: "Partner application submitted successfully." };
+}
+
+/**
+ * Partner Confirmation Email Dispatcher
+ */
+function sendPartnerConfirmationEmail(recipientEmail, recipientName, applicationId, company, lang) {
+  var isFa = lang === "fa";
+  var isAr = lang === "ar";
+  var isZh = lang === "zh";
+
+  var subject = "Sharif Group | Partnership Application Received (" + applicationId + ")";
+  if (isFa) subject = "تاییدیه دریافت درخواست همکاری شریف گروپ (" + applicationId + ")";
+  else if (isAr) subject = "تأكيد استلام طلب الشراكة - مجموعة شريف (" + applicationId + ")";
+  else if (isZh) subject = "谢里夫集团 | 合作伙伴申请已确认 (" + applicationId + ")";
+
+  var htmlContent = getPartnerEmailTemplate(recipientName, applicationId, company, lang);
+  var plainText = (isFa)
+    ? "سلام " + (recipientName || "همکار گرامی") + "،\n\nدرخواست همکاری شما با کد رهگیری " + applicationId + " با موفقیت دریافت شد. تیم روابط بین‌الملل شریف گروپ ظرف حداکثر ۲ روز کاری جهت بررسی مدارک و آغاز همکاری با شما تماس خواهد گرفت.\n\nشریف گروپ دبی\nmohammad@sharifgroup.ae"
+    : (isAr)
+    ? "مرحباً " + (recipientName || "شريكنا العزيز") + "،\n\nتم استلام طلب الشراكة بنجاح برقم مرجعي: " + applicationId + ". سيتواصل معك فريق علاقات الشركاء خلال يومي عمل لمناقشة التفاصيل وبدء التعاون.\n\nمجموعة شريف دبي\nmohammad@sharifgroup.ae"
+    : (isZh)
+    ? "尊敬的 " + (recipientName || "合作伙伴") + "：\n\n您的合作伙伴申请已成功送达，申请编号：" + applicationId + "。我们的战略合作团队将在2个工作日内与您联系，安排对接事宜。\n\n迪拜谢里夫集团\nmohammad@sharifgroup.ae"
+    : "Dear " + (recipientName || "Valued Partner") + ",\n\nThank you for applying to become an official Sharif Group Partner. Your application reference is " + applicationId + ".\nOur Global Partnerships team will review your credentials and contact you within 2 business days to schedule an introductory onboarding call.\n\nSharif Group Dubai\nmohammad@sharifgroup.ae";
+
+  var scriptProperties = PropertiesService.getScriptProperties();
+  var resendApiKey = scriptProperties.getProperty("RESEND_API_KEY");
+  var fromAddress = scriptProperties.getProperty("SENDER_EMAIL") || CONFIG.DEFAULT_SENDER;
+
+  if (CONFIG.PREFER_GOOGLE_MAIL || !resendApiKey) {
+    try {
+      MailApp.sendEmail({
+        to: recipientEmail,
+        subject: subject,
+        body: plainText,
+        htmlBody: htmlContent,
+        name: CONFIG.SENDER_NAME,
+        replyTo: CONFIG.REPLY_TO_EMAIL
+      });
+      return "Sent via Google Mail (" + new Date().toISOString() + ")";
+    } catch (gmailErr) {
+      if (resendApiKey) {
+        return sendViaResend(recipientEmail, subject, htmlContent, resendApiKey, fromAddress) + " (Google Mail failed: " + gmailErr.message + ")";
+      }
+      return "Google Mail Error: " + gmailErr.message;
+    }
+  }
+
+  try {
+    return sendViaResend(recipientEmail, subject, htmlContent, resendApiKey, fromAddress);
+  } catch (err) {
+    MailApp.sendEmail({
+      to: recipientEmail,
+      subject: subject,
+      body: plainText,
+      htmlBody: htmlContent,
+      name: CONFIG.SENDER_NAME,
+      replyTo: CONFIG.REPLY_TO_EMAIL
+    });
+    return "Sent via Google Mail (Fallback)";
+  }
+}
+
+/**
+ * Multilingual Branded Partner HTML Email Template
+ */
+function getPartnerEmailTemplate(name, applicationId, company, lang) {
+  var isFa = lang === "fa";
+  var isAr = lang === "ar";
+  var isRtl = isFa || isAr;
+
+  var title = "Partnership Application Received";
+  var greeting = "Dear " + (name || "Valued Partner") + ",";
+  var intro = "Thank you for submitting your partnership application to Sharif Group Dubai. We are delighted by your interest in joining our global network of introducers, law firms, and advisory agencies.";
+  var refLabel = "Application Reference";
+  var nextTitle = "What Happens Next?";
+  var step1 = "<strong>1. Compliance & Document Review:</strong> Our partnerships desk reviews your firm profile within 2 business days.";
+  var step2 = "<strong>2. Strategic Onboarding Call:</strong> A dedicated Relationship Manager connects with you to discuss commission structures and referral protocols.";
+  var step3 = "<strong>3. Agreement & Partner Kit:</strong> Formal B2B agreement execution and access to marketing collateral, co-branded decks, and private client processing pipelines.";
+  var contactNote = "If you have any immediate questions, feel free to reply directly to this email or reach our partnerships desk via WhatsApp.";
+
+  if (isFa) {
+    title = "درخواست همکاری شما دریافت شد";
+    greeting = "سلام " + (name || "همکار گرامی") + "،";
+    intro = "از ارسال درخواست همکاری شما با شریف گروپ دبی صمیمانه سپاسگزاریم. ما از پیوستن آژانس‌ها و معرف‌های معتبر به شبکه جهانی خود بسیار خرسندیم.";
+    refLabel = "کد پیگیری درخواست";
+    nextTitle = "مراحل بعدی چیست؟";
+    step1 = "<strong>۱. بررسی مدارک و انطباق:</strong> تیم ارزیابی بین‌الملل حداکثر ظرف ۲ روز کاری پروفایل کاری شما را بررسی می‌کند.";
+    step2 = "<strong>۲. جلسه معارفه و تعیین شرایط:</strong> مدیر روابط اختصاصی شما جهت هماهنگی ساختار کمیسیون‌ها و رویه‌های معرفی با شما تماس خواهد گرفت.";
+    step3 = "<strong>۳. عقد قرارداد و اعطای ابزارها:</strong> امضای تفاهم‌نامه رسمی همکاری و ارائه پکیج مارکتینگ، بروشورهای اختصاصی و کانال پردازش سریع پرونده‌ها.";
+    contactNote = "در صورت نیاز به ارتباط فوری، می‌توانید مستقیماً به این ایمیل پاسخ داده یا از طریق واتس‌اپ با بخش همکاران در تماس باشید.";
+  } else if (isAr) {
+    title = "تم استلام طلب الشراكة بنجاح";
+    greeting = "عزيزنا " + (name || "الشريك المحترم") + "،";
+    intro = "نشكرك على تقديم طلب الانضمام إلى شبكة شركاء مجموعة شريف في دبي. يسعدنا توسيع آفاق التعاون المشترك في مجال الجنسية والإقامة عبر الاستثمار.";
+    refLabel = "رقم الطلب المرجعي";
+    nextTitle = "الخطوات التالية:";
+    step1 = "<strong>١. التدقيق والامتثال:</strong> يقوم فريق الشراكات بمراجعة بياناتكم خلال يومي عمل.";
+    step2 = "<strong>٢. جلسة التعارف وتحديد العمولات:</strong> يتواصل معكم مدير حسابات مخصص لمناقشة نماذج العمولات وآليات الإحالة.";
+    step3 = "<strong>٣. توقيع الاتفاقية وحزمة الشريك:</strong> إبرام عقد الشراكة وتسليم المواد الترويجية وقنوات التقديم السريعة.";
+    contactNote = "إذا كانت لديكم أية استفسارات عاجلة، يمكنكم الرد مباشرة على هذا البريد أو التواصل عبر الواتساب.";
+  } else if (lang === "zh") {
+    title = "合作伙伴申请已确认送达";
+    greeting = "尊敬的 " + (name || "合作伙伴") + "：";
+    intro = "非常感谢您申请成为迪拜谢里夫集团官方合作伙伴。我们非常期待与具有远见的专业机构携手，共同拓展全球第二身份与海外资产配置市场。";
+    refLabel = "申请追踪编号";
+    nextTitle = "后续流程安排：";
+    step1 = "<strong>1. 资质合规审核：</strong> 我们的合规与战略合作团队将在2个工作日内完成初步审核。";
+    step2 = "<strong>2. 专属顾问对接：</strong> 专属机构关系经理将与您沟通，明确佣金机制、引荐流程与合作模式。";
+    step3 = "<strong>3. 协议签署与赋能：</strong> 签署正式B2B合作协议，获取联合品牌资料包与VIP快速递件通道。";
+    contactNote = "如有任何即时疑问，可直接回复此邮件，或通过官方 WhatsApp 与我们的合作团队取得联系。";
+  }
+
+  return `
+  <!DOCTYPE html>
+  <html>
+  <head><meta charset="utf-8"></head>
+  <body style="font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif; background: #FAF6EE; padding: 24px; color: #111; margin: 0;">
+    <div style="max-width: 620px; margin: 0 auto; background: #ffffff; border-radius: 16px; border: 1px solid #E2E8F0; overflow: hidden; box-shadow: 0 4px 20px rgba(0,0,0,0.06);">
+      <div style="background: #070E1A; padding: 28px 32px; text-align: center;">
+        <span style="font-size: 20px; font-weight: 700; letter-spacing: 0.15em; color: #C5A880; text-transform: uppercase;">SHARIF GROUP</span>
+        <div style="font-size: 11px; letter-spacing: 0.2em; color: #94A3B8; text-transform: uppercase; margin-top: 4px;">GLOBAL CITIZENSHIP & RESIDENCY PARTNERSHIPS</div>
+      </div>
+      <div style="padding: 32px; direction: ${isRtl ? 'rtl' : 'ltr'}; text-align: ${isRtl ? 'right' : 'left'};">
+        <h2 style="color: #070E1A; margin-top: 0; font-size: 20px;">${title}</h2>
+        <p style="font-size: 15px; color: #475569; line-height: 1.6;">${greeting}</p>
+        <p style="font-size: 14px; color: #475569; line-height: 1.6;">${intro}</p>
+        
+        <div style="background: #FAF6EE; border-radius: 12px; padding: 18px 22px; margin: 22px 0; border: 1px solid #E5E0D8; text-align: center;">
+          <div style="font-size: 12px; font-weight: 600; color: #786142; text-transform: uppercase; letter-spacing: 0.1em;">${refLabel}</div>
+          <div style="font-size: 22px; font-weight: 800; color: #070E1A; letter-spacing: 0.08em; margin-top: 4px; font-family: monospace;">${applicationId}</div>
+          ${company ? `<div style="font-size: 12px; color: #64748B; margin-top: 4px;">${company}</div>` : ''}
+        </div>
+
+        <div style="margin: 22px 0;">
+          <h3 style="font-size: 14px; color: #070E1A; text-transform: uppercase; letter-spacing: 0.05em; margin-bottom: 12px;">${nextTitle}</h3>
+          <div style="font-size: 13px; color: #334155; line-height: 1.7; padding-${isRtl ? 'right' : 'left'}: 4px;">
+            <div style="margin-bottom: 10px;">${step1}</div>
+            <div style="margin-bottom: 10px;">${step2}</div>
+            <div>${step3}</div>
+          </div>
+        </div>
+
+        <p style="font-size: 13px; color: #64748B; line-height: 1.6; margin-top: 24px; background: #F8FAFC; padding: 14px 18px; border-radius: 8px; border: 1px solid #EDF2F7;">
+          ${contactNote}
+        </p>
+
+        <div style="margin-top: 32px; padding-top: 20px; border-top: 1px solid #E2E8F0; text-align: center; font-size: 12px; color: #94A3B8; line-height: 1.6;">
+          Sharif Group Dubai • 116 The Binary Tower, Business Bay, Dubai, UAE<br/>
+          Direct Inquiries: <a href="mailto:mohammad@sharifgroup.ae" style="color: #786142; text-decoration: none;">mohammad@sharifgroup.ae</a> | WhatsApp: +971 4 357 8737
+        </div>
+      </div>
+    </div>
+  </body>
+  </html>
+  `;
 }

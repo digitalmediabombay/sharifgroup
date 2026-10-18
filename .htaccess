@@ -69,6 +69,10 @@
     RewriteCond %{REQUEST_FILENAME} !-d
     RewriteRule ^(ar|fa|zh)/webinars/([^/]+)(?:/thanks)?/?$ /$1/webinars/index.html [L,QSA]
 
+    RewriteCond %{REQUEST_FILENAME} !-f
+    RewriteCond %{REQUEST_FILENAME} !-d
+    RewriteRule ^(ar|fa|zh)/partners/(.+)$ /$1/partners/index.html [L,QSA]
+
     # 10. Clean Language Paths (/ar/, /fa/, /zh/)
     # Serve physical localized directories and files directly (zero redirection)
     RewriteCond %{REQUEST_FILENAME} -f [OR]
@@ -92,6 +96,10 @@
     RewriteCond %{REQUEST_FILENAME} !-f
     RewriteCond %{REQUEST_FILENAME} !-d
     RewriteRule ^webinars/([^/]+)(?:/thanks)?/?$ /webinars/index.html [L,QSA]
+
+    RewriteCond %{REQUEST_FILENAME} !-f
+    RewriteCond %{REQUEST_FILENAME} !-d
+    RewriteRule ^partners/(.+)$ /partners/index.html [L,QSA]
 </IfModule>
 
 # ------------------------------------------------------------------------------

@@ -111,6 +111,22 @@
       "destination": "/webinars/"
     },
     {
+      "source": "/fa/partners/(.+)",
+      "destination": "/fa/partners/"
+    },
+    {
+      "source": "/ar/partners/(.+)",
+      "destination": "/ar/partners/"
+    },
+    {
+      "source": "/zh/partners/(.+)",
+      "destination": "/zh/partners/"
+    },
+    {
+      "source": "/partners/(.+)",
+      "destination": "/partners/"
+    },
+    {
       "source": "/ar",
       "destination": "/index.html"
     },
