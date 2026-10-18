@@ -37,8 +37,8 @@ window.WEBINAR_I18N = {
       corporateIdentity: "Corporate Identity",
       overview: "Overview",
       viewAllServices: "View All Services",
-      cbiTitle: "Citizenship<br>By<br>Investment",
-      rbiTitle: "Residency<br>By<br>Investment"
+      cbiTitle: "Citizenship By Investment",
+      rbiTitle: "Residency By Investment"
     },
     footer: {
       webinars: "Webinars",
