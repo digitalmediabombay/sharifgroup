@@ -95,20 +95,20 @@
   ],
   "rewrites": [
     {
-      "source": "/fa/webinars/:path*",
-      "destination": "/fa/webinars/index.html"
+      "source": "/fa/webinars/(.+)",
+      "destination": "/fa/webinars/"
     },
     {
-      "source": "/ar/webinars/:path*",
-      "destination": "/ar/webinars/index.html"
+      "source": "/ar/webinars/(.+)",
+      "destination": "/ar/webinars/"
     },
     {
-      "source": "/zh/webinars/:path*",
-      "destination": "/zh/webinars/index.html"
+      "source": "/zh/webinars/(.+)",
+      "destination": "/zh/webinars/"
     },
     {
-      "source": "/webinars/:path*",
-      "destination": "/webinars/index.html"
+      "source": "/webinars/(.+)",
+      "destination": "/webinars/"
     },
     {
       "source": "/ar",
