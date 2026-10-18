@@ -1129,7 +1129,12 @@
               const faIcon = k === 'host' ? '<i class="fa-solid fa-microphone"></i>' : '<i class="fa-solid fa-user-tie"></i>';
               return `<div class="speaker"><div class="avatar">${faIcon}</div><div><h4>${esc(t('detail.' + k + 'Name'))}</h4><p>${esc(t('detail.' + k + 'Role'))}</p><span class="tbd">${esc(t('detail.tbd'))}</span></div></div>`;
             }
-            return `<div class="speaker"><div class="avatar"><i class="fa-solid fa-user-tie"></i></div><div><h4>${esc(sp.title || sp.name || t('detail.expertName'))}</h4><p>${esc(sp.affiliation || sp.role || t('detail.expertRole'))}</p><span class="tbd">${esc(sp.note || t('detail.tbd'))}</span></div></div>`;
+            const speakerName = sp.name || sp.title || t('detail.expertName');
+            const speakerRole = (sp.name && sp.title)
+              ? (sp.title + (sp.affiliation ? ` · ${sp.affiliation}` : ''))
+              : (sp.affiliation || sp.role || sp.title || t('detail.expertRole'));
+            const speakerNote = sp.note || (sp.name ? '' : t('detail.tbd'));
+            return `<div class="speaker"><div class="avatar"><i class="fa-solid fa-user-tie"></i></div><div><h4>${esc(speakerName)}</h4><p>${esc(speakerRole)}</p>${speakerNote ? `<span class="tbd">${esc(speakerNote)}</span>` : ''}</div></div>`;
           }).join('')}
         </div></section>
         <section class="block"><h2 class="block-title"><span class="bt-icon"><i class="fa-solid fa-shield-halved"></i></span><span>${esc(t('detail.privacy'))}</span></h2><div class="privacy-strip"><div class="privacy-strip-ico"><i class="fa-solid fa-shield-halved"></i></div><div style="flex:1"><h3 style="margin-bottom:8px">${esc(t('detail.privacy'))}</h3><ul class="privacy-list">${t('detail.privacyItems').map(p => `<li><i class="fa-solid fa-check"></i><span>${esc(p)}</span></li>`).join('')}</ul></div></div></section>

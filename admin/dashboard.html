@@ -8368,21 +8368,25 @@
                   </div>
                   <div id="wsess-speakers-list" style="display:flex;flex-direction:column;gap:8px">
                     ${(Array.isArray(selL.speakers) && selL.speakers.length ? selL.speakers : [
-                      { title: 'Senior Citizenship Specialist', affiliation: 'Sharif Group, Dubai', note: 'Name to be announced' },
-                      { title: 'Dari-speaking host', affiliation: 'Moderates questions and chat', note: 'Name to be announced' }
+                      { name: '', title: 'Senior Citizenship Specialist', affiliation: 'Sharif Group, Dubai', note: 'Name to be announced' },
+                      { name: '', title: 'Dari-speaking host', affiliation: 'Moderates questions and chat', note: 'Name to be announced' }
                     ]).map(sp => `
-                      <div class="wsess-speaker-item" style="display:grid;grid-template-columns:1fr 1fr 130px 32px;gap:6px;align-items:center;background:var(--bg2);padding:8px;border-radius:8px;border:1px solid var(--border)">
+                      <div class="wsess-speaker-item" style="display:grid;grid-template-columns:1.2fr 1fr 1fr 100px 32px;gap:6px;align-items:center;background:var(--bg2);padding:8px;border-radius:8px;border:1px solid var(--border)">
+                        <div>
+                          <div style="font-size:9px;color:var(--gold);font-weight:600;margin-bottom:2px">Speaker Name</div>
+                          <input class="form-input" ${dir} value="${escH(sp.name || '')}" placeholder="e.g. Dr. Alireza Sharif" style="font-size:11px;font-weight:600" oninput="markUnsaved()">
+                        </div>
                         <div>
                           <div style="font-size:9px;color:var(--muted);margin-bottom:2px">Role / Title</div>
-                          <input class="form-input" ${dir} value="${escH(sp.title || sp.name || '')}" placeholder="e.g. Senior Specialist" style="font-size:11px" oninput="markUnsaved()">
+                          <input class="form-input" ${dir} value="${escH(sp.title || sp.role || '')}" placeholder="e.g. Senior Specialist" style="font-size:11px" oninput="markUnsaved()">
                         </div>
                         <div>
-                          <div style="font-size:9px;color:var(--muted);margin-bottom:2px">Affiliation / Description</div>
-                          <input class="form-input" ${dir} value="${escH(sp.affiliation || sp.role || '')}" placeholder="e.g. Sharif Group, Dubai" style="font-size:11px" oninput="markUnsaved()">
+                          <div style="font-size:9px;color:var(--muted);margin-bottom:2px">Affiliation / Organization</div>
+                          <input class="form-input" ${dir} value="${escH(sp.affiliation || '')}" placeholder="e.g. Sharif Group, Dubai" style="font-size:11px" oninput="markUnsaved()">
                         </div>
                         <div>
-                          <div style="font-size:9px;color:var(--muted);margin-bottom:2px">Status / Note</div>
-                          <input class="form-input" ${dir} value="${escH(sp.note || '')}" placeholder="e.g. To be announced" style="font-size:11px" oninput="markUnsaved()">
+                          <div style="font-size:9px;color:var(--muted);margin-bottom:2px">Status / Badge</div>
+                          <input class="form-input" ${dir} value="${escH(sp.note || '')}" placeholder="e.g. Keynote" style="font-size:11px" oninput="markUnsaved()">
                         </div>
                         <div style="align-self:end">
                           <button type="button" class="btn btn-ghost" style="color:#f87171;padding:6px;margin-bottom:2px" onclick="removeWebinarSpeakerItem(this)">
@@ -8645,19 +8649,23 @@
         const dir = (currentLang === 'fa' || currentLang === 'ar') ? 'dir="rtl"' : 'dir="ltr"';
         const div = document.createElement('div');
         div.className = 'wsess-speaker-item';
-        div.style.cssText = 'display:grid;grid-template-columns:1fr 1fr 130px 32px;gap:6px;align-items:center;background:var(--bg2);padding:8px;border-radius:8px;border:1px solid var(--border)';
+        div.style.cssText = 'display:grid;grid-template-columns:1.2fr 1fr 1fr 100px 32px;gap:6px;align-items:center;background:var(--bg2);padding:8px;border-radius:8px;border:1px solid var(--border)';
         div.innerHTML = `
+          <div>
+            <div style="font-size:9px;color:var(--gold);font-weight:600;margin-bottom:2px">Speaker Name</div>
+            <input class="form-input" ${dir} placeholder="e.g. Dr. Alireza Sharif" style="font-size:11px;font-weight:600" oninput="markUnsaved()">
+          </div>
           <div>
             <div style="font-size:9px;color:var(--muted);margin-bottom:2px">Role / Title</div>
             <input class="form-input" ${dir} placeholder="e.g. Senior Specialist" style="font-size:11px" oninput="markUnsaved()">
           </div>
           <div>
-            <div style="font-size:9px;color:var(--muted);margin-bottom:2px">Affiliation / Description</div>
+            <div style="font-size:9px;color:var(--muted);margin-bottom:2px">Affiliation / Organization</div>
             <input class="form-input" ${dir} placeholder="e.g. Sharif Group, Dubai" style="font-size:11px" oninput="markUnsaved()">
           </div>
           <div>
-            <div style="font-size:9px;color:var(--muted);margin-bottom:2px">Status / Note</div>
-            <input class="form-input" ${dir} placeholder="e.g. Name to be announced" style="font-size:11px" oninput="markUnsaved()">
+            <div style="font-size:9px;color:var(--muted);margin-bottom:2px">Status / Badge</div>
+            <input class="form-input" ${dir} placeholder="e.g. Keynote" style="font-size:11px" oninput="markUnsaved()">
           </div>
           <div style="align-self:end">
             <button type="button" class="btn btn-ghost" style="color:#f87171;padding:6px;margin-bottom:2px" onclick="removeWebinarSpeakerItem(this)">
@@ -8755,17 +8763,18 @@
             }).filter(ag => ag.topic || ag.time);
           }
 
-          // Speakers (Image 4)
+          // Speakers (Image 4) - Includes Speaker Name, Role, Affiliation & Note
           const spRows = [...document.querySelectorAll('#wsess-speakers-list .wsess-speaker-item')];
           if (spRows.length) {
             selSession[currentLang].speakers = spRows.map(row => {
               const inputs = row.querySelectorAll('input');
               return {
-                title: inputs[0]?.value.trim() || '',
-                affiliation: inputs[1]?.value.trim() || '',
-                note: inputs[2]?.value.trim() || ''
+                name: inputs[0]?.value.trim() || '',
+                title: inputs[1]?.value.trim() || '',
+                affiliation: inputs[2]?.value.trim() || '',
+                note: inputs[3]?.value.trim() || ''
               };
-            }).filter(sp => sp.title || sp.affiliation);
+            }).filter(sp => sp.name || sp.title || sp.affiliation);
           }
 
           // If selSession is also featured/Session 1, keep featured synced
