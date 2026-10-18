@@ -470,7 +470,7 @@
         <span class="nav-sep" aria-hidden="true">|</span>
         <a class="nav-link caps" href="${SITE + p}blog/">${esc(N.blog)}</a>
         <span class="nav-sep" aria-hidden="true">|</span>
-        <a class="nav-link caps is-active" href="#/webinars" aria-current="page">${esc(N.webinars)} <span class="nav-new">${esc(t('common.isNew'))}</span></a>
+        <a class="nav-link caps is-active" href="${SITE + p}webinars/" aria-current="page">${esc(N.webinars)} <span class="nav-new">${esc(t('common.isNew'))}</span></a>
       </nav>
       </div>
 
