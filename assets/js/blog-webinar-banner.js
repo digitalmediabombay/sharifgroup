@@ -21,22 +21,70 @@
     return 'en';
   }
 
-  // Extract current article slug
-  function getArticleSlug() {
-    var path = (window.location && window.location.pathname) ? window.location.pathname : '';
+  // Extract current page topic/context (blog slug, country program slug, or category)
+  function getPageContext() {
+    var path = (window.location && window.location.pathname) ? window.location.pathname.toLowerCase() : '';
     path = path.replace(/index\.html$/i, '').replace(/\/+$/, '');
     var parts = path.split('/').filter(Boolean);
-    var bIdx = parts.indexOf('blog');
-    if (bIdx !== -1 && parts.length > bIdx + 1) {
-      var s = parts[bIdx + 1].toLowerCase().trim();
-      if (s && s !== 'index' && s !== 'index.html') return s;
+
+    // Strip out language segment if present (fa, ar, zh)
+    if (parts.length > 0 && ['fa', 'ar', 'zh'].indexOf(parts[0]) !== -1) {
+      parts.shift();
     }
+
+    // Do NOT show on webinars hub or admin studio
+    if (path.indexOf('webinar') !== -1 || path.indexOf('admin') !== -1) {
+      return null;
+    }
+
+    var isBlog = parts.indexOf('blog') !== -1;
+    var isProgram = parts.indexOf('programs') !== -1;
+    var isCitizenship = path.indexOf('citizenship') !== -1;
+    var isResidency = path.indexOf('residency') !== -1;
+
+    // Only run on blog, program, citizenship or residency pages
+    if (!isBlog && !isProgram && !isCitizenship && !isResidency) {
+      return null;
+    }
+
+    // Determine specific program or article slug
+    var specificSlug = null;
+    if (isBlog) {
+      var bIdx = parts.indexOf('blog');
+      if (bIdx !== -1 && parts.length > bIdx + 1) {
+        specificSlug = parts[bIdx + 1].toLowerCase().trim();
+      }
+    } else if (isProgram) {
+      // e.g. ["programs", "citizenshipbyinvestment", "dominica"]
+      if (parts.length >= 3) {
+        specificSlug = parts[2].toLowerCase().trim();
+      } else if (parts.length >= 2) {
+        specificSlug = parts[1].toLowerCase().trim();
+      }
+    }
+
     var canonical = document.querySelector('link[rel="canonical"]');
-    if (canonical && canonical.href) {
-      var m = canonical.href.match(/\/blog\/([a-z0-9-]+)/i);
-      if (m && m[1] && m[1] !== 'blog') return m[1].toLowerCase().trim();
-    }
-    return null;
+    var canonicalUrl = (canonical && canonical.href) ? canonical.href.toLowerCase() : '';
+
+    var pageText = (
+      path + ' ' +
+      canonicalUrl + ' ' +
+      (specificSlug || '') + ' ' +
+      (document.title || '') + ' ' +
+      (document.querySelector('meta[name="keywords"]')?.content || '') + ' ' +
+      (document.querySelector('meta[name="description"]')?.content || '')
+    ).toLowerCase();
+
+    return {
+      path: path,
+      parts: parts,
+      isBlog: isBlog,
+      isProgram: isProgram,
+      isCitizenship: isCitizenship,
+      isResidency: isResidency,
+      specificSlug: specificSlug,
+      pageText: pageText
+    };
   }
 
   // Translations dictionary for banner UI
@@ -75,11 +123,9 @@
     }
   };
 
-  // Find matching webinar based on slug and metadata
-  function findMatchingWebinar(catalog, slug) {
-    if (!catalog || !catalog.length) return null;
-    slug = (slug || '').toLowerCase();
-    var pageText = (slug + ' ' + document.title + ' ' + (document.querySelector('meta[name="keywords"]')?.content || '')).toLowerCase();
+  // Find matching webinar based on page context (country, subcategory, keywords, category)
+  function findMatchingWebinar(catalog, ctx) {
+    if (!catalog || !catalog.length || !ctx) return null;
 
     // Prioritize webinars that are open for registration or scheduled
     var list = catalog.slice().sort(function(a, b) {
@@ -88,21 +134,39 @@
       return (a.session_no || 0) - (b.session_no || 0);
     });
 
+    // 1. Direct subcategory / country matching (e.g. Dominica, Grenada, Saint Kitts, Vanuatu, etc.)
     for (var i = 0; i < list.length; i++) {
       var w = list[i];
       var subcat = (w.subcategory || '').toLowerCase().trim();
-      if (subcat && pageText.indexOf(subcat) !== -1) {
+      if (subcat && ctx.pageText.indexOf(subcat) !== -1) {
         return w;
       }
       var wKeywords = (w.slug || '').split('-').filter(function(k) {
         return k.length > 3 && ['second', 'passport', 'introducing', 'pilot', 'programme', 'program', 'questions'].indexOf(k) === -1;
       });
       for (var j = 0; j < wKeywords.length; j++) {
-        if (pageText.indexOf(wKeywords[j]) !== -1) {
+        if (ctx.pageText.indexOf(wKeywords[j]) !== -1) {
           return w;
         }
       }
     }
+
+    // 2. If visitor is on a general Category Hub page (e.g. /citizenshipbyinvestment/ or /residencybyinvestment/)
+    // and NOT on a specific country program page (e.g. not /programs/citizenshipbyinvestment/grenada/),
+    // match the active webinar belonging to this broad category!
+    if (!ctx.specificSlug) {
+      for (var k = 0; k < list.length; k++) {
+        var cw = list[k];
+        var cat = (cw.category || '').toLowerCase().trim();
+        if (ctx.isCitizenship && cat === 'citizenship') {
+          return cw;
+        }
+        if (ctx.isResidency && cat === 'residency') {
+          return cw;
+        }
+      }
+    }
+
     return null;
   }
 
@@ -362,6 +426,8 @@
 
   // Build and display the floating banner with reopen trigger
   function showBanner(webinar) {
+    if (document.querySelector('.sg-wb-banner')) return;
+
     var lang = getLang();
     var c = webinar[lang] || webinar.en || {};
     var title = c.title || webinar.slug;
@@ -438,12 +504,12 @@
 
   // Load webinar catalog and initialize banner matching
   function init() {
-    var slug = getArticleSlug();
-    if (!slug) return; // Only run on blog post articles
+    var ctx = getPageContext();
+    if (!ctx) return; // Only run on blog, programs, citizenship or residency pages
 
     function proceed(catalog) {
       if (!catalog || !catalog.length) return;
-      var match = findMatchingWebinar(catalog, slug);
+      var match = findMatchingWebinar(catalog, ctx);
       if (match) {
         showBanner(match);
       }
@@ -469,8 +535,17 @@
 
     // 3. Dynamically load webinars-data.js script
     var isFile = window.location.protocol === 'file:';
+    var scriptPath = isFile ? '../../assets/js/webinars-data.js' : '/assets/js/webinars-data.js';
+    if (isFile) {
+      var refEl = document.querySelector('script[src*="assets/js/"]') || document.querySelector('link[href*="assets/"]');
+      if (refEl) {
+        var refStr = refEl.getAttribute('src') || refEl.getAttribute('href') || '';
+        var aIdx = refStr.indexOf('assets/');
+        if (aIdx !== -1) scriptPath = refStr.substring(0, aIdx) + 'assets/js/webinars-data.js';
+      }
+    }
     var scr = document.createElement('script');
-    scr.src = isFile ? '../../assets/js/webinars-data.js' : '/assets/js/webinars-data.js';
+    scr.src = scriptPath;
     scr.onload = function() {
       if (window.SGCMS_WEBINARS && Array.isArray(window.SGCMS_WEBINARS)) {
         proceed(window.SGCMS_WEBINARS);

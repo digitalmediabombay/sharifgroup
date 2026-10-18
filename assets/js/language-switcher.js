@@ -1688,6 +1688,45 @@
         (document.body || document.head).appendChild(widgetScript);
     }
 
+    function loadWebinarBanner() {
+        try {
+            var path = (window.location && window.location.pathname) ? window.location.pathname.toLowerCase() : '';
+            var href = (window.location && window.location.href) ? window.location.href.toLowerCase() : '';
+            var search = (window.location && window.location.search) ? window.location.search.toLowerCase() : '';
+            if (path.indexOf('/admin/') !== -1 || path.indexOf('admin') !== -1 || href.indexOf('dashboard.html') !== -1) return;
+            if (path.indexOf('/webinars') !== -1) return;
+            if (window.self !== window.top) return;
+            if (search.indexOf('cms_editor') !== -1 || search.indexOf('cms_preview') !== -1) return;
+
+            var isBlog = path.indexOf('/blog') !== -1;
+            var isProgram = path.indexOf('/programs') !== -1;
+            var isCitizenship = path.indexOf('citizenship') !== -1;
+            var isResidency = path.indexOf('residency') !== -1;
+            if (!isBlog && !isProgram && !isCitizenship && !isResidency) return;
+        } catch (e) { return; }
+
+        if (window.__sgWebinarBannerLoaded || document.getElementById('sg-webinar-banner-script') || document.querySelector('script[src*="blog-webinar-banner.js"]')) {
+            if (window.initWebinarBlogBanner) window.initWebinarBlogBanner();
+            return;
+        }
+
+        var isFile = window.location.protocol === 'file:';
+        var bannerScript = document.createElement('script');
+        bannerScript.id = 'sg-webinar-banner-script';
+        var bPath = '/assets/js/blog-webinar-banner.js?v=' + Date.now();
+        if (isFile) {
+            var refEl = document.querySelector('script[src*="assets/js/"]') || document.querySelector('link[href*="assets/"]');
+            if (refEl) {
+                var refStr = refEl.getAttribute('src') || refEl.getAttribute('href') || '';
+                var aIdx = refStr.indexOf('assets/');
+                if (aIdx !== -1) bPath = refStr.substring(0, aIdx) + 'assets/js/blog-webinar-banner.js';
+            }
+        }
+        bannerScript.src = bPath;
+        bannerScript.async = true;
+        (document.body || document.head).appendChild(bannerScript);
+    }
+
     function loadBlogTranslator() {
         try {
             var path = (window.location && window.location.pathname) ? window.location.pathname.toLowerCase() : '';
@@ -1813,6 +1852,9 @@
 
         // Initialize floating WhatsApp advisor widget site-wide
         loadWhatsAppWidget();
+
+        // Initialize floating webinar banner on matching blogs, citizenship, and program pages
+        loadWebinarBanner();
 
         // Initialize footer canvas video site-wide
         initFooterCanvasVideo();
