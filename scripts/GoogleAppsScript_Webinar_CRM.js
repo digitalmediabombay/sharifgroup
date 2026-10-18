@@ -22,9 +22,10 @@
 const CONFIG = {
   WEBINAR_SHEET_NAME: "Webinar_Registrations",
   LEADS_SHEET_NAME: "Inquiries",
+  ADMIN_EMAIL: "mohammad@sharifgroup.ae",
   SENDER_NAME: "Sharif Group",
-  REPLY_TO_EMAIL: "contact@sharifgroup.ae",
-  DEFAULT_SENDER: "Sharif Group <webinars@sharifgroup.ae>",
+  REPLY_TO_EMAIL: "mohammad@sharifgroup.ae",
+  DEFAULT_SENDER: "Sharif Group <mohammad@sharifgroup.ae>",
   RESEND_API_URL: "https://api.resend.com/emails",
   // Default to Google Mail (MailApp) as requested by client
   PREFER_GOOGLE_MAIL: true
@@ -181,6 +182,26 @@ function handleWebinarRegistration(data) {
     emailStatus
   ]);
 
+  // Dispatch instant admin notification alert to Mohammad
+  try {
+    MailApp.sendEmail({
+      to: CONFIG.ADMIN_EMAIL,
+      subject: "🔔 New Webinar Registration: " + fullName,
+      body: "New Webinar Registration Received:\n\n" +
+            "• Name: " + fullName + "\n" +
+            "• Email: " + email + "\n" +
+            "• Phone: " + ((dialCode ? dialCode + " " : "") + rawPhone).trim() + "\n" +
+            "• Country: " + residence + "\n" +
+            "• Webinar Session: " + webinarId + "\n" +
+            "• Language: " + lang + "\n" +
+            "• Timestamp: " + new Date().toISOString() + "\n" +
+            "• Page: " + page + "\n\n" +
+            "View registrations in Google Sheet: " + ss.getUrl()
+    });
+  } catch (adminErr) {
+    Logger.log("Admin notify error: " + adminErr.message);
+  }
+
   return { status: "success", duplicate: false, message: "Registration recorded successfully." };
 }
 
@@ -199,17 +220,44 @@ function handleStandardLead(data) {
     sheet.setFrozenRows(1);
   }
 
+  var leadName = data.fullName || ((data.firstName || "") + " " + (data.lastName || "")).trim();
+  var leadEmail = data.email || "";
+  var leadPhone = data.phone || "";
+  var leadService = data.service || data.program || data.programChoice || "";
+  var leadCountry = data.country || data.citizenship || "";
+  var leadNotes = data.notes || data.message || data.confidentialNotes || "";
+
   sheet.appendRow([
     new Date().toISOString(),
-    data.fullName || ((data.firstName || "") + " " + (data.lastName || "")).trim(),
-    data.email || "",
-    data.phone || "",
-    data.country || data.citizenship || "",
-    data.service || data.program || "",
-    data.notes || data.message || "",
+    leadName,
+    leadEmail,
+    leadPhone,
+    leadCountry,
+    leadService,
+    leadNotes,
     data.source || "",
     data.form_id || "general"
   ]);
+
+  // Dispatch instant admin alert to Mohammad
+  try {
+    MailApp.sendEmail({
+      to: CONFIG.ADMIN_EMAIL,
+      subject: "⚡ New Website Inquiry: " + leadName + " (" + (leadService || "General") + ")",
+      body: "New Website Lead Received:\n\n" +
+            "• Name: " + leadName + "\n" +
+            "• Email: " + leadEmail + "\n" +
+            "• Phone: " + leadPhone + "\n" +
+            "• Service: " + leadService + "\n" +
+            "• Country: " + leadCountry + "\n" +
+            "• Notes: " + leadNotes + "\n" +
+            "• Form ID: " + (data.form_id || "general") + "\n" +
+            "• Source: " + (data.source || "") + "\n\n" +
+            "View in Google Sheet: " + ss.getUrl()
+    });
+  } catch (adminErr) {
+    Logger.log("Admin notify error: " + adminErr.message);
+  }
 
   return { status: "success", message: "Inquiry saved." };
 }
@@ -357,7 +405,7 @@ function getEmailTemplate(name, lang) {
         </p>
         <div style="margin-top: 32px; padding-top: 20px; border-top: 1px solid #E2E8F0; text-align: center; font-size: 12px; color: #94A3B8;">
           Sharif Group Dubai • 116 The Binary Tower, Business Bay, Dubai, UAE<br/>
-          WhatsApp: +971 4 357 8737 | contact@sharifgroup.ae
+          WhatsApp: +971 4 357 8737 | mohammad@sharifgroup.ae
         </div>
       </div>
     </div>
