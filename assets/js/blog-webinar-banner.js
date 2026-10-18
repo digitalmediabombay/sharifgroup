@@ -1,7 +1,8 @@
 /**
- * Sharif Group - Dynamic Blog Webinar Floating Banner
+ * Sharif Group - Dynamic Blog Webinar Floating Banner & Reopen Trigger
  * Automatically displays a luxury floating promotional card for webinars
  * that match the topic/country of the current blog article.
+ * Sits cleanly above the WhatsApp widget with minimize & reopen support.
  */
 (function() {
   'use strict';
@@ -44,25 +45,33 @@
       badge: 'Upcoming Free Webinar',
       cta: 'View Session & Register',
       datePrefix: 'Live Session:',
-      closeTitle: 'Dismiss notice'
+      closeTitle: 'Minimize webinar banner',
+      reopenLabel: 'Live Webinar',
+      reopenTitle: 'Open webinar announcement'
     },
     fa: {
       badge: 'وبینار آنلاین رایگان',
       cta: 'مشاهده و ثبت‌نام رایگان',
       datePrefix: 'زمان جلسه:',
-      closeTitle: 'بستن'
+      closeTitle: 'کوچک کردن اعلان',
+      reopenLabel: 'وبینار آنلاین',
+      reopenTitle: 'مشاهده اعلان وبینار'
     },
     ar: {
       badge: 'ندوة مجانية عبر الإنترنت',
       cta: 'عرض الجلسة والتسجيل المجاني',
       datePrefix: 'موعد الجلسة:',
-      closeTitle: 'إغلاق'
+      closeTitle: 'تصغير الإشعار',
+      reopenLabel: 'الندوة المباشرة',
+      reopenTitle: 'فتح إشعار الندوة'
     },
     zh: {
       badge: '免费线上讲座',
       cta: '查看详情并免费报名',
       datePrefix: '讲座时间：',
-      closeTitle: '关闭'
+      closeTitle: '最小化讲座通知',
+      reopenLabel: '线上讲座',
+      reopenTitle: '打开讲座通知'
     }
   };
 
@@ -109,38 +118,42 @@
     }
   }
 
-  // Inject CSS styles for the floating banner
+  // Inject CSS styles for the floating banner and reopen trigger
   function injectStyles() {
     if (document.getElementById('sg-webinar-banner-styles')) return;
     var style = document.createElement('style');
     style.id = 'sg-webinar-banner-styles';
     style.textContent = `
+      /* Floating Webinar Card — Positioned above WhatsApp button */
       .sg-wb-banner {
         position: fixed;
-        bottom: 24px;
+        bottom: 104px;
         right: 24px;
         z-index: 9998;
         width: 380px;
         max-width: calc(100vw - 32px);
-        background: rgba(7, 14, 26, 0.94);
+        background: rgba(7, 14, 26, 0.95);
         backdrop-filter: blur(18px);
         -webkit-backdrop-filter: blur(18px);
         border: 1px solid rgba(197, 168, 128, 0.45);
-        border-radius: 22px;
+        border-radius: 24px;
         box-shadow: 0 16px 40px rgba(0, 0, 0, 0.45), 0 0 30px rgba(197, 168, 128, 0.28);
-        padding: 20px 22px 18px;
+        padding: 22px 24px 20px;
         color: #ffffff;
         font-family: 'Inter', system-ui, -apple-system, sans-serif;
         transform: translateY(35px) scale(0.96);
         opacity: 0;
         pointer-events: none;
-        transition: transform 0.5s cubic-bezier(0.16, 1, 0.3, 1), opacity 0.5s ease;
+        transition: transform 0.45s cubic-bezier(0.16, 1, 0.3, 1), opacity 0.45s ease, border-color 0.3s ease, box-shadow 0.3s ease;
         direction: ltr;
         text-align: left;
       }
+      .sg-wb-banner:hover {
+        border-color: #c5a880;
+        box-shadow: 0 20px 48px rgba(0, 0, 0, 0.55), 0 0 35px rgba(197, 168, 128, 0.4);
+      }
       [dir="rtl"] .sg-wb-banner, html[lang="fa"] .sg-wb-banner, html[lang="ar"] .sg-wb-banner {
-        right: auto;
-        left: 24px;
+        right: 24px;
         direction: rtl;
         text-align: right;
         font-family: 'Vazirmatn', 'Cairo', system-ui, sans-serif;
@@ -154,13 +167,13 @@
         display: flex;
         align-items: center;
         justify-content: space-between;
-        margin-bottom: 8px;
+        margin-bottom: 10px;
       }
       .sg-wb-badge {
         display: inline-flex;
         align-items: center;
-        gap: 6px;
-        font-size: 10px;
+        gap: 7px;
+        font-size: 10.5px;
         font-weight: 700;
         letter-spacing: 0.12em;
         text-transform: uppercase;
@@ -183,30 +196,35 @@
         border: none;
         color: #9ca3af;
         cursor: pointer;
-        font-size: 20px;
+        font-size: 22px;
         line-height: 1;
         padding: 2px 6px;
         border-radius: 6px;
-        transition: color 0.2s, background 0.2s;
+        transition: color 0.2s, background 0.2s, transform 0.2s;
       }
       .sg-wb-close:hover {
         color: #ffffff;
         background: rgba(255, 255, 255, 0.1);
+        transform: scale(1.1);
       }
+      /* Bold, clean, solid title */
       .sg-wb-title {
         font-family: 'Playfair Display', Georgia, serif;
-        font-style: italic;
-        font-size: 16px;
-        font-weight: 600;
-        line-height: 1.35;
+        font-style: normal;
+        font-weight: 700;
+        font-size: 16.5px;
+        line-height: 1.4;
         color: #ffffff;
-        margin: 0 0 8px;
+        margin: 0 0 10px;
+        letter-spacing: -0.01em;
+        transition: color 0.3s ease;
       }
       html[lang="fa"] .sg-wb-title, html[lang="ar"] .sg-wb-title {
         font-family: inherit;
         font-style: normal;
-        font-weight: 700;
-        font-size: 15px;
+        font-weight: 800;
+        font-size: 15.5px;
+        line-height: 1.45;
       }
       .sg-wb-meta {
         display: flex;
@@ -214,7 +232,7 @@
         gap: 8px;
         font-size: 12px;
         color: #d1d5db;
-        margin-bottom: 14px;
+        margin-bottom: 16px;
         font-weight: 300;
       }
       .sg-wb-meta i {
@@ -227,11 +245,11 @@
         justify-content: center;
         gap: 8px;
         width: 100%;
-        padding: 12px 18px;
+        padding: 13px 18px;
         border-radius: 12px;
         background: #786142;
         color: #ffffff !important;
-        font-size: 12px;
+        font-size: 12.5px;
         font-weight: 700;
         text-transform: uppercase;
         letter-spacing: 0.08em;
@@ -255,32 +273,96 @@
       [dir="rtl"] .sg-wb-btn:hover .sg-wb-btn-arrow {
         transform: translateX(-4px);
       }
-      @media (max-width: 480px) {
+
+      /* Reopen Trigger Badge — Appears above WhatsApp when banner is closed */
+      .sg-wb-reopen-btn {
+        position: fixed;
+        bottom: 104px;
+        right: 24px;
+        z-index: 9998;
+        height: 46px;
+        padding: 0 16px 0 14px;
+        border-radius: 9999px;
+        background: rgba(7, 14, 26, 0.95);
+        backdrop-filter: blur(16px);
+        -webkit-backdrop-filter: blur(16px);
+        border: 1.5px solid #c5a880;
+        color: #c5a880;
+        font-size: 12px;
+        font-weight: 700;
+        letter-spacing: 0.08em;
+        text-transform: uppercase;
+        display: inline-flex;
+        align-items: center;
+        gap: 8px;
+        box-shadow: 0 10px 28px rgba(0, 0, 0, 0.55), 0 0 20px rgba(197, 168, 128, 0.3);
+        cursor: pointer;
+        opacity: 0;
+        transform: scale(0.85) translateY(10px);
+        pointer-events: none;
+        transition: all 0.35s cubic-bezier(0.16, 1, 0.3, 1);
+        font-family: inherit;
+        user-select: none;
+        outline: none;
+      }
+      [dir="rtl"] .sg-wb-reopen-btn, html[lang="fa"] .sg-wb-reopen-btn, html[lang="ar"] .sg-wb-reopen-btn {
+        right: 24px;
+        direction: rtl;
+      }
+      .sg-wb-reopen-btn.sg-wb-reopen-visible {
+        opacity: 1;
+        transform: scale(1) translateY(0);
+        pointer-events: auto;
+      }
+      .sg-wb-reopen-btn:hover {
+        background: #c5a880;
+        color: #ffffff;
+        border-color: #c5a880;
+        transform: scale(1.05) translateY(-2px);
+        box-shadow: 0 12px 32px rgba(197, 168, 128, 0.5);
+      }
+      .sg-wb-reopen-pulse {
+        width: 7px;
+        height: 7px;
+        border-radius: 50%;
+        background: #34d399;
+        box-shadow: 0 0 6px #34d399;
+        animation: sgWbPulse 2s infinite;
+      }
+      .sg-wb-reopen-btn i {
+        font-size: 13px;
+      }
+
+      @media (max-width: 600px) {
         .sg-wb-banner {
-          bottom: 14px;
-          right: 14px;
-          left: 14px;
+          bottom: 100px;
+          right: 16px;
+          left: 16px;
           width: auto;
           max-width: none;
-          padding: 16px 18px 16px;
-          border-radius: 18px;
+          padding: 18px 20px 18px;
+          border-radius: 20px;
         }
         [dir="rtl"] .sg-wb-banner, html[lang="fa"] .sg-wb-banner, html[lang="ar"] .sg-wb-banner {
-          left: 14px;
-          right: 14px;
+          left: 16px;
+          right: 16px;
         }
-        .sg-wb-title { font-size: 14.5px; }
+        .sg-wb-title { font-size: 15px; }
+        .sg-wb-reopen-btn {
+          bottom: 100px;
+          right: 16px;
+        }
+        [dir="rtl"] .sg-wb-reopen-btn, html[lang="fa"] .sg-wb-reopen-btn, html[lang="ar"] .sg-wb-reopen-btn {
+          right: 16px;
+        }
       }
     `;
     document.head.appendChild(style);
   }
 
-  // Build and display the floating banner
+  // Build and display the floating banner with reopen trigger
   function showBanner(webinar) {
     var lang = getLang();
-    var dismissKey = 'sg_dismiss_wb_' + webinar.id;
-    if (sessionStorage.getItem(dismissKey)) return;
-
     var c = webinar[lang] || webinar.en || {};
     var title = c.title || webinar.slug;
     var tUI = I18N[lang] || I18N.en;
@@ -290,6 +372,7 @@
 
     injectStyles();
 
+    // 1. Create main banner card
     var banner = document.createElement('aside');
     banner.className = 'sg-wb-banner';
     banner.setAttribute('role', 'complementary');
@@ -313,20 +396,41 @@
       </a>
     `;
 
-    document.body.appendChild(banner);
+    // 2. Create reopen trigger button
+    var reopenBtn = document.createElement('button');
+    reopenBtn.className = 'sg-wb-reopen-btn';
+    reopenBtn.type = 'button';
+    reopenBtn.setAttribute('aria-label', tUI.reopenTitle);
+    reopenBtn.setAttribute('title', tUI.reopenTitle);
+    reopenBtn.innerHTML = `
+      <span class="sg-wb-reopen-pulse"></span>
+      <i class="fa-solid fa-video"></i>
+      <span>${tUI.reopenLabel}</span>
+    `;
 
-    // Bind close button
+    document.body.appendChild(banner);
+    document.body.appendChild(reopenBtn);
+
+    // Close action: hides banner, shows reopen button
     var closeBtn = banner.querySelector('.sg-wb-close');
     closeBtn.addEventListener('click', function(e) {
       e.preventDefault();
-      sessionStorage.setItem(dismissKey, '1');
       banner.classList.remove('sg-wb-visible');
       setTimeout(function() {
-        if (banner.parentNode) banner.parentNode.removeChild(banner);
-      }, 500);
+        reopenBtn.classList.add('sg-wb-reopen-visible');
+      }, 250);
     });
 
-    // Animate in after 1.5 seconds of reading
+    // Reopen action: hides reopen button, shows banner
+    reopenBtn.addEventListener('click', function(e) {
+      e.preventDefault();
+      reopenBtn.classList.remove('sg-wb-reopen-visible');
+      setTimeout(function() {
+        banner.classList.add('sg-wb-visible');
+      }, 200);
+    });
+
+    // Animate banner in after 1.5 seconds of reading
     setTimeout(function() {
       banner.classList.add('sg-wb-visible');
     }, 1500);
