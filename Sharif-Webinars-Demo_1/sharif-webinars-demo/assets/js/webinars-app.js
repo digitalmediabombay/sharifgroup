@@ -980,10 +980,16 @@
       }
 
       setTimeout(() => {
+        const thanksUrl = `${SITE}${prefix()}webinars/${w.slug}/thanks/` + (DEMO ? '?demo=1' : '');
         if (window.location.protocol === 'file:') {
           location.hash = `#/webinars/${w.slug}/thanks`;
         } else {
-          window.location.href = `${SITE}${prefix()}webinars/${w.slug}/thanks/` + (DEMO ? '?demo=1' : '');
+          try {
+            history.pushState({ page: 'thanks', slug: w.slug }, '', thanksUrl);
+            route();
+          } catch (_) {
+            window.location.href = thanksUrl;
+          }
         }
       }, 550);
     });

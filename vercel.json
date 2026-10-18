@@ -95,6 +95,22 @@
   ],
   "rewrites": [
     {
+      "source": "/fa/webinars/:path*",
+      "destination": "/fa/webinars/index.html"
+    },
+    {
+      "source": "/ar/webinars/:path*",
+      "destination": "/ar/webinars/index.html"
+    },
+    {
+      "source": "/zh/webinars/:path*",
+      "destination": "/zh/webinars/index.html"
+    },
+    {
+      "source": "/webinars/:path*",
+      "destination": "/webinars/index.html"
+    },
+    {
       "source": "/ar",
       "destination": "/index.html"
     },
