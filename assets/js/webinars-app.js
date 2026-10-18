@@ -246,12 +246,19 @@
     const TWO_HOURS = 2 * 60 * 60 * 1000;
 
     const list = JSON.parse(JSON.stringify(sourceList)).map(w => {
-      // 1. Apply overrides from CRM schedule if present (only time and link)
+      // 1. Apply overrides from CRM schedule if present (time, link, and reg_status)
       if (schedule && schedule.sessions && schedule.sessions[w.session_no]) {
         const sData = schedule.sessions[w.session_no];
         if (sData.start_utc) w.start_utc = sData.start_utc;
         if (typeof sData.join_url === 'string') w.join_url = sData.join_url.trim();
         if (typeof sData.duration_min !== 'undefined') w.duration_min = sData.duration_min;
+        if (sData.reg_status) {
+          w.reg_status = sData.reg_status;
+          w.registration_open = (sData.reg_status === 'open');
+        }
+      }
+      if (!w.reg_status) {
+        w.reg_status = w.registration_open ? 'open' : 'soon';
       }
 
       // 2. Compute dynamic time status & 2-Hour Auto-Expiry Lifecycle
@@ -870,7 +877,12 @@
     if (s === 'live') return `<span class="badge badge--live"><span class="dot"></span>${esc(t('status.live'))}</span>`;
     if (s === 'ended') return `<span class="badge badge--muted">${esc(t('status.ended'))}</span>`;
     if (s === 'postponed' || s === 'cancelled') return `<span class="badge badge--muted">${esc(t('status.' + s))}</span>`;
-    if (w.registration_open || w.join_visibility === 'public') return `<span class="badge badge--gold">${esc(t('status.regOpen'))}</span>`;
+    if (w.reg_status === 'closed') {
+      return `<span class="badge badge--muted" style="border-color:rgba(239,68,68,0.3);color:#ef4444;background:rgba(239,68,68,0.08)"><svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" style="display:inline-block;vertical-align:middle;margin-right:4px"><circle cx="12" cy="12" r="10"/><line x1="15" y1="9" x2="9" y2="15"/><line x1="9" y1="9" x2="15" y2="15"/></svg>${esc(t('status.regClosed') || 'Registration closed')}</span>`;
+    }
+    if (w.reg_status === 'open' || w.registration_open || w.join_visibility === 'public') {
+      return `<span class="badge badge--gold">${esc(t('status.regOpen'))}</span>`;
+    }
     return `<span class="badge badge--muted">${esc(t('status.soon'))}</span>`;
   }
   function countdownHTML(w, light) {
@@ -1074,7 +1086,10 @@
   function formCard(w) {
     const pub = w.join_visibility === 'public';
     if (w.event_status === 'ended') return '';
-    if (!w.registration_open) {
+    if (w.reg_status === 'closed') {
+      return `<div class="card"><h3>${esc(t('form.title'))}</h3><div class="closed-msg" style="border-color:rgba(239,68,68,0.3);background:rgba(239,68,68,0.06);color:#dc2626"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" style="display:inline-block;vertical-align:middle;margin-right:6px"><circle cx="12" cy="12" r="10"/><line x1="15" y1="9" x2="9" y2="15"/><line x1="9" y1="9" x2="15" y2="15"/></svg>${esc(t('form.closed'))}</div></div>`;
+    }
+    if (w.reg_status === 'soon' || !w.registration_open) {
       const msg = w.event_status === 'upcoming' ? t('detail.notOpen', { n: n(w.session_no - 1) }) : t('form.closed');
       return `<div class="card"><h3>${esc(t('form.title'))}</h3><div class="closed-msg">${esc(msg)}</div></div>`;
     }

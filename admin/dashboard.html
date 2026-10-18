@@ -8977,6 +8977,7 @@
         const selNo = Number(webinarSchedulerState.selectedNo);
         const selSession = allSessions.find(s => Number(s.session_no) === selNo) || allSessions[0] || { session_no: 1 };
         const selData = (schedule.sessions && schedule.sessions[selNo]) ? schedule.sessions[selNo] : {};
+        const selRegStatus = (selData && selData.reg_status) ? selData.reg_status : (selSession.registration_open ? 'open' : 'soon');
 
         const title = (selSession[curLang] && selSession[curLang].title) || (selSession.en && selSession.en.title) || selSession.title || ('Session ' + selNo);
         const excerpt = (selSession[curLang] && selSession[curLang].excerpt) || (selSession.en && selSession.en.excerpt) || selSession.excerpt || '';
@@ -9006,6 +9007,15 @@
           statusBadgeHtml = `<span style="display:inline-flex;align-items:center;gap:6px;padding:4px 12px;border-radius:20px;font-size:11px;font-weight:700;background:rgba(197,168,128,0.15);color:#b38e5d;border:1px solid rgba(197,168,128,0.3)"><i class="fa-solid fa-clock"></i> Upcoming (Countdown Active)</span>`;
         }
 
+        let regPillHtml = '';
+        if (selRegStatus === 'open') {
+          regPillHtml = `<span style="display:inline-flex;align-items:center;gap:6px;padding:4px 12px;border-radius:20px;font-size:11px;font-weight:700;background:rgba(16,185,129,0.12);color:#059669;border:1px solid rgba(16,185,129,0.3)"><i class="fa-solid fa-user-check"></i> Reg Open</span>`;
+        } else if (selRegStatus === 'closed') {
+          regPillHtml = `<span style="display:inline-flex;align-items:center;gap:6px;padding:4px 12px;border-radius:20px;font-size:11px;font-weight:700;background:rgba(239,68,68,0.12);color:#ef4444;border:1px solid rgba(239,68,68,0.25)"><i class="fa-solid fa-lock"></i> Reg Closed</span>`;
+        } else {
+          regPillHtml = `<span style="display:inline-flex;align-items:center;gap:6px;padding:4px 12px;border-radius:20px;font-size:11px;font-weight:700;background:rgba(197,168,128,0.15);color:#b38e5d;border:1px solid rgba(197,168,128,0.3)"><i class="fa-regular fa-clock"></i> Coming Soon</span>`;
+        }
+
         const isCurrentlyActive = (selNo === activeNo);
 
         ed.innerHTML = `
@@ -9019,7 +9029,7 @@
                 </div>
                 <div>
                   <h1 style="font-size:20px;font-weight:700;color:var(--text);margin:0 0 3px">Webinar Live Session & Link Manager</h1>
-                  <p style="font-size:12px;color:var(--muted);margin:0">Select which session is featured on the live website, update its countdown time, and paste the meeting link.</p>
+                  <p style="font-size:12px;color:var(--muted);margin:0">Select which session is featured on the live website, update countdown time, meeting link, and registration status.</p>
                 </div>
               </div>
               <div>
@@ -9037,7 +9047,7 @@
                   Select Session
                 </div>
                 <div style="font-size:11px;color:var(--muted)">
-                  Click any session below to edit its time/link or promote it to Next Live Session
+                  Click any session below to edit its time/link/registration or promote it to Next Live Session
                 </div>
               </div>
 
@@ -9050,6 +9060,7 @@
                   const sTitle = (s[curLang] && s[curLang].title) || (s.en && s.en.title) || s.title || ('Session ' + sNo);
                   const sSch = (schedule.sessions && schedule.sessions[sNo]) || {};
                   const sLink = (typeof sSch.join_url === 'string') ? sSch.join_url : (s.join_url || '');
+                  const sReg = (sSch && sSch.reg_status) ? sSch.reg_status : (s.registration_open ? 'open' : 'soon');
                   return `
                     <div onclick="selectWebinarSchedulerSession(${sNo})" style="cursor:pointer;border-radius:12px;padding:16px;border:2px solid ${isSel ? 'var(--gold)' : (isActiveOnWeb ? '#10b981' : 'var(--border)')};background:${isSel ? 'rgba(197,168,128,0.06)' : 'var(--card)'};box-shadow:${isSel ? '0 4px 14px rgba(197,168,128,0.18)' : '0 1px 3px rgba(0,0,0,0.03)'};transition:all 0.2s">
                       <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:8px">
@@ -9066,7 +9077,11 @@
                         ${escH(sTitle)}
                       </div>
                       <div style="display:flex;align-items:center;justify-content:space-between;font-size:11px;color:var(--muted);padding-top:10px;border-top:1px solid var(--border)">
-                        <span>${sLink ? '<span style="color:#10b981"><i class="fa-solid fa-link"></i> Link Ready</span>' : '<span style="opacity:0.65"><i class="fa-regular fa-clock"></i> Link Pending</span>'}</span>
+                        <div style="display:flex;align-items:center;gap:6px">
+                          <span>${sLink ? '<span style="color:#10b981"><i class="fa-solid fa-link"></i> Link Ready</span>' : '<span style="opacity:0.65"><i class="fa-regular fa-clock"></i> Link Pending</span>'}</span>
+                          <span style="opacity:0.3">|</span>
+                          ${sReg === 'open' ? '<span style="color:#059669;font-weight:700">● Reg Open</span>' : (sReg === 'closed' ? '<span style="color:#ef4444;font-weight:700">● Reg Closed</span>' : '<span style="color:#b38e5d;font-weight:700">● Soon</span>')}
+                        </div>
                         <span style="font-weight:600;color:${isSel ? 'var(--gold)' : 'var(--text)'}">${isSel ? 'Selected →' : 'Select'}</span>
                       </div>
                     </div>
@@ -9075,7 +9090,7 @@
               </div>
             </div>
 
-            <!-- ═══ STEP 2 & 3: SCHEDULE & MEETING LINK PANEL ═══ -->
+            <!-- ═══ STEP 2 & 3: SCHEDULE, REGISTRATION & MEETING LINK PANEL ═══ -->
             <div style="background:var(--card);border:1px solid var(--border);border-radius:14px;padding:22px 24px;box-shadow:0 2px 10px rgba(0,0,0,0.03);margin-bottom:24px">
               
               <!-- Session Header & Activation Toggle -->
@@ -9089,6 +9104,7 @@
                   </h2>
                   <div style="display:flex;align-items:center;gap:10px">
                     ${statusBadgeHtml}
+                    ${regPillHtml}
                   </div>
                 </div>
 
@@ -9105,7 +9121,7 @@
                 </div>
               </div>
 
-              <!-- Input Fields -->
+              <!-- Input Fields: Date & Time Picker + Meeting Link -->
               <div style="display:grid;grid-template-columns:1fr 1fr;gap:20px;margin-bottom:20px">
                 
                 <!-- Date & Time Picker -->
@@ -9139,11 +9155,60 @@
 
               </div>
 
+              <!-- Registration Status Selector -->
+              <div style="margin-bottom:20px;background:var(--surface);border:1px solid var(--border);border-radius:12px;padding:16px 18px">
+                <label class="form-label" style="font-size:12px;font-weight:700;margin-bottom:6px;display:flex;align-items:center;justify-content:space-between">
+                  <span>
+                    <i class="fa-solid fa-user-check" style="color:var(--gold);margin-right:6px"></i>
+                    Registration Status for Session ${String(selNo).padStart(2, '0')}
+                  </span>
+                  <span style="font-size:11px;font-weight:400;color:var(--muted)">Controls the registration badge and form visibility on the live website</span>
+                </label>
+                <div style="display:grid;grid-template-columns:repeat(auto-fit, minmax(200px, 1fr));gap:12px;margin-top:10px">
+                  <!-- Option 1: Registration Open -->
+                  <label style="cursor:pointer;border:2px solid ${selRegStatus === 'open' ? '#10b981' : 'var(--border)'};background:${selRegStatus === 'open' ? 'rgba(16,185,129,0.08)' : 'var(--card)'};border-radius:10px;padding:12px 14px;display:flex;align-items:flex-start;gap:10px;transition:all 0.2s">
+                    <input type="radio" name="wsch-reg-status" value="open" ${selRegStatus === 'open' ? 'checked' : ''} style="margin-top:3px;accent-color:#10b981">
+                    <div>
+                      <div style="font-size:13px;font-weight:700;color:${selRegStatus === 'open' ? '#059669' : 'var(--text)'}">
+                        🟢 Registration Open
+                      </div>
+                      <div style="font-size:11px;color:var(--muted);line-height:1.3;margin-top:2px">
+                        Form is active. Users can submit name & WhatsApp to register.
+                      </div>
+                    </div>
+                  </label>
+                  <!-- Option 2: Coming Soon -->
+                  <label style="cursor:pointer;border:2px solid ${selRegStatus === 'soon' ? 'var(--gold)' : 'var(--border)'};background:${selRegStatus === 'soon' ? 'rgba(197,168,128,0.08)' : 'var(--card)'};border-radius:10px;padding:12px 14px;display:flex;align-items:flex-start;gap:10px;transition:all 0.2s">
+                    <input type="radio" name="wsch-reg-status" value="soon" ${selRegStatus === 'soon' ? 'checked' : ''} style="margin-top:3px;accent-color:var(--gold)">
+                    <div>
+                      <div style="font-size:13px;font-weight:700;color:${selRegStatus === 'soon' ? 'var(--gold)' : 'var(--text)'}">
+                        🟡 Coming Soon
+                      </div>
+                      <div style="font-size:11px;color:var(--muted);line-height:1.3;margin-top:2px">
+                        Shows "Coming Soon" badge; registration form is locked until opened.
+                      </div>
+                    </div>
+                  </label>
+                  <!-- Option 3: Registration Closed -->
+                  <label style="cursor:pointer;border:2px solid ${selRegStatus === 'closed' ? '#ef4444' : 'var(--border)'};background:${selRegStatus === 'closed' ? 'rgba(239,68,68,0.08)' : 'var(--card)'};border-radius:10px;padding:12px 14px;display:flex;align-items:flex-start;gap:10px;transition:all 0.2s">
+                    <input type="radio" name="wsch-reg-status" value="closed" ${selRegStatus === 'closed' ? 'checked' : ''} style="margin-top:3px;accent-color:#ef4444">
+                    <div>
+                      <div style="font-size:13px;font-weight:700;color:${selRegStatus === 'closed' ? '#ef4444' : 'var(--text)'}">
+                        🔴 Registration Closed
+                      </div>
+                      <div style="font-size:11px;color:var(--muted);line-height:1.3;margin-top:2px">
+                        Shows "Registration closed" badge and message. No new signups accepted.
+                      </div>
+                    </div>
+                  </label>
+                </div>
+              </div>
+
               <!-- Save & Update Website Action -->
               <div style="display:flex;align-items:center;justify-content:space-between;padding-top:18px;border-top:1px solid var(--border)">
                 <div style="font-size:12px;color:var(--muted)">
                   <i class="fa-solid fa-shield-halved" style="color:var(--gold);margin-right:6px"></i>
-                  Clicking Update Website instantly refreshes the live website and countdown timer.
+                  Clicking Update Website instantly refreshes the live website, countdown timer, and registration availability.
                 </div>
                 <div style="display:flex;gap:10px">
                   <button type="button" class="btn btn-primary" style="font-size:13px;padding:11px 26px;background:linear-gradient(135deg,#10b981,#059669);color:#fff;border:none;box-shadow:0 2px 8px rgba(16,185,129,0.3)" onclick="saveWebinarScheduleData()">
@@ -9196,6 +9261,7 @@
         
         const dtInput = document.getElementById('wsch-datetime');
         const linkInput = document.getElementById('wsch-link');
+        const regRadio = document.querySelector('input[name="wsch-reg-status"]:checked');
         
         let startUtc = '';
         if (dtInput && dtInput.value) {
@@ -9205,12 +9271,14 @@
         }
         
         const joinUrl = linkInput ? linkInput.value.trim() : '';
+        const regStatus = regRadio ? regRadio.value : (schedule.sessions && schedule.sessions[selNo] && schedule.sessions[selNo].reg_status ? schedule.sessions[selNo].reg_status : 'open');
         
         if (!schedule.sessions) schedule.sessions = {};
         schedule.sessions[selNo] = {
           start_utc: startUtc,
           join_url: joinUrl,
-          duration_min: 65
+          duration_min: 65,
+          reg_status: regStatus
         };
         schedule.updated_at = new Date().toISOString();
         

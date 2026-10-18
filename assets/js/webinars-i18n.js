@@ -87,7 +87,7 @@ window.WEBINAR_I18N = {
       common: { demoStrong: "Demo", demoText: "Preview for the web team — nothing is sent or saved outside this browser.", skip: "Skip to content", isNew: "New", free: "Free", min: "{n} min", sample: "Sample date — pending approval", copy: "Copy link", copied: "Link copied", close: "Close", lang: "Persian (Dari)", online: "Online", seats: "{n} seats", sessionN: "Session {n}", of: "of" },
       cd: { d: "Days", h: "Hours", m: "Minutes", s: "Seconds" },
       tz: { kabul: "Kabul", dubai: "Dubai", istanbul: "Istanbul", you: "Your time" },
-      status: { upcoming: "Upcoming", live: "Live now", ended: "Held", postponed: "Postponed", cancelled: "Cancelled", regOpen: "Registration open", soon: "Coming soon", publicLink: "Public link" },
+      status: { upcoming: "Upcoming", live: "Live now", ended: "Held", postponed: "Postponed", cancelled: "Cancelled", regOpen: "Registration open", regClosed: "Registration closed", soon: "Coming soon", publicLink: "Public link" },
       list: {
         eyebrow: "Live Sessions & Insights", title: "Webinars", sub: "SHARIF GROUP DUBAI",
         lede: "Free, live online sessions where our specialists explain citizenship and residency pathways clearly — and answer your questions.",
@@ -248,7 +248,7 @@ window.WEBINAR_I18N = {
       common: { demoStrong: "نسخه دمو", demoText: "پیش‌نمایش برای تیم وبسایت — هیچ اطلاعاتی بیرون از این مرورگر ارسال یا ذخیره نمی‌شود.", skip: "رفتن به محتوا", isNew: "جدید", free: "رایگان", min: "{n} دقیقه", sample: "تاریخ نمونه — در انتظار تأیید", copy: "کپی لینک", copied: "لینک کپی شد", close: "بستن", lang: "فارسی (دری)", online: "آنلاین", seats: "{n} نفر ظرفیت", sessionN: "جلسه {n}", of: "از" },
       cd: { d: "روز", h: "ساعت", m: "دقیقه", s: "ثانیه" },
       tz: { kabul: "کابل", dubai: "دبی", istanbul: "استانبول", you: "وقت شما" },
-      status: { upcoming: "پیش رو", live: "در حال پخش", ended: "برگزار شد", postponed: "به تعویق افتاد", cancelled: "لغو شد", regOpen: "ثبت‌نام باز است", soon: "به‌زودی", publicLink: "لینک عمومی" },
+      status: { upcoming: "پیش رو", live: "در حال پخش", ended: "برگزار شد", postponed: "به تعویق افتاد", cancelled: "لغو شد", regOpen: "ثبت‌نام باز است", regClosed: "ثبت‌نام بسته شد", soon: "به‌زودی", publicLink: "لینک عمومی" },
       list: {
         eyebrow: "جلسه‌های زنده و دانستنی‌ها", title: "وبینارها", sub: "شریف گروپ دبی",
         lede: "جلسه‌های آنلاین، زنده و رایگان که در آن کارشناسان ما مسیرهای شهروندی و اقامت را روشن توضیح می‌دهند و به پرسش‌های شما پاسخ می‌دهند.",
@@ -409,7 +409,7 @@ window.WEBINAR_I18N = {
       common: { demoStrong: "نسخة تجريبية", demoText: "معاينة لفريق الموقع — لا يتم إرسال أو حفظ أي بيانات خارج هذا المتصفح.", skip: "انتقل إلى المحتوى", isNew: "جديد", free: "مجاناً", min: "{n} دقيقة", sample: "تاريخ تجريبي — بانتظار الاعتماد", copy: "نسخ الرابط", copied: "تم نسخ الرابط", close: "إغلاق", lang: "الفارسية (الدرية)", online: "عبر الإنترنت", seats: "{n} مقعداً", sessionN: "الجلسة {n}", of: "من" },
       cd: { d: "أيام", h: "ساعات", m: "دقائق", s: "ثوانٍ" },
       tz: { kabul: "كابول", dubai: "دبي", istanbul: "إسطنبول", you: "توقيتك" },
-      status: { upcoming: "قادمة", live: "مباشر الآن", ended: "انعقدت", postponed: "مؤجلة", cancelled: "ملغاة", regOpen: "التسجيل مفتوح", soon: "قريباً", publicLink: "رابط عام" },
+      status: { upcoming: "قادمة", live: "مباشر الآن", ended: "انعقدت", postponed: "مؤجلة", cancelled: "ملغاة", regOpen: "التسجيل مفتوح", regClosed: "التسجيل مغلق", soon: "قريباً", publicLink: "رابط عام" },
       list: {
         eyebrow: "جلسات مباشرة ورؤى", title: "الندوات عبر الإنترنت", sub: "مجموعة شريف دبي",
         lede: "جلسات مباشرة ومجانية عبر الإنترنت يشرح فيها خبراؤنا مسارات الجنسية والإقامة بوضوح ويجيبون عن أسئلتكم.",
@@ -570,7 +570,7 @@ window.WEBINAR_I18N = {
       common: { demoStrong: "演示版", demoText: "供网站团队预览——任何数据都不会发送或保存到本浏览器之外。", skip: "跳到内容", isNew: "新", free: "免费", min: "{n} 分钟", sample: "示例日期——待确认", copy: "复制链接", copied: "链接已复制", close: "关闭", lang: "波斯语（达利语）", online: "线上", seats: "{n} 个名额", sessionN: "第 {n} 场", of: "/" },
       cd: { d: "天", h: "小时", m: "分钟", s: "秒" },
       tz: { kabul: "喀布尔", dubai: "迪拜", istanbul: "伊斯坦布尔", you: "您的时间" },
-      status: { upcoming: "即将开始", live: "正在直播", ended: "已举行", postponed: "已延期", cancelled: "已取消", regOpen: "报名开放", soon: "敬请期待", publicLink: "公开链接" },
+      status: { upcoming: "即将开始", live: "正在直播", ended: "已举行", postponed: "已延期", cancelled: "已取消", regOpen: "报名开放", regClosed: "报名已截止", soon: "敬请期待", publicLink: "公开链接" },
       list: {
         eyebrow: "直播讲座与洞察", title: "在线讲座", sub: "谢里夫集团 · 迪拜",
         lede: "免费在线直播讲座：我们的专家清晰讲解入籍与居留路径，并现场解答您的问题。",
