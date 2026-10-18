@@ -1104,36 +1104,37 @@
     <section class="hero hero--detail">
       <img class="hero-mark mark-white" src="${LOGO}" alt="" aria-hidden="true">
       <div class="container hero-inner">
-        <nav class="crumbs" aria-label="Breadcrumb"><a href="${SITE + prefix()}">${esc(t('detail.home'))}</a>${I.crumb}<a href="#/webinars">${esc(L().nav.webinars)}</a>${I.crumb}<span aria-current="page">${esc(t('common.sessionN', { n: pad2(w.session_no) }))}</span></nav>
-        <div class="btn-row" style="gap:8px;align-items:center"><span class="eyebrow caps">${esc(c.series_tag || t('list.seriesTag'))} · ${esc(t('common.sessionN', { n: pad2(w.session_no) }))}</span>${statusBadge(w)}</div>
+        <nav class="crumbs" aria-label="Breadcrumb"><a href="${SITE + prefix()}">${esc(t('detail.home'))}</a><i class="fa-solid fa-chevron-right crumb-ico"></i><a href="#/webinars">${esc(L().nav.webinars)}</a><i class="fa-solid fa-chevron-right crumb-ico"></i><span aria-current="page">${esc(t('common.sessionN', { n: pad2(w.session_no) }))}</span></nav>
+        <div class="btn-row" style="gap:8px;align-items:center"><span class="eyebrow caps"><i class="fa-solid fa-star text-[10px]"></i> ${esc(c.series_tag || t('list.seriesTag'))} · ${esc(t('common.sessionN', { n: pad2(w.session_no) }))}</span>${statusBadge(w)}</div>
         <h1 class="display h-lg">${esc(c.title || ('Session ' + w.session_no))}</h1>
         <p class="lede">${esc(c.excerpt || '')}</p>
         <div class="hero-meta">
-          <span>${I.cal}${esc(dLong(d, TZ.kabul))}</span>
-          <span>${I.clock}${tm(d, TZ.kabul)} ${esc(t('tz.kabul'))} · ${tm(d, TZ.dubai)} ${esc(t('tz.dubai'))}</span>
-          <span>${I.mic}${esc(t('common.lang'))}</span>
-          <span>${I.checkCircle}${esc(t('common.free'))} · ${esc(t('common.min', { n: n(w.duration_min) }))}</span>
+          <span><i class="fa-regular fa-calendar-check"></i> ${esc(dLong(d, TZ.kabul))}</span>
+          <span><i class="fa-regular fa-clock"></i> ${tm(d, TZ.kabul)} ${esc(t('tz.kabul'))} · ${tm(d, TZ.dubai)} ${esc(t('tz.dubai'))}</span>
+          <span><i class="fa-solid fa-language"></i> ${esc(t('common.lang'))}</span>
+          <span><i class="fa-solid fa-circle-check"></i> ${esc(t('common.free'))} · ${esc(t('common.min', { n: n(w.duration_min) }))}</span>
         </div>
       </div>
     </section>
     <div class="container"><div class="detail">
       <div class="d-join">${joinCard(w)}</div>
       <div class="d-main">
-        <section class="block"><h2 class="block-title">${esc(t('detail.about'))}</h2><div class="prose">${bodyParas.length ? bodyParas.map(p => `<p>${esc(p)}</p>`).join('') : `<p>${esc(c.excerpt || '')}</p>`}</div></section>
-        <section class="block"><h2 class="block-title">${esc(t('detail.learn'))}</h2><ul class="learn">${outcomeItems.length ? outcomeItems.map(o => `<li>${I.check}<span>${esc(o)}</span></li>`).join('') : `<li>${I.check}<span>${esc(t('common.free'))}</span></li>`}</ul></section>
-        <section class="block"><h2 class="block-title">${esc(t('detail.agenda'))}</h2><ol class="agenda">${agendaList.map(a => `<li><span class="ag-time">${esc(a.time || a.t || '')}</span><span class="ag-label">${esc(a.topic || a.l || '')}<span class="ag-who">${esc(a.speaker || a.w || '')}</span></span></li>`).join('')}</ol></section>
-        <section class="block"><h2 class="block-title">${esc(t('detail.speakers'))}</h2><div class="speakers">
+        <section class="block"><h2 class="block-title"><span class="bt-icon"><i class="fa-solid fa-circle-info"></i></span><span>${esc(t('detail.about'))}</span></h2><div class="prose card card--prose">${bodyParas.length ? bodyParas.map(p => `<p>${esc(p)}</p>`).join('') : `<p>${esc(c.excerpt || '')}</p>`}</div></section>
+        <section class="block"><h2 class="block-title"><span class="bt-icon"><i class="fa-solid fa-graduation-cap"></i></span><span>${esc(t('detail.learn'))}</span></h2><ul class="learn">${outcomeItems.length ? outcomeItems.map(o => `<li><div class="learn-ico"><i class="fa-solid fa-check"></i></div><span>${esc(o)}</span></li>`).join('') : `<li><div class="learn-ico"><i class="fa-solid fa-check"></i></div><span>${esc(t('common.free'))}</span></li>`}</ul></section>
+        <section class="block"><h2 class="block-title"><span class="bt-icon"><i class="fa-solid fa-list-check"></i></span><span>${esc(t('detail.agenda'))}</span></h2><ol class="agenda">${agendaList.map(a => `<li><span class="ag-time">${esc(a.time || a.t || '')}</span><span class="ag-label">${esc(a.topic || a.l || '')}<span class="ag-who">${esc(a.speaker || a.w || '')}</span></span></li>`).join('')}</ol></section>
+        <section class="block"><h2 class="block-title"><span class="bt-icon"><i class="fa-solid fa-users"></i></span><span>${esc(t('detail.speakers'))}</span></h2><div class="speakers">
           ${speakersList.map(sp => {
             if (Array.isArray(sp)) {
-              const [k, ic] = sp;
-              return `<div class="speaker"><div class="avatar">${ic}</div><div><h4>${esc(t('detail.' + k + 'Name'))}</h4><p>${esc(t('detail.' + k + 'Role'))}</p><span class="tbd">${esc(t('detail.tbd'))}</span></div></div>`;
+              const [k] = sp;
+              const faIcon = k === 'host' ? '<i class="fa-solid fa-microphone"></i>' : '<i class="fa-solid fa-user-tie"></i>';
+              return `<div class="speaker"><div class="avatar">${faIcon}</div><div><h4>${esc(t('detail.' + k + 'Name'))}</h4><p>${esc(t('detail.' + k + 'Role'))}</p><span class="tbd">${esc(t('detail.tbd'))}</span></div></div>`;
             }
-            return `<div class="speaker"><div class="avatar">${I.user}</div><div><h4>${esc(sp.title || sp.name || t('detail.expertName'))}</h4><p>${esc(sp.affiliation || sp.role || t('detail.expertRole'))}</p><span class="tbd">${esc(sp.note || t('detail.tbd'))}</span></div></div>`;
+            return `<div class="speaker"><div class="avatar"><i class="fa-solid fa-user-tie"></i></div><div><h4>${esc(sp.title || sp.name || t('detail.expertName'))}</h4><p>${esc(sp.affiliation || sp.role || t('detail.expertRole'))}</p><span class="tbd">${esc(sp.note || t('detail.tbd'))}</span></div></div>`;
           }).join('')}
         </div></section>
-        <section class="block"><h2 class="block-title">${esc(t('detail.privacy'))}</h2><ul class="privacy-list">${t('detail.privacyItems').map(p => `<li>${I.shield}<span>${esc(p)}</span></li>`).join('')}</ul></section>
-        <section class="block faq"><h2 class="block-title">${esc(t('detail.faq'))}</h2>${t('detail.faqs').map((f, i) => `<details${i === 0 ? ' open' : ''}><summary>${esc(f.q)}${I.plus}</summary><p>${esc(f.a)}</p></details>`).join('')}</section>
-        ${others.length ? `<section class="block"><h2 class="block-title">${esc(t('detail.other'))}</h2><div class="section--navy" style="border-radius:22px;padding:8px 14px 18px">${others.map(sessionRow).join('')}</div></section>` : ''}
+        <section class="block"><h2 class="block-title"><span class="bt-icon"><i class="fa-solid fa-shield-halved"></i></span><span>${esc(t('detail.privacy'))}</span></h2><div class="privacy-strip"><div class="privacy-strip-ico"><i class="fa-solid fa-shield-halved"></i></div><div style="flex:1"><h3 style="margin-bottom:8px">${esc(t('detail.privacy'))}</h3><ul class="privacy-list">${t('detail.privacyItems').map(p => `<li><i class="fa-solid fa-check"></i><span>${esc(p)}</span></li>`).join('')}</ul></div></div></section>
+        <section class="block faq"><h2 class="block-title"><span class="bt-icon"><i class="fa-solid fa-circle-question"></i></span><span>${esc(t('detail.faq'))}</span></h2>${t('detail.faqs').map((f, i) => `<details${i === 0 ? ' open' : ''}><summary>${esc(f.q)}<i class="fa-solid fa-plus faq-toggle-ico"></i></summary><p>${esc(f.a)}</p></details>`).join('')}</section>
+        ${others.length ? `<section class="block"><h2 class="block-title"><span class="bt-icon"><i class="fa-solid fa-layer-group"></i></span><span>${esc(t('detail.other'))}</span></h2><div class="section--navy other-sessions-box" style="border-radius:24px;padding:12px 18px 22px">${others.map(sessionRow).join('')}</div></section>` : ''}
       </div>
       <div class="d-form" id="register">${formCard(w)}</div>
     </div></div>
@@ -1141,37 +1142,37 @@
   }
   function joinCard(w) {
     const st = linkState(w), live = w.event_status === 'live', held = st === 'held';
-    return `<div class="card card--dark">
-      <div class="join-head">${statusBadge(w)}${w.join_visibility === 'public' && !held ? `<span class="badge badge--gold">${I.link.replace('<svg', '<svg width="12" height="12"')}${esc(t('status.publicLink'))}</span>` : ''}</div>
-      ${held ? '' : `<h3>${esc(t('detail.joinTitle'))}</h3>`}
+    return `<div class="card card--dark join-card-luxury">
+      <div class="join-head">${statusBadge(w)}${w.join_visibility === 'public' && !held ? `<span class="badge badge--gold"><i class="fa-solid fa-link" style="font-size:11px"></i>${esc(t('status.publicLink'))}</span>` : ''}</div>
+      ${held ? '' : `<h3 class="join-card-title">${esc(t('detail.joinTitle'))}</h3>`}
       ${held ? '' : `<p class="sub">${esc(w.join_visibility === 'public' ? t('detail.joinPublic') : t('form.subPrivate'))}</p>`}
       <div style="margin-bottom:18px">${dateLine(w)}</div>
       ${live || held ? '' : `<div style="margin-bottom:18px">${countdownHTML(w)}</div>`}
       ${held ? '' : `<div style="margin-bottom:20px">${tzHTML(w)}</div>`}
       ${joinAction(w)}
-      ${held ? `<a class="btn btn--bronze btn--block" style="margin-top:16px" href="${SITE + prefix()}contact/">${esc(t('detail.consultBtn'))}${I.arrow}</a>` : `<div class="mini-links">
-        ${st === 'ready' ? `<button class="btn btn--ghost-light btn--sm" type="button" data-copy="${esc(w.join_url)}">${I.copy}${esc(t('common.copy'))}</button>` : ''}
-        <button class="btn btn--ghost-light btn--sm" type="button" data-ics="${w.id}">${I.cal}${esc(t('detail.addCal'))}</button>
-        <a class="btn btn--ghost-light btn--sm" href="${waShare(w)}" target="_blank" rel="noopener">${I.wa}${esc(t('detail.shareWa'))}</a>
+      ${held ? `<a class="btn btn--bronze btn--block" style="margin-top:16px" href="${SITE + prefix()}contact/"><span>${esc(t('detail.consultBtn'))}</span><i class="fa-solid fa-arrow-right"></i></a>` : `<div class="mini-links">
+        ${st === 'ready' ? `<button class="btn btn--ghost-light btn--sm" type="button" data-copy="${esc(w.join_url)}"><i class="fa-regular fa-copy"></i><span>${esc(t('common.copy'))}</span></button>` : ''}
+        <button class="btn btn--ghost-light btn--sm" type="button" data-ics="${w.id}"><i class="fa-regular fa-calendar-plus"></i><span>${esc(t('detail.addCal'))}</span></button>
+        <a class="btn btn--ghost-light btn--sm" href="${waShare(w)}" target="_blank" rel="noopener"><i class="fa-brands fa-whatsapp"></i><span>${esc(t('detail.shareWa'))}</span></a>
       </div>`}
-      ${w.registration_open && st !== 'locked' && !held ? `<p class="note">${I.wa}<a href="#register" style="text-decoration:underline;text-underline-offset:3px">${esc(t('list.remind'))}</a></p>` : ''}
+      ${w.registration_open && st !== 'locked' && !held ? `<p class="note"><i class="fa-brands fa-whatsapp text-emerald-400"></i><a href="#register" style="text-decoration:underline;text-underline-offset:3px">${esc(t('list.remind'))}</a></p>` : ''}
     </div>`;
   }
   function formCard(w) {
     const pub = w.join_visibility === 'public';
     if (w.event_status === 'ended') return '';
     if (w.reg_status === 'closed') {
-      return `<div class="card"><h3>${esc(t('form.title'))}</h3><div class="closed-msg" style="border-color:rgba(239,68,68,0.3);background:rgba(239,68,68,0.06);color:#dc2626"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" style="display:inline-block;vertical-align:middle;margin-right:6px"><circle cx="12" cy="12" r="10"/><line x1="15" y1="9" x2="9" y2="15"/><line x1="9" y1="9" x2="15" y2="15"/></svg>${esc(t('form.closed'))}</div></div>`;
+      return `<div class="card card--form"><h3>${esc(t('form.title'))}</h3><div class="closed-msg" style="border-color:rgba(239,68,68,0.3);background:rgba(239,68,68,0.06);color:#dc2626"><i class="fa-regular fa-circle-xmark" style="margin-inline-end:8px"></i>${esc(t('form.closed'))}</div></div>`;
     }
     if (w.reg_status === 'soon' || !w.registration_open) {
       const msg = w.event_status === 'upcoming' ? t('detail.notOpen', { n: n(w.session_no - 1) }) : t('form.closed');
-      return `<div class="card"><h3>${esc(t('form.title'))}</h3><div class="closed-msg">${esc(msg)}</div></div>`;
+      return `<div class="card card--form"><h3>${esc(t('form.title'))}</h3><div class="closed-msg"><i class="fa-regular fa-clock" style="margin-inline-end:8px"></i>${esc(msg)}</div></div>`;
     }
     const F = k => esc(t('form.' + k));
     const dial = DIAL.map(([c, k]) => `<option value="${c}">${c} ${k}</option>`).join('');
     const ctry = Object.entries(t('form.countries')).map(([k, v]) => `<option value="${k}">${esc(v)}</option>`).join('');
-    return `<div class="card">
-      <h3>${F('title')}</h3><p class="sub">${esc(pub ? t('form.subPublic') : t('form.subPrivate'))}</p>
+    return `<div class="card card--form">
+      <h3 class="form-card-title">${F('title')}</h3><p class="sub">${esc(pub ? t('form.subPublic') : t('form.subPrivate'))}</p>
       <form class="form" id="regForm" novalidate data-id="${w.id}">
         <div class="form-alert" role="alert" id="formAlert">${F('alert')}</div>
         <div class="field"><label for="f-name">${F('name')}<span class="req">*</span></label>
@@ -1188,8 +1189,11 @@
           <textarea class="textarea" id="f-q" name="question" maxlength="500" aria-describedby="h-q e-q"></textarea><span class="hint" id="h-q">${F('questionHint')}</span><span class="counter" id="qCount">${n(0)} / ${n(500)}</span><span class="err" id="e-q">${F('errQuestion')}</span></div>
         <label class="check"><input type="checkbox" name="newsletter_optin" value="yes"><span>${F('newsletter')}</span></label>
         <div class="hp" aria-hidden="true"><label>Company<input name="company" tabindex="-1" autocomplete="off"></label></div>
-        <button class="btn btn--bronze btn--block" type="submit">${F('submit')}</button>
-        <p class="consent-note">${I.shield}<span>${F('privacy')}</span></p>
+        <button class="btn btn--bronze btn--block btn--submit" type="submit">
+          <span>${F('submit')}</span>
+          <i class="fa-solid fa-arrow-right btn-arrow-ico"></i>
+        </button>
+        <p class="consent-note"><i class="fa-solid fa-shield-halved"></i><span>${F('privacy')}</span></p>
       </form></div>`;
   }
 
