@@ -12,7 +12,7 @@
 
   const urlParams = new URLSearchParams(window.location.search);
   const DEMO = urlParams.get('demo') === '1';
-  const CRM_WEBHOOK_URL = "https://script.google.com/macros/s/AKfycbx1htojc2xrudJ3i9eRepORLmAXqh6vk2IoBy6bUrtPqlcpODqI5XVdgUpXWYbgpCXOvg/exec";
+  const CRM_WEBHOOK_URL = "https://script.google.com/macros/s/AKfycbyO6vUrWreO-zeAj1gfmWTish9ntgeYOaUthNSmFRAFfdG6trRgoLjmo1JN-Z57_hdK/exec";
   const LANGS = ['fa', 'en', 'ar', 'zh'];
   const SITE = window.location.protocol === 'file:' ? 'https://www.sharifgroup.ae/' : '/';
   const TZ = { kabul: 'Asia/Kabul', dubai: 'Asia/Dubai', istanbul: 'Europe/Istanbul' };
