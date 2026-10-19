@@ -17,7 +17,7 @@
 /* Base Site Header */
 .site-header,
 #main-header {
-  position: sticky !important;
+  position: fixed !important;
   top: 0 !important;
   left: 0 !important;
   right: 0 !important;
@@ -41,15 +41,12 @@
   box-shadow: 0 4px 24px -4px rgba(0, 0, 0, 0.08) !important;
 }
 
-/* Legacy padding normalizers for pages that had hardcoded compensation for fixed headers */
-body > main.pt-24,
-body > main.pt-28,
-body > main.pt-32 {
-  padding-top: 0 !important;
-}
-
-main.blog-article-layout {
-  padding-top: 36px !important;
+/* Webinars & Demo app top clearance for fixed header */
+body.lang-en #main,
+body.lang-ar #main,
+body.lang-fa #main,
+body.lang-zh #main {
+  padding-top: var(--sg-nav-h) !important;
 }
 
 /* Inner Layout Container */
@@ -365,43 +362,51 @@ html[lang="ar"] .sg-mm-list li a {
 
 /* Card-Based Mega Menus (Services & About Us) */
 .sg-mm-cards-layout {
-  grid-template-columns: 260px 1fr !important;
+  grid-template-columns: 280px 1fr !important;
   gap: 36px !important;
+  align-items: center !important;
 }
 
 .sg-mm-cards-grid {
-  display: grid !important;
-  grid-template-columns: repeat(3, 1fr) !important;
-  gap: 20px !important;
-}
-
-.sg-mm-cards-grid--4 {
-  grid-template-columns: repeat(4, 1fr) !important;
+  display: flex !important;
+  align-items: center !important;
+  justify-content: flex-start !important;
+  gap: 16px !important;
+  width: 100% !important;
 }
 
 .sg-mm-card {
   position: relative !important;
-  display: block !important;
-  height: 140px !important;
-  border-radius: 16px !important;
+  flex: 1 1 0 !important;
+  max-width: 270px !important;
+  height: 125px !important;
+  border-radius: 20px !important;
   overflow: hidden !important;
   text-decoration: none !important;
-  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.08) !important;
-  border: 1px solid rgba(0, 0, 0, 0.06) !important;
-  transition: transform 0.3s cubic-bezier(0.16, 1, 0.3, 1), box-shadow 0.3s ease !important;
+  border: 1px solid rgba(197, 168, 128, 0.5) !important;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08) !important;
+  display: flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  transition: transform 0.4s cubic-bezier(0.16, 1, 0.3, 1), box-shadow 0.4s ease, border-color 0.4s ease !important;
+  box-sizing: border-box !important;
 }
 
 .sg-mm-card:hover {
-  transform: translateY(-3px) !important;
-  box-shadow: 0 12px 28px rgba(0, 0, 0, 0.16) !important;
+  transform: translateY(-2px) !important;
+  border-color: var(--sg-gold) !important;
+  box-shadow: 0 8px 24px rgba(197, 168, 128, 0.25) !important;
 }
 
 .sg-mm-card img {
+  position: absolute !important;
+  inset: 0 !important;
   width: 100% !important;
   height: 100% !important;
   object-fit: cover !important;
   display: block !important;
   transition: transform 0.6s cubic-bezier(0.16, 1, 0.3, 1) !important;
+  z-index: 1 !important;
 }
 
 .sg-mm-card:hover img {
@@ -411,32 +416,35 @@ html[lang="ar"] .sg-mm-list li a {
 .sg-mm-card-overlay {
   position: absolute !important;
   inset: 0 !important;
-  background: linear-gradient(180deg, rgba(6, 10, 18, 0.1) 0%, rgba(6, 10, 18, 0.82) 100%) !important;
-  transition: background 0.3s ease !important;
+  background: rgba(10, 10, 10, 0.62) !important;
+  transition: background-color 0.3s ease !important;
+  z-index: 2 !important;
 }
 
 .sg-mm-card:hover .sg-mm-card-overlay {
-  background: linear-gradient(180deg, rgba(6, 10, 18, 0) 0%, rgba(6, 10, 18, 0.9) 100%) !important;
+  background: rgba(10, 10, 10, 0.48) !important;
 }
 
 .sg-mm-card-title {
-  position: absolute !important;
-  inset-inline: 16px !important;
-  bottom: 14px !important;
-  z-index: 2 !important;
-  font-size: 10.5px !important;
+  position: relative !important;
+  z-index: 3 !important;
+  text-align: center !important;
+  padding: 12px 16px !important;
+  font-size: 11px !important;
   font-weight: 700 !important;
-  letter-spacing: 0.12em !important;
+  letter-spacing: 0.18em !important;
   text-transform: uppercase !important;
   color: #ffffff !important;
-  transition: color 0.2s ease !important;
+  line-height: 1.35 !important;
+  transition: color 0.25s ease !important;
+  pointer-events: none !important;
 }
 
 html[lang="fa"] .sg-mm-card-title,
 html[lang="ar"] .sg-mm-card-title {
   letter-spacing: 0 !important;
   text-transform: none !important;
-  font-size: 12px !important;
+  font-size: 12.5px !important;
 }
 
 .sg-mm-card:hover .sg-mm-card-title {

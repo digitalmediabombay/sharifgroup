@@ -40,6 +40,7 @@
         socialResp: 'Social Responsibility',
         corporateIdentity: 'Corporate Identity',
         overview: 'Overview',
+        ourStory: 'Our Story',
         aboutSharif: 'About Sharif Group',
         aboutFounder: 'About Founder | Ali Sharif',
         becomePartner: 'Become a Partner'
@@ -90,6 +91,7 @@
         socialResp: 'المسؤولية الاجتماعية',
         corporateIdentity: 'الهوية المؤسسية',
         overview: 'نظرة عامة',
+        ourStory: 'قصتنا',
         aboutSharif: 'عن مجموعة شريف',
         aboutFounder: 'عن المؤسس | علي شريف',
         becomePartner: 'كن شريكاً لنا'
@@ -140,6 +142,7 @@
         socialResp: 'مسئولیت اجتماعی',
         corporateIdentity: 'هویت سازمانی',
         overview: 'بررسی اجمالی',
+        ourStory: 'داستان ما',
         aboutSharif: 'درباره شریف گروپ',
         aboutFounder: 'درباره بنیان‌گذار | علی شریف',
         becomePartner: 'همکار ما شوید'
@@ -190,6 +193,7 @@
         socialResp: '企业社会责任',
         corporateIdentity: '公司介绍',
         overview: '概览',
+        ourStory: '品牌故事',
         aboutSharif: '关于谢里夫集团',
         aboutFounder: '创始人简介 | 阿里·谢里夫',
         becomePartner: '成为合作伙伴'
@@ -407,17 +411,17 @@
             <div class="sg-mega-menu">
               <div class="sg-mm-inner sg-mm-cards-layout">
                 <div class="sg-mm-side">
-                  <p class="sg-mm-title">${esc(n.corporateIdentity)}</p>
-                  <a class="sg-mm-all-btn" href="${site + p}aboutus/">${esc(n.overview)}</a>
+                  <p class="sg-mm-title">${esc(n.aboutSharif)}</p>
+                  <a class="sg-mm-all-btn" href="${site + p}aboutus/">${esc(n.ourStory)}</a>
                 </div>
-                <div class="sg-mm-cards-grid sg-mm-cards-grid--4">
+                <div class="sg-mm-cards-grid">
                   <a class="sg-mm-card" href="${site + p}aboutus/">
                     <img src="${getAssetUrl('assets/images/dubai-office-2.webp')}" alt="About Sharif Group" loading="lazy">
                     <div class="sg-mm-card-overlay"></div>
                     <span class="sg-mm-card-title">${esc(n.aboutSharif)}</span>
                   </a>
                   <a class="sg-mm-card" href="${site + p}about-founder/">
-                    <img src="${getAssetUrl('assets/images/Masoud_Sharif_3x2_60_dd0fff.webp')}" alt="Founder" loading="lazy">
+                    <img src="${getAssetUrl('assets/images/founder-ali-sharif.webp')}" alt="About Founder | Ali Sharif" loading="lazy">
                     <div class="sg-mm-card-overlay"></div>
                     <span class="sg-mm-card-title">${esc(n.aboutFounder)}</span>
                   </a>
@@ -425,14 +429,6 @@
                     <img src="${getAssetUrl('assets/images/photo-148852178799_7302db.webp')}" alt="Social Responsibility" loading="lazy">
                     <div class="sg-mm-card-overlay"></div>
                     <span class="sg-mm-card-title">${esc(n.socialResp)}</span>
-                  </a>
-                  <a class="sg-mm-card" href="${site + p}partners/" style="border: 1px solid rgba(197, 168, 128, 0.45); background: #060a12;">
-                    <div class="sg-mm-card-overlay" style="background: linear-gradient(180deg, rgba(6,10,18,0.3) 0%, rgba(6,10,18,0.95) 100%);"></div>
-                    <div style="position: absolute; inset: 0; display: flex; flex-direction: column; align-items: center; justify-content: center; z-index: 2; padding: 12px; text-align: center;">
-                      <i class="fa-solid fa-handshake" style="color: var(--sg-gold); font-size: 18px; margin-bottom: 6px;"></i>
-                      <span class="sg-mm-card-title" style="position: static; font-size: 10px;">${esc(n.becomePartner)}</span>
-                      <span class="sg-badge-new" style="margin-top: 5px;">${esc(n.newBadge)}</span>
-                    </div>
                   </a>
                 </div>
               </div>
