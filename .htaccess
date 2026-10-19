@@ -60,14 +60,14 @@
     # 8b. Automated Multilingual XML Sitemap Engine
     RewriteRule ^sitemap\.xml$ sitemap.php [L]
 
-    # 9. Clean Language Path Rewrites for Blog & Webinars (/ar/blog/..., /ar/webinars/...)
+    # 9. Clean Language Path Rewrites for Blog, Webinars & Partners
     RewriteCond %{REQUEST_FILENAME} !-f
     RewriteCond %{REQUEST_FILENAME} !-d
     RewriteRule ^(ar|fa|zh)/blog/([^/]+)/?$ /$1/blog/index.html [L,QSA]
 
     RewriteCond %{REQUEST_FILENAME} !-f
     RewriteCond %{REQUEST_FILENAME} !-d
-    RewriteRule ^(ar|fa|zh)/webinars/([^/]+)(?:/thanks)?/?$ /$1/webinars/index.html [L,QSA]
+    RewriteRule ^(ar|fa|zh)/webinars/(.+)$ /$1/webinars/index.html [L,QSA]
 
     RewriteCond %{REQUEST_FILENAME} !-f
     RewriteCond %{REQUEST_FILENAME} !-d
@@ -88,14 +88,14 @@
     RewriteCond %{REQUEST_FILENAME} !-d
     RewriteRule ^(ar|fa|zh)/(.*)$ /$2 [L,QSA]
 
-    # 11. Blog & Webinars slug fallback
+    # 11. Blog, Webinars & Partners slug fallback
     RewriteCond %{REQUEST_FILENAME} !-f
     RewriteCond %{REQUEST_FILENAME} !-d
     RewriteRule ^blog/([^/]+)/?$ /blog/index.html [L,QSA]
 
     RewriteCond %{REQUEST_FILENAME} !-f
     RewriteCond %{REQUEST_FILENAME} !-d
-    RewriteRule ^webinars/([^/]+)(?:/thanks)?/?$ /webinars/index.html [L,QSA]
+    RewriteRule ^webinars/(.+)$ /webinars/index.html [L,QSA]
 
     RewriteCond %{REQUEST_FILENAME} !-f
     RewriteCond %{REQUEST_FILENAME} !-d
