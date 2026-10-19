@@ -1105,12 +1105,38 @@
   }
   function sessionRow(w) {
     const c = C(w), d = startOf(w);
-    return `<div class="session-row">
-      <span class="session-no">${pad2(w.session_no)}</span>
-      <div class="session-body"><h3>${esc(c.title || ('Session ' + w.session_no))}</h3><p>${esc(c.excerpt || '')}</p>
-        <div class="session-meta"><span>${esc(dShort(d, TZ.kabul))} · ${tm(d, TZ.kabul)} ${esc(t('tz.kabul'))}</span><span>${esc(t('common.min', { n: n(w.duration_min) }))}</span></div></div>
-      <div class="session-actions">${statusBadge(w)}<a class="btn btn--bronze btn--sm caps" href="#/webinars/${w.slug}">${esc(t('list.sessionCta'))}${I.arrow}</a></div>
-    </div>`;
+    return `<article class="session-row" tabindex="0" role="region" aria-label="${esc(c.title || ('Session ' + w.session_no))}">
+      <div class="session-row-head">
+        <span class="session-no">${pad2(w.session_no)}</span>
+        <div class="session-head-title">
+          <h3>${esc(c.title || ('Session ' + w.session_no))}</h3>
+        </div>
+        <div class="session-head-actions">
+          ${statusBadge(w)}
+          <span class="session-chevron" aria-hidden="true"><i class="fa-solid fa-chevron-down"></i></span>
+        </div>
+      </div>
+      <div class="session-row-collapse">
+        <div class="session-row-inner">
+          <div class="session-divider"></div>
+          <div class="session-detail-grid">
+            <div class="session-detail-info">
+              <p class="session-desc">${esc(c.excerpt || '')}</p>
+              <div class="session-meta">
+                <span><i class="fa-regular fa-calendar-check"></i> ${esc(dShort(d, TZ.kabul))} · ${tm(d, TZ.kabul)} ${esc(t('tz.kabul'))}</span>
+                <span><i class="fa-regular fa-clock"></i> ${esc(t('common.min', { n: n(w.duration_min) }))}</span>
+              </div>
+            </div>
+            <div class="session-detail-btn">
+              <a class="btn btn--bronze btn--sm caps" href="#/webinars/${w.slug}">
+                <span>${esc(t('list.sessionCta'))}</span>
+                <i class="fa-solid fa-arrow-right"></i>
+              </a>
+            </div>
+          </div>
+        </div>
+      </div>
+    </article>`;
   }
   function ctaBand() {
     return `<div class="cta-band"><div><h2 class="display h-md">${esc(t('list.ctaTitle'))}</h2><p>${esc(t('list.ctaText'))}</p></div>
@@ -1499,6 +1525,10 @@
     const tt = e.target.closest('[data-toast]');
     if (tt) { toast(t('demo.' + tt.dataset.toast)); return; }
     if (e.target.closest('a[href^="#/"]')) { $('#drawer').classList.remove('open'); }
+    const sessionRow = e.target.closest('.session-row');
+    if (sessionRow && !e.target.closest('a') && !e.target.closest('button')) {
+      sessionRow.classList.toggle('is-open');
+    }
   });
   $('#demoFab') && $('#demoFab').addEventListener('click', () => $('#demoPanel').classList.toggle('open'));
 
