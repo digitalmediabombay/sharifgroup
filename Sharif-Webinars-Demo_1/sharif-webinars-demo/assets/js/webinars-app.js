@@ -726,22 +726,33 @@
   const waShare = w => `https://wa.me/?text=${encodeURIComponent(C(w).title + ' — ' + pageUrl(w))}`;
 
   const HERO_BG_IMAGES = ['web_1.webp', 'web_2.webp', 'web_3.webp', 'web_4.webp'];
-  function heroBgScrollerHTML() {
-    const items = [...HERO_BG_IMAGES, ...HERO_BG_IMAGES, ...HERO_BG_IMAGES, ...HERO_BG_IMAGES];
+  function heroSlideshowHTML() {
     const basePath = (window.location.protocol === 'file:')
       ? (window.location.pathname.includes('/fa/') || window.location.pathname.includes('/ar/') || window.location.pathname.includes('/zh/') ? '../../assets/images/' : (window.location.pathname.includes('/webinars') ? '../assets/images/' : 'assets/images/'))
       : '/assets/images/';
     return `
-    <div class="hero-bg-scroller" aria-hidden="true">
-      <div class="hero-scroller-track">
-        ${items.map((img, i) => `
-          <div class="hero-scroller-item">
-            <img src="${basePath + img}" alt="Sharif Group Webinar" loading="${i < 4 ? 'eager' : 'lazy'}">
-          </div>
-        `).join('')}
-      </div>
+    <div class="hero-slides-wrapper" aria-hidden="true">
+      ${HERO_BG_IMAGES.map((img, i) => `
+        <div class="hero-slide${i === 0 ? ' is-active' : ''}" style="background-image: linear-gradient(rgba(6, 10, 18, 0.65), rgba(6, 10, 18, 0.82)), url('${basePath + img}');"></div>
+      `).join('')}
     </div>
     <div class="hero-overlay" aria-hidden="true"></div>`;
+  }
+
+  let heroSlideshowTimer = null;
+  function initHeroSlideshow() {
+    if (heroSlideshowTimer) {
+      clearInterval(heroSlideshowTimer);
+      heroSlideshowTimer = null;
+    }
+    const slides = $$('.hero-slide');
+    if (!slides.length) return;
+    let current = 0;
+    heroSlideshowTimer = setInterval(() => {
+      slides[current].classList.remove('is-active');
+      current = (current + 1) % slides.length;
+      slides[current].classList.add('is-active');
+    }, 4500);
   }
 
   /* ---------- LIST PAGE ---------- */
@@ -753,8 +764,7 @@
     document.title = L().meta.title;
     return `
     <section class="hero">
-      ${heroBgScrollerHTML()}
-      <img class="hero-mark mark-white" src="${LOGO}" alt="" aria-hidden="true">
+      ${heroSlideshowHTML()}
       <div class="container hero-inner">
         <span class="eyebrow caps">${I.video}${esc(t('list.eyebrow'))}</span>
         <h1 class="display h-xl" style="margin-top:14px">${esc(t('list.title'))}</h1>
@@ -845,8 +855,7 @@
     const others = webinars().filter(x => x.series === w.series && x.id !== w.id);
     return `
     <section class="hero hero--detail">
-      ${heroBgScrollerHTML()}
-      <img class="hero-mark mark-white" src="${LOGO}" alt="" aria-hidden="true">
+      ${heroSlideshowHTML()}
       <div class="container hero-inner">
         <nav class="crumbs" aria-label="Breadcrumb"><a href="${SITE + prefix()}">${esc(t('detail.home'))}</a>${I.crumb}<a href="#/webinars">${esc(L().nav.webinars)}</a>${I.crumb}<span aria-current="page">${esc(t('common.sessionN', { n: pad2(w.session_no) }))}</span></nav>
         <div class="btn-row" style="gap:8px;align-items:center"><span class="eyebrow caps">${esc(t('list.seriesTag'))} · ${esc(t('common.sessionN', { n: pad2(w.session_no) }))}</span>${statusBadge(w)}</div>
@@ -1250,6 +1259,7 @@
     else html = viewNotFound();
     main.innerHTML = html;
     bindForm(); if (r.page === 'admin') bindAdmin();
+    initHeroSlideshow();
     clearInterval(cdTimer); tickCountdowns(); if ($('[data-cd]')) cdTimer = setInterval(tickCountdowns, 1000);
   }
   function route() { render(); window.scrollTo({ top: 0, left: 0, behavior: 'instant' }); }
