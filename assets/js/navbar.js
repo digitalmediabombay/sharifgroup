@@ -421,7 +421,7 @@
                     <span class="sg-mm-card-title">${esc(n.aboutSharif)}</span>
                   </a>
                   <a class="sg-mm-card" href="${site + p}about-founder/">
-                    <img src="${getAssetUrl('assets/images/founder-ali-sharif.webp')}" alt="About Founder | Ali Sharif" loading="lazy">
+                    <img src="${getAssetUrl('assets/images/alirezasharif.svg')}" alt="About Founder | Ali Sharif" loading="lazy">
                     <div class="sg-mm-card-overlay"></div>
                     <span class="sg-mm-card-title">${esc(n.aboutFounder)}</span>
                   </a>
