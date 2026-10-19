@@ -51,7 +51,7 @@ body.lang-zh #main {
 
 /* Inner Layout Container */
 .sg-header-inner {
-  position: relative !important;
+  position: static !important;
   display: flex !important;
   align-items: center !important;
   justify-content: space-between !important;
@@ -66,6 +66,7 @@ body.lang-zh #main {
 
 /* Brand & Main Navigation Left Group */
 .sg-brand-group {
+  position: static !important;
   display: flex !important;
   align-items: center !important;
   gap: clamp(8px, 1.2vw, 18px) !important;
@@ -101,6 +102,7 @@ body.lang-zh #main {
 
 /* Desktop Main Nav */
 .sg-main-nav {
+  position: static !important;
   display: flex !important;
   align-items: center !important;
   gap: clamp(4px, 0.7vw, 12px) !important;
