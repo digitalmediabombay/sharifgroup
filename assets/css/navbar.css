@@ -4,6 +4,8 @@
    Fully supports EN, AR, FA, ZH and proper RTL layout without collisions
    ========================================================================== */
 
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Playfair+Display:ital,wght@0,600;0,700;1,400&display=swap');
+
 :root {
   --sg-nav-h: 80px;
   --sg-gold: #c5a880;
@@ -11,7 +13,7 @@
   --sg-navy: #060a12;
   --sg-border: rgba(0, 0, 0, 0.08);
   --sg-font-serif: 'Playfair Display', Georgia, 'Times New Roman', serif;
-  --sg-font-sans: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+  --sg-font-sans: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
 }
 
 /* Base Site Header */
@@ -33,7 +35,23 @@
   box-sizing: border-box !important;
   margin: 0 !important;
   padding: 0 !important;
+  font-family: var(--sg-font-sans) !important;
+  -webkit-font-smoothing: antialiased !important;
+  -moz-osx-font-smoothing: grayscale !important;
+  text-rendering: optimizeLegibility !important;
   transition: background-color 0.3s ease, box-shadow 0.3s ease !important;
+}
+
+.site-header *,
+.site-header *::before,
+.site-header *::after,
+#sgDrawer,
+#sgDrawer *,
+#sgDrawer *::before,
+#sgDrawer *::after {
+  box-sizing: border-box !important;
+  -webkit-font-smoothing: antialiased !important;
+  -moz-osx-font-smoothing: grayscale !important;
 }
 
 .site-header.is-scrolled,
@@ -59,9 +77,9 @@ body.lang-zh #main {
   max-width: 1600px !important;
   height: 100% !important;
   margin-inline: auto !important;
-  padding-inline: clamp(16px, 2.2vw, 32px) !important;
+  padding-inline: 32px !important;
   box-sizing: border-box !important;
-  gap: 12px !important;
+  gap: 16px !important;
 }
 
 /* Brand & Main Navigation Left Group */
@@ -105,7 +123,7 @@ body.lang-zh #main {
   position: static !important;
   display: flex !important;
   align-items: center !important;
-  gap: clamp(4px, 0.7vw, 12px) !important;
+  gap: 8px !important;
   height: 100% !important;
   white-space: nowrap !important;
   margin: 0 !important;
@@ -124,13 +142,16 @@ body.lang-zh #main {
   display: flex !important;
   align-items: center !important;
   height: 100% !important;
+  margin: 0 !important;
+  padding: 0 !important;
 }
 
 .sg-nav-link {
   display: inline-flex !important;
   align-items: center !important;
   gap: 5px !important;
-  padding: 6px clamp(4px, 0.5vw, 9px) !important;
+  padding: 8px 8px !important;
+  font-family: var(--sg-font-sans) !important;
   font-size: 10.5px !important;
   font-weight: 700 !important;
   letter-spacing: 0.12em !important;
@@ -138,6 +159,7 @@ body.lang-zh #main {
   color: #404040 !important;
   text-decoration: none !important;
   white-space: nowrap !important;
+  line-height: 1 !important;
   transition: color 0.2s ease !important;
   height: 100% !important;
   cursor: pointer !important;
@@ -145,14 +167,18 @@ body.lang-zh #main {
 
 html[lang="fa"] .sg-nav-link,
 html[lang="ar"] .sg-nav-link {
+  font-family: 'Inter', system-ui, -apple-system, sans-serif !important;
   letter-spacing: 0 !important;
   text-transform: none !important;
   font-size: 12.5px !important;
+  line-height: 1 !important;
 }
 
 html[lang="zh"] .sg-nav-link {
+  font-family: 'Inter', system-ui, -apple-system, sans-serif !important;
   letter-spacing: 0.06em !important;
   font-size: 12px !important;
+  line-height: 1 !important;
 }
 
 .sg-nav-link:hover,
@@ -177,6 +203,7 @@ html[lang="zh"] .sg-nav-link {
   display: inline-flex !important;
   align-items: center !important;
   justify-content: center !important;
+  font-family: var(--sg-font-sans) !important;
   font-size: 7.5px !important;
   font-weight: 700 !important;
   line-height: 1 !important;
@@ -191,11 +218,14 @@ html[lang="zh"] .sg-nav-link {
 
 .sg-nav-sep {
   color: #d4d4d4 !important;
+  font-family: var(--sg-font-sans) !important;
   font-size: 11px !important;
   font-weight: 300 !important;
   opacity: 0.7 !important;
   user-select: none !important;
   margin: 0 !important;
+  padding: 0 !important;
+  line-height: 1 !important;
 }
 
 /* ==========================================================================
@@ -483,21 +513,25 @@ html[lang="ar"] .sg-mm-card-title {
   justify-content: center !important;
   padding: 8px 18px !important;
   border-radius: 9999px !important;
+  font-family: var(--sg-font-sans) !important;
   font-size: 10px !important;
   font-weight: 700 !important;
   letter-spacing: 0.14em !important;
   text-transform: uppercase !important;
   text-decoration: none !important;
   white-space: nowrap !important;
+  line-height: 1 !important;
   transition: all 0.25s ease !important;
   cursor: pointer !important;
 }
 
 html[lang="fa"] .sg-pill-btn,
 html[lang="ar"] .sg-pill-btn {
+  font-family: 'Inter', system-ui, -apple-system, sans-serif !important;
   letter-spacing: 0 !important;
   text-transform: none !important;
   font-size: 12px !important;
+  line-height: 1 !important;
 }
 
 .sg-btn-eligibility {
@@ -537,10 +571,12 @@ html[lang="ar"] .sg-pill-btn {
   border: 1px solid #d4d4d4 !important;
   background: rgba(255, 255, 255, 0.95) !important;
   color: #262626 !important;
+  font-family: var(--sg-font-sans) !important;
   font-size: 11px !important;
   font-weight: 700 !important;
   letter-spacing: 0.08em !important;
   text-transform: uppercase !important;
+  line-height: 1 !important;
   cursor: pointer !important;
   transition: all 0.2s ease !important;
   outline: none !important;

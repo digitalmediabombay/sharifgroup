@@ -1834,7 +1834,11 @@
                     if (!document.querySelector('script[src*="navbar.js"]')) {
                         var s = document.createElement('script');
                         s.src = pfx + 'assets/js/navbar.js';
-                        s.async = true;
+                        s.onload = function() {
+                            if (typeof window.mountUniversalNavbar === 'function') {
+                                window.mountUniversalNavbar();
+                            }
+                        };
                         document.head.appendChild(s);
                     }
                 })();
