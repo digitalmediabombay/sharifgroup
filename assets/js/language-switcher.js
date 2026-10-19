@@ -418,7 +418,7 @@
 
     function updateLanguageSwitcherHrefs() {
         var cleanPath = getCleanCurrentPath();
-        var links = document.querySelectorAll('.lang-option, .mobile-lang-option');
+        var links = document.querySelectorAll('.lang-option, .mobile-lang-option, .sg-drawer-lang-btn, .sg-lang-link, [data-lang]');
         links.forEach(function (el) {
             var l = normalizeLang(el.getAttribute('data-lang'));
             var targetUrl = (l === 'en') ? cleanPath : ('/' + l + (cleanPath === '/' ? '/' : cleanPath));
@@ -433,8 +433,12 @@
         var links = document.querySelectorAll('a[href^="/"]');
         links.forEach(function (a) {
             // Guard: NEVER rewrite language switcher buttons or dropdown items!
-            if (a.classList.contains('lang-option') || a.classList.contains('mobile-lang-option') ||
-                a.closest('.lang-switcher-wrapper, #lang-dropdown-menu, .mobile-lang-grid')) {
+            if (a.hasAttribute('data-lang') ||
+                a.classList.contains('lang-option') ||
+                a.classList.contains('mobile-lang-option') ||
+                a.classList.contains('sg-drawer-lang-btn') ||
+                a.classList.contains('sg-lang-link') ||
+                a.closest('.lang-switcher-wrapper, #lang-dropdown-menu, .mobile-lang-grid, .sg-lang-wrap, #sgLangMenu, .sg-drawer-langs, #sgDrawer')) {
                 return;
             }
 
@@ -1459,7 +1463,10 @@
         var cleanPath = getCleanCurrentPath();
         var targetUrl = (lang === 'en') ? cleanPath : ('/' + lang + (cleanPath === '/' ? '/' : cleanPath));
         if (explicitHref && explicitHref !== '#' && !explicitHref.startsWith('javascript:')) {
-            targetUrl = explicitHref;
+            var isMatchingLang = (lang === 'en') ? !/^\/(ar|fa|zh)(\/|$)/i.test(explicitHref) : new RegExp('^\\/' + lang + '(\\/|$)', 'i').test(explicitHref);
+            if (isMatchingLang) {
+                targetUrl = explicitHref;
+            }
         }
 
         // If user clicked the language they are ALREADY on, just close the dropdown

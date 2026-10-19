@@ -278,7 +278,7 @@
     const langOptionsHTML = langs.map(l => {
       const isCur = l === lang;
       return `<li class="sg-lang-item${isCur ? ' is-current' : ''}">
-        <a href="${getSwitchUrl(l)}" data-lang="${l}">
+        <a href="${getSwitchUrl(l)}" data-lang="${l}" class="sg-lang-link lang-option">
           <span>${esc(I18N[l].langName)}</span>
           <small>${esc(I18N[l].code)}</small>
         </a>
@@ -287,7 +287,7 @@
 
     const drawerLangsHTML = langs.map(l => {
       const isCur = l === lang;
-      return `<a href="${getSwitchUrl(l)}" class="sg-drawer-lang-btn${isCur ? ' is-active' : ''}" data-lang="${l}">
+      return `<a href="${getSwitchUrl(l)}" class="sg-drawer-lang-btn mobile-lang-option${isCur ? ' is-active' : ''}" data-lang="${l}">
         ${esc(I18N[l].langName)}
       </a>`;
     }).join('');
@@ -619,6 +619,38 @@
           langBtn.setAttribute('aria-expanded', 'false');
         }
       });
+
+      // Explicit language switch click handler
+      function handleLangSwitch(e) {
+        const a = e.target.closest('[data-lang]');
+        if (!a) return;
+        const targetLang = a.getAttribute('data-lang');
+        if (!targetLang) return;
+        e.preventDefault();
+        e.stopPropagation();
+
+        try {
+          localStorage.setItem('sharif_lang', targetLang);
+          localStorage.setItem('sharif_preferred_lang', targetLang);
+        } catch (err) {}
+
+        let clean = window.location.pathname.replace(/^\/(ar|fa|zh|en)(\/|$)/i, '/');
+        if (!clean.startsWith('/')) clean = '/' + clean;
+        const search = window.location.search || '';
+        const hash = window.location.hash || '';
+
+        const targetUrl = (targetLang === 'en') ? (clean + search + hash) : ('/' + targetLang + clean + search + hash);
+        window.location.href = targetUrl;
+      }
+
+      headerEl.querySelectorAll('#sgLangMenu a[data-lang]').forEach(el => {
+        el.addEventListener('click', handleLangSwitch);
+      });
+      if (drawerEl) {
+        drawerEl.querySelectorAll('.sg-drawer-langs a[data-lang]').forEach(el => {
+          el.addEventListener('click', handleLangSwitch);
+        });
+      }
     }
 
     // 2. Mobile toggle
