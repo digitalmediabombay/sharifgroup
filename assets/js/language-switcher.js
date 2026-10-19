@@ -86,9 +86,9 @@
 
     var LANG_CONFIG = {
         'en': { code: 'en', dir: 'ltr', label: 'EN', badge: 'EN', name: 'English' },
-        'ar': { code: 'ar', dir: 'rtl', label: 'AR', badge: 'AR', name: 'Arabic' },
-        'fa': { code: 'fa', dir: 'rtl', label: 'FA', badge: 'FA', name: 'Persian' },
-        'zh': { code: 'zh', dir: 'ltr', label: 'ZH', badge: 'ZH', name: 'Chinese' }
+        'ar': { code: 'ar', dir: 'rtl', label: 'العربية', badge: 'AR', name: 'Arabic' },
+        'fa': { code: 'fa', dir: 'rtl', label: 'فارسی', badge: 'FA', name: 'Persian' },
+        'zh': { code: 'zh', dir: 'ltr', label: '中文', badge: 'ZH', name: 'Chinese' }
     };
 
     var ARABIC_DIGITS = ['٠', '١', '٢', '٣', '٤', '٥', '٦', '٧', '٨', '٩'];

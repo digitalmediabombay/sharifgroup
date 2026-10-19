@@ -498,6 +498,16 @@ html[lang="ar"] .sg-mm-card-title {
   align-items: center !important;
   gap: 10px !important;
   flex-shrink: 0 !important;
+  margin-inline-start: auto !important;
+  margin-inline-end: 0 !important;
+}
+
+html[dir="rtl"] .sg-right-actions,
+[dir="rtl"] .sg-right-actions,
+html[lang="ar"] .sg-right-actions,
+html[lang="fa"] .sg-right-actions {
+  margin-left: 0 !important;
+  margin-right: auto !important;
 }
 
 @media (max-width: 1120px) {

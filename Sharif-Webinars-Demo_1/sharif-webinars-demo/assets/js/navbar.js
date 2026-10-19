@@ -469,7 +469,7 @@
         <div class="sg-lang-wrap" id="sgLangWrap">
           <button class="sg-lang-btn" type="button" aria-haspopup="true" aria-expanded="false" id="sgLangBtn">
             <i class="fa-solid fa-globe"></i>
-            <span>${esc(data.code)}</span>
+            <span>${esc(data.code === 'EN' ? 'EN' : data.langName)}</span>
             <i class="fa-solid fa-chevron-down sg-lang-arrow"></i>
           </button>
           <ul class="sg-lang-menu" id="sgLangMenu" role="menu">

@@ -157,6 +157,29 @@ body[dir="rtl"] [class*="space-x-"]> :not([hidden])~ :not([hidden]),
     margin-left: 0 !important;
 }
 
+/* 1.1 Header RTL Actions & Brand Alignment (Fixes CTAs getting clustered next to nav links) */
+html[dir="rtl"] #main-header div.hidden.lg\:flex.shrink-0,
+html[dir="rtl"] #main-header > div > div:last-child,
+html[dir="rtl"] #main-header .sg-right-actions,
+html[dir="rtl"] .sg-right-actions,
+[dir="rtl"] #main-header div.hidden.lg\:flex.shrink-0,
+[dir="rtl"] #main-header > div > div:last-child,
+[dir="rtl"] #main-header .sg-right-actions,
+[dir="rtl"] .sg-right-actions,
+html[lang="ar"] #main-header div.hidden.lg\:flex.shrink-0,
+html[lang="ar"] #main-header > div > div:last-child,
+html[lang="ar"] #main-header .sg-right-actions,
+html[lang="ar"] .sg-right-actions,
+html[lang="fa"] #main-header div.hidden.lg\:flex.shrink-0,
+html[lang="fa"] #main-header > div > div:last-child,
+html[lang="fa"] #main-header .sg-right-actions,
+html[lang="fa"] .sg-right-actions {
+    margin-left: 0 !important;
+    margin-right: auto !important;
+    margin-inline-start: auto !important;
+    margin-inline-end: 0 !important;
+}
+
 /* 2. Site-wide Footer Brand Mark & Column Alignment in RTL */
 html[dir="rtl"] footer .lg\:col-span-1,
 html[dir="rtl"] .footer .lg\:col-span-1,

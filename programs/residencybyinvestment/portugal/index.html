@@ -414,7 +414,19 @@ j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
     align-items: center !important;
     gap: clamp(6px, 0.8vw, 12px) !important;
     flex-shrink: 0 !important;
-    margin-left: auto !important;
+    margin-inline-start: auto !important;
+    margin-inline-end: 0 !important;
+}
+html[dir="rtl"] #main-header div.hidden.lg\:flex.shrink-0,
+html[dir="rtl"] #main-header > div > div:last-child,
+[dir="rtl"] #main-header div.hidden.lg\:flex.shrink-0,
+[dir="rtl"] #main-header > div > div:last-child,
+html[lang="ar"] #main-header div.hidden.lg\:flex.shrink-0,
+html[lang="ar"] #main-header > div > div:last-child,
+html[lang="fa"] #main-header div.hidden.lg\:flex.shrink-0,
+html[lang="fa"] #main-header > div > div:last-child {
+    margin-left: 0 !important;
+    margin-right: auto !important;
 }
 #main-header div.hidden.lg\:flex.shrink-0 > :not([hidden]) ~ :not([hidden]) {
     margin-left: 0 !important;

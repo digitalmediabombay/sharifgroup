@@ -373,7 +373,19 @@ j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
     align-items: center !important;
     gap: clamp(6px, 0.8vw, 12px) !important;
     flex-shrink: 0 !important;
-    margin-left: auto !important;
+    margin-inline-start: auto !important;
+    margin-inline-end: 0 !important;
+}
+html[dir="rtl"] #main-header div.hidden.lg\:flex.shrink-0,
+html[dir="rtl"] #main-header > div > div:last-child,
+[dir="rtl"] #main-header div.hidden.lg\:flex.shrink-0,
+[dir="rtl"] #main-header > div > div:last-child,
+html[lang="ar"] #main-header div.hidden.lg\:flex.shrink-0,
+html[lang="ar"] #main-header > div > div:last-child,
+html[lang="fa"] #main-header div.hidden.lg\:flex.shrink-0,
+html[lang="fa"] #main-header > div > div:last-child {
+    margin-left: 0 !important;
+    margin-right: auto !important;
 }
 #main-header div.hidden.lg\:flex.shrink-0 > :not([hidden]) ~ :not([hidden]) {
     margin-left: 0 !important;
@@ -526,7 +538,7 @@ html[lang="fa"] #main-header nav a,
 <div class="relative lang-switcher-wrapper">
 <button class="flex items-center space-x-1.5 px-3 py-2 rounded-full border border-neutral-300 hover:border-luxury-gold bg-white/95 text-neutral-800 text-[11px] font-bold tracking-wider uppercase transition-all duration-300 focus:outline-none cursor-pointer shadow-sm" id="lang-switcher-btn" onclick="toggleLangDropdown(event)" type="button">
 <i class="fa-solid fa-globe text-luxury-gold text-xs"></i>
-<span id="current-lang-text">AR</span>
+<span id="current-lang-text">العربية</span>
 <i class="fa-solid fa-chevron-down text-[8px] text-neutral-400 transition-transform duration-200" id="lang-arrow-icon"></i>
 </button>
 <div class="hidden absolute right-0 mt-2 w-44 bg-white/95 rounded-2xl shadow-2xl border border-neutral-200/80 py-2 z-50 overflow-hidden" id="lang-dropdown-menu">
