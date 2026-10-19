@@ -830,15 +830,6 @@ html[lang="fa"] .hero-sub, html[lang="ar"] .hero-sub, html[lang="zh"] .hero-sub 
 .hero-meta svg { width: 15px; height: 15px; color: var(--gold); }
 @media (max-width: 640px) {
   .hero-inner { padding: 72px 0 64px; }
-  .hero-mark { width: 320px; }
-  .hero-scroller-track { gap: 14px; padding: 12px 0; animation-duration: 32s; }
-  .hero-scroller-item { width: 280px; border-radius: 14px; }
-}
-
-@media (prefers-reduced-motion: reduce) {
-  .hero-scroller-track {
-    animation-play-state: paused;
-  }
 }
 
 /* ---------- Sections ---------- */
@@ -853,8 +844,8 @@ html[lang="fa"] .hero-sub, html[lang="ar"] .hero-sub, html[lang="zh"] .hero-sub 
 .section--navy .lede { color: #a3a3a3; }
 @media (max-width: 640px) { .section { padding: 64px 0; } .section-head { margin-bottom: 30px; } }
 
-/* ---------- Featured next session ---------- */
-.feature { position: relative; margin-top: -56px; z-index: 2; }
+/* ---------- Featured next session (shifted down with elegant spacing) ---------- */
+.feature { position: relative; margin-top: 64px; z-index: 2; }
 .feature-card { display: grid; grid-template-columns: 1.25fr 1fr; background: #fff; border: 1px solid var(--line); border-radius: var(--radius-card); box-shadow: var(--shadow); overflow: hidden; }
 .feature-main { padding: 44px 44px 40px; }
 .feature-main .display { margin: 16px 0 14px; }
@@ -867,7 +858,7 @@ html[lang="fa"] .hero-sub, html[lang="ar"] .hero-sub, html[lang="zh"] .hero-sub 
 [dir="rtl"] .feature-side::after { inset: auto auto -80px -60px; }
 .side-label { font-size: 11px; color: var(--gold); font-weight: 700; }
 html[lang="fa"] .side-label, html[lang="ar"] .side-label { font-size: 13px; }
-@media (max-width: 900px) { .feature-card { grid-template-columns: 1fr; } .feature-main { padding: 30px 22px; } .feature-side { padding: 30px 22px; } .feature { margin-top: -36px; } }
+@media (max-width: 900px) { .feature-card { grid-template-columns: 1fr; } .feature-main { padding: 30px 22px; } .feature-side { padding: 30px 22px; } .feature { margin-top: 40px; } }
 
 /* Countdown */
 .countdown { display: grid; grid-template-columns: repeat(4, 1fr); gap: 8px; }
