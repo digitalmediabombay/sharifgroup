@@ -1818,6 +1818,29 @@
         updateLanguageSwitcherHrefs();
         updateLanguageUI(currentLang);
 
+        // Mount Universal Navigation System across all pages
+        try {
+            if (typeof window.mountUniversalNavbar === 'function') {
+                window.mountUniversalNavbar();
+            } else {
+                (function() {
+                    var pfx = (window.location.protocol === 'file:') ? '' : '/';
+                    if (!document.querySelector('link[href*="navbar.css"]')) {
+                        var l = document.createElement('link');
+                        l.rel = 'stylesheet';
+                        l.href = pfx + 'assets/css/navbar.css';
+                        document.head.appendChild(l);
+                    }
+                    if (!document.querySelector('script[src*="navbar.js"]')) {
+                        var s = document.createElement('script');
+                        s.src = pfx + 'assets/js/navbar.js';
+                        s.async = true;
+                        document.head.appendChild(s);
+                    }
+                })();
+            }
+        } catch(e) {}
+
         // Preload translation in background.
         // If currentLang matches pageNativeLang, page was ALREADY server-rendered (SSG) in that language!
         // We DO NOT overwrite the live DOM with static JSON, preventing any flash of old content / flicker!

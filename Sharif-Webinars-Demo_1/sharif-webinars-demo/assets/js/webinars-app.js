@@ -66,7 +66,7 @@
 
   /* ---------- icons ---------- */
   const I = {
-    chev: '<svg class="chev" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><path d="M6 9l6 6 6-6"/></svg>',
+    chev: '<svg class="chev" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M6 9l6 6 6-6"/></svg>',
     globe: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="9"/><path d="M3 12h18M12 3a14 14 0 0 1 0 18M12 3a14 14 0 0 0 0 18"/></svg>',
     menu: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 7h16M4 12h16M4 17h16"/></svg>',
     x: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M6 6l12 12M18 6L6 18"/></svg>',
@@ -110,31 +110,216 @@
   const demoDefaults = { status: 'upcoming', visibility: 'public', link: 'soon' };
   const SAMPLE_URL = 'https://meet.example/sharif-WEB01';
   let demo = Object.assign({}, demoDefaults, store.get(K.demo, {}));
-  function webinars() {
-    const edits = store.get(K.edits, {});
-    const list = JSON.parse(JSON.stringify(BASE)).map(w => {
-      const e = edits[w.id];
-      if (e) {
-        ['event_status', 'registration_open', 'start_utc', 'date_confirmed', 'join_visibility', 'join_url', 'capacity'].forEach(k => { if (k in e) w[k] = e[k]; });
-        if (e.title_fa) w.fa.title = e.title_fa;
-        if (e.title_en) w.en.title = e.title_en;
+
+  // Clean up any stale partial draft in localStorage so official sessions are never truncated
+  try {
+    const rawOld = localStorage.getItem('sgcms_webinars');
+    if (rawOld) {
+      const pOld = JSON.parse(rawOld);
+      if (!Array.isArray(pOld) || pOld.length < 3 || !pOld[0].en || !pOld[0].en.title) {
+        localStorage.removeItem('sgcms_webinars');
+        localStorage.removeItem('sgcms_webinars_live');
       }
+    }
+  } catch(e) {}
+
+  const BASELINE_SESSIONS = [
+    {
+      id: "WEB01",
+      slug: "dominica-second-passport-for-afghans",
+      series: "dominica-pilot",
+      session_no: 1,
+      category: "Citizenship",
+      start_utc: "2026-10-29T15:30:00Z",
+      duration_min: 65,
+      event_status: "upcoming",
+      registration_open: true,
+      join_visibility: "public",
+      join_url: "",
+      en: {
+        title: "A Second Passport for Afghans: Introducing the Dominica Programme",
+        excerpt: "A free online session in Persian (Dari): what Dominica's citizenship programme is, why it matters for Afghans and who can apply."
+      },
+      fa: {
+        title: "پاسپورت دوم برای افغان‌ها: آشنایی با برنامه دومینیکا",
+        excerpt: "جلسه آنلاین و رایگان به فارسی (دری): برنامه شهروندی دومینیکا چیست، چرا برای افغان‌ها مهم است و چه کسانی می‌توانند درخواست بدهند."
+      },
+      ar: {
+        title: "جواز سفر ثانٍ للأفغان: التعريف ببرنامج دومينيكا",
+        excerpt: "جلسة مجانية عبر الإنترنت باللغة الفارسية (الدرية): ما هو برنامج جنسية دومينیکا، ولماذا يهم الأفغان، ومن يحق له التقديم."
+      },
+      zh: {
+        title: "阿富汗人的第二本护照：多米尼克入籍项目介绍",
+        excerpt: "免费在线讲座（波斯语／达利语）：多米尼克投资入籍项目是什么、为何对阿富汗人重要、哪些人可以申请。"
+      }
+    },
+    {
+      id: "WEB02",
+      slug: "dominica-from-decision-to-passport",
+      series: "dominica-pilot",
+      session_no: 2,
+      category: "Citizenship",
+      start_utc: "2026-11-12T15:30:00Z",
+      duration_min: 65,
+      event_status: "upcoming",
+      registration_open: false,
+      join_visibility: "registrants",
+      join_url: "",
+      en: {
+        title: "From Decision to Passport: Steps, Documents and Source of Funds",
+        excerpt: "The application steps, required documents (Tazkira, passport, financial records), proving and transferring source of funds, interview preparation and a full cost breakdown."
+      },
+      fa: {
+        title: "از تصمیم تا پاسپورت: مراحل، مدارک و منشأ پول",
+        excerpt: "مراحل پرونده، مدارک لازم (تذکره، پاسپورت، اسناد مالی)، اثبات و انتقال منشأ پول، آمادگی برای مصاحبه و ریز هزینه‌های کامل."
+      },
+      ar: {
+        title: "من القرار إلى الجواز: الخطوات والمستندات ومصدر الأموال",
+        excerpt: "مراحل الملف، والمستندات المطلوبة (التذكرة والجواز والسجلات المالية)، وإثبات مصدر الأموال وتحويلها، والاستعداد للمقابلة، وتفصيل كامل للتكاليف."
+      },
+      zh: {
+        title: "从决定到护照：流程、材料与资金来源",
+        excerpt: "申请流程、所需材料（身份证Tazkira、护照、财务文件）、资金来源证明与转账、面试准备及完整费用明细。"
+      }
+    },
+    {
+      id: "WEB03",
+      slug: "dominica-your-questions-answered",
+      series: "dominica-pilot",
+      session_no: 3,
+      category: "Citizenship",
+      start_utc: "2026-11-26T15:30:00Z",
+      duration_min: 65,
+      event_status: "upcoming",
+      registration_open: false,
+      join_visibility: "registrants",
+      join_url: "",
+      en: {
+        title: "Your Questions, Our Answers",
+        excerpt: "Answers to the questions collected in earlier sessions and the registration form: life after the passport, travel, banking and family."
+      },
+      fa: {
+        title: "پرسش‌های شما، پاسخ‌های ما",
+        excerpt: "پاسخ به پرسش‌هایی که در جلسات قبل و فرم ثبت‌نام جمع شده: زندگی بعد از پاسپورت، سفر، بانک و خانواده."
+      },
+      ar: {
+        title: "أسئلتكم، وإجاباتنا",
+        excerpt: "إجابات عن الأسئلة التي جُمعت في الجلسات السابقة ونموذج التسجيل: الحياة بعد الجواز، والسفر، والبنوك، والعائلة."
+      },
+      zh: {
+        title: "您的问题，我们来解答",
+        excerpt: "解答往期讲座及报名表中收集的问题：入籍后的生活、出行、银行与家庭。"
+      }
+    }
+  ];
+
+  function webinars() {
+    let sourceList = null;
+    if (typeof window.SGCMS_WEBINARS !== 'undefined' && Array.isArray(window.SGCMS_WEBINARS) && window.SGCMS_WEBINARS.length >= 3) {
+      sourceList = window.SGCMS_WEBINARS;
+    } else if (Array.isArray(BASE) && BASE.length >= 3) {
+      sourceList = BASE;
+    }
+    if (!sourceList) {
+      try {
+        const liveStr = localStorage.getItem('sgcms_webinars_live') || localStorage.getItem('sgcms_webinars');
+        if (liveStr) {
+          const parsed = JSON.parse(liveStr);
+          if (Array.isArray(parsed) && parsed.length >= 3 && parsed[0].en && parsed[0].en.title) {
+            sourceList = parsed;
+          }
+        }
+      } catch (e) {}
+    }
+    if (!sourceList || !sourceList.length) {
+      sourceList = BASELINE_SESSIONS;
+    }
+
+    // Read ONLY schedule overrides (date/time & link) from sgcms_webinar_schedule
+    let schedule = null;
+    try {
+      const schStr = localStorage.getItem('sgcms_webinar_schedule');
+      if (schStr) schedule = JSON.parse(schStr);
+    } catch (e) {}
+
+    const now = Date.now();
+    const TWO_HOURS = 2 * 60 * 60 * 1000;
+
+    const list = JSON.parse(JSON.stringify(sourceList)).map(w => {
+      // 1. Apply overrides from CRM schedule if present (time, link, and reg_status)
+      if (schedule && schedule.sessions && schedule.sessions[w.session_no]) {
+        const sData = schedule.sessions[w.session_no];
+        if (sData.start_utc) w.start_utc = sData.start_utc;
+        if (typeof sData.join_url === 'string') w.join_url = sData.join_url.trim();
+        if (typeof sData.duration_min !== 'undefined') w.duration_min = sData.duration_min;
+        if (sData.reg_status) {
+          w.reg_status = sData.reg_status;
+          w.registration_open = (sData.reg_status === 'open');
+        }
+      }
+      if (!w.reg_status) {
+        w.reg_status = w.registration_open ? 'open' : 'soon';
+      }
+
+      // 2. Compute dynamic time status & 2-Hour Auto-Expiry Lifecycle
+      const startMs = Date.parse(w.start_utc);
+      if (!isNaN(startMs)) {
+        if (now > (startMs + TWO_HOURS)) {
+          // Rule: After 2 hours, link is automatically removed from public website
+          w.event_status = 'ended';
+          w.join_url = '';
+        } else if (now >= startMs && now <= (startMs + TWO_HOURS)) {
+          // Rule: During 2-hour window, session is live
+          w.event_status = 'live';
+        } else {
+          // Upcoming
+          w.event_status = 'upcoming';
+        }
+      }
+
       return w;
     });
-    const w1 = list[0];
-    w1.event_status = demo.status;
-    w1.join_visibility = demo.visibility;
-    if (!(edits.WEB01 && 'join_url' in edits.WEB01)) w1.join_url = demo.link === 'set' ? SAMPLE_URL : '';
-    if (demo.status === 'ended') { list[1].registration_open = true; w1.registration_open = false; }
-    if (demo.status === 'live') w1.registration_open = false;
+
     return list;
   }
-  const byslug = s => webinars().find(w => w.slug === s);
-  /* held | locked | soon | ready */
-  const linkState = w => w.event_status === 'ended' ? 'held' : (w.join_visibility !== 'public' ? 'locked' : (w.join_url ? 'ready' : 'soon'));
-  const C = w => w[lang] || w.en;
+  const byslug = s => webinars().find(w => w.slug === s || (w.id && w.id.toLowerCase() === String(s).toLowerCase()) || ('session-' + w.session_no) === s);
+  
+  /* held (ended) | locked | soon | ready */
+  const linkState = w => {
+    const now = Date.now();
+    const stTime = startOf(w).getTime();
+    const TWO_HOURS = 2 * 60 * 60 * 1000;
+    if (w.event_status === 'ended' || (!isNaN(stTime) && now > (stTime + TWO_HOURS))) return 'held';
+    if (w.join_visibility !== 'public' && Number(w.session_no) > 1) return 'locked';
+    return (w.join_url && String(w.join_url).trim()) ? 'ready' : 'soon';
+  };
+  const C = w => {
+    if (!w) return { title: '', excerpt: '', series_tag: '' };
+    const cur = w[lang] || {};
+    const en = w.en || {};
+    return {
+      title: cur.title || en.title || w.title || ('Session ' + w.session_no),
+      excerpt: cur.excerpt || en.excerpt || w.excerpt || '',
+      series_tag: cur.series_tag || en.series_tag || w.series_tag || '',
+      body: cur.body || en.body || [],
+      outcomes: cur.outcomes || en.outcomes || []
+    };
+  };
   const startOf = w => new Date(w.start_utc);
-  const featured = () => webinars().find(w => w.event_status !== 'ended') || webinars()[0];
+
+  /* featured(): Returns whichever session admin marked active in CRM, defaulting to first upcoming */
+  const featured = () => {
+    let activeNo = 1;
+    try {
+      const schStr = localStorage.getItem('sgcms_webinar_schedule');
+      if (schStr) {
+        const sch = JSON.parse(schStr);
+        if (sch.active_session_no) activeNo = Number(sch.active_session_no);
+      }
+    } catch (e) {}
+    const all = webinars();
+    return all.find(w => Number(w.session_no) === activeNo) || all.find(w => w.event_status !== 'ended') || all[0];
+  };
 
   /* ---------- shell: header / footer ---------- */
   function navItems() {
@@ -154,34 +339,35 @@
     const langs = LANGS.map(c => `<button type="button" data-lang="${c}" aria-current="${c === lang}"><span lang="${c}">${esc(I18N[c].meta.name)}</span><small>${c.toUpperCase()}</small></button>`).join('');
 
     return `<div class="header-inner">
-      <a class="brand" href="${SITE + p}" aria-label="Sharif Group"><img src="${LOGO}" alt="Sharif Group" width="42" height="46"></a>
-      <span class="brand-sep" aria-hidden="true">|</span>
-      <nav class="main-nav" aria-label="Main">
+      <div class="brand-group">
+        <a class="brand" href="${SITE + p}" aria-label="Sharif Group"><img src="${LOGO}" alt="Sharif Group" width="50" height="56"></a>
+        <span class="brand-sep" aria-hidden="true">|</span>
+        <nav class="main-nav" aria-label="Main">
         <!-- Citizenship with Mega Menu -->
         <div class="nav-item has-dd" data-dd="cbi">
           <a class="nav-link caps" href="${SITE + p}citizenshipbyinvestment/">${esc(N.citizenship)} ${I.chev}</a>
           <div class="mega-menu" id="mm-cbi">
             <div class="mega-menu-inner">
               <div class="mm-side">
-                <p class="mm-title">${N.cbiTitle || 'Citizenship<br>By<br>Investment'}</p>
+                <p class="mm-title">${N.cbiTitle || 'Citizenship By Investment'}</p>
                 <a class="mm-all-btn caps" href="${SITE + p}citizenshipbyinvestment/">${esc(N.allCitizenship)}</a>
               </div>
               <div class="mm-col">
                 <div class="mm-col-head caps">${esc(N.caribbeanPortfolios)}</div>
                 <ul class="mm-list">
-                  <li><a href="${SITE + p}programs/citizenshipbyinvestment/dominica/"><img src="https://flagcdn.com/dm.svg" alt="" width="24" height="16" class="flag-icon"><span>${esc(F.cbi?.dominica || 'Dominica | Passport')}</span></a></li>
-                  <li><a href="${SITE + p}programs/citizenshipbyinvestment/stkitts/"><img src="https://flagcdn.com/kn.svg" alt="" width="24" height="16" class="flag-icon"><span>${esc(F.cbi?.kitts || 'St. Kitts & Nevis | Passport')}</span></a></li>
-                  <li><a href="${SITE + p}programs/citizenshipbyinvestment/antiguaandbarbuda/"><img src="https://flagcdn.com/ag.svg" alt="" width="24" height="16" class="flag-icon"><span>${esc(F.cbi?.antigua || 'Antigua & Barbuda | Passport')}</span></a></li>
-                  <li><a href="${SITE + p}programs/citizenshipbyinvestment/stlucia/"><img src="https://flagcdn.com/lc.svg" alt="" width="24" height="16" class="flag-icon"><span>${esc(F.cbi?.lucia || 'Saint Lucia | Passport')}</span></a></li>
-                  <li><a href="${SITE + p}programs/citizenshipbyinvestment/grenada/"><img src="https://flagcdn.com/gd.svg" alt="" width="24" height="16" class="flag-icon"><span>${esc(F.cbi?.grenada || 'Grenada | Passport')}</span></a></li>
+                  <li><a href="${SITE + p}programs/citizenshipbyinvestment/dominica/"><img src="https://flagcdn.com/dm.svg" alt="Dominica" width="48" height="32" class="flag-icon"><span>${esc(F.cbi?.dominica || 'Dominica | Passport')}</span></a></li>
+                  <li><a href="${SITE + p}programs/citizenshipbyinvestment/stkitts/"><img src="https://flagcdn.com/kn.svg" alt="St. Kitts & Nevis" width="48" height="32" class="flag-icon"><span>${esc(F.cbi?.kitts || 'St. Kitts & Nevis | Passport')}</span></a></li>
+                  <li><a href="${SITE + p}programs/citizenshipbyinvestment/antiguaandbarbuda/"><img src="https://flagcdn.com/ag.svg" alt="Antigua & Barbuda" width="48" height="32" class="flag-icon"><span>${esc(F.cbi?.antigua || 'Antigua & Barbuda | Passport')}</span></a></li>
+                  <li><a href="${SITE + p}programs/citizenshipbyinvestment/stlucia/"><img src="https://flagcdn.com/lc.svg" alt="Saint Lucia" width="48" height="32" class="flag-icon"><span>${esc(F.cbi?.lucia || 'Saint Lucia | Passport')}</span></a></li>
+                  <li><a href="${SITE + p}programs/citizenshipbyinvestment/grenada/"><img src="https://flagcdn.com/gd.svg" alt="Grenada" width="48" height="32" class="flag-icon"><span>${esc(F.cbi?.grenada || 'Grenada | Passport')}</span></a></li>
                 </ul>
               </div>
               <div class="mm-col">
                 <div class="mm-col-head caps mm-col-head--alt">${esc(N.globalPortfolios)}</div>
                 <ul class="mm-list">
-                  <li><a href="${SITE + p}programs/citizenshipbyinvestment/vanuatu/"><img src="https://flagcdn.com/vu.svg" alt="" width="24" height="16" class="flag-icon"><span>${esc(F.cbi?.vanuatu || 'Vanuatu | Passport')}</span></a></li>
-                  <li><a href="${SITE + p}programs/citizenshipbyinvestment/sao-tome-and-principe/"><img src="https://flagcdn.com/st.svg" alt="" width="24" height="16" class="flag-icon"><span>${esc(F.cbi?.saotome || 'São Tomé and Príncipe | Passport')}</span></a></li>
-                  <li><a href="${SITE + p}programs/citizenshipbyinvestment/nauru/"><img src="https://flagcdn.com/nr.svg" alt="" width="24" height="16" class="flag-icon"><span>${esc(F.cbi?.nauru || 'Republic of Nauru | Passport')}</span></a></li>
+                  <li><a href="${SITE + p}programs/citizenshipbyinvestment/vanuatu/"><img src="https://flagcdn.com/vu.svg" alt="Vanuatu" width="48" height="32" class="flag-icon"><span>${esc(F.cbi?.vanuatu || 'Vanuatu | Passport')}</span></a></li>
+                  <li><a href="${SITE + p}programs/citizenshipbyinvestment/sao-tome-and-principe/"><img src="https://flagcdn.com/st.svg" alt="São Tomé and Príncipe" width="48" height="32" class="flag-icon"><span>${esc(F.cbi?.saotome || 'São Tomé and Príncipe | Passport')}</span></a></li>
+                  <li><a href="${SITE + p}programs/citizenshipbyinvestment/nauru/"><img src="https://flagcdn.com/nr.svg" alt="Republic of Nauru" width="48" height="32" class="flag-icon"><span>${esc(F.cbi?.nauru || 'Republic of Nauru | Passport')}</span></a></li>
                 </ul>
               </div>
             </div>
@@ -195,21 +381,21 @@
           <div class="mega-menu" id="mm-rbi">
             <div class="mega-menu-inner">
               <div class="mm-side">
-                <p class="mm-title">${N.rbiTitle || 'Residency<br>By<br>Investment'}</p>
+                <p class="mm-title">${N.rbiTitle || 'Residency By Investment'}</p>
                 <a class="mm-all-btn caps" href="${SITE + p}residencybyinvestment/">${esc(N.allResidency)}</a>
               </div>
               <div class="mm-col">
                 <div class="mm-col-head caps">${esc(N.europeanPortfolios)}</div>
                 <ul class="mm-list">
-                  <li><a href="${SITE + p}programs/residencybyinvestment/portugal/"><img src="https://flagcdn.com/pt.svg" alt="" width="24" height="16" class="flag-icon"><span>${esc(F.rbi?.portugal || 'Portugal | Golden Visa')}</span></a></li>
-                  <li><a href="${SITE + p}programs/residencybyinvestment/greece/"><img src="https://flagcdn.com/gr.svg" alt="" width="24" height="16" class="flag-icon"><span>${esc(F.rbi?.greece || 'Greece | Golden Visa')}</span></a></li>
+                  <li><a href="${SITE + p}programs/residencybyinvestment/portugal/"><img src="https://flagcdn.com/pt.svg" alt="Portugal" width="48" height="32" class="flag-icon"><span>${esc(F.rbi?.portugal || 'Portugal | Golden Visa')}</span></a></li>
+                  <li><a href="${SITE + p}programs/residencybyinvestment/greece/"><img src="https://flagcdn.com/gr.svg" alt="Greece" width="48" height="32" class="flag-icon"><span>${esc(F.rbi?.greece || 'Greece | Golden Visa')}</span></a></li>
                 </ul>
               </div>
               <div class="mm-col">
                 <div class="mm-col-head caps mm-col-head--alt">${esc(N.americasUAE)}</div>
                 <ul class="mm-list">
-                  <li><a href="${SITE + p}programs/residencybyinvestment/panama/"><img src="https://flagcdn.com/pa.svg" alt="" width="24" height="16" class="flag-icon"><span>${esc(F.rbi?.panama || 'Panama | Golden Visa')}</span></a></li>
-                  <li><a href="${SITE + p}programs/residencybyinvestment/uae/"><img src="https://flagcdn.com/ae.svg" alt="" width="24" height="16" class="flag-icon"><span>${esc(F.rbi?.uae || 'United Arab Emirates | Golden Visa')}</span></a></li>
+                  <li><a href="${SITE + p}programs/residencybyinvestment/panama/"><img src="https://flagcdn.com/pa.svg" alt="Panama" width="48" height="32" class="flag-icon"><span>${esc(F.rbi?.panama || 'Panama | Golden Visa')}</span></a></li>
+                  <li><a href="${SITE + p}programs/residencybyinvestment/uae/"><img src="https://flagcdn.com/ae.svg" alt="UAE" width="48" height="32" class="flag-icon"><span>${esc(F.rbi?.uae || 'United Arab Emirates | Golden Visa')}</span></a></li>
                 </ul>
               </div>
             </div>
@@ -284,8 +470,9 @@
         <span class="nav-sep" aria-hidden="true">|</span>
         <a class="nav-link caps" href="${SITE + p}blog/">${esc(N.blog)}</a>
         <span class="nav-sep" aria-hidden="true">|</span>
-        <a class="nav-link caps is-active" href="#/webinars" aria-current="page">${esc(N.webinars)} <span class="nav-new">${esc(t('common.isNew'))}</span></a>
+        <a class="nav-link caps is-active" href="${SITE + p}webinars/" aria-current="page">${esc(N.webinars)} <span class="nav-new">${esc(t('common.isNew'))}</span></a>
       </nav>
+      </div>
 
       <div class="header-actions">
         <a class="pill pill--bronze caps" href="${SITE + p}eligibilitychecker/">${esc(N.eligibilityChecker)}</a>
@@ -516,8 +703,12 @@
       }
     }
     $('.skip').textContent = t('common.skip');
-    $('#siteHeader').innerHTML = headerHTML(false);
-    $('#drawer').innerHTML = `
+    if (typeof window.mountUniversalNavbar === 'function') {
+      window.mountUniversalNavbar('#siteHeader');
+      if ($('#drawer')) $('#drawer').style.display = 'none';
+    } else if ($('#siteHeader')) {
+      $('#siteHeader').innerHTML = headerHTML(false);
+      $('#drawer').innerHTML = `
       <!-- Mobile Language Selector -->
       <div class="drawer-lang-section">
         <div class="drawer-lang-head">
@@ -598,6 +789,7 @@
       <div class="drawer-contact-info">
         <p>+971 4 357 8737 • contact@sharifgroup.ae</p>
       </div>`;
+    }
     $('#siteFooter').innerHTML = footerHTML();
     initFooterCanvas();
     if (typeof window.updateWhatsAppWidget === 'function') {
@@ -642,14 +834,56 @@
         });
       });
     }
-    // Desktop hover & click handling for mega menus
+    // Desktop hover & click handling for mega menus with smooth grace period
+    let mmTimer = null;
+    const closeAllMegaMenus = () => {
+      clearTimeout(mmTimer);
+      $$('.has-dd').forEach(d => d.classList.remove('is-open'));
+    };
+
     $$('.has-dd').forEach(item => {
       const link = $('.nav-link', item);
+      const menu = $('.mega-menu', item);
+
+      // On mouseenter nav trigger
+      item.addEventListener('mouseenter', () => {
+        if (window.innerWidth >= 1024) {
+          clearTimeout(mmTimer);
+          $$('.has-dd').forEach(d => { if (d !== item) d.classList.remove('is-open'); });
+          item.classList.add('is-open');
+        }
+      });
+
+      // On mouseleave nav trigger -> wait 250ms before closing
+      item.addEventListener('mouseleave', () => {
+        if (window.innerWidth >= 1024) {
+          clearTimeout(mmTimer);
+          mmTimer = setTimeout(closeAllMegaMenus, 250);
+        }
+      });
+
+      // Keep menu open when mouse moves over the dropdown content
+      if (menu) {
+        menu.addEventListener('mouseenter', () => {
+          if (window.innerWidth >= 1024) {
+            clearTimeout(mmTimer);
+            item.classList.add('is-open');
+          }
+        });
+        menu.addEventListener('mouseleave', () => {
+          if (window.innerWidth >= 1024) {
+            clearTimeout(mmTimer);
+            mmTimer = setTimeout(closeAllMegaMenus, 250);
+          }
+        });
+      }
+
+      // Click to toggle on desktop
       if (link) {
         link.addEventListener('click', e => {
           if (window.innerWidth >= 1024) {
             const isOpen = item.classList.contains('is-open');
-            $$('.has-dd').forEach(d => { if (d !== item) d.classList.remove('is-open'); });
+            closeAllMegaMenus();
             if (!isOpen) {
               e.preventDefault();
               item.classList.add('is-open');
@@ -658,9 +892,10 @@
         });
       }
     });
+
     document.addEventListener('click', e => {
       if (!e.target.closest('.has-dd')) {
-        $$('.has-dd').forEach(d => d.classList.remove('is-open'));
+        closeAllMegaMenus();
       }
       if (box && !e.target.closest('#langBox')) {
         box.classList.remove('open');
@@ -692,7 +927,12 @@
     if (s === 'live') return `<span class="badge badge--live"><span class="dot"></span>${esc(t('status.live'))}</span>`;
     if (s === 'ended') return `<span class="badge badge--muted">${esc(t('status.ended'))}</span>`;
     if (s === 'postponed' || s === 'cancelled') return `<span class="badge badge--muted">${esc(t('status.' + s))}</span>`;
-    if (w.registration_open || w.join_visibility === 'public') return `<span class="badge badge--gold">${esc(t('status.regOpen'))}</span>`;
+    if (w.reg_status === 'closed') {
+      return `<span class="badge badge--muted" style="border-color:rgba(239,68,68,0.3);color:#ef4444;background:rgba(239,68,68,0.08)"><svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" style="display:inline-block;vertical-align:middle;margin-right:4px"><circle cx="12" cy="12" r="10"/><line x1="15" y1="9" x2="9" y2="15"/><line x1="9" y1="9" x2="15" y2="15"/></svg>${esc(t('status.regClosed') || 'Registration closed')}</span>`;
+    }
+    if (w.reg_status === 'open' || w.registration_open || w.join_visibility === 'public') {
+      return `<span class="badge badge--gold">${esc(t('status.regOpen'))}</span>`;
+    }
     return `<span class="badge badge--muted">${esc(t('status.soon'))}</span>`;
   }
   function countdownHTML(w, light) {
@@ -716,20 +956,31 @@
   function joinAction(w, light) {
     const st = linkState(w), live = w.event_status === 'live';
     const opens = new Date(startOf(w).getTime() - w.room_opens_min_before * 60000);
-    if (st === 'held') return `<div class="held${light ? ' held--light' : ''}">${I.checkCircle}<div><strong>${esc(t('detail.heldTitle'))}</strong><span>${esc(t('detail.heldText'))}</span></div></div>`;
-    if (st === 'locked') return `<div class="locked${light ? ' locked--light' : ''}">${I.lock}<div><strong>${esc(t('detail.lockedTitle'))}</strong><br>${esc(t('detail.lockedText'))}</div></div>`;
-    if (st === 'soon') return `<span class="btn btn--soon${light ? ' btn--soon-light' : ''} btn--block" role="status">${I.clock}${esc(t('detail.linkSoon'))}</span><p class="note">${I.link}<span>${esc(t('detail.linkSoonNote'))}</span></p>`;
-    return `<a class="btn btn--bronze btn--block" href="${esc(w.join_url)}" data-join target="_blank" rel="noopener">${I.video}${esc(live ? t('detail.joinNow') : t('detail.joinBtn'))}</a>
-      ${live ? '' : `<p class="note">${I.clock}<span>${esc(t('detail.roomOpens', { time: tm(opens, TZ.kabul) }))}</span></p>`}`;
+    if (st === 'held') return `<div class="held${light ? ' held--light' : ''}"><div class="notice-ico"><i class="fa-regular fa-circle-check"></i></div><div><strong>${esc(t('detail.heldTitle'))}</strong><p class="notice-desc">${esc(t('detail.heldText'))}</p></div></div>`;
+    if (st === 'locked') return `<div class="locked${light ? ' locked--light' : ''}"><div class="notice-ico"><i class="fa-solid fa-lock"></i></div><div><strong>${esc(t('detail.lockedTitle'))}</strong><p class="notice-desc">${esc(t('detail.lockedText'))}</p></div></div>`;
+    if (st === 'soon') return `<div class="soon-wrap"><span class="btn btn--soon${light ? ' btn--soon-light' : ''} btn--block" role="status"><i class="fa-regular fa-clock"></i><span>${esc(t('detail.linkSoon'))}</span></span><p class="note"><i class="fa-solid fa-link"></i><span>${esc(t('detail.linkSoonNote'))}</span></p></div>`;
+    return `<a class="btn btn--bronze btn--block" href="${esc(w.join_url)}" data-join target="_blank" rel="noopener"><i class="fa-solid fa-video"></i><span>${esc(live ? t('detail.joinNow') : t('detail.joinBtn'))}</span></a>
+      ${live ? '' : `<p class="note"><i class="fa-regular fa-clock"></i><span>${esc(t('detail.roomOpens', { time: tm(opens, TZ.kabul) }))}</span></p>`}`;
   }
   const pageUrl = w => `${SITE}${prefix()}webinars/${w.slug}/`;
   const waShare = w => `https://wa.me/?text=${encodeURIComponent(C(w).title + ' — ' + pageUrl(w))}`;
+
+  function webinarImg(sessionNo) {
+    const num = Number(sessionNo) || 1;
+    const imgName = 'web_' + (((num - 1) % 4) + 1) + '.webp';
+    if (window.location.protocol === 'file:') {
+      if (window.location.pathname.includes('/fa/') || window.location.pathname.includes('/ar/') || window.location.pathname.includes('/zh/')) return '../../assets/images/' + imgName;
+      if (window.location.pathname.includes('/webinars')) return '../assets/images/' + imgName;
+      return 'assets/images/' + imgName;
+    }
+    return window.location.pathname.includes('/sharif-webinars-demo/') ? ('assets/images/' + imgName) : ('/assets/images/' + imgName);
+  }
 
   const HERO_BG_IMAGES = ['web_1.webp', 'web_2.webp', 'web_3.webp', 'web_4.webp'];
   function heroSlideshowHTML() {
     const basePath = (window.location.protocol === 'file:')
       ? (window.location.pathname.includes('/fa/') || window.location.pathname.includes('/ar/') || window.location.pathname.includes('/zh/') ? '../../assets/images/' : (window.location.pathname.includes('/webinars') ? '../assets/images/' : 'assets/images/'))
-      : '/assets/images/';
+      : (window.location.pathname.includes('/sharif-webinars-demo/') ? 'assets/images/' : '/assets/images/');
     return `
     <div class="hero-slides-wrapper" aria-hidden="true">
       ${HERO_BG_IMAGES.map((img, i) => `
@@ -760,7 +1011,8 @@
     const all = webinars(), f = featured(), fc = C(f), d = startOf(f);
     const st = linkState(f);
     const live = f.event_status === 'live';
-    const series = all.filter(w => w.series === 'dominica-pilot');
+    let series = all.filter(w => !w.series || w.series === f.series || w.series === 'dominica-pilot');
+    if (!series.length) series = all;
     document.title = L().meta.title;
     return `
     <section class="hero">
@@ -790,14 +1042,21 @@
             ${f.join_visibility === 'public' ? `<span class="chip">${I.link}${esc(t('status.publicLink'))}</span>` : ''}
           </div>
           <div class="btn-row">
-            ${st === 'ready' ? `<a class="btn btn--bronze" href="${esc(f.join_url)}" data-join target="_blank" rel="noopener">${I.video}${esc(live ? t('detail.joinNow') : t('list.join'))}</a>` : ''}
-            ${st === 'soon' ? `<span class="btn btn--soon btn--soon-light" role="status">${I.clock}${esc(t('detail.linkSoon'))}</span>` : ''}
+            ${st === 'held' ? `<span class="btn btn--soon btn--soon-light" style="border-color:rgba(239,68,68,0.3);color:#ef4444;background:rgba(239,68,68,0.08)" role="status"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" style="display:inline-block;vertical-align:middle;margin-right:4px"><circle cx="12" cy="12" r="10"/><line x1="15" y1="9" x2="9" y2="15"/><line x1="9" y1="9" x2="15" y2="15"/></svg>${esc(t('detail.heldTitle') || 'Session Ended')}</span>` : ''}
+            ${st === 'ready' ? `<a class="btn btn--bronze" href="${esc(f.join_url)}" data-join target="_blank" rel="noopener">${I.video}${esc(live ? (t('detail.joinNow') || 'Join Live Session Now') : (t('list.join') || 'Join Live Session'))}</a>` : ''}
+            ${st === 'soon' ? `<span class="btn btn--soon btn--soon-light" role="status">${I.clock}${esc(t('detail.linkSoon') || 'Link will be posted soon')}</span>` : ''}
             <a class="btn ${st === 'ready' || st === 'soon' ? 'btn--ghost' : 'btn--bronze'}" href="#/webinars/${f.slug}">${esc(t('list.details'))}${I.arrow}</a>
           </div>
         </div>
         <aside class="feature-side">
           <div><div class="side-label caps">${esc(t('list.whenTitle'))}</div>${dateLine(f)}</div>
-          ${live ? `<div><span class="badge badge--live"><span class="dot"></span>${esc(t('detail.liveBanner'))}</span></div>` : `<div><div class="side-label caps" style="margin-bottom:10px">${esc(t('list.startsIn'))}</div>${countdownHTML(f)}</div>`}
+          ${st === 'held'
+            ? `<div style="background:rgba(239,68,68,0.08);border:1px solid rgba(239,68,68,0.25);border-radius:10px;padding:12px 14px;margin:8px 0 14px"><div class="side-label caps" style="margin-bottom:4px;color:#ef4444;font-weight:700">${esc(t('detail.heldTitle') || 'Session Ended')}</div><p style="font-size:12px;opacity:0.85;margin:0;line-height:1.4">${esc(t('detail.heldText') || 'This session has concluded.')}</p></div>`
+            : (live
+                ? `<div><span class="badge badge--live"><span class="dot"></span>${esc(t('detail.liveBanner'))}</span></div>`
+                : `<div><div class="side-label caps" style="margin-bottom:10px">${esc(t('list.startsIn'))}</div>${countdownHTML(f)}</div>`
+              )
+          }
           ${tzHTML(f)}
         </aside>
       </article>
@@ -806,13 +1065,13 @@
     <section class="section section--navy" style="margin-top:96px">
       <div class="container">
         <div class="section-head center">
-          <span class="eyebrow caps">${I.spark}${esc(t('list.seriesTag'))}</span>
+          <span class="eyebrow caps">${I.spark}${esc(fc.series_tag || t('list.seriesTag'))}</span>
           <h2 class="display h-lg">${t('list.upTitle')}</h2>
         </div>
         <div class="series-card">
           <div class="series-top">
             <div class="series-id"><div class="series-icon">${I.passport}</div>
-              <div><span class="series-tag caps">${esc(t('list.seriesTag'))}</span><h3 class="display h-sm">${esc(t('list.seriesTitle'))}</h3></div></div>
+              <div><span class="series-tag caps">${esc(fc.series_tag || t('list.seriesTag'))}</span><h3 class="display h-sm">${esc(t('list.seriesTitle'))}</h3></div></div>
             <span class="badge badge--gold caps">${esc(t('common.free'))} · ${esc(t('common.online'))}</span>
           </div>
           <p>${esc(t('list.seriesText'))}</p>
@@ -821,20 +1080,44 @@
       </div>
     </section>
 
-    <section class="section section--sand">
+    <section class="section section--sand how-to-join-sec">
       <div class="container">
-        <div class="section-head"><span class="eyebrow eyebrow--bronze caps">${I.phone}${esc(t('list.howEyebrow'))}</span><h2 class="display h-lg on-light">${t('list.howTitle')}</h2></div>
-        <div class="steps">${t('list.steps').map((s, i) => `<div class="step"><span class="step-num">${pad2(i + 1)}</span><div class="step-ico">${[I.link, I.user, I.wifi, I.chat][i]}</div><h3>${esc(s.t)}</h3><p>${esc(s.d)}</p></div>`).join('')}</div>
-        <div class="privacy-strip">${I.shield}<div><h3>${esc(t('list.privacyTitle'))}</h3><p>${esc(t('list.privacyText'))}</p></div></div>
+        <div class="section-head section-head--centered">
+          <span class="eyebrow caps"><i class="fa-solid fa-star text-[10px]"></i> <span>${esc(t('list.howEyebrow'))}</span></span>
+          <h2 class="display h-lg on-light">${t('list.howTitle')}</h2>
+          <div class="section-gold-line"></div>
+          <p class="section-sub">${esc(t('list.howSub'))}</p>
+        </div>
+        <div class="steps">
+          ${t('list.steps').map((s, i) => `
+            <div class="step group">
+              <div class="step-top">
+                <div class="step-ico">
+                  ${[
+                    `<i class="fa-solid fa-arrow-up-right-from-square"></i>`,
+                    `<i class="fa-solid fa-user-shield"></i>`,
+                    `<i class="fa-solid fa-headphones"></i>`,
+                    `<i class="fa-solid fa-comments"></i>`
+                  ][i]}
+                </div>
+                <span class="step-num">${pad2(i + 1)}</span>
+              </div>
+              <h3 class="step-title">${esc(s.t)}</h3>
+              <p class="step-desc">${esc(s.d)}</p>
+            </div>
+          `).join('')}
+        </div>
+        <div class="privacy-strip">
+          <div class="privacy-strip-ico"><i class="fa-solid fa-shield-halved"></i></div>
+          <div>
+            <h3>${esc(t('list.privacyTitle'))}</h3>
+            <p>${esc(t('list.privacyText'))}</p>
+          </div>
+        </div>
       </div>
     </section>
 
-    <section class="section section--white"><div class="container">${ctaBand()}</div></section>`;
-  }
-  function webinarImg(sessionNo) {
-    const num = Number(sessionNo) || 1;
-    const imgName = 'web_' + (((num - 1) % 4) + 1) + '.webp';
-    return 'assets/images/' + imgName;
+    <section class="section section--cream section--tight"><div class="container">${ctaBand()}</div></section>`;
   }
   function sessionRow(w) {
     const c = C(w), d = startOf(w);
@@ -888,37 +1171,54 @@
     const w = byslug(slug);
     if (!w) return viewNotFound();
     const c = C(w), d = startOf(w);
-    const isFirst = w.session_no === 1;
-    document.title = `${c.title} | ${L().nav.webinars} | Sharif Group`;
-    const others = webinars().filter(x => x.series === w.series && x.id !== w.id);
+    const isFirst = Number(w.session_no) === 1;
+    document.title = `${c.title || ('Session ' + w.session_no)} | ${L().nav.webinars} | Sharif Group`;
+    const others = webinars().filter(x => (x.series === w.series || !x.series) && x.id !== w.id);
+    const bodyParas = (Array.isArray(c.body) ? c.body : (typeof c.body === 'string' ? [c.body] : [])).filter(Boolean);
+    const outcomeItems = (Array.isArray(c.outcomes) ? c.outcomes : (typeof c.outcomes === 'string' ? [c.outcomes] : [])).filter(Boolean);
+    const agendaList = (Array.isArray(c.agenda) && c.agenda.length) ? c.agenda : (t('detail.agendaItems') || []);
+    const speakersList = (Array.isArray(c.speakers) && c.speakers.length) ? c.speakers : [['expert', I.user], ['host', I.mic]];
+
     return `
     <section class="hero hero--detail">
       ${heroSlideshowHTML()}
       <div class="container hero-inner">
-        <nav class="crumbs" aria-label="Breadcrumb"><a href="${SITE + prefix()}">${esc(t('detail.home'))}</a>${I.crumb}<a href="#/webinars">${esc(L().nav.webinars)}</a>${I.crumb}<span aria-current="page">${esc(t('common.sessionN', { n: pad2(w.session_no) }))}</span></nav>
-        <div class="btn-row" style="gap:8px;align-items:center"><span class="eyebrow caps">${esc(t('list.seriesTag'))} · ${esc(t('common.sessionN', { n: pad2(w.session_no) }))}</span>${statusBadge(w)}</div>
-        <h1 class="display h-lg">${esc(c.title)}</h1>
-        <p class="lede">${esc(c.excerpt)}</p>
+        <nav class="crumbs" aria-label="Breadcrumb"><a href="${SITE + prefix()}">${esc(t('detail.home'))}</a><i class="fa-solid fa-chevron-right crumb-ico"></i><a href="#/webinars">${esc(L().nav.webinars)}</a><i class="fa-solid fa-chevron-right crumb-ico"></i><span aria-current="page">${esc(t('common.sessionN', { n: pad2(w.session_no) }))}</span></nav>
+        <div class="btn-row" style="gap:8px;align-items:center"><span class="eyebrow caps"><i class="fa-solid fa-star text-[10px]"></i> ${esc(c.series_tag || t('list.seriesTag'))} · ${esc(t('common.sessionN', { n: pad2(w.session_no) }))}</span>${statusBadge(w)}</div>
+        <h1 class="display h-lg">${esc(c.title || ('Session ' + w.session_no))}</h1>
+        <p class="lede">${esc(c.excerpt || '')}</p>
         <div class="hero-meta">
-          <span>${I.cal}${esc(dLong(d, TZ.kabul))}</span>
-          <span>${I.clock}${tm(d, TZ.kabul)} ${esc(t('tz.kabul'))} · ${tm(d, TZ.dubai)} ${esc(t('tz.dubai'))}</span>
-          <span>${I.mic}${esc(t('common.lang'))}</span>
-          <span>${I.checkCircle}${esc(t('common.free'))} · ${esc(t('common.min', { n: n(w.duration_min) }))}</span>
+          <span><i class="fa-regular fa-calendar-check"></i> ${esc(dLong(d, TZ.kabul))}</span>
+          <span><i class="fa-regular fa-clock"></i> ${tm(d, TZ.kabul)} ${esc(t('tz.kabul'))} · ${tm(d, TZ.dubai)} ${esc(t('tz.dubai'))}</span>
+          <span><i class="fa-solid fa-language"></i> ${esc(t('common.lang'))}</span>
+          <span><i class="fa-solid fa-circle-check"></i> ${esc(t('common.free'))} · ${esc(t('common.min', { n: n(w.duration_min) }))}</span>
         </div>
       </div>
     </section>
     <div class="container"><div class="detail">
       <div class="d-join">${joinCard(w)}</div>
       <div class="d-main">
-        <section class="block"><h2 class="block-title">${esc(t('detail.about'))}</h2><div class="prose">${c.body.map(p => `<p>${esc(p)}</p>`).join('')}</div></section>
-        <section class="block"><h2 class="block-title">${esc(t('detail.learn'))}</h2><ul class="learn">${c.outcomes.map(o => `<li>${I.check}<span>${esc(o)}</span></li>`).join('')}</ul></section>
-        <section class="block"><h2 class="block-title">${esc(t('detail.agenda'))}</h2><ol class="agenda">${t('detail.agendaItems').map(a => `<li><span class="ag-time">${esc(a.t)} ${esc(t('detail.minutes'))}</span><span class="ag-label">${esc(a.l)}<span class="ag-who">${esc(a.w)}</span></span></li>`).join('')}</ol></section>
-        <section class="block"><h2 class="block-title">${esc(t('detail.speakers'))}</h2><div class="speakers">
-          ${[['expert', I.user], ['host', I.mic]].map(([k, ic]) => `<div class="speaker"><div class="avatar">${ic}</div><div><h4>${esc(t('detail.' + k + 'Name'))}</h4><p>${esc(t('detail.' + k + 'Role'))}</p><span class="tbd">${esc(t('detail.tbd'))}</span></div></div>`).join('')}
+        <section class="block"><h2 class="block-title"><span class="bt-icon"><i class="fa-solid fa-circle-info"></i></span><span>${esc(t('detail.about'))}</span></h2><div class="prose card card--prose">${bodyParas.length ? bodyParas.map(p => `<p>${esc(p)}</p>`).join('') : `<p>${esc(c.excerpt || '')}</p>`}</div></section>
+        <section class="block"><h2 class="block-title"><span class="bt-icon"><i class="fa-solid fa-graduation-cap"></i></span><span>${esc(t('detail.learn'))}</span></h2><ul class="learn">${outcomeItems.length ? outcomeItems.map(o => `<li><div class="learn-ico"><i class="fa-solid fa-check"></i></div><span>${esc(o)}</span></li>`).join('') : `<li><div class="learn-ico"><i class="fa-solid fa-check"></i></div><span>${esc(t('common.free'))}</span></li>`}</ul></section>
+        <section class="block"><h2 class="block-title"><span class="bt-icon"><i class="fa-solid fa-list-check"></i></span><span>${esc(t('detail.agenda'))}</span></h2><ol class="agenda">${agendaList.map(a => `<li><span class="ag-time">${esc(a.time || a.t || '')}</span><span class="ag-label">${esc(a.topic || a.l || '')}<span class="ag-who">${esc(a.speaker || a.w || '')}</span></span></li>`).join('')}</ol></section>
+        <section class="block"><h2 class="block-title"><span class="bt-icon"><i class="fa-solid fa-users"></i></span><span>${esc(t('detail.speakers'))}</span></h2><div class="speakers">
+          ${speakersList.map(sp => {
+            if (Array.isArray(sp)) {
+              const [k] = sp;
+              const faIcon = k === 'host' ? '<i class="fa-solid fa-microphone"></i>' : '<i class="fa-solid fa-user-tie"></i>';
+              return `<div class="speaker"><div class="avatar">${faIcon}</div><div><h4>${esc(t('detail.' + k + 'Name'))}</h4><p>${esc(t('detail.' + k + 'Role'))}</p><span class="tbd">${esc(t('detail.tbd'))}</span></div></div>`;
+            }
+            const speakerName = sp.name || sp.title || t('detail.expertName');
+            const speakerRole = (sp.name && sp.title)
+              ? (sp.title + (sp.affiliation ? ` · ${sp.affiliation}` : ''))
+              : (sp.affiliation || sp.role || sp.title || t('detail.expertRole'));
+            const speakerNote = sp.note || (sp.name ? '' : t('detail.tbd'));
+            return `<div class="speaker"><div class="avatar"><i class="fa-solid fa-user-tie"></i></div><div><h4>${esc(speakerName)}</h4><p>${esc(speakerRole)}</p>${speakerNote ? `<span class="tbd">${esc(speakerNote)}</span>` : ''}</div></div>`;
+          }).join('')}
         </div></section>
-        <section class="block"><h2 class="block-title">${esc(t('detail.privacy'))}</h2><ul class="privacy-list">${t('detail.privacyItems').map(p => `<li>${I.shield}<span>${esc(p)}</span></li>`).join('')}</ul></section>
-        <section class="block faq"><h2 class="block-title">${esc(t('detail.faq'))}</h2>${t('detail.faqs').map((f, i) => `<details${i === 0 ? ' open' : ''}><summary>${esc(f.q)}${I.plus}</summary><p>${esc(f.a)}</p></details>`).join('')}</section>
-        ${others.length ? `<section class="block"><h2 class="block-title">${esc(t('detail.other'))}</h2><div class="section--navy" style="border-radius:22px;padding:8px 14px 18px">${others.map(sessionRow).join('')}</div></section>` : ''}
+        <section class="block"><h2 class="block-title"><span class="bt-icon"><i class="fa-solid fa-shield-halved"></i></span><span>${esc(t('detail.privacy'))}</span></h2><div class="privacy-strip"><div class="privacy-strip-ico"><i class="fa-solid fa-shield-halved"></i></div><div style="flex:1"><h3 style="margin-bottom:8px">${esc(t('detail.privacy'))}</h3><ul class="privacy-list">${t('detail.privacyItems').map(p => `<li><i class="fa-solid fa-check"></i><span>${esc(p)}</span></li>`).join('')}</ul></div></div></section>
+        <section class="block faq"><h2 class="block-title"><span class="bt-icon"><i class="fa-solid fa-circle-question"></i></span><span>${esc(t('detail.faq'))}</span></h2>${t('detail.faqs').map((f, i) => `<details${i === 0 ? ' open' : ''}><summary>${esc(f.q)}<i class="fa-solid fa-plus faq-toggle-ico"></i></summary><p>${esc(f.a)}</p></details>`).join('')}</section>
+        ${others.length ? `<section class="block"><h2 class="block-title"><span class="bt-icon"><i class="fa-solid fa-layer-group"></i></span><span>${esc(t('detail.other'))}</span></h2><div class="section--navy other-sessions-box" style="border-radius:24px;padding:12px 18px 22px">${others.map(sessionRow).join('')}</div></section>` : ''}
       </div>
       <div class="d-form" id="register">${formCard(w)}</div>
     </div></div>
@@ -926,34 +1226,37 @@
   }
   function joinCard(w) {
     const st = linkState(w), live = w.event_status === 'live', held = st === 'held';
-    return `<div class="card card--dark">
-      <div class="join-head">${statusBadge(w)}${w.join_visibility === 'public' && !held ? `<span class="badge badge--gold">${I.link.replace('<svg', '<svg width="12" height="12"')}${esc(t('status.publicLink'))}</span>` : ''}</div>
-      ${held ? '' : `<h3>${esc(t('detail.joinTitle'))}</h3>`}
+    return `<div class="card card--dark join-card-luxury">
+      <div class="join-head">${statusBadge(w)}${w.join_visibility === 'public' && !held ? `<span class="badge badge--gold"><i class="fa-solid fa-link" style="font-size:11px"></i>${esc(t('status.publicLink'))}</span>` : ''}</div>
+      ${held ? '' : `<h3 class="join-card-title">${esc(t('detail.joinTitle'))}</h3>`}
       ${held ? '' : `<p class="sub">${esc(w.join_visibility === 'public' ? t('detail.joinPublic') : t('form.subPrivate'))}</p>`}
       <div style="margin-bottom:18px">${dateLine(w)}</div>
       ${live || held ? '' : `<div style="margin-bottom:18px">${countdownHTML(w)}</div>`}
       ${held ? '' : `<div style="margin-bottom:20px">${tzHTML(w)}</div>`}
       ${joinAction(w)}
-      ${held ? `<a class="btn btn--bronze btn--block" style="margin-top:16px" href="${SITE + prefix()}contact/">${esc(t('detail.consultBtn'))}${I.arrow}</a>` : `<div class="mini-links">
-        ${st === 'ready' ? `<button class="btn btn--ghost-light btn--sm" type="button" data-copy="${esc(w.join_url)}">${I.copy}${esc(t('common.copy'))}</button>` : ''}
-        <button class="btn btn--ghost-light btn--sm" type="button" data-ics="${w.id}">${I.cal}${esc(t('detail.addCal'))}</button>
-        <a class="btn btn--ghost-light btn--sm" href="${waShare(w)}" target="_blank" rel="noopener">${I.wa}${esc(t('detail.shareWa'))}</a>
+      ${held ? `<a class="btn btn--bronze btn--block" style="margin-top:16px" href="${SITE + prefix()}contact/"><span>${esc(t('detail.consultBtn'))}</span><i class="fa-solid fa-arrow-right"></i></a>` : `<div class="mini-links">
+        ${st === 'ready' ? `<button class="btn btn--ghost-light btn--sm" type="button" data-copy="${esc(w.join_url)}"><i class="fa-regular fa-copy"></i><span>${esc(t('common.copy'))}</span></button>` : ''}
+        <button class="btn btn--ghost-light btn--sm" type="button" data-ics="${w.id}"><i class="fa-regular fa-calendar-plus"></i><span>${esc(t('detail.addCal'))}</span></button>
+        <a class="btn btn--ghost-light btn--sm" href="${waShare(w)}" target="_blank" rel="noopener"><i class="fa-brands fa-whatsapp"></i><span>${esc(t('detail.shareWa'))}</span></a>
       </div>`}
-      ${w.registration_open && st !== 'locked' && !held ? `<p class="note">${I.wa}<a href="#register" style="text-decoration:underline;text-underline-offset:3px">${esc(t('list.remind'))}</a></p>` : ''}
+      ${w.registration_open && st !== 'locked' && !held ? `<p class="note"><i class="fa-brands fa-whatsapp text-emerald-400"></i><a href="#register" style="text-decoration:underline;text-underline-offset:3px">${esc(t('list.remind'))}</a></p>` : ''}
     </div>`;
   }
   function formCard(w) {
     const pub = w.join_visibility === 'public';
     if (w.event_status === 'ended') return '';
-    if (!w.registration_open) {
+    if (w.reg_status === 'closed') {
+      return `<div class="card card--form"><h3>${esc(t('form.title'))}</h3><div class="closed-msg" style="border-color:rgba(239,68,68,0.3);background:rgba(239,68,68,0.06);color:#dc2626"><i class="fa-regular fa-circle-xmark" style="margin-inline-end:8px"></i>${esc(t('form.closed'))}</div></div>`;
+    }
+    if (w.reg_status === 'soon' || !w.registration_open) {
       const msg = w.event_status === 'upcoming' ? t('detail.notOpen', { n: n(w.session_no - 1) }) : t('form.closed');
-      return `<div class="card"><h3>${esc(t('form.title'))}</h3><div class="closed-msg">${esc(msg)}</div></div>`;
+      return `<div class="card card--form"><h3>${esc(t('form.title'))}</h3><div class="closed-msg"><i class="fa-regular fa-clock" style="margin-inline-end:8px"></i>${esc(msg)}</div></div>`;
     }
     const F = k => esc(t('form.' + k));
     const dial = DIAL.map(([c, k]) => `<option value="${c}">${c} ${k}</option>`).join('');
     const ctry = Object.entries(t('form.countries')).map(([k, v]) => `<option value="${k}">${esc(v)}</option>`).join('');
-    return `<div class="card">
-      <h3>${F('title')}</h3><p class="sub">${esc(pub ? t('form.subPublic') : t('form.subPrivate'))}</p>
+    return `<div class="card card--form">
+      <h3 class="form-card-title">${F('title')}</h3><p class="sub">${esc(pub ? t('form.subPublic') : t('form.subPrivate'))}</p>
       <form class="form" id="regForm" novalidate data-id="${w.id}">
         <div class="form-alert" role="alert" id="formAlert">${F('alert')}</div>
         <div class="field"><label for="f-name">${F('name')}<span class="req">*</span></label>
@@ -970,8 +1273,11 @@
           <textarea class="textarea" id="f-q" name="question" maxlength="500" aria-describedby="h-q e-q"></textarea><span class="hint" id="h-q">${F('questionHint')}</span><span class="counter" id="qCount">${n(0)} / ${n(500)}</span><span class="err" id="e-q">${F('errQuestion')}</span></div>
         <label class="check"><input type="checkbox" name="newsletter_optin" value="yes"><span>${F('newsletter')}</span></label>
         <div class="hp" aria-hidden="true"><label>Company<input name="company" tabindex="-1" autocomplete="off"></label></div>
-        <button class="btn btn--bronze btn--block" type="submit">${F('submit')}</button>
-        <p class="consent-note">${I.shield}<span>${F('privacy')}</span></p>
+        <button class="btn btn--bronze btn--block btn--submit" type="submit">
+          <span>${F('submit')}</span>
+          <i class="fa-solid fa-arrow-right btn-arrow-ico"></i>
+        </button>
+        <p class="consent-note"><i class="fa-solid fa-shield-halved"></i><span>${F('privacy')}</span></p>
       </form></div>`;
   }
 
@@ -1242,6 +1548,10 @@
     const tt = e.target.closest('[data-toast]');
     if (tt) { toast(t('demo.' + tt.dataset.toast)); return; }
     if (e.target.closest('a[href^="#/"]')) { $('#drawer').classList.remove('open'); }
+    const sessionRow = e.target.closest('.session-row');
+    if (sessionRow && !e.target.closest('a') && !e.target.closest('button')) {
+      sessionRow.classList.toggle('is-open');
+    }
   });
   $('#demoFab') && $('#demoFab').addEventListener('click', () => $('#demoPanel').classList.toggle('open'));
 
@@ -1303,6 +1613,16 @@
   function route() { render(); window.scrollTo({ top: 0, left: 0, behavior: 'instant' }); }
   window.addEventListener('hashchange', () => { $('#drawer').classList.remove('open'); route(); $('#main').focus({ preventScroll: true }); });
   window.addEventListener('popstate', () => { $('#drawer').classList.remove('open'); route(); });
+  window.addEventListener('storage', e => {
+    if (e.key === 'sgcms_webinars' || e.key === 'sgcms_webinars_live' || e.key === 'sgcms_webinars_data' || e.key === 'sgcms_webinar_schedule') {
+      route();
+    }
+  });
+  window.addEventListener('message', e => {
+    if (e.data && (e.data.type === 'CMS_WEBINARS_UPDATED' || e.data.type === 'CMS_PREVIEW_RELOAD')) {
+      route();
+    }
+  });
 
   renderShell();
   route();

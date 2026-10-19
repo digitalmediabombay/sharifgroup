@@ -703,8 +703,12 @@
       }
     }
     $('.skip').textContent = t('common.skip');
-    $('#siteHeader').innerHTML = headerHTML(false);
-    $('#drawer').innerHTML = `
+    if (typeof window.mountUniversalNavbar === 'function') {
+      window.mountUniversalNavbar('#siteHeader');
+      if ($('#drawer')) $('#drawer').style.display = 'none';
+    } else if ($('#siteHeader')) {
+      $('#siteHeader').innerHTML = headerHTML(false);
+      $('#drawer').innerHTML = `
       <!-- Mobile Language Selector -->
       <div class="drawer-lang-section">
         <div class="drawer-lang-head">
@@ -785,6 +789,7 @@
       <div class="drawer-contact-info">
         <p>+971 4 357 8737 • contact@sharifgroup.ae</p>
       </div>`;
+    }
     $('#siteFooter').innerHTML = footerHTML();
     initFooterCanvas();
     if (typeof window.updateWhatsAppWidget === 'function') {
