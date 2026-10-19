@@ -784,13 +784,80 @@ html[lang="fa"] .series-tag, html[lang="ar"] .series-tag { font-size: 11px; }
   margin: 0 24px;
 }
 
-/* Expanded details: description, date/time meta, and button */
+/* Expanded details: media thumbnail, description, date/time meta, and button */
 .session-detail-grid {
   display: flex;
   align-items: center;
   justify-content: space-between;
-  gap: 24px;
+  gap: 22px;
   padding: 18px 24px 22px;
+}
+
+/* Media Thumbnail */
+.session-detail-media {
+  flex-shrink: 0;
+  width: 170px;
+}
+
+.session-thumb-wrap {
+  position: relative;
+  width: 100%;
+  aspect-ratio: 16 / 10;
+  border-radius: 12px;
+  overflow: hidden;
+  background: rgba(6, 10, 18, 0.6);
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  box-shadow: 0 4px 18px rgba(0, 0, 0, 0.45);
+}
+
+.session-thumb {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+  transition: transform 0.45s cubic-bezier(0.16, 1, 0.3, 1), filter 0.35s ease;
+}
+
+.session-row:hover .session-thumb,
+.session-row:focus-within .session-thumb,
+.session-row.is-open .session-thumb {
+  transform: scale(1.08);
+}
+
+.session-thumb-wrap::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(180deg, rgba(6, 10, 18, 0) 35%, rgba(6, 10, 18, 0.65) 100%);
+  pointer-events: none;
+}
+
+.session-thumb-badge {
+  position: absolute;
+  inset-inline-end: 8px;
+  bottom: 8px;
+  z-index: 2;
+  width: 24px;
+  height: 24px;
+  border-radius: 50%;
+  background: rgba(14, 18, 27, 0.85);
+  backdrop-filter: blur(4px);
+  border: 1px solid rgba(197, 168, 128, 0.55);
+  color: var(--gold);
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 8.5px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.5);
+  transition: transform 0.3s ease, background 0.3s ease, color 0.3s ease;
+}
+
+.session-row:hover .session-thumb-badge,
+.session-row:focus-within .session-thumb-badge,
+.session-row.is-open .session-thumb-badge {
+  transform: scale(1.1);
+  background: var(--gold);
+  color: #060a12;
 }
 
 .session-detail-info {
@@ -880,9 +947,20 @@ html[lang="fa"] .series-tag, html[lang="ar"] .series-tag { font-size: 11px; }
   }
   .session-detail-grid {
     flex-direction: column;
-    align-items: flex-start;
+    align-items: stretch;
     padding: 14px 18px 18px;
-    gap: 16px;
+    gap: 14px;
+  }
+  .session-detail-media {
+    width: 100%;
+  }
+  .session-thumb-wrap {
+    width: 100%;
+    height: 150px;
+    aspect-ratio: auto;
+  }
+  .session-detail-info {
+    width: 100%;
   }
   .session-detail-btn {
     width: 100%;

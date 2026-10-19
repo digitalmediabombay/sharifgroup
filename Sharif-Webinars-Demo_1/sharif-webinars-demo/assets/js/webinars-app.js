@@ -831,8 +831,14 @@
 
     <section class="section section--white"><div class="container">${ctaBand()}</div></section>`;
   }
+  function webinarImg(sessionNo) {
+    const num = Number(sessionNo) || 1;
+    const imgName = 'web_' + (((num - 1) % 4) + 1) + '.webp';
+    return 'assets/images/' + imgName;
+  }
   function sessionRow(w) {
     const c = C(w), d = startOf(w);
+    const imgSrc = w.image || webinarImg(w.session_no);
     return `<article class="session-row" tabindex="0" role="region" aria-label="${esc(c.title || ('Session ' + w.session_no))}">
       <div class="session-row-head">
         <span class="session-no">${pad2(w.session_no)}</span>
@@ -848,6 +854,12 @@
         <div class="session-row-inner">
           <div class="session-divider"></div>
           <div class="session-detail-grid">
+            <div class="session-detail-media">
+              <div class="session-thumb-wrap">
+                <img src="${imgSrc}" alt="${esc(c.title || ('Session ' + w.session_no))}" class="session-thumb" loading="lazy" />
+                <span class="session-thumb-badge"><i class="fa-solid fa-play"></i></span>
+              </div>
+            </div>
             <div class="session-detail-info">
               <p class="session-desc">${esc(c.excerpt || '')}</p>
               <div class="session-meta">

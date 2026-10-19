@@ -960,11 +960,22 @@
   const pageUrl = w => `${SITE}${prefix()}webinars/${w.slug}/`;
   const waShare = w => `https://wa.me/?text=${encodeURIComponent(C(w).title + ' — ' + pageUrl(w))}`;
 
+  function webinarImg(sessionNo) {
+    const num = Number(sessionNo) || 1;
+    const imgName = 'web_' + (((num - 1) % 4) + 1) + '.webp';
+    if (window.location.protocol === 'file:') {
+      if (window.location.pathname.includes('/fa/') || window.location.pathname.includes('/ar/') || window.location.pathname.includes('/zh/')) return '../../assets/images/' + imgName;
+      if (window.location.pathname.includes('/webinars')) return '../assets/images/' + imgName;
+      return 'assets/images/' + imgName;
+    }
+    return window.location.pathname.includes('/sharif-webinars-demo/') ? ('assets/images/' + imgName) : ('/assets/images/' + imgName);
+  }
+
   const HERO_BG_IMAGES = ['web_1.webp', 'web_2.webp', 'web_3.webp', 'web_4.webp'];
   function heroSlideshowHTML() {
     const basePath = (window.location.protocol === 'file:')
       ? (window.location.pathname.includes('/fa/') || window.location.pathname.includes('/ar/') || window.location.pathname.includes('/zh/') ? '../../assets/images/' : (window.location.pathname.includes('/webinars') ? '../assets/images/' : 'assets/images/'))
-      : '/assets/images/';
+      : (window.location.pathname.includes('/sharif-webinars-demo/') ? 'assets/images/' : '/assets/images/');
     return `
     <div class="hero-slides-wrapper" aria-hidden="true">
       ${HERO_BG_IMAGES.map((img, i) => `
@@ -1105,6 +1116,7 @@
   }
   function sessionRow(w) {
     const c = C(w), d = startOf(w);
+    const imgSrc = w.image || webinarImg(w.session_no);
     return `<article class="session-row" tabindex="0" role="region" aria-label="${esc(c.title || ('Session ' + w.session_no))}">
       <div class="session-row-head">
         <span class="session-no">${pad2(w.session_no)}</span>
@@ -1120,6 +1132,12 @@
         <div class="session-row-inner">
           <div class="session-divider"></div>
           <div class="session-detail-grid">
+            <div class="session-detail-media">
+              <div class="session-thumb-wrap">
+                <img src="${imgSrc}" alt="${esc(c.title || ('Session ' + w.session_no))}" class="session-thumb" loading="lazy" />
+                <span class="session-thumb-badge"><i class="fa-solid fa-play"></i></span>
+              </div>
+            </div>
             <div class="session-detail-info">
               <p class="session-desc">${esc(c.excerpt || '')}</p>
               <div class="session-meta">
