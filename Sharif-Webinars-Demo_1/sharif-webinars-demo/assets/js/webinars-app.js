@@ -331,7 +331,7 @@
       { h: SITE + p + 'aboutus/', l: N.aboutUs, dd: 'about' },
       { h: SITE + p + 'contact/', l: N.contact },
       { h: SITE + p + 'blog/', l: N.blog },
-      { h: '#/webinars', l: N.webinars, active: 1, isNew: 1 }
+      { h: `${SITE}${p}webinars/`, l: N.webinars, active: 1, isNew: 1 }
     ];
   }
   function headerHTML(staticCopy) {
@@ -776,7 +776,7 @@
           <a href="${SITE + p}about-founder/">${esc(N.aboutFounder)}</a>
           <a href="${SITE + p}socialresponsibility/">${esc(N.socialResp)}</a>
           <a href="${SITE + p}blog/">${esc(N.blog)}</a>
-          <a href="#/webinars" class="is-active">${esc(N.webinars)} <span class="nav-new">${esc(t('common.isNew'))}</span></a>
+          <a href="${SITE + p}webinars/" class="is-active">${esc(N.webinars)} <span class="nav-new">${esc(t('common.isNew'))}</span></a>
           <a href="${SITE + p}contact/">${esc(N.contact)}</a>
         </div>
       </nav>
@@ -1045,7 +1045,7 @@
             ${st === 'held' ? `<span class="btn btn--soon btn--soon-light" style="border-color:rgba(239,68,68,0.3);color:#ef4444;background:rgba(239,68,68,0.08)" role="status"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" style="display:inline-block;vertical-align:middle;margin-right:4px"><circle cx="12" cy="12" r="10"/><line x1="15" y1="9" x2="9" y2="15"/><line x1="9" y1="9" x2="15" y2="15"/></svg>${esc(t('detail.heldTitle') || 'Session Ended')}</span>` : ''}
             ${st === 'ready' ? `<a class="btn btn--bronze" href="${esc(f.join_url)}" data-join target="_blank" rel="noopener">${I.video}${esc(live ? (t('detail.joinNow') || 'Join Live Session Now') : (t('list.join') || 'Join Live Session'))}</a>` : ''}
             ${st === 'soon' ? `<span class="btn btn--soon btn--soon-light" role="status">${I.clock}${esc(t('detail.linkSoon') || 'Link will be posted soon')}</span>` : ''}
-            <a class="btn ${st === 'ready' || st === 'soon' ? 'btn--ghost' : 'btn--bronze'}" href="#/webinars/${f.slug}">${esc(t('list.details'))}${I.arrow}</a>
+            <a class="btn ${st === 'ready' || st === 'soon' ? 'btn--ghost' : 'btn--bronze'}" href="${pageUrl(f)}">${esc(t('list.details'))}${I.arrow}</a>
           </div>
         </div>
         <aside class="feature-side">
@@ -1151,7 +1151,7 @@
               </div>
             </div>
             <div class="session-detail-btn">
-              <a class="btn btn--bronze btn--sm caps" href="#/webinars/${w.slug}">
+              <a class="btn btn--bronze btn--sm caps" href="${pageUrl(w)}">
                 <span>${esc(t('list.sessionCta'))}</span>
                 <i class="fa-solid fa-arrow-right"></i>
               </a>
@@ -1183,7 +1183,7 @@
     <section class="hero hero--detail">
       ${heroSlideshowHTML()}
       <div class="container hero-inner">
-        <nav class="crumbs" aria-label="Breadcrumb"><a href="${SITE + prefix()}">${esc(t('detail.home'))}</a><i class="fa-solid fa-chevron-right crumb-ico"></i><a href="#/webinars">${esc(L().nav.webinars)}</a><i class="fa-solid fa-chevron-right crumb-ico"></i><span aria-current="page">${esc(t('common.sessionN', { n: pad2(w.session_no) }))}</span></nav>
+        <nav class="crumbs" aria-label="Breadcrumb"><a href="${SITE + prefix()}">${esc(t('detail.home'))}</a><i class="fa-solid fa-chevron-right crumb-ico"></i><a href="${SITE + prefix()}webinars/">${esc(L().nav.webinars)}</a><i class="fa-solid fa-chevron-right crumb-ico"></i><span aria-current="page">${esc(t('common.sessionN', { n: pad2(w.session_no) }))}</span></nav>
         <div class="btn-row" style="gap:8px;align-items:center"><span class="eyebrow caps"><i class="fa-solid fa-star text-[10px]"></i> ${esc(c.series_tag || t('list.seriesTag'))} · ${esc(t('common.sessionN', { n: pad2(w.session_no) }))}</span>${statusBadge(w)}</div>
         <h1 class="display h-lg">${esc(c.title || ('Session ' + w.session_no))}</h1>
         <p class="lede">${esc(c.excerpt || '')}</p>
@@ -1420,7 +1420,7 @@
           <div class="field full"><label for="a-tfa">${A('titleFa')}</label><input class="input" id="a-tfa" name="title_fa" dir="rtl" value="${esc(w.fa.title)}"></div>
           <div class="field full"><label for="a-ten">${A('titleEn')}</label><input class="input" id="a-ten" name="title_en" dir="ltr" value="${esc(w.en.title)}"></div>
         </div></fieldset>
-        <div class="btn-row"><button class="btn btn--bronze" type="submit">${A('save')}</button><a class="btn btn--ghost" href="#/webinars/${w.slug}">${esc(t('list.details'))}${I.arrow}</a></div>
+        <div class="btn-row"><button class="btn btn--bronze" type="submit">${A('save')}</button><a class="btn btn--ghost" href="${pageUrl(w)}">${esc(t('list.details'))}${I.arrow}</a></div>
       </form>`;
     const kp = [[regs.length, 'kRegs'], [regs.filter(r => r.residence_country === 'AF').length, 'kAF'], [regs.filter(r => r.newsletter_optin === 'yes').length, 'kNews'], [regs.filter(r => r.question).length, 'kQ']];
     const cols = t('admin.cols');
@@ -1479,16 +1479,16 @@
       <h1 class="display h-lg on-light" style="margin:10px 0 8px">${T('title')}</h1><p class="lede" style="margin-bottom:34px">${T('intro')}</p>
       <div class="int-block"><span class="int-label">${T('nav')}</span><div class="frame"><header class="site-header" style="position:relative">${headerHTML(true)}</header></div></div>
       <div class="int-block"><span class="int-label">${T('home')}</span><div class="frame frame--pad" style="background:var(--sand)">
-        <a class="home-banner" href="#/webinars/${f.slug}"><span class="hb-l">${I.video}<span><b>${esc(t('int.homeT', { title: c.title }))}</b><small>${esc(t('int.homeD', { date: dShort(d, TZ.kabul), time: tm(d, TZ.kabul) }))} · ${esc(t('common.lang'))} · ${esc(t('common.free'))}</small></span></span><span class="btn btn--bronze btn--sm caps">${T('homeBtn')}${I.arrow}</span></a></div></div>
+        <a class="home-banner" href="${pageUrl(f)}"><span class="hb-l">${I.video}<span><b>${esc(t('int.homeT', { title: c.title }))}</b><small>${esc(t('int.homeD', { date: dShort(d, TZ.kabul), time: tm(d, TZ.kabul) }))} · ${esc(t('common.lang'))} · ${esc(t('common.free'))}</small></span></span><span class="btn btn--bronze btn--sm caps">${T('homeBtn')}${I.arrow}</span></a></div></div>
       <div class="int-block"><span class="int-label">${T('blog')}</span><div class="frame frame--pad">
         <div class="blog-end"><div class="be-date"><b>${esc(dayNum(d, TZ.kabul))}</b><span>${esc(monthName(d, TZ.kabul))} · ${tm(d, TZ.kabul)}</span></div>
-          <div><span class="eyebrow eyebrow--bronze caps">${I.spark}${T('blogEyebrow')} · ${esc(t('common.free'))}</span><h4>${esc(c.title)}</h4><p>${esc(c.excerpt)}</p><a class="btn btn--bronze btn--sm caps" href="#/webinars/${f.slug}">${esc(t('list.details'))}${I.arrow}</a></div></div></div></div>
+          <div><span class="eyebrow eyebrow--bronze caps">${I.spark}${T('blogEyebrow')} · ${esc(t('common.free'))}</span><h4>${esc(c.title)}</h4><p>${esc(c.excerpt)}</p><a class="btn btn--bronze btn--sm caps" href="${pageUrl(f)}">${esc(t('list.details'))}${I.arrow}</a></div></div></div></div>
       <div class="int-block"><span class="int-label">${T('urls')}</span><div class="frame"><table class="urlmap"><thead><tr>${t('int.urlCols').map(h => `<th>${esc(h)}</th>`).join('')}</tr></thead>
         <tbody>${rows.map((r, i) => `<tr><td>${esc(r)}</td><td><code>${urls[i][0]}</code></td><td><code>${urls[i][1]}</code></td></tr>`).join('')}</tbody></table></div></div>
     </div>`;
   }
 
-  function viewNotFound() { return `<div class="container thanks"><h1 class="display h-md on-light">404</h1><p><a class="btn btn--dark" href="#/webinars">${esc(t('thanks.back'))}</a></p></div>`; }
+  function viewNotFound() { return `<div class="container thanks"><h1 class="display h-md on-light">404</h1><p><a class="btn btn--dark" href="${SITE + prefix()}webinars/">${esc(t('thanks.back'))}</a></p></div>`; }
 
   /* ---------- demo panel ---------- */
   function renderDemoPanel() {
@@ -1507,7 +1507,7 @@
       <div class="grp"><span>${D('linkState')}</span>${seg('link', [['soon', t('demo.linkSoon')], ['set', t('demo.linkSet')]])}</div>
       <div class="grp"><span>${D('visibility')}</span>${seg('visibility', [['public', t('demo.public')], ['registrants', t('demo.registrants')]])}</div>
       <div class="grp"><span>${D('pages')}</span>
-        <a class="lnk" href="#/webinars">${D('list')}</a><a class="lnk" href="#/webinars/${w1}">${D('detail')}</a><a class="lnk" href="#/webinars/${w1}/thanks">${D('thanks')}</a><a class="lnk" href="#/admin">${D('admin')}</a><a class="lnk" href="#/integration">${D('integration')}</a></div>
+        <a class="lnk" href="${SITE + prefix()}webinars/">${D('list')}</a><a class="lnk" href="${pageUrl(BASE[0])}">${D('detail')}</a><a class="lnk" href="${pageUrl(BASE[0])}thanks/">${D('thanks')}</a><a class="lnk" href="#/admin">${D('admin')}</a><a class="lnk" href="#/integration">${D('integration')}</a></div>
       <button class="btn btn--ghost btn--sm" type="button" id="demoReset">${D('reset')}</button>`;
     $$('[data-demo]').forEach(b => b.addEventListener('click', () => {
       demo[b.dataset.demo] = b.dataset.v; store.set(K.demo, demo);
@@ -1548,6 +1548,27 @@
     const tt = e.target.closest('[data-toast]');
     if (tt) { toast(t('demo.' + tt.dataset.toast)); return; }
     if (e.target.closest('a[href^="#/"]')) { $('#drawer').classList.remove('open'); }
+    const wLink = e.target.closest('a');
+    if (wLink && window.location.protocol !== 'file:') {
+      const href = wLink.getAttribute('href');
+      if (href && !href.startsWith('#') && !href.startsWith('mailto:') && !href.startsWith('tel:') && !href.startsWith('http') && wLink.target !== '_blank') {
+        const p = prefix();
+        const baseWebinars = (p ? `/${p}webinars` : '/webinars');
+        if (href.startsWith(baseWebinars) || href.startsWith('/webinars')) {
+          if (!e.ctrlKey && !e.metaKey && !e.shiftKey) {
+            e.preventDefault();
+            $('#drawer').classList.remove('open');
+            if (location.pathname !== href && (location.pathname + '/') !== href && location.pathname !== (href + '/')) {
+              try {
+                history.pushState(null, '', href);
+              } catch (_) {}
+            }
+            route();
+            return;
+          }
+        }
+      }
+    }
     const sessionRow = e.target.closest('.session-row');
     if (sessionRow && !e.target.closest('a') && !e.target.closest('button')) {
       sessionRow.classList.toggle('is-open');
@@ -1567,18 +1588,16 @@
 
   /* ---------- router ---------- */
   function parseRoute() {
-    // 1. Hash support
-    if (location.hash && location.hash.length > 1) {
-      const p = location.hash.replace(/^#\/?/, '').split('/').filter(Boolean);
-      if (p[0] === 'webinars') {
-        if (!p[1]) return { page: 'list', slug: null };
-        if (p[2] === 'thanks') return { page: 'thanks', slug: p[1] };
-        return { page: 'detail', slug: p[1] };
-      }
-      if (p[0] === 'admin') return { page: 'admin', slug: null };
-      if (p[0] === 'integration') return { page: 'integration', slug: null };
+    // 1. Clean up legacy hash if present on http/https
+    if (window.location.protocol !== 'file:' && location.hash && location.hash.startsWith('#/webinars')) {
+      const cleanSub = location.hash.replace(/^#\/?webinars\/?/, '');
+      const cleanUrl = `${SITE}${prefix()}webinars/${cleanSub}${cleanSub && !cleanSub.endsWith('/') ? '/' : ''}${location.search}`;
+      try {
+        history.replaceState(null, '', cleanUrl);
+      } catch (_) {}
     }
-    // 2. Pathname support
+
+    // 2. Pathname support (primary for clean URLs)
     const path = location.pathname.replace(/^\/+|\/+$/g, '');
     const segs = path.split('/').filter(Boolean);
     const wIdx = segs.indexOf('webinars');
@@ -1592,6 +1611,19 @@
       }
       return { page: 'detail', slug: rest[0] };
     }
+
+    // 3. Hash fallback (for demo panels or file: protocol)
+    if (location.hash && location.hash.length > 1) {
+      const p = location.hash.replace(/^#\/?/, '').split('/').filter(Boolean);
+      if (p[0] === 'webinars') {
+        if (!p[1]) return { page: 'list', slug: null };
+        if (p[2] === 'thanks') return { page: 'thanks', slug: p[1] };
+        return { page: 'detail', slug: p[1] };
+      }
+      if (p[0] === 'admin') return { page: 'admin', slug: null };
+      if (p[0] === 'integration') return { page: 'integration', slug: null };
+    }
+
     return { page: 'list', slug: null };
   }
   function routeName() { return parseRoute().page; }

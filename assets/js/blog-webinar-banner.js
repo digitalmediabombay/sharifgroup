@@ -434,7 +434,7 @@
     var tUI = I18N[lang] || I18N.en;
 
     var dateStr = webinar.start_utc ? formatSessionDate(webinar.start_utc, lang) : '';
-    var webinarUrl = (lang === 'en' ? '' : '/' + lang) + '/webinars/#/webinars/' + webinar.slug;
+    var webinarUrl = (lang === 'en' ? '' : '/' + lang) + '/webinars/' + webinar.slug + '/';
 
     injectStyles();
 
