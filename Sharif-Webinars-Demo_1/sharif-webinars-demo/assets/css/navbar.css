@@ -418,13 +418,15 @@ html[lang="ar"] .sg-mm-list li a {
   position: relative !important;
   flex: 1 1 0 !important;
   max-width: 265px !important;
-  height: 140px !important;
+  height: 130px !important;
   border-radius: 20px !important;
   overflow: hidden !important;
   text-decoration: none !important;
   border: 1px solid rgba(197, 168, 128, 0.45) !important;
   box-shadow: 0 4px 16px rgba(0, 0, 0, 0.08) !important;
-  display: block !important;
+  display: flex !important;
+  align-items: center !important;
+  justify-content: center !important;
   transition: transform 0.4s cubic-bezier(0.16, 1, 0.3, 1), box-shadow 0.4s ease, border-color 0.4s ease !important;
   box-sizing: border-box !important;
 }
@@ -453,37 +455,39 @@ html[lang="ar"] .sg-mm-list li a {
 .sg-mm-card-overlay {
   position: absolute !important;
   inset: 0 !important;
-  background: linear-gradient(180deg, rgba(6, 10, 18, 0.15) 0%, rgba(6, 10, 18, 0.8) 100%) !important;
-  transition: background 0.3s ease !important;
+  background: rgba(6, 10, 18, 0.62) !important;
+  transition: background-color 0.3s ease !important;
   z-index: 2 !important;
 }
 
 .sg-mm-card:hover .sg-mm-card-overlay {
-  background: linear-gradient(180deg, rgba(6, 10, 18, 0.05) 0%, rgba(6, 10, 18, 0.88) 100%) !important;
+  background: rgba(6, 10, 18, 0.48) !important;
 }
 
 .sg-mm-card-title {
-  position: absolute !important;
-  inset-inline: 16px !important;
-  bottom: 14px !important;
+  position: relative !important;
   z-index: 3 !important;
   text-align: center !important;
-  padding: 0 !important;
+  padding: 14px 16px !important;
+  margin: 0 !important;
   font-size: 11px !important;
   font-weight: 700 !important;
   letter-spacing: 0.18em !important;
   text-transform: uppercase !important;
   color: #ffffff !important;
-  line-height: 1.35 !important;
+  line-height: 1.4 !important;
   transition: color 0.25s ease !important;
   pointer-events: none !important;
+  display: block !important;
+  width: 100% !important;
+  box-sizing: border-box !important;
 }
 
 html[lang="fa"] .sg-mm-card-title,
 html[lang="ar"] .sg-mm-card-title {
   letter-spacing: 0 !important;
   text-transform: none !important;
-  font-size: 12.5px !important;
+  font-size: 13px !important;
 }
 
 .sg-mm-card:hover .sg-mm-card-title {
