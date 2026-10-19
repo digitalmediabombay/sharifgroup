@@ -725,6 +725,25 @@
   const pageUrl = w => `${SITE}${prefix()}webinars/${w.slug}/`;
   const waShare = w => `https://wa.me/?text=${encodeURIComponent(C(w).title + ' — ' + pageUrl(w))}`;
 
+  const HERO_BG_IMAGES = ['web_1.webp', 'web_2.webp', 'web_3.webp', 'web_4.webp'];
+  function heroBgScrollerHTML() {
+    const items = [...HERO_BG_IMAGES, ...HERO_BG_IMAGES, ...HERO_BG_IMAGES, ...HERO_BG_IMAGES];
+    const basePath = (window.location.protocol === 'file:')
+      ? (window.location.pathname.includes('/fa/') || window.location.pathname.includes('/ar/') || window.location.pathname.includes('/zh/') ? '../../assets/images/' : (window.location.pathname.includes('/webinars') ? '../assets/images/' : 'assets/images/'))
+      : '/assets/images/';
+    return `
+    <div class="hero-bg-scroller" aria-hidden="true">
+      <div class="hero-scroller-track">
+        ${items.map((img, i) => `
+          <div class="hero-scroller-item">
+            <img src="${basePath + img}" alt="Sharif Group Webinar" loading="${i < 4 ? 'eager' : 'lazy'}">
+          </div>
+        `).join('')}
+      </div>
+    </div>
+    <div class="hero-overlay" aria-hidden="true"></div>`;
+  }
+
   /* ---------- LIST PAGE ---------- */
   function viewList() {
     const all = webinars(), f = featured(), fc = C(f), d = startOf(f);
@@ -734,6 +753,7 @@
     document.title = L().meta.title;
     return `
     <section class="hero">
+      ${heroBgScrollerHTML()}
       <img class="hero-mark mark-white" src="${LOGO}" alt="" aria-hidden="true">
       <div class="container hero-inner">
         <span class="eyebrow caps">${I.video}${esc(t('list.eyebrow'))}</span>
@@ -825,6 +845,7 @@
     const others = webinars().filter(x => x.series === w.series && x.id !== w.id);
     return `
     <section class="hero hero--detail">
+      ${heroBgScrollerHTML()}
       <img class="hero-mark mark-white" src="${LOGO}" alt="" aria-hidden="true">
       <div class="container hero-inner">
         <nav class="crumbs" aria-label="Breadcrumb"><a href="${SITE + prefix()}">${esc(t('detail.home'))}</a>${I.crumb}<a href="#/webinars">${esc(L().nav.webinars)}</a>${I.crumb}<span aria-current="page">${esc(t('common.sessionN', { n: pad2(w.session_no) }))}</span></nav>
