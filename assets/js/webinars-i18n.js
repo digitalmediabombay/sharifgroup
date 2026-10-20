@@ -41,7 +41,7 @@ window.WEBINAR_I18N = {
       rbiTitle: "Residency By Investment"
     },
     footer: {
-      webinars: "Webinars",
+      webinars: "Events",
       quickLinks: "Quick Links",
       home: "Home",
       aboutSharif: "About | Sharif Group",
@@ -214,7 +214,7 @@ window.WEBINAR_I18N = {
       rbiTitle: "اقامت<br>از طریق<br>سرمایه‌گذاری"
     },
     footer: {
-      webinars: "وبینارها",
+      webinars: "رویدادها",
       quickLinks: "لینک‌های سریع",
       home: "خانه",
       aboutSharif: "درباره | شریف گروپ",
@@ -387,7 +387,7 @@ window.WEBINAR_I18N = {
       rbiTitle: "الإقامة<br>عبر<br>الاستثمار"
     },
     footer: {
-      webinars: "الندوات عبر الإنترنت",
+      webinars: "الفعاليات",
       quickLinks: "روابط سريعة",
       home: "الرئيسية",
       aboutSharif: "عن | مجموعة شريف",
@@ -560,7 +560,7 @@ window.WEBINAR_I18N = {
       rbiTitle: "投资<br>居留<br>项目"
     },
     footer: {
-      webinars: "在线讲座",
+      webinars: "活动",
       quickLinks: "快速链接",
       home: "首页",
       aboutSharif: "关于 | 谢里夫集团",
