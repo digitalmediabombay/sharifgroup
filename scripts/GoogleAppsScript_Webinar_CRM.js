@@ -787,9 +787,17 @@ function getPartnerEmailTemplate(name, applicationId, company, lang) {
  * ==============================================================================
  * Select "testEmailPermissions" from the Apps Script function dropdown and click "Run".
  * Google will display the "Authorization Required" popup.
- * Click "Review Permissions" -> Choose your Google Account -> "Advanced" -> "Go to Sharif Group CRM (unsafe)" -> "Allow".
- * This permanently authorizes MailApp so confirmation emails dispatch 100% reliably!
+/**
+ * BARE AUTHORIZATION TRIGGER (NO TRY/CATCH)
+ * Select "authorizeMailNow" and click "Run".
+ * Because there is no try/catch, Google CANNOT swallow the permission check
+ * and will immediately pop up the "Authorization Required" window!
  */
+function authorizeMailNow() {
+  var remaining = MailApp.getRemainingDailyQuota();
+  Logger.log("Permission granted! Remaining quota: " + remaining);
+}
+
 function testEmailPermissions() {
   var quota = -1;
   try {
@@ -804,4 +812,5 @@ function testEmailPermissions() {
   var status = sendConfirmationEmail(testRecipient, "Test Attendee", "WEB01", "en");
   Logger.log("📬 Dispatch result: " + status);
 }
+
 
