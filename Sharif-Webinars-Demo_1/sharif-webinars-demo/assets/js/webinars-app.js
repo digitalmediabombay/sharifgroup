@@ -1080,34 +1080,96 @@
       </div>
     </section>
 
-    <section class="section section--sand how-to-join-sec">
-      <div class="container">
-        <div class="section-head section-head--centered">
-          <span class="eyebrow caps"><i class="fa-solid fa-star text-[10px]"></i> <span>${esc(t('list.howEyebrow'))}</span></span>
+    <section class="section section--sand how-to-join-sec timeline-section">
+      <div class="timeline-bg-map"></div>
+      <div class="container relative z-10">
+        <div class="section-head section-head--centered mb-12">
+          <span class="eyebrow caps"><i class="fa-regular fa-clock text-[10px]"></i> <span>${esc(t('list.timelineEyebrow') || 'TIMELINE')}</span></span>
           <h2 class="display h-lg on-light">${t('list.howTitle')}</h2>
           <div class="section-gold-line"></div>
           <p class="section-sub">${esc(t('list.howSub'))}</p>
         </div>
-        <div class="steps">
-          ${t('list.steps').map((s, i) => `
-            <div class="step group">
-              <div class="step-top">
-                <div class="step-ico">
-                  ${[
-                    `<i class="fa-solid fa-arrow-up-right-from-square"></i>`,
-                    `<i class="fa-solid fa-user-shield"></i>`,
-                    `<i class="fa-solid fa-headphones"></i>`,
-                    `<i class="fa-solid fa-comments"></i>`
-                  ][i]}
-                </div>
-                <span class="step-num">${pad2(i + 1)}</span>
-              </div>
-              <h3 class="step-title">${esc(s.t)}</h3>
-              <p class="step-desc">${esc(s.d)}</p>
+
+        <div class="timeline-track" id="timeline-track">
+          <!-- Central Track Line -->
+          <div class="timeline-central-line"></div>
+
+          <!-- Animated Central Floating Tracker Card -->
+          <div id="central-passport-node">
+            <div class="timeline-node-card">
+              <div class="timeline-node-icon"><i class="fa-solid fa-play"></i></div>
+              <span class="timeline-node-badge">LIVE</span>
             </div>
-          `).join('')}
+          </div>
+
+          <!-- Steps 1 to 4 -->
+          <div class="timeline-steps-list">
+            ${t('list.steps').map((s, i) => {
+              const stepNum = i + 1;
+              const isOdd = (stepNum % 2 !== 0);
+              const stepTips = t('list.stepTips') || [];
+              const tipText = stepTips[i] || '';
+              const stepPrefix = t('list.stepPrefix') || 'STEP';
+
+              return `
+                <div class="timeline-step" data-step="${stepNum}">
+                  <!-- Left Side -->
+                  <div class="timeline-side timeline-side-left">
+                    ${isOdd ? `
+                      <div class="timeline-step-content">
+                        <span class="timeline-step-kicker">${esc(stepPrefix)} ${pad2(stepNum)}</span>
+                        <h4 class="timeline-step-title">${esc(s.t)}</h4>
+                        <p class="timeline-step-desc">${esc(s.d)}</p>
+                      </div>
+                    ` : `
+                      <div class="timeline-step-tip">
+                        <p class="timeline-step-note">${esc(tipText)}</p>
+                      </div>
+                    `}
+                  </div>
+
+                  <!-- Center Badge -->
+                  <div class="timeline-side-center">
+                    <div class="step-badge" id="step-badge-${stepNum}" data-badge="${stepNum}">
+                      <span>${stepNum}</span>
+                    </div>
+                  </div>
+
+                  <!-- Right Side -->
+                  <div class="timeline-side-right">
+                    ${!isOdd ? `
+                      <div class="timeline-step-content">
+                        <span class="timeline-step-kicker">${esc(stepPrefix)} ${pad2(stepNum)}</span>
+                        <h4 class="timeline-step-title">${esc(s.t)}</h4>
+                        <p class="timeline-step-desc">${esc(s.d)}</p>
+                      </div>
+                    ` : `
+                      <div class="timeline-step-tip">
+                        <p class="timeline-step-note">${esc(tipText)}</p>
+                      </div>
+                    `}
+                  </div>
+                </div>
+              `;
+            }).join('')}
+          </div>
+
+          <!-- Step 5: Final Milestone (Checkmark Badge & Celebration) -->
+          <div class="timeline-step timeline-step-5" data-step="5">
+            <div class="timeline-side-center">
+              <div class="step-badge step-badge--final" id="step-badge-5" data-badge="5">
+                <i class="fa-solid fa-check"></i>
+              </div>
+            </div>
+            <div class="timeline-final-content">
+              <span class="timeline-final-kicker text-neutral-500" id="congrats-label">${esc(t('list.finalKicker') || 'JOIN OUR NEXT LIVE SESSION')}</span>
+              <h3 class="timeline-final-title">${esc(t('list.finalTitle') || "You're All Set to Experience Sharif Group Live!")}</h3>
+              <p class="timeline-final-desc">${esc(t('list.finalDesc') || "Enjoy direct access to licensed immigration lawyers, bespoke investment advisory, and live Q&A in your preferred language.")}</p>
+            </div>
+          </div>
         </div>
-        <div class="privacy-strip">
+
+        <div class="privacy-strip mt-16">
           <div class="privacy-strip-ico"><i class="fa-solid fa-shield-halved"></i></div>
           <div>
             <h3>${esc(t('list.privacyTitle'))}</h3>
@@ -1627,6 +1689,103 @@
     return { page: 'list', slug: null };
   }
   function routeName() { return parseRoute().page; }
+  let timelineScrollHandler = null;
+  function updateTimeline() {
+    const passportNode = document.getElementById("central-passport-node");
+    const track = document.getElementById("timeline-track");
+    const steps = document.querySelectorAll(".timeline-step");
+
+    if (!passportNode || !track || steps.length === 0) return;
+
+    const trackRect = track.getBoundingClientRect();
+    const isMobile = window.innerWidth < 768;
+    const viewportCenter = window.innerHeight * (isMobile ? 0.45 : 0.5);
+
+    // Calculate max downward travel bound (stops precisely at Step 5 badge)
+    const finalStep = steps[steps.length - 1];
+    let maxTravel = trackRect.height;
+    if (finalStep) {
+      const finalBadge = finalStep.querySelector(".step-badge");
+      if (finalBadge) {
+        const badgeRect = finalBadge.getBoundingClientRect();
+        maxTravel = badgeRect.top + (badgeRect.height / 2) - trackRect.top;
+      }
+    }
+
+    // Calculate travel relative to track container & clamp precisely
+    let relativeY = viewportCenter - trackRect.top;
+    relativeY = Math.max(0, Math.min(relativeY, maxTravel));
+
+    // Move passport node smoothly
+    passportNode.style.top = `${relativeY}px`;
+
+    // Proximity threshold adapted for mobile vs desktop screens
+    const proximityThreshold = isMobile ? 70 : 110;
+
+    // Check proximity to light up badges step by step
+    steps.forEach((step) => {
+      const badge = step.querySelector(".step-badge");
+      if (!badge) return;
+
+      const badgeRect = badge.getBoundingClientRect();
+      const badgeCenter = badgeRect.top + badgeRect.height / 2;
+      const stepNum = step.dataset.step;
+
+      if (Math.abs(viewportCenter - badgeCenter) < proximityThreshold) {
+        // Active Light-Up State (Yellow/Golden Glow)
+        badge.classList.remove("bg-neutral-200", "text-neutral-600", "badge-passed-green");
+        badge.classList.add("bg-amber-500", "text-neutral-950", "ring-4", "scale-110", "shadow-xl");
+
+        if (stepNum === "5") {
+          const label = document.getElementById("congrats-label");
+          if (label) {
+            label.classList.remove("text-neutral-500");
+            label.classList.add("text-amber-600");
+          }
+        }
+      } else if (badgeCenter < viewportCenter) {
+        // Passed State
+        badge.classList.remove("bg-neutral-200", "text-neutral-600", "bg-amber-500", "ring-4", "scale-110", "shadow-xl");
+
+        if (stepNum === "5") {
+          badge.classList.add("bg-amber-500", "text-neutral-950");
+        } else {
+          badge.classList.add("badge-passed-green");
+        }
+      } else {
+        // Upcoming State
+        badge.classList.remove("bg-amber-500", "badge-passed-green", "text-white", "text-neutral-950", "ring-4", "scale-110", "shadow-xl");
+        badge.classList.add("bg-neutral-200", "text-neutral-600");
+
+        if (stepNum === "5") {
+          const label = document.getElementById("congrats-label");
+          if (label) {
+            label.classList.remove("text-amber-600");
+            label.classList.add("text-neutral-500");
+          }
+        }
+      }
+    });
+  }
+
+  function initTimelineAnimation() {
+    if (timelineScrollHandler) {
+      window.removeEventListener("scroll", timelineScrollHandler);
+      window.removeEventListener("resize", timelineScrollHandler);
+      timelineScrollHandler = null;
+    }
+    const track = document.getElementById("timeline-track");
+    if (!track) return;
+
+    timelineScrollHandler = () => {
+      requestAnimationFrame(updateTimeline);
+    };
+
+    window.addEventListener("scroll", timelineScrollHandler, { passive: true });
+    window.addEventListener("resize", timelineScrollHandler, { passive: true });
+    requestAnimationFrame(updateTimeline);
+  }
+
   function render() {
     const r = parseRoute();
     const main = $('#main');
@@ -1640,6 +1799,7 @@
     main.innerHTML = html;
     bindForm(); if (r.page === 'admin') bindAdmin();
     initHeroSlideshow();
+    initTimelineAnimation();
     clearInterval(cdTimer); tickCountdowns(); if ($('[data-cd]')) cdTimer = setInterval(tickCountdowns, 1000);
   }
   function route() { render(); window.scrollTo({ top: 0, left: 0, behavior: 'instant' }); }

@@ -101,6 +101,17 @@ window.WEBINAR_I18N = {
           { t: "Weak internet?", d: "Choose “audio only”. The voice is the heart of the session; slides are simple." },
           { t: "Ask in the chat", d: "Type your question in the chat. The host reads it out without your name." }
         ],
+        timelineEyebrow: "TIMELINE",
+        stepPrefix: "STEP",
+        stepTips: [
+          "Instant 1-click browser access from your phone or PC — no apps to install.",
+          "Complete anonymity guaranteed — your camera & mic remain strictly off.",
+          "Lightweight audio-only mode ensures uninterrupted listening even on weak connections.",
+          "Submit confidential questions in the chat — the host answers live without revealing your identity."
+        ],
+        finalKicker: "READY TO JOIN",
+        finalTitle: "You're All Set to Join the Webinar!",
+        finalDesc: "Zero installation, zero cameras, 100% confidential and free. Our specialists are ready to answer all your questions.",
         privacyTitle: "Your privacy is protected", privacyText: "Nobody sees who attended. The recording shows only the speakers and slides — never participants' names or images.",
         ctaTitle: "Prefer a private conversation?", ctaText: "Book a confidential consultation with our team in Business Bay, Dubai — in person, by phone or online.", ctaBtn: "Book Consultation"
       },
@@ -262,6 +273,17 @@ window.WEBINAR_I18N = {
           { t: "اینترنت ضعیف است؟", d: "گزینه «فقط صدا» را انتخاب کنید. صدا محور اصلی جلسه است و اسلایدها ساده‌اند." },
           { t: "در چت بپرسید", d: "پرسش خود را در چت بنویسید. مجری آن را بدون نام شما می‌خواند." }
         ],
+        timelineEyebrow: "مراحل ورود",
+        stepPrefix: "مرحله",
+        stepTips: [
+          "ورود مستقیم با یک کلیک از طریق گوشی یا کمپیوتر — بدون نیاز به نصب برنامه.",
+          "حفظ کامل حریم خصوصی — کمره و مایکروفون شما کاملاً خاموش می‌ماند.",
+          "حالت فقط صوتی برای ارتباط پایدار و بدون وقفه حتی با اینترنت ضعیف.",
+          "پرسش‌های خود را خصوصی بفرستید — مجری بدون ذکر هویت شما پاسخ می‌دهد."
+        ],
+        finalKicker: "آماده ورود",
+        finalTitle: "شما کاملاً آماده ورود به جلسه زنده هستید!",
+        finalDesc: "بدون نصب برنامه، بدون کمره، کاملاً محرمانه و رایگان. متخصصان ما آماده پاسخ به پرسش‌های شما هستند.",
         privacyTitle: "حریم خصوصی شما محفوظ است", privacyText: "هیچ‌کس نمی‌بیند چه کسی در جلسه بوده است. ضبط جلسه فقط سخنران و اسلایدها را نشان می‌دهد، نه نام یا تصویر شرکت‌کنندگان.",
         ctaTitle: "گفت‌وگوی خصوصی را ترجیح می‌دهید؟", ctaText: "یک مشاوره محرمانه با تیم ما در بیزنس بی دبی رزرو کنید — حضوری، تلفنی یا آنلاین.", ctaBtn: "رزرو مشاوره"
       },
@@ -423,6 +445,17 @@ window.WEBINAR_I18N = {
           { t: "الإنترنت ضعيف؟", d: "اختر «الصوت فقط». الصوت هو محور الجلسة والشرائح بسيطة." },
           { t: "اسأل في الدردشة", d: "اكتب سؤالك في الدردشة، وسيقرؤه المقدّم دون ذكر اسمك." }
         ],
+        timelineEyebrow: "المسار الزمني",
+        stepPrefix: "الخطوة",
+        stepTips: [
+          "وصول فوري بنقرة واحدة من هاتفك أو حاسوبك دون الحاجة لتثبيت أي تطبيق.",
+          "خصوصية تامة مضمونة — الكاميرا والميكروفون مغلقان تماماً افتراضياً.",
+          "وضع الصوت فقط يضمن متابعة واضحة وسلسة حتى مع الاتصالات الضعيفة.",
+          "اطرح أسئلتك في الدردشة الخاصة وسيجيب المحاضر دون الكشف عن هويتك."
+        ],
+        finalKicker: "أنت جاهز للمشاركة",
+        finalTitle: "أنت الآن جاهز بالكامل لحضور الجلسة المباشرة!",
+        finalDesc: "دون تحميل أي برنامج، بدون كاميرا، مجاناً وسرية ١٠٠٪. خبراؤنا بانتظار الإجابة على استفساراتكم.",
         privacyTitle: "خصوصيتك محمية", privacyText: "لا أحد يعرف من حضر. يُظهر التسجيل المتحدثين والشرائح فقط، دون أسماء المشاركين أو صورهم.",
         ctaTitle: "تفضّل محادثة خاصة؟", ctaText: "احجز استشارة سرية مع فريقنا في الخليج التجاري بدبي — حضورياً أو هاتفياً أو عبر الإنترنت.", ctaBtn: "حجز استشارة"
       },
@@ -584,6 +617,17 @@ window.WEBINAR_I18N = {
           { t: "网络较慢？", d: "选择“仅音频”。讲座以语音为主，幻灯片简洁。" },
           { t: "在聊天区提问", d: "在聊天区输入问题，主持人会匿名宣读。" }
         ],
+        timelineEyebrow: "时间轴",
+        stepPrefix: "第",
+        stepTips: [
+          "手机或电脑一键极速接入，无需下载安装任何软件。",
+          "严格保护参会隐私——摄像头与麦克风全程保持关闭。",
+          "支持纯音频模式，即使网络信号较弱也能流畅清晰收听。",
+          "在聊天栏随时提出疑问，主持人将匿名解答，不透露个人身份。"
+        ],
+        finalKicker: "准备就绪",
+        finalTitle: "您已准备好加入在线研讨会！",
+        finalDesc: "无需下载、无需开摄像头，百分之百私密且完全免费。专家团队将为您深度解答。",
         privacyTitle: "您的隐私受到保护", privacyText: "没有人能看到谁参加了讲座。录像仅显示主讲人和幻灯片，不包含参与者的姓名或影像。",
         ctaTitle: "更希望私下沟通？", ctaText: "预约与我们迪拜商业湾团队的保密咨询——到访、电话或线上均可。", ctaBtn: "预约咨询"
       },
