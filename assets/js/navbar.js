@@ -271,7 +271,8 @@
     const p = getLangPrefix(lang);
     const site = getRootSite();
     const homeUrl = site + p;
-    const logoUrl = getAssetUrl('assets/images/logo.svg');
+    const logoUrl = getAssetUrl('assets/images/vector_b5a81734.svg');
+    const fallbackLogoUrl = getAssetUrl('assets/images/logo.svg');
 
     // Language options
     const langs = ['en', 'ar', 'fa', 'zh'];
@@ -297,7 +298,7 @@
       <!-- Left: Logo & Menu -->
       <div class="sg-brand-group">
         <a class="sg-brand" href="${homeUrl}" aria-label="Sharif Group Home">
-          <img src="${logoUrl}" alt="Sharif Group" id="nav-logo" width="50" height="56">
+          <img src="${logoUrl}" onerror="if(this.src.indexOf('vector_b5a81734')!==-1){this.src='${fallbackLogoUrl}';}else if(this.src.indexOf('logo.svg')!==-1){this.src='${getAssetUrl('assets/images/vector_2d09c4bb.svg')}';}" alt="Sharif Group Logo" id="nav-logo" width="50" height="56">
         </a>
         <span class="sg-brand-sep" aria-hidden="true">|</span>
 
