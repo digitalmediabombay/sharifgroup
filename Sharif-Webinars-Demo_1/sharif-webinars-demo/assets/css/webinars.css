@@ -802,16 +802,16 @@ html[lang="fa"] .badge, html[lang="ar"] .badge { font-size: 12px; }
   transform: scale(1);
 }
 
-/* Subtle luxury overlay ensuring background images remain clearly visible and vibrant */
+/* Refined luxury overlay with balanced opacity matching homepage hero section */
 .hero-overlay {
   position: absolute;
   inset: 0;
   z-index: 1;
   pointer-events: none;
   background:
-    linear-gradient(180deg, rgba(6, 10, 18, 0.38) 0%, rgba(6, 10, 18, 0.14) 45%, rgba(6, 10, 18, 0.7) 85%, #060a12 100%),
-    radial-gradient(ellipse 960px 520px at 50% 50%, rgba(5, 11, 20, 0.05) 0%, rgba(5, 11, 20, 0.45) 85%),
-    radial-gradient(800px 320px at 50% 120%, rgba(197, 168, 128, 0.15), transparent 70%);
+    linear-gradient(180deg, rgba(6, 10, 18, 0.72) 0%, rgba(6, 10, 18, 0.54) 40%, rgba(6, 10, 18, 0.82) 85%, #060a12 100%),
+    radial-gradient(ellipse 1100px 650px at 50% 50%, rgba(5, 11, 20, 0.35) 0%, rgba(5, 11, 20, 0.78) 100%),
+    radial-gradient(800px 320px at 50% 120%, rgba(197, 168, 128, 0.12), transparent 70%);
 }
 
 .hero-inner { position: relative; z-index: 2; padding: 110px 0 96px; text-align: center; }
@@ -1288,14 +1288,7 @@ html[lang="fa"] .series-tag, html[lang="ar"] .series-tag { font-size: 11px; }
 
 /* ---------- Animated Interactive Timeline (Mirrors Programmes Pages) ---------- */
 .timeline-bg-map {
-  position: absolute !important;
-  inset: 0 !important;
-  opacity: 0.08 !important;
-  pointer-events: none !important;
-  background-image: url('https://upload.wikimedia.org/wikipedia/commons/thumb/8/80/World_map_-_low_resolution.svg/1280px-World_map_-_low_resolution.svg.png') !important;
-  background-repeat: no-repeat !important;
-  background-position: center center !important;
-  background-size: contain !important;
+  display: none !important;
 }
 
 .timeline-track {

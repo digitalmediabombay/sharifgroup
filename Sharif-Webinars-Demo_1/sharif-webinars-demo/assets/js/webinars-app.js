@@ -1081,7 +1081,6 @@
     </section>
 
     <section class="section section--sand how-to-join-sec timeline-section">
-      <div class="timeline-bg-map"></div>
       <div class="container relative z-10">
         <div class="section-head section-head--centered mb-12">
           <span class="eyebrow caps"><i class="fa-regular fa-clock text-[10px]"></i> <span>${esc(t('list.timelineEyebrow') || 'TIMELINE')}</span></span>
