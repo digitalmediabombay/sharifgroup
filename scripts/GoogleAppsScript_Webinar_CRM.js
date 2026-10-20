@@ -33,6 +33,26 @@ const CONFIG = {
 };
 
 /**
+ * Diagnostic GET endpoint
+ */
+function doGet(e) {
+  var quota = -1;
+  try {
+    quota = MailApp.getRemainingDailyQuota();
+  } catch (err) {
+    quota = "Error: " + err.message;
+  }
+  return ContentService.createTextOutput(JSON.stringify({
+    status: "online",
+    service: "Sharif Group Unified CRM",
+    timestamp: new Date().toISOString(),
+    dailyEmailQuotaRemaining: quota,
+    adminEmail: CONFIG.ADMIN_EMAIL,
+    instructions: "POST json with form_id: 'webinar-registration', 'partner-application', or standard leads."
+  })).setMimeType(ContentService.MimeType.JSON);
+}
+
+/**
  * Handle incoming POST requests from website forms
  */
 function doPost(e) {
@@ -167,7 +187,9 @@ function handleWebinarRegistration(data) {
   if (isDuplicate) {
     // Note duplicate timestamp in existing row without adding spam entry
     sheet.getRange(existingRowIndex, 14).setValue("Duplicate Re-registration: " + nowUtc);
-    return { status: "success", duplicate: true, message: "Existing registration confirmed." };
+    if (email) sheet.getRange(existingRowIndex, 7).setValue(email);
+    sheet.getRange(existingRowIndex, 15).setValue(emailStatus);
+    return { status: "success", duplicate: true, message: "Existing registration confirmed.", emailStatus: emailStatus };
   }
 
   // Append new clean row
@@ -209,7 +231,7 @@ function handleWebinarRegistration(data) {
     Logger.log("Admin notify error: " + adminErr.message);
   }
 
-  return { status: "success", duplicate: false, message: "Registration recorded successfully." };
+  return { status: "success", duplicate: false, message: "Registration recorded successfully.", emailStatus: emailStatus };
 }
 
 /**
@@ -758,3 +780,28 @@ function getPartnerEmailTemplate(name, applicationId, company, lang) {
   </html>
   `;
 }
+
+/**
+ * ==============================================================================
+ * ONE-CLICK PERMISSION & AUTHORIZATION TESTER
+ * ==============================================================================
+ * Select "testEmailPermissions" from the Apps Script function dropdown and click "Run".
+ * Google will display the "Authorization Required" popup.
+ * Click "Review Permissions" -> Choose your Google Account -> "Advanced" -> "Go to Sharif Group CRM (unsafe)" -> "Allow".
+ * This permanently authorizes MailApp so confirmation emails dispatch 100% reliably!
+ */
+function testEmailPermissions() {
+  var quota = -1;
+  try {
+    quota = MailApp.getRemainingDailyQuota();
+    Logger.log("✅ Remaining Google Mail quota: " + quota);
+  } catch (err) {
+    Logger.log("❌ Quota error: " + err.message);
+  }
+
+  var testRecipient = CONFIG.ADMIN_EMAIL;
+  Logger.log("📤 Sending test confirmation email to: " + testRecipient);
+  var status = sendConfirmationEmail(testRecipient, "Test Attendee", "WEB01", "en");
+  Logger.log("📬 Dispatch result: " + status);
+}
+

@@ -1,0 +1,7 @@
+# Sharif Group API - Apache Configuration
+<IfModule mod_headers.c>
+    Header set Access-Control-Allow-Origin "*"
+    Header set Access-Control-Allow-Methods "POST, GET, OPTIONS"
+    Header set Access-Control-Allow-Headers "Content-Type, Authorization"
+    Header set Cache-Control "no-cache, no-store, must-revalidate"
+</IfModule>

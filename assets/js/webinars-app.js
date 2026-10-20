@@ -1387,24 +1387,49 @@
       const btn = $('button[type="submit"]', form);
       btn.disabled = true; btn.textContent = t('form.sending');
 
-      let rec = dup;
-      if (!dup) {
-        rec = {
-          form_id: 'webinar-registration',
-          registration_id: 'REG-' + w.id + '-' + Date.now().toString(36).toUpperCase().slice(-6),
-          webinar_id: w.id, webinar_slug: w.slug, webinar_start_utc: w.start_utc,
-          fullName: name, dialCode: dial, phone: `${dial} ${local}`, whatsapp_e164: e164,
-          email, residence_country: country, question,
-          newsletter_optin: fd.get('newsletter_optin') === 'yes' ? 'yes' : 'no',
-          utm_source: allowedSrc.includes(src) ? src : (src ? 'unknown' : 'website'),
-          utm_campaign: params.get('utm_campaign') || w.utm_campaign,
-          lang, registered_at_utc: new Date().toISOString(),
-          source: pageUrl(w), page: `/${prefix()}webinars/${w.slug}/`
-        };
-        regs.push(rec); store.set(K.regs, regs);
+      const regId = (dup && dup.registration_id) ? dup.registration_id : ('REG-' + w.id + '-' + Date.now().toString(36).toUpperCase().slice(-6));
+      const rec = {
+        form_id: 'webinar-registration',
+        registration_id: regId,
+        webinar_id: w.id,
+        webinar_slug: w.slug,
+        webinar_title: (w.en && w.en.title) || w.title || '',
+        webinar_start_utc: w.start_utc,
+        fullName: name,
+        dialCode: dial,
+        phone: `${dial} ${local}`,
+        whatsapp_e164: e164,
+        email: email,
+        residence_country: country,
+        question: question,
+        newsletter_optin: fd.get('newsletter_optin') === 'yes' ? 'yes' : 'no',
+        utm_source: allowedSrc.includes(src) ? src : (src ? 'unknown' : 'website'),
+        utm_campaign: params.get('utm_campaign') || w.utm_campaign,
+        lang: lang,
+        registered_at_utc: new Date().toISOString(),
+        source: pageUrl(w),
+        page: `/${prefix()}events/${w.slug}/`
+      };
+
+      if (dup) {
+        const idx = regs.findIndex(r => r.webinar_id === w.id && r.whatsapp_e164 === e164);
+        if (idx !== -1) regs[idx] = rec;
+      } else {
+        regs.push(rec);
       }
+      store.set(K.regs, regs);
       store.set(K.last, { id: rec.registration_id, dup: !!dup });
 
+      // 1. Primary Direct Server Email Dispatcher (SPF/DKIM authenticated from @sharifgroup.ae)
+      if (window.location.protocol !== 'file:') {
+        fetch('/api/event-register.php', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify(rec)
+        }).catch(err => console.warn('Server registration notice:', err));
+      }
+
+      // 2. Central CRM Sheet Sync (Google Apps Script)
       if (CRM_WEBHOOK_URL) {
         fetch(CRM_WEBHOOK_URL, {
           method: 'POST',
@@ -1415,9 +1440,9 @@
       }
 
       setTimeout(() => {
-        const thanksUrl = `${SITE}${prefix()}webinars/${w.slug}/thanks/` + (DEMO ? '?demo=1' : '');
+        const thanksUrl = `${SITE}${prefix()}events/${w.slug}/thanks/` + (DEMO ? '?demo=1' : '');
         if (window.location.protocol === 'file:') {
-          location.hash = `#/webinars/${w.slug}/thanks`;
+          location.hash = `#/events/${w.slug}/thanks`;
         } else {
           try {
             history.pushState({ page: 'thanks', slug: w.slug }, '', thanksUrl);
@@ -1454,7 +1479,7 @@
             <ol class="timeline">${t('thanks.steps').map((s, i) => `<li class="${i === 0 ? 'done' : ''}"><strong>${esc(s.t)}</strong><span>${esc(s.d)}</span></li>`).join('')}</ol></div>
         </div>
       </div>
-      <div class="btn-row" style="margin-top:28px"><a class="btn btn--dark" href="${SITE + prefix()}webinars/">${esc(t('thanks.back'))}</a><a class="btn btn--ghost" href="${SITE + prefix()}contact/">${esc(L().nav.bookConsultation)}</a></div>
+      <div class="btn-row" style="margin-top:28px"><a class="btn btn--dark" href="${SITE + prefix()}events/">${esc(t('thanks.back'))}</a><a class="btn btn--ghost" href="${SITE + prefix()}contact/">${esc(L().nav.bookConsultation)}</a></div>
     </div></div>`;
   }
 
@@ -1549,7 +1574,7 @@
     </div>`;
   }
 
-  function viewNotFound() { return `<div class="container thanks"><h1 class="display h-md on-light">404</h1><p><a class="btn btn--dark" href="${SITE + prefix()}webinars/">${esc(t('thanks.back'))}</a></p></div>`; }
+  function viewNotFound() { return `<div class="container thanks"><h1 class="display h-md on-light">404</h1><p><a class="btn btn--dark" href="${SITE + prefix()}events/">${esc(t('thanks.back'))}</a></p></div>`; }
 
   /* ---------- demo panel ---------- */
   function renderDemoPanel() {
@@ -1568,7 +1593,7 @@
       <div class="grp"><span>${D('linkState')}</span>${seg('link', [['soon', t('demo.linkSoon')], ['set', t('demo.linkSet')]])}</div>
       <div class="grp"><span>${D('visibility')}</span>${seg('visibility', [['public', t('demo.public')], ['registrants', t('demo.registrants')]])}</div>
       <div class="grp"><span>${D('pages')}</span>
-        <a class="lnk" href="${SITE + prefix()}webinars/">${D('list')}</a><a class="lnk" href="${pageUrl(BASE[0])}">${D('detail')}</a><a class="lnk" href="${pageUrl(BASE[0])}thanks/">${D('thanks')}</a><a class="lnk" href="#/admin">${D('admin')}</a><a class="lnk" href="#/integration">${D('integration')}</a></div>
+        <a class="lnk" href="${SITE + prefix()}events/">${D('list')}</a><a class="lnk" href="${pageUrl(BASE[0])}">${D('detail')}</a><a class="lnk" href="${pageUrl(BASE[0])}thanks/">${D('thanks')}</a><a class="lnk" href="#/admin">${D('admin')}</a><a class="lnk" href="#/integration">${D('integration')}</a></div>
       <button class="btn btn--ghost btn--sm" type="button" id="demoReset">${D('reset')}</button>`;
     $$('[data-demo]').forEach(b => b.addEventListener('click', () => {
       demo[b.dataset.demo] = b.dataset.v; store.set(K.demo, demo);
@@ -1614,8 +1639,9 @@
       const href = wLink.getAttribute('href');
       if (href && !href.startsWith('#') && !href.startsWith('mailto:') && !href.startsWith('tel:') && !href.startsWith('http') && wLink.target !== '_blank') {
         const p = prefix();
+        const baseEvents = (p ? `/${p}events` : '/events');
         const baseWebinars = (p ? `/${p}webinars` : '/webinars');
-        if (href.startsWith(baseWebinars) || href.startsWith('/webinars')) {
+        if (href.startsWith(baseEvents) || href.startsWith('/events') || href.startsWith(baseWebinars) || href.startsWith('/webinars')) {
           if (!e.ctrlKey && !e.metaKey && !e.shiftKey) {
             e.preventDefault();
             $('#drawer').classList.remove('open');
