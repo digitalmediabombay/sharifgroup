@@ -331,7 +331,7 @@
       { h: SITE + p + 'aboutus/', l: N.aboutUs, dd: 'about' },
       { h: SITE + p + 'contact/', l: N.contact },
       { h: SITE + p + 'blog/', l: N.blog },
-      { h: `${SITE}${p}webinars/`, l: N.webinars, active: 1, isNew: 1 }
+      { h: `${SITE}${p}events/`, l: N.webinars, active: 1, isNew: 1 }
     ];
   }
   function headerHTML(staticCopy) {
@@ -470,7 +470,7 @@
         <span class="nav-sep" aria-hidden="true">|</span>
         <a class="nav-link caps" href="${SITE + p}blog/">${esc(N.blog)}</a>
         <span class="nav-sep" aria-hidden="true">|</span>
-        <a class="nav-link caps is-active" href="${SITE + p}webinars/" aria-current="page">${esc(N.webinars)} <span class="nav-new">${esc(t('common.isNew'))}</span></a>
+        <a class="nav-link caps is-active" href="${SITE + p}events/" aria-current="page">${esc(N.webinars)} <span class="nav-new">${esc(t('common.isNew'))}</span></a>
       </nav>
       </div>
 
@@ -631,7 +631,7 @@
             <li><a class="hover:text-luxury-gold transition" data-i18n="footer.educationalAdvisory" href="${SITE + p}educationaladvisory/">${esc(F.educationalAdvisory)}</a></li>
             <li><a class="hover:text-luxury-gold transition" data-i18n="footer.contactUs" href="${SITE + p}contact/">${esc(F.contactUs)}</a></li>
             <li><a class="hover:text-luxury-gold transition" data-i18n="footer.insightsBlog" href="${SITE + p}blog/">${esc(F.insightsBlog)}</a></li>
-            <li><a class="hover:text-luxury-gold transition inline-flex items-center gap-1.5 foot-new-row" href="${SITE + p}webinars/"><span data-i18n="footer.webinars">${esc(F.webinars)}</span> <span class="nav-new-badge ml-1.5 px-1.5 py-0.5 rounded-full bg-[#786142] text-white text-[8px] font-bold leading-none inline-flex items-center justify-center shrink-0 tracking-wider" data-i18n="nav.newBadge">${esc(t('common.isNew') || 'New')}</span></a></li>
+            <li><a class="hover:text-luxury-gold transition inline-flex items-center gap-1.5 foot-new-row" href="${SITE + p}events/"><span data-i18n="footer.webinars">${esc(F.webinars)}</span> <span class="nav-new-badge ml-1.5 px-1.5 py-0.5 rounded-full bg-[#786142] text-white text-[8px] font-bold leading-none inline-flex items-center justify-center shrink-0 tracking-wider" data-i18n="nav.newBadge">${esc(t('common.isNew') || 'New')}</span></a></li>
             <li><a class="hover:text-luxury-gold transition" data-i18n="footer.eligibilityChecker" href="${SITE + p}eligibilitychecker/">${esc(F.eligibilityChecker)}</a></li>
           </ul>
         </div>
@@ -776,7 +776,7 @@
           <a href="${SITE + p}about-founder/">${esc(N.aboutFounder)}</a>
           <a href="${SITE + p}socialresponsibility/">${esc(N.socialResp)}</a>
           <a href="${SITE + p}blog/">${esc(N.blog)}</a>
-          <a href="${SITE + p}webinars/" class="is-active">${esc(N.webinars)} <span class="nav-new">${esc(t('common.isNew'))}</span></a>
+          <a href="${SITE + p}events/" class="is-active">${esc(N.webinars)} <span class="nav-new">${esc(t('common.isNew'))}</span></a>
           <a href="${SITE + p}contact/">${esc(N.contact)}</a>
         </div>
       </nav>
@@ -912,7 +912,7 @@
       renderShell(); route();
     } else {
       const r = parseRoute();
-      let targetPath = (c === 'en' ? '' : '/' + c) + '/webinars/';
+      let targetPath = (c === 'en' ? '' : '/' + c) + '/events/';
       if (r.slug) {
         targetPath += r.slug + '/';
         if (r.page === 'thanks') targetPath += 'thanks/';
@@ -962,7 +962,7 @@
     return `<a class="btn btn--bronze btn--block" href="${esc(w.join_url)}" data-join target="_blank" rel="noopener"><i class="fa-solid fa-video"></i><span>${esc(live ? t('detail.joinNow') : t('detail.joinBtn'))}</span></a>
       ${live ? '' : `<p class="note"><i class="fa-regular fa-clock"></i><span>${esc(t('detail.roomOpens', { time: tm(opens, TZ.kabul) }))}</span></p>`}`;
   }
-  const pageUrl = w => `${SITE}${prefix()}webinars/${w.slug}/`;
+  const pageUrl = w => `${SITE}${prefix()}events/${w.slug}/`;
   const waShare = w => `https://wa.me/?text=${encodeURIComponent(C(w).title + ' — ' + pageUrl(w))}`;
 
   function webinarImg(sessionNo) {
@@ -970,7 +970,7 @@
     const imgName = 'web_' + (((num - 1) % 4) + 1) + '.webp';
     if (window.location.protocol === 'file:') {
       if (window.location.pathname.includes('/fa/') || window.location.pathname.includes('/ar/') || window.location.pathname.includes('/zh/')) return '../../assets/images/' + imgName;
-      if (window.location.pathname.includes('/webinars')) return '../assets/images/' + imgName;
+      if (window.location.pathname.includes('/webinars') || window.location.pathname.includes('/events')) return '../assets/images/' + imgName;
       return 'assets/images/' + imgName;
     }
     return window.location.pathname.includes('/sharif-webinars-demo/') ? ('assets/images/' + imgName) : ('/assets/images/' + imgName);
@@ -979,12 +979,12 @@
   const HERO_BG_IMAGES = ['web_1.webp', 'web_2.webp', 'web_3.webp', 'web_4.webp'];
   function heroSlideshowHTML() {
     const basePath = (window.location.protocol === 'file:')
-      ? (window.location.pathname.includes('/fa/') || window.location.pathname.includes('/ar/') || window.location.pathname.includes('/zh/') ? '../../assets/images/' : (window.location.pathname.includes('/webinars') ? '../assets/images/' : 'assets/images/'))
+      ? (window.location.pathname.includes('/fa/') || window.location.pathname.includes('/ar/') || window.location.pathname.includes('/zh/') ? '../../assets/images/' : (window.location.pathname.includes('/webinars') || window.location.pathname.includes('/events') ? '../assets/images/' : 'assets/images/'))
       : (window.location.pathname.includes('/sharif-webinars-demo/') ? 'assets/images/' : '/assets/images/');
     return `
     <div class="hero-slides-wrapper" aria-hidden="true">
       ${HERO_BG_IMAGES.map((img, i) => `
-        <div class="hero-slide${i === 0 ? ' is-active' : ''}" style="background-image: linear-gradient(rgba(6, 10, 18, 0.65), rgba(6, 10, 18, 0.82)), url('${basePath + img}');"></div>
+        <div class="hero-slide${i === 0 ? ' is-active' : ''}" style="background-image: url('${basePath + img}');"></div>
       `).join('')}
     </div>
     <div class="hero-overlay" aria-hidden="true"></div>`;
@@ -1245,7 +1245,7 @@
     <section class="hero hero--detail">
       ${heroSlideshowHTML()}
       <div class="container hero-inner">
-        <nav class="crumbs" aria-label="Breadcrumb"><a href="${SITE + prefix()}">${esc(t('detail.home'))}</a><i class="fa-solid fa-chevron-right crumb-ico"></i><a href="${SITE + prefix()}webinars/">${esc(L().nav.webinars)}</a><i class="fa-solid fa-chevron-right crumb-ico"></i><span aria-current="page">${esc(t('common.sessionN', { n: pad2(w.session_no) }))}</span></nav>
+        <nav class="crumbs" aria-label="Breadcrumb"><a href="${SITE + prefix()}">${esc(t('detail.home'))}</a><i class="fa-solid fa-chevron-right crumb-ico"></i><a href="${SITE + prefix()}events/">${esc(L().nav.webinars)}</a><i class="fa-solid fa-chevron-right crumb-ico"></i><span aria-current="page">${esc(t('common.sessionN', { n: pad2(w.session_no) }))}</span></nav>
         <div class="btn-row" style="gap:8px;align-items:center"><span class="eyebrow caps"><i class="fa-solid fa-star text-[10px]"></i> ${esc(c.series_tag || t('list.seriesTag'))} · ${esc(t('common.sessionN', { n: pad2(w.session_no) }))}</span>${statusBadge(w)}</div>
         <h1 class="display h-lg">${esc(c.title || ('Session ' + w.session_no))}</h1>
         <p class="lede">${esc(c.excerpt || '')}</p>
@@ -1651,9 +1651,9 @@
   /* ---------- router ---------- */
   function parseRoute() {
     // 1. Clean up legacy hash if present on http/https
-    if (window.location.protocol !== 'file:' && location.hash && location.hash.startsWith('#/webinars')) {
-      const cleanSub = location.hash.replace(/^#\/?webinars\/?/, '');
-      const cleanUrl = `${SITE}${prefix()}webinars/${cleanSub}${cleanSub && !cleanSub.endsWith('/') ? '/' : ''}${location.search}`;
+    if (window.location.protocol !== 'file:' && location.hash && (location.hash.startsWith('#/webinars') || location.hash.startsWith('#/events'))) {
+      const cleanSub = location.hash.replace(/^#\/?(webinars|events)\/?/i, '');
+      const cleanUrl = `${SITE}${prefix()}events/${cleanSub}${cleanSub && !cleanSub.endsWith('/') ? '/' : ''}${location.search}`;
       try {
         history.replaceState(null, '', cleanUrl);
       } catch (_) {}
@@ -1662,7 +1662,9 @@
     // 2. Pathname support (primary for clean URLs)
     const path = location.pathname.replace(/^\/+|\/+$/g, '');
     const segs = path.split('/').filter(Boolean);
-    const wIdx = segs.indexOf('webinars');
+    const segsLower = segs.map(s => s.toLowerCase());
+    let wIdx = segsLower.indexOf('events');
+    if (wIdx === -1) wIdx = segsLower.indexOf('webinars');
     if (wIdx !== -1) {
       const rest = segs.slice(wIdx + 1);
       if (!rest.length || rest[0] === 'index.html' || rest[0] === 'index.php') {
@@ -1677,7 +1679,8 @@
     // 3. Hash fallback (for demo panels or file: protocol)
     if (location.hash && location.hash.length > 1) {
       const p = location.hash.replace(/^#\/?/, '').split('/').filter(Boolean);
-      if (p[0] === 'webinars') {
+      const first = p[0] ? p[0].toLowerCase() : '';
+      if (first === 'events' || first === 'webinars') {
         if (!p[1]) return { page: 'list', slug: null };
         if (p[2] === 'thanks') return { page: 'thanks', slug: p[1] };
         return { page: 'detail', slug: p[1] };

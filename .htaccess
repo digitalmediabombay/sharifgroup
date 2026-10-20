@@ -31,6 +31,16 @@
     RewriteRule ^programs/citizenshipbyinvestment/saotomeprinciple(?:/.*)?$ /programs/citizenshipbyinvestment/sao-tome-and-principe/ [R=301,L]
     RewriteRule ^programs/citizenshipbyinvestment/sao-tome-principle(?:/.*)?$ /programs/citizenshipbyinvestment/sao-tome-and-principe/ [R=301,L]
 
+    # 5b. 301 Redirect webinars and case-variations of Events to clean canonical /events/
+    RewriteRule ^Events/?$ /events/ [R=301,L]
+    RewriteRule ^Events/(.+)$ /events/$1 [R=301,L]
+    RewriteRule ^webinars/?$ /events/ [R=301,L]
+    RewriteRule ^webinars/(.+)$ /events/$1 [R=301,L]
+    RewriteRule ^(ar|fa|zh)/webinars/?$ /$1/events/ [R=301,L]
+    RewriteRule ^(ar|fa|zh)/webinars/(.+)$ /$1/events/$2 [R=301,L]
+    RewriteRule ^(ar|fa|zh)/Events/?$ /$1/events/ [R=301,L]
+    RewriteRule ^(ar|fa|zh)/Events/(.+)$ /$1/events/$2 [R=301,L]
+
     # 6. Redirect legacy .html URLs from old canonicals to clean folders
     RewriteRule ^programs/st-kitts\.html$ /programs/citizenshipbyinvestment/stkitts/ [R=301,L]
     RewriteRule ^programs/grenada\.html$ /programs/citizenshipbyinvestment/grenada/ [R=301,L]
@@ -60,14 +70,18 @@
     # 8b. Automated Multilingual XML Sitemap Engine
     RewriteRule ^sitemap\.xml$ sitemap.php [L]
 
-    # 9. Clean Language Path Rewrites for Blog, Webinars & Partners
+    # 9. Clean Language Path Rewrites for Blog, Events & Partners
     RewriteCond %{REQUEST_FILENAME} !-f
     RewriteCond %{REQUEST_FILENAME} !-d
     RewriteRule ^(ar|fa|zh)/blog/([^/]+)/?$ /$1/blog/index.html [L,QSA]
 
     RewriteCond %{REQUEST_FILENAME} !-f
     RewriteCond %{REQUEST_FILENAME} !-d
-    RewriteRule ^(ar|fa|zh)/webinars/(.+)$ /$1/webinars/index.html [L,QSA]
+    RewriteRule ^(ar|fa|zh)/events/(.+)$ /$1/events/index.html [L,QSA]
+
+    RewriteCond %{REQUEST_FILENAME} !-f
+    RewriteCond %{REQUEST_FILENAME} !-d
+    RewriteRule ^(ar|fa|zh)/webinars/(.+)$ /$1/events/$2 [R=301,L]
 
     RewriteCond %{REQUEST_FILENAME} !-f
     RewriteCond %{REQUEST_FILENAME} !-d
@@ -88,14 +102,18 @@
     RewriteCond %{REQUEST_FILENAME} !-d
     RewriteRule ^(ar|fa|zh)/(.*)$ /$2 [L,QSA]
 
-    # 11. Blog, Webinars & Partners slug fallback
+    # 11. Blog, Events & Partners slug fallback
     RewriteCond %{REQUEST_FILENAME} !-f
     RewriteCond %{REQUEST_FILENAME} !-d
     RewriteRule ^blog/([^/]+)/?$ /blog/index.html [L,QSA]
 
     RewriteCond %{REQUEST_FILENAME} !-f
     RewriteCond %{REQUEST_FILENAME} !-d
-    RewriteRule ^webinars/(.+)$ /webinars/index.html [L,QSA]
+    RewriteRule ^events/(.+)$ /events/index.html [L,QSA]
+
+    RewriteCond %{REQUEST_FILENAME} !-f
+    RewriteCond %{REQUEST_FILENAME} !-d
+    RewriteRule ^webinars/(.+)$ /events/$1 [R=301,L]
 
     RewriteCond %{REQUEST_FILENAME} !-f
     RewriteCond %{REQUEST_FILENAME} !-d

@@ -449,7 +449,7 @@
           <span class="sg-nav-sep" aria-hidden="true">|</span>
 
           <div class="sg-nav-item">
-            <a class="sg-nav-link" href="${site + p}webinars/">
+            <a class="sg-nav-link" href="${site + p}events/">
               <span>${esc(n.webinars)}</span>
               <span class="sg-badge-new">${esc(n.newBadge)}</span>
             </a>
@@ -588,7 +588,7 @@
         <i class="fa-solid fa-arrow-right"></i>
       </a>
 
-      <a class="sg-drawer-link-direct" href="${site + p}webinars/">
+      <a class="sg-drawer-link-direct" href="${site + p}events/">
         <span>${esc(n.webinars)} <span class="sg-badge-new">${esc(n.newBadge)}</span></span>
         <i class="fa-solid fa-arrow-right"></i>
       </a>

@@ -91,24 +91,90 @@
       "source": "/programs/citizenshipbyinvestment/sao-tome-principle/:path*",
       "destination": "/programs/citizenshipbyinvestment/sao-tome-and-principe/",
       "permanent": true
+    },
+    {
+      "source": "/Events",
+      "destination": "/events/",
+      "permanent": true
+    },
+    {
+      "source": "/Events/:path*",
+      "destination": "/events/:path*",
+      "permanent": true
+    },
+    {
+      "source": "/webinars",
+      "destination": "/events/",
+      "permanent": true
+    },
+    {
+      "source": "/webinars/:path*",
+      "destination": "/events/:path*",
+      "permanent": true
+    },
+    {
+      "source": "/ar/webinars",
+      "destination": "/ar/events/",
+      "permanent": true
+    },
+    {
+      "source": "/ar/webinars/:path*",
+      "destination": "/ar/events/:path*",
+      "permanent": true
+    },
+    {
+      "source": "/fa/webinars",
+      "destination": "/fa/events/",
+      "permanent": true
+    },
+    {
+      "source": "/fa/webinars/:path*",
+      "destination": "/fa/events/:path*",
+      "permanent": true
+    },
+    {
+      "source": "/zh/webinars",
+      "destination": "/zh/events/",
+      "permanent": true
+    },
+    {
+      "source": "/zh/webinars/:path*",
+      "destination": "/zh/events/:path*",
+      "permanent": true
     }
   ],
   "rewrites": [
     {
+      "source": "/fa/events/(.+)",
+      "destination": "/fa/events/"
+    },
+    {
+      "source": "/ar/events/(.+)",
+      "destination": "/ar/events/"
+    },
+    {
+      "source": "/zh/events/(.+)",
+      "destination": "/zh/events/"
+    },
+    {
+      "source": "/events/(.+)",
+      "destination": "/events/"
+    },
+    {
       "source": "/fa/webinars/(.+)",
-      "destination": "/fa/webinars/"
+      "destination": "/fa/events/"
     },
     {
       "source": "/ar/webinars/(.+)",
-      "destination": "/ar/webinars/"
+      "destination": "/ar/events/"
     },
     {
       "source": "/zh/webinars/(.+)",
-      "destination": "/zh/webinars/"
+      "destination": "/zh/events/"
     },
     {
       "source": "/webinars/(.+)",
-      "destination": "/webinars/"
+      "destination": "/events/"
     },
     {
       "source": "/fa/partners/(.+)",

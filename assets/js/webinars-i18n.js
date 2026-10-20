@@ -9,7 +9,7 @@
    ========================================================================== */
 window.WEBINAR_I18N = {
   en: {
-    meta: { dir: "ltr", code: "EN", locale: "en-GB", name: "English", title: "Webinars | Sharif Group Dubai", description: "Free live webinars by Sharif Group on second citizenship and residency — join from your phone, no installation." },
+    meta: { dir: "ltr", code: "EN", locale: "en-GB", name: "English", title: "Events | Sharif Group Dubai", description: "Exclusive live events and sessions by Sharif Group on second citizenship and residency — join from your phone, no installation." },
     nav: {
       citizenship: "Citizenship",
       residency: "Residency",
@@ -17,7 +17,7 @@ window.WEBINAR_I18N = {
       aboutUs: "About Us",
       contact: "Contact Us",
       blog: "Blog",
-      webinars: "Webinars",
+      webinars: "Events",
       eligibilityChecker: "Eligibility Checker",
       bookConsultation: "Book Consultation",
       dualCitizenship: "Dual Citizenship",
@@ -89,7 +89,7 @@ window.WEBINAR_I18N = {
       tz: { kabul: "Kabul", dubai: "Dubai", istanbul: "Istanbul", you: "Your time" },
       status: { upcoming: "Upcoming", live: "Live now", ended: "Held", postponed: "Postponed", cancelled: "Cancelled", regOpen: "Registration open", regClosed: "Registration closed", soon: "Coming soon", publicLink: "Public link" },
       list: {
-        eyebrow: "Live Sessions & Insights", title: "Webinars", sub: "SHARIF GROUP DUBAI",
+        eyebrow: "Live Sessions & Insights", title: "Events", sub: "SHARIF GROUP DUBAI",
         lede: "Free, live online sessions where our specialists explain citizenship and residency pathways clearly — and answer your questions.",
         nextEyebrow: "Next live session", join: "Join the webinar", remind: "Get WhatsApp reminder", details: "Full details",
         startsIn: "Starts in", whenTitle: "Date & time", noInstall: "No app needed", phoneOk: "Works on mobile",
@@ -182,7 +182,7 @@ window.WEBINAR_I18N = {
   },
 
   fa: {
-    meta: { dir: "rtl", code: "FA", locale: "fa-AF", name: "فارسی", title: "وبینارها | شریف گروپ دبی", description: "وبینارهای زنده و رایگان شریف گروپ درباره شهروندی دوم و اقامت — ورود با گوشی، بدون نصب برنامه." },
+    meta: { dir: "rtl", code: "FA", locale: "fa-AF", name: "فارسی", title: "رویدادها | شریف گروپ دبی", description: "رویدادها و جلسه‌های زنده شریف گروپ درباره شهروندی دوم و اقامت — ورود با گوشی، بدون نصب برنامه." },
     nav: {
       citizenship: "شهروندی",
       residency: "اقامت",
@@ -190,7 +190,7 @@ window.WEBINAR_I18N = {
       aboutUs: "درباره ما",
       contact: "تماس با ما",
       blog: "بلاگ",
-      webinars: "وبینارها",
+      webinars: "رویدادها",
       eligibilityChecker: "بررسی شرایط واجد بودن",
       bookConsultation: "رزرو مشاوره",
       dualCitizenship: "تابعیت دوگانه",
@@ -262,7 +262,7 @@ window.WEBINAR_I18N = {
       tz: { kabul: "کابل", dubai: "دبی", istanbul: "استانبول", you: "وقت شما" },
       status: { upcoming: "پیش رو", live: "در حال پخش", ended: "برگزار شد", postponed: "به تعویق افتاد", cancelled: "لغو شد", regOpen: "ثبت‌نام باز است", regClosed: "ثبت‌نام بسته شد", soon: "به‌زودی", publicLink: "لینک عمومی" },
       list: {
-        eyebrow: "جلسه‌های زنده و دانستنی‌ها", title: "وبینارها", sub: "شریف گروپ دبی",
+        eyebrow: "جلسه‌های زنده و دانستنی‌ها", title: "رویدادها", sub: "شریف گروپ دبی",
         lede: "جلسه‌های آنلاین، زنده و رایگان که در آن کارشناسان ما مسیرهای شهروندی و اقامت را روشن توضیح می‌دهند و به پرسش‌های شما پاسخ می‌دهند.",
         nextEyebrow: "جلسه زنده بعدی", join: "ورود به وبینار", remind: "یادآوری در واتس‌اپ", details: "جزئیات کامل",
         startsIn: "زمان باقی‌مانده تا شروع", whenTitle: "تاریخ و ساعت", noInstall: "بدون نصب برنامه", phoneOk: "قابل استفاده با گوشی",
@@ -355,7 +355,7 @@ window.WEBINAR_I18N = {
   },
 
   ar: {
-    meta: { dir: "rtl", code: "AR", locale: "ar-AE", name: "العربية", title: "الندوات عبر الإنترنت | مجموعة شريف دبي", description: "ندوات مباشرة ومجانية من مجموعة شريف حول الجنسية الثانية والإقامة — انضم من هاتفك دون تثبيت أي تطبيق." },
+    meta: { dir: "rtl", code: "AR", locale: "ar-AE", name: "العربية", title: "الفعاليات | مجموعة شريف دبي", description: "جلسات وفعاليات مباشرة ومجانية من مجموعة شريف حول الجنسية الثانية والإقامة — انضم من هاتفك دون تثبيت أي تطبيق." },
     nav: {
       citizenship: "الجنسية",
       residency: "الإقامة",
@@ -363,7 +363,7 @@ window.WEBINAR_I18N = {
       aboutUs: "من نحن",
       contact: "اتصل بنا",
       blog: "المدونة",
-      webinars: "الندوات",
+      webinars: "الفعاليات",
       eligibilityChecker: "التحقق من الأهلية",
       bookConsultation: "حجز استشارة",
       dualCitizenship: "الجنسية المزدوجة",
@@ -435,7 +435,7 @@ window.WEBINAR_I18N = {
       tz: { kabul: "كابول", dubai: "دبي", istanbul: "إسطنبول", you: "توقيتك" },
       status: { upcoming: "قادمة", live: "مباشر الآن", ended: "انعقدت", postponed: "مؤجلة", cancelled: "ملغاة", regOpen: "التسجيل مفتوح", regClosed: "التسجيل مغلق", soon: "قريباً", publicLink: "رابط عام" },
       list: {
-        eyebrow: "جلسات مباشرة ورؤى", title: "الندوات عبر الإنترنت", sub: "مجموعة شريف دبي",
+        eyebrow: "جلسات مباشرة ورؤى", title: "الفعاليات", sub: "مجموعة شريف دبي",
         lede: "جلسات مباشرة ومجانية عبر الإنترنت يشرح فيها خبراؤنا مسارات الجنسية والإقامة بوضوح ويجيبون عن أسئلتكم.",
         nextEyebrow: "الجلسة المباشرة القادمة", join: "الانضمام إلى الندوة", remind: "تذكير عبر واتساب", details: "التفاصيل الكاملة",
         startsIn: "تبدأ بعد", whenTitle: "التاريخ والوقت", noInstall: "دون تثبيت تطبيق", phoneOk: "تعمل على الهاتف",
@@ -528,7 +528,7 @@ window.WEBINAR_I18N = {
   },
 
   zh: {
-    meta: { dir: "ltr", code: "中文", locale: "zh-CN", name: "中文", title: "在线讲座 | 谢里夫集团迪拜", description: "谢里夫集团免费直播讲座：第二国籍与居留——手机即可参加，无需安装应用。" },
+    meta: { dir: "ltr", code: "中文", locale: "zh-CN", name: "中文", title: "活动与讲座 | 谢里夫集团迪拜", description: "谢里夫集团免费独家活动与讲座：第二国籍与居留——手机即可参加，无需安装应用。" },
     nav: {
       citizenship: "公民身份",
       residency: "居留",
@@ -536,7 +536,7 @@ window.WEBINAR_I18N = {
       aboutUs: "关于我们",
       contact: "联系我们",
       blog: "博客",
-      webinars: "在线讲座",
+      webinars: "活动",
       eligibilityChecker: "资格检查",
       bookConsultation: "预约咨询",
       dualCitizenship: "双重国籍",
@@ -608,7 +608,7 @@ window.WEBINAR_I18N = {
       tz: { kabul: "喀布尔", dubai: "迪拜", istanbul: "伊斯坦布尔", you: "您的时间" },
       status: { upcoming: "即将开始", live: "正在直播", ended: "已举行", postponed: "已延期", cancelled: "已取消", regOpen: "报名开放", regClosed: "报名已截止", soon: "敬请期待", publicLink: "公开链接" },
       list: {
-        eyebrow: "直播讲座与洞察", title: "在线讲座", sub: "谢里夫集团 · 迪拜",
+        eyebrow: "直播讲座与洞察", title: "活动", sub: "谢里夫集团 · 迪拜",
         lede: "免费在线直播讲座：我们的专家清晰讲解入籍与居留路径，并现场解答您的问题。",
         nextEyebrow: "下一场直播", join: "进入讲座", remind: "WhatsApp 提醒", details: "查看详情",
         startsIn: "距离开始", whenTitle: "日期与时间", noInstall: "无需安装应用", phoneOk: "支持手机观看",

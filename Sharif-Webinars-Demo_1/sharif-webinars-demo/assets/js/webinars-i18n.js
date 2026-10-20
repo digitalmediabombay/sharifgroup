@@ -9,7 +9,7 @@
    ========================================================================== */
 window.WEBINAR_I18N = {
   en: {
-    meta: { dir: "ltr", code: "EN", locale: "en-GB", name: "English", title: "Webinars | Sharif Group Dubai", description: "Free live webinars by Sharif Group on second citizenship and residency — join from your phone, no installation." },
+    meta: { dir: "ltr", code: "EN", locale: "en-GB", name: "English", title: "Events | Sharif Group Dubai", description: "Exclusive live events and sessions by Sharif Group on second citizenship and residency — join from your phone, no installation." },
     nav: {
       citizenship: "Citizenship",
       residency: "Residency",
@@ -17,7 +17,7 @@ window.WEBINAR_I18N = {
       aboutUs: "About Us",
       contact: "Contact Us",
       blog: "Blog",
-      webinars: "Webinars",
+      webinars: "Events",
       eligibilityChecker: "Eligibility Checker",
       bookConsultation: "Book Consultation",
       dualCitizenship: "Dual Citizenship",
@@ -37,8 +37,8 @@ window.WEBINAR_I18N = {
       corporateIdentity: "Corporate Identity",
       overview: "Overview",
       viewAllServices: "View All Services",
-      cbiTitle: "Citizenship<br>By<br>Investment",
-      rbiTitle: "Residency<br>By<br>Investment"
+      cbiTitle: "Citizenship By Investment",
+      rbiTitle: "Residency By Investment"
     },
     footer: {
       webinars: "Webinars",
@@ -87,14 +87,15 @@ window.WEBINAR_I18N = {
       common: { demoStrong: "Demo", demoText: "Preview for the web team — nothing is sent or saved outside this browser.", skip: "Skip to content", isNew: "New", free: "Free", min: "{n} min", sample: "Sample date — pending approval", copy: "Copy link", copied: "Link copied", close: "Close", lang: "Persian (Dari)", online: "Online", seats: "{n} seats", sessionN: "Session {n}", of: "of" },
       cd: { d: "Days", h: "Hours", m: "Minutes", s: "Seconds" },
       tz: { kabul: "Kabul", dubai: "Dubai", istanbul: "Istanbul", you: "Your time" },
-      status: { upcoming: "Upcoming", live: "Live now", ended: "Held", postponed: "Postponed", cancelled: "Cancelled", regOpen: "Registration open", soon: "Coming soon", publicLink: "Public link" },
+      status: { upcoming: "Upcoming", live: "Live now", ended: "Held", postponed: "Postponed", cancelled: "Cancelled", regOpen: "Registration open", regClosed: "Registration closed", soon: "Coming soon", publicLink: "Public link" },
       list: {
-        eyebrow: "Live Sessions & Insights", title: "Webinars", sub: "SHARIF GROUP DUBAI",
+        eyebrow: "Live Sessions & Insights", title: "Events", sub: "SHARIF GROUP DUBAI",
         lede: "Free, live online sessions where our specialists explain citizenship and residency pathways clearly — and answer your questions.",
         nextEyebrow: "Next live session", join: "Join the webinar", remind: "Get WhatsApp reminder", details: "Full details",
         startsIn: "Starts in", whenTitle: "Date & time", noInstall: "No app needed", phoneOk: "Works on mobile",
         upTitle: "Upcoming <em>Sessions</em>", seriesTag: "Series 01 · Dominica", seriesTitle: "Dominica Pilot Series", seriesText: "Three sessions, two weeks apart — from the basics to documents and your own questions. Every session is free and in Persian (Dari).",
         sessionCta: "Details", howEyebrow: "Before you join", howTitle: "How to <em>join</em>",
+        howSub: "Follow these four simple steps to participate in any live session — no downloads, apps, or registration required.",
         steps: [
           { t: "Open the link", d: "Tap “Join the webinar” on this page from your phone or computer. No app to install." },
           { t: "Enter any name", d: "You can join with any name. Your camera and microphone stay off." },
@@ -181,7 +182,7 @@ window.WEBINAR_I18N = {
   },
 
   fa: {
-    meta: { dir: "rtl", code: "FA", locale: "fa-AF", name: "فارسی", title: "وبینارها | شریف گروپ دبی", description: "وبینارهای زنده و رایگان شریف گروپ درباره شهروندی دوم و اقامت — ورود با گوشی، بدون نصب برنامه." },
+    meta: { dir: "rtl", code: "FA", locale: "fa-AF", name: "فارسی", title: "رویدادها | شریف گروپ دبی", description: "رویدادها و جلسه‌های زنده شریف گروپ درباره شهروندی دوم و اقامت — ورود با گوشی، بدون نصب برنامه." },
     nav: {
       citizenship: "شهروندی",
       residency: "اقامت",
@@ -189,7 +190,7 @@ window.WEBINAR_I18N = {
       aboutUs: "درباره ما",
       contact: "تماس با ما",
       blog: "بلاگ",
-      webinars: "وبینارها",
+      webinars: "رویدادها",
       eligibilityChecker: "بررسی شرایط واجد بودن",
       bookConsultation: "رزرو مشاوره",
       dualCitizenship: "تابعیت دوگانه",
@@ -259,14 +260,15 @@ window.WEBINAR_I18N = {
       common: { demoStrong: "نسخه دمو", demoText: "پیش‌نمایش برای تیم وبسایت — هیچ اطلاعاتی بیرون از این مرورگر ارسال یا ذخیره نمی‌شود.", skip: "رفتن به محتوا", isNew: "جدید", free: "رایگان", min: "{n} دقیقه", sample: "تاریخ نمونه — در انتظار تأیید", copy: "کپی لینک", copied: "لینک کپی شد", close: "بستن", lang: "فارسی (دری)", online: "آنلاین", seats: "{n} نفر ظرفیت", sessionN: "جلسه {n}", of: "از" },
       cd: { d: "روز", h: "ساعت", m: "دقیقه", s: "ثانیه" },
       tz: { kabul: "کابل", dubai: "دبی", istanbul: "استانبول", you: "وقت شما" },
-      status: { upcoming: "پیش رو", live: "در حال پخش", ended: "برگزار شد", postponed: "به تعویق افتاد", cancelled: "لغو شد", regOpen: "ثبت‌نام باز است", soon: "به‌زودی", publicLink: "لینک عمومی" },
+      status: { upcoming: "پیش رو", live: "در حال پخش", ended: "برگزار شد", postponed: "به تعویق افتاد", cancelled: "لغو شد", regOpen: "ثبت‌نام باز است", regClosed: "ثبت‌نام بسته شد", soon: "به‌زودی", publicLink: "لینک عمومی" },
       list: {
-        eyebrow: "جلسه‌های زنده و دانستنی‌ها", title: "وبینارها", sub: "شریف گروپ دبی",
+        eyebrow: "جلسه‌های زنده و دانستنی‌ها", title: "رویدادها", sub: "شریف گروپ دبی",
         lede: "جلسه‌های آنلاین، زنده و رایگان که در آن کارشناسان ما مسیرهای شهروندی و اقامت را روشن توضیح می‌دهند و به پرسش‌های شما پاسخ می‌دهند.",
         nextEyebrow: "جلسه زنده بعدی", join: "ورود به وبینار", remind: "یادآوری در واتس‌اپ", details: "جزئیات کامل",
         startsIn: "زمان باقی‌مانده تا شروع", whenTitle: "تاریخ و ساعت", noInstall: "بدون نصب برنامه", phoneOk: "قابل استفاده با گوشی",
         upTitle: "جلسه‌های <em>پیش رو</em>", seriesTag: "مجموعه ۰۱ · دومینیکا", seriesTitle: "مجموعه آزمایشی دومینیکا", seriesText: "سه جلسه با فاصله دو هفته — از آشنایی کلی تا مدارک و پرسش‌های خود شما. همه جلسه‌ها رایگان و به فارسی (دری) است.",
         sessionCta: "جزئیات", howEyebrow: "پیش از ورود", howTitle: "چطور <em>وارد شویم</em>",
+        howSub: "چهار مرحله ساده برای ورود و مشارکت در جلسات زنده — بدون نیاز به نصب هیچ‌گونه اپلیکیشن.",
         steps: [
           { t: "لینک را باز کنید", d: "از گوشی یا کمپیوتر روی «ورود به وبینار» در همین صفحه بزنید. نیازی به نصب برنامه نیست." },
           { t: "با هر نامی وارد شوید", d: "می‌توانید با هر نامی وارد شوید. کمره و مایکروفون شما خاموش است." },
@@ -353,7 +355,7 @@ window.WEBINAR_I18N = {
   },
 
   ar: {
-    meta: { dir: "rtl", code: "AR", locale: "ar-AE", name: "العربية", title: "الندوات عبر الإنترنت | مجموعة شريف دبي", description: "ندوات مباشرة ومجانية من مجموعة شريف حول الجنسية الثانية والإقامة — انضم من هاتفك دون تثبيت أي تطبيق." },
+    meta: { dir: "rtl", code: "AR", locale: "ar-AE", name: "العربية", title: "الفعاليات | مجموعة شريف دبي", description: "جلسات وفعاليات مباشرة ومجانية من مجموعة شريف حول الجنسية الثانية والإقامة — انضم من هاتفك دون تثبيت أي تطبيق." },
     nav: {
       citizenship: "الجنسية",
       residency: "الإقامة",
@@ -361,7 +363,7 @@ window.WEBINAR_I18N = {
       aboutUs: "من نحن",
       contact: "اتصل بنا",
       blog: "المدونة",
-      webinars: "الندوات",
+      webinars: "الفعاليات",
       eligibilityChecker: "التحقق من الأهلية",
       bookConsultation: "حجز استشارة",
       dualCitizenship: "الجنسية المزدوجة",
@@ -431,14 +433,15 @@ window.WEBINAR_I18N = {
       common: { demoStrong: "نسخة تجريبية", demoText: "معاينة لفريق الموقع — لا يتم إرسال أو حفظ أي بيانات خارج هذا المتصفح.", skip: "انتقل إلى المحتوى", isNew: "جديد", free: "مجاناً", min: "{n} دقيقة", sample: "تاريخ تجريبي — بانتظار الاعتماد", copy: "نسخ الرابط", copied: "تم نسخ الرابط", close: "إغلاق", lang: "الفارسية (الدرية)", online: "عبر الإنترنت", seats: "{n} مقعداً", sessionN: "الجلسة {n}", of: "من" },
       cd: { d: "أيام", h: "ساعات", m: "دقائق", s: "ثوانٍ" },
       tz: { kabul: "كابول", dubai: "دبي", istanbul: "إسطنبول", you: "توقيتك" },
-      status: { upcoming: "قادمة", live: "مباشر الآن", ended: "انعقدت", postponed: "مؤجلة", cancelled: "ملغاة", regOpen: "التسجيل مفتوح", soon: "قريباً", publicLink: "رابط عام" },
+      status: { upcoming: "قادمة", live: "مباشر الآن", ended: "انعقدت", postponed: "مؤجلة", cancelled: "ملغاة", regOpen: "التسجيل مفتوح", regClosed: "التسجيل مغلق", soon: "قريباً", publicLink: "رابط عام" },
       list: {
-        eyebrow: "جلسات مباشرة ورؤى", title: "الندوات عبر الإنترنت", sub: "مجموعة شريف دبي",
+        eyebrow: "جلسات مباشرة ورؤى", title: "الفعاليات", sub: "مجموعة شريف دبي",
         lede: "جلسات مباشرة ومجانية عبر الإنترنت يشرح فيها خبراؤنا مسارات الجنسية والإقامة بوضوح ويجيبون عن أسئلتكم.",
         nextEyebrow: "الجلسة المباشرة القادمة", join: "الانضمام إلى الندوة", remind: "تذكير عبر واتساب", details: "التفاصيل الكاملة",
         startsIn: "تبدأ بعد", whenTitle: "التاريخ والوقت", noInstall: "دون تثبيت تطبيق", phoneOk: "تعمل على الهاتف",
         upTitle: "الجلسات <em>القادمة</em>", seriesTag: "السلسلة 01 · دومينيكا", seriesTitle: "السلسلة التجريبية لدومينيكا", seriesText: "ثلاث جلسات بفاصل أسبوعين — من الأساسيات إلى المستندات وأسئلتكم الخاصة. جميع الجلسات مجانية وباللغة الفارسية (الدرية).",
         sessionCta: "التفاصيل", howEyebrow: "قبل الانضمام", howTitle: "كيف <em>تنضم</em>",
+        howSub: "أربع خطوات بسيطة للمشاركة في الجلسات المباشرة — دون الحاجة لتحميل أي تطبيقات.",
         steps: [
           { t: "افتح الرابط", d: "اضغط «الانضمام إلى الندوة» في هذه الصفحة من هاتفك أو حاسوبك. لا حاجة لتثبيت أي تطبيق." },
           { t: "ادخل بأي اسم", d: "يمكنك الانضمام بأي اسم. تبقى الكاميرا والميكروفون مغلقين." },
@@ -525,7 +528,7 @@ window.WEBINAR_I18N = {
   },
 
   zh: {
-    meta: { dir: "ltr", code: "中文", locale: "zh-CN", name: "中文", title: "在线讲座 | 谢里夫集团迪拜", description: "谢里夫集团免费直播讲座：第二国籍与居留——手机即可参加，无需安装应用。" },
+    meta: { dir: "ltr", code: "中文", locale: "zh-CN", name: "中文", title: "活动与讲座 | 谢里夫集团迪拜", description: "谢里夫集团免费独家活动与讲座：第二国籍与居留——手机即可参加，无需安装应用。" },
     nav: {
       citizenship: "公民身份",
       residency: "居留",
@@ -533,7 +536,7 @@ window.WEBINAR_I18N = {
       aboutUs: "关于我们",
       contact: "联系我们",
       blog: "博客",
-      webinars: "在线讲座",
+      webinars: "活动",
       eligibilityChecker: "资格检查",
       bookConsultation: "预约咨询",
       dualCitizenship: "双重国籍",
@@ -603,14 +606,15 @@ window.WEBINAR_I18N = {
       common: { demoStrong: "演示版", demoText: "供网站团队预览——任何数据都不会发送或保存到本浏览器之外。", skip: "跳到内容", isNew: "新", free: "免费", min: "{n} 分钟", sample: "示例日期——待确认", copy: "复制链接", copied: "链接已复制", close: "关闭", lang: "波斯语（达利语）", online: "线上", seats: "{n} 个名额", sessionN: "第 {n} 场", of: "/" },
       cd: { d: "天", h: "小时", m: "分钟", s: "秒" },
       tz: { kabul: "喀布尔", dubai: "迪拜", istanbul: "伊斯坦布尔", you: "您的时间" },
-      status: { upcoming: "即将开始", live: "正在直播", ended: "已举行", postponed: "已延期", cancelled: "已取消", regOpen: "报名开放", soon: "敬请期待", publicLink: "公开链接" },
+      status: { upcoming: "即将开始", live: "正在直播", ended: "已举行", postponed: "已延期", cancelled: "已取消", regOpen: "报名开放", regClosed: "报名已截止", soon: "敬请期待", publicLink: "公开链接" },
       list: {
-        eyebrow: "直播讲座与洞察", title: "在线讲座", sub: "谢里夫集团 · 迪拜",
+        eyebrow: "直播讲座与洞察", title: "活动", sub: "谢里夫集团 · 迪拜",
         lede: "免费在线直播讲座：我们的专家清晰讲解入籍与居留路径，并现场解答您的问题。",
         nextEyebrow: "下一场直播", join: "进入讲座", remind: "WhatsApp 提醒", details: "查看详情",
         startsIn: "距离开始", whenTitle: "日期与时间", noInstall: "无需安装应用", phoneOk: "支持手机观看",
         upTitle: "即将<em>开讲</em>", seriesTag: "系列 01 · 多米尼克", seriesTitle: "多米尼克试点系列", seriesText: "共三场，每两周一场——从基础知识到申请材料，再到您的个人问题。全部免费，以波斯语（达利语）进行。",
         sessionCta: "详情", howEyebrow: "参加之前", howTitle: "如何<em>参加</em>",
+        howSub: "只需简单四步即可参与直播互动 — 无需下载任何应用程序。",
         steps: [
           { t: "打开链接", d: "用手机或电脑点击本页的“进入讲座”，无需安装任何应用。" },
           { t: "任意名字进入", d: "可使用任意名字进入，您的摄像头和麦克风保持关闭。" },
