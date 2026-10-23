@@ -1,0 +1,151 @@
+{
+  "nav": {
+    "becomePartner": "Become a Partner"
+  },
+  "footer": {
+    "partnerWithUs": "Partner With Us"
+  },
+  "partners": {
+    "common": {
+      "demoStrong": "Demo",
+      "demoText": "Preview for the web team — nothing is sent or saved outside this browser.",
+      "skip": "Skip to content",
+      "isNew": "New",
+      "optional": "optional"
+    },
+    "hero": {
+      "eyebrow": "Partnership",
+      "title": "Become a <em>Partner</em>",
+      "sub": "SHARIF GROUP DUBAI",
+      "lede": "Have a network of clients or a company in immigration, legal, financial or real estate services? Partner with Sharif Group and offer your clients second citizenship and residency, backed by our team in Dubai.",
+      "apply": "Apply now"
+    },
+    "who": {
+      "title": "Who we work with",
+      "items": [
+        {
+          "k": "agency",
+          "t": "Immigration agencies & consultancies",
+          "d": "Offer more programmes to your clients."
+        },
+        {
+          "k": "firm",
+          "t": "Professional firms",
+          "d": "Law, accounting, wealth management, real estate and travel."
+        },
+        {
+          "k": "individual",
+          "t": "Individuals with a network",
+          "d": "Introduce people looking for a second passport or residency."
+        }
+      ]
+    },
+    "steps": {
+      "title": "How it works",
+      "items": [
+        {
+          "t": "Apply",
+          "d": "Fill in the short form."
+        },
+        {
+          "t": "Introductory call & due diligence",
+          "d": "We get to know you and complete our standard checks."
+        },
+        {
+          "t": "Partnership agreement",
+          "d": "Terms are agreed in writing."
+        }
+      ]
+    },
+    "form": {
+      "title": "Partnership application",
+      "sub": "Leave your details and our team will contact you.",
+      "type": "I am applying as",
+      "types": {
+        "agency": "Agency / consultancy",
+        "firm": "Company / firm",
+        "individual": "Individual with a network"
+      },
+      "name": "Full name",
+      "company": "Company name",
+      "companyHint": "Not needed for individuals.",
+      "country": "Country",
+      "wa": "WhatsApp number",
+      "email": "Email",
+      "message": "Tell us briefly about your network or business",
+      "consent": "I agree that Sharif Group may contact me about this application.",
+      "submit": "Submit application",
+      "sending": "Sending…",
+      "privacy": "Your details are used only to review your application and contact you.",
+      "note": "Partnership terms are shared after review, in a written agreement.",
+      "errType": "Please choose one option.",
+      "errName": "Please enter your full name.",
+      "errCompany": "Please enter your company name.",
+      "errCountry": "Please enter your country.",
+      "errPhone": "Please enter a valid WhatsApp number.",
+      "errEmail": "Please enter a valid email address.",
+      "errConsent": "Please confirm that we may contact you.",
+      "alert": "Please correct the highlighted fields."
+    },
+    "thanks": {
+      "eyebrow": "Application received",
+      "title": "Thank you, {name}!",
+      "text": "We have received your application. Our partnerships team will contact you on WhatsApp or by email.",
+      "already": "We already have an application with this email address. Our team will be in touch.",
+      "ref": "Reference",
+      "back": "Back to partner page",
+      "home": "Go to homepage"
+    },
+    "demo": {
+      "fab": "Demo controls",
+      "title": "Demo controls",
+      "intro": "Preview pages. These controls are not part of the production design.",
+      "pages": "Preview pages",
+      "page": "Partner page",
+      "thanks": "Thank-you page",
+      "admin": "Applications preview",
+      "integration": "Site integration",
+      "reset": "Reset demo data",
+      "resetDone": "Demo data reset"
+    },
+    "admin": {
+      "title": "Applications preview",
+      "intro": "How partner applications will look in the Google Sheet tab “Partner_Applications”.",
+      "warn": "Demo only: in production the data comes from the Google Sheet.",
+      "kTotal": "Applications",
+      "export": "Export CSV (Excel)",
+      "none": "No applications yet — submit the form on the partner page to see a row here.",
+      "cols": {
+        "id": "Reference",
+        "at": "Submitted (UTC)",
+        "type": "Type",
+        "name": "Name",
+        "company": "Company",
+        "country": "Country",
+        "wa": "WhatsApp",
+        "email": "Email",
+        "msg": "Message"
+      }
+    },
+    "int": {
+      "title": "Site integration",
+      "intro": "Where the partner page connects to the existing website. All components below follow the selected language.",
+      "nav": "1 · “About Us” menu — new last item",
+      "footer": "2 · Footer — Quick Links",
+      "home": "3 · Homepage — slim band above the footer",
+      "homeT": "Have a network or a firm?",
+      "homeD": "Partner with Sharif Group and offer your clients second citizenship and residency.",
+      "homeBtn": "Become a Partner",
+      "urls": "4 · URL map",
+      "urlCols": [
+        "Page",
+        "English",
+        "Persian / Arabic / Chinese"
+      ],
+      "urlRows": [
+        "Partner page",
+        "Thank-you page (noindex)"
+      ]
+    }
+  }
+}
