@@ -236,6 +236,12 @@
     return lang === 'en' ? '' : lang + '/';
   }
 
+  function checkIsPartnerDemo() {
+    return window.location.hash.startsWith('#/partners') || 
+           (window.location.protocol === 'file:' && window.location.pathname.includes('partner')) ||
+           window.location.pathname.includes('partners-demo');
+  }
+
   function getSwitchUrl(targetLang) {
     let clean = window.location.pathname.replace(/^\/(ar|fa|zh|en)(\/|$)/i, '/');
     if (!clean.startsWith('/')) clean = '/' + clean;
@@ -273,6 +279,7 @@
     const homeUrl = site + p;
     const logoUrl = getAssetUrl('assets/images/vector_b5a81734.svg');
     const fallbackLogoUrl = getAssetUrl('assets/images/logo.svg');
+    const isPartnerDemo = checkIsPartnerDemo();
 
     // Language options
     const langs = ['en', 'ar', 'fa', 'zh'];
@@ -431,6 +438,17 @@
                     <div class="sg-mm-card-overlay"></div>
                     <span class="sg-mm-card-title">${esc(n.socialResp)}</span>
                   </a>
+                  <a class="sg-mm-card sg-mm-card-partner" href="${isPartnerDemo ? '#/partners' : site + p + 'partners/'}">
+                    <img src="${getAssetUrl('assets/images/card.webp')}" alt="${esc(n.becomePartner)}" loading="lazy">
+                    <div class="sg-mm-card-overlay sg-mm-card-partner-overlay"></div>
+                    <div class="sg-mm-card-partner-content">
+                      <i class="fa-solid fa-handshake sg-mm-partner-icon"></i>
+                      <div class="sg-mm-card-partner-text">
+                        <span class="sg-mm-card-title">${esc(n.becomePartner)}</span>
+                        <span class="sg-badge-new">${esc(n.newBadge)}</span>
+                      </div>
+                    </div>
+                  </a>
                 </div>
               </div>
             </div>
@@ -497,6 +515,7 @@
     const rbi = data.rbi;
     const p = getLangPrefix(lang);
     const site = getRootSite();
+    const isPartnerDemo = checkIsPartnerDemo();
 
     const langs = ['en', 'ar', 'fa', 'zh'];
     const drawerLangsHTML = langs.map(l => {
@@ -573,7 +592,7 @@
           <li><a href="${site + p}aboutus/">${esc(n.aboutSharif)}</a></li>
           <li><a href="${site + p}about-founder/">${esc(n.aboutFounder)}</a></li>
           <li><a href="${site + p}socialresponsibility/">${esc(n.socialResp)}</a></li>
-          <li><a href="${site + p}partners/">${esc(n.becomePartner)}</a></li>
+          <li><a href="${isPartnerDemo ? '#/partners' : site + p + 'partners/'}" style="color:var(--sg-gold-dark);font-weight:700;display:flex;align-items:center;justify-content:space-between;padding:8px 0;"><span>${esc(n.becomePartner)}</span><span class="sg-badge-new">${esc(n.newBadge)}</span></a></li>
         </ul>
       </div>
 

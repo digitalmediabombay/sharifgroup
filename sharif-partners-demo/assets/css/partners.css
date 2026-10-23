@@ -127,13 +127,91 @@ html[lang="fa"] .intro-h, html[lang="ar"] .intro-h { font-weight: 800; font-size
 .who-list li, .mini-steps li { display: flex; gap: 14px; align-items: flex-start; }
 .who-list strong, .mini-steps strong { display: block; font-size: 15px; }
 .who-list span, .mini-steps span { font-size: 13.5px; color: var(--muted); }
-.wl-ico { width: 40px; height: 40px; border-radius: 12px; background: linear-gradient(135deg, #d8bc94, #a3845b); color: #fff !important; display: grid; place-items: center; flex-shrink: 0; }
-.wl-ico svg { width: 20px; height: 20px; }
+.wl-ico {
+  width: 40px !important;
+  height: 40px !important;
+  min-width: 40px !important;
+  min-height: 40px !important;
+  border-radius: 12px;
+  background: linear-gradient(135deg, #d8bc94, #a3845b);
+  color: #fff !important;
+  display: flex !important;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+}
+.wl-ico svg,
+.who-list .wl-ico svg {
+  width: 20px !important;
+  height: 20px !important;
+  max-width: 20px !important;
+  max-height: 20px !important;
+  margin: 0 !important;
+  color: #fff !important;
+  stroke: currentColor;
+  display: block;
+}
 .ms-n { width: 40px; height: 40px; border-radius: 50%; border: 1.5px solid var(--bronze-2); color: var(--bronze) !important; font-weight: 700; display: grid; place-items: center; flex-shrink: 0; font-size: 13px !important; }
 .terms-note { display: flex; gap: 10px; align-items: flex-start; font-size: 13px; color: var(--muted); padding: 14px 16px; background: #fff; border: 1px solid var(--line); border-radius: 14px; margin: 0; }
 .terms-note svg { width: 17px; height: 17px; color: var(--bronze); flex-shrink: 0; margin-top: 2px; }
-.apply-grid { grid-template-columns: 380px minmax(0, 1fr); gap: 40px; }
-@media (max-width: 1020px) { .apply-grid { grid-template-columns: 1fr; gap: 28px; } }
-.who-list .wl-ico svg { width: 20px; height: 20px; margin: 0; color: #fff; }
+.apply-grid { display: grid; grid-template-columns: 380px minmax(0, 1fr) !important; gap: 40px; }
+@media (max-width: 1020px) { .apply-grid { grid-template-columns: 1fr !important; gap: 28px; } }
+.type-grid { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 10px; }
+@media (max-width: 900px) { .type-grid { grid-template-columns: 1fr; } }
+.type-card { min-width: 0; box-sizing: border-box; }
+.type-card .tc-l { font-size: 13px; font-weight: 600; line-height: 1.35; overflow-wrap: break-word; }
+.type-card .tc-ico { min-width: 36px; min-height: 36px; }
+.type-card .tc-ico svg { width: 19px !important; height: 19px !important; max-width: 19px !important; max-height: 19px !important; }
 .intro-col .who-list li { font-size: inherit; }
 .intro-col .who-list { margin-bottom: 36px; }
+
+/* ---------- Hero Slideshow (Rotating background like homepage) ---------- */
+.hero {
+  position: relative !important;
+  background: #060a12 !important;
+  color: #fff !important;
+  overflow: hidden !important;
+  isolation: isolate !important;
+}
+
+.hero-slides-wrapper {
+  position: absolute !important;
+  inset: 0 !important;
+  z-index: 0 !important;
+  overflow: hidden !important;
+  pointer-events: none !important;
+}
+
+.hero-slide {
+  position: absolute !important;
+  inset: 0 !important;
+  background-size: cover !important;
+  background-position: center !important;
+  background-repeat: no-repeat !important;
+  opacity: 0 !important;
+  transform: scale(1.05) !important;
+  transition: opacity 1.2s ease-in-out, transform 6s ease-out !important;
+  will-change: opacity, transform !important;
+}
+
+.hero-slide.is-active {
+  opacity: 1 !important;
+  transform: scale(1) !important;
+}
+
+.hero-overlay {
+  position: absolute !important;
+  inset: 0 !important;
+  z-index: 1 !important;
+  pointer-events: none !important;
+  background:
+    linear-gradient(180deg, rgba(6, 10, 18, 0.72) 0%, rgba(6, 10, 18, 0.52) 45%, rgba(6, 10, 18, 0.82) 85%, #060a12 100%),
+    radial-gradient(ellipse 1100px 650px at 50% 50%, rgba(5, 11, 20, 0.25) 0%, rgba(5, 11, 20, 0.75) 100%),
+    radial-gradient(800px 320px at 50% 120%, rgba(197, 168, 128, 0.14), transparent 70%) !important;
+}
+
+.hero-inner {
+  position: relative !important;
+  z-index: 2 !important;
+}
+

@@ -84,6 +84,7 @@
   const FOOTER_LOGO = ROOT_PATH + 'assets/images/vector_2d09c4bb.svg';
   const IMC_LOGO = ROOT_PATH + 'imclogo.webp';
   const FOOTER_VIDEO = ROOT_PATH + 'assets/videos/footer_bg_e58bba71.mp4';
+  let footerCanvasAnimId = null;
   const imgRel = path => (window.location.protocol === 'file:' ? 'assets/images/' : '/assets/images/') + path;
 
   /* ---------- shell: header / footer ---------- */
@@ -226,6 +227,7 @@
                   <span class="mm-card-title caps">${esc(N.socialResp)}</span>
                 </a>
                 <a class="mm-card mm-card--partner is-active" href="${SITE + p}partners/">
+                  <img src="${imgRel('card.webp')}" alt="Become a Partner" loading="lazy">
                   <div class="mm-card-overlay mm-card-overlay--gold"></div>
                   <span class="mm-card-title caps">${esc(N.becomePartner)} <span class="nav-new">${esc(t('common.isNew'))}</span></span>
                 </a>
@@ -255,95 +257,244 @@
       </div></div>`;
   }
 
+  function initFooterCanvas() {
+    if (footerCanvasAnimId) {
+      cancelAnimationFrame(footerCanvasAnimId);
+      footerCanvasAnimId = null;
+    }
+    const v1 = document.getElementById("footer-hidden-video");
+    const v2 = document.getElementById("footer-hidden-video-2");
+    const canvas = document.getElementById("footer-seamless-canvas");
+    if (!v1 || !v2 || !canvas) return;
+    const ctx = canvas.getContext("2d", { alpha: false });
+
+    let activeVideo = v1;
+    let standbyVideo = v2;
+    let crossfadeAlpha = 0;
+    let isFading = false;
+    let isFooterVisible = false;
+
+    function resizeCanvas() {
+      if (!canvas || !canvas.offsetWidth) return;
+      const dpr = Math.min(window.devicePixelRatio || 1, 1.5);
+      canvas.width = Math.floor(canvas.offsetWidth * dpr);
+      canvas.height = Math.floor(canvas.offsetHeight * dpr);
+    }
+    window.removeEventListener("resize", resizeCanvas);
+    window.addEventListener("resize", resizeCanvas, { passive: true });
+    resizeCanvas();
+
+    function renderFrame() {
+      if (!isFooterVisible) return;
+      if (activeVideo.duration && activeVideo.currentTime >= activeVideo.duration - 1.2 && !isFading) {
+        isFading = true;
+        standbyVideo.currentTime = 0;
+        standbyVideo.play().catch(() => {});
+        crossfadeAlpha = 0;
+      }
+      if (isFading) {
+        crossfadeAlpha += 0.035;
+        if (crossfadeAlpha >= 1) {
+          crossfadeAlpha = 1;
+          isFading = false;
+          activeVideo.pause();
+          const temp = activeVideo;
+          activeVideo = standbyVideo;
+          standbyVideo = temp;
+        }
+      }
+      try {
+        if (activeVideo.readyState >= 2) {
+          ctx.globalAlpha = 1.0;
+          ctx.drawImage(activeVideo, 0, 0, canvas.width, canvas.height);
+        }
+        if (isFading && standbyVideo.readyState >= 2) {
+          ctx.globalAlpha = crossfadeAlpha;
+          ctx.drawImage(standbyVideo, 0, 0, canvas.width, canvas.height);
+        }
+      } catch (err) {}
+      footerCanvasAnimId = requestAnimationFrame(renderFrame);
+    }
+
+    const observer = new IntersectionObserver((entries) => {
+      entries.forEach(entry => {
+        isFooterVisible = entry.isIntersecting;
+        if (isFooterVisible) {
+          resizeCanvas();
+          activeVideo.play().catch(() => {});
+          if (!footerCanvasAnimId) footerCanvasAnimId = requestAnimationFrame(renderFrame);
+        } else {
+          activeVideo.pause();
+          standbyVideo.pause();
+          if (footerCanvasAnimId) {
+            cancelAnimationFrame(footerCanvasAnimId);
+            footerCanvasAnimId = null;
+          }
+        }
+      });
+    }, { rootMargin: "250px" });
+
+    const footerElem = document.getElementById("siteFooter");
+    if (footerElem) observer.observe(footerElem);
+  }
+
+  function footerHTML() {
+    const F = L().footer || {}, p = prefix();
+    return `
+      <!-- TOP GRADIENT FADE (CREAM INTO VIDEO) -->
+      <div class="footer-top-fade"></div>
+
+      <!-- VIDEO BACKGROUND WITH SEAMLESS CANVAS CROSSFADE -->
+      <div class="footer-video-layer">
+        <canvas id="footer-seamless-canvas"></canvas>
+        <video id="footer-hidden-video" style="display:none" muted playsinline preload="none">
+          <source src="${FOOTER_VIDEO}" type="video/mp4"/>
+        </video>
+        <video id="footer-hidden-video-2" style="display:none" muted playsinline preload="none">
+          <source src="${FOOTER_VIDEO}" type="video/mp4"/>
+        </video>
+        <div class="footer-video-overlay"></div>
+      </div>
+
+      <!-- FOOTER CONTENT (MATCHING LIVE WEBSITE 5-COLUMN FOOTER EXACTLY) -->
+      <div class="max-w-7xl mx-auto px-6 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-8 mb-16 relative z-30 [text-shadow:_0_1px_3px_rgb(0_0_0_/_80%)]">
+        <!-- Col 1: Brand Info -->
+        <div class="flex flex-col space-y-6 lg:col-span-1 foot-brand-col">
+          <a class="flex items-center space-x-2 group cursor-pointer foot-brand-link" href="${SITE + p}">
+            <img alt="Sharif Group Logo" class="h-14 w-auto group-hover:scale-105 transition-transform duration-300 foot-brand-logo" src="${FOOTER_LOGO}" loading="lazy" decoding="async"/>
+            <div class="flex items-center space-x-2 translate-y-1.5 foot-brand-text-wrap">
+              <div class="h-10 w-[1px] bg-neutral-500/50 foot-brand-divider"></div>
+              <div class="flex flex-col justify-center font-serif text-white tracking-[0.2em] font-bold leading-tight group-hover:text-luxury-gold transition foot-brand-text">
+                <span class="text-base uppercase">SHARIF</span>
+                <span class="text-base uppercase">GROUP</span>
+              </div>
+            </div>
+          </a>
+          <div class="pt-2 foot-imc-wrap">
+            <img alt="Investment Migration Council" class="h-10 w-auto brightness-0 invert object-contain foot-imc-logo" src="${IMC_LOGO}" loading="lazy" decoding="async"/>
+          </div>
+          <div class="text-xs text-neutral-300 space-y-3 pt-2 foot-contact-list">
+            <p class="flex items-start"><i class="fa-solid fa-location-dot mt-1 mr-3 text-luxury-gold text-sm foot-ico"></i> <span>${esc(F.address || '116, The Binary Tower, Business Bay, Dubai, United Arab Emirates')}</span></p>
+            <p class="flex items-center"><i class="fa-solid fa-phone mr-3 text-luxury-gold text-sm foot-ico"></i> <a class="hover:text-white transition ltr" href="tel:+97143578737">+971 4 357 8737</a></p>
+            <p class="flex items-center"><i class="fa-solid fa-envelope mr-3 text-luxury-gold text-sm foot-ico"></i> <a class="hover:text-white transition ltr" href="mailto:contact@sharifgroup.ae">contact@sharifgroup.ae</a></p>
+          </div>
+          <!-- SOCIAL MEDIA LINKS BLOCK -->
+          <div class="flex items-center space-x-3 pt-2 foot-social-list">
+            <a class="w-8 h-8 rounded-full bg-white/10 border border-white/20 flex items-center justify-center text-white hover:bg-luxury-gold hover:border-luxury-gold transition foot-social-btn" href="https://www.linkedin.com/company/sharif-group-uae/" rel="noopener noreferrer" target="_blank" aria-label="LinkedIn"><i class="fa-brands fa-linkedin-in text-xs"></i></a>
+            <a class="w-8 h-8 rounded-full bg-white/10 border border-white/20 flex items-center justify-center text-white hover:bg-luxury-gold hover:border-luxury-gold transition foot-social-btn" href="https://www.instagram.com/sharifgroup.uae" rel="noopener noreferrer" target="_blank" aria-label="Instagram"><i class="fa-brands fa-instagram text-xs"></i></a>
+            <a class="w-8 h-8 rounded-full bg-white/10 border border-white/20 flex items-center justify-center text-white hover:bg-luxury-gold hover:border-luxury-gold transition foot-social-btn" href="https://api.whatsapp.com/send?phone=97143578737" rel="noopener noreferrer" target="_blank" aria-label="WhatsApp"><i class="fa-brands fa-whatsapp text-xs"></i></a>
+            <a class="w-8 h-8 rounded-full bg-white/10 border border-white/20 flex items-center justify-center text-white hover:bg-luxury-gold hover:border-luxury-gold transition foot-social-btn" href="mailto:contact@sharifgroup.ae" aria-label="Email"><i class="fa-solid fa-envelope text-xs"></i></a>
+          </div>
+        </div>
+
+        <!-- Col 2: Quick Links -->
+        <div class="foot-col">
+          <p class="text-[11px] uppercase tracking-[0.2em] text-luxury-gold font-bold mb-6 foot-col-title mb-6">${esc(F.quickLinks || 'Quick Links')}</p>
+          <ul class="space-y-2.5 text-xs text-neutral-300 foot-link-list space-y-2.5">
+            <li><a class="hover:text-luxury-gold transition" href="${SITE + p}">${esc(F.home || 'Home')}</a></li>
+            <li><a class="hover:text-luxury-gold transition" href="${SITE + p}aboutus/">${esc(F.aboutSharif || 'About | Sharif Group')}</a></li>
+            <li><a class="hover:text-luxury-gold transition" href="${SITE + p}about-founder/">${esc(F.aboutAli || 'About | Ali Sharif')}</a></li>
+            <li><a class="hover:text-luxury-gold transition" href="${SITE + p}socialresponsibility/">${esc(F.socialResp || 'Social Responsibility')}</a></li>
+            <li><a class="hover:text-luxury-gold transition" href="${SITE + p}citizenshipbyinvestment/">${esc(F.citizenshipPrograms || 'Citizenship Programs')}</a></li>
+            <li><a class="hover:text-luxury-gold transition" href="${SITE + p}residencybyinvestment/">${esc(F.residencyPrograms || 'Residency Programs')}</a></li>
+            <li><a class="hover:text-luxury-gold transition" href="${SITE + p}realestate/">${esc(F.realEstate || 'Real Estate')}</a></li>
+            <li><a class="hover:text-luxury-gold transition" href="${SITE + p}educationaladvisory/">${esc(F.educationalAdvisory || 'Educational Advisory')}</a></li>
+            <li><a class="hover:text-luxury-gold transition" href="${SITE + p}contact/">${esc(F.contactUs || 'Contact Us')}</a></li>
+            <li><a class="hover:text-luxury-gold transition" href="${SITE + p}blog/">${esc(F.insightsBlog || 'Insights & Blog')}</a></li>
+            <li><a class="hover:text-luxury-gold transition inline-flex items-center gap-1.5 foot-new-row" href="${SITE + p}events/"><span>${esc(F.webinars || 'Events')}</span> <span class="nav-new-badge ml-1.5 px-1.5 py-0.5 rounded-full bg-[#786142] text-white text-[8px] font-bold leading-none inline-flex items-center justify-center shrink-0 tracking-wider">${esc(t('common.isNew') || 'New')}</span></a></li>
+            <li><a class="hover:text-luxury-gold transition inline-flex items-center gap-1.5 foot-new-row is-active" href="${SITE + p}partners/" style="color:var(--bronze);font-weight:700;"><span>${esc(F.partnerWithUs || 'Partner With Us')}</span> <span class="nav-new-badge ml-1.5 px-1.5 py-0.5 rounded-full bg-[#786142] text-white text-[8px] font-bold leading-none inline-flex items-center justify-center shrink-0 tracking-wider">${esc(t('common.isNew') || 'New')}</span></a></li>
+            <li><a class="hover:text-luxury-gold transition" href="${SITE + p}eligibilitychecker/">${esc(F.eligibilityChecker || 'Eligibility Checker')}</a></li>
+          </ul>
+        </div>
+
+        <!-- Col 3: Citizenship Programs -->
+        <div class="foot-col">
+          <p class="text-[11px] uppercase tracking-[0.2em] text-luxury-gold font-bold mb-4 foot-col-title mb-4">${esc(F.citizenshipProgramsCol || 'Citizenship Programs')}</p>
+          <ul class="space-y-2 text-xs text-neutral-300 foot-link-list space-y-2">
+            <li><a class="hover:text-luxury-gold transition" href="${SITE + p}programs/citizenshipbyinvestment/dominica/">${esc(F.cbi?.dominica || 'Dominica | Passport')}</a></li>
+            <li><a class="hover:text-luxury-gold transition" href="${SITE + p}programs/citizenshipbyinvestment/stkitts/">${esc(F.cbi?.kitts || 'St. Kitts & Nevis | Passport')}</a></li>
+            <li><a class="hover:text-luxury-gold transition" href="${SITE + p}programs/citizenshipbyinvestment/antiguaandbarbuda/">${esc(F.cbi?.antigua || 'Antigua & Barbuda | Passport')}</a></li>
+            <li><a class="hover:text-luxury-gold transition" href="${SITE + p}programs/citizenshipbyinvestment/stlucia/">${esc(F.cbi?.lucia || 'Saint Lucia | Passport')}</a></li>
+            <li><a class="hover:text-luxury-gold transition" href="${SITE + p}programs/citizenshipbyinvestment/grenada/">${esc(F.cbi?.grenada || 'Grenada | Passport')}</a></li>
+            <li><a class="hover:text-luxury-gold transition" href="${SITE + p}programs/citizenshipbyinvestment/vanuatu/">${esc(F.cbi?.vanuatu || 'Vanuatu | Passport')}</a></li>
+            <li><a class="hover:text-luxury-gold transition" href="${SITE + p}programs/citizenshipbyinvestment/sao-tome-and-principe/">${esc(F.cbi?.saotome || 'São Tomé and Príncipe | Passport')}</a></li>
+            <li><a class="hover:text-luxury-gold transition" href="${SITE + p}programs/citizenshipbyinvestment/nauru/">${esc(F.cbi?.nauru || 'Republic of Nauru | Passport')}</a></li>
+          </ul>
+        </div>
+
+        <!-- Col 4: Residency & Other Services -->
+        <div class="foot-col">
+          <p class="text-[11px] uppercase tracking-[0.2em] text-luxury-gold font-bold mb-4 foot-col-title mb-4">${esc(F.residencyProgramsCol || 'Residency Programs')}</p>
+          <ul class="space-y-2 text-xs text-neutral-300 mb-6 foot-link-list space-y-2 mb-6">
+            <li><a class="hover:text-luxury-gold transition" href="${SITE + p}programs/residencybyinvestment/portugal/">${esc(F.rbi?.portugal || 'Portugal | Golden Visa')}</a></li>
+            <li><a class="hover:text-luxury-gold transition" href="${SITE + p}programs/residencybyinvestment/greece/">${esc(F.rbi?.greece || 'Greece | Golden Visa')}</a></li>
+            <li><a class="hover:text-luxury-gold transition" href="${SITE + p}programs/residencybyinvestment/panama/">${esc(F.rbi?.panama || 'Panama | Golden Visa')}</a></li>
+            <li><a class="hover:text-luxury-gold transition" href="${SITE + p}programs/residencybyinvestment/uae/">${esc(F.rbi?.uae || 'United Arab Emirates | Golden Visa')}</a></li>
+          </ul>
+          <p class="text-[11px] uppercase tracking-[0.2em] text-luxury-gold font-bold mb-3 foot-col-title mb-3">${esc(F.otherServices || 'Other Services')}</p>
+          <ul class="space-y-2 text-xs text-neutral-300 foot-link-list space-y-2">
+            <li><a class="hover:text-luxury-gold transition" href="${SITE + p}realestate/">${esc(F.realEstate || 'Real Estate')}</a></li>
+            <li><a class="hover:text-luxury-gold transition" href="${SITE + p}educationaladvisory/">${esc(F.educationalAdvisory || 'Educational Advisory')}</a></li>
+          </ul>
+        </div>
+
+        <!-- Col 5: Legal Frameworks -->
+        <div class="foot-col">
+          <p class="text-[11px] uppercase tracking-[0.2em] text-luxury-gold font-bold mb-6 foot-col-title mb-6">${esc(F.legalFrameworks || 'Legal Frameworks')}</p>
+          <ul class="space-y-3 text-xs text-neutral-300 foot-link-list space-y-3">
+            <li><a class="hover:text-luxury-gold transition" href="${SITE + p}privacypolicy/">${esc(F.privacyPolicy || 'Privacy Policy')}</a></li>
+            <li><a class="hover:text-luxury-gold transition" href="${SITE + p}termsofuse/">${esc(F.termsOfUse || 'Terms of Use')}</a></li>
+            <li><a class="hover:text-luxury-gold transition" href="${SITE + p}cookiepolicy/">${esc(F.cookiePolicy || 'Cookie Policy')}</a></li>
+          </ul>
+        </div>
+      </div>
+
+      <!-- Foot Bottom Bar -->
+      <div class="max-w-7xl mx-auto px-6 pt-8 border-t border-neutral-700/50 text-[11px] text-neutral-400 font-light relative z-30 foot-bottom-bar">
+        <div class="flex flex-col md:flex-row justify-between items-center gap-4 foot-bottom-inner">
+          <p>${esc(F.allRightsReserved || '© 2026 Sharif Group. All Rights Reserved.')}</p>
+          <p class="text-xs foot-credit">
+            <span>${esc(F.designedBy || 'Designed and Developed by')}</span> <a class="font-bold hover:underline text-white dmb-link" href="https://www.digitalmediabombay.com" target="_blank" rel="noopener noreferrer">Digital Media <span class="text-[#e4aa25]">Bombay</span></a>
+          </p>
+        </div>
+      </div>`;
+  }
+
   function renderShell() {
     const M = L().meta, F = L().footer, N = L().nav, p = prefix();
     document.documentElement.lang = lang;
     document.documentElement.dir = M.dir;
     document.body.className = 'lang-' + lang;
     $('.skip').textContent = t('common.skip');
-    $('#siteHeader').innerHTML = headerHTML(false);
 
-    // Mobile Drawer with Partners sub-link
-    $('#drawer').innerHTML = navItems().map(i => `<a href="${i.h}">${esc(i.l)}</a>${i.about ? `<a class="drawer-sub is-active" href="${SITE + p}partners/">${esc(N.becomePartner)} <span class="nav-new">${esc(t('common.isNew'))}</span></a>` : ''}`).join('') +
-      `<div class="drawer-ctas"><a href="${SITE + p}eligibilitychecker/">${esc(N.eligibilityChecker)}</a><a class="solid" href="${SITE + p}contact/">${esc(N.bookConsultation)}</a></div>`;
+    // Mount Universal Navbar if available
+    if (typeof window.mountUniversalNavbar === 'function') {
+      window.mountUniversalNavbar('#siteHeader');
+      const legacyDrawer = $('#drawer');
+      if (legacyDrawer) legacyDrawer.style.display = 'none';
+    } else {
+      $('#siteHeader').innerHTML = headerHTML(false);
+      $('#drawer').innerHTML = navItems().map(i => `<a href="${i.h}">${esc(i.l)}</a>${i.about ? `<a class="drawer-sub is-active" href="${SITE + p}partners/">${esc(N.becomePartner)} <span class="nav-new">${esc(t('common.isNew'))}</span></a>` : ''}`).join('') +
+        `<div class="drawer-ctas"><a href="${SITE + p}eligibilitychecker/">${esc(N.eligibilityChecker)}</a><a class="solid" href="${SITE + p}contact/">${esc(N.bookConsultation)}</a></div>`;
+    }
 
-    // Production Footer
-    $('#siteFooter').innerHTML = `
-      <div class="absolute inset-0 z-0 overflow-hidden pointer-events-none foot-video-wrap">
-        <video autoplay class="w-full h-full object-cover opacity-25 filter brightness-50 contrast-125" loop muted playsinline preload="none" aria-hidden="true">
-          <source src="${FOOTER_VIDEO}" type="video/mp4"/>
-        </video>
-        <div class="absolute inset-0 bg-gradient-to-t from-luxury-black via-luxury-black/80 to-transparent"></div>
-      </div>
-      <div class="container relative z-10 py-16 foot-content">
-        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-10 pb-12 border-b border-white/10 foot-grid">
-          <div class="lg:col-span-2 space-y-6 foot-brand-col">
-            <div class="flex items-center space-x-3 foot-brand-header">
-              <a class="flex items-center space-x-3 group" href="${SITE + p}">
-                <img alt="Sharif Group Logo" class="h-14 w-auto group-hover:scale-105 transition-transform duration-300 foot-brand-logo" src="${FOOTER_LOGO}" loading="lazy" decoding="async"/>
-                <div class="flex items-center space-x-2 translate-y-1.5 foot-brand-text-wrap">
-                  <div class="h-10 w-[1px] bg-neutral-500/50 foot-brand-divider"></div>
-                  <div class="flex flex-col text-white tracking-widest leading-none foot-brand-name">
-                    <span class="font-serif text-lg tracking-[0.25em] font-normal uppercase">SHARIF</span>
-                    <span class="text-[9px] tracking-[0.45em] text-luxury-gold uppercase mt-0.5">GROUP</span>
-                  </div>
-                </div>
-              </a>
-              <div class="h-8 w-[1px] bg-white/20 foot-imc-divider"></div>
-              <img alt="Investment Migration Council" class="h-10 w-auto brightness-0 invert object-contain foot-imc-logo" src="${IMC_LOGO}" loading="lazy" decoding="async"/>
-            </div>
-            <div class="text-xs text-neutral-300 space-y-3 pt-2 foot-contact-list">
-              <p class="leading-relaxed font-light"><strong class="text-white font-medium">${esc(F.tagline)}</strong></p>
-              <p class="leading-relaxed font-light">${esc(F.address)}</p>
-              <p class="font-light"><a class="ltr hover:text-luxury-gold transition" href="tel:+97143578737">+971 4 357 8737</a> · <a class="ltr hover:text-luxury-gold transition" href="mailto:contact@sharifgroup.ae">contact@sharifgroup.ae</a></p>
-            </div>
-          </div>
-          <div class="space-y-4">
-            <h4 class="text-xs font-semibold tracking-wider text-luxury-gold uppercase">${esc(F.quickLinks)}</h4>
-            <ul class="space-y-2.5 text-xs text-neutral-300 font-light foot-links-list">
-              <li><a class="hover:text-white transition" href="${SITE + p}">${esc(F.home)}</a></li>
-              <li><a class="hover:text-white transition" href="${SITE + p}aboutus/">${esc(N.aboutUs)}</a></li>
-              <li><a class="hover:text-white transition" href="${SITE + p}blog/">${esc(F.insightsBlog)}</a></li>
-              <li><a class="hover:text-white transition" href="${SITE + p}webinars/">${esc(N.webinars)}</a></li>
-              <li><a class="hover:text-white transition text-luxury-gold font-medium" href="${SITE + p}partners/">${esc(F.partnerWithUs)}</a></li>
-              <li><a class="hover:text-white transition" href="${SITE + p}contact/">${esc(F.contactUs)}</a></li>
-            </ul>
-          </div>
-          <div class="space-y-4">
-            <h4 class="text-xs font-semibold tracking-wider text-luxury-gold uppercase">${esc(F.programmes)}</h4>
-            <ul class="space-y-2.5 text-xs text-neutral-300 font-light foot-links-list">
-              <li><a class="hover:text-white transition" href="${SITE + p}citizenshipbyinvestment/">${esc(N.citizenship)}</a></li>
-              <li><a class="hover:text-white transition" href="${SITE + p}residencybyinvestment/">${esc(N.residency)}</a></li>
-              <li><a class="hover:text-white transition" href="${SITE + p}realestate/">${esc(N.moreServices)}</a></li>
-            </ul>
-          </div>
-          <div class="space-y-4">
-            <h4 class="text-xs font-semibold tracking-wider text-luxury-gold uppercase">${esc(F.legalFrameworks)}</h4>
-            <ul class="space-y-2.5 text-xs text-neutral-300 font-light foot-links-list">
-              <li><a class="hover:text-white transition" href="${SITE + p}privacy-policy/">${esc(F.privacyPolicy)}</a></li>
-              <li><a class="hover:text-white transition" href="${SITE + p}terms-of-use/">${esc(F.termsOfUse)}</a></li>
-            </ul>
-          </div>
-        </div>
-        <div class="pt-8 flex flex-col sm:flex-row items-center justify-between text-[11px] text-neutral-400 font-light foot-bottom-bar">
-          <p>${esc(F.allRightsReserved)}</p>
-          <div class="flex items-center space-x-6 mt-4 sm:mt-0">
-            <a class="hover:text-luxury-gold transition" href="https://www.linkedin.com/company/sharif-group-uae/" target="_blank" rel="noopener">LinkedIn</a>
-            <a class="hover:text-luxury-gold transition" href="https://www.instagram.com/sharifgroup.uae" target="_blank" rel="noopener">Instagram</a>
-          </div>
-        </div>
-      </div>`;
+    // Mount Luxury 5-Column Video Canvas Footer
+    $('#siteFooter').innerHTML = footerHTML();
+    initFooterCanvas();
 
     $('meta[name="description"]')?.setAttribute('content', M.description);
 
-    // Language dropdown toggle
-    const box = $('#langBox'), btn = $('.lang-btn', box);
+    // Synchronize language switching with Universal Navbar
+    window.__SG_ON_LANG_CHANGE__ = setLang;
+
+    // Language dropdown toggle (fallback)
+    const box = $('#langBox'), btn = box ? $('.lang-btn', box) : null;
     if (box && btn) {
       btn.addEventListener('click', e => { e.stopPropagation(); const o = box.classList.toggle('open'); btn.setAttribute('aria-expanded', o); });
       $$('[data-lang]', box).forEach(b => b.addEventListener('click', () => setLang(b.dataset.lang)));
     }
 
-    // Burger menu toggle
+    // Burger menu toggle (fallback)
     const bg = $('#burger');
     if (bg) {
       bg.addEventListener('click', () => {
@@ -355,7 +506,7 @@
       });
     }
 
-    // Desktop hover & click handling for mega menus with smooth grace period
+    // Desktop hover & click handling for mega menus (fallback)
     let mmTimer = null;
     const closeAllMegaMenus = () => {
       clearTimeout(mmTimer);
@@ -366,7 +517,6 @@
       const link = $('.nav-link', item);
       const menu = $('.mega-menu', item);
 
-      // On mouseenter nav trigger
       item.addEventListener('mouseenter', () => {
         if (window.innerWidth >= 1024) {
           clearTimeout(mmTimer);
@@ -375,7 +525,6 @@
         }
       });
 
-      // On mouseleave nav trigger -> wait 250ms before closing
       item.addEventListener('mouseleave', () => {
         if (window.innerWidth >= 1024) {
           clearTimeout(mmTimer);
@@ -383,7 +532,6 @@
         }
       });
 
-      // Keep menu open when mouse moves over the dropdown content
       if (menu) {
         menu.addEventListener('mouseenter', () => {
           if (window.innerWidth >= 1024) {
@@ -399,7 +547,6 @@
         });
       }
 
-      // Click to toggle on desktop
       if (link) {
         link.addEventListener('click', e => {
           if (window.innerWidth >= 1024) {
@@ -442,74 +589,76 @@
   /* ---------- PARTNER PAGE ---------- */
   const typeIcon = { agency: I.building, firm: I.briefcase, individual: I.user };
   const whyIcons = [I.headset, I.file, I.chart, I.cap, I.book, I.pin];
+  const HERO_BG_IMAGES = ['partner-1.webp', 'partner-2.webp', 'partner-3.webp', 'partner-4.webp', 'partner-5.webp'];
+
+  function getPartnerImgUrl(imgName) {
+    if (window.location.protocol === 'file:') {
+      return (window.location.pathname.includes('/partners') || window.location.pathname.includes('\\partners'))
+        ? ('../assets/images/' + imgName)
+        : ('assets/images/' + imgName);
+    }
+    if (window.location.pathname.includes('/sharif-partners-demo/')) {
+      return 'assets/images/' + imgName;
+    }
+    return '/assets/images/' + imgName;
+  }
+
+  function heroSlideshowHTML() {
+    return `
+    <div class="hero-slides-wrapper" aria-hidden="true">
+      ${HERO_BG_IMAGES.map((img, i) => `
+        <div class="hero-slide${i === 0 ? ' is-active' : ''}" style="background-image: linear-gradient(rgba(11,15,20,0.58), rgba(11,15,20,0.72)), url('${getPartnerImgUrl(img)}');"></div>
+      `).join('')}
+    </div>
+    <div class="hero-overlay" aria-hidden="true"></div>`;
+  }
+
+  let heroSlideshowTimer = null;
+  function initHeroSlideshow() {
+    if (heroSlideshowTimer) {
+      clearInterval(heroSlideshowTimer);
+      heroSlideshowTimer = null;
+    }
+    const slides = document.querySelectorAll('.hero-slide');
+    if (!slides.length) return;
+    let current = 0;
+    heroSlideshowTimer = setInterval(() => {
+      if (!slides[current]) return;
+      slides[current].classList.remove('is-active');
+      current = (current + 1) % slides.length;
+      if (!slides[current]) return;
+      slides[current].classList.add('is-active');
+    }, 4500);
+  }
 
   function viewPartners() {
     document.title = L().meta.title;
     const P = k => t(k);
     return `
-    <section class="hero">
+    <section class="hero hero--compact">
+      ${heroSlideshowHTML()}
       <img class="hero-mark mark-white" src="${LOGO}" alt="" aria-hidden="true">
       <div class="container hero-inner">
         <span class="eyebrow caps">${I.handshake}${esc(P('hero.eyebrow'))}</span>
         <h1 class="display h-xl" style="margin-top:14px">${P('hero.title')}</h1>
         <p class="hero-sub caps">${esc(P('hero.sub'))}</p>
         <p class="lede">${esc(P('hero.lede'))}</p>
-        <div class="btn-row" style="justify-content:center;margin-top:28px">
-          <button class="btn btn--bronze" type="button" data-scroll="apply">${esc(P('hero.apply'))}${I.arrow}</button>
-          <button class="btn btn--ghost-light" type="button" data-scroll="how">${esc(P('hero.how'))}${I.down}</button>
-        </div>
-      </div>
-    </section>
-
-    <section class="stats-band"><div class="container stats">${P('stats').map(s => `<div class="stat"><b class="ltr">${esc(s.n)}</b><span class="caps">${esc(s.l)}</span></div>`).join('')}</div></section>
-
-    <section class="section section--white">
-      <div class="container">
-        <div class="section-head center"><span class="eyebrow eyebrow--bronze caps">${I.spark}${esc(P('who.eyebrow'))}</span><h2 class="display h-lg on-light">${P('who.title')}</h2></div>
-        <div class="who-grid">${P('who.items').map(w => `<article class="who-card"><div class="who-ico">${typeIcon[w.k]}</div><h3>${esc(w.t)}</h3><p>${esc(w.d)}</p>
-          <button class="who-link" type="button" data-scroll="apply" data-type="${w.k}">${esc(P('hero.apply'))}${I.arrow}</button></article>`).join('')}</div>
-      </div>
-    </section>
-
-    <section class="section section--navy">
-      <div class="container">
-        <div class="section-head center"><span class="eyebrow caps">${I.star}${esc(P('why.eyebrow'))}</span><h2 class="display h-lg">${P('why.title')}</h2></div>
-        <div class="series-card why-card"><div class="why-grid">${P('why.items').map((w, i) => `<div class="why-item"><div class="why-ico">${whyIcons[i]}</div><div><h3>${esc(w.t)}</h3><p>${esc(w.d)}</p></div></div>`).join('')}</div></div>
-      </div>
-    </section>
-
-    <section class="section section--sand" id="how">
-      <div class="container">
-        <div class="section-head"><span class="eyebrow eyebrow--bronze caps">${I.handshake}${esc(P('steps.eyebrow'))}</span><h2 class="display h-lg on-light">${P('steps.title')}</h2></div>
-        <div class="steps">${P('steps.items').map((s, i) => `<div class="step"><span class="step-num">${pad2(i + 1)}</span><div class="step-ico">${[I.file, I.headset, I.shield, I.handshake][i]}</div><h3>${esc(s.t)}</h3><p>${esc(s.d)}</p></div>`).join('')}</div>
-      </div>
-    </section>
-
-    <section class="section section--white">
-      <div class="container">
-        <div class="section-head"><span class="eyebrow eyebrow--bronze caps">${I.passport}${esc(P('progs.eyebrow'))}</span><h2 class="display h-lg on-light">${P('progs.title')}</h2></div>
-        <div class="prog-grid">
-          ${[['cit', I.passport], ['res', I.home], ['other', I.star]].map(([k, ic]) => `<div class="prog-col"><h3>${ic}${esc(P('progs.' + k))}</h3><div class="prog-chips">${P('progs.' + k + 'List').map(x => `<span>${esc(x)}</span>`).join('')}</div></div>`).join('')}
+        <div class="btn-row" style="justify-content:center;margin-top:26px">
+          <button class="btn btn--bronze" type="button" data-scroll="apply">${esc(P('hero.apply'))}${I.down}</button>
         </div>
       </div>
     </section>
 
     <section class="section section--cream" id="apply">
-      <div class="container">
-        <div class="section-head"><span class="eyebrow eyebrow--bronze caps">${I.file}${esc(P('form.eyebrow'))}</span><h2 class="display h-lg on-light">${P('form.title')}</h2><p class="lede" style="margin-top:10px">${esc(P('form.sub'))}</p></div>
-        <div class="apply-grid">
-          <div class="card apply-form">${formHTML()}</div>
-          <aside class="apply-side">
-            <div class="card card--dark"><h3>${I.info.replace('<svg', '<svg width="18" height="18" style="display:inline;vertical-align:-3px;margin-inline-end:8px;color:var(--gold)"')}${esc(P('note.title'))}</h3>
-              <ul class="note-list">${P('note.items').map(x => `<li>${I.check}<span>${esc(x)}</span></li>`).join('')}</ul></div>
-            <div class="card contact-card"><p>${esc(L().footer.address)}</p><p><a class="ltr" href="tel:+97143578737">+971 4 357 8737</a></p><p><a class="ltr" href="mailto:contact@sharifgroup.ae">contact@sharifgroup.ae</a></p></div>
-          </aside>
+      <div class="container apply-grid">
+        <div class="intro-col">
+          <h2 class="intro-h">${esc(P('who.title'))}</h2>
+          <ul class="who-list">${P('who.items').map(w => `<li><span class="wl-ico">${typeIcon[w.k]}</span><div><strong>${esc(w.t)}</strong><span>${esc(w.d)}</span></div></li>`).join('')}</ul>
+          <h2 class="intro-h">${esc(P('steps.title'))}</h2>
+          <ol class="mini-steps">${P('steps.items').map((st, i) => `<li><span class="ms-n">${pad2(i + 1)}</span><div><strong>${esc(st.t)}</strong><span>${esc(st.d)}</span></div></li>`).join('')}</ol>
         </div>
+        <div class="card apply-form"><h2 class="form-title">${esc(P('form.title').replace(/<\/?em>/g, ''))}</h2><p class="sub">${esc(P('form.sub'))}</p>${formHTML()}</div>
       </div>
-    </section>
-
-    <section class="section section--white">
-      <div class="container faq-wrap"><div class="faq"><h2 class="block-title">${esc(P('faq.title'))}</h2>${P('faq.items').map((f, i) => `<details${i === 0 ? ' open' : ''}><summary>${esc(f.q)}${I.plus}</summary><p>${esc(f.a)}</p></details>`).join('')}</div></div>
     </section>`;
   }
 
@@ -517,37 +666,23 @@
     const F = k => esc(t('form.' + k));
     const types = Object.entries(t('form.types')).map(([k, v]) => `<label class="type-card"><input type="radio" name="partner_type" value="${k}"><span class="tc-ico">${typeIcon[k]}</span><span class="tc-l">${esc(v)}</span></label>`).join('');
     const dial = DIAL.map(([c, k]) => `<option value="${c}">${c} ${k}</option>`).join('');
-    const progs = [...t('progs.citList'), ...t('progs.resList'), ...t('progs.otherList')];
-    const progKeys = ['dominica', 'stkitts', 'antigua', 'stlucia', 'grenada', 'vanuatu', 'saotome', 'nauru', 'portugal-gv', 'greece-gv', 'panama-pr', 'uae-gv', 'dubai-real-estate', 'education'];
-    const chips = progs.map((p, i) => `<label class="chip-check"><input type="checkbox" name="programmes" value="${progKeys[i]}"><span>${esc(p)}</span></label>`).join('');
-    const opt = obj => Object.entries(obj).map(([k, v]) => `<option value="${k}">${esc(v)}</option>`).join('');
     return `<form class="form" id="partnerForm" novalidate>
       <div class="form-alert" role="alert" id="formAlert">${F('alert')}</div>
       <fieldset class="field" id="f-type-wrap"><legend class="label">${F('type')}<span class="req">*</span></legend><div class="type-grid">${types}</div><span class="err">${F('errType')}</span></fieldset>
       <div class="form-2">
         <div class="field"><label for="f-name">${F('name')}<span class="req">*</span></label><input class="input" id="f-name" name="fullName" autocomplete="name" maxlength="80"><span class="err">${F('errName')}</span></div>
-        <div class="field"><label for="f-role">${F('role')}<span class="opt">(${esc(t('common.optional'))})</span></label><input class="input" id="f-role" name="job_title" autocomplete="organization-title" maxlength="80"></div>
+        <div class="field" id="company-field"><label for="f-company">${F('company')}<span class="req">*</span></label><input class="input" id="f-company" name="company" autocomplete="organization" maxlength="120"><span class="hint">${F('companyHint')}</span><span class="err">${F('errCompany')}</span></div>
       </div>
-      <div class="field" id="company-field"><label for="f-company">${F('company')}<span class="req">*</span></label><input class="input" id="f-company" name="company" autocomplete="organization" maxlength="120"><span class="hint">${F('companyHint')}</span><span class="err">${F('errCompany')}</span></div>
       <div class="form-2">
         <div class="field"><label for="f-country">${F('country')}<span class="req">*</span></label><input class="input" id="f-country" name="country" autocomplete="country-name" maxlength="60"><span class="err">${F('errCountry')}</span></div>
-        <div class="field"><label for="f-city">${F('city')}<span class="opt">(${esc(t('common.optional'))})</span></label><input class="input" id="f-city" name="city" autocomplete="address-level2" maxlength="60"></div>
-      </div>
-      <div class="form-2">
-        <div class="field"><label for="f-phone">${F('wa')}<span class="req">*</span></label><div class="phone"><select class="select" id="f-dial" name="dialCode" aria-label="Country code">${dial}</select><input class="input" id="f-phone" name="phone" type="tel" inputmode="tel" autocomplete="tel-national"></div><span class="err">${F('errPhone')}</span></div>
         <div class="field"><label for="f-email">${F('email')}<span class="req">*</span></label><input class="input" id="f-email" name="email" type="email" inputmode="email" autocomplete="email" dir="ltr"><span class="err">${F('errEmail')}</span></div>
       </div>
-      <div class="field"><label for="f-web">${F('web')}<span class="opt">(${esc(t('common.optional'))})</span></label><input class="input" id="f-web" name="website" inputmode="url" dir="ltr" placeholder="www.example.com / linkedin.com/in/…"><span class="err">${F('errWeb')}</span></div>
-      <fieldset class="field"><legend class="label">${F('interest')}<span class="opt">(${esc(t('common.optional'))})</span></legend><div class="chip-grid">${chips}</div></fieldset>
-      <div class="form-2">
-        <div class="field"><label for="f-vol">${F('volume')}<span class="opt">(${esc(t('common.optional'))})</span></label><select class="select" id="f-vol" name="referrals_per_year"><option value="">${F('choose')}</option>${opt(t('form.volumes'))}</select></div>
-        <div class="field"><label for="f-src">${F('source')}<span class="opt">(${esc(t('common.optional'))})</span></label><select class="select" id="f-src" name="heard_from"><option value="">${F('choose')}</option>${opt(t('form.sources'))}</select></div>
-      </div>
-      <div class="field"><label for="f-msg">${F('message')}<span class="opt">(${esc(t('common.optional'))})</span></label><textarea class="textarea" id="f-msg" name="message" maxlength="1000"></textarea></div>
+      <div class="field"><label for="f-phone">${F('wa')}<span class="req">*</span></label><div class="phone"><select class="select" id="f-dial" name="dialCode" aria-label="Country code">${dial}</select><input class="input" id="f-phone" name="phone" type="tel" inputmode="tel" autocomplete="tel-national"></div><span class="err">${F('errPhone')}</span></div>
+      <div class="field"><label for="f-msg">${F('message')}<span class="opt">(${esc(t('common.optional'))})</span></label><textarea class="textarea" id="f-msg" name="message" maxlength="1000" rows="3"></textarea></div>
       <div class="field" id="consent-field"><label class="check"><input type="checkbox" id="f-consent" name="consent" value="yes"><span>${F('consent')}<span class="req">*</span></span></label><span class="err">${F('errConsent')}</span></div>
       <div class="hp" aria-hidden="true"><label>Company website<input name="hp_url" tabindex="-1" autocomplete="off"></label></div>
       <button class="btn btn--bronze btn--block" type="submit">${F('submit')}</button>
-      <p class="consent-note">${I.shield}<span>${F('privacy')}</span></p>
+      <p class="consent-note">${I.shield}<span>${F('note')} ${F('privacy')}</span></p>
     </form>`;
   }
 
@@ -582,7 +717,6 @@
       const dial = String(fd.get('dialCode'));
       const local = toLatin(fd.get('phone')).replace(/[^\d]/g, '').replace(/^0+/, '');
       const email = toLatin(String(fd.get('email') || '').trim()).toLowerCase();
-      const web = String(fd.get('website') || '').trim();
 
       const checks = [
         ['f-type-wrap', !!type],
@@ -591,7 +725,6 @@
         ['f-country', country.length >= 2],
         ['f-phone', /^\d{6,13}$/.test(local)],
         ['f-email', /^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/.test(email)],
-        ['f-web', !web || /^(https?:\/\/)?[\w-]+(\.[\w-]+)+(\/\S*)?$/i.test(web)],
         ['consent-field', fd.get('consent') === 'yes']
       ];
 
@@ -733,6 +866,9 @@
     else html = viewPartners();
     main.innerHTML = html;
     bindForm();
+    if (r.page !== 'thanks') {
+      initHeroSlideshow();
+    }
   }
 
   function route() { render(); window.scrollTo({ top: 0, left: 0, behavior: 'instant' }); }

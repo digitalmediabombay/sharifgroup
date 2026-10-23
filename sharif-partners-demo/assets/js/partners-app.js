@@ -363,11 +363,54 @@
   /* ---------- PARTNER PAGE ---------- */
   const typeIcon = { agency: I.building, firm: I.briefcase, individual: I.user };
   const whyIcons = [I.headset, I.file, I.chart, I.cap, I.book, I.pin];
+  const HERO_BG_IMAGES = ['partner-1.webp', 'partner-2.webp', 'partner-3.webp', 'partner-4.webp', 'partner-5.webp'];
+
+  function getPartnerImgUrl(imgName) {
+    if (window.location.protocol === 'file:') {
+      return (window.location.pathname.includes('/partners') || window.location.pathname.includes('\\partners'))
+        ? ('../assets/images/' + imgName)
+        : ('assets/images/' + imgName);
+    }
+    if (window.location.pathname.includes('/sharif-partners-demo/')) {
+      return 'assets/images/' + imgName;
+    }
+    return '/assets/images/' + imgName;
+  }
+
+  function heroSlideshowHTML() {
+    return `
+    <div class="hero-slides-wrapper" aria-hidden="true">
+      ${HERO_BG_IMAGES.map((img, i) => `
+        <div class="hero-slide${i === 0 ? ' is-active' : ''}" style="background-image: linear-gradient(rgba(11,15,20,0.58), rgba(11,15,20,0.72)), url('${getPartnerImgUrl(img)}');"></div>
+      `).join('')}
+    </div>
+    <div class="hero-overlay" aria-hidden="true"></div>`;
+  }
+
+  let heroSlideshowTimer = null;
+  function initHeroSlideshow() {
+    if (heroSlideshowTimer) {
+      clearInterval(heroSlideshowTimer);
+      heroSlideshowTimer = null;
+    }
+    const slides = document.querySelectorAll('.hero-slide');
+    if (!slides.length) return;
+    let current = 0;
+    heroSlideshowTimer = setInterval(() => {
+      if (!slides[current]) return;
+      slides[current].classList.remove('is-active');
+      current = (current + 1) % slides.length;
+      if (!slides[current]) return;
+      slides[current].classList.add('is-active');
+    }, 4500);
+  }
+
   function viewPartners() {
     document.title = L().meta.title;
     const P = k => t(k);
     return `
     <section class="hero hero--compact">
+      ${heroSlideshowHTML()}
       <img class="hero-mark mark-white" src="${LOGO}" alt="" aria-hidden="true">
       <div class="container hero-inner">
         <span class="eyebrow caps">${I.handshake}${esc(P('hero.eyebrow'))}</span>
@@ -579,6 +622,9 @@
     else html = viewPartners();
     $('#main').innerHTML = html;
     bindForm();
+    if (!p.length || p[0] === 'partners' && !p[1]) {
+      initHeroSlideshow();
+    }
   }
   function route() { render(); window.scrollTo({ top: 0, left: 0, behavior: 'instant' }); }
   window.addEventListener('hashchange', () => { $('#drawer').classList.remove('open'); route(); $('#main').focus({ preventScroll: true }); });

@@ -410,14 +410,14 @@ html[lang="ar"] .sg-mm-list li a {
   display: flex !important;
   align-items: center !important;
   justify-content: flex-start !important;
-  gap: 16px !important;
+  gap: 14px !important;
   width: 100% !important;
 }
 
 .sg-mm-card {
   position: relative !important;
   flex: 1 1 0 !important;
-  max-width: 265px !important;
+  max-width: 250px !important;
   height: 130px !important;
   border-radius: 20px !important;
   overflow: hidden !important;
@@ -429,6 +429,77 @@ html[lang="ar"] .sg-mm-list li a {
   justify-content: center !important;
   transition: transform 0.4s cubic-bezier(0.16, 1, 0.3, 1), box-shadow 0.4s ease, border-color 0.4s ease !important;
   box-sizing: border-box !important;
+}
+
+/* Become a Partner Card */
+.sg-mm-card-partner {
+  background: linear-gradient(135deg, #1c1917 0%, #0c0a09 100%) !important;
+  border: 1px solid rgba(197, 168, 128, 0.65) !important;
+  box-shadow: 0 4px 18px rgba(120, 97, 66, 0.15) !important;
+}
+
+.sg-mm-card-partner:hover {
+  transform: translateY(-2px) !important;
+  border-color: var(--sg-gold) !important;
+  box-shadow: 0 10px 28px rgba(197, 168, 128, 0.3) !important;
+}
+
+.sg-mm-card-partner-overlay {
+  position: absolute !important;
+  inset: 0 !important;
+  background: linear-gradient(180deg, rgba(6, 10, 18, 0.5) 0%, rgba(6, 10, 18, 0.78) 100%) !important;
+  z-index: 2 !important;
+  transition: background 0.3s ease !important;
+}
+
+.sg-mm-card-partner:hover .sg-mm-card-partner-overlay {
+  background: linear-gradient(180deg, rgba(6, 10, 18, 0.35) 0%, rgba(6, 10, 18, 0.65) 100%) !important;
+}
+
+.sg-mm-card-partner-content {
+  position: relative !important;
+  z-index: 3 !important;
+  display: flex !important;
+  flex-direction: column !important;
+  align-items: center !important;
+  justify-content: center !important;
+  gap: 8px !important;
+  padding: 14px 10px !important;
+  width: 100% !important;
+  text-align: center !important;
+  box-sizing: border-box !important;
+}
+
+.sg-mm-partner-icon {
+  font-size: 22px !important;
+  color: var(--sg-gold) !important;
+  display: block !important;
+  transition: transform 0.3s ease, color 0.3s ease !important;
+}
+
+.sg-mm-card-partner:hover .sg-mm-partner-icon {
+  transform: scale(1.18) !important;
+  color: #e5c99e !important;
+}
+
+.sg-mm-card-partner-text {
+  display: flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  gap: 6px !important;
+  flex-wrap: wrap !important;
+}
+
+.sg-mm-card-partner .sg-mm-card-title {
+  padding: 0 !important;
+  letter-spacing: 0.14em !important;
+  font-size: 10.5px !important;
+  color: #ffffff !important;
+  transition: color 0.3s ease !important;
+}
+
+.sg-mm-card-partner:hover .sg-mm-card-title {
+  color: var(--sg-gold) !important;
 }
 
 .sg-mm-card:hover {

@@ -238,6 +238,12 @@
     return lang === 'en' ? '' : lang + '/';
   }
 
+  function checkIsPartnerDemo() {
+    return window.location.hash.startsWith('#/partners') || 
+           (window.location.protocol === 'file:' && window.location.pathname.includes('partner')) ||
+           window.location.pathname.includes('partners-demo');
+  }
+
   function getSwitchUrl(targetLang) {
     let clean = window.location.pathname.replace(/^\/(ar|fa|zh|en)(\/|$)/i, '/');
     if (!clean.startsWith('/')) clean = '/' + clean;
@@ -275,9 +281,7 @@
     const homeUrl = site + p;
     const logoUrl = getAssetUrl('assets/images/vector_b5a81734.svg');
     const fallbackLogoUrl = getAssetUrl('assets/images/logo.svg');
-    const isPartnerDemo = window.location.hash.startsWith('#/partners') || 
-                          (window.location.protocol === 'file:' && window.location.pathname.includes('partner')) ||
-                          window.location.pathname.includes('partners-demo');
+    const isPartnerDemo = checkIsPartnerDemo();
 
     // Language options
     const langs = ['en', 'ar', 'fa', 'zh'];
@@ -437,6 +441,7 @@
                     <span class="sg-mm-card-title">${esc(n.socialResp)}</span>
                   </a>
                   <a class="sg-mm-card sg-mm-card-partner" href="${isPartnerDemo ? '#/partners' : site + p + 'partners/'}">
+                    <img src="${getAssetUrl('assets/images/card.webp')}" alt="${esc(n.becomePartner)}" loading="lazy">
                     <div class="sg-mm-card-overlay sg-mm-card-partner-overlay"></div>
                     <div class="sg-mm-card-partner-content">
                       <i class="fa-solid fa-handshake sg-mm-partner-icon"></i>
@@ -512,6 +517,7 @@
     const rbi = data.rbi;
     const p = getLangPrefix(lang);
     const site = getRootSite();
+    const isPartnerDemo = checkIsPartnerDemo();
 
     const langs = ['en', 'ar', 'fa', 'zh'];
     const drawerLangsHTML = langs.map(l => {
