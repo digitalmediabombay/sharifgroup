@@ -1507,8 +1507,8 @@ html[lang="ar"] .who-acc-title {
   width: 38px;
   height: 38px;
   border-radius: 11px;
-  border: 1px solid rgba(197, 168, 128, 0.45);
-  background: rgba(255, 255, 255, 0.05);
+  border: 1px solid rgba(197, 168, 128, 0.40);
+  background: rgba(197, 168, 128, 0.15);
   backdrop-filter: blur(10px);
   -webkit-backdrop-filter: blur(10px);
   display: inline-flex;
@@ -1517,6 +1517,11 @@ html[lang="ar"] .who-acc-title {
   color: #c5a880;
   box-shadow: 0 4px 16px rgba(0, 0, 0, 0.25);
   flex-shrink: 0;
+  transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+}
+
+.overview-badge-icon svg {
+  transition: transform 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275), fill 0.3s ease;
 }
 
 .overview-badge-text {
@@ -1529,13 +1534,13 @@ html[lang="ar"] .who-acc-title {
 }
 
 .overview-title {
-  font-family: var(--font-sans);
-  font-size: clamp(32px, 3.6vw, 48px);
+  font-family: var(--font-serif);
+  font-size: clamp(32px, 3.8vw, 50px);
   font-weight: 700;
   color: #ffffff;
   line-height: 1.15;
   margin: 0;
-  letter-spacing: -0.02em;
+  letter-spacing: -0.01em;
 }
 
 .overview-title-highlight {
@@ -1543,7 +1548,7 @@ html[lang="ar"] .who-acc-title {
   font-family: var(--font-serif);
   font-style: italic;
   font-weight: 400;
-  color: #c8a773;
+  color: #c5a880;
   margin-top: 6px;
 }
 
@@ -1614,25 +1619,18 @@ html[lang="ar"] .who-acc-title {
 }
 
 .overview-feature-card {
-  background: rgba(22, 27, 34, 0.60);
+  position: relative;
+  background: rgba(255, 255, 255, 0.04);
   backdrop-filter: blur(20px);
   -webkit-backdrop-filter: blur(20px);
-  border: 1px solid rgba(255, 255, 255, 0.11);
+  border: 1px solid rgba(255, 255, 255, 0.12);
   border-radius: 22px;
   padding: 26px 22px;
   display: flex;
   flex-direction: column;
-  transition: all 0.35s cubic-bezier(0.16, 1, 0.3, 1);
+  transition: all 0.4s cubic-bezier(0.16, 1, 0.3, 1);
   box-shadow: 0 12px 30px -10px rgba(0, 0, 0, 0.35);
-  position: relative;
   overflow: hidden;
-}
-
-.overview-feature-card:hover {
-  transform: translateY(-4px);
-  border-color: rgba(197, 168, 128, 0.45);
-  background: rgba(28, 35, 45, 0.72);
-  box-shadow: 0 20px 40px -10px rgba(0, 0, 0, 0.5), 0 0 25px rgba(197, 168, 128, 0.1);
 }
 
 .overview-feature-header {
@@ -1643,24 +1641,22 @@ html[lang="ar"] .who-acc-title {
 }
 
 .overview-feature-icon {
-  width: 46px;
-  height: 46px;
-  min-width: 46px;
-  border-radius: 13px;
-  border: 1px solid rgba(197, 168, 128, 0.38);
-  background: rgba(197, 168, 128, 0.08);
+  width: 48px;
+  height: 48px;
+  min-width: 48px;
+  border-radius: 14px;
+  border: 1px solid rgba(197, 168, 128, 0.35);
+  background: rgba(197, 168, 128, 0.15);
   display: flex;
   align-items: center;
   justify-content: center;
   color: #c5a880;
-  transition: all 0.3s ease;
+  transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
   flex-shrink: 0;
 }
 
-.overview-feature-card:hover .overview-feature-icon {
-  background: rgba(197, 168, 128, 0.2);
-  border-color: #c5a880;
-  transform: scale(1.06);
+.overview-feature-icon svg {
+  transition: transform 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275), stroke 0.3s ease;
 }
 
 .overview-feature-title {
@@ -1679,6 +1675,70 @@ html[lang="ar"] .who-acc-title {
   color: rgba(255, 255, 255, 0.78);
   margin: 0;
   font-weight: 300;
+}
+
+/* ==========================================================================
+   GOLDEN ICON ANIMATION & SIMULTANEOUS ILLUMINATION
+   Matches Company Overview card behavior from About Us
+   ========================================================================== */
+
+/* 1. Container Hover (When cursor enters the panoramic card) */
+.overview-hero-card {
+  transition: all 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+@media (min-width: 768px) {
+  .overview-hero-card:hover {
+    border-color: #c5a880 !important;
+    box-shadow: 0 0 30px rgba(197, 168, 128, 0.45), 0 25px 60px -15px rgba(0, 0, 0, 0.7) !important;
+  }
+}
+
+/* Container hover illuminates the left badge icon */
+.overview-hero-card:hover .overview-badge-icon,
+.neon-card-hover:hover .overview-badge-icon,
+.overview-badge:hover .overview-badge-icon {
+  background: #c5a880 !important;
+  color: #ffffff !important;
+  border-color: #c5a880 !important;
+  box-shadow: 0 0 18px rgba(197, 168, 128, 0.85) !important;
+  transform: scale(1.15) rotate(12deg) !important;
+}
+
+/* Container hover illuminates all feature cards */
+.overview-hero-card:hover .overview-feature-card,
+.neon-card-hover:hover .overview-feature-card {
+  background: rgba(255, 255, 255, 0.08) !important;
+  border-color: #c5a880 !important;
+  box-shadow: 0 0 20px rgba(197, 168, 128, 0.4), inset 0 0 10px rgba(197, 168, 128, 0.15) !important;
+  transform: translateY(-3px);
+}
+
+/* Container hover illuminates all feature icons with golden glow & animation */
+.overview-hero-card:hover .overview-feature-card .overview-feature-icon,
+.neon-card-hover:hover .overview-feature-card .overview-feature-icon {
+  background-color: #c5a880 !important;
+  color: #ffffff !important;
+  border-color: #c5a880 !important;
+  box-shadow: 0 0 20px rgba(197, 168, 128, 0.85) !important;
+  transform: scale(1.15) rotate(10deg) !important;
+}
+
+/* 2. Individual Feature Card Hover (Direct cursor focus on card) */
+.overview-feature-card:hover {
+  background: rgba(255, 255, 255, 0.12) !important;
+  border-color: #c5a880 !important;
+  box-shadow: 0 0 30px rgba(197, 168, 128, 0.65), inset 0 0 12px rgba(197, 168, 128, 0.2) !important;
+  transform: translateY(-5px) scale(1.02) !important;
+  z-index: 5;
+}
+
+.overview-feature-card:hover .overview-feature-icon {
+  background-color: #c5a880 !important;
+  color: #ffffff !important;
+  border-color: #c5a880 !important;
+  box-shadow: 0 0 26px rgba(197, 168, 128, 1), 0 0 45px rgba(197, 168, 128, 0.5) !important;
+  transform: scale(1.2) rotate(12deg) !important;
 }
 
 /* Responsive & RTL Adjustments */

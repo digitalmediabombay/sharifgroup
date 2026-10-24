@@ -10,6 +10,7 @@
   'use strict';
 
   const LANGS = ['fa', 'en', 'ar', 'zh'];
+  const CRM_WEBHOOK_URL = 'https://script.google.com/macros/s/AKfycbwRFNqHPPeGo4UqWU7jkhMdJPCTNkirDhCEvBQjWc9YUFufe535vIl89vYyg4NiRhnt_Q/exec';
   const SITE = 'https://www.sharifgroup.ae/';
   const FOOTER_VIDEO = 'assets/videos/footer_bg_e58bba71.mp4';
   const FOOTER_LOGO = 'assets/images/vector_2d09c4bb.svg';
@@ -461,14 +462,14 @@
          ========================================================================= -->
     <section class="sec-overview-wrapper" id="overview">
       <div class="container">
-        <div class="overview-hero-card">
+        <div class="overview-hero-card neon-card-hover group cursor-pointer">
           <div class="overview-card-bg" style="background-image: url('${bgUrl}');" aria-hidden="true"></div>
           <div class="overview-card-overlay" aria-hidden="true"></div>
           <div class="overview-card-content">
             <!-- Left Column: Branding, Title, Subtitle, CTA -->
             <div class="overview-col-left">
               <div class="overview-badge">
-                <span class="overview-badge-icon" aria-hidden="true">
+                <span class="overview-badge-icon icon-hover-box" aria-hidden="true">
                   <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor">
                     <path d="M12 2L14.4 9.6L22 12L14.4 14.4L12 22L9.6 14.4L2 12L9.6 9.6L12 2Z"/>
                   </svg>
@@ -500,9 +501,9 @@
             <div class="overview-col-right">
               <div class="overview-cards-grid">
                 <!-- Card 1: Global Network -->
-                <div class="overview-feature-card">
+                <div class="overview-feature-card about-feature-box">
                   <div class="overview-feature-header">
-                    <div class="overview-feature-icon">
+                    <div class="overview-feature-icon feature-icon-pill">
                       <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
                         <path d="m11 17 2 2a1 1 0 0 0 1.4 0l4.3-4.3a1 1 0 0 0 0-1.4l-2.6-2.6a1 1 0 0 0-1.4 0L13 12"/>
                         <path d="m13 12-4.3-4.3a1 1 0 0 0-1.4 0L4.7 10.3a1 1 0 0 0 0 1.4l2.6 2.6a1 1 0 0 0 1.4 0L11 12"/>
@@ -517,9 +518,9 @@
                 </div>
 
                 <!-- Card 2: Secure Programs -->
-                <div class="overview-feature-card">
+                <div class="overview-feature-card about-feature-box">
                   <div class="overview-feature-header">
-                    <div class="overview-feature-icon">
+                    <div class="overview-feature-icon feature-icon-pill">
                       <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
                         <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/>
                         <polyline points="14 2 14 8 20 8"/>
@@ -533,9 +534,9 @@
                 </div>
 
                 <!-- Card 3: Expert Support -->
-                <div class="overview-feature-card">
+                <div class="overview-feature-card about-feature-box">
                   <div class="overview-feature-header">
-                    <div class="overview-feature-icon">
+                    <div class="overview-feature-icon feature-icon-pill">
                       <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
                         <rect x="2" y="7" width="20" height="14" rx="2"/>
                         <path d="M16 21V5a2 2 0 0 0-2-2h-4a2 2 0 0 0-2 2v16"/>
@@ -547,9 +548,9 @@
                 </div>
 
                 <!-- Card 4: High Commissions -->
-                <div class="overview-feature-card">
+                <div class="overview-feature-card about-feature-box">
                   <div class="overview-feature-header">
-                    <div class="overview-feature-icon">
+                    <div class="overview-feature-icon feature-icon-pill">
                       <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
                         <circle cx="12" cy="12" r="10"/>
                         <line x1="2" y1="12" x2="22" y2="12"/>
@@ -905,9 +906,20 @@
             source: `${SITE}${prefix()}partners/`, page: `/${prefix()}partners/`
           };
           apps.push(rec); store.set(K.apps, apps);
-          console.info('[Sharif partners demo] Payload that production would POST to CRM_WEBHOOK_URL (forms.js):', rec);
+          console.info('[Sharif partners demo] Payload dispatched to CRM_WEBHOOK_URL:', rec);
         }
         store.set(K.last, { id: rec.application_id, dup: !!dup });
+
+        // Dispatch to Live Google Apps Script CRM Webhook
+        if (CRM_WEBHOOK_URL) {
+          fetch(CRM_WEBHOOK_URL, {
+            method: 'POST',
+            mode: 'no-cors',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify(rec)
+          }).catch(err => console.warn('Partner CRM sync error:', err));
+        }
+
         location.hash = '#/partners/thanks';
       }, 500);
     });
