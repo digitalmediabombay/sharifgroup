@@ -1994,21 +1994,36 @@ html[lang="ar"] .intro-roadmap-step-title {
   border-bottom: 1px solid rgba(120, 97, 66, 0.18);
 }
 .timeline-map-bg {
-  position: absolute;
-  inset: 0;
-  background-repeat: no-repeat;
-  background-position: center;
-  background-size: contain;
-  opacity: 0.11;
-  pointer-events: none;
-  z-index: 1;
+  display: none !important;
 }
 .timeline-map-gradient {
+  display: none !important;
+}
+.timeline-logo-bg {
   position: absolute;
-  inset: 0;
-  background: radial-gradient(ellipse 1100px 750px at 50% 50%, transparent 40%, rgba(250, 246, 238, 0.75) 100%);
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  width: 520px;
+  max-width: 85vw;
+  opacity: 0.05;
   pointer-events: none;
-  z-index: 2;
+  z-index: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  user-select: none;
+}
+.timeline-logo-bg img {
+  width: 100%;
+  height: auto;
+  display: block;
+}
+@media (max-width: 768px) {
+  .timeline-logo-bg {
+    width: 300px;
+    max-width: 75vw;
+  }
 }
 
 #timeline-track {
@@ -2021,12 +2036,13 @@ html[lang="ar"] .intro-roadmap-step-title {
   position: absolute;
   left: 50%;
   top: 0;
-  bottom: 180px;
+  bottom: auto;
   width: 2px;
   background-color: rgba(120, 97, 66, 0.3);
   transform: translateX(-50%);
   display: block;
-  z-index: 5;
+  z-index: 2;
+  pointer-events: none;
 }
 
 /* Floating animated badge */
@@ -2827,5 +2843,317 @@ html[lang="ar"] .who-acc-title {
   transform: translateY(-2px) !important;
   box-shadow: 0 14px 28px -5px rgba(0, 0, 0, 0.28) !important;
 }
+
+/* ==========================================================================
+   PARTNERSHIP OVERVIEW HERO CARD (MATCHING LUXURY OVERVIEW MOCKUP)
+   ========================================================================== */
+.sec-overview-wrapper {
+  position: relative;
+  padding: 40px 0 60px;
+  background: transparent;
+}
+
+.overview-hero-card {
+  position: relative;
+  border-radius: 32px;
+  border: 1px solid rgba(197, 168, 128, 0.42);
+  overflow: hidden;
+  box-shadow: 0 25px 60px -15px rgba(0, 0, 0, 0.7), 0 0 40px rgba(197, 168, 128, 0.08);
+  background-color: #0b0f14;
+  isolation: isolate;
+}
+
+.overview-card-bg {
+  position: absolute;
+  inset: 0;
+  background-size: cover;
+  background-position: center;
+  transform: scale(1.02);
+  transition: transform 1.2s cubic-bezier(0.16, 1, 0.3, 1);
+  z-index: 0;
+}
+
+.overview-hero-card:hover .overview-card-bg {
+  transform: scale(1.045);
+}
+
+.overview-card-overlay {
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(135deg, rgba(8, 11, 15, 0.88) 0%, rgba(13, 17, 23, 0.80) 45%, rgba(8, 11, 15, 0.90) 100%);
+  backdrop-filter: blur(1.5px);
+  -webkit-backdrop-filter: blur(1.5px);
+  z-index: 1;
+}
+
+.overview-card-content {
+  position: relative;
+  z-index: 2;
+  display: grid;
+  grid-template-columns: 1fr 1.15fr;
+  gap: clamp(32px, 5vw, 64px);
+  align-items: center;
+  padding: clamp(38px, 5.5vw, 68px) clamp(28px, 5vw, 64px);
+}
+
+/* Left Column */
+.overview-col-left {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  text-align: start;
+}
+
+.overview-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 12px;
+  margin-bottom: 22px;
+}
+
+.overview-badge-icon {
+  width: 38px;
+  height: 38px;
+  border-radius: 11px;
+  border: 1px solid rgba(197, 168, 128, 0.45);
+  background: rgba(255, 255, 255, 0.05);
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  color: #c5a880;
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.25);
+  flex-shrink: 0;
+}
+
+.overview-badge-text {
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 0.22em;
+  text-transform: uppercase;
+  color: #c5a880;
+  font-family: var(--font-sans);
+}
+
+.overview-title {
+  font-family: var(--font-sans);
+  font-size: clamp(32px, 3.6vw, 48px);
+  font-weight: 700;
+  color: #ffffff;
+  line-height: 1.15;
+  margin: 0;
+  letter-spacing: -0.02em;
+}
+
+.overview-title-highlight {
+  display: block;
+  font-family: var(--font-serif);
+  font-style: italic;
+  font-weight: 400;
+  color: #c8a773;
+  margin-top: 6px;
+}
+
+.overview-gold-line {
+  width: 52px;
+  height: 2px;
+  background: #c5a880;
+  margin: 20px 0 24px;
+  border-radius: 2px;
+}
+
+.overview-desc {
+  color: rgba(255, 255, 255, 0.82);
+  font-size: clamp(14px, 1.05vw, 15.5px);
+  line-height: 1.7;
+  max-width: 460px;
+  margin: 0 0 34px;
+  font-weight: 300;
+}
+
+.overview-action {
+  display: flex;
+  align-items: center;
+}
+
+.overview-cta-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  background: #876d49;
+  color: #ffffff;
+  font-size: 12px;
+  font-weight: 700;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  padding: 14px 28px;
+  border-radius: 12px;
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  cursor: pointer;
+  transition: all 0.25s ease;
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.35);
+  text-decoration: none;
+}
+
+.overview-cta-btn:hover {
+  background: #9d8159;
+  transform: translateY(-2px);
+  box-shadow: 0 12px 28px rgba(135, 109, 73, 0.45);
+}
+
+.overview-cta-arrow {
+  width: 14px;
+  height: 14px;
+  flex-shrink: 0;
+  transition: transform 0.25s ease;
+}
+
+.overview-cta-btn:hover .overview-cta-arrow {
+  transform: translateX(4px);
+}
+
+/* Right Column: 2x2 Glass Cards Grid */
+.overview-cards-grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 20px;
+}
+
+.overview-feature-card {
+  background: rgba(22, 27, 34, 0.60);
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
+  border: 1px solid rgba(255, 255, 255, 0.11);
+  border-radius: 22px;
+  padding: 26px 22px;
+  display: flex;
+  flex-direction: column;
+  transition: all 0.35s cubic-bezier(0.16, 1, 0.3, 1);
+  box-shadow: 0 12px 30px -10px rgba(0, 0, 0, 0.35);
+  position: relative;
+  overflow: hidden;
+}
+
+.overview-feature-card:hover {
+  transform: translateY(-4px);
+  border-color: rgba(197, 168, 128, 0.45);
+  background: rgba(28, 35, 45, 0.72);
+  box-shadow: 0 20px 40px -10px rgba(0, 0, 0, 0.5), 0 0 25px rgba(197, 168, 128, 0.1);
+}
+
+.overview-feature-header {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  margin-bottom: 16px;
+}
+
+.overview-feature-icon {
+  width: 46px;
+  height: 46px;
+  min-width: 46px;
+  border-radius: 13px;
+  border: 1px solid rgba(197, 168, 128, 0.38);
+  background: rgba(197, 168, 128, 0.08);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #c5a880;
+  transition: all 0.3s ease;
+  flex-shrink: 0;
+}
+
+.overview-feature-card:hover .overview-feature-icon {
+  background: rgba(197, 168, 128, 0.2);
+  border-color: #c5a880;
+  transform: scale(1.06);
+}
+
+.overview-feature-title {
+  font-size: 13px;
+  font-weight: 700;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: #c5a880;
+  margin: 0;
+  line-height: 1.35;
+}
+
+.overview-feature-desc {
+  font-size: 13.5px;
+  line-height: 1.6;
+  color: rgba(255, 255, 255, 0.78);
+  margin: 0;
+  font-weight: 300;
+}
+
+/* Responsive & RTL Adjustments */
+@media (max-width: 1024px) {
+  .overview-card-content {
+    grid-template-columns: 1fr;
+    gap: 40px;
+  }
+  .overview-desc {
+    max-width: 100%;
+  }
+}
+
+@media (max-width: 640px) {
+  .sec-overview-wrapper {
+    padding: 24px 0 40px;
+  }
+  .overview-hero-card {
+    border-radius: 22px;
+  }
+  .overview-card-content {
+    padding: 28px 20px;
+    gap: 32px;
+  }
+  .overview-cards-grid {
+    grid-template-columns: 1fr;
+    gap: 14px;
+  }
+  .overview-title {
+    font-size: 28px;
+  }
+  .overview-feature-card {
+    padding: 20px 18px;
+    border-radius: 18px;
+  }
+}
+
+[dir="rtl"] .overview-col-left {
+  align-items: flex-start;
+  text-align: start;
+}
+
+[dir="rtl"] .overview-cta-arrow {
+  transform: scaleX(-1);
+}
+
+[dir="rtl"] .overview-cta-btn:hover .overview-cta-arrow {
+  transform: scaleX(-1) translateX(4px);
+}
+
+[dir="rtl"] .overview-badge-text,
+[dir="rtl"] .overview-feature-title,
+[dir="rtl"] .overview-cta-btn {
+  letter-spacing: 0;
+}
+
+html[lang="fa"] .overview-title-highlight,
+html[lang="ar"] .overview-title-highlight {
+  font-style: normal;
+  font-weight: 700;
+}
+
+/* Hide demo controls floating button */
+.demo-fab,
+.demo-panel {
+  display: none !important;
+}
+
 
 

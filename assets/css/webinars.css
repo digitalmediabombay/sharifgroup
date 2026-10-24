@@ -1246,6 +1246,8 @@ html[lang="fa"] .series-tag, html[lang="ar"] .series-tag { font-size: 11px; }
   background: #FAF6EE;
   border-top: 1px solid rgba(229, 231, 235, 0.6);
   border-bottom: 1px solid rgba(229, 231, 235, 0.6);
+  position: relative;
+  overflow: hidden;
 }
 .section-head--centered {
   text-align: center;
@@ -1304,6 +1306,33 @@ html[lang="fa"] .series-tag, html[lang="ar"] .series-tag { font-size: 11px; }
   display: none !important;
 }
 
+.timeline-logo-bg {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  width: 520px;
+  max-width: 85vw;
+  opacity: 0.05;
+  pointer-events: none;
+  z-index: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  user-select: none;
+}
+.timeline-logo-bg img {
+  width: 100%;
+  height: auto;
+  display: block;
+}
+@media (max-width: 768px) {
+  .timeline-logo-bg {
+    width: 300px;
+    max-width: 75vw;
+  }
+}
+
 .timeline-track {
   position: relative !important;
   padding-top: 24px !important;
@@ -1316,12 +1345,13 @@ html[lang="fa"] .series-tag, html[lang="ar"] .series-tag { font-size: 11px; }
   position: absolute !important;
   left: 50% !important;
   top: 0 !important;
-  bottom: 150px !important;
+  bottom: auto !important;
   width: 2px !important;
   background: rgba(120, 97, 66, 0.28) !important;
   transform: translateX(-50%) !important;
   display: block !important;
   z-index: 1 !important;
+  pointer-events: none !important;
 }
 
 #central-passport-node {

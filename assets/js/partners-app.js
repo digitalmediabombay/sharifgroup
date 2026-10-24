@@ -677,6 +677,123 @@
     }
   };
 
+  function overviewSectionHTML() {
+    const O = L().partners.overview || I18N.en.partners.overview;
+    const bgUrl = getPartnerImgUrl('dubai-office-2.webp');
+
+    return `
+    <!-- =========================================================================
+         SECTION: PARTNERSHIP OVERVIEW (HERO CARD WITH BACKGROUND IMAGE & 2x2 GRID)
+         ========================================================================= -->
+    <section class="sec-overview-wrapper" id="overview">
+      <div class="container">
+        <div class="overview-hero-card">
+          <div class="overview-card-bg" style="background-image: url('${bgUrl}');" aria-hidden="true"></div>
+          <div class="overview-card-overlay" aria-hidden="true"></div>
+          <div class="overview-card-content">
+            <!-- Left Column: Branding, Title, Subtitle, CTA -->
+            <div class="overview-col-left">
+              <div class="overview-badge">
+                <span class="overview-badge-icon" aria-hidden="true">
+                  <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor">
+                    <path d="M12 2L14.4 9.6L22 12L14.4 14.4L12 22L9.6 14.4L2 12L9.6 9.6L12 2Z"/>
+                  </svg>
+                </span>
+                <span class="overview-badge-text">${esc(O.badge)}</span>
+              </div>
+
+              <h2 class="overview-title">
+                ${esc(O.title)}
+                <span class="overview-title-highlight">${esc(O.titleHighlight)}</span>
+              </h2>
+
+              <div class="overview-gold-line" aria-hidden="true"></div>
+
+              <p class="overview-desc">${esc(O.desc)}</p>
+
+              <div class="overview-action">
+                <button type="button" class="overview-cta-btn" data-scroll="apply">
+                  <span>${esc(O.cta)}</span>
+                  <svg class="overview-cta-arrow" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+                    <line x1="5" y1="12" x2="19" y2="12"></line>
+                    <polyline points="12 5 19 12 12 19"></polyline>
+                  </svg>
+                </button>
+              </div>
+            </div>
+
+            <!-- Right Column: 2x2 Glass Cards Grid -->
+            <div class="overview-col-right">
+              <div class="overview-cards-grid">
+                <!-- Card 1: Global Network -->
+                <div class="overview-feature-card">
+                  <div class="overview-feature-header">
+                    <div class="overview-feature-icon">
+                      <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+                        <path d="m11 17 2 2a1 1 0 0 0 1.4 0l4.3-4.3a1 1 0 0 0 0-1.4l-2.6-2.6a1 1 0 0 0-1.4 0L13 12"/>
+                        <path d="m13 12-4.3-4.3a1 1 0 0 0-1.4 0L4.7 10.3a1 1 0 0 0 0 1.4l2.6 2.6a1 1 0 0 0 1.4 0L11 12"/>
+                        <path d="M18 11V6a2 2 0 0 0-2-2H8a2 2 0 0 0-2 2v2"/>
+                        <path d="m2 14 4-2"/>
+                        <path d="m20 10 2 2"/>
+                      </svg>
+                    </div>
+                    <h3 class="overview-feature-title">${esc(O.cards.network.title)}</h3>
+                  </div>
+                  <p class="overview-feature-desc">${esc(O.cards.network.desc)}</p>
+                </div>
+
+                <!-- Card 2: Secure Programs -->
+                <div class="overview-feature-card">
+                  <div class="overview-feature-header">
+                    <div class="overview-feature-icon">
+                      <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+                        <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/>
+                        <polyline points="14 2 14 8 20 8"/>
+                        <circle cx="12" cy="15" r="2.5"/>
+                        <path d="M10.5 17.5 9 21l3-1 3 1-1.5-3.5"/>
+                      </svg>
+                    </div>
+                    <h3 class="overview-feature-title">${esc(O.cards.secure.title)}</h3>
+                  </div>
+                  <p class="overview-feature-desc">${esc(O.cards.secure.desc)}</p>
+                </div>
+
+                <!-- Card 3: Expert Support -->
+                <div class="overview-feature-card">
+                  <div class="overview-feature-header">
+                    <div class="overview-feature-icon">
+                      <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+                        <rect x="2" y="7" width="20" height="14" rx="2"/>
+                        <path d="M16 21V5a2 2 0 0 0-2-2h-4a2 2 0 0 0-2 2v16"/>
+                      </svg>
+                    </div>
+                    <h3 class="overview-feature-title">${esc(O.cards.support.title)}</h3>
+                  </div>
+                  <p class="overview-feature-desc">${esc(O.cards.support.desc)}</p>
+                </div>
+
+                <!-- Card 4: High Commissions -->
+                <div class="overview-feature-card">
+                  <div class="overview-feature-header">
+                    <div class="overview-feature-icon">
+                      <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+                        <circle cx="12" cy="12" r="10"/>
+                        <line x1="2" y1="12" x2="22" y2="12"/>
+                        <path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"/>
+                      </svg>
+                    </div>
+                    <h3 class="overview-feature-title">${esc(O.cards.commissions.title)}</h3>
+                  </div>
+                  <p class="overview-feature-desc">${esc(O.cards.commissions.desc)}</p>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>`;
+  }
+
   function viewPartners() {
     document.title = L().meta.title;
     const P = k => t(k);
@@ -695,6 +812,8 @@
         </div>
       </div>
     </section>
+
+    ${overviewSectionHTML()}
 
     <!-- =========================================================================
          SECTION 1: WHO WE WORK WITH (IMMERSIVE ACCORDION CARDS - MATCHING IMAGE 2)
@@ -760,8 +879,9 @@
          SECTION 2: HOW IT WORKS (ROADMAP MAP ANIMATION IDENTICAL TO REFERENCE)
          ========================================================================= -->
     <section class="sec-timeline-wrapper relative overflow-hidden scroll-mt-36" id="sec-timeline">
-      <div class="timeline-map-bg absolute inset-0 pointer-events-none" style="background-image: url('https://upload.wikimedia.org/wikipedia/commons/thumb/c/cf/United_Arab_Emirates_location_map.svg/1920px-United_Arab_Emirates_location_map.svg.png');"></div>
-      <div class="timeline-map-gradient absolute inset-0 pointer-events-none"></div>
+      <div class="timeline-logo-bg pointer-events-none select-none" aria-hidden="true">
+        <img src="${LOGO}" alt="" class="w-full h-auto">
+      </div>
 
       <div class="max-w-5xl mx-auto space-y-16 relative z-10 px-6">
         <div class="text-center space-y-3 relative" style="text-align:center;margin-bottom:36px;">
@@ -1217,6 +1337,13 @@
       }
     }
 
+    // Terminate central line precisely at the center of the final milestone badge
+    const centralLine = track.querySelector(".timeline-central-line");
+    if (centralLine && maxTravel > 0) {
+      centralLine.style.setProperty("bottom", "auto", "important");
+      centralLine.style.setProperty("height", `${maxTravel}px`, "important");
+    }
+
     // Calculate travel relative to track container & clamp precisely to final tick
     let relativeY = viewportCenter - trackRect.top;
     relativeY = Math.max(0, Math.min(relativeY, maxTravel));
@@ -1266,6 +1393,7 @@
 
   window.addEventListener("scroll", updateTimeline, { passive: true });
   window.addEventListener("resize", updateTimeline, { passive: true });
+  window.addEventListener("load", updateTimeline, { passive: true });
 
   function render() {
     const r = parseRoute();
@@ -1279,7 +1407,10 @@
     if (r.page !== 'thanks') {
       initHeroSlideshow();
       bindPartnerCards();
+      updateTimeline();
+      requestAnimationFrame(updateTimeline);
       setTimeout(updateTimeline, 60);
+      setTimeout(updateTimeline, 250);
     }
   }
 

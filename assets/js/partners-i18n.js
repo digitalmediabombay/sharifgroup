@@ -84,6 +84,31 @@ window.PARTNER_I18N = {
         "lede": "Have a network of clients or a company in immigration, legal, financial or real estate services? Partner with Sharif Group and offer your clients second citizenship and residency, backed by our team in Dubai.",
         "apply": "Apply now"
       },
+      "overview": {
+        "badge": "PARTNERSHIP OVERVIEW",
+        "title": "Partnership Overview:",
+        "titleHighlight": "Sharif Group",
+        "desc": "Partner with Sharif Group to expand your business horizon. We empower agents, professional firms, and individuals to offer high-demand citizenship and residency programs, back with expert support.",
+        "cta": "APPLY AS PARTNER",
+        "cards": {
+          "network": {
+            "title": "GLOBAL NETWORK",
+            "desc": "Gain access to our vast network of international clients, agents, and legal partners."
+          },
+          "secure": {
+            "title": "SECURE PROGRAMS",
+            "desc": "Provide your clients with second passports and residency visas with full compliance."
+          },
+          "support": {
+            "title": "EXPERT SUPPORT",
+            "desc": "Dedicated support for document processing, legal checks, and client onboarding."
+          },
+          "commissions": {
+            "title": "HIGH COMMISSIONS",
+            "desc": "Enjoy lucrative referral commissions and exclusive benefits as a partner."
+          }
+        }
+      },
       "who": {
         "title": "Who we work with",
         "items": [
@@ -310,6 +335,31 @@ window.PARTNER_I18N = {
         "sub": "شریف گروپ دبی",
         "lede": "شبکه‌ای از مشتریان دارید یا شرکتی در حوزه مهاجرت، حقوقی، مالی یا املاک؟ با شریف گروپ همکاری کنید و شهروندی دوم و اقامت را با پشتیبانی تیم ما در دبی به مشتریانتان ارائه دهید.",
         "apply": "درخواست همکاری"
+      },
+      "overview": {
+        "badge": "نمای کلی همکاری",
+        "title": "نمای کلی همکاری:",
+        "titleHighlight": "شریف گروپ",
+        "desc": "برای گسترش افق‌های کسب‌وکار خود با شریف گروپ همکاری کنید. ما به آژانس‌ها، دفاتر حرفه‌ای و افراد این امکان را می‌دهیم تا برنامه‌های پرتقاضای اخذ شهروندی و اقامت را با پشتیبانی تخصصی ارائه دهند.",
+        "cta": "ثبت‌نام به‌عنوان همکار",
+        "cards": {
+          "network": {
+            "title": "شبکه جهانی",
+            "desc": "دسترسی به شبکه گسترده مشتریان بین‌المللی، کارگزاران و وکلای قانونی ما."
+          },
+          "secure": {
+            "title": "برنامه‌های معتبر و امن",
+            "desc": "ارائه گذرنامه دوم و ویزای اقامت به مشتریان خود با رعایت کامل الزامات قانونی."
+          },
+          "support": {
+            "title": "پشتیبانی تخصصی",
+            "desc": "پشتیبانی کامل در فرآیند آماده‌سازی مدارک، بررسی‌های حقوقی و پذیرش پرونده‌ها."
+          },
+          "commissions": {
+            "title": "کمیسیون‌های چشمگیر",
+            "desc": "بهره‌مندی از کمیسیون‌های معرفی پرسود و مزایای اختصاصی برای همکاران."
+          }
+        }
       },
       "who": {
         "title": "با چه کسانی همکاری می‌کنیم",
@@ -538,6 +588,31 @@ window.PARTNER_I18N = {
         "lede": "هل لديك شبكة من العملاء أو شركة في مجال الهجرة أو الخدمات القانونية أو المالية أو العقارية؟ كن شريكاً لمجموعة شريف وقدّم لعملائك الجنسية الثانية والإقامة بدعم من فريقنا في دبي.",
         "apply": "قدّم الآن"
       },
+      "overview": {
+        "badge": "نظرة عامة على الشراكة",
+        "title": "نظرة عامة على الشراكة:",
+        "titleHighlight": "مجموعة شريف",
+        "desc": "انضم إلى مجموعة شريف لتوسيع آفاق أعمالك. نمكّن الوكالات والشركات المهنية والأفراد من تقديم برامج الإقامة والجنسية الأكثر طلباً مدعومة بفريق خبراء متخصص.",
+        "cta": "التقدم كشريك",
+        "cards": {
+          "network": {
+            "title": "شبكة دولية واسعة",
+            "desc": "الوصول إلى شبكتنا الواسعة من العملاء الدوليين والوكلاء والشركاء القانونيين."
+          },
+          "secure": {
+            "title": "برامج معتمدة وآمنة",
+            "desc": "تزويد عملائك بجوازات سفر ثانية وتأشيرات إقامة مع الامتثال القانوني الكامل."
+          },
+          "support": {
+            "title": "دعم الخبراء المتكامل",
+            "desc": "دعم مخصص لمعالجة المستندات والفحوصات القانونية ودمج العملاء."
+          },
+          "commissions": {
+            "title": "عمولات مجزية",
+            "desc": "تمتع بعمولات إحالة مجزية ومزايا حصرية كشريك معتمد لدينا."
+          }
+        }
+      },
       "who": {
         "title": "مع من نعمل",
         "items": [
@@ -764,6 +839,31 @@ window.PARTNER_I18N = {
         "sub": "谢里夫集团 · 迪拜",
         "lede": "您拥有客户网络，或在移民、法律、金融或房产领域经营公司？成为谢里夫集团的合作伙伴，在我们迪拜团队的支持下，为客户提供第二国籍与居留方案。",
         "apply": "立即申请"
+      },
+      "overview": {
+        "badge": "合作概览",
+        "title": "合作概览：",
+        "titleHighlight": "谢里夫集团",
+        "desc": "与谢里夫集团携手拓展您的全球业务版图。我们助力各类代理机构、专业顾问事务所及个人，凭借顶级专家支持提供高需求度的第二公民身份与居留投资项目。",
+        "cta": "申请成为合作伙伴",
+        "cards": {
+          "network": {
+            "title": "全球合作伙伴网络",
+            "desc": "接入我们覆盖全球的高净值客户网络、战略代理与资深法律顾问团队。"
+          },
+          "secure": {
+            "title": "合规安全投资项目",
+            "desc": "为您的客户提供符合官方严格法律合规流程的第二护照与黄金居留签证。"
+          },
+          "support": {
+            "title": "全程专家团队支持",
+            "desc": "从文件收集公证、尽职合规背调到客户建档提供一对一专席支持。"
+          },
+          "commissions": {
+            "title": "丰厚佣金与专属权益",
+            "desc": "享受极具行业竞争力的推荐佣金分成与谢里夫集团专属合作伙伴特权。"
+          }
+        }
       },
       "who": {
         "title": "我们与谁合作",

@@ -1080,7 +1080,10 @@
       </div>
     </section>
 
-    <section class="section section--sand how-to-join-sec timeline-section">
+    <section class="section section--sand how-to-join-sec timeline-section relative overflow-hidden">
+      <div class="timeline-logo-bg pointer-events-none select-none" aria-hidden="true">
+        <img src="${LOGO}" alt="" class="w-full h-auto">
+      </div>
       <div class="container relative z-10">
         <div class="section-head section-head--centered mb-12">
           <span class="eyebrow caps"><i class="fa-regular fa-clock text-[10px]"></i> <span>${esc(t('list.timelineEyebrow') || 'TIMELINE')}</span></span>
@@ -1738,6 +1741,13 @@
         const badgeRect = finalBadge.getBoundingClientRect();
         maxTravel = badgeRect.top + (badgeRect.height / 2) - trackRect.top;
       }
+    }
+
+    // Terminate central line precisely at the center of the final milestone badge
+    const centralLine = track.querySelector(".timeline-central-line");
+    if (centralLine && maxTravel > 0) {
+      centralLine.style.setProperty("bottom", "auto", "important");
+      centralLine.style.setProperty("height", `${maxTravel}px`, "important");
     }
 
     // Calculate travel relative to track container & clamp precisely
