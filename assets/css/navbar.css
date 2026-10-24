@@ -18,6 +18,7 @@
 
 /* Base Site Header */
 .site-header,
+#siteHeader,
 #main-header {
   position: fixed !important;
   top: 0 !important;
@@ -55,6 +56,7 @@
 }
 
 .site-header.is-scrolled,
+#siteHeader.is-scrolled,
 #main-header.is-scrolled {
   box-shadow: 0 4px 24px -4px rgba(0, 0, 0, 0.08) !important;
 }
@@ -77,9 +79,9 @@ body.lang-zh #main {
   max-width: 1600px !important;
   height: 100% !important;
   margin-inline: auto !important;
-  padding-inline: 32px !important;
+  padding-inline: clamp(12px, 2vw, 32px) !important;
   box-sizing: border-box !important;
-  gap: 16px !important;
+  gap: 8px !important;
 }
 
 /* Brand & Main Navigation Left Group */
@@ -101,7 +103,7 @@ body.lang-zh #main {
 }
 
 .sg-brand img {
-  height: 48px !important;
+  height: 42px !important;
   width: auto !important;
   max-width: 100% !important;
   object-fit: contain !important;
@@ -111,11 +113,14 @@ body.lang-zh #main {
 
 .sg-brand-sep {
   color: #d4d4d4 !important;
-  font-size: 11px !important;
+  font-family: var(--font-sans, var(--sg-font-sans)) !important;
+  font-size: 10px !important;
   font-weight: 300 !important;
-  opacity: 0.7 !important;
+  opacity: 0.65 !important;
   user-select: none !important;
   margin: 0 !important;
+  padding: 0 1px !important;
+  line-height: 1 !important;
 }
 
 /* Desktop Main Nav */
@@ -123,7 +128,7 @@ body.lang-zh #main {
   position: static !important;
   display: flex !important;
   align-items: center !important;
-  gap: 8px !important;
+  gap: clamp(4px, 0.6vw, 10px) !important;
   height: 100% !important;
   white-space: nowrap !important;
   margin: 0 !important;
@@ -131,7 +136,7 @@ body.lang-zh #main {
   list-style: none !important;
 }
 
-@media (max-width: 1120px) {
+@media (max-width: 1140px) {
   .sg-main-nav {
     display: none !important;
   }
@@ -149,12 +154,12 @@ body.lang-zh #main {
 .sg-nav-link {
   display: inline-flex !important;
   align-items: center !important;
-  gap: 5px !important;
-  padding: 8px 8px !important;
-  font-family: var(--sg-font-sans) !important;
-  font-size: 10.5px !important;
+  gap: 4px !important;
+  padding: 6px clamp(3px, 0.4vw, 8px) !important;
+  font-family: var(--font-sans, var(--sg-font-sans)) !important;
+  font-size: 10px !important;
   font-weight: 700 !important;
-  letter-spacing: 0.12em !important;
+  letter-spacing: 0.07em !important;
   text-transform: uppercase !important;
   color: #404040 !important;
   text-decoration: none !important;
@@ -166,18 +171,19 @@ body.lang-zh #main {
 }
 
 html[lang="fa"] .sg-nav-link,
-html[lang="ar"] .sg-nav-link {
-  font-family: 'Inter', system-ui, -apple-system, sans-serif !important;
+html[lang="ar"] .sg-nav-link,
+[dir="rtl"] .sg-nav-link {
+  font-family: var(--font-sans, var(--sg-font-sans)) !important;
   letter-spacing: 0 !important;
   text-transform: none !important;
-  font-size: 12.5px !important;
+  font-size: 10px !important;
   line-height: 1 !important;
 }
 
 html[lang="zh"] .sg-nav-link {
-  font-family: 'Inter', system-ui, -apple-system, sans-serif !important;
-  letter-spacing: 0.06em !important;
-  font-size: 12px !important;
+  font-family: var(--font-sans, var(--sg-font-sans)) !important;
+  letter-spacing: 0.04em !important;
+  font-size: 10px !important;
   line-height: 1 !important;
 }
 
@@ -203,28 +209,36 @@ html[lang="zh"] .sg-nav-link {
   display: inline-flex !important;
   align-items: center !important;
   justify-content: center !important;
-  font-family: var(--sg-font-sans) !important;
-  font-size: 7.5px !important;
+  font-family: var(--font-sans, var(--sg-font-sans)) !important;
+  font-size: 7px !important;
   font-weight: 700 !important;
   line-height: 1 !important;
   letter-spacing: 0 !important;
-  padding: 2.5px 5.5px !important;
+  padding: 2px 4.5px !important;
   border-radius: 9999px !important;
   background-color: var(--sg-gold-dark) !important;
   color: #ffffff !important;
-  margin-inline-start: 4px !important;
+  margin-inline-start: 3.5px !important;
+  margin-inline-end: 0 !important;
+  vertical-align: middle !important;
   flex-shrink: 0 !important;
+  white-space: nowrap !important;
+}
+
+[dir="rtl"] .sg-badge-new {
+  margin-inline-start: 0 !important;
+  margin-inline-end: 3.5px !important;
 }
 
 .sg-nav-sep {
   color: #d4d4d4 !important;
-  font-family: var(--sg-font-sans) !important;
-  font-size: 11px !important;
+  font-family: var(--font-sans, var(--sg-font-sans)) !important;
+  font-size: 10px !important;
   font-weight: 300 !important;
-  opacity: 0.7 !important;
+  opacity: 0.65 !important;
   user-select: none !important;
   margin: 0 !important;
-  padding: 0 !important;
+  padding: 0 1px !important;
   line-height: 1 !important;
 }
 
@@ -583,9 +597,7 @@ html[lang="ar"] .sg-right-actions,
 html[lang="fa"] .sg-right-actions {
   margin-left: 0 !important;
   margin-right: auto !important;
-}
-
-@media (max-width: 1120px) {
+}@media (max-width: 1140px) {
   .sg-right-actions .sg-btn-eligibility,
   .sg-right-actions .sg-btn-consult {
     display: none !important;
@@ -596,12 +608,13 @@ html[lang="fa"] .sg-right-actions {
   display: inline-flex !important;
   align-items: center !important;
   justify-content: center !important;
-  padding: 8px 18px !important;
+  height: 34px !important;
+  padding: 0 clamp(10px, 1vw, 16px) !important;
   border-radius: 9999px !important;
-  font-family: var(--sg-font-sans) !important;
+  font-family: var(--font-sans, var(--sg-font-sans)) !important;
   font-size: 10px !important;
   font-weight: 700 !important;
-  letter-spacing: 0.14em !important;
+  letter-spacing: 0.07em !important;
   text-transform: uppercase !important;
   text-decoration: none !important;
   white-space: nowrap !important;
@@ -611,11 +624,12 @@ html[lang="fa"] .sg-right-actions {
 }
 
 html[lang="fa"] .sg-pill-btn,
-html[lang="ar"] .sg-pill-btn {
-  font-family: 'Inter', system-ui, -apple-system, sans-serif !important;
+html[lang="ar"] .sg-pill-btn,
+[dir="rtl"] .sg-pill-btn {
+  font-family: var(--font-sans, var(--sg-font-sans)) !important;
   letter-spacing: 0 !important;
   text-transform: none !important;
-  font-size: 12px !important;
+  font-size: 10px !important;
   line-height: 1 !important;
 }
 
@@ -650,21 +664,31 @@ html[lang="ar"] .sg-pill-btn {
 .sg-lang-btn {
   display: inline-flex !important;
   align-items: center !important;
-  gap: 6px !important;
-  padding: 7px 14px !important;
+  gap: 4px !important;
+  height: 32px !important;
+  padding: 0 10px !important;
   border-radius: 9999px !important;
   border: 1px solid #d4d4d4 !important;
   background: rgba(255, 255, 255, 0.95) !important;
   color: #262626 !important;
-  font-family: var(--sg-font-sans) !important;
-  font-size: 11px !important;
+  font-family: var(--font-sans, var(--sg-font-sans)) !important;
+  font-size: 10px !important;
   font-weight: 700 !important;
-  letter-spacing: 0.08em !important;
+  letter-spacing: 0.05em !important;
   text-transform: uppercase !important;
   line-height: 1 !important;
   cursor: pointer !important;
   transition: all 0.2s ease !important;
   outline: none !important;
+  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.04) !important;
+}
+
+html[lang="fa"] .sg-lang-btn,
+html[lang="ar"] .sg-lang-btn,
+[dir="rtl"] .sg-lang-btn {
+  font-family: var(--font-sans, var(--sg-font-sans)) !important;
+  letter-spacing: 0 !important;
+  font-size: 10px !important;
 }
 
 .sg-lang-btn:hover {
@@ -673,7 +697,83 @@ html[lang="ar"] .sg-pill-btn {
 
 .sg-lang-btn i.fa-globe {
   color: var(--sg-gold) !important;
-  font-size: 12px !important;
+}
+
+/* ==========================================================================
+   Responsive Navigation Scaling — Matches index.html & multilingual.css
+   ========================================================================== */
+@media (max-width: 1380px) {
+  .sg-nav-sep,
+  .sg-brand-sep {
+    display: none !important;
+  }
+  .sg-main-nav {
+    gap: 0.25rem 0.45rem !important;
+  }
+  .sg-nav-link {
+    font-size: 9.5px !important;
+    letter-spacing: 0.05em !important;
+    padding: 4px 5px !important;
+  }
+  html[lang="fa"] .sg-nav-link,
+  html[lang="ar"] .sg-nav-link,
+  [dir="rtl"] .sg-nav-link {
+    letter-spacing: 0 !important;
+    font-size: 9.5px !important;
+  }
+  .sg-pill-btn {
+    height: 32px !important;
+    padding: 0 10px !important;
+    font-size: 9.5px !important;
+    letter-spacing: 0.05em !important;
+  }
+  html[lang="fa"] .sg-pill-btn,
+  html[lang="ar"] .sg-pill-btn,
+  [dir="rtl"] .sg-pill-btn {
+    letter-spacing: 0 !important;
+    font-size: 9.5px !important;
+  }
+  .sg-lang-btn {
+    height: 30px !important;
+    padding: 0 8px !important;
+    font-size: 9.5px !important;
+    letter-spacing: 0.05em !important;
+  }
+}
+
+@media (max-width: 1280px) {
+  .sg-main-nav {
+    gap: 0.2rem 0.35rem !important;
+  }
+  .sg-nav-link {
+    font-size: 9px !important;
+    letter-spacing: 0.03em !important;
+    padding: 4px 4px !important;
+  }
+  html[lang="fa"] .sg-nav-link,
+  html[lang="ar"] .sg-nav-link,
+  [dir="rtl"] .sg-nav-link {
+    letter-spacing: 0 !important;
+    font-size: 9px !important;
+  }
+  .sg-pill-btn {
+    height: 30px !important;
+    padding: 0 8px !important;
+    font-size: 9px !important;
+    letter-spacing: 0.03em !important;
+  }
+  html[lang="fa"] .sg-pill-btn,
+  html[lang="ar"] .sg-pill-btn,
+  [dir="rtl"] .sg-pill-btn {
+    letter-spacing: 0 !important;
+    font-size: 9px !important;
+  }
+  .sg-lang-btn {
+    height: 28px !important;
+    padding: 0 7px !important;
+    font-size: 9px !important;
+    letter-spacing: 0.03em !important;
+  }
 }
 
 .sg-lang-btn .sg-lang-arrow {
@@ -760,7 +860,7 @@ html[lang="ar"] .sg-pill-btn {
   outline: none !important;
 }
 
-@media (max-width: 1120px) {
+@media (max-width: 1140px) {
   .sg-mob-toggle {
     display: flex !important;
   }
@@ -806,6 +906,12 @@ html[lang="ar"] .sg-pill-btn {
   display: flex !important;
   flex-direction: column !important;
   gap: 20px !important;
+}
+
+@media (min-width: 1141px) {
+  .sg-drawer {
+    display: none !important;
+  }
 }
 
 [dir="rtl"] .sg-drawer {

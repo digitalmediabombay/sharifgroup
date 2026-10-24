@@ -55,6 +55,7 @@
     x: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M6 6l12 12M18 6L6 18"/></svg>',
     arrow: '<svg class="flip" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 12h14M13 6l6 6-6 6"/></svg>',
     down: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 5v14M6 13l6 6 6-6"/></svg>',
+    up: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 19V5M6 11l6-6 6 6"/></svg>',
     check: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4"><path d="M5 12l5 5L20 7"/></svg>',
     plus: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4"><path d="M12 5v14M5 12h14"/></svg>',
     shield: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 3l8 3v6c0 5-3.5 8-8 9-4.5-1-8-4-8-9V6z"/><path d="M9 12l2 2 4-4"/></svg>',
@@ -631,9 +632,55 @@
     }, 4500);
   }
 
+  const WHO_BG_IMAGES = {
+    agency: 'https://images.unsplash.com/photo-1486406146926-c627a92ad1ab?auto=format&fit=crop&q=80&w=1200',
+    firm: 'https://images.unsplash.com/photo-1497366216548-37526070297c?auto=format&fit=crop&q=80&w=1200',
+    individual: 'https://images.unsplash.com/photo-1517245386807-bb43f82c33c4?auto=format&fit=crop&q=80&w=1200'
+  };
+
+  const CARD_LABELS = {
+    en: {
+      category: 'CATEGORY',
+      step: 'STEP',
+      hover: 'HOVER TO EXPAND',
+      active: 'ACTIVE UNIT',
+      applyFor: 'Apply as',
+      stepPillars: ['PHASE 01 • APPLICATION', 'PHASE 02 • SCREENING', 'PHASE 03 • ONBOARDING'],
+      whoPillars: ['PORTFOLIO 01 • AGENTS', 'PORTFOLIO 02 • FIRMS', 'PORTFOLIO 03 • NETWORK']
+    },
+    fa: {
+      category: 'دسته‌بندی',
+      step: 'مرحله',
+      hover: 'برای مشاهده کامل لمس کنید',
+      active: 'بخش فعال',
+      applyFor: 'درخواست به‌عنوان',
+      stepPillars: ['مرحله ۰۱ • ثبت درخواست', 'مرحله ۰۲ • بررسی و اعتبارسنجی', 'مرحله ۰۳ • عقد قرارداد'],
+      whoPillars: ['بخش ۰۱ • آژانس‌ها', 'بخش ۰۲ • شرکت‌ها', 'بخش ۰۳ • شبکه‌سازان']
+    },
+    ar: {
+      category: 'الفئة',
+      step: 'الخطوة',
+      hover: 'مرر للتوسيع',
+      active: 'الوحدة النشطة',
+      applyFor: 'تقديم الطلب كـ',
+      stepPillars: ['المرحلة ۰۱ • تقديم الطلب', 'المرحلة ۰۲ • التدقيق والمراجعة', 'المرحلة ۰۳ • اتفاقية الشراكة'],
+      whoPillars: ['المحفظة ۰۱ • الوكالات', 'المحفظة ۰۲ • الشركات', 'المحفظة ۰۳ • الأفراد']
+    },
+    zh: {
+      category: '类别',
+      step: '阶段',
+      hover: '悬停展开详情',
+      active: '已展开',
+      applyFor: '申请身份：',
+      stepPillars: ['第一阶段 • 在线申请', '第二阶段 • 审核与背调', '第三阶段 • 签署合作协议'],
+      whoPillars: ['领域 01 • 移民与咨询机构', '领域 02 • 专业服务事务所', '领域 03 • 高净值关系网络']
+    }
+  };
+
   function viewPartners() {
     document.title = L().meta.title;
     const P = k => t(k);
+    const curLabels = CARD_LABELS[lang] || CARD_LABELS.en;
     return `
     <section class="hero hero--compact">
       ${heroSlideshowHTML()}
@@ -649,18 +696,194 @@
       </div>
     </section>
 
-    <section class="section section--cream" id="apply">
-      <div class="container apply-grid">
-        <div class="intro-col">
-          <h2 class="intro-h">${esc(P('who.title'))}</h2>
-          <ul class="who-list">${P('who.items').map(w => `<li><span class="wl-ico">${typeIcon[w.k]}</span><div><strong>${esc(w.t)}</strong><span>${esc(w.d)}</span></div></li>`).join('')}</ul>
-          <h2 class="intro-h">${esc(P('steps.title'))}</h2>
-          <ol class="mini-steps">${P('steps.items').map((st, i) => `<li><span class="ms-n">${pad2(i + 1)}</span><div><strong>${esc(st.t)}</strong><span>${esc(st.d)}</span></div></li>`).join('')}</ol>
+    <!-- =========================================================================
+         SECTION 1: WHO WE WORK WITH (IMMERSIVE ACCORDION CARDS - MATCHING IMAGE 2)
+         ========================================================================= -->
+    <section class="section section--who scroll-mt-28" id="who">
+      <div class="container">
+        <!-- Centered Heading Intro matching Image 2 style -->
+        <div class="who-sec-head" style="text-align:center;max-width:760px;margin:0 auto 44px;">
+          <span class="text-xs font-bold uppercase tracking-[0.25em] text-luxury-gold flex items-center justify-center gap-2" style="display:inline-flex;align-items:center;gap:8px;color:#C5A880;font-size:11px;font-weight:700;letter-spacing:0.22em;">
+            <i class="fa-solid fa-handshake"></i> <span>SHARIF GROUP PARTNERS</span>
+          </span>
+          <h2 class="font-serif text-3xl sm:text-4xl md:text-5xl font-bold text-white tracking-tight" style="font-family:var(--font-serif);font-size:clamp(28px, 4vw, 46px);font-weight:700;color:#ffffff;margin:14px 0 12px;line-height:1.2;">
+            ${esc(P('who.title'))}
+          </h2>
+          <p class="text-xs sm:text-sm text-neutral-400 max-w-xl mx-auto font-light leading-relaxed" style="font-size:14px;color:#a3a3a3;max-width:580px;margin:0 auto;line-height:1.6;">
+            ${esc(P('hero.sub') || '')}
+          </p>
         </div>
-        <div class="card apply-form"><h2 class="form-title">${esc(P('form.title').replace(/<\/?em>/g, ''))}</h2><p class="sub">${esc(P('form.sub'))}</p>${formHTML()}</div>
+
+        <!-- Accordion Cards Stack (Itemized List with Glowing Active Card) -->
+        <div class="who-acc-container" id="who-accordion-container">
+          ${P('who.items').map((w, idx) => {
+            const bgImg = WHO_BG_IMAGES[w.k] || WHO_BG_IMAGES.agency;
+            const isAct = false;
+            return `
+            <div class="who-acc-item" data-partner-type="${w.k}" tabindex="0" role="button" aria-expanded="false" aria-label="${esc(w.t)}">
+              <div class="who-acc-bg" style="background-image: url('${bgImg}');"></div>
+              <div class="who-acc-overlay"></div>
+              <div class="who-acc-main">
+                <div class="who-acc-header">
+                  <div class="who-acc-lead">
+                    <div class="who-acc-icon">
+                      ${typeIcon[w.k]}
+                    </div>
+                    <div class="who-acc-meta">
+                      <span class="who-acc-pillar">${esc(curLabels.whoPillars[idx] || (curLabels.category + ' ' + pad2(idx + 1)))}</span>
+                      <h3 class="who-acc-title">${esc(w.t)}</h3>
+                    </div>
+                  </div>
+                  <span class="who-acc-badge">${esc(isAct ? curLabels.active : curLabels.hover)}</span>
+                </div>
+                <div class="who-acc-grid">
+                  <div class="who-acc-body">
+                    <div class="who-acc-content">
+                      <p class="who-acc-desc">${esc(w.d)}</p>
+                      <div class="who-acc-action">
+                        <button type="button" class="who-acc-btn" data-scroll="apply" data-type="${w.k}">
+                          <span>${esc(curLabels.applyFor)}: ${esc(w.t)}</span>
+                          <i class="fa-solid fa-arrow-right ml-1"></i>
+                        </button>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>`;
+          }).join('')}
+        </div>
+      </div>
+    </section>
+
+    <!-- =========================================================================
+         SECTION 2: HOW IT WORKS (ROADMAP MAP ANIMATION IDENTICAL TO REFERENCE)
+         ========================================================================= -->
+    <section class="sec-timeline-wrapper relative overflow-hidden scroll-mt-36" id="sec-timeline">
+      <div class="timeline-map-bg absolute inset-0 pointer-events-none" style="background-image: url('https://upload.wikimedia.org/wikipedia/commons/thumb/c/cf/United_Arab_Emirates_location_map.svg/1920px-United_Arab_Emirates_location_map.svg.png');"></div>
+      <div class="timeline-map-gradient absolute inset-0 pointer-events-none"></div>
+
+      <div class="max-w-5xl mx-auto space-y-16 relative z-10 px-6">
+        <div class="text-center space-y-3 relative" style="text-align:center;margin-bottom:36px;">
+          <span class="text-xs font-bold uppercase tracking-[0.25em] text-luxury-gold flex items-center justify-center gap-2" style="display:inline-flex;align-items:center;gap:8px;color:#C5A880;font-size:11px;font-weight:700;letter-spacing:0.25em;">
+            <i class="fa-regular fa-clock"></i> <span>${esc(P('steps.timelineBadge'))}</span>
+          </span>
+          <h2 class="font-serif text-2xl sm:text-3xl md:text-4xl font-bold text-neutral-900 leading-tight" style="font-family:var(--font-serif);font-size:clamp(22px, 2.5vw, 34px);font-weight:700;color:#171717;margin:10px 0 8px;">
+            ${P('steps.timelineTitle')}
+          </h2>
+          <p class="text-xs sm:text-sm text-neutral-600 font-light max-w-xl mx-auto" style="font-size:13px;color:#525252;max-width:540px;margin:0 auto;line-height:1.55;">
+            ${esc(P('steps.timelineDesc'))}
+          </p>
+        </div>
+
+        <div class="relative pt-8 pb-12" id="timeline-track">
+          <!-- Central Track Line -->
+          <div class="timeline-central-line"></div>
+
+          <!-- Animated Central Floating Luxury Badge Node -->
+          <div class="central-passport-node" id="central-passport-node">
+            <div class="central-passport-card">
+              <div class="passport-crest">
+                <i class="fa-solid fa-handshake"></i>
+              </div>
+              <span class="passport-brand">SHARIF</span>
+              <span class="passport-sub">PARTNER</span>
+            </div>
+          </div>
+
+          <div class="space-y-16 sm:space-y-20 relative z-10" style="display:flex;flex-direction:column;gap:56px;">
+            ${(() => {
+              const items = P('steps.items') || [];
+              const s1 = items[0] || {}, s2 = items[1] || {}, s3 = items[2] || {};
+              return `
+              <!-- Step 1 -->
+              <div class="timeline-step grid grid-cols-12 gap-2 sm:gap-8 items-center relative" data-step="1">
+                <div class="col-span-5 text-end pe-2 sm:pe-12 space-y-1 sm:space-y-2 timeline-text-col">
+                  <span class="timeline-step-phase">${esc(s1.phase || 'PHASE 01')} • ${esc(s1.time || 'DAY 1')}</span>
+                  <h4 class="timeline-step-heading">${esc(s1.t)}</h4>
+                  <p class="timeline-step-text hidden xs:block">${esc(s1.d)}</p>
+                </div>
+                <div class="col-span-2 flex justify-center relative">
+                  <div class="step-badge">1</div>
+                </div>
+                <div class="col-span-5 text-start ps-2 sm:ps-12 timeline-note-col">
+                  <p class="timeline-step-note">${esc(s1.note)}</p>
+                </div>
+              </div>
+
+              <!-- Step 2 -->
+              <div class="timeline-step grid grid-cols-12 gap-2 sm:gap-8 items-center relative" data-step="2">
+                <div class="col-span-5 text-end pe-2 sm:pe-12 timeline-note-col">
+                  <p class="timeline-step-note">${esc(s2.note)}</p>
+                </div>
+                <div class="col-span-2 flex justify-center relative">
+                  <div class="step-badge">2</div>
+                </div>
+                <div class="col-span-5 text-start ps-2 sm:ps-12 space-y-1 sm:space-y-2 timeline-text-col">
+                  <span class="timeline-step-phase">${esc(s2.phase || 'PHASE 02')} • ${esc(s2.time || 'DAYS 2-3')}</span>
+                  <h4 class="timeline-step-heading">${esc(s2.t)}</h4>
+                  <p class="timeline-step-text hidden xs:block">${esc(s2.d)}</p>
+                </div>
+              </div>
+
+              <!-- Step 3 -->
+              <div class="timeline-step grid grid-cols-12 gap-2 sm:gap-8 items-center relative" data-step="3">
+                <div class="col-span-5 text-end pe-2 sm:pe-12 space-y-1 sm:space-y-2 timeline-text-col">
+                  <span class="timeline-step-phase">${esc(s3.phase || 'PHASE 03')} • ${esc(s3.time || 'DAY 4')}</span>
+                  <h4 class="timeline-step-heading">${esc(s3.t)}</h4>
+                  <p class="timeline-step-text hidden xs:block">${esc(s3.d)}</p>
+                </div>
+                <div class="col-span-2 flex justify-center relative">
+                  <div class="step-badge">3</div>
+                </div>
+                <div class="col-span-5 text-start ps-2 sm:ps-12 timeline-note-col">
+                  <p class="timeline-step-note">${esc(s3.note)}</p>
+                </div>
+              </div>
+
+              <!-- Final Celebration Milestone (Checkmark ✓) -->
+              <div class="timeline-step grid grid-cols-12 gap-8 items-center relative" data-step="4">
+                <div class="col-span-12 flex flex-col items-center justify-center text-center pt-4 sm:pt-8" style="text-align:center;display:flex;flex-direction:column;align-items:center;">
+                  <div class="step-badge step-badge--final">✓</div>
+                  <div class="mt-4 sm:mt-6 space-y-2" style="margin-top:16px;">
+                    <span class="timeline-congrats-label" id="congrats-label">${esc(P('steps.congrats'))}</span>
+                    <h4 class="timeline-congrats-title">${esc(P('steps.congratsTitle'))}</h4>
+                    <p class="timeline-congrats-desc">${esc(P('steps.congratsDesc'))}</p>
+                    <div style="margin-top:18px;">
+                      <button class="btn btn--bronze btn--sm" type="button" data-scroll="apply" style="display:inline-flex;align-items:center;gap:8px;">
+                        <span>${esc(P('hero.apply'))}</span>
+                        ${I.down}
+                      </button>
+                    </div>
+                  </div>
+                </div>
+              </div>`;
+            })()}
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- =========================================================================
+         SECTION 3: PARTNERSHIP APPLICATION FORM (STANDALONE DEDICATED SECTION)
+         ========================================================================= -->
+    <section class="section section--apply-standalone scroll-mt-24 relative overflow-hidden" id="apply">
+      <div class="apply-map-bg" aria-hidden="true"></div>
+      <div class="apply-map-overlay" aria-hidden="true"></div>
+      <div class="container relative z-10">
+        <div class="sec-head" style="text-align:center;max-width:760px;margin:0 auto 40px;position:relative;z-index:10;">
+          <span class="eyebrow caps" style="justify-content:center;color:#786142;letter-spacing:0.25em;font-size:11.5px;font-weight:700;"><i class="fa-solid fa-file-signature" style="margin-inline-end:6px"></i><span>${esc(P('hero.apply'))}</span></span>
+          <h2 class="display h-lg font-serif" style="margin:14px 0 0;color:#171717;font-weight:700;">${P('form.title')}</h2>
+          <div style="width:64px;height:2px;background:#786142;margin:16px auto;"></div>
+          <p class="lede" style="margin:0 auto;color:#525252;line-height:1.6;font-size:14.5px;max-width:620px;">${esc(P('form.sub'))}</p>
+        </div>
+        <div class="apply-form--standalone">
+          ${formHTML()}
+        </div>
       </div>
     </section>`;
   }
+
 
   function formHTML() {
     const F = k => esc(t('form.' + k));
@@ -668,21 +891,75 @@
     const dial = DIAL.map(([c, k]) => `<option value="${c}">${c} ${k}</option>`).join('');
     return `<form class="form" id="partnerForm" novalidate>
       <div class="form-alert" role="alert" id="formAlert">${F('alert')}</div>
-      <fieldset class="field" id="f-type-wrap"><legend class="label">${F('type')}<span class="req">*</span></legend><div class="type-grid">${types}</div><span class="err">${F('errType')}</span></fieldset>
-      <div class="form-2">
-        <div class="field"><label for="f-name">${F('name')}<span class="req">*</span></label><input class="input" id="f-name" name="fullName" autocomplete="name" maxlength="80"><span class="err">${F('errName')}</span></div>
-        <div class="field" id="company-field"><label for="f-company">${F('company')}<span class="req">*</span></label><input class="input" id="f-company" name="company" autocomplete="organization" maxlength="120"><span class="hint">${F('companyHint')}</span><span class="err">${F('errCompany')}</span></div>
+      
+      <!-- Row 1: 3 Columns (Matches Program Pages UI/UX) -->
+      <div class="form-grid-3">
+        <div class="field">
+          <label class="field-label-caps" for="f-name">${F('name')}<span class="req">*</span></label>
+          <input class="input" id="f-name" name="fullName" autocomplete="name" placeholder="John Doe" maxlength="80">
+          <span class="err">${F('errName')}</span>
+        </div>
+        <div class="field">
+          <label class="field-label-caps" for="f-email">${F('email')}<span class="req">*</span></label>
+          <input class="input" id="f-email" name="email" type="email" inputmode="email" autocomplete="email" placeholder="name@domain.com" dir="ltr">
+          <span class="err">${F('errEmail')}</span>
+        </div>
+        <div class="field">
+          <label class="field-label-caps" for="f-phone">${F('wa')}<span class="req">*</span></label>
+          <div class="phone" dir="ltr">
+            <select class="select" id="f-dial" name="dialCode" aria-label="Country code">${dial}</select>
+            <input class="input" id="f-phone" name="phone" type="tel" inputmode="tel" autocomplete="tel-national" placeholder="50 123 4567" dir="ltr">
+          </div>
+          <span class="err">${F('errPhone')}</span>
+        </div>
       </div>
-      <div class="form-2">
-        <div class="field"><label for="f-country">${F('country')}<span class="req">*</span></label><input class="input" id="f-country" name="country" autocomplete="country-name" maxlength="60"><span class="err">${F('errCountry')}</span></div>
-        <div class="field"><label for="f-email">${F('email')}<span class="req">*</span></label><input class="input" id="f-email" name="email" type="email" inputmode="email" autocomplete="email" dir="ltr"><span class="err">${F('errEmail')}</span></div>
+
+      <!-- Row 2: 2 Columns -->
+      <div class="form-grid-2">
+        <div class="field" id="company-field">
+          <label class="field-label-caps" for="f-company">${F('company')}<span class="req">*</span></label>
+          <input class="input" id="f-company" name="company" autocomplete="organization" placeholder="e.g. Legal Partners LLC" maxlength="120">
+          <span class="hint" style="font-size:11px;color:#737373;margin-top:3px;display:block;">${F('companyHint')}</span>
+          <span class="err">${F('errCompany')}</span>
+        </div>
+        <div class="field">
+          <label class="field-label-caps" for="f-country">${F('country')}<span class="req">*</span></label>
+          <input class="input" id="f-country" name="country" autocomplete="country-name" placeholder="e.g. UAE, Saudi Arabia, USA" maxlength="60">
+          <span class="err">${F('errCountry')}</span>
+        </div>
       </div>
-      <div class="field"><label for="f-phone">${F('wa')}<span class="req">*</span></label><div class="phone"><select class="select" id="f-dial" name="dialCode" aria-label="Country code">${dial}</select><input class="input" id="f-phone" name="phone" type="tel" inputmode="tel" autocomplete="tel-national"></div><span class="err">${F('errPhone')}</span></div>
-      <div class="field"><label for="f-msg">${F('message')}<span class="opt">(${esc(t('common.optional'))})</span></label><textarea class="textarea" id="f-msg" name="message" maxlength="1000" rows="3"></textarea></div>
-      <div class="field" id="consent-field"><label class="check"><input type="checkbox" id="f-consent" name="consent" value="yes"><span>${F('consent')}<span class="req">*</span></span></label><span class="err">${F('errConsent')}</span></div>
+
+      <!-- Row 3: Partner Category / Type Selection -->
+      <fieldset class="field" id="f-type-wrap" style="margin:6px 0 22px;">
+        <legend class="field-label-caps">${F('type')}<span class="req">*</span></legend>
+        <div class="type-grid">${types}</div>
+        <span class="err">${F('errType')}</span>
+      </fieldset>
+
+      <!-- Row 4: Confidential Notes -->
+      <div class="field" style="margin-bottom:22px;">
+        <label class="field-label-caps" for="f-msg">${F('message')} <span class="opt" style="font-weight:normal;color:#737373;text-transform:none;">(${esc(t('common.optional'))})</span></label>
+        <textarea class="textarea" id="f-msg" name="message" maxlength="1000" rows="3" placeholder="...Detail any specific partnership parameters, portfolio size, or questions"></textarea>
+      </div>
+
+      <!-- Row 5: Consent Checkbox -->
+      <div class="field" id="consent-field" style="border-top:1px solid rgba(0,0,0,0.08);padding-top:16px;margin-bottom:20px;">
+        <label class="check" style="cursor:pointer;display:flex;align-items:flex-start;gap:10px;">
+          <input type="checkbox" id="f-consent" name="consent" value="yes" style="margin-top:3px;">
+          <span style="font-size:12.5px;color:#525252;line-height:1.6;">${F('consent')}<span class="req">*</span></span>
+        </label>
+        <span class="err">${F('errConsent')}</span>
+      </div>
+
       <div class="hp" aria-hidden="true"><label>Company website<input name="hp_url" tabindex="-1" autocomplete="off"></label></div>
-      <button class="btn btn--bronze btn--block" type="submit">${F('submit')}</button>
-      <p class="consent-note">${I.shield}<span>${F('note')} ${F('privacy')}</span></p>
+
+      <!-- Row 6: Centered CTA Button -->
+      <div style="text-align:center;padding-top:6px;">
+        <button class="btn-program-submit" type="submit">${F('submit')} →</button>
+      </div>
+      <p class="consent-note" style="text-align:center;margin-top:16px;font-size:12px;color:#737373;display:flex;align-items:center;justify-content:center;gap:6px;">
+        ${I.shield}<span>${F('note')} ${F('privacy')}</span>
+      </p>
     </form>`;
   }
 
@@ -857,6 +1134,139 @@
     return { page: 'partners' };
   }
 
+  function bindPartnerCards() {
+    const curLabels = CARD_LABELS[lang] || CARD_LABELS.en;
+    const whoCards = $$('.who-acc-item, .who-card');
+
+    function setCardActive(card) {
+      if (!card) return;
+      whoCards.forEach(c => {
+        c.classList.remove('is-active');
+        c.setAttribute('aria-expanded', 'false');
+        const b = c.querySelector('.who-acc-badge, .partner-card-badge');
+        if (b) b.textContent = curLabels.hover;
+      });
+      card.classList.add('is-active');
+      card.setAttribute('aria-expanded', 'true');
+      const ab = card.querySelector('.who-acc-badge, .partner-card-badge');
+      if (ab) ab.textContent = curLabels.active;
+
+      const type = card.dataset.partnerType;
+      if (type) {
+        const radio = $(`#partnerForm input[name="partner_type"][value="${type}"]`);
+        if (radio && !radio.checked) {
+          radio.checked = true;
+          radio.dispatchEvent(new Event('change', { bubbles: true }));
+        }
+      }
+    }
+
+    function deactivateCard(card) {
+      if (!card) return;
+      card.classList.remove('is-active');
+      card.setAttribute('aria-expanded', 'false');
+      const b = card.querySelector('.who-acc-badge, .partner-card-badge');
+      if (b) b.textContent = curLabels.hover;
+    }
+
+    whoCards.forEach(card => {
+      card.addEventListener('mouseenter', () => setCardActive(card));
+      card.addEventListener('mouseleave', () => deactivateCard(card));
+      card.addEventListener('click', e => {
+        if (e.target.closest('[data-scroll]')) return;
+        if (card.classList.contains('is-active')) {
+          deactivateCard(card);
+        } else {
+          setCardActive(card);
+        }
+      });
+    });
+
+    const form = $('#partnerForm');
+    if (form) {
+      form.querySelectorAll('input[name="partner_type"]').forEach(input => {
+        input.addEventListener('change', () => {
+          const val = input.value;
+          const matchingCard = $(`.who-acc-item[data-partner-type="${val}"], .who-card[data-partner-type="${val}"]`);
+          if (matchingCard && !matchingCard.classList.contains('is-active')) {
+            setCardActive(matchingCard);
+          }
+        });
+      });
+    }
+  }
+
+  function updateTimeline() {
+    const passportNode = document.getElementById("central-passport-node");
+    const track = document.getElementById("timeline-track");
+    const steps = document.querySelectorAll(".timeline-step");
+
+    if (!passportNode || !track || steps.length === 0) return;
+
+    const trackRect = track.getBoundingClientRect();
+    const viewportCenter = window.innerHeight / 2;
+
+    // Calculate max downward travel bound (stops precisely at final badge)
+    const finalStep = steps[steps.length - 1];
+    let maxTravel = trackRect.height;
+    if (finalStep) {
+      const finalBadge = finalStep.querySelector(".step-badge");
+      if (finalBadge) {
+        const badgeRect = finalBadge.getBoundingClientRect();
+        maxTravel = badgeRect.top + (badgeRect.height / 2) - trackRect.top;
+      }
+    }
+
+    // Calculate travel relative to track container & clamp precisely to final tick
+    let relativeY = viewportCenter - trackRect.top;
+    relativeY = Math.max(0, Math.min(relativeY, maxTravel));
+
+    // Move passport node smoothly
+    passportNode.style.top = `${relativeY}px`;
+
+    // Proximity threshold adapted for mobile vs desktop screens
+    const proximityThreshold = window.innerWidth < 640 ? 80 : 110;
+
+    // Check proximity to light up badges step by step
+    steps.forEach((step) => {
+      const badge = step.querySelector(".step-badge");
+      if (!badge) return;
+
+      const badgeRect = badge.getBoundingClientRect();
+      const badgeCenter = badgeRect.top + badgeRect.height / 2;
+      const stepNum = step.dataset.step;
+
+      if (Math.abs(viewportCenter - badgeCenter) < proximityThreshold) {
+        // Active Light-Up State (Yellow/Golden Glow)
+        badge.classList.remove("bg-neutral-200", "text-neutral-600", "badge-passed-green");
+        badge.classList.add("bg-amber-500", "text-neutral-950", "ring-4", "ring-amber-300/60", "scale-110", "shadow-xl");
+
+        if (stepNum === "4") {
+          const label = document.getElementById("congrats-label");
+          if (label) {
+            label.style.color = "#d97706";
+          }
+        }
+      } else if (badgeCenter < viewportCenter) {
+        // Passed State
+        badge.classList.remove("bg-neutral-200", "text-neutral-600", "bg-amber-500", "ring-4", "ring-amber-300/60", "scale-110", "shadow-xl");
+
+        if (stepNum === "4") {
+          badge.classList.add("bg-amber-500", "text-neutral-950");
+        } else {
+          badge.classList.add("badge-passed-green");
+        }
+      } else {
+        // Upcoming State (Default Gray)
+        badge.classList.remove("bg-amber-500", "badge-passed-green", "text-white", "text-neutral-950", "ring-4", "ring-amber-300/60", "scale-110", "shadow-xl");
+        badge.classList.add("bg-neutral-200", "text-neutral-600");
+      }
+    });
+  }
+
+  window.addEventListener("scroll", updateTimeline, { passive: true });
+  window.addEventListener("resize", updateTimeline, { passive: true });
+
   function render() {
     const r = parseRoute();
     const main = $('#main');
@@ -868,6 +1278,8 @@
     bindForm();
     if (r.page !== 'thanks') {
       initHeroSlideshow();
+      bindPartnerCards();
+      setTimeout(updateTimeline, 60);
     }
   }
 

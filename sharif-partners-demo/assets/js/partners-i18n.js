@@ -106,18 +106,34 @@ window.PARTNER_I18N = {
       },
       "steps": {
         "title": "How it works",
+        "timelineBadge": "TIMELINE",
+        "timelineTitle": "Partnership <span class=\"italic text-[#786142] font-serif font-normal\">Roadmap & Steps</span>",
+        "timelineDesc": "Become an authorized Sharif Group partner in 3 simple steps over 4 days.",
+        "congrats": "CONGRATULATIONS • PARTNERSHIP ACTIVE",
+        "congratsTitle": "Start Referring Clients & Earning High-Tier Commissions",
+        "congratsDesc": "Full legal, processing, and private client desk support across 8 Citizenship and 4 Residency programs.",
+        "exploreRoadmap": "Explore Interactive Roadmap",
         "items": [
           {
-            "t": "Apply",
-            "d": "Fill in the short form."
+            "phase": "PHASE 01",
+            "time": "DAY 1",
+            "t": "Submit Partnership Application",
+            "d": "Fill in the short partner application form with your details or firm profile.",
+            "note": "Takes under 2 minutes. Our Dubai onboarding desk reviews your profile within 24 hours."
           },
           {
-            "t": "Introductory call & due diligence",
-            "d": "We get to know you and complete our standard checks."
+            "phase": "PHASE 02",
+            "time": "DAYS 2-3",
+            "t": "Introductory Call & Due Diligence",
+            "d": "We connect via video call or at our Dubai office to discuss commission structures, client profiles, and program options.",
+            "note": "Compliance review and direct consultation with our Head of Global Partnerships in Dubai."
           },
           {
-            "t": "Partnership agreement",
-            "d": "Terms are agreed in writing."
+            "phase": "PHASE 03",
+            "time": "DAY 4",
+            "t": "Partnership Agreement & Portal Access",
+            "d": "Sign the official agency agreement and get direct access to dedicated case managers and priority client tracking.",
+            "note": "Official agreement protectively structured under UAE law with prompt, transparent commission payouts."
           }
         ]
       },
@@ -317,18 +333,34 @@ window.PARTNER_I18N = {
       },
       "steps": {
         "title": "روند همکاری",
+        "timelineBadge": "مسیر همکاری",
+        "timelineTitle": "مراحل و نقشه راه <span class=\"italic text-[#786142] font-serif font-normal\">همکاری رسمی</span>",
+        "timelineDesc": "در ۳ مرحله شفاف و ظرف ۴ روز، شریک رسمی شریف گروپ شوید.",
+        "congrats": "تبریک • شراکت رسمی فعال شد",
+        "congratsTitle": "معرفی مشتریان را آغاز کنید و از بالاترین کمیسیون‌ها بهره‌مند شوید",
+        "congratsDesc": "پشتیبانی کامل حقوقی، اجرایی و میز اختصاصی در ۸ برنامه شهروندی و ۴ برنامه اقامت با تضمین شریف گروپ دبی.",
+        "exploreRoadmap": "مشاهده نقشه راه تعاملی",
         "items": [
           {
-            "t": "درخواست",
-            "d": "فرم کوتاه را پر کنید."
+            "phase": "مرحله اول",
+            "time": "روز ۱",
+            "t": "ثبت درخواست همکاری",
+            "d": "فرم کوتاه درخواست را با اطلاعات شخصی یا سازمانی خود تکمیل کنید.",
+            "note": "کمتر از ۲ دقیقه زمان می‌برد. تیم پذیرش ما ظرف ۲۴ ساعت پرونده شما را بررسی می‌کند."
           },
           {
+            "phase": "مرحله دوم",
+            "time": "روز ۲-۳",
             "t": "جلسه آشنایی و بررسی صلاحیت",
-            "d": "با شما آشنا می‌شویم و بررسی‌های معمول را انجام می‌دهیم."
+            "d": "در یک جلسه آنلاین یا در دفتر دبی، ساختار کمیسیون‌ها و فرصت‌های همکاری را بررسی می‌کنیم.",
+            "note": "جلسه مستقیم با مدیر ارشد توسعه همکاری‌های بین‌المللی شریف گروپ در بیزنس بی دبی."
           },
           {
-            "t": "قرارداد همکاری",
-            "d": "شرایط به‌صورت کتبی توافق می‌شود."
+            "phase": "مرحله سوم",
+            "time": "روز ۴",
+            "t": "امضای قرارداد و فعال‌سازی پنل",
+            "d": "قرارداد رسمی نمایندگی را امضا کرده و ابزارهای معرفی و پشتیبانی مستقیم پرونده‌ها را دریافت کنید.",
+            "note": "قرارداد رسمی منطبق بر قوانین امارات با تضمین پرداخت سریع و شفاف کمیسیون‌ها."
           }
         ]
       },
@@ -527,19 +559,35 @@ window.PARTNER_I18N = {
         ]
       },
       "steps": {
-        "title": "كيف تعمل الشراكة",
+        "title": "كيف نعمل",
+        "timelineBadge": "المسار الزمني",
+        "timelineTitle": "خطوات ومراحل <span class=\"italic text-[#786142] font-serif font-normal\">الشراكة الرسمية</span>",
+        "timelineDesc": "انضم كشريك رسمي معتمد لمجموعة شريف في ۳ خطوات بسيطة خلال ٤ أيام.",
+        "congrats": "تهانينا • تم تفعيل الشراكة بنجاح",
+        "congratsTitle": "ابدأ في إحالة العملاء وتحقيق أعلى العمولات التنافسية",
+        "congratsDesc": "دعم قانوني وتنفيذي كامل ومكتب عملاء خاص عبر ۸ برامج جنسية و٤ برامج إقامة استثمارية.",
+        "exploreRoadmap": "استكشف الخارطة التفاعلية",
         "items": [
           {
-            "t": "قدّم الطلب",
-            "d": "املأ النموذج القصير."
+            "phase": "المرحلة الأولى",
+            "time": "اليوم ۱",
+            "t": "تقديم طلب الشراكة",
+            "d": "املأ النموذج المختصر ببياناتك الشخصية أو ملف شركتك المهنية.",
+            "note": "يستغرق أقل من دقيقتين. يقوم مكتب شراكات دبي بمراجعة طلبك خلال ۲۴ ساعة."
           },
           {
-            "t": "مكالمة تعارف والعناية الواجبة",
-            "d": "نتعرّف عليك ونجري فحوصاتنا المعتادة."
+            "phase": "المرحلة الثانية",
+            "time": "اليوم ۲-۳",
+            "t": "مكالمة التعارف والتدقيق",
+            "d": "نتواصل عبر مكالمة مرئية أو في مقرنا بدبي لمناقشة نسب العمولات وبرامج الاستثمار المتاحة.",
+            "note": "جلسة مباشرة مع مدير الشراكات العالمية في برج باينري، الخليج التجاري، دبي."
           },
           {
-            "t": "اتفاقية الشراكة",
-            "d": "يُتفق على الشروط كتابياً."
+            "phase": "المرحلة الثالثة",
+            "time": "اليوم ٤",
+            "t": "اتفاقية الشراكة والاعتماد",
+            "d": "توقيع اتفاقية الشراكة الرسمية والحصول على المواد التسويقية والمكتب المخصص لمتابعة العملاء.",
+            "note": "عقد رسمي معتمد وفق قوانين دولة الإمارات مع جدول سداد عمولات فوري وشفاف."
           }
         ]
       },
@@ -739,18 +787,34 @@ window.PARTNER_I18N = {
       },
       "steps": {
         "title": "合作流程",
+        "timelineBadge": "合作路线图",
+        "timelineTitle": "合作 <span class=\"italic text-[#786142] font-serif font-normal\">流程与步骤</span>",
+        "timelineDesc": "只需 3 个清晰步骤，在 4 天内成为谢里夫集团官方授权合作伙伴。",
+        "congrats": "恭喜 • 合作伙伴身份已正式激活",
+        "congratsTitle": "开始引荐高净值客户，尊享行业顶尖佣金回报",
+        "congratsDesc": "涵盖 8 国投资入籍与 4 国黄金居留，迪拜法律与文案团队全程 100% 直办支持。",
+        "exploreRoadmap": "探索动态合作路线图",
         "items": [
           {
-            "t": "提交申请",
-            "d": "填写简短表格。"
+            "phase": "第一阶段",
+            "time": "第 1 天",
+            "t": "在线提交合作申请",
+            "d": "填写在线简表，提供您的个人联系方式或企业业务概况。",
+            "note": "仅需 2 分钟。迪拜合作招募团队将在 24 小时内完成首轮审核与对接。"
           },
           {
-            "t": "初步沟通与尽职调查",
-            "d": "我们了解您的情况并完成常规审核。"
+            "phase": "第二阶段",
+            "time": "第 2-3 天",
+            "t": "线上沟通与资质审核",
+            "d": "通过视频会议或在迪拜总部面对面沟通，确立佣金层级、客户画像与合作模式。",
+            "note": "由谢里夫集团全球合作伙伴总监在迪拜商务港（Business Bay）直接对接。"
           },
           {
-            "t": "签订合作协议",
-            "d": "以书面形式约定合作条款。"
+            "phase": "第三阶段",
+            "time": "第 4 天",
+            "t": "签署协议与正式入驻",
+            "d": "签署官方合作协议，获取联合品牌推广物料，享有专属个案经理与极速绿通跟进。",
+            "note": "受阿联酋法律严谨保护的正式协议，保障及时、透明、合规的佣金结算。"
           }
         ]
       },

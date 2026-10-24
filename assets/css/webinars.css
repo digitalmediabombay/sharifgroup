@@ -394,13 +394,13 @@ html[lang="zh"] .caps { letter-spacing: .06em; }
 }
 
 /* Language & typography tweaks */
-html[lang="fa"] .main-nav .nav-link, html[lang="ar"] .main-nav .nav-link { font-size: 13px; font-weight: 600; letter-spacing: 0; }
+html[lang="fa"] .main-nav .nav-link, html[lang="ar"] .main-nav .nav-link, html[lang="fa"] .sg-nav-link, html[lang="ar"] .sg-nav-link { font-size: 10px; font-weight: 700; letter-spacing: 0; }
 html[lang="fa"] .mm-title, html[lang="ar"] .mm-title { font-size: 23px; font-weight: 800; line-height: 1.35; }
 html[lang="fa"] .mm-all-btn, html[lang="ar"] .mm-all-btn { font-size: 11.5px; letter-spacing: 0; }
 html[lang="fa"] .mm-col-head, html[lang="ar"] .mm-col-head { font-size: 12.5px; letter-spacing: 0; }
 html[lang="fa"] .mm-list a, html[lang="ar"] .mm-list a { font-size: 12px; letter-spacing: 0; }
 html[lang="fa"] .mm-card-title, html[lang="ar"] .mm-card-title { font-size: 12px; letter-spacing: 0; }
-html[lang="zh"] .main-nav .nav-link { font-size: 11.5px; font-weight: 600; letter-spacing: .04em; }
+html[lang="zh"] .main-nav .nav-link, html[lang="zh"] .sg-nav-link { font-size: 10px; font-weight: 700; letter-spacing: .04em; }
 html[lang="zh"] .mm-title { font-size: 23px; }
 html[lang="zh"] .mm-list a { font-size: 11.5px; letter-spacing: .04em; }
 
@@ -919,7 +919,11 @@ html[lang="fa"] .series-tag, html[lang="ar"] .series-tag { font-size: 11px; }
   margin-top: 12px;
   padding: 0;
   overflow: hidden;
-  transition: all 0.35s cubic-bezier(0.16, 1, 0.3, 1);
+  transition: transform 2.2s cubic-bezier(0.16, 1, 0.3, 1),
+              border-color 2.2s cubic-bezier(0.16, 1, 0.3, 1),
+              box-shadow 2.2s cubic-bezier(0.16, 1, 0.3, 1),
+              background-color 2.2s cubic-bezier(0.16, 1, 0.3, 1) !important;
+  will-change: transform, box-shadow, border-color !important;
   cursor: pointer;
   outline: none;
 }
@@ -927,10 +931,10 @@ html[lang="fa"] .series-tag, html[lang="ar"] .series-tag { font-size: 11px; }
 .session-row:hover,
 .session-row:focus-within,
 .session-row.is-open {
-  border-color: rgba(197, 168, 128, 0.55);
-  background: rgba(255, 255, 255, 0.05);
-  box-shadow: 0 12px 32px -8px rgba(0, 0, 0, 0.5), 0 0 24px rgba(197, 168, 128, 0.12);
-  transform: translateY(-2px);
+  border-color: rgba(197, 168, 128, 0.65) !important;
+  background: rgba(255, 255, 255, 0.06) !important;
+  box-shadow: 0 16px 40px -8px rgba(0, 0, 0, 0.6), 0 0 32px rgba(197, 168, 128, 0.22) !important;
+  transform: translateY(-4px) !important;
 }
 
 /* Header (Visible initially: Number, Main Heading, Badge + Chevron) */
@@ -949,12 +953,13 @@ html[lang="fa"] .series-tag, html[lang="ar"] .series-tag { font-size: 11px; }
   font-weight: 700;
   min-width: 36px;
   flex-shrink: 0;
-  transition: transform 0.3s ease;
+  transition: transform 1.8s cubic-bezier(0.16, 1, 0.3, 1), color 1.8s ease !important;
 }
 
 .session-row:hover .session-no,
-.session-row:focus-within .session-no {
-  transform: scale(1.08);
+.session-row:focus-within .session-no,
+.session-row.is-open .session-no {
+  transform: scale(1.12) !important;
 }
 
 .session-head-title {
@@ -969,12 +974,13 @@ html[lang="fa"] .series-tag, html[lang="ar"] .series-tag { font-size: 11px; }
   font-weight: 700;
   color: #ffffff;
   line-height: 1.35;
-  transition: color 0.25s ease;
+  transition: color 1.2s ease !important;
 }
 
 .session-row:hover .session-head-title h3,
-.session-row:focus-within .session-head-title h3 {
-  color: #FAF6EE;
+.session-row:focus-within .session-head-title h3,
+.session-row.is-open .session-head-title h3 {
+  color: #FAF6EE !important;
 }
 
 .session-head-actions {
@@ -995,23 +1001,27 @@ html[lang="fa"] .series-tag, html[lang="ar"] .series-tag { font-size: 11px; }
   border: 1px solid rgba(255, 255, 255, 0.12);
   color: var(--gold);
   font-size: 11px;
-  transition: transform 0.35s cubic-bezier(0.16, 1, 0.3, 1), background 0.25s ease, border-color 0.25s ease;
+  transition: transform 1.8s cubic-bezier(0.16, 1, 0.3, 1),
+              background 1.6s ease,
+              border-color 1.6s ease,
+              color 1.6s ease !important;
 }
 
 .session-row:hover .session-chevron,
 .session-row:focus-within .session-chevron,
 .session-row.is-open .session-chevron {
-  transform: rotate(180deg);
-  background: rgba(197, 168, 128, 0.22);
-  border-color: rgba(197, 168, 128, 0.4);
-  color: #ffffff;
+  transform: rotate(180deg) !important;
+  background: rgba(197, 168, 128, 0.24) !important;
+  border-color: rgba(197, 168, 128, 0.5) !important;
+  color: #ffffff !important;
+  box-shadow: 0 0 16px rgba(197, 168, 128, 0.35) !important;
 }
 
 /* Collapse / Expand Container via CSS Grid 0fr -> 1fr */
 .session-row-collapse {
   display: grid;
   grid-template-rows: 0fr;
-  transition: grid-template-rows 0.38s cubic-bezier(0.16, 1, 0.3, 1);
+  transition: grid-template-rows 2.4s cubic-bezier(0.16, 1, 0.3, 1) !important;
 }
 
 .session-row:hover .session-row-collapse,
@@ -1023,8 +1033,9 @@ html[lang="fa"] .series-tag, html[lang="ar"] .series-tag { font-size: 11px; }
 .session-row-inner {
   overflow: hidden;
   opacity: 0;
-  transform: translateY(-6px);
-  transition: opacity 0.3s ease, transform 0.35s ease;
+  transform: translateY(14px);
+  transition: opacity 1.6s cubic-bezier(0.16, 1, 0.3, 1),
+              transform 1.8s cubic-bezier(0.16, 1, 0.3, 1) !important;
 }
 
 .session-row:hover .session-row-inner,
@@ -1032,6 +1043,8 @@ html[lang="fa"] .series-tag, html[lang="ar"] .series-tag { font-size: 11px; }
 .session-row.is-open .session-row-inner {
   opacity: 1;
   transform: translateY(0);
+  transition: opacity 1.8s cubic-bezier(0.16, 1, 0.3, 1) 0.2s,
+              transform 1.8s cubic-bezier(0.16, 1, 0.3, 1) 0.2s !important;
 }
 
 /* Subtle separator line between header and expanded details */
@@ -1072,13 +1085,13 @@ html[lang="fa"] .series-tag, html[lang="ar"] .series-tag { font-size: 11px; }
   height: 100%;
   object-fit: cover;
   display: block;
-  transition: transform 0.45s cubic-bezier(0.16, 1, 0.3, 1), filter 0.35s ease;
+  transition: transform 2.2s cubic-bezier(0.16, 1, 0.3, 1), filter 1.8s ease !important;
 }
 
 .session-row:hover .session-thumb,
 .session-row:focus-within .session-thumb,
 .session-row.is-open .session-thumb {
-  transform: scale(1.08);
+  transform: scale(1.1) !important;
 }
 
 .session-thumb-wrap::after {
@@ -1106,15 +1119,15 @@ html[lang="fa"] .series-tag, html[lang="ar"] .series-tag { font-size: 11px; }
   justify-content: center;
   font-size: 8.5px;
   box-shadow: 0 2px 8px rgba(0, 0, 0, 0.5);
-  transition: transform 0.3s ease, background 0.3s ease, color 0.3s ease;
+  transition: transform 1.6s cubic-bezier(0.16, 1, 0.3, 1), background 1.6s ease, color 1.6s ease !important;
 }
 
 .session-row:hover .session-thumb-badge,
 .session-row:focus-within .session-thumb-badge,
 .session-row.is-open .session-thumb-badge {
-  transform: scale(1.1);
-  background: var(--gold);
-  color: #060a12;
+  transform: scale(1.15) !important;
+  background: var(--gold) !important;
+  color: #060a12 !important;
 }
 
 .session-detail-info {

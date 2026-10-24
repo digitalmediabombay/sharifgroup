@@ -82,14 +82,14 @@ html[lang="zh"] .caps { letter-spacing: .06em; }
 .main-nav a.is-active::after { content: ""; position: absolute; inset-inline: 13px; bottom: -2px; height: 1.5px; background: var(--bronze); }
 .main-nav .chev { width: 8px; height: 8px; opacity: .6; }
 .nav-new { display: inline-block; font-size: 8px; line-height: 1; padding: 3px 5px; border-radius: 99px; background: var(--bronze); color: #fff; letter-spacing: .04em; }
-html[lang="fa"] .main-nav a, html[lang="ar"] .main-nav a { font-size: 13px; font-weight: 600; }
-html[lang="zh"] .main-nav a { font-size: 12px; font-weight: 500; }
+html[lang="fa"] .main-nav a, html[lang="ar"] .main-nav a { font-size: 10px; font-weight: 700; letter-spacing: 0; }
+html[lang="zh"] .main-nav a { font-size: 10px; font-weight: 700; letter-spacing: .04em; }
 .header-actions { display: flex; align-items: center; gap: 10px; flex-shrink: 0; }
 .pill { display: inline-flex; align-items: center; justify-content: center; gap: 6px; border: 1px solid var(--ink-2); color: var(--ink-2); border-radius: 9999px; padding: 8px 15px; font-size: 10px; font-weight: 700; background: transparent; white-space: nowrap; transition: background .2s, color .2s; }
 .pill:hover { background: var(--ink-2); color: #fff; }
 .pill--bronze { border-color: var(--bronze); color: var(--bronze); }
 .pill--bronze:hover { background: var(--bronze); color: #fff; }
-html[lang="fa"] .pill, html[lang="ar"] .pill { font-size: 12px; }
+html[lang="fa"] .pill, html[lang="ar"] .pill { font-size: 10px; letter-spacing: 0; }
 .lang { position: relative; }
 .lang-btn { display: inline-flex; align-items: center; gap: 5px; height: 30px; padding: 0 10px; border: 1px solid var(--line); border-radius: 99px; background: #fff; font-size: 10px; font-weight: 700; color: var(--ink-3); }
 .lang-btn svg { width: 12px; height: 12px; }

@@ -399,11 +399,6 @@
                     <div class="sg-mm-card-overlay"></div>
                     <span class="sg-mm-card-title">${esc(n.education)}</span>
                   </a>
-                  <a class="sg-mm-card" href="${site + p}socialresponsibility/">
-                    <img src="${getAssetUrl('assets/images/photo-148852178799_7302db.webp')}" alt="Social Responsibility" loading="lazy">
-                    <div class="sg-mm-card-overlay"></div>
-                    <span class="sg-mm-card-title">${esc(n.socialResp)}</span>
-                  </a>
                 </div>
               </div>
             </div>
@@ -578,7 +573,6 @@
         <ul class="sg-drawer-acc-body">
           <li><a href="${site + p}realestate/">${esc(n.realEstate)}</a></li>
           <li><a href="${site + p}educationaladvisory/">${esc(n.education)}</a></li>
-          <li><a href="${site + p}socialresponsibility/">${esc(n.socialResp)}</a></li>
         </ul>
       </div>
 
@@ -742,7 +736,7 @@
       document.body.insertBefore(headerEl, document.body.firstChild);
     } else {
       headerEl.classList.add('site-header');
-      if (!headerEl.id) headerEl.id = 'main-header';
+      if (!headerEl.id || headerEl.id === 'siteHeader') headerEl.id = 'main-header';
     }
 
     // Remove legacy old mobile drawers if present to avoid dual menus
