@@ -1275,6 +1275,7 @@
     </section>
     <div class="container"><div class="detail">
       <div class="d-join">${joinCard(w)}</div>
+      <div class="d-form" id="register">${formCard(w)}</div>
       <div class="d-main">
         <section class="block"><h2 class="block-title"><span class="bt-icon"><i class="fa-solid fa-circle-info"></i></span><span>${esc(t('detail.about'))}</span></h2><div class="prose card card--prose">${bodyParas.length ? bodyParas.map(p => `<p>${esc(p)}</p>`).join('') : `<p>${esc(c.excerpt || '')}</p>`}</div></section>
         <section class="block"><h2 class="block-title"><span class="bt-icon"><i class="fa-solid fa-graduation-cap"></i></span><span>${esc(t('detail.learn'))}</span></h2><ul class="learn">${outcomeItems.length ? outcomeItems.map(o => `<li><div class="learn-ico"><i class="fa-solid fa-check"></i></div><span>${esc(o)}</span></li>`).join('') : `<li><div class="learn-ico"><i class="fa-solid fa-check"></i></div><span>${esc(t('common.free'))}</span></li>`}</ul></section>
@@ -1298,7 +1299,6 @@
         <section class="block faq"><h2 class="block-title"><span class="bt-icon"><i class="fa-solid fa-circle-question"></i></span><span>${esc(t('detail.faq'))}</span></h2>${t('detail.faqs').map((f, i) => `<details${i === 0 ? ' open' : ''}><summary>${esc(f.q)}<i class="fa-solid fa-plus faq-toggle-ico"></i></summary><p>${esc(f.a)}</p></details>`).join('')}</section>
         ${others.length ? `<section class="block"><h2 class="block-title"><span class="bt-icon"><i class="fa-solid fa-layer-group"></i></span><span>${esc(t('detail.other'))}</span></h2><div class="section--navy other-sessions-box" style="border-radius:24px;padding:12px 18px 22px">${others.map(sessionRow).join('')}</div></section>` : ''}
       </div>
-      <div class="d-form" id="register">${formCard(w)}</div>
     </div></div>
     <section class="section section--cream section--tight"><div class="container">${ctaBand()}</div></section>`;
   }
@@ -1329,16 +1329,28 @@
     const pub = w.join_visibility === 'public';
     if (w.event_status === 'ended') return '';
     if (w.reg_status === 'closed') {
-      return `<div class="card card--form"><h3>${esc(t('form.title'))}</h3><div class="closed-msg" style="border-color:rgba(239,68,68,0.3);background:rgba(239,68,68,0.06);color:#dc2626"><i class="fa-regular fa-circle-xmark" style="margin-inline-end:8px"></i>${esc(t('form.closed'))}</div></div>`;
+      return `<div class="card card--form">
+        <div class="form-header-badge"><span class="badge badge--live" style="background:rgba(239,68,68,0.12);color:#dc2626;border-color:rgba(239,68,68,0.25)"><i class="fa-solid fa-lock"></i> ${esc(t('status.regClosed'))}</span></div>
+        <h3 class="form-card-title">${esc(t('form.title'))}</h3>
+        <div class="closed-msg" style="border-color:rgba(239,68,68,0.3);background:rgba(239,68,68,0.06);color:#dc2626"><i class="fa-regular fa-circle-xmark" style="margin-inline-end:8px"></i>${esc(t('form.closed'))}</div>
+      </div>`;
     }
     if (w.reg_status === 'soon' || !w.registration_open) {
       const msg = w.event_status === 'upcoming' ? t('detail.notOpen', { n: n(w.session_no - 1) }) : t('form.closed');
-      return `<div class="card card--form"><h3>${esc(t('form.title'))}</h3><div class="closed-msg"><i class="fa-regular fa-clock" style="margin-inline-end:8px"></i>${esc(msg)}</div></div>`;
+      return `<div class="card card--form">
+        <div class="form-header-badge"><span class="badge badge--gold"><i class="fa-regular fa-clock"></i> ${esc(t('status.soon'))}</span></div>
+        <h3 class="form-card-title">${esc(t('form.title'))}</h3>
+        <div class="closed-msg"><i class="fa-regular fa-clock" style="margin-inline-end:8px"></i>${esc(msg)}</div>
+      </div>`;
     }
     const F = k => esc(t('form.' + k));
     const dial = DIAL.map(([c, k]) => `<option value="${c}">${c} ${k}</option>`).join('');
     const ctry = Object.entries(t('form.countries')).map(([k, v]) => `<option value="${k}">${esc(v)}</option>`).join('');
     return `<div class="card card--form">
+      <div class="form-header-badge">
+        <span class="badge badge--bronze"><i class="fa-solid fa-pen-to-square"></i> ${esc(t('status.regOpen'))}</span>
+        <span class="badge badge--gold"><i class="fa-solid fa-circle-check"></i> 100% ${esc(t('common.free'))}</span>
+      </div>
       <h3 class="form-card-title">${F('title')}</h3><p class="sub">${esc(pub ? t('form.subPublic') : t('form.subPrivate'))}</p>
       <form class="form" id="regForm" novalidate data-id="${w.id}">
         <div class="form-alert" role="alert" id="formAlert">${F('alert')}</div>

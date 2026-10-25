@@ -1809,11 +1809,22 @@ html[lang="fa"] .read-more, html[lang="ar"] .read-more { font-size: 13px; letter
 
 @media (max-width: 1040px) {
   .detail {
-    grid-template-columns: minmax(0, 1fr);
-    grid-template-rows: auto;
-    grid-template-areas: "join" "form" "main";
-    gap: 28px;
-    padding-top: 28px;
+    display: flex;
+    flex-direction: column;
+    gap: 26px;
+    padding: 24px 0 64px;
+  }
+  .d-join {
+    order: 1;
+    width: 100%;
+  }
+  .d-form {
+    order: 2;
+    width: 100%;
+  }
+  .d-main {
+    order: 3;
+    width: 100%;
   }
 }
 
@@ -2203,9 +2214,37 @@ html[lang="fa"] .speaker h4, html[lang="ar"] .speaker h4 {
   box-shadow: 0 1px 3px rgba(0, 0, 0, 0.04);
   transition: all 0.4s ease;
 }
+
+/* Registration Form Card - Primary Action */
+.card--form {
+  position: relative;
+  background: #ffffff;
+  border: 1.5px solid rgba(197, 168, 128, 0.45);
+  border-radius: 28px;
+  padding: 32px 28px;
+  box-shadow: 0 10px 32px rgba(0, 0, 0, 0.05), 0 1px 3px rgba(0, 0, 0, 0.04);
+  transition: all 0.4s ease;
+  overflow: hidden;
+}
+.card--form::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 4px;
+  background: linear-gradient(90deg, #c5a880 0%, #e7d6be 50%, #786142 100%);
+}
 .card--form:hover {
-  border-color: rgba(197, 168, 128, 0.7);
-  box-shadow: 0 0 30px rgba(197, 168, 128, 0.25), 0 16px 36px rgba(0, 0, 0, 0.06);
+  border-color: #c5a880;
+  box-shadow: 0 0 35px rgba(197, 168, 128, 0.28), 0 16px 40px rgba(0, 0, 0, 0.08);
+}
+.form-header-badge {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  flex-wrap: wrap;
+  margin-bottom: 12px;
 }
 
 .join-card-luxury {
@@ -3127,3 +3166,161 @@ main:focus { outline: none; }
 .held--light strong { color: var(--ink); }
 .locked--light { background: var(--cream); border-color: var(--line-2); color: var(--text); }
 .join-light .note { color: var(--muted); }
+
+/* ==========================================================================
+   MOBILE UI/UX PERFECTION — Events & Session Pages
+   ========================================================================== */
+
+/* Enhanced Submit button - primary luxury action */
+.btn--submit {
+  min-height: 52px;
+  font-size: 15px !important;
+  font-weight: 700 !important;
+  letter-spacing: 0.04em !important;
+  background: linear-gradient(135deg, #8a704e 0%, #786142 50%, #5d482d 100%) !important;
+  border: 1px solid rgba(197, 168, 128, 0.45) !important;
+  color: #ffffff !important;
+  border-radius: 14px !important;
+  box-shadow: 0 4px 18px rgba(120, 97, 66, 0.35) !important;
+  cursor: pointer;
+}
+.btn--submit:hover {
+  background: linear-gradient(135deg, #9b7e59 0%, #876e4c 50%, #6d5536 100%) !important;
+  transform: translateY(-2px);
+  box-shadow: 0 8px 24px rgba(120, 97, 66, 0.45) !important;
+}
+
+/* Tablet & Mobile responsive adjustments (<= 1040px) */
+@media (max-width: 1040px) {
+  .detail {
+    display: flex !important;
+    flex-direction: column !important;
+    gap: 24px !important;
+    padding: 24px 0 60px !important;
+  }
+  .d-join {
+    order: 1 !important;
+    width: 100% !important;
+  }
+  .d-form {
+    order: 2 !important;
+    width: 100% !important;
+  }
+  .d-main {
+    order: 3 !important;
+    width: 100% !important;
+  }
+}
+
+/* Mobile view adjustments (<= 768px) */
+@media (max-width: 768px) {
+  .card, .card--form, .join-card-luxury, .card--prose {
+    padding: 24px 20px;
+    border-radius: 22px;
+  }
+  .join-card-luxury::before {
+    display: none;
+  }
+  .input, .select, .textarea {
+    font-size: 16px !important; /* Critical: prevents iOS Safari zoom on focus */
+    min-height: 48px;
+  }
+  .phone {
+    grid-template-columns: 108px 1fr;
+    gap: 8px;
+  }
+  .phone .select {
+    font-size: 14px !important;
+    padding-inline: 10px 24px;
+  }
+  .phone .input {
+    font-size: 16px !important;
+  }
+}
+
+/* Small mobile devices (<= 640px) */
+@media (max-width: 640px) {
+  .card, .card--form, .join-card-luxury, .card--prose {
+    padding: 22px 16px;
+    border-radius: 18px;
+  }
+  .form-card-title {
+    font-size: 21px;
+    line-height: 1.3;
+  }
+  .join-card-title {
+    font-size: 20px;
+    line-height: 1.3;
+  }
+  .card--form .sub {
+    font-size: 13px;
+    margin-bottom: 18px;
+  }
+  .form {
+    gap: 16px;
+  }
+  .block {
+    margin-bottom: 36px;
+  }
+  .block-title {
+    font-size: 21px;
+    gap: 10px;
+    margin-bottom: 16px;
+  }
+  .block-title .bt-icon {
+    width: 34px;
+    height: 34px;
+    font-size: 14px;
+    border-radius: 10px;
+  }
+  .hero-actions {
+    flex-direction: column;
+    align-items: stretch !important;
+    gap: 10px;
+  }
+  .hero-reg-btn, .hero-actions .btn {
+    width: 100% !important;
+    justify-content: center !important;
+    min-height: 48px;
+  }
+  .feature-main .btn-row {
+    flex-direction: column;
+    align-items: stretch;
+    gap: 10px;
+  }
+  .feature-main .btn-row .btn {
+    width: 100%;
+    justify-content: center;
+    min-height: 46px;
+  }
+  .mini-links {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+  }
+  .mini-links .btn {
+    flex: 1 1 calc(50% - 8px);
+    justify-content: center;
+    min-height: 42px;
+  }
+  .cd-num {
+    font-size: 24px;
+  }
+}
+
+/* Extra small screens (<= 400px) */
+@media (max-width: 400px) {
+  .phone {
+    grid-template-columns: 96px 1fr;
+  }
+  .cd-num {
+    font-size: 20px !important;
+  }
+  .countdown {
+    gap: 6px;
+  }
+  .cd-cell {
+    padding: 10px 2px 7px;
+  }
+}
+
