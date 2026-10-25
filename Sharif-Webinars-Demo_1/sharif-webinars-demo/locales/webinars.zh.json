@@ -189,11 +189,11 @@
       "notOpen": "本场报名将在第 {n} 场结束后开放。",
       "other": "本系列其他场次",
       "soonCta": "通知我",
-      "registerNowBtn": "立即免费预约"
+      "registerNowBtn": "立即报名"
     },
     "form": {
-      "title": "预约参会并获取资料",
-      "subPublic": "通过 WhatsApp 接收会议直达链接与开会提醒，并在会后获取专属资料清单。",
+      "title": "立即免费报名",
+      "subPublic": "报名后，您将通过 WhatsApp 收到参会链接和提醒，并在讲座后获得达利语材料清单。",
       "subPrivate": "报名后通过 WhatsApp 接收参会链接和提醒。",
       "name": "姓名",
       "nameHint": "不必使用真实姓名。",

@@ -189,11 +189,11 @@
       "notOpen": "Registration for this session opens after Session {n}.",
       "other": "Other sessions in this series",
       "soonCta": "Notify me",
-      "registerNowBtn": "Register Now — Free"
+      "registerNowBtn": "Register now"
     },
     "form": {
-      "title": "Register for this Session",
-      "subPublic": "Receive the direct link and reminders on WhatsApp, plus the document checklist after the session.",
+      "title": "Register now — it's free",
+      "subPublic": "Register to receive the joining link and reminders on WhatsApp, plus the Dari document checklist after the session.",
       "subPrivate": "Register to receive the joining link and reminders on WhatsApp.",
       "name": "Name",
       "nameHint": "Doesn't have to be your real name.",

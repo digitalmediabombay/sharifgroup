@@ -761,6 +761,8 @@ html[lang="fa"] .btn--sm, html[lang="ar"] .btn--sm { font-size: 12px; }
 .badge { display: inline-flex; align-items: center; gap: 6px; border-radius: 99px; padding: 4px 11px; font-size: 10px; font-weight: 700; border: 1px solid currentColor; white-space: nowrap; }
 html[lang="fa"] .badge, html[lang="ar"] .badge { font-size: 12px; }
 .badge--gold { color: var(--gold); background: rgba(197,168,128,.08); }
+.badge--link { text-decoration: none !important; cursor: pointer; transition: all 0.25s ease; }
+.badge--link:hover { transform: translateY(-1px); box-shadow: 0 4px 14px rgba(197,168,128,.4); background: rgba(197,168,128,.22); }
 .badge--bronze { color: var(--bronze); background: rgba(120,97,66,.06); }
 .badge--muted { color: var(--muted); background: #fff; border-color: var(--line-2); }
 .badge--live { color: #fff; background: var(--live); border-color: var(--live); }

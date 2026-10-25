@@ -932,7 +932,7 @@
       return `<span class="badge badge--muted" style="border-color:rgba(239,68,68,0.3);color:#ef4444;background:rgba(239,68,68,0.08)"><svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" style="display:inline-block;vertical-align:middle;margin-right:4px"><circle cx="12" cy="12" r="10"/><line x1="15" y1="9" x2="9" y2="15"/><line x1="9" y1="9" x2="15" y2="15"/></svg>${esc(t('status.regClosed') || 'Registration closed')}</span>`;
     }
     if (w.reg_status === 'open' || w.registration_open || w.join_visibility === 'public') {
-      return `<span class="badge badge--gold">${esc(t('status.regOpen'))}</span>`;
+      return `<a href="${pageUrl(w)}#register" class="badge badge--gold badge--link" title="${esc(t('status.regOpen'))}">${esc(t('status.regOpen'))}</a>`;
     }
     return `<span class="badge badge--muted">${esc(t('status.soon'))}</span>`;
   }
@@ -1046,7 +1046,8 @@
             ${st === 'held' ? `<span class="btn btn--soon btn--soon-light" style="border-color:rgba(239,68,68,0.3);color:#ef4444;background:rgba(239,68,68,0.08)" role="status"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" style="display:inline-block;vertical-align:middle;margin-right:4px"><circle cx="12" cy="12" r="10"/><line x1="15" y1="9" x2="9" y2="15"/><line x1="9" y1="9" x2="15" y2="15"/></svg>${esc(t('detail.heldTitle') || 'Session Ended')}</span>` : ''}
             ${st === 'ready' ? `<a class="btn btn--bronze" href="${esc(f.join_url)}" data-join target="_blank" rel="noopener">${I.video}${esc(live ? (t('detail.joinNow') || 'Join Live Session Now') : (t('list.join') || 'Join Live Session'))}</a>` : ''}
             ${st === 'soon' ? `<span class="btn btn--soon btn--soon-light" role="status">${I.clock}${esc(t('detail.linkSoon') || 'Link will be posted soon')}</span>` : ''}
-            <a class="btn ${st === 'ready' || st === 'soon' ? 'btn--ghost' : 'btn--bronze'}" href="${pageUrl(f)}">${esc(t('list.details'))}${I.arrow}</a>
+            ${f.registration_open && st !== 'held' ? `<a class="btn btn--bronze font-bold" href="${pageUrl(f)}#register" style="font-weight:700"><span>${esc(t('detail.registerNowBtn'))}</span><i class="fa-solid fa-arrow-right"></i></a>` : ''}
+            <a class="btn ${st === 'ready' || st === 'soon' || f.registration_open ? 'btn--ghost' : 'btn--bronze'}" href="${pageUrl(f)}">${esc(t('list.details'))}${I.arrow}</a>
           </div>
         </div>
         <aside class="feature-side">
@@ -1872,7 +1873,21 @@
     initTimelineAnimation();
     clearInterval(cdTimer); tickCountdowns(); if ($('[data-cd]')) cdTimer = setInterval(tickCountdowns, 1000);
   }
-  function route() { render(); window.scrollTo({ top: 0, left: 0, behavior: 'instant' }); }
+  function route() {
+    render();
+    if (location.hash === '#register') {
+      setTimeout(() => {
+        const target = $('#register') || $('#regForm');
+        if (target) {
+          target.scrollIntoView({ behavior: 'smooth', block: 'start' });
+          const fi = $('#f-name');
+          if (fi) setTimeout(() => fi.focus({ preventScroll: true }), 400);
+        }
+      }, 120);
+    } else {
+      window.scrollTo({ top: 0, left: 0, behavior: 'instant' });
+    }
+  }
   window.addEventListener('hashchange', () => { $('#drawer').classList.remove('open'); route(); $('#main').focus({ preventScroll: true }); });
   window.addEventListener('popstate', () => { $('#drawer').classList.remove('open'); route(); });
   window.addEventListener('storage', e => {
