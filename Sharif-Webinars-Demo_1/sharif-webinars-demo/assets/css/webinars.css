@@ -55,8 +55,8 @@ button { cursor: pointer; }
 .skip { position: absolute; inset-inline-start: 12px; top: -60px; z-index: 200; background: var(--ink); color: #fff; padding: 10px 16px; border-radius: 10px; }
 .skip:focus { top: 12px; }
 .ltr { direction: ltr; unicode-bidi: isolate; display: inline-block; }
-.container { width: 100%; max-width: var(--container); margin-inline: auto; padding-inline: 24px; }
-@media (max-width: 640px) { .container { padding-inline: 16px; } }
+.container { width: 100%; max-width: var(--container); margin-inline: auto; padding-inline: 24px; box-sizing: border-box; }
+@media (max-width: 768px) { .container { padding-inline: 20px; } }
 
 /* Latin-only typographic flourishes (uppercase + tracking) must never apply
    to Arabic-script text: letter-spacing breaks the joining of letters. */
@@ -816,7 +816,7 @@ html[lang="fa"] .badge, html[lang="ar"] .badge { font-size: 12px; }
     radial-gradient(800px 320px at 50% 120%, rgba(197, 168, 128, 0.12), transparent 70%);
 }
 
-.hero-inner { position: relative; z-index: 2; padding: 110px 0 96px; text-align: center; }
+.hero-inner { position: relative; z-index: 2; padding-block: 110px 96px; text-align: center; box-sizing: border-box; }
 .hero .display {
   color: #fff;
   text-shadow: 0 4px 28px rgba(0, 0, 0, 0.95), 0 0 35px rgba(0, 0, 0, 0.8);
@@ -837,7 +837,7 @@ html[lang="fa"] .hero-sub, html[lang="ar"] .hero-sub, html[lang="zh"] .hero-sub 
   font-weight: 400;
   text-shadow: 0 2px 16px rgba(0, 0, 0, 0.95);
 }
-.hero--detail .hero-inner { text-align: start; padding: 54px 0 64px; }
+.hero--detail .hero-inner { text-align: start; padding-block: 54px 64px; box-sizing: border-box; }
 .crumbs { display: flex; flex-wrap: wrap; gap: 8px; align-items: center; font-size: 12px; color: #a3a3a3; margin-bottom: 30px; }
 .crumbs a:hover { color: #fff; }
 .crumbs svg { width: 10px; height: 10px; opacity: .6; }
@@ -847,7 +847,7 @@ html[lang="fa"] .hero-sub, html[lang="ar"] .hero-sub, html[lang="zh"] .hero-sub 
 .hero-meta span { display: inline-flex; align-items: center; gap: 8px; }
 .hero-meta svg { width: 15px; height: 15px; color: var(--gold); }
 @media (max-width: 640px) {
-  .hero-inner { padding: 72px 0 64px; }
+  .hero-inner { padding-block: 60px 48px; }
 }
 
 /* ---------- Sections ---------- */
@@ -3274,6 +3274,14 @@ main:focus { outline: none; }
 
 /* Mobile view adjustments (<= 768px) */
 @media (max-width: 768px) {
+  .hero--detail .hero-inner {
+    padding-top: 32px !important;
+    padding-bottom: 36px !important;
+    padding-inline: 20px !important;
+    box-sizing: border-box !important;
+    width: 100% !important;
+    max-width: 100% !important;
+  }
   .card, .card--form, .join-card-luxury, .card--prose {
     padding: 24px 20px;
     border-radius: 22px;
@@ -3335,7 +3343,13 @@ main:focus { outline: none; }
   }
   /* Hero Section Mobile Perfection */
   .hero--detail .hero-inner {
-    padding: 24px 0 32px !important;
+    padding-top: 24px !important;
+    padding-bottom: 30px !important;
+    padding-inline: 20px !important;
+    box-sizing: border-box !important;
+    width: 100% !important;
+    max-width: 100% !important;
+    overflow-x: hidden !important;
   }
   .hero--detail .hero-overlay {
     background:
@@ -3346,42 +3360,71 @@ main:focus { outline: none; }
     margin-bottom: 12px !important;
     gap: 6px !important;
     font-size: 11.5px !important;
+    max-width: 100% !important;
+    overflow-wrap: break-word !important;
   }
-  .hero--detail .crumbs .crumb-ico {
+  .hero--detail .crumbs .crumb-ico,
+  .hero--detail .crumbs svg {
     font-size: 8px !important;
+    width: 9px !important;
+    height: 9px !important;
+    flex-shrink: 0 !important;
   }
   .hero-eyebrow-row {
-    display: flex;
-    flex-wrap: wrap;
-    align-items: center;
-    gap: 8px 10px;
-    margin-bottom: 10px;
+    display: flex !important;
+    flex-wrap: wrap !important;
+    align-items: center !important;
+    gap: 8px 10px !important;
+    margin-bottom: 10px !important;
+    max-width: 100% !important;
   }
   .hero-eyebrow-row .eyebrow {
     font-size: 10px !important;
     letter-spacing: 0.06em !important;
+    display: inline-flex !important;
+    align-items: center !important;
+    gap: 5px !important;
+    max-width: 100% !important;
+  }
+  .hero-eyebrow-row .eyebrow svg {
+    width: 12px !important;
+    height: 12px !important;
+    flex-shrink: 0 !important;
   }
   .hero-eyebrow-row .badge {
     padding: 4px 10px !important;
     font-size: 10.5px !important;
+    flex-shrink: 0 !important;
   }
   .hero--detail .display {
-    font-size: 24px !important;
-    line-height: 1.25 !important;
+    font-size: 23px !important;
+    line-height: 1.28 !important;
     margin: 8px 0 10px !important;
     letter-spacing: -0.01em !important;
+    max-width: 100% !important;
+    overflow-wrap: break-word !important;
+    word-wrap: break-word !important;
   }
   .hero--detail p.lede {
     font-size: 13.5px !important;
     line-height: 1.55 !important;
     color: #d1d5db !important;
     margin: 0 0 14px !important;
+    max-width: 100% !important;
+    overflow-wrap: break-word !important;
+    word-wrap: break-word !important;
   }
   .hero--detail .hero-meta {
     display: grid !important;
     grid-template-columns: 1fr !important;
     gap: 8px !important;
     margin-top: 14px !important;
+    margin-bottom: 0 !important;
+    margin-left: 0 !important;
+    margin-right: 0 !important;
+    width: 100% !important;
+    max-width: 100% !important;
+    box-sizing: border-box !important;
     background: rgba(7, 14, 26, 0.72) !important;
     backdrop-filter: blur(12px) !important;
     -webkit-backdrop-filter: blur(12px) !important;
@@ -3396,23 +3439,33 @@ main:focus { outline: none; }
     font-size: 13px !important;
     color: #e5e7eb !important;
     line-height: 1.35 !important;
+    min-width: 0 !important;
   }
-  .hero--detail .hero-meta span i {
+  .hero--detail .hero-meta span i,
+  .hero--detail .hero-meta span svg {
     color: #c5a880 !important;
     font-size: 13px !important;
     width: 16px !important;
+    height: 16px !important;
     text-align: center !important;
     flex-shrink: 0 !important;
   }
   .hero-actions {
     margin-top: 16px !important;
+    margin-left: 0 !important;
+    margin-right: 0 !important;
     display: flex !important;
     flex-direction: column !important;
     align-items: stretch !important;
     gap: 10px !important;
+    width: 100% !important;
+    max-width: 100% !important;
+    box-sizing: border-box !important;
   }
   .hero-reg-btn {
     width: 100% !important;
+    max-width: 100% !important;
+    box-sizing: border-box !important;
     min-height: 48px !important;
     padding: 12px 20px !important;
     border-radius: 12px !important;
@@ -3426,6 +3479,8 @@ main:focus { outline: none; }
   }
   .hero-actions .hero-cal-btn {
     width: 100% !important;
+    max-width: 100% !important;
+    box-sizing: border-box !important;
     min-height: 46px !important;
     padding: 11px 20px !important;
     border-radius: 12px !important;
