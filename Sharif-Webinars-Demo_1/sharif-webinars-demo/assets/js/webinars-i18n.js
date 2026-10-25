@@ -146,10 +146,10 @@ window.WEBINAR_I18N = {
         shareWa: "Share on WhatsApp", addCal: "Add to calendar", liveBanner: "This session is live now",
         linkSoon: "Link will be posted soon", linkSoonNote: "The joining link will appear here before the session starts. Register to get it on WhatsApp too.",
         heldTitle: "This session has been held", heldText: "Thank you to everyone who joined. The next session of this series is listed below.", consultTitle: "Free private consultation", consultText: "A 15–20 minute confidential call for participants of this session.", consultBtn: "Book a consultation",
-        notOpen: "Registration for this session opens after Session {n}.", other: "Other sessions in this series", soonCta: "Notify me"
+        notOpen: "Registration for this session opens after Session {n}.", other: "Other sessions in this series", soonCta: "Notify me", registerNowBtn: "Register Now — Free"
       },
       form: {
-        title: "Get reminders & checklist", subPublic: "Optional — receive the link and reminders on WhatsApp, plus the Dari document checklist after the session.", subPrivate: "Register to receive the joining link and reminders on WhatsApp.",
+        title: "Register for this Session", subPublic: "Receive the direct link and reminders on WhatsApp, plus the document checklist after the session.", subPrivate: "Register to receive the joining link and reminders on WhatsApp.",
         name: "Name", nameHint: "Doesn't have to be your real name.", wa: "WhatsApp number", waHint: "We send the link and reminders here.", email: "Email", optional: "optional",
         country: "Where do you live?", choose: "Select…", countries: { AF: "Afghanistan", AE: "United Arab Emirates", TR: "Turkey", IR: "Iran", other: "Other" },
         question: "Your question for the specialist", questionHint: "Please don't write personal or financial details.", newsletter: "Send me news about future webinars",
@@ -320,10 +320,10 @@ window.WEBINAR_I18N = {
         shareWa: "اشتراک در واتس‌اپ", addCal: "افزودن به تقویم", liveBanner: "این جلسه هم‌اکنون زنده است",
         linkSoon: "لینک به‌زودی گذاشته می‌شود", linkSoonNote: "لینک ورود پیش از شروع جلسه در همین‌جا قرار می‌گیرد. با ثبت‌نام، آن را در واتس‌اپ هم دریافت می‌کنید.",
         heldTitle: "این جلسه برگزار شد", heldText: "از همه شرکت‌کنندگان تشکر می‌کنیم. جلسه بعدی این مجموعه را در پایین ببینید.", consultTitle: "مشاوره خصوصی رایگان", consultText: "یک تماس محرمانه ۱۵ تا ۲۰ دقیقه‌ای برای شرکت‌کنندگان این جلسه.", consultBtn: "رزرو مشاوره",
-        notOpen: "ثبت‌نام این جلسه بعد از جلسه {n} باز می‌شود.", other: "جلسه‌های دیگر این مجموعه", soonCta: "خبرم کنید"
+        notOpen: "ثبت‌نام این جلسه بعد از جلسه {n} باز می‌شود.", other: "جلسه‌های دیگر این مجموعه", soonCta: "خبرم کنید", registerNowBtn: "ثبت‌نام در جلسه — رایگان"
       },
       form: {
-        title: "یادآوری و چک‌لیست", subPublic: "اختیاری — لینک و یادآوری را در واتس‌اپ و چک‌لیست مدارک به دری را بعد از جلسه دریافت کنید.", subPrivate: "برای دریافت لینک ورود و یادآوری در واتس‌اپ ثبت‌نام کنید.",
+        title: "ثبت‌نام در این جلسه", subPublic: "لینک مستقیم ورود به جلسه و یادآوری‌ها را در واتس‌اپ به همراه چک‌لیست مدارک پس از جلسه دریافت کنید.", subPrivate: "برای دریافت لینک ورود و یادآوری در واتس‌اپ ثبت‌نام کنید.",
         name: "نام", nameHint: "لازم نیست نام واقعی باشد.", wa: "شماره واتس‌اپ", waHint: "لینک و یادآوری را به این شماره می‌فرستیم.", email: "ایمیل", optional: "اختیاری",
         country: "محل زندگی شما", choose: "انتخاب کنید…", countries: { AF: "افغانستان", AE: "امارات", TR: "ترکیه", IR: "ایران", other: "سایر" },
         question: "پرسش شما از کارشناس", questionHint: "لطفاً اطلاعات شخصی و مالی ننویسید.", newsletter: "خبر وبینارهای بعدی را برایم بفرستید",
@@ -494,10 +494,10 @@ window.WEBINAR_I18N = {
         shareWa: "مشاركة عبر واتساب", addCal: "إضافة إلى التقويم", liveBanner: "هذه الجلسة مباشرة الآن",
         linkSoon: "سيُنشر الرابط قريباً", linkSoonNote: "سيظهر رابط الانضمام هنا قبل بدء الجلسة. سجّل لتستلمه عبر واتساب أيضاً.",
         heldTitle: "انعقدت هذه الجلسة", heldText: "شكراً لكل من حضر. الجلسة التالية من هذه السلسلة مذكورة أدناه.", consultTitle: "استشارة خاصة مجانية", consultText: "مكالمة سرية من 15 إلى 20 دقيقة لحضور هذه الجلسة.", consultBtn: "احجز استشارة",
-        notOpen: "يُفتح التسجيل لهذه الجلسة بعد الجلسة {n}.", other: "جلسات أخرى في هذه السلسلة", soonCta: "أبلغني"
+        notOpen: "يُفتح التسجيل لهذه الجلسة بعد الجلسة {n}.", other: "جلسات أخرى في هذه السلسلة", soonCta: "أبلغني", registerNowBtn: "سجّل الآن — مجاناً"
       },
       form: {
-        title: "التذكيرات وقائمة المستندات", subPublic: "اختياري — استلم الرابط والتذكيرات عبر واتساب، وقائمة المستندات بالدرية بعد الجلسة.", subPrivate: "سجّل لاستلام رابط الانضمام والتذكيرات عبر واتساب.",
+        title: "التسجيل في هذه الجلسة", subPublic: "احصل على رابط الانضمام المباشر والتذكيرات عبر واتساب، بالإضافة إلى قائمة مراجعة المستندات بعد الجلسة.", subPrivate: "سجّل لاستلام رابط الانضمام والتذكيرات عبر واتساب.",
         name: "الاسم", nameHint: "لا يلزم أن يكون اسمك الحقيقي.", wa: "رقم واتساب", waHint: "نرسل الرابط والتذكيرات إلى هذا الرقم.", email: "البريد الإلكتروني", optional: "اختياري",
         country: "أين تقيم؟", choose: "اختر…", countries: { AF: "أفغانستان", AE: "الإمارات", TR: "تركيا", IR: "إيران", other: "أخرى" },
         question: "سؤالك للأخصائي", questionHint: "يرجى عدم كتابة معلومات شخصية أو مالية.", newsletter: "أرسلوا لي أخبار الندوات القادمة",
@@ -668,10 +668,10 @@ window.WEBINAR_I18N = {
         shareWa: "分享到 WhatsApp", addCal: "添加到日历", liveBanner: "本场讲座正在直播",
         linkSoon: "链接即将公布", linkSoonNote: "参会链接将在讲座开始前发布在此处。报名后也会通过 WhatsApp 发送给您。",
         heldTitle: "本场讲座已举行", heldText: "感谢所有参与者。本系列的下一场讲座见下方。", consultTitle: "免费私人咨询", consultText: "为本场参与者提供 15–20 分钟的保密通话。", consultBtn: "预约咨询",
-        notOpen: "本场报名将在第 {n} 场结束后开放。", other: "本系列其他场次", soonCta: "通知我"
+        notOpen: "本场报名将在第 {n} 场结束后开放。", other: "本系列其他场次", soonCta: "通知我", registerNowBtn: "立即免费预约"
       },
       form: {
-        title: "提醒与材料清单", subPublic: "可选——通过 WhatsApp 接收链接和提醒，讲座后获取达利语材料清单。", subPrivate: "报名后通过 WhatsApp 接收参会链接和提醒。",
+        title: "预约参会并获取资料", subPublic: "通过 WhatsApp 接收会议直达链接与开会提醒，并在会后获取专属资料清单。", subPrivate: "报名后通过 WhatsApp 接收参会链接和提醒。",
         name: "姓名", nameHint: "不必使用真实姓名。", wa: "WhatsApp 号码", waHint: "我们将把链接和提醒发送到此号码。", email: "电子邮箱", optional: "选填",
         country: "您居住在哪里？", choose: "请选择…", countries: { AF: "阿富汗", AE: "阿联酋", TR: "土耳其", IR: "伊朗", other: "其他" },
         question: "您想问专家的问题", questionHint: "请勿填写个人或财务信息。", newsletter: "向我发送后续讲座信息",

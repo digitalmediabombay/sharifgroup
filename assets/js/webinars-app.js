@@ -1258,6 +1258,18 @@
           <span><i class="fa-solid fa-language"></i> ${esc(t('common.lang'))}</span>
           <span><i class="fa-solid fa-circle-check"></i> ${esc(t('common.free'))} · ${esc(t('common.min', { n: n(w.duration_min) }))}</span>
         </div>
+        ${w.registration_open && w.event_status !== 'ended' ? `
+        <div class="hero-actions" style="margin-top:22px;display:flex;gap:12px;flex-wrap:wrap;align-items:center;">
+          <a class="hero-reg-btn" href="#register">
+            <i class="fa-solid fa-pen-to-square"></i>
+            <span>${esc(t('detail.registerNowBtn'))}</span>
+            <i class="fa-solid fa-arrow-down" style="font-size:12px;"></i>
+          </a>
+          <button class="btn btn--ghost-light" type="button" data-ics="${w.id}">
+            <i class="fa-regular fa-calendar-plus" style="margin-inline-end:6px;"></i>
+            <span>${esc(t('detail.addCal'))}</span>
+          </button>
+        </div>` : ''}
       </div>
     </section>
     <div class="container"><div class="detail">
@@ -1299,6 +1311,11 @@
       ${live || held ? '' : `<div style="margin-bottom:18px">${countdownHTML(w)}</div>`}
       ${held ? '' : `<div style="margin-bottom:20px">${tzHTML(w)}</div>`}
       ${joinAction(w)}
+      ${w.registration_open && !held ? `<a class="join-reg-btn" href="#register">
+        <i class="fa-solid fa-pen-to-square"></i>
+        <span>${esc(t('detail.registerNowBtn'))}</span>
+        <i class="fa-solid fa-arrow-down" style="font-size:12px;"></i>
+      </a>` : ''}
       ${held ? `<a class="btn btn--bronze btn--block" style="margin-top:16px" href="${SITE + prefix()}contact/"><span>${esc(t('detail.consultBtn'))}</span><i class="fa-solid fa-arrow-right"></i></a>` : `<div class="mini-links">
         ${st === 'ready' ? `<button class="btn btn--ghost-light btn--sm" type="button" data-copy="${esc(w.join_url)}"><i class="fa-regular fa-copy"></i><span>${esc(t('common.copy'))}</span></button>` : ''}
         <button class="btn btn--ghost-light btn--sm" type="button" data-ics="${w.id}"><i class="fa-regular fa-calendar-plus"></i><span>${esc(t('detail.addCal'))}</span></button>
@@ -1350,7 +1367,21 @@
   const toLatin = s => String(s || '').replace(/[۰-۹]/g, c => '۰۱۲۳۴۵۶۷۸۹'.indexOf(c)).replace(/[٠-٩]/g, c => '٠١٢٣٤٥٦٧٨٩'.indexOf(c));
   const normPhone = s => toLatin(s).replace(/[^\d]/g, '').replace(/^0+/, '');
   function bindForm() {
-    const form = $('#regForm'); if (!form) return;
+    const form = $('#regForm');
+    document.querySelectorAll('a[href="#register"]').forEach(a => {
+      a.addEventListener('click', e => {
+        e.preventDefault();
+        const target = $('#register') || form;
+        if (target) {
+          target.scrollIntoView({ behavior: 'smooth', block: 'start' });
+          setTimeout(() => {
+            const input = $('#f-name', target);
+            if (input) input.focus();
+          }, 450);
+        }
+      });
+    });
+    if (!form) return;
     const q = $('#f-q', form);
     q.addEventListener('input', () => { $('#qCount').textContent = `${n(q.value.length)} / ${n(500)}`; });
     const dialSel = $('#f-dial', form);
