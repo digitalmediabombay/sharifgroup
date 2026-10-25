@@ -1249,25 +1249,24 @@
     <section class="hero hero--detail">
       ${heroSlideshowHTML()}
       <div class="container hero-inner">
-        <nav class="crumbs" aria-label="Breadcrumb"><a href="${SITE + prefix()}">${esc(t('detail.home'))}</a><i class="fa-solid fa-chevron-right crumb-ico"></i><a href="${SITE + prefix()}events/">${esc(L().nav.webinars)}</a><i class="fa-solid fa-chevron-right crumb-ico"></i><span aria-current="page">${esc(t('common.sessionN', { n: pad2(w.session_no) }))}</span></nav>
-        <div class="btn-row" style="gap:8px;align-items:center"><span class="eyebrow caps"><i class="fa-solid fa-star text-[10px]"></i> ${esc(c.series_tag || t('list.seriesTag'))} · ${esc(t('common.sessionN', { n: pad2(w.session_no) }))}</span>${statusBadge(w)}</div>
+        <nav class="crumbs" aria-label="Breadcrumb"><a href="${SITE + prefix()}">${esc(t('detail.home'))}</a>${I.crumb}<a href="${SITE + prefix()}events/">${esc(L().nav.webinars)}</a>${I.crumb}<span aria-current="page">${esc(t('common.sessionN', { n: pad2(w.session_no) }))}</span></nav>
+        <div class="hero-eyebrow-row"><span class="eyebrow caps">${I.spark} ${esc(c.series_tag || t('list.seriesTag'))} · ${esc(t('common.sessionN', { n: pad2(w.session_no) }))}</span>${statusBadge(w)}</div>
         <h1 class="display h-lg">${esc(c.title || ('Session ' + w.session_no))}</h1>
         <p class="lede">${esc(c.excerpt || '')}</p>
         <div class="hero-meta">
-          <span><i class="fa-regular fa-calendar-check"></i> ${esc(dLong(d, TZ.kabul))}</span>
-          <span><i class="fa-regular fa-clock"></i> ${tm(d, TZ.kabul)} ${esc(t('tz.kabul'))} · ${tm(d, TZ.dubai)} ${esc(t('tz.dubai'))}</span>
-          <span><i class="fa-solid fa-language"></i> ${esc(t('common.lang'))}</span>
-          <span><i class="fa-solid fa-circle-check"></i> ${esc(t('common.free'))} · ${esc(t('common.min', { n: n(w.duration_min) }))}</span>
+          <span>${I.cal} <span>${esc(dLong(d, TZ.kabul))}</span></span>
+          <span>${I.clock} <span>${tm(d, TZ.kabul)} ${esc(t('tz.kabul'))} · ${tm(d, TZ.dubai)} ${esc(t('tz.dubai'))}</span></span>
+          <span>${I.globe} <span>${esc(t('common.lang'))}</span></span>
+          <span>${I.checkCircle} <span>${esc(t('common.free'))} · ${esc(t('common.min', { n: n(w.duration_min) }))}</span></span>
         </div>
         ${w.registration_open && w.event_status !== 'ended' ? `
-        <div class="hero-actions" style="margin-top:22px;display:flex;gap:12px;flex-wrap:wrap;align-items:center;">
+        <div class="hero-actions">
           <a class="hero-reg-btn" href="#register">
-            <i class="fa-solid fa-pen-to-square"></i>
             <span>${esc(t('detail.registerNowBtn'))}</span>
-            <i class="fa-solid fa-arrow-down" style="font-size:12px;"></i>
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M12 5v14M19 12l-7 7-7-7"/></svg>
           </a>
-          <button class="btn btn--ghost-light" type="button" data-ics="${w.id}">
-            <i class="fa-regular fa-calendar-plus" style="margin-inline-end:6px;"></i>
+          <button class="btn btn--ghost-light hero-cal-btn" type="button" data-ics="${w.id}">
+            ${I.cal}
             <span>${esc(t('detail.addCal'))}</span>
           </button>
         </div>` : ''}

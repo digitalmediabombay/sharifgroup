@@ -1900,10 +1900,70 @@ html[lang="fa"] .block-title, html[lang="ar"] .block-title {
 [dir="rtl"] .hero--detail .crumbs .crumb-ico {
   transform: rotate(180deg);
 }
-.hero-meta span i {
+.hero-meta span i,
+.hero-meta span svg {
   color: #c5a880;
   font-size: 13px;
+  width: 15px;
+  height: 15px;
+  margin-inline-end: 6px;
+  flex-shrink: 0;
+}
+.hero-eyebrow-row {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  flex-wrap: wrap;
+  margin-bottom: 14px;
+}
+.hero-eyebrow-row .eyebrow svg {
+  width: 11px;
+  height: 11px;
+  color: var(--gold);
+  vertical-align: -1px;
   margin-inline-end: 4px;
+}
+.crumbs svg {
+  width: 9px;
+  height: 9px;
+  color: var(--gold);
+  opacity: 0.7;
+}
+.hero-actions {
+  margin-top: 24px;
+  display: flex;
+  gap: 12px;
+  flex-wrap: wrap;
+  align-items: center;
+}
+.hero-reg-btn svg {
+  width: 14px;
+  height: 14px;
+  flex-shrink: 0;
+  transition: transform 0.25s ease;
+}
+.hero-reg-btn:hover svg {
+  transform: translateY(2px);
+}
+.hero-cal-btn {
+  background: rgba(255, 255, 255, 0.08) !important;
+  border: 1px solid rgba(255, 255, 255, 0.28) !important;
+  color: #ffffff !important;
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
+  transition: all 0.25s ease;
+}
+.hero-cal-btn svg {
+  width: 15px;
+  height: 15px;
+  color: var(--gold);
+  margin-inline-end: 6px;
+  flex-shrink: 0;
+}
+.hero-cal-btn:hover {
+  background: rgba(255, 255, 255, 0.16) !important;
+  border-color: rgba(255, 255, 255, 0.45) !important;
+  color: #ffffff !important;
 }
 
 /* About prose card */
@@ -3273,15 +3333,110 @@ main:focus { outline: none; }
     font-size: 14px;
     border-radius: 10px;
   }
-  .hero-actions {
-    flex-direction: column;
-    align-items: stretch !important;
-    gap: 10px;
+  /* Hero Section Mobile Perfection */
+  .hero--detail .hero-inner {
+    padding: 24px 0 32px !important;
   }
-  .hero-reg-btn, .hero-actions .btn {
+  .hero--detail .hero-overlay {
+    background:
+      linear-gradient(180deg, rgba(6, 10, 18, 0.90) 0%, rgba(6, 10, 18, 0.82) 45%, rgba(6, 10, 18, 0.96) 100%),
+      radial-gradient(ellipse 800px 500px at 50% 30%, rgba(5, 11, 20, 0.7) 0%, rgba(5, 11, 20, 0.95) 100%) !important;
+  }
+  .hero--detail .crumbs {
+    margin-bottom: 12px !important;
+    gap: 6px !important;
+    font-size: 11.5px !important;
+  }
+  .hero--detail .crumbs .crumb-ico {
+    font-size: 8px !important;
+  }
+  .hero-eyebrow-row {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 8px 10px;
+    margin-bottom: 10px;
+  }
+  .hero-eyebrow-row .eyebrow {
+    font-size: 10px !important;
+    letter-spacing: 0.06em !important;
+  }
+  .hero-eyebrow-row .badge {
+    padding: 4px 10px !important;
+    font-size: 10.5px !important;
+  }
+  .hero--detail .display {
+    font-size: 24px !important;
+    line-height: 1.25 !important;
+    margin: 8px 0 10px !important;
+    letter-spacing: -0.01em !important;
+  }
+  .hero--detail p.lede {
+    font-size: 13.5px !important;
+    line-height: 1.55 !important;
+    color: #d1d5db !important;
+    margin: 0 0 14px !important;
+  }
+  .hero--detail .hero-meta {
+    display: grid !important;
+    grid-template-columns: 1fr !important;
+    gap: 8px !important;
+    margin-top: 14px !important;
+    background: rgba(7, 14, 26, 0.72) !important;
+    backdrop-filter: blur(12px) !important;
+    -webkit-backdrop-filter: blur(12px) !important;
+    border: 1px solid rgba(197, 168, 128, 0.22) !important;
+    border-radius: 14px !important;
+    padding: 12px 14px !important;
+  }
+  .hero--detail .hero-meta span {
+    display: flex !important;
+    align-items: center !important;
+    gap: 10px !important;
+    font-size: 13px !important;
+    color: #e5e7eb !important;
+    line-height: 1.35 !important;
+  }
+  .hero--detail .hero-meta span i {
+    color: #c5a880 !important;
+    font-size: 13px !important;
+    width: 16px !important;
+    text-align: center !important;
+    flex-shrink: 0 !important;
+  }
+  .hero-actions {
+    margin-top: 16px !important;
+    display: flex !important;
+    flex-direction: column !important;
+    align-items: stretch !important;
+    gap: 10px !important;
+  }
+  .hero-reg-btn {
     width: 100% !important;
+    min-height: 48px !important;
+    padding: 12px 20px !important;
+    border-radius: 12px !important;
+    font-size: 14.5px !important;
+    font-weight: 700 !important;
     justify-content: center !important;
-    min-height: 48px;
+    background: linear-gradient(135deg, #c5a880 0%, #a88a60 100%) !important;
+    color: #070e1a !important;
+    border: 1px solid rgba(197, 168, 128, 0.75) !important;
+    box-shadow: 0 4px 16px rgba(197, 168, 128, 0.3) !important;
+  }
+  .hero-actions .hero-cal-btn {
+    width: 100% !important;
+    min-height: 46px !important;
+    padding: 11px 20px !important;
+    border-radius: 12px !important;
+    font-size: 13.5px !important;
+    font-weight: 600 !important;
+    justify-content: center !important;
+    background: rgba(255, 255, 255, 0.08) !important;
+    border: 1px solid rgba(255, 255, 255, 0.24) !important;
+    color: #ffffff !important;
+    backdrop-filter: blur(8px) !important;
+    -webkit-backdrop-filter: blur(8px) !important;
   }
   .feature-main .btn-row {
     flex-direction: column;
