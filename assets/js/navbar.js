@@ -439,7 +439,6 @@
                     <img src="${getAssetUrl('assets/images/card.webp')}" alt="${esc(n.becomePartner)}" loading="lazy">
                     <div class="sg-mm-card-overlay sg-mm-card-partner-overlay"></div>
                     <div class="sg-mm-card-partner-content">
-                      <i class="fa-solid fa-handshake sg-mm-partner-icon"></i>
                       <div class="sg-mm-card-partner-text">
                         <span class="sg-mm-card-title">${esc(n.becomePartner)}</span>
                         <span class="sg-badge-new">${esc(n.newBadge)}</span>

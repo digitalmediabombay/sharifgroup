@@ -7,7 +7,7 @@
 
   const urlParams = new URLSearchParams(window.location.search);
   const DEMO = urlParams.get('demo') === '1';
-  const CRM_WEBHOOK_URL = "https://script.google.com/macros/s/AKfycbwRFNqHPPeGo4UqWU7jkhMdJPCTNkirDhCEvBQjWc9YUFufe535vIl89vYyg4NiRhnt_Q/exec";
+  const CRM_WEBHOOK_URL = "https://script.google.com/macros/s/AKfycbyO6vUrWreO-zeAj1gfmWTish9ntgeYOaUthNSmFRAFfdG6trRgoLjmo1JN-Z57_hdK/exec";
   const LANGS = ['fa', 'en', 'ar', 'zh'];
   const SITE = window.location.protocol === 'file:' ? 'https://www.sharifgroup.ae/' : '/';
   const DIAL = [
@@ -403,7 +403,7 @@
             <li><a class="hover:text-luxury-gold transition" href="${SITE + p}contact/">${esc(F.contactUs || 'Contact Us')}</a></li>
             <li><a class="hover:text-luxury-gold transition" href="${SITE + p}blog/">${esc(F.insightsBlog || 'Insights & Blog')}</a></li>
             <li><a class="hover:text-luxury-gold transition inline-flex items-center gap-1.5 foot-new-row" href="${SITE + p}events/"><span>${esc(F.webinars || 'Events')}</span> <span class="nav-new-badge ml-1.5 px-1.5 py-0.5 rounded-full bg-[#786142] text-white text-[8px] font-bold leading-none inline-flex items-center justify-center shrink-0 tracking-wider">${esc(t('common.isNew') || 'New')}</span></a></li>
-            <li><a class="hover:text-luxury-gold transition inline-flex items-center gap-1.5 foot-new-row is-active" href="${SITE + p}partners/" style="color:var(--bronze);font-weight:700;"><span>${esc(F.partnerWithUs || 'Partner With Us')}</span> <span class="nav-new-badge ml-1.5 px-1.5 py-0.5 rounded-full bg-[#786142] text-white text-[8px] font-bold leading-none inline-flex items-center justify-center shrink-0 tracking-wider">${esc(t('common.isNew') || 'New')}</span></a></li>
+            <li><a class="hover:text-luxury-gold transition inline-flex items-center gap-1.5 foot-new-row" href="${SITE + p}partners/"><span>${esc(F.partnerWithUs || 'Partner With Us')}</span> <span class="nav-new-badge ml-1.5 px-1.5 py-0.5 rounded-full bg-[#786142] text-white text-[8px] font-bold leading-none inline-flex items-center justify-center shrink-0 tracking-wider">${esc(t('common.isNew') || 'New')}</span></a></li>
             <li><a class="hover:text-luxury-gold transition" href="${SITE + p}eligibilitychecker/">${esc(F.eligibilityChecker || 'Eligibility Checker')}</a></li>
           </ul>
         </div>
