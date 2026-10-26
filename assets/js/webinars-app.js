@@ -256,6 +256,27 @@
           w.reg_status = sData.reg_status;
           w.registration_open = (sData.reg_status === 'open');
         }
+        if (Array.isArray(sData.speakers) && sData.speakers.length) {
+          w.speakers = sData.speakers;
+        } else if (sData.speaker_name) {
+          const spList = [
+            {
+              name: sData.speaker_name,
+              title: sData.speaker_role || 'Citizenship Specialist',
+              affiliation: sData.speaker_affiliation || 'Sharif Group',
+              note: 'Keynote Speaker'
+            }
+          ];
+          if (sData.host_name) {
+            spList.push({
+              name: sData.host_name,
+              title: sData.host_role || 'Session Host',
+              affiliation: sData.host_affiliation || 'Sharif Group',
+              note: 'Host'
+            });
+          }
+          w.speakers = spList;
+        }
       }
       if (!w.reg_status) {
         w.reg_status = w.registration_open ? 'open' : 'soon';
@@ -294,7 +315,7 @@
     return (w.join_url && String(w.join_url).trim()) ? 'ready' : 'soon';
   };
   const C = w => {
-    if (!w) return { title: '', excerpt: '', series_tag: '' };
+    if (!w) return { title: '', excerpt: '', series_tag: '', speakers: [] };
     const cur = w[lang] || {};
     const en = w.en || {};
     return {
@@ -302,7 +323,8 @@
       excerpt: cur.excerpt || en.excerpt || w.excerpt || '',
       series_tag: cur.series_tag || en.series_tag || w.series_tag || '',
       body: cur.body || en.body || [],
-      outcomes: cur.outcomes || en.outcomes || []
+      outcomes: cur.outcomes || en.outcomes || [],
+      speakers: (Array.isArray(cur.speakers) && cur.speakers.length) ? cur.speakers : ((Array.isArray(w.speakers) && w.speakers.length) ? w.speakers : [])
     };
   };
   const startOf = w => new Date(w.start_utc);
@@ -1243,7 +1265,7 @@
     const bodyParas = (Array.isArray(c.body) ? c.body : (typeof c.body === 'string' ? [c.body] : [])).filter(Boolean);
     const outcomeItems = (Array.isArray(c.outcomes) ? c.outcomes : (typeof c.outcomes === 'string' ? [c.outcomes] : [])).filter(Boolean);
     const agendaList = (Array.isArray(c.agenda) && c.agenda.length) ? c.agenda : (t('detail.agendaItems') || []);
-    const speakersList = (Array.isArray(c.speakers) && c.speakers.length) ? c.speakers : [['expert', I.user], ['host', I.mic]];
+    const speakersList = (Array.isArray(c.speakers) && c.speakers.length) ? c.speakers : ((Array.isArray(w.speakers) && w.speakers.length) ? w.speakers : [['expert', I.user], ['host', I.mic]]);
 
     return `
     <section class="hero hero--detail">

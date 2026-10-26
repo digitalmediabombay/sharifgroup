@@ -156,6 +156,21 @@ if (in_array('sgcms_blog', $savedKeys)) {
     }
 }
 
+// 4. Atomically update webinars-data.js & homepage when webinars or scheduler is modified
+if (in_array('sgcms_webinar_schedule', $savedKeys) || in_array('sgcms_webinars', $savedKeys)) {
+    try {
+        $rootDir = realpath(dirname(__DIR__, 2));
+        if ($rootDir && file_exists(__DIR__ . '/webinars-regen.php')) {
+            require_once __DIR__ . '/webinars-regen.php';
+            if (function_exists('regenerateWebinars')) {
+                regenerateWebinars($rootDir, $currentDraft);
+            }
+        }
+    } catch (Throwable $wre) {
+        error_log('[SharifCMS Save Webinars Regen Warning] ' . $wre->getMessage());
+    }
+}
+
 jsonResponse([
     'success'   => true,
     'message'   => 'Draft saved successfully' . ($dbSaved ? ' to MySQL & server snapshot.' : ' to server snapshot.'),

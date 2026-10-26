@@ -17,6 +17,9 @@ def create_patch_zip():
         'admin/api/blog-list-published.php',
         'admin/api/blog-delete-draft.php',
         'admin/api/delete-blog.php',
+        'admin/api/save.php',
+        'admin/api/webinars-regen.php',
+        'assets/js/webinars-app.js',
         'admin/dashboard.html'
     ]
 

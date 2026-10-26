@@ -9004,6 +9004,21 @@
         const startUtc = selData.start_utc || selSession.start_utc || '2026-10-29T15:30:00Z';
         const joinUrl = (typeof selData.join_url === 'string') ? selData.join_url : (selSession.join_url || '');
 
+        // Speakers data extraction
+        const selSpeakers = (selData && Array.isArray(selData.speakers) && selData.speakers.length)
+          ? selData.speakers
+          : ((Array.isArray(selSession.speakers) && selSession.speakers.length) ? selSession.speakers : []);
+        const sp1 = selSpeakers[0] || {};
+        const sp2 = selSpeakers[1] || {};
+
+        const selSpeakerName = selData.speaker_name || sp1.name || '';
+        const selSpeakerRole = selData.speaker_role || sp1.title || sp1.role || '';
+        const selSpeakerAffil = selData.speaker_affiliation || sp1.affiliation || '';
+
+        const selHostName = selData.host_name || sp2.name || '';
+        const selHostRole = selData.host_role || sp2.title || sp2.role || '';
+        const selHostAffil = selData.host_affiliation || sp2.affiliation || '';
+
         let dtLocalVal = '2026-10-29T19:30';
         try {
           const dObj = new Date(startUtc);
@@ -9222,11 +9237,98 @@
                 </div>
               </div>
 
+              <!-- ═══ STEP 4: WEBINAR SPEAKERS & PRESENTERS CARD ═══ -->
+              <div style="margin-bottom:20px;background:var(--surface);border:1px solid var(--border);border-radius:12px;padding:18px 20px">
+                <div style="display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:8px;margin-bottom:14px;padding-bottom:10px;border-bottom:1px solid var(--border)">
+                  <div>
+                    <label class="form-label" style="font-size:13px;font-weight:700;color:var(--text);margin-bottom:2px;display:flex;align-items:center;gap:8px">
+                      <i class="fa-solid fa-user-tie" style="color:var(--gold);font-size:15px"></i>
+                      Webinar Speakers & Presenters (Session ${String(selNo).padStart(2, '0')})
+                    </label>
+                    <div style="font-size:11px;color:var(--muted)">
+                      Enter the speaker details for this webinar session. These update live on the website automatically.
+                    </div>
+                  </div>
+                  <span style="font-size:11px;font-weight:700;background:rgba(197,168,128,0.15);color:var(--gold);padding:4px 12px;border-radius:20px;border:1px solid rgba(197,168,128,0.3);display:inline-flex;align-items:center;gap:6px">
+                    <i class="fa-solid fa-microphone"></i> Session Speakers
+                  </span>
+                </div>
+
+                <!-- Grid: Keynote Speaker & Host / Co-Speaker -->
+                <div style="display:grid;grid-template-columns:repeat(auto-fit, minmax(280px, 1fr));gap:16px">
+                  
+                  <!-- Speaker 1: Keynote Speaker / Expert -->
+                  <div style="background:var(--card);border:1px solid var(--border);border-radius:10px;padding:16px;box-shadow:0 1px 3px rgba(0,0,0,0.02)">
+                    <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:12px;padding-bottom:8px;border-bottom:1px dashed var(--border)">
+                      <div style="display:flex;align-items:center;gap:8px;font-size:12px;font-weight:700;color:var(--text)">
+                        <span style="width:22px;height:22px;border-radius:50%;background:linear-gradient(135deg,rgba(197,168,128,0.35),rgba(179,142,93,0.2));color:var(--gold);display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:800">1</span>
+                        Keynote Speaker / Specialist
+                      </div>
+                      <span style="font-size:10px;font-weight:700;color:#059669;background:rgba(16,185,129,0.1);padding:2px 8px;border-radius:8px">Primary</span>
+                    </div>
+
+                    <div class="form-group" style="margin-bottom:12px">
+                      <label style="font-size:11px;font-weight:700;color:var(--text);display:block;margin-bottom:4px">
+                        Speaker Name *
+                      </label>
+                      <input type="text" class="form-input" id="wsch-speaker-name" value="${escH(selSpeakerName)}" placeholder="e.g. Dr. Babak Sharif or Adv. Sarah Al-Mansoor" style="font-size:13px;padding:9px 12px">
+                    </div>
+
+                    <div class="form-group" style="margin-bottom:12px">
+                      <label style="font-size:11px;font-weight:700;color:var(--text);display:block;margin-bottom:4px">
+                        Designation / Title
+                      </label>
+                      <input type="text" class="form-input" id="wsch-speaker-role" value="${escH(selSpeakerRole)}" placeholder="e.g. Senior Citizenship & Investment Specialist" style="font-size:13px;padding:9px 12px">
+                    </div>
+
+                    <div class="form-group" style="margin-bottom:0">
+                      <label style="font-size:11px;font-weight:700;color:var(--text);display:block;margin-bottom:4px">
+                        Organization / Affiliation
+                      </label>
+                      <input type="text" class="form-input" id="wsch-speaker-affil" value="${escH(selSpeakerAffil)}" placeholder="e.g. Sharif Group Legal Desk" style="font-size:13px;padding:9px 12px">
+                    </div>
+                  </div>
+
+                  <!-- Speaker 2: Host / Moderator -->
+                  <div style="background:var(--card);border:1px solid var(--border);border-radius:10px;padding:16px;box-shadow:0 1px 3px rgba(0,0,0,0.02)">
+                    <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:12px;padding-bottom:8px;border-bottom:1px dashed var(--border)">
+                      <div style="display:flex;align-items:center;gap:8px;font-size:12px;font-weight:700;color:var(--text)">
+                        <span style="width:22px;height:22px;border-radius:50%;background:rgba(100,116,139,0.15);color:var(--text);display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:800">2</span>
+                        Session Host & Moderator
+                      </div>
+                      <span style="font-size:10px;font-weight:700;color:var(--muted);background:rgba(100,116,139,0.1);padding:2px 8px;border-radius:8px">Host</span>
+                    </div>
+
+                    <div class="form-group" style="margin-bottom:12px">
+                      <label style="font-size:11px;font-weight:700;color:var(--text);display:block;margin-bottom:4px">
+                        Host Name
+                      </label>
+                      <input type="text" class="form-input" id="wsch-host-name" value="${escH(selHostName)}" placeholder="e.g. Ali Rezaei (Dari Host) or Legal Desk Host" style="font-size:13px;padding:9px 12px">
+                    </div>
+
+                    <div class="form-group" style="margin-bottom:12px">
+                      <label style="font-size:11px;font-weight:700;color:var(--text);display:block;margin-bottom:4px">
+                        Host Role
+                      </label>
+                      <input type="text" class="form-input" id="wsch-host-role" value="${escH(selHostRole)}" placeholder="e.g. Session Host & Live Q&A Moderator" style="font-size:13px;padding:9px 12px">
+                    </div>
+
+                    <div class="form-group" style="margin-bottom:0">
+                      <label style="font-size:11px;font-weight:700;color:var(--text);display:block;margin-bottom:4px">
+                        Organization
+                      </label>
+                      <input type="text" class="form-input" id="wsch-host-affil" value="${escH(selHostAffil)}" placeholder="e.g. Sharif Group" style="font-size:13px;padding:9px 12px">
+                    </div>
+                  </div>
+
+                </div>
+              </div>
+
               <!-- Save & Update Website Action -->
               <div style="display:flex;align-items:center;justify-content:space-between;padding-top:18px;border-top:1px solid var(--border)">
                 <div style="font-size:12px;color:var(--muted)">
                   <i class="fa-solid fa-shield-halved" style="color:var(--gold);margin-right:6px"></i>
-                  Clicking Update Website instantly refreshes the live website, countdown timer, and registration availability.
+                  Clicking Update Website instantly refreshes the live website, speakers list, countdown timer, and registration availability.
                 </div>
                 <div style="display:flex;gap:10px">
                   <button type="button" class="btn btn-primary" style="font-size:13px;padding:11px 26px;background:linear-gradient(135deg,#10b981,#059669);color:#fff;border:none;box-shadow:0 2px 8px rgba(16,185,129,0.3)" onclick="saveWebinarScheduleData()">
@@ -9257,13 +9359,20 @@
         
         // Sync to backend save.php
         try {
+          const token = (window.CMS && window.CMS.Auth) ? window.CMS.Auth.getToken() : (sessionStorage.getItem('sgcms_token') || localStorage.getItem('sgcms_token') || '');
+          const authHeaders = { 'Content-Type': 'application/json' };
+          if (token) {
+            authHeaders['Authorization'] = 'Bearer ' + token;
+            authHeaders['X-CMS-Token'] = token;
+          }
           fetch('api/save.php', {
             method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
+            credentials: 'include',
+            headers: authHeaders,
             body: JSON.stringify({
               key: 'sgcms_webinar_schedule',
               data: schedule,
-              token: (window.CMS && window.CMS.Auth) ? window.CMS.Auth.getToken() : ''
+              token: token
             })
           }).catch(() => {});
         } catch(e) {}
@@ -9280,6 +9389,14 @@
         const dtInput = document.getElementById('wsch-datetime');
         const linkInput = document.getElementById('wsch-link');
         const regRadio = document.querySelector('input[name="wsch-reg-status"]:checked');
+
+        const speakerNameInput = document.getElementById('wsch-speaker-name');
+        const speakerRoleInput = document.getElementById('wsch-speaker-role');
+        const speakerAffilInput = document.getElementById('wsch-speaker-affil');
+
+        const hostNameInput = document.getElementById('wsch-host-name');
+        const hostRoleInput = document.getElementById('wsch-host-role');
+        const hostAffilInput = document.getElementById('wsch-host-affil');
         
         let startUtc = '';
         if (dtInput && dtInput.value) {
@@ -9291,16 +9408,61 @@
         const joinUrl = linkInput ? linkInput.value.trim() : '';
         const regStatus = regRadio ? regRadio.value : (schedule.sessions && schedule.sessions[selNo] && schedule.sessions[selNo].reg_status ? schedule.sessions[selNo].reg_status : 'open');
         
+        const speakerName = speakerNameInput ? speakerNameInput.value.trim() : '';
+        const speakerRole = speakerRoleInput ? speakerRoleInput.value.trim() : '';
+        const speakerAffil = speakerAffilInput ? speakerAffilInput.value.trim() : '';
+
+        const hostName = hostNameInput ? hostNameInput.value.trim() : '';
+        const hostRole = hostRoleInput ? hostRoleInput.value.trim() : '';
+        const hostAffil = hostAffilInput ? hostAffilInput.value.trim() : '';
+
+        const compiledSpeakers = [];
+        if (speakerName) {
+          compiledSpeakers.push({
+            name: speakerName,
+            title: speakerRole || 'Citizenship Specialist',
+            affiliation: speakerAffil || 'Sharif Group',
+            note: 'Keynote Speaker'
+          });
+        }
+        if (hostName) {
+          compiledSpeakers.push({
+            name: hostName,
+            title: hostRole || 'Session Moderator',
+            affiliation: hostAffil || 'Sharif Group',
+            note: 'Host'
+          });
+        }
+
         if (!schedule.sessions) schedule.sessions = {};
         schedule.sessions[selNo] = {
           start_utc: startUtc,
           join_url: joinUrl,
           duration_min: 65,
-          reg_status: regStatus
+          reg_status: regStatus,
+          speaker_name: speakerName,
+          speaker_role: speakerRole,
+          speaker_affiliation: speakerAffil,
+          host_name: hostName,
+          host_role: hostRole,
+          host_affiliation: hostAffil,
+          speakers: compiledSpeakers.length ? compiledSpeakers : undefined
         };
         schedule.updated_at = new Date().toISOString();
         
         localStorage.setItem('sgcms_webinar_schedule', JSON.stringify(schedule));
+
+        // Update allSessions catalog in window.CMS and window.SGCMS_WEBINARS
+        if (typeof window.SGCMS_WEBINARS !== 'undefined' && Array.isArray(window.SGCMS_WEBINARS)) {
+          const match = window.SGCMS_WEBINARS.find(s => Number(s.session_no) === selNo);
+          if (match) {
+            if (compiledSpeakers.length) match.speakers = compiledSpeakers;
+            if (startUtc) match.start_utc = startUtc;
+            if (joinUrl) match.join_url = joinUrl;
+            match.registration_open = (regStatus === 'open');
+          }
+        }
+
         // Clear any old legacy drafts that might truncate live sessions
         try {
           const rawOld = localStorage.getItem('sgcms_webinars');
@@ -9314,20 +9476,34 @@
         } catch(e) {}
         window.dispatchEvent(new StorageEvent('storage', { key: 'sgcms_webinar_schedule' }));
 
-        // Sync to backend save.php
+        // Sync to backend save.php with credentials and auth headers
         try {
+          const token = (window.CMS && window.CMS.Auth) ? window.CMS.Auth.getToken() : (sessionStorage.getItem('sgcms_token') || localStorage.getItem('sgcms_token') || '');
+          const authHeaders = { 'Content-Type': 'application/json' };
+          if (token) {
+            authHeaders['Authorization'] = 'Bearer ' + token;
+            authHeaders['X-CMS-Token'] = token;
+          }
+
           fetch('api/save.php', {
             method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
+            credentials: 'include',
+            headers: authHeaders,
             body: JSON.stringify({
               key: 'sgcms_webinar_schedule',
               data: schedule,
-              token: (window.CMS && window.CMS.Auth) ? window.CMS.Auth.getToken() : ''
+              token: token
             })
-          }).catch(() => {});
+          }).then(r => r.json()).then(res => {
+            if (res && res.success) {
+              showToast(`Session ${selNo} schedule, link & speakers updated live on the website!`, 'success');
+            }
+          }).catch(() => {
+            showToast(`Session ${selNo} schedule updated locally.`, 'info');
+          });
         } catch(e) {}
 
-        showToast(`Session ${selNo} schedule & link updated on the live website!`, 'success');
+        showToast(`Session ${selNo} schedule, link & speakers updated on the live website!`, 'success');
         renderWebinarScheduler();
       }
 

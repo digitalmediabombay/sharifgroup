@@ -87,10 +87,80 @@ if (!function_exists('regenerateWebinars')) {
                 }
             }
         }
+        if (empty($publishedData['sgcms_webinars'])) {
+            $draftJsonFile = $rootDir . '/admin/api/draft_content.json';
+            if (file_exists($draftJsonFile)) {
+                $rawD = @file_get_contents($draftJsonFile);
+                $dD = json_decode($rawD, true);
+                if (!empty($dD['sgcms_webinars'])) {
+                    $publishedData['sgcms_webinars'] = $dD['sgcms_webinars'];
+                }
+            }
+        }
 
         $webinars = $publishedData['sgcms_webinars'] ?? null;
         if (empty($webinars) || !is_array($webinars)) {
             return ['success' => false, 'message' => 'No webinars data to regenerate'];
+        }
+
+        // Merge CRM schedule & speaker overrides from sgcms_webinar_schedule
+        $schedule = $publishedData['sgcms_webinar_schedule'] ?? null;
+        if (!$schedule) {
+            $draftJsonFile = $rootDir . '/admin/api/draft_content.json';
+            if (file_exists($draftJsonFile)) {
+                $rawSch = @file_get_contents($draftJsonFile);
+                $decSch = json_decode($rawSch, true);
+                if (!empty($decSch['sgcms_webinar_schedule'])) {
+                    $schedule = $decSch['sgcms_webinar_schedule'];
+                }
+            }
+        }
+        if (!$schedule) {
+            $pubJsonFile = $rootDir . '/admin/api/published_content.json';
+            if (file_exists($pubJsonFile)) {
+                $rawSchPub = @file_get_contents($pubJsonFile);
+                $decSchPub = json_decode($rawSchPub, true);
+                if (!empty($decSchPub['sgcms_webinar_schedule'])) {
+                    $schedule = $decSchPub['sgcms_webinar_schedule'];
+                }
+            }
+        }
+
+        if (!empty($schedule['sessions']) && is_array($schedule['sessions'])) {
+            foreach ($webinars as &$wItem) {
+                $sNum = $wItem['session_no'] ?? 0;
+                if (!empty($schedule['sessions'][$sNum])) {
+                    $sData = $schedule['sessions'][$sNum];
+                    if (!empty($sData['start_utc'])) $wItem['start_utc'] = $sData['start_utc'];
+                    if (isset($sData['join_url'])) $wItem['join_url'] = trim($sData['join_url']);
+                    if (isset($sData['reg_status'])) {
+                        $wItem['reg_status'] = $sData['reg_status'];
+                        $wItem['registration_open'] = ($sData['reg_status'] === 'open');
+                    }
+                    if (!empty($sData['speakers']) && is_array($sData['speakers'])) {
+                        $wItem['speakers'] = $sData['speakers'];
+                    } elseif (!empty($sData['speaker_name'])) {
+                        $spList = [
+                            [
+                                'name'        => trim($sData['speaker_name']),
+                                'title'       => !empty($sData['speaker_role']) ? trim($sData['speaker_role']) : 'Citizenship & Immigration Specialist',
+                                'affiliation' => !empty($sData['speaker_affiliation']) ? trim($sData['speaker_affiliation']) : 'Sharif Group',
+                                'note'        => 'Keynote Speaker'
+                            ]
+                        ];
+                        if (!empty($sData['host_name'])) {
+                            $spList[] = [
+                                'name'        => trim($sData['host_name']),
+                                'title'       => !empty($sData['host_role']) ? trim($sData['host_role']) : 'Session Moderator & Host',
+                                'affiliation' => !empty($sData['host_affiliation']) ? trim($sData['host_affiliation']) : 'Sharif Group',
+                                'note'        => 'Host'
+                            ];
+                        }
+                        $wItem['speakers'] = $spList;
+                    }
+                }
+            }
+            unset($wItem);
         }
 
         // 1. UPDATE assets/js/webinars-data.js
@@ -103,10 +173,21 @@ if (!function_exists('regenerateWebinars')) {
 
         // 2. IDENTIFY FEATURED / NEXT UPCOMING SESSION (Session 1 or first active)
         $featured = null;
-        foreach ($webinars as $w) {
-            if (!empty($w['event_status']) && in_array($w['event_status'], ['upcoming', 'live'])) {
-                $featured = $w;
-                break;
+        $activeSessionNo = !empty($schedule['active_session_no']) ? (int)$schedule['active_session_no'] : null;
+        if ($activeSessionNo) {
+            foreach ($webinars as $w) {
+                if ((int)($w['session_no'] ?? 0) === $activeSessionNo) {
+                    $featured = $w;
+                    break;
+                }
+            }
+        }
+        if (!$featured) {
+            foreach ($webinars as $w) {
+                if (!empty($w['event_status']) && in_array($w['event_status'], ['upcoming', 'live'])) {
+                    $featured = $w;
+                    break;
+                }
             }
         }
         if (!$featured && !empty($webinars[0])) {
