@@ -13,14 +13,27 @@ if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
 startSecureSession();
 requireAdminAuth();
 
-if (empty($_FILES['file'])) {
-    jsonResponse(['success' => false, 'error' => 'No file uploaded.'], 400);
+// Support multiple input field names ('file', 'image', 'upload')
+$file = !empty($_FILES['file']) ? $_FILES['file'] 
+      : (!empty($_FILES['image']) ? $_FILES['image'] 
+      : (!empty($_FILES['upload']) ? $_FILES['upload'] : null));
+
+if (!$file) {
+    jsonResponse(['success' => false, 'error' => 'No file uploaded. Please select an image file.'], 400);
 }
 
-$file = $_FILES['file'];
-
 if ($file['error'] !== UPLOAD_ERR_OK) {
-    jsonResponse(['success' => false, 'error' => 'Upload error code: ' . $file['error']], 400);
+    $errMap = [
+        UPLOAD_ERR_INI_SIZE   => 'Uploaded file exceeds upload_max_filesize directive in php.ini.',
+        UPLOAD_ERR_FORM_SIZE  => 'Uploaded file exceeds MAX_FILE_SIZE directive in form.',
+        UPLOAD_ERR_PARTIAL    => 'File was only partially uploaded.',
+        UPLOAD_ERR_NO_FILE    => 'No file was uploaded.',
+        UPLOAD_ERR_NO_TMP_DIR => 'Missing a temporary folder on server.',
+        UPLOAD_ERR_CANT_WRITE => 'Failed to write file to disk.',
+        UPLOAD_ERR_EXTENSION  => 'A PHP extension stopped the file upload.'
+    ];
+    $msg = $errMap[$file['error']] ?? ('Upload error code: ' . $file['error']);
+    jsonResponse(['success' => false, 'error' => $msg], 400);
 }
 
 if ($file['size'] > MAX_UPLOAD_SIZE) {
@@ -57,6 +70,9 @@ $uploadDir = rtrim(UPLOAD_DIR, '/\\') . DIRECTORY_SEPARATOR;
 if (!is_dir($uploadDir)) {
     @mkdir($uploadDir, 0777, true);
 }
+if (!is_writable($uploadDir)) {
+    @chmod($uploadDir, 0777);
+}
 
 // Generate unique clean file name base
 $baseName = preg_replace('/[^a-zA-Z0-9_\-]/', '_', pathinfo($origName, PATHINFO_FILENAME));
@@ -67,6 +83,7 @@ $rasterExts = ['jpg', 'jpeg', 'png', 'webp'];
 $finalFileName = $baseName . '_' . $timestamp . '.' . $ext;
 $targetPath = $uploadDir . $finalFileName;
 $finalSize = $file['size'];
+$savedSuccessfully = false;
 
 if (in_array($ext, $rasterExts, true) && extension_loaded('gd') && function_exists('imagecreatefromstring')) {
     $imgData = @file_get_contents($file['tmp_name']);
@@ -101,32 +118,35 @@ if (in_array($ext, $rasterExts, true) && extension_loaded('gd') && function_exis
         if (function_exists('imagewebp')) {
             $finalFileName = $baseName . '_' . $timestamp . '.webp';
             $targetPath = $uploadDir . $finalFileName;
-            imagewebp($dstImg, $targetPath, 80);
+            $savedSuccessfully = @imagewebp($dstImg, $targetPath, 80);
             $ext = 'webp';
         } else {
             $finalFileName = $baseName . '_' . $timestamp . '.jpg';
             $targetPath = $uploadDir . $finalFileName;
             imageinterlace($dstImg, 1);
-            imagejpeg($dstImg, $targetPath, 82);
+            $savedSuccessfully = @imagejpeg($dstImg, $targetPath, 82);
             $ext = 'jpg';
         }
         imagedestroy($dstImg);
-        $finalSize = @filesize($targetPath) ?: $file['size'];
-    } else {
-        if (!@move_uploaded_file($file['tmp_name'], $targetPath)) {
-            @copy($file['tmp_name'], $targetPath);
-        }
     }
-} else {
-    // Non-raster file (SVG, PDF) or GD not available
+}
+
+// Fallback if GD was not used or GD save failed
+if (!$savedSuccessfully || !file_exists($targetPath) || @filesize($targetPath) === 0) {
+    $finalFileName = $baseName . '_' . $timestamp . '.' . strtolower(pathinfo($origName, PATHINFO_EXTENSION));
+    $targetPath = $uploadDir . $finalFileName;
     if (!@move_uploaded_file($file['tmp_name'], $targetPath)) {
         if (!@copy($file['tmp_name'], $targetPath)) {
-            jsonResponse(['success' => false, 'error' => 'Failed to save uploaded file on server. Check folder permissions.'], 500);
+            jsonResponse([
+                'success' => false, 
+                'error'   => 'Failed to save uploaded file to ' . $uploadDir . '. Please check directory permissions (chmod 755 or 777).'
+            ], 500);
         }
     }
 }
-@chmod($targetPath, 0666);
 
+@chmod($targetPath, 0666);
+$finalSize = @filesize($targetPath) ?: $file['size'];
 $publicUrl = UPLOAD_URL_PREFIX . $finalFileName;
 
 // Log to cms_media if table exists
@@ -143,6 +163,11 @@ try {
 jsonResponse([
     'success'  => true,
     'url'      => $publicUrl,
+    'file'     => [
+        'url'      => $publicUrl,
+        'filename' => $finalFileName,
+        'size'     => $finalSize
+    ],
     'filename' => $finalFileName,
     'size'     => $finalSize
 ]);

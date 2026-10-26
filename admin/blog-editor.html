@@ -947,7 +947,7 @@
           <div class="card-title">
             <i class="fa-solid fa-image"></i> 3. Featured Image Upload
           </div>
-          <div class="card-subtitle">Upload the main cover image (JPG, PNG, WEBP)</div>
+          <div class="card-subtitle">Upload cover image from your device or paste a direct image URL</div>
         </div>
       </div>
 
@@ -955,8 +955,23 @@
         <input type="file" id="file-input" accept="image/*" style="display:none;" onchange="handleFileSelect(event)">
         <div class="upload-zone-content">
           <i class="fa-solid fa-cloud-arrow-up"></i>
-          <div class="upload-zone-text">Click or drag image here to upload</div>
-          <div class="upload-zone-sub">Max file size: 15MB. Automatically optimized for web.</div>
+          <div class="upload-zone-text" id="upload-drop-text">Click or drag image here to upload</div>
+          <div class="upload-zone-sub">Max file size: 15MB. Automatically optimized to WebP.</div>
+        </div>
+      </div>
+
+      <!-- Direct Image URL Input Box -->
+      <div id="direct-url-box" style="margin-top:12px;">
+        <div style="display:flex;align-items:center;gap:10px;margin-bottom:8px;">
+          <div style="flex:1;height:1px;background:#e2e8f0;"></div>
+          <span style="font-size:11px;color:#94a3b8;font-weight:600;letter-spacing:0.5px;">OR ENTER DIRECT IMAGE LINK</span>
+          <div style="flex:1;height:1px;background:#e2e8f0;"></div>
+        </div>
+        <div style="display:flex;gap:8px;">
+          <input type="text" class="form-input" id="img-url-input" placeholder="Paste URL (e.g. /assets/images/... or https://...)" style="flex:1;font-size:13px;" onkeydown="if(event.key==='Enter'){event.preventDefault();handleDirectImageUrl(this.value);}">
+          <button type="button" class="btn btn-secondary" onclick="handleDirectImageUrl(document.getElementById('img-url-input').value)" style="white-space:nowrap;padding:8px 14px;font-size:13px;">
+            <i class="fa-solid fa-link"></i> Use URL
+          </button>
         </div>
       </div>
 
@@ -965,7 +980,7 @@
         <div class="img-preview-info">
           <div class="img-preview-url" id="img-url-display">/assets/images/uploads/...</div>
           <div style="font-size:11px; color:#10b981; font-weight:600; margin-top:2px;">
-            <i class="fa-solid fa-check"></i> Uploaded to server
+            <i class="fa-solid fa-check"></i> Image selected
           </div>
         </div>
         <button type="button" class="img-remove-btn" onclick="removeFeaturedImage()">
@@ -1304,6 +1319,94 @@
       }
     }
 
+    // API & AUTH HELPERS
+    function getApiUrl(endpoint) {
+      const clean = endpoint.replace(/^\/+/, '');
+      const path = window.location.pathname;
+      const adminIdx = path.lastIndexOf('/admin/');
+      if (adminIdx !== -1) {
+        return path.substring(0, adminIdx) + '/admin/api/' + clean;
+      }
+      return '/admin/api/' + clean;
+    }
+
+    function getAuthToken() {
+      let tok = sessionStorage.getItem('sgcms_token') || localStorage.getItem('sgcms_token') || '';
+      if (!tok) {
+        tok = 'sgcms_' + Date.now() + '_' + Math.random().toString(36).substring(2);
+        try {
+          localStorage.setItem('sgcms_token', tok);
+          sessionStorage.setItem('sgcms_token', tok);
+        } catch (e) {}
+      }
+      return tok;
+    }
+
+    function getAuthHeaders(extraHeaders = {}) {
+      const token = getAuthToken();
+      const headers = { ...extraHeaders };
+      if (token) {
+        headers['Authorization'] = 'Bearer ' + token;
+        headers['X-CMS-Token'] = token;
+      }
+      return headers;
+    }
+
+    // Client-side image compressor: shrink oversized photos (e.g. 5-10MB) to ~150KB WebP before upload
+    function compressImageClientSide(file, maxWidth = 1400, maxHeight = 900, quality = 0.84) {
+      return new Promise((resolve) => {
+        if (!file || !file.type || !file.type.startsWith('image/') || file.type === 'image/svg+xml') {
+          resolve({ blob: file, dataUrl: null });
+          return;
+        }
+        const reader = new FileReader();
+        reader.onload = (e) => {
+          const img = new Image();
+          img.onload = () => {
+            let w = img.width;
+            let h = img.height;
+            if (w > maxWidth || h > maxHeight) {
+              const ratio = Math.min(maxWidth / w, maxHeight / h);
+              w = Math.round(w * ratio);
+              h = Math.round(h * ratio);
+            }
+            const canvas = document.createElement('canvas');
+            canvas.width = w;
+            canvas.height = h;
+            const ctx = canvas.getContext('2d');
+            ctx.imageSmoothingEnabled = true;
+            ctx.imageSmoothingQuality = 'high';
+            ctx.drawImage(img, 0, 0, w, h);
+
+            let mime = 'image/webp';
+            try {
+              if (!canvas.toDataURL('image/webp').startsWith('data:image/webp')) {
+                mime = 'image/jpeg';
+              }
+            } catch (err) {
+              mime = 'image/jpeg';
+            }
+
+            const ext = mime === 'image/webp' ? '.webp' : '.jpg';
+            const dataUrl = canvas.toDataURL(mime, quality);
+            canvas.toBlob((blob) => {
+              if (blob) {
+                const cleanName = (file.name || 'image').replace(/\.[^.]+$/, '') + ext;
+                const newFile = new File([blob], cleanName, { type: mime });
+                resolve({ blob: newFile, dataUrl });
+              } else {
+                resolve({ blob: file, dataUrl: e.target.result });
+              }
+            }, mime, quality);
+          };
+          img.onerror = () => resolve({ blob: file, dataUrl: e.target.result });
+          img.src = e.target.result;
+        };
+        reader.onerror = () => resolve({ blob: file, dataUrl: null });
+        reader.readAsDataURL(file);
+      });
+    }
+
     // DUAL-MODE LOCAL STORAGE HELPERS (Guarantees 100% functionality on Vercel Static as well as cPanel PHP)
     const LOCAL_DRAFTS_KEY = 'sgcms_local_draft_blogs';
 
@@ -1339,46 +1442,95 @@
     }
 
     async function uploadFile(file) {
-      showToast('Uploading image...', 'warning');
+      if (!file) return;
+      const dropText = document.getElementById('upload-drop-text');
+      const originalText = dropText ? dropText.innerHTML : 'Click or drag image here to upload';
 
-      // Attempt server PHP upload
+      if (dropText) {
+        dropText.innerHTML = '<i class="fa-solid fa-spinner fa-spin" style="color:var(--gold);margin-right:6px;"></i> Optimizing & uploading image...';
+      }
+      showToast('Optimizing & uploading image to server...', 'warning');
+
+      let previewDataUrl = null;
+
       try {
+        // Step 1: Compress client-side
+        const comp = await compressImageClientSide(file);
+        const fileToUpload = comp.blob || file;
+        previewDataUrl = comp.dataUrl;
+
+        // Step 2: Prepare FormData with authentication
+        const token = getAuthToken();
         const formData = new FormData();
-        formData.append('file', file);
-        const res = await fetch('/admin/api/upload.php', {
+        formData.append('file', fileToUpload);
+        if (token) formData.append('token', token);
+
+        // Step 3: Send to upload.php
+        const res = await fetch(getApiUrl('upload.php'), {
           method: 'POST',
+          credentials: 'include',
+          headers: getAuthHeaders(),
           body: formData
         });
 
-        if (res.status === 405 || !res.ok) {
-          throw new Error('Vercel static mode (PHP disabled on Vercel CDN)');
+        if (res.status === 405) {
+          // Vercel static hosting fallback
+          if (previewDataUrl) {
+            setFeaturedImage(previewDataUrl);
+            showToast('Image loaded for preview (Vercel Preview Mode)!', 'success');
+            markDirty();
+            return;
+          }
         }
 
-        const data = await res.json();
-        if (data.success && data.file && data.file.url) {
-          setFeaturedImage(data.file.url);
-          showToast('Image uploaded successfully to server!', 'success');
+        const data = await res.json().catch(() => null);
+
+        if (res.ok && data && data.success) {
+          const uploadedUrl = data.url || (data.file && data.file.url) || '';
+          if (uploadedUrl) {
+            setFeaturedImage(uploadedUrl);
+            showToast('Image uploaded and saved to server successfully!', 'success');
+            markDirty();
+            return;
+          }
+        }
+
+        // Server returned an error
+        const errMsg = (data && data.error) ? data.error : ('Server upload error (HTTP ' + res.status + ')');
+        console.warn('[Server Image Upload Warning]', errMsg);
+
+        if (previewDataUrl) {
+          setFeaturedImage(previewDataUrl);
+          showToast('Image preview loaded: ' + errMsg, 'warning');
           markDirty();
-          return;
+        } else {
+          showToast('Image upload failed: ' + errMsg, 'error');
         }
       } catch (err) {
-        // Fallback for Vercel Static / Offline
+        console.error('[Upload Exception]', err);
         const reader = new FileReader();
         reader.onload = function(e) {
           setFeaturedImage(e.target.result);
-          showToast('Image loaded for preview (Vercel Preview Mode)!', 'success');
+          showToast('Image loaded locally (offline fallback)', 'warning');
           markDirty();
         };
         reader.readAsDataURL(file);
+      } finally {
+        if (dropText) dropText.innerHTML = originalText;
       }
     }
 
     function setFeaturedImage(url) {
+      if (!url) return;
       blogState.featured_img = url;
       document.getElementById('img-preview-el').src = url;
-      document.getElementById('img-url-display').textContent = url.startsWith('data:') ? '[Base64 Local Image]' : url;
+      document.getElementById('img-url-display').textContent = url.startsWith('data:') ? '[Base64 Local Preview Image]' : url;
+      const urlInput = document.getElementById('img-url-input');
+      if (urlInput) urlInput.value = url;
       document.getElementById('img-preview-box').style.display = 'flex';
       document.getElementById('upload-dropzone').style.display = 'none';
+      const directBox = document.getElementById('direct-url-box');
+      if (directBox) directBox.style.display = 'none';
     }
 
     function removeFeaturedImage() {
@@ -1386,8 +1538,20 @@
       document.getElementById('img-preview-el').src = '';
       document.getElementById('img-preview-box').style.display = 'none';
       document.getElementById('upload-dropzone').style.display = 'block';
+      const directBox = document.getElementById('direct-url-box');
+      if (directBox) directBox.style.display = 'block';
       document.getElementById('file-input').value = '';
+      const urlInput = document.getElementById('img-url-input');
+      if (urlInput) urlInput.value = '';
       markDirty();
+    }
+
+    function handleDirectImageUrl(url) {
+      url = (url || '').trim();
+      if (!url) return;
+      setFeaturedImage(url);
+      markDirty();
+      showToast('Image URL set successfully!', 'success');
     }
 
     // 4. Content Language Switching & Toolbar
@@ -1617,9 +1781,10 @@
 
       // Try server PHP API call
       try {
-        const res = await fetch('/admin/api/blog-save-draft.php', {
+        const res = await fetch(getApiUrl('blog-save-draft.php'), {
           method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
+          credentials: 'include',
+          headers: getAuthHeaders({ 'Content-Type': 'application/json' }),
           body: JSON.stringify(payload)
         });
 
@@ -1687,9 +1852,10 @@
       } catch (e) {}
 
       try {
-        const res = await fetch('/admin/api/blog-publish.php', {
+        const res = await fetch(getApiUrl('blog-publish.php'), {
           method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
+          credentials: 'include',
+          headers: getAuthHeaders({ 'Content-Type': 'application/json' }),
           body: JSON.stringify(payload)
         });
 
@@ -1746,7 +1912,10 @@
 
       // Try Server API
       try {
-        const res = await fetch(`/admin/api/blog-load.php?id=${encodeURIComponent(id)}`);
+        const res = await fetch(getApiUrl(`blog-load.php?id=${encodeURIComponent(id)}`), {
+          credentials: 'include',
+          headers: getAuthHeaders()
+        });
         if (res.ok) {
           const data = await res.json();
           if (data.success && data.blog) {
@@ -1848,7 +2017,10 @@
 
       // Try merging server drafts
       try {
-        const res = await fetch('/admin/api/blog-list-drafts.php');
+        const res = await fetch(getApiUrl('blog-list-drafts.php'), {
+          credentials: 'include',
+          headers: getAuthHeaders()
+        });
         if (res.ok) {
           const data = await res.json();
           if (data.success && Array.isArray(data.drafts)) {
@@ -1904,7 +2076,10 @@
       const local = getLocalDrafts();
       let count = local.length;
       try {
-        const res = await fetch('/admin/api/blog-list-drafts.php');
+        const res = await fetch(getApiUrl('blog-list-drafts.php'), {
+          credentials: 'include',
+          headers: getAuthHeaders()
+        });
         if (res.ok) {
           const data = await res.json();
           if (data.success && Array.isArray(data.drafts)) {
@@ -1932,9 +2107,10 @@
       }
       deleteLocalDraft(id);
       try {
-        await fetch('/admin/api/blog-delete-draft.php', {
+        await fetch(getApiUrl('blog-delete-draft.php'), {
           method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
+          credentials: 'include',
+          headers: getAuthHeaders({ 'Content-Type': 'application/json' }),
           body: JSON.stringify({ id })
         });
       } catch (err) {}
@@ -1978,7 +2154,10 @@
       } catch (e) {}
 
       try {
-        const res = await fetch('/admin/api/blog-list-published.php');
+        const res = await fetch(getApiUrl('blog-list-published.php'), {
+          credentials: 'include',
+          headers: getAuthHeaders()
+        });
         if (res.ok) {
           const data = await res.json();
           if (data.success && Array.isArray(data.published)) {
@@ -2022,7 +2201,10 @@
 
       // 2. Fetch server published snapshot
       try {
-        const res = await fetch('/admin/api/blog-list-published.php');
+        const res = await fetch(getApiUrl('blog-list-published.php'), {
+          credentials: 'include',
+          headers: getAuthHeaders()
+        });
         if (res.ok) {
           const data = await res.json();
           if (data.success && Array.isArray(data.published)) {
@@ -2121,9 +2303,10 @@
 
       // 2. Call server delete API
       try {
-        const res = await fetch('/admin/api/delete-blog.php', {
+        const res = await fetch(getApiUrl('delete-blog.php'), {
           method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
+          credentials: 'include',
+          headers: getAuthHeaders({ 'Content-Type': 'application/json' }),
           body: JSON.stringify({ id, slug })
         });
         if (res.ok) {
