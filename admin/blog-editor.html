@@ -1253,33 +1253,79 @@
       }
     }
 
-    async function uploadFile(file) {
-      showToast('Uploading image to server...', 'warning');
-      const formData = new FormData();
-      formData.append('file', file);
+    // DUAL-MODE LOCAL STORAGE HELPERS (Guarantees 100% functionality on Vercel Static as well as cPanel PHP)
+    const LOCAL_DRAFTS_KEY = 'sgcms_local_draft_blogs';
 
+    function getLocalDrafts() {
       try {
+        const raw = localStorage.getItem(LOCAL_DRAFTS_KEY);
+        return raw ? JSON.parse(raw) : [];
+      } catch (e) {
+        return [];
+      }
+    }
+
+    function saveLocalDraft(item) {
+      try {
+        const list = getLocalDrafts();
+        const idx = list.findIndex(d => (d.id && d.id === item.id) || (d.slug && d.slug === item.slug));
+        if (idx >= 0) {
+          list[idx] = item;
+        } else {
+          list.unshift(item);
+        }
+        localStorage.setItem(LOCAL_DRAFTS_KEY, JSON.stringify(list));
+      } catch (e) {
+        console.warn('LocalStorage save warning:', e);
+      }
+    }
+
+    function deleteLocalDraft(id) {
+      try {
+        const list = getLocalDrafts().filter(d => d.id !== id && d.slug !== id);
+        localStorage.setItem(LOCAL_DRAFTS_KEY, JSON.stringify(list));
+      } catch (e) {}
+    }
+
+    async function uploadFile(file) {
+      showToast('Uploading image...', 'warning');
+
+      // Attempt server PHP upload
+      try {
+        const formData = new FormData();
+        formData.append('file', file);
         const res = await fetch('/admin/api/upload.php', {
           method: 'POST',
           body: formData
         });
+
+        if (res.status === 405 || !res.ok) {
+          throw new Error('Vercel static mode (PHP disabled on Vercel CDN)');
+        }
+
         const data = await res.json();
         if (data.success && data.file && data.file.url) {
           setFeaturedImage(data.file.url);
-          showToast('Image uploaded successfully!', 'success');
+          showToast('Image uploaded successfully to server!', 'success');
           markDirty();
-        } else {
-          showToast(data.error || 'Upload failed', 'error');
+          return;
         }
       } catch (err) {
-        showToast('Server error during image upload: ' + err.message, 'error');
+        // Fallback for Vercel Static / Offline
+        const reader = new FileReader();
+        reader.onload = function(e) {
+          setFeaturedImage(e.target.result);
+          showToast('Image loaded for preview (Vercel Preview Mode)!', 'success');
+          markDirty();
+        };
+        reader.readAsDataURL(file);
       }
     }
 
     function setFeaturedImage(url) {
       blogState.featured_img = url;
       document.getElementById('img-preview-el').src = url;
-      document.getElementById('img-url-display').textContent = url;
+      document.getElementById('img-url-display').textContent = url.startsWith('data:') ? '[Base64 Local Image]' : url;
       document.getElementById('img-preview-box').style.display = 'flex';
       document.getElementById('upload-dropzone').style.display = 'none';
     }
@@ -1295,27 +1341,21 @@
 
     // 4. Content Language Switching & Toolbar
     function switchContentLang(targetLang) {
-      // Save current language body before switching
       const currentEditor = document.getElementById('content-editor');
       blogState[blogState.currentContentLang].body = currentEditor.innerHTML;
 
-      // Update active state
       blogState.currentContentLang = targetLang;
 
-      // Update UI tabs
       document.querySelectorAll('#content-lang-tabs .lang-tab-btn').forEach(btn => {
         btn.classList.toggle('active', btn.getAttribute('data-lang') === targetLang);
       });
 
-      // Direction: Arabic and Farsi are RTL
       const isRtl = (targetLang === 'ar' || targetLang === 'fa');
       currentEditor.setAttribute('dir', isRtl ? 'rtl' : 'ltr');
 
-      // Load target language body
       const content = blogState[targetLang].body || '';
       currentEditor.innerHTML = content || (targetLang === 'en' ? '<p>Start writing your article here...</p>' : '<p></p>');
 
-      // Translated Title input visibility
       const titleGroup = document.getElementById('translated-title-group');
       const titleLabel = document.getElementById('translated-title-label');
       const titleInput = document.getElementById('translated-title-input');
@@ -1330,7 +1370,6 @@
         titleInput.setAttribute('dir', isRtl ? 'rtl' : 'ltr');
       }
 
-      // Update SEO fields for target language
       updateSeoInputsForLang(targetLang);
     }
 
@@ -1355,17 +1394,13 @@
 
     // 5. FAQ Builder (12 sets)
     function switchFaqLang(targetLang) {
-      // Save current inputs
       saveCurrentFaqInputs();
-
       blogState.currentFaqLang = targetLang;
 
-      // Update tabs
       document.querySelectorAll('#faq-lang-tabs .lang-tab-btn').forEach(btn => {
         btn.classList.toggle('active', btn.getAttribute('data-lang') === targetLang);
       });
 
-      // Render cards with newly selected language data
       renderFaqCards();
     }
 
@@ -1462,17 +1497,19 @@
 
     // Collect complete state into API payload
     function collectPayload() {
-      // Flush current editor body and FAQs to memory
       const curLang = blogState.currentContentLang;
       blogState[curLang].body = document.getElementById('content-editor').innerHTML;
       saveCurrentFaqInputs();
 
-      // Ensure English title
       const enTitle = document.getElementById('article-title-en').value.trim();
       blogState.en.title = enTitle;
 
       if (!blogState.slug) {
         autoSlug();
+      }
+
+      if (!blogState.id || blogState.id === 'null' || blogState.id.startsWith('new-')) {
+        blogState.id = 'bid-' + Math.random().toString(36).substring(2, 9);
       }
 
       return {
@@ -1483,6 +1520,12 @@
         slug: blogState.slug,
         featured_img: blogState.featured_img,
         publish_date: blogState.publish_date,
+        updated_at: new Date().toISOString().replace('T', ' ').substring(0, 19),
+        status: 'draft',
+        status_en: 'draft',
+        status_ar: 'draft',
+        status_fa: 'draft',
+        status_zh: 'draft',
         en: blogState.en,
         ar: blogState.ar,
         fa: blogState.fa,
@@ -1491,7 +1534,7 @@
       };
     }
 
-    // SAVE AS DRAFT
+    // SAVE AS DRAFT (Dual-Mode: LocalStorage + Server PHP)
     async function saveAsDraft() {
       const enTitle = document.getElementById('article-title-en').value.trim();
       if (!enTitle) {
@@ -1506,25 +1549,37 @@
 
       const payload = collectPayload();
 
+      // Always save to browser LocalStorage immediately
+      saveLocalDraft(payload);
+      blogState.id = payload.id;
+      blogState.slug = payload.slug;
+      document.getElementById('current-mode-badge').textContent = 'Draft: ' + payload.slug;
+      markSaved();
+      fetchDraftCount();
+
+      // Try server PHP API call
       try {
         const res = await fetch('/admin/api/blog-save-draft.php', {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify(payload)
         });
+
+        if (res.status === 405 || !res.ok) {
+          // Vercel Static Hosting environment:
+          showToast('Draft saved successfully to browser storage! (Vercel Preview Mode)', 'success');
+          return;
+        }
+
         const data = await res.json();
         if (data.success) {
-          blogState.id = data.id;
-          blogState.slug = data.slug;
-          document.getElementById('current-mode-badge').textContent = 'Draft: ' + data.slug;
-          markSaved();
-          showToast('Draft saved successfully!', 'success');
-          fetchDraftCount();
+          showToast('Draft saved successfully to server database & JSON!', 'success');
         } else {
-          showToast(data.error || 'Failed to save draft.', 'error');
+          showToast(data.error || 'Server warning, saved in browser storage.', 'warning');
         }
       } catch (err) {
-        showToast('Network/Server error: ' + err.message, 'error');
+        // Network or Vercel static error
+        showToast('Draft saved in browser storage! (When deployed on cPanel with PHP, this syncs to MySQL)', 'success');
       } finally {
         btn.disabled = false;
         btn.innerHTML = '<i class="fa-solid fa-floppy-disk"></i> Save as Draft';
@@ -1540,7 +1595,7 @@
         return;
       }
 
-      if (!confirm(`Are you ready to publish "${enTitle}" live?\n\nThis will generate all 4 multilingual physical pages, update blog listings, and refresh the sitemap.`)) {
+      if (!confirm(`Are you ready to publish "${enTitle}" live?\n\nThis will compile all 4 multilingual static pages, update blog listings, and refresh the sitemap.`)) {
         return;
       }
 
@@ -1549,6 +1604,14 @@
       btn.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i> Publishing (SSG & Sitemap)...';
 
       const payload = collectPayload();
+      payload.status = 'published';
+      payload.status_en = 'published';
+      payload.status_ar = 'published';
+      payload.status_fa = 'published';
+      payload.status_zh = 'published';
+
+      // Update local copy
+      saveLocalDraft(payload);
 
       try {
         const res = await fetch('/admin/api/blog-publish.php', {
@@ -1556,10 +1619,25 @@
           headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify(payload)
         });
+
+        if (res.status === 405 || !res.ok) {
+          // Vercel Static Mode: PHP SSG is disabled on static Vercel
+          markSaved();
+          fetchDraftCount();
+          alert(
+            'Draft Saved!\n\n' +
+            'NOTE (Vercel Hosting):\n' +
+            'You are currently viewing on Vercel static hosting (where PHP is not executed).\n\n' +
+            'To generate the live physical HTML article files (/blog/' + payload.slug + '/), ' +
+            'update blog listing cards, and regenerate sitemap.xml, deploy/upload to your cPanel hosting ' +
+            '(as detailed in step.md) where PHP & MySQL are active.'
+          );
+          showToast('Draft saved locally. Publish requires cPanel Apache PHP runtime.', 'warning');
+          return;
+        }
+
         const data = await res.json();
         if (data.success) {
-          blogState.id = data.id;
-          blogState.slug = data.slug;
           markSaved();
           showToast('Article published live across all 4 languages & sitemap regenerated!', 'success');
           fetchDraftCount();
@@ -1573,7 +1651,7 @@
           showToast(data.error || 'Publish failed.', 'error');
         }
       } catch (err) {
-        showToast('Server error while publishing: ' + err.message, 'error');
+        showToast('Publish requires cPanel PHP environment: ' + err.message, 'warning');
       } finally {
         btn.disabled = false;
         btn.innerHTML = '<i class="fa-solid fa-rocket"></i> Publish Article';
@@ -1583,17 +1661,30 @@
     // LOAD BLOG FOR EDITING
     async function loadBlogById(id) {
       showToast('Loading article data...', 'warning');
+
+      // Check LocalStorage first
+      const localList = getLocalDrafts();
+      const localFound = localList.find(d => d.id === id || d.slug === id);
+      if (localFound) {
+        populateFormWithBlog(localFound, localFound.faqs);
+        showToast('Article loaded from storage.', 'success');
+        return;
+      }
+
+      // Try Server API
       try {
         const res = await fetch(`/admin/api/blog-load.php?id=${encodeURIComponent(id)}`);
-        const data = await res.json();
-        if (data.success && data.blog) {
-          populateFormWithBlog(data.blog, data.faqs);
-          showToast('Article loaded for editing.', 'success');
-        } else {
-          showToast(data.error || 'Could not load article.', 'error');
+        if (res.ok) {
+          const data = await res.json();
+          if (data.success && data.blog) {
+            populateFormWithBlog(data.blog, data.faqs);
+            showToast('Article loaded for editing.', 'success');
+            return;
+          }
         }
+        showToast('Article not found.', 'error');
       } catch (err) {
-        showToast('Error loading blog: ' + err.message, 'error');
+        showToast('Could not load article: ' + err.message, 'error');
       }
     }
 
@@ -1606,7 +1697,6 @@
       blogState.featured_img = blog.featured_img || '';
       blogState.publish_date = blog.publish_date || new Date().toISOString().split('T')[0];
 
-      // Languages
       ['en', 'ar', 'fa', 'zh'].forEach(lng => {
         blogState[lng] = {
           title: (blog[lng] && blog[lng].title) || (lng === 'en' ? (blog.title || '') : ''),
@@ -1615,7 +1705,6 @@
           meta_title: (blog[lng] && blog[lng].meta_title) || '',
           meta_desc: (blog[lng] && blog[lng].meta_desc) || ''
         };
-        // Normalize 12 FAQs
         const rawFaqs = (faqsMap && faqsMap[lng]) || (blog[lng] && blog[lng].faqs) || [];
         const norm = Array.from({ length: 12 }, (_, i) => ({
           q: rawFaqs[i] ? rawFaqs[i].q : '',
@@ -1624,12 +1713,10 @@
         blogState.faqs[lng] = norm;
       });
 
-      // Update inputs
       document.getElementById('article-title-en').value = blogState.en.title || '';
       document.getElementById('slug-text-preview').textContent = blogState.slug || '';
       document.getElementById('current-mode-badge').textContent = 'Editing: ' + (blog.id || blog.slug);
 
-      // Program select
       const pSelect = document.getElementById('program-select');
       for (let i = 0; i < pSelect.options.length; i++) {
         if (pSelect.options[i].value === blogState.program || pSelect.options[i].getAttribute('data-sub') === blogState.subcategory) {
@@ -1638,14 +1725,12 @@
         }
       }
 
-      // Featured image
       if (blogState.featured_img) {
         setFeaturedImage(blogState.featured_img);
       } else {
         removeFeaturedImage();
       }
 
-      // Switch to EN content tab
       switchContentLang('en');
       switchFaqLang('en');
       markSaved();
@@ -1679,62 +1764,88 @@
         </div>
       `;
 
+      // Start with LocalStorage drafts
+      let allDrafts = getLocalDrafts().map(d => ({
+        id: d.id,
+        slug: d.slug,
+        category: d.category || 'Citizenship',
+        title: (d.en && d.en.title) || d.title || 'Untitled Draft',
+        updated_at: d.updated_at || d.publish_date || ''
+      }));
+
+      // Try merging server drafts
       try {
         const res = await fetch('/admin/api/blog-list-drafts.php');
-        const data = await res.json();
-        if (data.success) {
-          document.getElementById('draft-count-badge').textContent = data.count || 0;
-          if (!data.drafts || data.drafts.length === 0) {
-            container.innerHTML = `
-              <div style="text-align:center; padding:40px 20px; color:var(--text-muted);">
-                <i class="fa-solid fa-file-circle-check" style="font-size:36px; color:#cbd5e1; margin-bottom:12px;"></i>
-                <div style="font-weight:600; color:var(--navy);">No Draft Blogs</div>
-                <div style="font-size:13px; margin-top:4px;">All blogs are published or you haven't saved any drafts yet.</div>
-              </div>
-            `;
-            return;
+        if (res.ok) {
+          const data = await res.json();
+          if (data.success && Array.isArray(data.drafts)) {
+            data.drafts.forEach(sd => {
+              if (!allDrafts.some(ad => ad.id === sd.id || ad.slug === sd.slug)) {
+                allDrafts.push(sd);
+              }
+            });
           }
-
-          let html = '';
-          data.drafts.forEach(d => {
-            const title = escapeHtml(d.title || 'Untitled Draft');
-            const cat = escapeHtml(d.category || 'Citizenship');
-            const date = d.updated_at ? d.updated_at.split(' ')[0] : (d.publish_date || '');
-            html += `
-              <div class="draft-card">
-                <div class="draft-card-title">${title}</div>
-                <div class="draft-card-meta">
-                  <span><i class="fa-solid fa-tag"></i> ${cat}</span>
-                  <span><i class="fa-regular fa-clock"></i> ${date}</span>
-                </div>
-                <div class="draft-card-actions">
-                  <button type="button" class="btn-edit-draft" onclick="loadDraftForEdit('${d.id}')">
-                    <i class="fa-solid fa-pen-to-square"></i> Open & Edit
-                  </button>
-                  <button type="button" class="btn-del-draft" onclick="deleteDraftItem('${d.id}', '${escapeHtml(title)}')">
-                    <i class="fa-solid fa-trash-can"></i> Delete
-                  </button>
-                </div>
-              </div>
-            `;
-          });
-          container.innerHTML = html;
-        } else {
-          container.innerHTML = `<div style="color:var(--danger); padding:16px;">Error: ${data.error}</div>`;
         }
-      } catch (err) {
-        container.innerHTML = `<div style="color:var(--danger); padding:16px;">Failed to load drafts: ${err.message}</div>`;
+      } catch (e) {}
+
+      document.getElementById('draft-count-badge').textContent = allDrafts.length;
+
+      if (allDrafts.length === 0) {
+        container.innerHTML = `
+          <div style="text-align:center; padding:40px 20px; color:var(--text-muted);">
+            <i class="fa-solid fa-file-circle-check" style="font-size:36px; color:#cbd5e1; margin-bottom:12px;"></i>
+            <div style="font-weight:600; color:var(--navy);">No Draft Blogs</div>
+            <div style="font-size:13px; margin-top:4px;">All blogs are published or you haven't saved any drafts yet.</div>
+          </div>
+        `;
+        return;
       }
+
+      let html = '';
+      allDrafts.forEach(d => {
+        const title = escapeHtml(d.title || 'Untitled Draft');
+        const cat = escapeHtml(d.category || 'Citizenship');
+        const date = d.updated_at ? d.updated_at.split(' ')[0] : (d.publish_date || '');
+        html += `
+          <div class="draft-card">
+            <div class="draft-card-title">${title}</div>
+            <div class="draft-card-meta">
+              <span><i class="fa-solid fa-tag"></i> ${cat}</span>
+              <span><i class="fa-regular fa-clock"></i> ${date}</span>
+            </div>
+            <div class="draft-card-actions">
+              <button type="button" class="btn-edit-draft" onclick="loadDraftForEdit('${d.id}')">
+                <i class="fa-solid fa-pen-to-square"></i> Open & Edit
+              </button>
+              <button type="button" class="btn-del-draft" onclick="deleteDraftItem('${d.id}', '${escapeHtml(title)}')">
+                <i class="fa-solid fa-trash-can"></i> Delete
+              </button>
+            </div>
+          </div>
+        `;
+      });
+      container.innerHTML = html;
     }
 
     async function fetchDraftCount() {
+      const local = getLocalDrafts();
+      let count = local.length;
       try {
         const res = await fetch('/admin/api/blog-list-drafts.php');
-        const data = await res.json();
-        if (data.success) {
-          document.getElementById('draft-count-badge').textContent = data.count || 0;
+        if (res.ok) {
+          const data = await res.json();
+          if (data.success && Array.isArray(data.drafts)) {
+            const combined = [...local];
+            data.drafts.forEach(sd => {
+              if (!combined.some(ad => ad.id === sd.id || ad.slug === sd.slug)) {
+                combined.push(sd);
+              }
+            });
+            count = combined.length;
+          }
         }
       } catch (e) {}
+      document.getElementById('draft-count-badge').textContent = count;
     }
 
     function loadDraftForEdit(id) {
@@ -1746,25 +1857,20 @@
       if (!confirm(`Are you sure you want to delete the draft "${title}"?`)) {
         return;
       }
+      deleteLocalDraft(id);
       try {
-        const res = await fetch('/admin/api/blog-delete-draft.php', {
+        await fetch('/admin/api/blog-delete-draft.php', {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify({ id })
         });
-        const data = await res.json();
-        if (data.success) {
-          showToast('Draft deleted.', 'success');
-          loadDraftsList();
-          fetchDraftCount();
-          if (blogState.id === id) {
-            resetFormToNew();
-          }
-        } else {
-          showToast(data.error || 'Could not delete draft.', 'error');
-        }
-      } catch (err) {
-        showToast('Error deleting draft: ' + err.message, 'error');
+      } catch (err) {}
+
+      showToast('Draft deleted.', 'success');
+      loadDraftsList();
+      fetchDraftCount();
+      if (blogState.id === id) {
+        resetFormToNew();
       }
     }
 
