@@ -2083,17 +2083,26 @@
               <span class="sb-lbl">Blog & Articles</span>
               <i class="fa-solid fa-chevron-right sb-chev"></i>
             </button>
-            <button class="sb-add-btn" title="New Article" onclick="event.stopPropagation();openQuickBlogModal()"><i
+            <button class="sb-add-btn" title="Easy Form Editor" onclick="event.stopPropagation();window.open('/admin/blog-editor.html', '_blank')"><i
                 class="fa-solid fa-plus"></i></button>
           </div>
           <div class="sb-children" id="sbc-blog">
+            <div style="padding:6px 6px 4px">
+              <a href="/admin/blog-editor.html" target="_blank" style="display:flex;align-items:center;gap:8px;padding:8px 12px;background:#c9a227;color:#000;font-weight:700;font-size:12px;border-radius:6px;text-decoration:none;margin-bottom:6px;box-shadow:0 1px 3px rgba(0,0,0,0.2);">
+                <i class="fa-solid fa-file-circle-plus"></i> New Blog Post (Easy Form)
+              </a>
+              <a href="/admin/blog-editor.html" target="_blank" style="display:flex;align-items:center;gap:8px;padding:6px 12px;background:rgba(255,255,255,0.08);color:#cbd5e1;font-weight:500;font-size:12px;border-radius:6px;text-decoration:none;">
+                <i class="fa-solid fa-folder-open"></i> Manage Draft Blogs
+              </a>
+            </div>
             <div id="sb-blog-items"></div>
             <div style="padding:4px 4px 6px">
-              <button type="button" class="btn-add-section-sb" onclick="openQuickBlogModal()">
-                <i class="fa-solid fa-plus"></i> Add New Article
+              <button type="button" class="btn-add-section-sb" onclick="window.open('/admin/blog-editor.html', '_blank')">
+                <i class="fa-solid fa-pen-to-square"></i> Open Form Editor
               </button>
             </div>
           </div>
+        </div>
         <!-- Webinar Scheduler -->
         <div class="sb-group">
           <div class="sb-group-header">

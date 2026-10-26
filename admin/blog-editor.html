@@ -1,0 +1,1808 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Blog Post Manager | Sharif Group CMS</title>
+  <link rel="icon" type="image/svg+xml" href="/favicon.svg">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Amiri:wght@400;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+  
+  <style>
+    :root {
+      --bg: #f4f6fa;
+      --card-bg: #ffffff;
+      --border: #e2e8f0;
+      --border-focus: #c9a227;
+      --text: #1e293b;
+      --text-muted: #64748b;
+      --navy: #0b1a30;
+      --navy-light: #162a4d;
+      --gold: #c9a227;
+      --gold-hover: #b38e1e;
+      --gold-subtle: #fbf7ee;
+      --emerald: #059669;
+      --emerald-hover: #047857;
+      --danger: #dc2626;
+      --radius: 12px;
+      --shadow-sm: 0 1px 3px rgba(0,0,0,0.06), 0 1px 2px rgba(0,0,0,0.04);
+      --shadow-md: 0 4px 6px -1px rgba(0,0,0,0.07), 0 2px 4px -2px rgba(0,0,0,0.05);
+      --shadow-lg: 0 10px 15px -3px rgba(0,0,0,0.08), 0 4px 6px -4px rgba(0,0,0,0.04);
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    body {
+      font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+      background: var(--bg);
+      color: var(--text);
+      line-height: 1.5;
+      padding-bottom: 90px;
+    }
+
+    /* TOP NAVBAR */
+    .top-bar {
+      position: sticky;
+      top: 0;
+      z-index: 100;
+      background: var(--navy);
+      color: #fff;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 14px 28px;
+      box-shadow: 0 2px 10px rgba(0,0,0,0.15);
+    }
+    .top-bar-left {
+      display: flex;
+      align-items: center;
+      gap: 16px;
+    }
+    .back-btn {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      color: #cbd5e1;
+      text-decoration: none;
+      font-size: 14px;
+      padding: 6px 12px;
+      border-radius: 6px;
+      background: rgba(255,255,255,0.08);
+      transition: all 0.2s;
+    }
+    .back-btn:hover {
+      background: rgba(255,255,255,0.16);
+      color: #fff;
+    }
+    .top-bar-title {
+      font-size: 17px;
+      font-weight: 600;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+    .top-bar-title .badge {
+      font-size: 11px;
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+      background: var(--gold);
+      color: #000;
+      padding: 3px 8px;
+      border-radius: 4px;
+    }
+    .top-bar-right {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+    .draft-btn {
+      background: #20355a;
+      border: 1px solid #3b5380;
+      color: #fff;
+      padding: 8px 16px;
+      border-radius: 8px;
+      font-size: 14px;
+      font-weight: 500;
+      cursor: pointer;
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      transition: all 0.2s;
+    }
+    .draft-btn:hover {
+      background: #2b4573;
+    }
+    .draft-count {
+      background: var(--gold);
+      color: #000;
+      font-size: 11px;
+      font-weight: 700;
+      padding: 2px 7px;
+      border-radius: 10px;
+    }
+    .new-btn {
+      background: rgba(255,255,255,0.1);
+      border: 1px solid rgba(255,255,255,0.2);
+      color: #fff;
+      padding: 8px 14px;
+      border-radius: 8px;
+      font-size: 14px;
+      cursor: pointer;
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+    }
+    .new-btn:hover {
+      background: rgba(255,255,255,0.2);
+    }
+
+    /* MAIN CONTAINER */
+    .container {
+      max-width: 900px;
+      margin: 28px auto;
+      padding: 0 20px;
+    }
+
+    /* FORM CARD */
+    .card {
+      background: var(--card-bg);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      padding: 24px;
+      margin-bottom: 22px;
+      box-shadow: var(--shadow-sm);
+      transition: border-color 0.2s, box-shadow 0.2s;
+    }
+    .card:hover {
+      border-color: #cbd5e1;
+      box-shadow: var(--shadow-md);
+    }
+    .card-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-bottom: 16px;
+      padding-bottom: 12px;
+      border-bottom: 1px solid #f1f5f9;
+    }
+    .card-title {
+      font-size: 16px;
+      font-weight: 600;
+      color: var(--navy);
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+    .card-title i {
+      color: var(--gold);
+      font-size: 15px;
+    }
+    .card-subtitle {
+      font-size: 13px;
+      color: var(--text-muted);
+      margin-top: 2px;
+    }
+
+    /* FORM CONTROLS */
+    .form-group {
+      margin-bottom: 18px;
+    }
+    .form-group:last-child {
+      margin-bottom: 0;
+    }
+    .form-label {
+      display: block;
+      font-size: 13px;
+      font-weight: 600;
+      color: #334155;
+      margin-bottom: 7px;
+    }
+    .form-label .req {
+      color: var(--danger);
+    }
+    .form-control, .form-select {
+      width: 100%;
+      padding: 10px 14px;
+      font-size: 14px;
+      color: var(--text);
+      background: #fff;
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      outline: none;
+      transition: all 0.2s;
+      font-family: inherit;
+    }
+    .form-control:focus, .form-select:focus {
+      border-color: var(--border-focus);
+      box-shadow: 0 0 0 3px rgba(201, 162, 39, 0.15);
+    }
+    .form-hint {
+      font-size: 12px;
+      color: var(--text-muted);
+      margin-top: 5px;
+    }
+
+    /* SLUG ROW */
+    .slug-preview {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      background: #f8fafc;
+      padding: 8px 12px;
+      border-radius: 6px;
+      border: 1px dashed #cbd5e1;
+      font-size: 13px;
+      color: var(--text-muted);
+      margin-top: 8px;
+      word-break: break-all;
+    }
+    .slug-preview strong {
+      color: var(--navy);
+    }
+
+    /* IMAGE UPLOADER */
+    .upload-zone {
+      border: 2px dashed #cbd5e1;
+      border-radius: 10px;
+      padding: 24px;
+      text-align: center;
+      background: #fafbfc;
+      cursor: pointer;
+      transition: all 0.2s;
+      position: relative;
+    }
+    .upload-zone:hover, .upload-zone.dragover {
+      border-color: var(--gold);
+      background: var(--gold-subtle);
+    }
+    .upload-zone-content i {
+      font-size: 32px;
+      color: var(--gold);
+      margin-bottom: 8px;
+    }
+    .upload-zone-text {
+      font-size: 14px;
+      font-weight: 500;
+      color: var(--navy);
+    }
+    .upload-zone-sub {
+      font-size: 12px;
+      color: var(--text-muted);
+      margin-top: 4px;
+    }
+    .img-preview-box {
+      margin-top: 14px;
+      display: flex;
+      align-items: center;
+      gap: 14px;
+      background: #fff;
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      padding: 10px 14px;
+    }
+    .img-preview-thumb {
+      width: 80px;
+      height: 52px;
+      object-fit: cover;
+      border-radius: 6px;
+      background: #eee;
+    }
+    .img-preview-info {
+      flex: 1;
+      min-width: 0;
+    }
+    .img-preview-url {
+      font-size: 12px;
+      color: var(--navy);
+      font-weight: 500;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+    .img-remove-btn {
+      color: var(--danger);
+      background: none;
+      border: none;
+      cursor: pointer;
+      font-size: 13px;
+      padding: 6px 10px;
+      border-radius: 6px;
+    }
+    .img-remove-btn:hover {
+      background: #fee2e2;
+    }
+
+    /* LANGUAGE TOGGLE PILLS */
+    .lang-tabs {
+      display: flex;
+      gap: 6px;
+      background: #eef2f6;
+      padding: 4px;
+      border-radius: 10px;
+      width: fit-content;
+      margin-bottom: 14px;
+    }
+    .lang-tab-btn {
+      border: none;
+      background: transparent;
+      padding: 6px 14px;
+      border-radius: 7px;
+      font-size: 13px;
+      font-weight: 600;
+      color: #64748b;
+      cursor: pointer;
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      transition: all 0.15s;
+    }
+    .lang-tab-btn:hover {
+      color: var(--navy);
+    }
+    .lang-tab-btn.active {
+      background: #fff;
+      color: var(--navy);
+      box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+    }
+
+    /* FORMATTING TOOLBAR */
+    .editor-toolbar {
+      display: flex;
+      flex-wrap: wrap;
+      align-items: center;
+      gap: 4px;
+      background: #f8fafc;
+      border: 1px solid var(--border);
+      border-bottom: none;
+      border-radius: 8px 8px 0 0;
+      padding: 6px 10px;
+    }
+    .tb-btn {
+      border: 1px solid transparent;
+      background: #fff;
+      color: #334155;
+      padding: 5px 9px;
+      border-radius: 5px;
+      font-size: 13px;
+      cursor: pointer;
+      display: inline-flex;
+      align-items: center;
+      gap: 4px;
+      transition: all 0.15s;
+    }
+    .tb-btn:hover {
+      background: #e2e8f0;
+      color: #000;
+      border-color: #cbd5e1;
+    }
+    .tb-sep {
+      width: 1px;
+      height: 18px;
+      background: #cbd5e1;
+      margin: 0 4px;
+    }
+
+    /* CONTENT EDITABLE AREA */
+    .editor-body {
+      min-height: 280px;
+      max-height: 520px;
+      overflow-y: auto;
+      padding: 16px;
+      font-size: 15px;
+      color: #1e293b;
+      line-height: 1.7;
+      background: #fff;
+      border: 1px solid var(--border);
+      border-radius: 0 0 8px 8px;
+      outline: none;
+      transition: border-color 0.2s;
+    }
+    .editor-body:focus {
+      border-color: var(--border-focus);
+      box-shadow: 0 0 0 3px rgba(201, 162, 39, 0.15);
+    }
+    .editor-body[dir="rtl"] {
+      font-family: 'Amiri', Tahoma, sans-serif;
+      font-size: 17px;
+      text-align: right;
+    }
+    .editor-body h2 {
+      font-size: 1.4rem;
+      margin: 1rem 0 0.5rem;
+      color: var(--navy);
+      font-weight: 700;
+    }
+    .editor-body h3 {
+      font-size: 1.15rem;
+      margin: 0.8rem 0 0.4rem;
+      color: #334155;
+      font-weight: 600;
+    }
+    .editor-body p {
+      margin-bottom: 0.8rem;
+    }
+    .editor-body ul, .editor-body ol {
+      margin: 0.5rem 0 0.8rem 1.5rem;
+    }
+    .editor-body[dir="rtl"] ul, .editor-body[dir="rtl"] ol {
+      margin: 0.5rem 1.5rem 0.8rem 0;
+    }
+    .editor-body blockquote {
+      border-left: 3px solid var(--gold);
+      padding-left: 12px;
+      color: #475569;
+      font-style: italic;
+      margin: 0.8rem 0;
+    }
+    .editor-body[dir="rtl"] blockquote {
+      border-left: none;
+      border-right: 3px solid var(--gold);
+      padding-left: 0;
+      padding-right: 12px;
+    }
+
+    /* FAQ CARDS */
+    .faq-toolbar-row {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-bottom: 16px;
+      flex-wrap: wrap;
+      gap: 10px;
+    }
+    .btn-default-faqs {
+      border: 1px solid var(--gold);
+      background: var(--gold-subtle);
+      color: #8c6a0c;
+      font-size: 12px;
+      font-weight: 600;
+      padding: 6px 12px;
+      border-radius: 6px;
+      cursor: pointer;
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      transition: all 0.2s;
+    }
+    .btn-default-faqs:hover {
+      background: #f4ecdc;
+    }
+    .faq-list {
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+    }
+    .faq-item {
+      background: #fbfcfe;
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      padding: 14px;
+      transition: border-color 0.2s;
+    }
+    .faq-item:focus-within {
+      border-color: var(--border-focus);
+      background: #fff;
+    }
+    .faq-item-header {
+      font-size: 12px;
+      font-weight: 700;
+      text-transform: uppercase;
+      color: var(--navy);
+      margin-bottom: 8px;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+    .faq-item-header .num {
+      background: var(--navy);
+      color: #fff;
+      width: 20px;
+      height: 20px;
+      border-radius: 50%;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 11px;
+    }
+    .faq-q-input {
+      width: 100%;
+      padding: 8px 12px;
+      font-size: 13px;
+      font-weight: 600;
+      border: 1px solid #cbd5e1;
+      border-radius: 6px;
+      margin-bottom: 8px;
+      outline: none;
+      font-family: inherit;
+    }
+    .faq-q-input:focus {
+      border-color: var(--gold);
+    }
+    .faq-a-input {
+      width: 100%;
+      padding: 8px 12px;
+      font-size: 13px;
+      border: 1px solid #cbd5e1;
+      border-radius: 6px;
+      min-height: 56px;
+      resize: vertical;
+      outline: none;
+      font-family: inherit;
+    }
+    .faq-a-input:focus {
+      border-color: var(--gold);
+    }
+    .faq-item[dir="rtl"] .faq-q-input,
+    .faq-item[dir="rtl"] .faq-a-input {
+      font-family: 'Amiri', Tahoma, sans-serif;
+      text-align: right;
+      font-size: 15px;
+    }
+
+    /* COLLAPSIBLE ACCORDION FOR SEO */
+    .collapsible-trigger {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      cursor: pointer;
+      user-select: none;
+    }
+    .collapsible-content {
+      margin-top: 16px;
+      padding-top: 14px;
+      border-top: 1px dashed #e2e8f0;
+      display: none;
+    }
+    .collapsible-content.open {
+      display: block;
+    }
+
+    /* FIXED FOOTER BAR */
+    .footer-bar {
+      position: fixed;
+      bottom: 0;
+      left: 0;
+      right: 0;
+      z-index: 100;
+      background: #ffffff;
+      border-top: 1px solid #cbd5e1;
+      padding: 14px 28px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      box-shadow: 0 -4px 12px rgba(0,0,0,0.06);
+    }
+    .footer-status {
+      font-size: 13px;
+      color: var(--text-muted);
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+    .footer-status .dot {
+      width: 8px;
+      height: 8px;
+      border-radius: 50%;
+      background: #94a3b8;
+    }
+    .footer-status .dot.saved {
+      background: var(--emerald);
+    }
+    .footer-status .dot.pending {
+      background: var(--gold);
+    }
+    .footer-actions {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+    .btn-draft {
+      background: #f1f5f9;
+      color: var(--navy);
+      border: 1px solid #cbd5e1;
+      padding: 10px 20px;
+      border-radius: 8px;
+      font-size: 14px;
+      font-weight: 600;
+      cursor: pointer;
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      transition: all 0.2s;
+    }
+    .btn-draft:hover {
+      background: #e2e8f0;
+    }
+    .btn-publish {
+      background: var(--emerald);
+      color: #fff;
+      border: none;
+      padding: 10px 24px;
+      border-radius: 8px;
+      font-size: 14px;
+      font-weight: 600;
+      cursor: pointer;
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      box-shadow: 0 2px 6px rgba(5,150,105,0.3);
+      transition: all 0.2s;
+    }
+    .btn-publish:hover {
+      background: var(--emerald-hover);
+      box-shadow: 0 4px 12px rgba(5,150,105,0.4);
+    }
+    .btn-publish:disabled, .btn-draft:disabled {
+      opacity: 0.6;
+      cursor: not-allowed;
+    }
+
+    /* DRAFTS MODAL / DRAWER */
+    .drawer-overlay {
+      position: fixed;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      background: rgba(15, 23, 42, 0.5);
+      z-index: 200;
+      opacity: 0;
+      pointer-events: none;
+      transition: opacity 0.2s;
+    }
+    .drawer-overlay.open {
+      opacity: 1;
+      pointer-events: auto;
+    }
+    .drawer {
+      position: fixed;
+      top: 0;
+      right: -420px;
+      width: 420px;
+      max-width: 90vw;
+      height: 100%;
+      background: #fff;
+      box-shadow: -4px 0 20px rgba(0,0,0,0.15);
+      z-index: 201;
+      display: flex;
+      flex-direction: column;
+      transition: right 0.25s cubic-bezier(0.16, 1, 0.3, 1);
+    }
+    .drawer.open {
+      right: 0;
+    }
+    .drawer-header {
+      padding: 18px 20px;
+      background: var(--navy);
+      color: #fff;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+    .drawer-title {
+      font-size: 16px;
+      font-weight: 600;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+    .drawer-close {
+      background: none;
+      border: none;
+      color: #94a3b8;
+      font-size: 18px;
+      cursor: pointer;
+    }
+    .drawer-close:hover {
+      color: #fff;
+    }
+    .drawer-body {
+      flex: 1;
+      overflow-y: auto;
+      padding: 16px;
+    }
+    .draft-card {
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      padding: 12px;
+      margin-bottom: 12px;
+      background: #fafbfc;
+      transition: all 0.2s;
+    }
+    .draft-card:hover {
+      border-color: var(--gold);
+      background: #fff;
+      box-shadow: var(--shadow-sm);
+    }
+    .draft-card-title {
+      font-size: 14px;
+      font-weight: 600;
+      color: var(--navy);
+      margin-bottom: 4px;
+      line-height: 1.4;
+    }
+    .draft-card-meta {
+      font-size: 12px;
+      color: var(--text-muted);
+      margin-bottom: 10px;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      flex-wrap: wrap;
+    }
+    .draft-card-actions {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 8px;
+    }
+    .btn-edit-draft {
+      background: var(--gold-subtle);
+      border: 1px solid var(--gold);
+      color: #8c6a0c;
+      font-size: 12px;
+      font-weight: 600;
+      padding: 5px 12px;
+      border-radius: 6px;
+      cursor: pointer;
+    }
+    .btn-edit-draft:hover {
+      background: #f4ecdc;
+    }
+    .btn-del-draft {
+      background: none;
+      border: none;
+      color: var(--danger);
+      font-size: 12px;
+      cursor: pointer;
+      padding: 5px 8px;
+    }
+    .btn-del-draft:hover {
+      text-decoration: underline;
+    }
+
+    /* TOAST NOTIFICATION */
+    .toast {
+      position: fixed;
+      bottom: 90px;
+      right: 24px;
+      background: var(--navy);
+      color: #fff;
+      padding: 12px 20px;
+      border-radius: 8px;
+      box-shadow: 0 4px 16px rgba(0,0,0,0.2);
+      font-size: 14px;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      z-index: 300;
+      opacity: 0;
+      transform: translateY(10px);
+      transition: all 0.25s ease;
+      pointer-events: none;
+    }
+    .toast.show {
+      opacity: 1;
+      transform: translateY(0);
+      pointer-events: auto;
+    }
+    .toast.success {
+      border-left: 4px solid var(--emerald);
+    }
+    .toast.error {
+      border-left: 4px solid var(--danger);
+    }
+    .toast.warning {
+      border-left: 4px solid var(--gold);
+    }
+
+    @media (max-width: 640px) {
+      .top-bar {
+        padding: 12px 16px;
+      }
+      .top-bar-title span:first-child {
+        display: none;
+      }
+      .footer-bar {
+        padding: 12px 16px;
+        flex-direction: column;
+        gap: 10px;
+        align-items: stretch;
+      }
+      .footer-actions {
+        justify-content: space-between;
+      }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- TOP HEADER -->
+  <header class="top-bar">
+    <div class="top-bar-left">
+      <a href="/admin/dashboard.html" class="back-btn">
+        <i class="fa-solid fa-arrow-left"></i> Dashboard
+      </a>
+      <div class="top-bar-title">
+        <span>Sharif Group</span> Blog Post Editor
+        <span class="badge" id="current-mode-badge">New Post</span>
+      </div>
+    </div>
+    <div class="top-bar-right">
+      <button class="new-btn" onclick="resetFormToNew()">
+        <i class="fa-solid fa-plus"></i> New
+      </button>
+      <button class="draft-btn" onclick="openDraftsDrawer()">
+        <i class="fa-solid fa-folder-open"></i> Draft Blogs
+        <span class="draft-count" id="draft-count-badge">0</span>
+      </button>
+    </div>
+  </header>
+
+  <!-- MAIN FORM -->
+  <main class="container">
+
+    <!-- 1. PROGRAM / PAGE SELECTOR -->
+    <div class="card">
+      <div class="card-header">
+        <div>
+          <div class="card-title">
+            <i class="fa-solid fa-layer-group"></i> 1. Target Program / Page
+          </div>
+          <div class="card-subtitle">Choose the sovereign program or service category this article belongs to</div>
+        </div>
+      </div>
+      <div class="form-group">
+        <label class="form-label" for="program-select">Select Program / Category <span class="req">*</span></label>
+        <select id="program-select" class="form-select" onchange="handleProgramChange()">
+          <optgroup label="Citizenship by Investment">
+            <option value="dominica" data-cat="Citizenship" data-sub="dominica" selected>Dominica — Citizenship</option>
+            <option value="st-kitts" data-cat="Citizenship" data-sub="st-kitts">St. Kitts & Nevis — Citizenship</option>
+            <option value="antigua" data-cat="Citizenship" data-sub="antigua">Antigua & Barbuda — Citizenship</option>
+            <option value="saint-lucia" data-cat="Citizenship" data-sub="saint-lucia">Saint Lucia — Citizenship</option>
+            <option value="grenada" data-cat="Citizenship" data-sub="grenada">Grenada — Citizenship</option>
+            <option value="vanuatu" data-cat="Citizenship" data-sub="vanuatu">Vanuatu — Citizenship</option>
+            <option value="sao-tome" data-cat="Citizenship" data-sub="sao-tome">São Tomé & Príncipe — Citizenship</option>
+            <option value="nauru" data-cat="Citizenship" data-sub="nauru">Nauru — Citizenship</option>
+          </optgroup>
+          <optgroup label="Residency by Investment">
+            <option value="portugal" data-cat="Residency" data-sub="portugal">Portugal — Golden Visa</option>
+            <option value="greece" data-cat="Residency" data-sub="greece">Greece — Golden Visa</option>
+            <option value="uae" data-cat="Residency" data-sub="uae">UAE — Golden Visa</option>
+            <option value="panama" data-cat="Residency" data-sub="panama">Panama — Qualified Investor</option>
+          </optgroup>
+          <optgroup label="Advisory & Corporate">
+            <option value="realestate" data-cat="Real Estate" data-sub="dubai">Dubai Real Estate Advisory</option>
+            <option value="educational" data-cat="Education" data-sub="advisory">Educational Advisory</option>
+            <option value="sharif" data-cat="Sharif" data-sub="sharif">Sharif Group — Corporate & News</option>
+          </optgroup>
+        </select>
+      </div>
+    </div>
+
+    <!-- 2. ARTICLE TITLE & SLUG -->
+    <div class="card">
+      <div class="card-header">
+        <div>
+          <div class="card-title">
+            <i class="fa-solid fa-heading"></i> 2. Article Title
+          </div>
+          <div class="card-subtitle">Main headline for the blog article</div>
+        </div>
+      </div>
+      <div class="form-group">
+        <label class="form-label" for="article-title-en">Title (English) <span class="req">*</span></label>
+        <input type="text" id="article-title-en" class="form-control" placeholder="e.g. Dominica Passport for Global Investors in 2026" oninput="handleTitleInput()">
+        
+        <div class="slug-preview">
+          <span>URL Slug:</span>
+          <strong>/blog/<span id="slug-text-preview">dominica-passport-for-global-investors-in-2026</span>/</strong>
+          <button type="button" style="margin-left:auto; background:none; border:none; color:var(--gold); cursor:pointer; font-size:12px;" onclick="editSlugPrompt()">
+            <i class="fa-solid fa-pen"></i> Edit Slug
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <!-- 3. FEATURED IMAGE UPLOAD -->
+    <div class="card">
+      <div class="card-header">
+        <div>
+          <div class="card-title">
+            <i class="fa-solid fa-image"></i> 3. Featured Image Upload
+          </div>
+          <div class="card-subtitle">Upload the main cover image (JPG, PNG, WEBP)</div>
+        </div>
+      </div>
+
+      <div class="upload-zone" id="upload-dropzone" onclick="document.getElementById('file-input').click()">
+        <input type="file" id="file-input" accept="image/*" style="display:none;" onchange="handleFileSelect(event)">
+        <div class="upload-zone-content">
+          <i class="fa-solid fa-cloud-arrow-up"></i>
+          <div class="upload-zone-text">Click or drag image here to upload</div>
+          <div class="upload-zone-sub">Max file size: 15MB. Automatically optimized for web.</div>
+        </div>
+      </div>
+
+      <div class="img-preview-box" id="img-preview-box" style="display:none;">
+        <img src="" id="img-preview-el" class="img-preview-thumb" alt="Preview">
+        <div class="img-preview-info">
+          <div class="img-preview-url" id="img-url-display">/assets/images/uploads/...</div>
+          <div style="font-size:11px; color:#10b981; font-weight:600; margin-top:2px;">
+            <i class="fa-solid fa-check"></i> Uploaded to server
+          </div>
+        </div>
+        <button type="button" class="img-remove-btn" onclick="removeFeaturedImage()">
+          <i class="fa-solid fa-trash-can"></i> Remove
+        </button>
+      </div>
+    </div>
+
+    <!-- 4. MAIN CONTENT (MULTILINGUAL + FORMATTING TOOLBAR) -->
+    <div class="card">
+      <div class="card-header">
+        <div>
+          <div class="card-title">
+            <i class="fa-solid fa-pen-nib"></i> 4. Main Article Content
+          </div>
+          <div class="card-subtitle">Write or format article body. Toggle between languages easily.</div>
+        </div>
+      </div>
+
+      <!-- LANGUAGE SWITCHER TOGGLE -->
+      <div class="lang-tabs" id="content-lang-tabs">
+        <button type="button" class="lang-tab-btn active" data-lang="en" onclick="switchContentLang('en')">
+          🇬🇧 English
+        </button>
+        <button type="button" class="lang-tab-btn" data-lang="ar" onclick="switchContentLang('ar')">
+          🇦🇪 العربية
+        </button>
+        <button type="button" class="lang-tab-btn" data-lang="fa" onclick="switchContentLang('fa')">
+          🇮🇷 فارسی
+        </button>
+        <button type="button" class="lang-tab-btn" data-lang="zh" onclick="switchContentLang('zh')">
+          🇨🇳 中文
+        </button>
+      </div>
+
+      <!-- Per-language Title (for AR, FA, ZH) -->
+      <div class="form-group" id="translated-title-group" style="display:none;">
+        <label class="form-label" id="translated-title-label">Title in Selected Language</label>
+        <input type="text" id="translated-title-input" class="form-control" placeholder="Enter translated title..." oninput="handleTranslatedTitleInput()">
+      </div>
+
+      <!-- FORMATTING TOOLBAR -->
+      <div class="editor-toolbar">
+        <button type="button" class="tb-btn" title="Bold" onclick="formatDoc('bold')">
+          <i class="fa-solid fa-bold"></i>
+        </button>
+        <button type="button" class="tb-btn" title="Italic" onclick="formatDoc('italic')">
+          <i class="fa-solid fa-italic"></i>
+        </button>
+        <button type="button" class="tb-btn" title="Underline" onclick="formatDoc('underline')">
+          <i class="fa-solid fa-underline"></i>
+        </button>
+        
+        <div class="tb-sep"></div>
+
+        <button type="button" class="tb-btn" title="Heading 2" onclick="formatDoc('formatBlock', '<h2>')">
+          <strong>H2</strong>
+        </button>
+        <button type="button" class="tb-btn" title="Heading 3" onclick="formatDoc('formatBlock', '<h3>')">
+          <strong>H3</strong>
+        </button>
+        <button type="button" class="tb-btn" title="Paragraph" onclick="formatDoc('formatBlock', '<p>')">
+          ¶ Normal
+        </button>
+
+        <div class="tb-sep"></div>
+
+        <button type="button" class="tb-btn" title="Bullet List" onclick="formatDoc('insertUnorderedList')">
+          <i class="fa-solid fa-list-ul"></i> Bullet List
+        </button>
+        <button type="button" class="tb-btn" title="Numbered List" onclick="formatDoc('insertOrderedList')">
+          <i class="fa-solid fa-list-ol"></i> Numbered
+        </button>
+        <button type="button" class="tb-btn" title="Quote" onclick="formatDoc('formatBlock', '<blockquote>')">
+          <i class="fa-solid fa-quote-left"></i>
+        </button>
+
+        <div class="tb-sep"></div>
+
+        <button type="button" class="tb-btn" title="Insert Link" onclick="insertLink()">
+          <i class="fa-solid fa-link"></i> Link
+        </button>
+        <button type="button" class="tb-btn" title="Remove Formatting" onclick="formatDoc('removeFormat')">
+          <i class="fa-solid fa-eraser"></i>
+        </button>
+      </div>
+
+      <!-- CONTENTEDITABLE BODY -->
+      <div id="content-editor" class="editor-body" contenteditable="true" dir="ltr" oninput="markDirty()">
+        <p>Start writing your article here...</p>
+      </div>
+      <div class="form-hint">Tip: Select text and click <strong>Bold</strong> or <strong>Bullet List</strong> above to style quickly.</div>
+    </div>
+
+    <!-- 5. 12 SET OF FAQs (MULTILINGUAL) -->
+    <div class="card">
+      <div class="card-header">
+        <div>
+          <div class="card-title">
+            <i class="fa-solid fa-circle-question"></i> 5. 12-Set FAQ Builder
+          </div>
+          <div class="card-subtitle">Add 12 sovereign questions and answers. Toggle to fill in all 4 languages.</div>
+        </div>
+      </div>
+
+      <div class="faq-toolbar-row">
+        <!-- FAQ Language Toggle Tabs -->
+        <div class="lang-tabs" id="faq-lang-tabs" style="margin-bottom:0;">
+          <button type="button" class="lang-tab-btn active" data-lang="en" onclick="switchFaqLang('en')">
+            🇬🇧 English
+          </button>
+          <button type="button" class="lang-tab-btn" data-lang="ar" onclick="switchFaqLang('ar')">
+            🇦🇪 العربية
+          </button>
+          <button type="button" class="lang-tab-btn" data-lang="fa" onclick="switchFaqLang('fa')">
+            🇮🇷 فارسی
+          </button>
+          <button type="button" class="lang-tab-btn" data-lang="zh" onclick="switchFaqLang('zh')">
+            🇨🇳 中文
+          </button>
+        </div>
+
+        <!-- Button to load 12 canonical defaults -->
+        <button type="button" class="btn-default-faqs" onclick="loadDefaultFaqs()">
+          <i class="fa-solid fa-wand-magic-sparkles"></i> Load 12 Default Sovereign FAQs
+        </button>
+      </div>
+
+      <!-- FAQ Container (12 cards rendered by JS) -->
+      <div class="faq-list" id="faq-cards-container">
+        <!-- Populated dynamically via JS -->
+      </div>
+    </div>
+
+    <!-- 6. OPTIONAL SEO META TAGS -->
+    <div class="card">
+      <div class="card-header collapsible-trigger" onclick="toggleSeoAccordion()">
+        <div>
+          <div class="card-title">
+            <i class="fa-solid fa-magnifying-glass"></i> 6. Search Engine Optimization (SEO & Meta Tags)
+          </div>
+          <div class="card-subtitle">Custom title, description & canonical settings (Auto-generated if left empty)</div>
+        </div>
+        <i class="fa-solid fa-chevron-down" id="seo-chevron" style="color:var(--text-muted); transition:transform 0.2s;"></i>
+      </div>
+
+      <div class="collapsible-content" id="seo-accordion-content">
+        <div class="form-group">
+          <label class="form-label" for="meta-title-input">Meta Title Tag</label>
+          <input type="text" id="meta-title-input" class="form-control" placeholder="Dominica Passport 2026 | Sharif Group Dubai" oninput="handleSeoInput()">
+        </div>
+        <div class="form-group">
+          <label class="form-label" for="meta-desc-input">Meta Description</label>
+          <textarea id="meta-desc-input" class="form-control" style="min-height:70px;" placeholder="Strategic legal analysis and investment parameters prepared by Sharif Group advisory desk." oninput="handleSeoInput()"></textarea>
+        </div>
+        <div class="form-hint">
+          Google FAQPage and Article Schema JSON-LD are generated automatically upon publication.
+        </div>
+      </div>
+    </div>
+
+  </main>
+
+  <!-- FIXED FOOTER BAR -->
+  <footer class="footer-bar">
+    <div class="footer-status">
+      <span class="dot" id="status-dot"></span>
+      <span id="status-text">Ready</span>
+    </div>
+    <div class="footer-actions">
+      <button type="button" class="btn-draft" id="btn-save-draft" onclick="saveAsDraft()">
+        <i class="fa-solid fa-floppy-disk"></i> Save as Draft
+      </button>
+      <button type="button" class="btn-publish" id="btn-publish" onclick="publishPost()">
+        <i class="fa-solid fa-rocket"></i> Publish Article
+      </button>
+    </div>
+  </footer>
+
+  <!-- DRAFTS DRAWER -->
+  <div class="drawer-overlay" id="drawer-overlay" onclick="closeDraftsDrawer()"></div>
+  <aside class="drawer" id="drafts-drawer">
+    <div class="drawer-header">
+      <div class="drawer-title">
+        <i class="fa-solid fa-folder-open" style="color:var(--gold);"></i> Saved Draft Blogs
+      </div>
+      <button class="drawer-close" onclick="closeDraftsDrawer()">
+        <i class="fa-solid fa-xmark"></i>
+      </button>
+    </div>
+    <div class="drawer-body" id="drafts-list-container">
+      <!-- Populated via JS -->
+      <div style="text-align:center; padding:30px; color:var(--text-muted);">
+        <i class="fa-solid fa-spinner fa-spin" style="font-size:24px;"></i>
+        <div style="margin-top:8px;">Loading drafts...</div>
+      </div>
+    </div>
+  </aside>
+
+  <!-- TOAST NOTIFICATION -->
+  <div class="toast" id="toast">
+    <i class="fa-solid fa-circle-check" id="toast-icon"></i>
+    <span id="toast-msg">Notification message</span>
+  </div>
+
+  <!-- LOAD CANONICAL DEFAULTS -->
+  <script src="/admin/blog-faq-defaults.js"></script>
+
+  <!-- MAIN SCRIPT -->
+  <script>
+    // In-memory unified state
+    const blogState = {
+      id: null,
+      program: 'dominica',
+      category: 'Citizenship',
+      subcategory: 'dominica',
+      slug: '',
+      featured_img: '',
+      publish_date: new Date().toISOString().split('T')[0],
+      en: { title: '', body: '', meta_title: '', meta_desc: '' },
+      ar: { title: '', body: '', meta_title: '', meta_desc: '' },
+      fa: { title: '', body: '', meta_title: '', meta_desc: '' },
+      zh: { title: '', body: '', meta_title: '', meta_desc: '' },
+      faqs: {
+        en: Array.from({ length: 12 }, () => ({ q: '', a: '' })),
+        ar: Array.from({ length: 12 }, () => ({ q: '', a: '' })),
+        fa: Array.from({ length: 12 }, () => ({ q: '', a: '' })),
+        zh: Array.from({ length: 12 }, () => ({ q: '', a: '' }))
+      },
+      currentContentLang: 'en',
+      currentFaqLang: 'en',
+      dirty: false
+    };
+
+    // Initialize on page load
+    document.addEventListener('DOMContentLoaded', () => {
+      // Check query param for edit ID
+      const urlParams = new URLSearchParams(window.location.search);
+      const editId = urlParams.get('id') || urlParams.get('slug');
+      
+      // Render 12 FAQ cards initially
+      renderFaqCards();
+
+      if (editId) {
+        loadBlogById(editId);
+      } else {
+        autoSlug();
+      }
+
+      // Fetch draft count
+      fetchDraftCount();
+
+      // Drag and drop for upload zone
+      const dropzone = document.getElementById('upload-dropzone');
+      dropzone.addEventListener('dragover', (e) => {
+        e.preventDefault();
+        dropzone.classList.add('dragover');
+      });
+      dropzone.addEventListener('dragleave', () => dropzone.classList.remove('dragover'));
+      dropzone.addEventListener('drop', (e) => {
+        e.preventDefault();
+        dropzone.classList.remove('dragover');
+        if (e.dataTransfer.files && e.dataTransfer.files[0]) {
+          uploadFile(e.dataTransfer.files[0]);
+        }
+      });
+    });
+
+    // 1. Program Selector
+    function handleProgramChange() {
+      const select = document.getElementById('program-select');
+      const opt = select.options[select.selectedIndex];
+      blogState.program = select.value;
+      blogState.category = opt.getAttribute('data-cat') || 'Citizenship';
+      blogState.subcategory = opt.getAttribute('data-sub') || select.value;
+      markDirty();
+    }
+
+    // 2. Title & Slug
+    function handleTitleInput() {
+      const title = document.getElementById('article-title-en').value;
+      blogState.en.title = title;
+      if (!blogState.slug || blogState.slug.startsWith('blog-')) {
+        autoSlug();
+      }
+      markDirty();
+    }
+
+    function autoSlug() {
+      const title = blogState.en.title || 'new-blog-post';
+      let s = title.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/^-|-$/g, '');
+      if (!s) s = 'blog-' + Math.random().toString(36).substring(2, 8);
+      blogState.slug = s;
+      document.getElementById('slug-text-preview').textContent = s;
+    }
+
+    function editSlugPrompt() {
+      const curr = blogState.slug || 'my-article-slug';
+      const userSlug = prompt('Enter custom URL slug for this article (lowercase, hyphens only):', curr);
+      if (userSlug !== null) {
+        let clean = userSlug.toLowerCase().replace(/[^a-z0-9\-]+/g, '-').replace(/^-|-$/g, '');
+        if (clean) {
+          blogState.slug = clean;
+          document.getElementById('slug-text-preview').textContent = clean;
+          markDirty();
+        }
+      }
+    }
+
+    // 3. Featured Image Upload
+    function handleFileSelect(e) {
+      if (e.target.files && e.target.files[0]) {
+        uploadFile(e.target.files[0]);
+      }
+    }
+
+    async function uploadFile(file) {
+      showToast('Uploading image to server...', 'warning');
+      const formData = new FormData();
+      formData.append('file', file);
+
+      try {
+        const res = await fetch('/admin/api/upload.php', {
+          method: 'POST',
+          body: formData
+        });
+        const data = await res.json();
+        if (data.success && data.file && data.file.url) {
+          setFeaturedImage(data.file.url);
+          showToast('Image uploaded successfully!', 'success');
+          markDirty();
+        } else {
+          showToast(data.error || 'Upload failed', 'error');
+        }
+      } catch (err) {
+        showToast('Server error during image upload: ' + err.message, 'error');
+      }
+    }
+
+    function setFeaturedImage(url) {
+      blogState.featured_img = url;
+      document.getElementById('img-preview-el').src = url;
+      document.getElementById('img-url-display').textContent = url;
+      document.getElementById('img-preview-box').style.display = 'flex';
+      document.getElementById('upload-dropzone').style.display = 'none';
+    }
+
+    function removeFeaturedImage() {
+      blogState.featured_img = '';
+      document.getElementById('img-preview-el').src = '';
+      document.getElementById('img-preview-box').style.display = 'none';
+      document.getElementById('upload-dropzone').style.display = 'block';
+      document.getElementById('file-input').value = '';
+      markDirty();
+    }
+
+    // 4. Content Language Switching & Toolbar
+    function switchContentLang(targetLang) {
+      // Save current language body before switching
+      const currentEditor = document.getElementById('content-editor');
+      blogState[blogState.currentContentLang].body = currentEditor.innerHTML;
+
+      // Update active state
+      blogState.currentContentLang = targetLang;
+
+      // Update UI tabs
+      document.querySelectorAll('#content-lang-tabs .lang-tab-btn').forEach(btn => {
+        btn.classList.toggle('active', btn.getAttribute('data-lang') === targetLang);
+      });
+
+      // Direction: Arabic and Farsi are RTL
+      const isRtl = (targetLang === 'ar' || targetLang === 'fa');
+      currentEditor.setAttribute('dir', isRtl ? 'rtl' : 'ltr');
+
+      // Load target language body
+      const content = blogState[targetLang].body || '';
+      currentEditor.innerHTML = content || (targetLang === 'en' ? '<p>Start writing your article here...</p>' : '<p></p>');
+
+      // Translated Title input visibility
+      const titleGroup = document.getElementById('translated-title-group');
+      const titleLabel = document.getElementById('translated-title-label');
+      const titleInput = document.getElementById('translated-title-input');
+
+      if (targetLang === 'en') {
+        titleGroup.style.display = 'none';
+      } else {
+        titleGroup.style.display = 'block';
+        const langNames = { ar: 'العربية (Arabic)', fa: 'فارسی (Farsi)', zh: '中文 (Chinese)' };
+        titleLabel.textContent = `Title in ${langNames[targetLang] || targetLang}`;
+        titleInput.value = blogState[targetLang].title || '';
+        titleInput.setAttribute('dir', isRtl ? 'rtl' : 'ltr');
+      }
+
+      // Update SEO fields for target language
+      updateSeoInputsForLang(targetLang);
+    }
+
+    function handleTranslatedTitleInput() {
+      const cur = blogState.currentContentLang;
+      blogState[cur].title = document.getElementById('translated-title-input').value;
+      markDirty();
+    }
+
+    function formatDoc(cmd, value = null) {
+      document.execCommand(cmd, false, value);
+      document.getElementById('content-editor').focus();
+      markDirty();
+    }
+
+    function insertLink() {
+      const url = prompt('Enter the link URL (e.g. https://sharifgroup.ae/contact/):');
+      if (url) {
+        formatDoc('createLink', url);
+      }
+    }
+
+    // 5. FAQ Builder (12 sets)
+    function switchFaqLang(targetLang) {
+      // Save current inputs
+      saveCurrentFaqInputs();
+
+      blogState.currentFaqLang = targetLang;
+
+      // Update tabs
+      document.querySelectorAll('#faq-lang-tabs .lang-tab-btn').forEach(btn => {
+        btn.classList.toggle('active', btn.getAttribute('data-lang') === targetLang);
+      });
+
+      // Render cards with newly selected language data
+      renderFaqCards();
+    }
+
+    function saveCurrentFaqInputs() {
+      const cur = blogState.currentFaqLang;
+      const arr = [];
+      for (let i = 1; i <= 12; i++) {
+        const qEl = document.getElementById(`faq-q-${i}`);
+        const aEl = document.getElementById(`faq-a-${i}`);
+        arr.push({
+          q: qEl ? qEl.value : '',
+          a: aEl ? aEl.value : ''
+        });
+      }
+      blogState.faqs[cur] = arr;
+    }
+
+    function renderFaqCards() {
+      const cur = blogState.currentFaqLang;
+      const isRtl = (cur === 'ar' || cur === 'fa');
+      const container = document.getElementById('faq-cards-container');
+      const list = blogState.faqs[cur] || Array.from({ length: 12 }, () => ({ q: '', a: '' }));
+
+      let html = '';
+      for (let i = 0; i < 12; i++) {
+        const item = list[i] || { q: '', a: '' };
+        const qVal = escapeHtml(item.q || '');
+        const aVal = escapeHtml(item.a || '');
+        html += `
+          <div class="faq-item" dir="${isRtl ? 'rtl' : 'ltr'}">
+            <div class="faq-item-header">
+              <span class="num">${i + 1}</span> FAQ #${i + 1}
+            </div>
+            <input type="text" id="faq-q-${i + 1}" class="faq-q-input" 
+              placeholder="Question ${i + 1}..." value="${qVal}" oninput="markDirty()">
+            <textarea id="faq-a-${i + 1}" class="faq-a-input" 
+              placeholder="Answer ${i + 1}..." oninput="markDirty()">${aVal}</textarea>
+          </div>
+        `;
+      }
+      container.innerHTML = html;
+    }
+
+    function loadDefaultFaqs() {
+      if (!window.SHARIF_CANONICAL_FAQS) {
+        showToast('Canonical FAQs library not loaded.', 'error');
+        return;
+      }
+      const cur = blogState.currentFaqLang;
+      const defaults = window.SHARIF_CANONICAL_FAQS[cur] || window.SHARIF_CANONICAL_FAQS.en;
+      
+      if (!confirm(`Do you want to populate all 12 FAQ slots with the official sovereign defaults for this language?`)) {
+        return;
+      }
+
+      blogState.faqs[cur] = defaults.map(item => ({ q: item.q, a: item.a }));
+      renderFaqCards();
+      markDirty();
+      showToast(`Loaded 12 default FAQs for ${cur.toUpperCase()}!`, 'success');
+    }
+
+    // 6. SEO Meta & Accordion
+    function toggleSeoAccordion() {
+      const content = document.getElementById('seo-accordion-content');
+      const chev = document.getElementById('seo-chevron');
+      const isOpen = content.classList.toggle('open');
+      chev.style.transform = isOpen ? 'rotate(180deg)' : 'rotate(0deg)';
+    }
+
+    function updateSeoInputsForLang(lang) {
+      document.getElementById('meta-title-input').value = blogState[lang].meta_title || '';
+      document.getElementById('meta-desc-input').value = blogState[lang].meta_desc || '';
+    }
+
+    function handleSeoInput() {
+      const cur = blogState.currentContentLang;
+      blogState[cur].meta_title = document.getElementById('meta-title-input').value;
+      blogState[cur].meta_desc = document.getElementById('meta-desc-input').value;
+      markDirty();
+    }
+
+    // State Status Helpers
+    function markDirty() {
+      blogState.dirty = true;
+      document.getElementById('status-dot').className = 'dot pending';
+      document.getElementById('status-text').textContent = 'Unsaved changes';
+    }
+
+    function markSaved() {
+      blogState.dirty = false;
+      document.getElementById('status-dot').className = 'dot saved';
+      document.getElementById('status-text').textContent = 'All changes saved';
+    }
+
+    // Collect complete state into API payload
+    function collectPayload() {
+      // Flush current editor body and FAQs to memory
+      const curLang = blogState.currentContentLang;
+      blogState[curLang].body = document.getElementById('content-editor').innerHTML;
+      saveCurrentFaqInputs();
+
+      // Ensure English title
+      const enTitle = document.getElementById('article-title-en').value.trim();
+      blogState.en.title = enTitle;
+
+      if (!blogState.slug) {
+        autoSlug();
+      }
+
+      return {
+        id: blogState.id,
+        program: blogState.program,
+        category: blogState.category,
+        subcategory: blogState.subcategory,
+        slug: blogState.slug,
+        featured_img: blogState.featured_img,
+        publish_date: blogState.publish_date,
+        en: blogState.en,
+        ar: blogState.ar,
+        fa: blogState.fa,
+        zh: blogState.zh,
+        faqs: blogState.faqs
+      };
+    }
+
+    // SAVE AS DRAFT
+    async function saveAsDraft() {
+      const enTitle = document.getElementById('article-title-en').value.trim();
+      if (!enTitle) {
+        showToast('Please enter an English Title before saving.', 'error');
+        document.getElementById('article-title-en').focus();
+        return;
+      }
+
+      const btn = document.getElementById('btn-save-draft');
+      btn.disabled = true;
+      btn.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i> Saving Draft...';
+
+      const payload = collectPayload();
+
+      try {
+        const res = await fetch('/admin/api/blog-save-draft.php', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify(payload)
+        });
+        const data = await res.json();
+        if (data.success) {
+          blogState.id = data.id;
+          blogState.slug = data.slug;
+          document.getElementById('current-mode-badge').textContent = 'Draft: ' + data.slug;
+          markSaved();
+          showToast('Draft saved successfully!', 'success');
+          fetchDraftCount();
+        } else {
+          showToast(data.error || 'Failed to save draft.', 'error');
+        }
+      } catch (err) {
+        showToast('Network/Server error: ' + err.message, 'error');
+      } finally {
+        btn.disabled = false;
+        btn.innerHTML = '<i class="fa-solid fa-floppy-disk"></i> Save as Draft';
+      }
+    }
+
+    // PUBLISH ARTICLE
+    async function publishPost() {
+      const enTitle = document.getElementById('article-title-en').value.trim();
+      if (!enTitle) {
+        showToast('Please enter an article title before publishing.', 'error');
+        document.getElementById('article-title-en').focus();
+        return;
+      }
+
+      if (!confirm(`Are you ready to publish "${enTitle}" live?\n\nThis will generate all 4 multilingual physical pages, update blog listings, and refresh the sitemap.`)) {
+        return;
+      }
+
+      const btn = document.getElementById('btn-publish');
+      btn.disabled = true;
+      btn.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i> Publishing (SSG & Sitemap)...';
+
+      const payload = collectPayload();
+
+      try {
+        const res = await fetch('/admin/api/blog-publish.php', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify(payload)
+        });
+        const data = await res.json();
+        if (data.success) {
+          blogState.id = data.id;
+          blogState.slug = data.slug;
+          markSaved();
+          showToast('Article published live across all 4 languages & sitemap regenerated!', 'success');
+          fetchDraftCount();
+
+          setTimeout(() => {
+            if (confirm('Article is live! Would you like to view the published page now?')) {
+              window.open(data.url, '_blank');
+            }
+          }, 800);
+        } else {
+          showToast(data.error || 'Publish failed.', 'error');
+        }
+      } catch (err) {
+        showToast('Server error while publishing: ' + err.message, 'error');
+      } finally {
+        btn.disabled = false;
+        btn.innerHTML = '<i class="fa-solid fa-rocket"></i> Publish Article';
+      }
+    }
+
+    // LOAD BLOG FOR EDITING
+    async function loadBlogById(id) {
+      showToast('Loading article data...', 'warning');
+      try {
+        const res = await fetch(`/admin/api/blog-load.php?id=${encodeURIComponent(id)}`);
+        const data = await res.json();
+        if (data.success && data.blog) {
+          populateFormWithBlog(data.blog, data.faqs);
+          showToast('Article loaded for editing.', 'success');
+        } else {
+          showToast(data.error || 'Could not load article.', 'error');
+        }
+      } catch (err) {
+        showToast('Error loading blog: ' + err.message, 'error');
+      }
+    }
+
+    function populateFormWithBlog(blog, faqsMap) {
+      blogState.id = blog.id;
+      blogState.slug = blog.slug || '';
+      blogState.program = blog.program || blog.subcategory || 'dominica';
+      blogState.category = blog.category || 'Citizenship';
+      blogState.subcategory = blog.subcategory || blog.program || '';
+      blogState.featured_img = blog.featured_img || '';
+      blogState.publish_date = blog.publish_date || new Date().toISOString().split('T')[0];
+
+      // Languages
+      ['en', 'ar', 'fa', 'zh'].forEach(lng => {
+        blogState[lng] = {
+          title: (blog[lng] && blog[lng].title) || (lng === 'en' ? (blog.title || '') : ''),
+          body: (blog[lng] && blog[lng].body) || (lng === 'en' ? (blog.body || '') : ''),
+          excerpt: (blog[lng] && blog[lng].excerpt) || '',
+          meta_title: (blog[lng] && blog[lng].meta_title) || '',
+          meta_desc: (blog[lng] && blog[lng].meta_desc) || ''
+        };
+        // Normalize 12 FAQs
+        const rawFaqs = (faqsMap && faqsMap[lng]) || (blog[lng] && blog[lng].faqs) || [];
+        const norm = Array.from({ length: 12 }, (_, i) => ({
+          q: rawFaqs[i] ? rawFaqs[i].q : '',
+          a: rawFaqs[i] ? rawFaqs[i].a : ''
+        }));
+        blogState.faqs[lng] = norm;
+      });
+
+      // Update inputs
+      document.getElementById('article-title-en').value = blogState.en.title || '';
+      document.getElementById('slug-text-preview').textContent = blogState.slug || '';
+      document.getElementById('current-mode-badge').textContent = 'Editing: ' + (blog.id || blog.slug);
+
+      // Program select
+      const pSelect = document.getElementById('program-select');
+      for (let i = 0; i < pSelect.options.length; i++) {
+        if (pSelect.options[i].value === blogState.program || pSelect.options[i].getAttribute('data-sub') === blogState.subcategory) {
+          pSelect.selectedIndex = i;
+          break;
+        }
+      }
+
+      // Featured image
+      if (blogState.featured_img) {
+        setFeaturedImage(blogState.featured_img);
+      } else {
+        removeFeaturedImage();
+      }
+
+      // Switch to EN content tab
+      switchContentLang('en');
+      switchFaqLang('en');
+      markSaved();
+    }
+
+    function resetFormToNew() {
+      if (blogState.dirty && !confirm('You have unsaved changes. Reset to a blank new post?')) {
+        return;
+      }
+      window.location.href = '/admin/blog-editor.html';
+    }
+
+    // DRAFTS DRAWER MANAGEMENT
+    function openDraftsDrawer() {
+      document.getElementById('drafts-drawer').classList.add('open');
+      document.getElementById('drawer-overlay').classList.add('open');
+      loadDraftsList();
+    }
+
+    function closeDraftsDrawer() {
+      document.getElementById('drafts-drawer').classList.remove('open');
+      document.getElementById('drawer-overlay').classList.remove('open');
+    }
+
+    async function loadDraftsList() {
+      const container = document.getElementById('drafts-list-container');
+      container.innerHTML = `
+        <div style="text-align:center; padding:30px; color:var(--text-muted);">
+          <i class="fa-solid fa-spinner fa-spin" style="font-size:24px;"></i>
+          <div style="margin-top:8px;">Fetching drafts...</div>
+        </div>
+      `;
+
+      try {
+        const res = await fetch('/admin/api/blog-list-drafts.php');
+        const data = await res.json();
+        if (data.success) {
+          document.getElementById('draft-count-badge').textContent = data.count || 0;
+          if (!data.drafts || data.drafts.length === 0) {
+            container.innerHTML = `
+              <div style="text-align:center; padding:40px 20px; color:var(--text-muted);">
+                <i class="fa-solid fa-file-circle-check" style="font-size:36px; color:#cbd5e1; margin-bottom:12px;"></i>
+                <div style="font-weight:600; color:var(--navy);">No Draft Blogs</div>
+                <div style="font-size:13px; margin-top:4px;">All blogs are published or you haven't saved any drafts yet.</div>
+              </div>
+            `;
+            return;
+          }
+
+          let html = '';
+          data.drafts.forEach(d => {
+            const title = escapeHtml(d.title || 'Untitled Draft');
+            const cat = escapeHtml(d.category || 'Citizenship');
+            const date = d.updated_at ? d.updated_at.split(' ')[0] : (d.publish_date || '');
+            html += `
+              <div class="draft-card">
+                <div class="draft-card-title">${title}</div>
+                <div class="draft-card-meta">
+                  <span><i class="fa-solid fa-tag"></i> ${cat}</span>
+                  <span><i class="fa-regular fa-clock"></i> ${date}</span>
+                </div>
+                <div class="draft-card-actions">
+                  <button type="button" class="btn-edit-draft" onclick="loadDraftForEdit('${d.id}')">
+                    <i class="fa-solid fa-pen-to-square"></i> Open & Edit
+                  </button>
+                  <button type="button" class="btn-del-draft" onclick="deleteDraftItem('${d.id}', '${escapeHtml(title)}')">
+                    <i class="fa-solid fa-trash-can"></i> Delete
+                  </button>
+                </div>
+              </div>
+            `;
+          });
+          container.innerHTML = html;
+        } else {
+          container.innerHTML = `<div style="color:var(--danger); padding:16px;">Error: ${data.error}</div>`;
+        }
+      } catch (err) {
+        container.innerHTML = `<div style="color:var(--danger); padding:16px;">Failed to load drafts: ${err.message}</div>`;
+      }
+    }
+
+    async function fetchDraftCount() {
+      try {
+        const res = await fetch('/admin/api/blog-list-drafts.php');
+        const data = await res.json();
+        if (data.success) {
+          document.getElementById('draft-count-badge').textContent = data.count || 0;
+        }
+      } catch (e) {}
+    }
+
+    function loadDraftForEdit(id) {
+      closeDraftsDrawer();
+      loadBlogById(id);
+    }
+
+    async function deleteDraftItem(id, title) {
+      if (!confirm(`Are you sure you want to delete the draft "${title}"?`)) {
+        return;
+      }
+      try {
+        const res = await fetch('/admin/api/blog-delete-draft.php', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ id })
+        });
+        const data = await res.json();
+        if (data.success) {
+          showToast('Draft deleted.', 'success');
+          loadDraftsList();
+          fetchDraftCount();
+          if (blogState.id === id) {
+            resetFormToNew();
+          }
+        } else {
+          showToast(data.error || 'Could not delete draft.', 'error');
+        }
+      } catch (err) {
+        showToast('Error deleting draft: ' + err.message, 'error');
+      }
+    }
+
+    // UTILITIES
+    function showToast(msg, type = 'success') {
+      const toast = document.getElementById('toast');
+      const icon = document.getElementById('toast-icon');
+      const text = document.getElementById('toast-msg');
+
+      toast.className = `toast ${type} show`;
+      text.textContent = msg;
+
+      if (type === 'success') {
+        icon.className = 'fa-solid fa-circle-check';
+        icon.style.color = '#10b981';
+      } else if (type === 'error') {
+        icon.className = 'fa-solid fa-triangle-exclamation';
+        icon.style.color = '#ef4444';
+      } else {
+        icon.className = 'fa-solid fa-circle-info';
+        icon.style.color = '#c9a227';
+      }
+
+      clearTimeout(window.__toastTimeout);
+      window.__toastTimeout = setTimeout(() => {
+        toast.classList.remove('show');
+      }, 4000);
+    }
+
+    function escapeHtml(str) {
+      if (!str) return '';
+      return String(str)
+        .replace(/&/g, '&amp;')
+        .replace(/</g, '&lt;')
+        .replace(/>/g, '&gt;')
+        .replace(/"/g, '&quot;')
+        .replace(/'/g, '&#039;');
+    }
+  </script>
+</body>
+</html>
