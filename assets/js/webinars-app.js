@@ -138,19 +138,19 @@
       join_url: "",
       en: {
         title: "A Second Passport for Afghans: Introducing the Dominica Programme",
-        excerpt: "A free online session in Persian (Dari): what Dominica's citizenship programme is, why it matters for Afghans and who can apply."
+        excerpt: "A free online session in Persian: what Dominica's citizenship programme is, why it matters for Afghans and who can apply."
       },
       fa: {
         title: "پاسپورت دوم برای افغان‌ها: آشنایی با برنامه دومینیکا",
-        excerpt: "جلسه آنلاین و رایگان به فارسی (دری): برنامه شهروندی دومینیکا چیست، چرا برای افغان‌ها مهم است و چه کسانی می‌توانند درخواست بدهند."
+        excerpt: "جلسه آنلاین و رایگان به زبان فارسی: برنامه شهروندی دومینیکا چیست، چرا برای افغان‌ها مهم است و چه کسانی می‌توانند درخواست بدهند."
       },
       ar: {
         title: "جواز سفر ثانٍ للأفغان: التعريف ببرنامج دومينيكا",
-        excerpt: "جلسة مجانية عبر الإنترنت باللغة الفارسية (الدرية): ما هو برنامج جنسية دومينیکا، ولماذا يهم الأفغان، ومن يحق له التقديم."
+        excerpt: "جلسة مجانية عبر الإنترنت باللغة الفارسية: ما هو برنامج جنسية دومينيكا، ولماذا يهم الأفغان، ومن يحق له التقديم."
       },
       zh: {
         title: "阿富汗人的第二本护照：多米尼克入籍项目介绍",
-        excerpt: "免费在线讲座（波斯语／达利语）：多米尼克投资入籍项目是什么、为何对阿富汗人重要、哪些人可以申请。"
+        excerpt: "免费在线讲座（波斯语）：多米尼克投资入籍项目是什么、为何对阿富汗人重要、哪些人可以申请。"
       }
     },
     {
@@ -262,17 +262,15 @@
           const spList = [
             {
               name: sData.speaker_name,
-              title: sData.speaker_role || 'Citizenship Specialist',
-              affiliation: sData.speaker_affiliation || 'Sharif Group',
-              note: 'Keynote Speaker'
+              title: sData.speaker_role || 'Senior Consultant, Caribbean Citizenship Programs',
+              affiliation: sData.speaker_affiliation || 'Sharif Group Dubai'
             }
           ];
-          if (sData.host_name) {
+          if (sData.speaker2_name) {
             spList.push({
-              name: sData.host_name,
-              title: sData.host_role || 'Session Host',
-              affiliation: sData.host_affiliation || 'Sharif Group',
-              note: 'Host'
+              name: sData.speaker2_name,
+              title: sData.speaker2_role || 'Dominica Passport Program Specialist',
+              affiliation: sData.speaker2_affiliation || 'Sharif Group Dubai'
             });
           }
           w.speakers = spList;
@@ -1265,7 +1263,82 @@
     const bodyParas = (Array.isArray(c.body) ? c.body : (typeof c.body === 'string' ? [c.body] : [])).filter(Boolean);
     const outcomeItems = (Array.isArray(c.outcomes) ? c.outcomes : (typeof c.outcomes === 'string' ? [c.outcomes] : [])).filter(Boolean);
     const agendaList = (Array.isArray(c.agenda) && c.agenda.length) ? c.agenda : (t('detail.agendaItems') || []);
-    const speakersList = (Array.isArray(c.speakers) && c.speakers.length) ? c.speakers : ((Array.isArray(w.speakers) && w.speakers.length) ? w.speakers : [['expert', I.user], ['host', I.mic]]);
+    const defaultSpeakersByLang = {
+      en: [
+        { name: "Mohammad Barselani", title: "Senior Consultant, Caribbean Citizenship Programs", affiliation: "Sharif Group Dubai" },
+        { name: "Mehdi Yarahmadi", title: "Dominica Passport Program Specialist", affiliation: "Sharif Group Dubai" }
+      ],
+      fa: [
+        { name: "محمد برسلانی", title: "مشاور ارشد برنامه‌های شهروندی کارائیبی", affiliation: "شریف گروپ دبی" },
+        { name: "مهدی یاراحمدی", title: "کارشناس برنامه پاسپورت دومینیکا", affiliation: "شریف گروپ دبی" }
+      ],
+      ar: [
+        { name: "محمد برسلاني", title: "مستشار أول لبرامج الجنسية في دول الكاريبي", affiliation: "شريف جروب دبي" },
+        { name: "مهدي يار أحمدي", title: "خبير برنامج جواز سفر دومينيكا", affiliation: "شريف جروب دبي" }
+      ],
+      zh: [
+        { name: "穆罕默德·巴尔塞拉尼 (Mohammad Barselani)", title: "加勒比公民身份项目高级顾问", affiliation: "Sharif Group 迪拜" },
+        { name: "迈赫迪·亚拉赫马迪 (Mehdi Yarahmadi)", title: "多米尼克护照项目专家", affiliation: "Sharif Group 迪拜" }
+      ]
+    };
+    const defaultTwoSpeakers = defaultSpeakersByLang[lang] || defaultSpeakersByLang.en;
+    let speakersList = (Array.isArray(c.speakers) && c.speakers.length)
+      ? c.speakers
+      : ((Array.isArray(w.speakers) && w.speakers.length) ? w.speakers : defaultTwoSpeakers);
+    // Filter out any legacy host entry
+    speakersList = speakersList.filter(sp => {
+      if (Array.isArray(sp)) return sp[0] !== 'host';
+      const roleStr = ((sp.title || '') + ' ' + (sp.role || '') + ' ' + (sp.note || '')).toLowerCase();
+      return !roleStr.includes('host') && !roleStr.includes('مجری') && !roleStr.includes('مقدّم') && !roleStr.includes('主持人');
+    });
+    if (!speakersList.length) speakersList = defaultTwoSpeakers;
+
+    // Dynamic Meta, OpenGraph & Schema.org Event Injection
+    try {
+      let metaDesc = document.querySelector('meta[name="description"]');
+      if (metaDesc) metaDesc.content = c.excerpt || '';
+      const setOG = (p, v) => {
+        let el = document.querySelector(`meta[property="${p}"]`);
+        if (!el) { el = document.createElement('meta'); el.setAttribute('property', p); document.head.appendChild(el); }
+        el.content = v;
+      };
+      setOG('og:title', `${c.title || ('Session ' + w.session_no)} | Sharif Group`);
+      setOG('og:description', c.excerpt || '');
+      setOG('og:url', window.location.href);
+
+      let scEl = document.getElementById('sg-event-schema');
+      if (!scEl) {
+        scEl = document.createElement('script');
+        scEl.id = 'sg-event-schema';
+        scEl.type = 'application/ld+json';
+        document.head.appendChild(scEl);
+      }
+      scEl.textContent = JSON.stringify({
+        "@context": "https://schema.org",
+        "@type": "EducationEvent",
+        "name": c.title || ('Session ' + w.session_no),
+        "description": c.excerpt || '',
+        "startDate": w.start_utc,
+        "eventAttendanceMode": "https://schema.org/OnlineEventAttendanceMode",
+        "eventStatus": "https://schema.org/EventScheduled",
+        "inLanguage": lang === 'fa' ? 'fa' : (lang === 'ar' ? 'ar' : (lang === 'zh' ? 'zh' : 'en')),
+        "location": {
+          "@type": "VirtualLocation",
+          "url": window.location.href
+        },
+        "organizer": {
+          "@type": "Organization",
+          "name": "Sharif Group Dubai",
+          "url": "https://www.sharifgroup.ae/"
+        },
+        "performer": speakersList.map(s => ({
+          "@type": "Person",
+          "name": s.name || '',
+          "jobTitle": s.title || s.role || '',
+          "worksFor": { "@type": "Organization", "name": s.affiliation || "Sharif Group Dubai" }
+        }))
+      }, null, 2);
+    } catch(e) {}
 
     return `
     <section class="hero hero--detail">
@@ -1305,15 +1378,14 @@
           ${speakersList.map(sp => {
             if (Array.isArray(sp)) {
               const [k] = sp;
-              const faIcon = k === 'host' ? '<i class="fa-solid fa-microphone"></i>' : '<i class="fa-solid fa-user-tie"></i>';
-              return `<div class="speaker"><div class="avatar">${faIcon}</div><div><h4>${esc(t('detail.' + k + 'Name'))}</h4><p>${esc(t('detail.' + k + 'Role'))}</p><span class="tbd">${esc(t('detail.tbd'))}</span></div></div>`;
+              if (k === 'host') return '';
+              return `<div class="speaker"><div class="avatar"><i class="fa-solid fa-user-tie"></i></div><div><h4>${esc(t('detail.' + k + 'Name'))}</h4><p class="speaker-role">${esc(t('detail.' + k + 'Role'))}</p><p class="speaker-affil" style="font-size:12.5px;color:var(--muted);margin-top:2px">Sharif Group Dubai</p></div></div>`;
             }
-            const speakerName = sp.name || sp.title || t('detail.expertName');
-            const speakerRole = (sp.name && sp.title)
-              ? (sp.title + (sp.affiliation ? ` · ${sp.affiliation}` : ''))
-              : (sp.affiliation || sp.role || sp.title || t('detail.expertRole'));
-            const speakerNote = sp.note || (sp.name ? '' : t('detail.tbd'));
-            return `<div class="speaker"><div class="avatar"><i class="fa-solid fa-user-tie"></i></div><div><h4>${esc(speakerName)}</h4><p>${esc(speakerRole)}</p>${speakerNote ? `<span class="tbd">${esc(speakerNote)}</span>` : ''}</div></div>`;
+            const speakerName = sp.name || t('detail.expertName');
+            const speakerRole = sp.title || sp.role || (sp.name ? '' : t('detail.expertRole'));
+            const speakerAffil = sp.affiliation || (sp.name ? '' : 'Sharif Group Dubai');
+            const speakerNote = (sp.name) ? '' : (sp.note || t('detail.tbd'));
+            return `<div class="speaker"><div class="avatar"><i class="fa-solid fa-user-tie"></i></div><div><h4>${esc(speakerName)}</h4>${speakerRole ? `<p class="speaker-role">${esc(speakerRole)}</p>` : ''}${speakerAffil ? `<p class="speaker-affil" style="font-size:12.5px;color:var(--muted);margin-top:2px">${esc(speakerAffil)}</p>` : ''}${speakerNote ? `<span class="tbd">${esc(speakerNote)}</span>` : ''}</div></div>`;
           }).join('')}
         </div></section>
         <section class="block"><h2 class="block-title"><span class="bt-icon"><i class="fa-solid fa-shield-halved"></i></span><span>${esc(t('detail.privacy'))}</span></h2><div class="privacy-strip"><div class="privacy-strip-ico"><i class="fa-solid fa-shield-halved"></i></div><div style="flex:1"><h3 style="margin-bottom:8px">${esc(t('detail.privacy'))}</h3><ul class="privacy-list">${t('detail.privacyItems').map(p => `<li><i class="fa-solid fa-check"></i><span>${esc(p)}</span></li>`).join('')}</ul></div></div></section>

@@ -9011,13 +9011,13 @@
         const sp1 = selSpeakers[0] || {};
         const sp2 = selSpeakers[1] || {};
 
-        const selSpeakerName = selData.speaker_name || sp1.name || '';
-        const selSpeakerRole = selData.speaker_role || sp1.title || sp1.role || '';
-        const selSpeakerAffil = selData.speaker_affiliation || sp1.affiliation || '';
+        const selSpeakerName = selData.speaker_name || sp1.name || (selNo === 1 ? 'Mohammad Barselani' : '');
+        const selSpeakerRole = selData.speaker_role || sp1.title || sp1.role || (selNo === 1 ? 'Senior Consultant, Caribbean Citizenship Programs' : '');
+        const selSpeakerAffil = selData.speaker_affiliation || sp1.affiliation || (selNo === 1 ? 'Sharif Group Dubai' : '');
 
-        const selHostName = selData.host_name || sp2.name || '';
-        const selHostRole = selData.host_role || sp2.title || sp2.role || '';
-        const selHostAffil = selData.host_affiliation || sp2.affiliation || '';
+        const selSpeaker2Name = selData.speaker2_name || sp2.name || (selNo === 1 ? 'Mehdi Yarahmadi' : '');
+        const selSpeaker2Role = selData.speaker2_role || sp2.title || sp2.role || (selNo === 1 ? 'Dominica Passport Program Specialist' : '');
+        const selSpeaker2Affil = selData.speaker2_affiliation || sp2.affiliation || (selNo === 1 ? 'Sharif Group Dubai' : '');
 
         let dtLocalVal = '2026-10-29T19:30';
         try {
@@ -9271,53 +9271,53 @@
                       <label style="font-size:11px;font-weight:700;color:var(--text);display:block;margin-bottom:4px">
                         Speaker Name *
                       </label>
-                      <input type="text" class="form-input" id="wsch-speaker-name" value="${escH(selSpeakerName)}" placeholder="e.g. Dr. Babak Sharif or Adv. Sarah Al-Mansoor" style="font-size:13px;padding:9px 12px">
+                      <input type="text" class="form-input" id="wsch-speaker-name" value="${escH(selSpeakerName)}" placeholder="e.g. Mohammad Barselani" style="font-size:13px;padding:9px 12px">
                     </div>
 
                     <div class="form-group" style="margin-bottom:12px">
                       <label style="font-size:11px;font-weight:700;color:var(--text);display:block;margin-bottom:4px">
                         Designation / Title
                       </label>
-                      <input type="text" class="form-input" id="wsch-speaker-role" value="${escH(selSpeakerRole)}" placeholder="e.g. Senior Citizenship & Investment Specialist" style="font-size:13px;padding:9px 12px">
+                      <input type="text" class="form-input" id="wsch-speaker-role" value="${escH(selSpeakerRole)}" placeholder="e.g. Senior Consultant, Caribbean Citizenship Programs" style="font-size:13px;padding:9px 12px">
                     </div>
 
                     <div class="form-group" style="margin-bottom:0">
                       <label style="font-size:11px;font-weight:700;color:var(--text);display:block;margin-bottom:4px">
                         Organization / Affiliation
                       </label>
-                      <input type="text" class="form-input" id="wsch-speaker-affil" value="${escH(selSpeakerAffil)}" placeholder="e.g. Sharif Group Legal Desk" style="font-size:13px;padding:9px 12px">
+                      <input type="text" class="form-input" id="wsch-speaker-affil" value="${escH(selSpeakerAffil)}" placeholder="e.g. Sharif Group Dubai" style="font-size:13px;padding:9px 12px">
                     </div>
                   </div>
 
-                  <!-- Speaker 2: Host / Moderator -->
+                  <!-- Speaker 2: Program Specialist / Co-Speaker -->
                   <div style="background:var(--card);border:1px solid var(--border);border-radius:10px;padding:16px;box-shadow:0 1px 3px rgba(0,0,0,0.02)">
                     <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:12px;padding-bottom:8px;border-bottom:1px dashed var(--border)">
                       <div style="display:flex;align-items:center;gap:8px;font-size:12px;font-weight:700;color:var(--text)">
-                        <span style="width:22px;height:22px;border-radius:50%;background:rgba(100,116,139,0.15);color:var(--text);display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:800">2</span>
-                        Session Host & Moderator
+                        <span style="width:22px;height:22px;border-radius:50%;background:rgba(197,168,128,0.25);color:var(--gold);display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:800">2</span>
+                        Speaker 2: Program Specialist
                       </div>
-                      <span style="font-size:10px;font-weight:700;color:var(--muted);background:rgba(100,116,139,0.1);padding:2px 8px;border-radius:8px">Host</span>
+                      <span style="font-size:10px;font-weight:700;color:var(--gold);background:rgba(197,168,128,0.12);padding:2px 8px;border-radius:8px">Specialist</span>
                     </div>
 
                     <div class="form-group" style="margin-bottom:12px">
                       <label style="font-size:11px;font-weight:700;color:var(--text);display:block;margin-bottom:4px">
-                        Host Name
+                        Speaker Name
                       </label>
-                      <input type="text" class="form-input" id="wsch-host-name" value="${escH(selHostName)}" placeholder="e.g. Ali Rezaei (Dari Host) or Legal Desk Host" style="font-size:13px;padding:9px 12px">
+                      <input type="text" class="form-input" id="wsch-speaker2-name" value="${escH(selSpeaker2Name)}" placeholder="e.g. Mehdi Yarahmadi" style="font-size:13px;padding:9px 12px">
                     </div>
 
                     <div class="form-group" style="margin-bottom:12px">
                       <label style="font-size:11px;font-weight:700;color:var(--text);display:block;margin-bottom:4px">
-                        Host Role
+                        Designation / Title
                       </label>
-                      <input type="text" class="form-input" id="wsch-host-role" value="${escH(selHostRole)}" placeholder="e.g. Session Host & Live Q&A Moderator" style="font-size:13px;padding:9px 12px">
+                      <input type="text" class="form-input" id="wsch-speaker2-role" value="${escH(selSpeaker2Role)}" placeholder="e.g. Dominica Passport Program Specialist" style="font-size:13px;padding:9px 12px">
                     </div>
 
                     <div class="form-group" style="margin-bottom:0">
                       <label style="font-size:11px;font-weight:700;color:var(--text);display:block;margin-bottom:4px">
-                        Organization
+                        Organization / Affiliation
                       </label>
-                      <input type="text" class="form-input" id="wsch-host-affil" value="${escH(selHostAffil)}" placeholder="e.g. Sharif Group" style="font-size:13px;padding:9px 12px">
+                      <input type="text" class="form-input" id="wsch-speaker2-affil" value="${escH(selSpeaker2Affil)}" placeholder="e.g. Sharif Group Dubai" style="font-size:13px;padding:9px 12px">
                     </div>
                   </div>
 
@@ -9394,9 +9394,9 @@
         const speakerRoleInput = document.getElementById('wsch-speaker-role');
         const speakerAffilInput = document.getElementById('wsch-speaker-affil');
 
-        const hostNameInput = document.getElementById('wsch-host-name');
-        const hostRoleInput = document.getElementById('wsch-host-role');
-        const hostAffilInput = document.getElementById('wsch-host-affil');
+        const speaker2NameInput = document.getElementById('wsch-speaker2-name');
+        const speaker2RoleInput = document.getElementById('wsch-speaker2-role');
+        const speaker2AffilInput = document.getElementById('wsch-speaker2-affil');
         
         let startUtc = '';
         if (dtInput && dtInput.value) {
@@ -9412,25 +9412,23 @@
         const speakerRole = speakerRoleInput ? speakerRoleInput.value.trim() : '';
         const speakerAffil = speakerAffilInput ? speakerAffilInput.value.trim() : '';
 
-        const hostName = hostNameInput ? hostNameInput.value.trim() : '';
-        const hostRole = hostRoleInput ? hostRoleInput.value.trim() : '';
-        const hostAffil = hostAffilInput ? hostAffilInput.value.trim() : '';
+        const speaker2Name = speaker2NameInput ? speaker2NameInput.value.trim() : '';
+        const speaker2Role = speaker2RoleInput ? speaker2RoleInput.value.trim() : '';
+        const speaker2Affil = speaker2AffilInput ? speaker2AffilInput.value.trim() : '';
 
         const compiledSpeakers = [];
         if (speakerName) {
           compiledSpeakers.push({
             name: speakerName,
-            title: speakerRole || 'Citizenship Specialist',
-            affiliation: speakerAffil || 'Sharif Group',
-            note: 'Keynote Speaker'
+            title: speakerRole || 'Senior Consultant, Caribbean Citizenship Programs',
+            affiliation: speakerAffil || 'Sharif Group Dubai'
           });
         }
-        if (hostName) {
+        if (speaker2Name) {
           compiledSpeakers.push({
-            name: hostName,
-            title: hostRole || 'Session Moderator',
-            affiliation: hostAffil || 'Sharif Group',
-            note: 'Host'
+            name: speaker2Name,
+            title: speaker2Role || 'Dominica Passport Program Specialist',
+            affiliation: speaker2Affil || 'Sharif Group Dubai'
           });
         }
 
@@ -9443,9 +9441,9 @@
           speaker_name: speakerName,
           speaker_role: speakerRole,
           speaker_affiliation: speakerAffil,
-          host_name: hostName,
-          host_role: hostRole,
-          host_affiliation: hostAffil,
+          speaker2_name: speaker2Name,
+          speaker2_role: speaker2Role,
+          speaker2_affiliation: speaker2Affil,
           speakers: compiledSpeakers.length ? compiledSpeakers : undefined
         };
         schedule.updated_at = new Date().toISOString();

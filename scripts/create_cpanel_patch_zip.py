@@ -19,8 +19,29 @@ def create_patch_zip():
         'admin/api/delete-blog.php',
         'admin/api/save.php',
         'admin/api/webinars-regen.php',
+        'admin/api/published_content.json',
+        'admin/api/draft_content.json',
+        'admin/dashboard.html',
         'assets/js/webinars-app.js',
-        'admin/dashboard.html'
+        'assets/js/webinars-data.js',
+        'assets/js/webinars-i18n.js',
+        'assets/locales/en.json',
+        'assets/locales/fa.json',
+        'assets/locales/ar.json',
+        'assets/locales/zh.json',
+        'data/sgcms_webinars.json',
+        'events/index.html',
+        'fa/events/index.html',
+        'ar/events/index.html',
+        'zh/events/index.html',
+        'index.html',
+        'fa/index.html',
+        'ar/index.html',
+        'zh/index.html',
+        'blog/index.html',
+        'fa/blog/index.html',
+        'ar/blog/index.html',
+        'zh/blog/index.html'
     ]
 
     print(f"Creating patch zip: {output_zip}...")

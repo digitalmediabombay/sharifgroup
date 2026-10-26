@@ -6793,9 +6793,9 @@
     "seriesTag": "Series 01 · Dominica",
     "freeBadge": "Free Online",
     "title": "A Second Passport for Afghans: Introducing the Dominica Programme",
-    "desc": "A free online session in Persian (Dari): what Dominica's citizenship programme is, why it matters for Afghans and who can apply.",
+    "desc": "A free online session in Persian: what Dominica's citizenship programme is, why it matters for Afghans and who can apply.",
     "dateTime": "Thursday 29 October · 20:00 Kabul / 19:30 Dubai",
-    "lang": "Language: Persian (Dari)",
+    "lang": "Language: Persian",
     "duration": "Duration: 65 Minutes + Live Q&A",
     "access": "Join via Phone or PC · No App Needed",
     "joinBtn": "View & Register",
@@ -6812,7 +6812,8 @@
     "privacyNote": "Camera & mic off · Anonymous participation permitted",
     "dateLabel": "DATE & TIME",
     "dateValue": "Thursday, 29 October 2026",
-    "yourTime": "Your time"
+    "yourTime": "Your time",
+    "meta": ""
   },
   "partners": {
     "common": {

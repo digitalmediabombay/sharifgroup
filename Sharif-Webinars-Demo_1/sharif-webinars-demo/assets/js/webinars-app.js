@@ -138,19 +138,19 @@
       join_url: "",
       en: {
         title: "A Second Passport for Afghans: Introducing the Dominica Programme",
-        excerpt: "A free online session in Persian (Dari): what Dominica's citizenship programme is, why it matters for Afghans and who can apply."
+        excerpt: "A free online session in Persian: what Dominica's citizenship programme is, why it matters for Afghans and who can apply."
       },
       fa: {
         title: "پاسپورت دوم برای افغان‌ها: آشنایی با برنامه دومینیکا",
-        excerpt: "جلسه آنلاین و رایگان به فارسی (دری): برنامه شهروندی دومینیکا چیست، چرا برای افغان‌ها مهم است و چه کسانی می‌توانند درخواست بدهند."
+        excerpt: "جلسه آنلاین و رایگان به زبان فارسی: برنامه شهروندی دومینیکا چیست، چرا برای افغان‌ها مهم است و چه کسانی می‌توانند درخواست بدهند."
       },
       ar: {
         title: "جواز سفر ثانٍ للأفغان: التعريف ببرنامج دومينيكا",
-        excerpt: "جلسة مجانية عبر الإنترنت باللغة الفارسية (الدرية): ما هو برنامج جنسية دومينیکا، ولماذا يهم الأفغان، ومن يحق له التقديم."
+        excerpt: "جلسة مجانية عبر الإنترنت باللغة الفارسية: ما هو برنامج جنسية دومينيكا، ولماذا يهم الأفغان، ومن يحق له التقديم."
       },
       zh: {
         title: "阿富汗人的第二本护照：多米尼克入籍项目介绍",
-        excerpt: "免费在线讲座（波斯语／达利语）：多米尼克投资入籍项目是什么、为何对阿富汗人重要、哪些人可以申请。"
+        excerpt: "免费在线讲座（波斯语）：多米尼克投资入籍项目是什么、为何对阿富汗人重要、哪些人可以申请。"
       }
     },
     {
@@ -1283,15 +1283,14 @@
           ${speakersList.map(sp => {
             if (Array.isArray(sp)) {
               const [k] = sp;
-              const faIcon = k === 'host' ? '<i class="fa-solid fa-microphone"></i>' : '<i class="fa-solid fa-user-tie"></i>';
-              return `<div class="speaker"><div class="avatar">${faIcon}</div><div><h4>${esc(t('detail.' + k + 'Name'))}</h4><p>${esc(t('detail.' + k + 'Role'))}</p><span class="tbd">${esc(t('detail.tbd'))}</span></div></div>`;
+              if (k === 'host') return '';
+              return `<div class="speaker"><div class="avatar"><i class="fa-solid fa-user-tie"></i></div><div><h4>${esc(t('detail.' + k + 'Name'))}</h4><p class="speaker-role">${esc(t('detail.' + k + 'Role'))}</p><p class="speaker-affil" style="font-size:12.5px;color:var(--muted);margin-top:2px">Sharif Group Dubai</p></div></div>`;
             }
-            const speakerName = sp.name || sp.title || t('detail.expertName');
-            const speakerRole = (sp.name && sp.title)
-              ? (sp.title + (sp.affiliation ? ` · ${sp.affiliation}` : ''))
-              : (sp.affiliation || sp.role || sp.title || t('detail.expertRole'));
-            const speakerNote = sp.note || (sp.name ? '' : t('detail.tbd'));
-            return `<div class="speaker"><div class="avatar"><i class="fa-solid fa-user-tie"></i></div><div><h4>${esc(speakerName)}</h4><p>${esc(speakerRole)}</p>${speakerNote ? `<span class="tbd">${esc(speakerNote)}</span>` : ''}</div></div>`;
+            const speakerName = sp.name || t('detail.expertName');
+            const speakerRole = sp.title || sp.role || (sp.name ? '' : t('detail.expertRole'));
+            const speakerAffil = sp.affiliation || (sp.name ? '' : 'Sharif Group Dubai');
+            const speakerNote = (sp.name) ? '' : (sp.note || t('detail.tbd'));
+            return `<div class="speaker"><div class="avatar"><i class="fa-solid fa-user-tie"></i></div><div><h4>${esc(speakerName)}</h4>${speakerRole ? `<p class="speaker-role">${esc(speakerRole)}</p>` : ''}${speakerAffil ? `<p class="speaker-affil" style="font-size:12.5px;color:var(--muted);margin-top:2px">${esc(speakerAffil)}</p>` : ''}${speakerNote ? `<span class="tbd">${esc(speakerNote)}</span>` : ''}</div></div>`;
           }).join('')}
         </div></section>
         <section class="block"><h2 class="block-title"><span class="bt-icon"><i class="fa-solid fa-shield-halved"></i></span><span>${esc(t('detail.privacy'))}</span></h2><div class="privacy-strip"><div class="privacy-strip-ico"><i class="fa-solid fa-shield-halved"></i></div><div style="flex:1"><h3 style="margin-bottom:8px">${esc(t('detail.privacy'))}</h3><ul class="privacy-list">${t('detail.privacyItems').map(p => `<li><i class="fa-solid fa-check"></i><span>${esc(p)}</span></li>`).join('')}</ul></div></div></section>

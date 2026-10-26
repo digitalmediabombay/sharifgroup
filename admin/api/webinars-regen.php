@@ -143,17 +143,15 @@ if (!function_exists('regenerateWebinars')) {
                         $spList = [
                             [
                                 'name'        => trim($sData['speaker_name']),
-                                'title'       => !empty($sData['speaker_role']) ? trim($sData['speaker_role']) : 'Citizenship & Immigration Specialist',
-                                'affiliation' => !empty($sData['speaker_affiliation']) ? trim($sData['speaker_affiliation']) : 'Sharif Group',
-                                'note'        => 'Keynote Speaker'
+                                'title'       => !empty($sData['speaker_role']) ? trim($sData['speaker_role']) : 'Senior Consultant, Caribbean Citizenship Programs',
+                                'affiliation' => !empty($sData['speaker_affiliation']) ? trim($sData['speaker_affiliation']) : 'Sharif Group Dubai'
                             ]
                         ];
-                        if (!empty($sData['host_name'])) {
+                        if (!empty($sData['speaker2_name'])) {
                             $spList[] = [
-                                'name'        => trim($sData['host_name']),
-                                'title'       => !empty($sData['host_role']) ? trim($sData['host_role']) : 'Session Moderator & Host',
-                                'affiliation' => !empty($sData['host_affiliation']) ? trim($sData['host_affiliation']) : 'Sharif Group',
-                                'note'        => 'Host'
+                                'name'        => trim($sData['speaker2_name']),
+                                'title'       => !empty($sData['speaker2_role']) ? trim($sData['speaker2_role']) : 'Dominica Passport Program Specialist',
+                                'affiliation' => !empty($sData['speaker2_affiliation']) ? trim($sData['speaker2_affiliation']) : 'Sharif Group Dubai'
                             ];
                         }
                         $wItem['speakers'] = $spList;

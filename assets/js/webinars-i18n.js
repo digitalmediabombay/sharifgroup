@@ -85,7 +85,7 @@ window.WEBINAR_I18N = {
       }
     },
     webinars: {
-      common: { demoStrong: "Demo", demoText: "Preview for the web team — nothing is sent or saved outside this browser.", skip: "Skip to content", isNew: "New", free: "Free", min: "{n} min", sample: "Sample date — pending approval", copy: "Copy link", copied: "Link copied", close: "Close", lang: "Persian (Dari)", online: "Online", seats: "{n} seats", sessionN: "Session {n}", of: "of" },
+      common: { demoStrong: "Demo", demoText: "Preview for the web team — nothing is sent or saved outside this browser.", skip: "Skip to content", isNew: "New", free: "Free", min: "{n} min", sample: "Sample date — pending approval", copy: "Copy link", copied: "Link copied", close: "Close", lang: "Persian", online: "Online", seats: "{n} seats", sessionN: "Session {n}", of: "of" },
       cd: { d: "Days", h: "Hours", m: "Minutes", s: "Seconds" },
       tz: { kabul: "Kabul", dubai: "Dubai", istanbul: "Istanbul", you: "Your time" },
       status: { upcoming: "Upcoming", live: "Live now", ended: "Held", postponed: "Postponed", cancelled: "Cancelled", regOpen: "Registration open", regClosed: "Registration closed", soon: "Coming soon", publicLink: "Public link" },
@@ -94,7 +94,7 @@ window.WEBINAR_I18N = {
         lede: "Free, live online sessions where our specialists explain citizenship and residency pathways clearly — and answer your questions.",
         nextEyebrow: "Next live session", join: "Join the webinar", remind: "Get WhatsApp reminder", details: "Full details",
         startsIn: "Starts in", whenTitle: "Date & time", noInstall: "No app needed", phoneOk: "Works on mobile",
-        upTitle: "Upcoming <em>Sessions</em>", seriesTag: "Series 01 · Dominica", seriesTitle: "Dominica Pilot Series", seriesText: "Three sessions, two weeks apart — from the basics to documents and your own questions. Every session is free and in Persian (Dari).",
+        upTitle: "Upcoming <em>Sessions</em>", seriesTag: "Series 01 · Dominica", seriesTitle: "Dominica Pilot Series", seriesText: "Three sessions, two weeks apart — from the basics to documents and your own questions. Every session is free and in Persian.",
         sessionCta: "Details", howEyebrow: "Before you join", howTitle: "How to <em>join</em>",
         howSub: "Follow these four simple steps to participate in any live session — no downloads, apps, or registration required.",
         steps: [
@@ -120,17 +120,17 @@ window.WEBINAR_I18N = {
       detail: {
         recapTitle: "Session summary", home: "Home", about: "About this session", learn: "What you will learn", agenda: "Session agenda", speakers: "Speakers",
         agendaItems: [
-          { t: "0–5", l: "Welcome in Dari and a short poll", w: "Host" },
-          { t: "5–10", l: "About Sharif Group and the speaker", w: "Host" },
-          { t: "10–40", l: "Main content", w: "Speaker" },
-          { t: "40–45", l: "Next step: free private consultation and checklist", w: "Speaker" },
-          { t: "45–63", l: "Live Q&A", w: "Host & speaker" },
-          { t: "63–65", l: "Summary and next session", w: "Host" }
+          { t: "0–5", l: "Welcome and a short poll", w: "Speakers" },
+          { t: "5–10", l: "About Sharif Group and the speakers", w: "Speakers" },
+          { t: "10–40", l: "Main content", w: "Speakers" },
+          { t: "40–45", l: "Next step: free private consultation and checklist", w: "Speakers" },
+          { t: "45–63", l: "Live Q&A", w: "Speakers" },
+          { t: "63–65", l: "Summary and next session", w: "Speakers" }
         ],
         minutes: "min",
-        expertName: "Senior Citizenship Specialist", expertRole: "Sharif Group, Dubai", hostName: "Dari-speaking host", hostRole: "Moderates questions and chat", tbd: "Name to be announced",
+        expertName: "Senior Citizenship Specialist", expertRole: "Sharif Group, Dubai", tbd: "Name to be announced",
         privacy: "Privacy during the session",
-        privacyItems: ["Join with any name — camera and microphone are off by default.", "The recording shows only the speakers and slides.", "The host never reads out the name of the person asking.", "You can send your question privately to the host."],
+        privacyItems: ["Join with any name — camera and microphone are off by default.", "The recording shows only the speakers and slides.", "The speakers never read out the name of the person asking.", "You can send your question privately to the speakers."],
         faq: "Frequently asked questions",
         faqs: [
           { q: "Do I need to install an app?", a: "No. The link opens in your phone or computer browser. Chrome works best." },
@@ -149,7 +149,7 @@ window.WEBINAR_I18N = {
         notOpen: "Registration for this session opens after Session {n}.", other: "Other sessions in this series", soonCta: "Notify me", registerNowBtn: "Register now"
       },
       form: {
-        title: "Register now — it's free", subPublic: "Register to receive the joining link and reminders on WhatsApp, plus the Dari document checklist after the session.", subPrivate: "Register to receive the joining link and reminders on WhatsApp.",
+        title: "Register now — it's free", subPublic: "Register to receive the joining link and reminders on WhatsApp, plus the Persian document checklist after the session.", subPrivate: "Register to receive the joining link and reminders on WhatsApp.",
         name: "Name", nameHint: "Doesn't have to be your real name.", wa: "WhatsApp number", waHint: "We send the link and reminders here.", email: "Email", optional: "optional",
         country: "Where do you live?", choose: "Select…", countries: { AF: "Afghanistan", AE: "United Arab Emirates", TR: "Turkey", IR: "Iran", other: "Other" },
         question: "Your question for the specialist", questionHint: "Please don't write personal or financial details.", newsletter: "Send me news about future webinars",
@@ -259,7 +259,7 @@ window.WEBINAR_I18N = {
       }
     },
     webinars: {
-      common: { demoStrong: "نسخه دمو", demoText: "پیش‌نمایش برای تیم وبسایت — هیچ اطلاعاتی بیرون از این مرورگر ارسال یا ذخیره نمی‌شود.", skip: "رفتن به محتوا", isNew: "جدید", free: "رایگان", min: "{n} دقیقه", sample: "تاریخ نمونه — در انتظار تأیید", copy: "کپی لینک", copied: "لینک کپی شد", close: "بستن", lang: "فارسی (دری)", online: "آنلاین", seats: "{n} نفر ظرفیت", sessionN: "جلسه {n}", of: "از" },
+      common: { demoStrong: "نسخه دمو", demoText: "پیش‌نمایش برای تیم وبسایت — هیچ اطلاعاتی بیرون از این مرورگر ارسال یا ذخیره نمی‌شود.", skip: "رفتن به محتوا", isNew: "جدید", free: "رایگان", min: "{n} دقیقه", sample: "تاریخ نمونه — در انتظار تأیید", copy: "کپی لینک", copied: "لینک کپی شد", close: "بستن", lang: "فارسی", online: "آنلاین", seats: "{n} نفر ظرفیت", sessionN: "جلسه {n}", of: "از" },
       cd: { d: "روز", h: "ساعت", m: "دقیقه", s: "ثانیه" },
       tz: { kabul: "کابل", dubai: "دبی", istanbul: "استانبول", you: "وقت شما" },
       status: { upcoming: "پیش رو", live: "در حال پخش", ended: "برگزار شد", postponed: "به تعویق افتاد", cancelled: "لغو شد", regOpen: "ثبت‌نام باز است", regClosed: "ثبت‌نام بسته شد", soon: "به‌زودی", publicLink: "لینک عمومی" },
@@ -268,7 +268,7 @@ window.WEBINAR_I18N = {
         lede: "جلسه‌های آنلاین، زنده و رایگان که در آن کارشناسان ما مسیرهای شهروندی و اقامت را روشن توضیح می‌دهند و به پرسش‌های شما پاسخ می‌دهند.",
         nextEyebrow: "جلسه زنده بعدی", join: "ورود به وبینار", remind: "یادآوری در واتس‌اپ", details: "جزئیات کامل",
         startsIn: "زمان باقی‌مانده تا شروع", whenTitle: "تاریخ و ساعت", noInstall: "بدون نصب برنامه", phoneOk: "قابل استفاده با گوشی",
-        upTitle: "جلسه‌های <em>پیش رو</em>", seriesTag: "مجموعه ۰۱ · دومینیکا", seriesTitle: "مجموعه آزمایشی دومینیکا", seriesText: "سه جلسه با فاصله دو هفته — از آشنایی کلی تا مدارک و پرسش‌های خود شما. همه جلسه‌ها رایگان و به فارسی (دری) است.",
+        upTitle: "جلسه‌های <em>پیش رو</em>", seriesTag: "مجموعه ۰۱ · دومینیکا", seriesTitle: "مجموعه آزمایشی دومینیکا", seriesText: "سه جلسه با فاصله دو هفته — از آشنایی کلی تا مدارک و پرسش‌های خود شما. همه جلسه‌ها رایگان و به زبان فارسی است.",
         sessionCta: "جزئیات", howEyebrow: "پیش از ورود", howTitle: "چطور <em>وارد شویم</em>",
         howSub: "چهار مرحله ساده برای ورود و مشارکت در جلسات زنده — بدون نیاز به نصب هیچ‌گونه اپلیکیشن.",
         steps: [
@@ -294,15 +294,15 @@ window.WEBINAR_I18N = {
       detail: {
         recapTitle: "خلاصه جلسه", home: "خانه", about: "درباره این جلسه", learn: "در این جلسه یاد می‌گیرید", agenda: "برنامه جلسه", speakers: "سخنرانان",
         agendaItems: [
-          { t: "۰–۵", l: "خوشامد به دری و نظرسنجی کوتاه", w: "مجری" },
-          { t: "۵–۱۰", l: "معرفی شریف گروپ و سخنران", w: "مجری" },
+          { t: "۰–۵", l: "خوشامدگویی و نظرسنجی کوتاه", w: "سخنرانان" },
+          { t: "۵–۱۰", l: "معرفی شریف گروپ و سخنرانان", w: "سخنرانان" },
           { t: "۱۰–۴۰", l: "محتوای اصلی جلسه", w: "سخنران" },
           { t: "۴۰–۴۵", l: "قدم بعدی: مشاوره خصوصی رایگان و چک‌لیست", w: "سخنران" },
           { t: "۴۵–۶۳", l: "پرسش‌وپاسخ زنده", w: "مجری و سخنران" },
           { t: "۶۳–۶۵", l: "جمع‌بندی و معرفی جلسه بعد", w: "مجری" }
         ],
         minutes: "دقیقه",
-        expertName: "کارشناس ارشد شهروندی", expertRole: "شریف گروپ، دبی", hostName: "مجری دری‌زبان", hostRole: "مدیریت پرسش‌ها و چت", tbd: "نام پس از تأیید اعلام می‌شود",
+        expertName: "کارشناس ارشد شهروندی", expertRole: "شریف گروپ، دبی", tbd: "نام پس از تأیید اعلام می‌شود",
         privacy: "حریم خصوصی در جلسه",
         privacyItems: ["با هر نامی وارد شوید — کمره و مایکروفون به‌طور پیش‌فرض خاموش است.", "ضبط جلسه فقط سخنران و اسلایدها را نشان می‌دهد.", "مجری هنگام خواندن پرسش‌ها نام پرسنده را نمی‌خواند.", "می‌توانید پرسش خود را خصوصی برای مجری بفرستید."],
         faq: "پرسش‌های متداول",
@@ -323,7 +323,7 @@ window.WEBINAR_I18N = {
         notOpen: "ثبت‌نام این جلسه بعد از جلسه {n} باز می‌شود.", other: "جلسه‌های دیگر این مجموعه", soonCta: "خبرم کنید", registerNowBtn: "ثبت‌نام کنید"
       },
       form: {
-        title: "همین حالا ثبت‌نام کنید — رایگان", subPublic: "ثبت‌نام کنید تا لینک ورود و یادآوری‌ها را در واتس‌اپ و چک‌لیست مدارک به دری را بعد از جلسه دریافت کنید.", subPrivate: "برای دریافت لینک ورود و یادآوری در واتس‌اپ ثبت‌نام کنید.",
+        title: "همین حالا ثبت‌نام کنید — رایگان", subPublic: "ثبت‌نام کنید تا لینک ورود و یادآوری‌ها را در واتس‌اپ و چک‌لیست مدارک به زبان فارسی را بعد از جلسه دریافت کنید.", subPrivate: "برای دریافت لینک ورود و یادآوری در واتس‌اپ ثبت‌نام کنید.",
         name: "نام", nameHint: "لازم نیست نام واقعی باشد.", wa: "شماره واتس‌اپ", waHint: "لینک و یادآوری را به این شماره می‌فرستیم.", email: "ایمیل", optional: "اختیاری",
         country: "محل زندگی شما", choose: "انتخاب کنید…", countries: { AF: "افغانستان", AE: "امارات", TR: "ترکیه", IR: "ایران", other: "سایر" },
         question: "پرسش شما از کارشناس", questionHint: "لطفاً اطلاعات شخصی و مالی ننویسید.", newsletter: "خبر وبینارهای بعدی را برایم بفرستید",
@@ -433,7 +433,7 @@ window.WEBINAR_I18N = {
       }
     },
     webinars: {
-      common: { demoStrong: "نسخة تجريبية", demoText: "معاينة لفريق الموقع — لا يتم إرسال أو حفظ أي بيانات خارج هذا المتصفح.", skip: "انتقل إلى المحتوى", isNew: "جديد", free: "مجاناً", min: "{n} دقيقة", sample: "تاريخ تجريبي — بانتظار الاعتماد", copy: "نسخ الرابط", copied: "تم نسخ الرابط", close: "إغلاق", lang: "الفارسية (الدرية)", online: "عبر الإنترنت", seats: "{n} مقعداً", sessionN: "الجلسة {n}", of: "من" },
+      common: { demoStrong: "نسخة تجريبية", demoText: "معاينة لفريق الموقع — لا يتم إرسال أو حفظ أي بيانات خارج هذا المتصفح.", skip: "انتقل إلى المحتوى", isNew: "جديد", free: "مجاناً", min: "{n} دقيقة", sample: "تاريخ تجريبي — بانتظار الاعتماد", copy: "نسخ الرابط", copied: "تم نسخ الرابط", close: "إغلاق", lang: "الفارسية", online: "عبر الإنترنت", seats: "{n} مقعداً", sessionN: "الجلسة {n}", of: "من" },
       cd: { d: "أيام", h: "ساعات", m: "دقائق", s: "ثوانٍ" },
       tz: { kabul: "كابول", dubai: "دبي", istanbul: "إسطنبول", you: "توقيتك" },
       status: { upcoming: "قادمة", live: "مباشر الآن", ended: "انعقدت", postponed: "مؤجلة", cancelled: "ملغاة", regOpen: "التسجيل مفتوح", regClosed: "التسجيل مغلق", soon: "قريباً", publicLink: "رابط عام" },
@@ -442,7 +442,7 @@ window.WEBINAR_I18N = {
         lede: "جلسات مباشرة ومجانية عبر الإنترنت يشرح فيها خبراؤنا مسارات الجنسية والإقامة بوضوح ويجيبون عن أسئلتكم.",
         nextEyebrow: "الجلسة المباشرة القادمة", join: "الانضمام إلى الندوة", remind: "تذكير عبر واتساب", details: "التفاصيل الكاملة",
         startsIn: "تبدأ بعد", whenTitle: "التاريخ والوقت", noInstall: "دون تثبيت تطبيق", phoneOk: "تعمل على الهاتف",
-        upTitle: "الجلسات <em>القادمة</em>", seriesTag: "السلسلة 01 · دومينيكا", seriesTitle: "السلسلة التجريبية لدومينيكا", seriesText: "ثلاث جلسات بفاصل أسبوعين — من الأساسيات إلى المستندات وأسئلتكم الخاصة. جميع الجلسات مجانية وباللغة الفارسية (الدرية).",
+        upTitle: "الجلسات <em>القادمة</em>", seriesTag: "السلسلة 01 · دومينيكا", seriesTitle: "السلسلة التجريبية لدومينيكا", seriesText: "ثلاث جلسات بفاصل أسبوعين — من الأساسيات إلى المستندات وأسئلتكم الخاصة. جميع الجلسات مجانية وباللغة الفارسية.",
         sessionCta: "التفاصيل", howEyebrow: "قبل الانضمام", howTitle: "كيف <em>تنضم</em>",
         howSub: "أربع خطوات بسيطة للمشاركة في الجلسات المباشرة — دون الحاجة لتحميل أي تطبيقات.",
         steps: [
@@ -468,15 +468,15 @@ window.WEBINAR_I18N = {
       detail: {
         recapTitle: "ملخص الجلسة", home: "الرئيسية", about: "عن هذه الجلسة", learn: "ما ستتعلمه", agenda: "جدول الجلسة", speakers: "المتحدثون",
         agendaItems: [
-          { t: "0–5", l: "ترحيب بالدرية واستطلاع قصير", w: "المقدّم" },
+          { t: "0–5", l: "ترحيب واستطلاع قصير", w: "المتحدثون" },
           { t: "5–10", l: "تعريف بمجموعة شريف والمتحدث", w: "المقدّم" },
           { t: "10–40", l: "المحتوى الرئيسي", w: "المتحدث" },
-          { t: "40–45", l: "الخطوة التالية: استشارة خاصة مجانية وقائمة المستندات", w: "المتحدث" },
-          { t: "45–63", l: "أسئلة وأجوبة مباشرة", w: "المقدّم والمتحدث" },
+          { t: "40–45", l: "الخطوة التالية: استشارة خاصة مجانية وقائمة المستندات", w: "المتحدثون" },
+          { t: "45–63", l: "أسئلة وأجوبة مباشرة", w: "المتحدثون" },
           { t: "63–65", l: "الخلاصة والجلسة القادمة", w: "المقدّم" }
         ],
         minutes: "دقيقة",
-        expertName: "أخصائي أول في الجنسية", expertRole: "مجموعة شريف، دبي", hostName: "مقدّم يتحدث الدرية", hostRole: "يدير الأسئلة والدردشة", tbd: "يُعلن الاسم لاحقاً",
+        expertName: "أخصائي أول في الجنسية", expertRole: "مجموعة شريف، دبي", tbd: "يُعلن الاسم لاحقاً",
         privacy: "الخصوصية أثناء الجلسة",
         privacyItems: ["انضم بأي اسم — الكاميرا والميكروفون مغلقان افتراضياً.", "يُظهر التسجيل المتحدثين والشرائح فقط.", "لا يقرأ المقدّم اسم صاحب السؤال.", "يمكنك إرسال سؤالك إلى المقدّم بشكل خاص."],
         faq: "الأسئلة الشائعة",
@@ -497,7 +497,7 @@ window.WEBINAR_I18N = {
         notOpen: "يُفتح التسجيل لهذه الجلسة بعد الجلسة {n}.", other: "جلسات أخرى في هذه السلسلة", soonCta: "أبلغني", registerNowBtn: "سجّل الآن"
       },
       form: {
-        title: "سجّل الآن — مجاناً", subPublic: "سجّل لتستلم رابط الانضمام والتذكيرات عبر واتساب، وقائمة المستندات بالدرية بعد الجلسة.", subPrivate: "سجّل لاستلام رابط الانضمام والتذكيرات عبر واتساب.",
+        title: "سجّل الآن — مجاناً", subPublic: "سجّل لتستلم رابط الانضمام والتذكيرات عبر واتساب، وقائمة المستندات بالفارسية بعد الجلسة.", subPrivate: "سجّل لاستلام رابط الانضمام والتذكيرات عبر واتساب.",
         name: "الاسم", nameHint: "لا يلزم أن يكون اسمك الحقيقي.", wa: "رقم واتساب", waHint: "نرسل الرابط والتذكيرات إلى هذا الرقم.", email: "البريد الإلكتروني", optional: "اختياري",
         country: "أين تقيم؟", choose: "اختر…", countries: { AF: "أفغانستان", AE: "الإمارات", TR: "تركيا", IR: "إيران", other: "أخرى" },
         question: "سؤالك للأخصائي", questionHint: "يرجى عدم كتابة معلومات شخصية أو مالية.", newsletter: "أرسلوا لي أخبار الندوات القادمة",
@@ -607,7 +607,7 @@ window.WEBINAR_I18N = {
       }
     },
     webinars: {
-      common: { demoStrong: "演示版", demoText: "供网站团队预览——任何数据都不会发送或保存到本浏览器之外。", skip: "跳到内容", isNew: "新", free: "免费", min: "{n} 分钟", sample: "示例日期——待确认", copy: "复制链接", copied: "链接已复制", close: "关闭", lang: "波斯语（达利语）", online: "线上", seats: "{n} 个名额", sessionN: "第 {n} 场", of: "/" },
+      common: { demoStrong: "演示版", demoText: "供网站团队预览——任何数据都不会发送或保存到本浏览器之外。", skip: "跳到内容", isNew: "新", free: "免费", min: "{n} 分钟", sample: "示例日期——待确认", copy: "复制链接", copied: "链接已复制", close: "关闭", lang: "波斯语", online: "线上", seats: "{n} 个名额", sessionN: "第 {n} 场", of: "/" },
       cd: { d: "天", h: "小时", m: "分钟", s: "秒" },
       tz: { kabul: "喀布尔", dubai: "迪拜", istanbul: "伊斯坦布尔", you: "您的时间" },
       status: { upcoming: "即将开始", live: "正在直播", ended: "已举行", postponed: "已延期", cancelled: "已取消", regOpen: "报名开放", regClosed: "报名已截止", soon: "敬请期待", publicLink: "公开链接" },
@@ -616,7 +616,7 @@ window.WEBINAR_I18N = {
         lede: "免费在线直播讲座：我们的专家清晰讲解入籍与居留路径，并现场解答您的问题。",
         nextEyebrow: "下一场直播", join: "进入讲座", remind: "WhatsApp 提醒", details: "查看详情",
         startsIn: "距离开始", whenTitle: "日期与时间", noInstall: "无需安装应用", phoneOk: "支持手机观看",
-        upTitle: "即将<em>开讲</em>", seriesTag: "系列 01 · 多米尼克", seriesTitle: "多米尼克试点系列", seriesText: "共三场，每两周一场——从基础知识到申请材料，再到您的个人问题。全部免费，以波斯语（达利语）进行。",
+        upTitle: "即将<em>开讲</em>", seriesTag: "系列 01 · 多米尼克", seriesTitle: "多米尼克试点系列", seriesText: "共三场，每两周一场——从基础知识到申请材料，再到您的个人问题。全部免费，以波斯语进行。",
         sessionCta: "详情", howEyebrow: "参加之前", howTitle: "如何<em>参加</em>",
         howSub: "只需简单四步即可参与直播互动 — 无需下载任何应用程序。",
         steps: [
@@ -640,17 +640,17 @@ window.WEBINAR_I18N = {
         ctaTitle: "更希望私下沟通？", ctaText: "预约与我们迪拜商业湾团队的保密咨询——到访、电话或线上均可。", ctaBtn: "预约咨询"
       },
       detail: {
-        recapTitle: "讲座摘要", home: "首页", about: "关于本场讲座", learn: "您将了解", agenda: "讲座流程", speakers: "主讲人",
+        recapTitle: "讲座摘要", home: "首页", about: "关于本场讲座", learn: "您将了解", agenda: "讲座流程", speakers: "主讲嘉宾",
         agendaItems: [
-          { t: "0–5", l: "达利语欢迎及简短投票", w: "主持人" },
-          { t: "5–10", l: "介绍谢里夫集团及主讲人", w: "主持人" },
+          { t: "0–5", l: "欢迎及简短投票", w: "主讲嘉宾" },
+          { t: "5–10", l: "介绍谢里夫集团及主讲嘉宾", w: "主讲嘉宾" },
           { t: "10–40", l: "主要内容", w: "主讲人" },
           { t: "40–45", l: "下一步：免费私人咨询与材料清单", w: "主讲人" },
-          { t: "45–63", l: "现场问答", w: "主持人与主讲人" },
+          { t: "45–63", l: "现场问答", w: "主讲嘉宾" },
           { t: "63–65", l: "总结及下期预告", w: "主持人" }
         ],
         minutes: "分钟",
-        expertName: "资深入籍顾问", expertRole: "谢里夫集团，迪拜", hostName: "达利语主持人", hostRole: "负责提问与聊天管理", tbd: "姓名待公布",
+        expertName: "资深入籍顾问", expertRole: "谢里夫集团，迪拜", tbd: "姓名待公布",
         privacy: "讲座中的隐私保护",
         privacyItems: ["可用任意名字进入——摄像头和麦克风默认关闭。", "录像仅显示主讲人和幻灯片。", "主持人宣读问题时不念提问者姓名。", "您可以私信向主持人提问。"],
         faq: "常见问题",
@@ -671,7 +671,7 @@ window.WEBINAR_I18N = {
         notOpen: "本场报名将在第 {n} 场结束后开放。", other: "本系列其他场次", soonCta: "通知我", registerNowBtn: "立即报名"
       },
       form: {
-        title: "立即免费报名", subPublic: "报名后，您将通过 WhatsApp 收到参会链接和提醒，并在讲座后获得达利语材料清单。", subPrivate: "报名后通过 WhatsApp 接收参会链接和提醒。",
+        title: "立即免费报名", subPublic: "报名后，您将通过 WhatsApp 收到参会链接和提醒，并在讲座后获得波斯语材料清单。", subPrivate: "报名后通过 WhatsApp 接收参会链接和提醒。",
         name: "姓名", nameHint: "不必使用真实姓名。", wa: "WhatsApp 号码", waHint: "我们将把链接和提醒发送到此号码。", email: "电子邮箱", optional: "选填",
         country: "您居住在哪里？", choose: "请选择…", countries: { AF: "阿富汗", AE: "阿联酋", TR: "土耳其", IR: "伊朗", other: "其他" },
         question: "您想问专家的问题", questionHint: "请勿填写个人或财务信息。", newsletter: "向我发送后续讲座信息",
