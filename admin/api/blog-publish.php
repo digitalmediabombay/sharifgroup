@@ -102,26 +102,34 @@ if (!empty($body['en']['title']) || !empty($body['slug'])) {
 
     $globalFaqs = !empty($langData['en']['faqs']) ? $langData['en']['faqs'] : [];
 
+    $targetPrograms = is_array($body['target_programs'] ?? null) ? $body['target_programs'] : [
+        $program,
+        $subcategory,
+        strtolower($category)
+    ];
+    $targetPrograms = array_values(array_unique(array_filter($targetPrograms)));
+
     $blogItem = [
-        'id'           => $id,
-        'slug'         => $slug,
-        'program'      => $program,
-        'author'       => $author,
-        'category'     => $category,
-        'subcategory'  => $subcategory,
-        'featured_img' => $featuredImg,
-        'publish_date' => $publishDate,
-        'updated_at'   => date('Y-m-d H:i:s'),
-        'status'       => 'published',
-        'status_en'    => 'published',
-        'status_ar'    => 'published',
-        'status_fa'    => 'published',
-        'status_zh'    => 'published',
-        'faqs'         => $globalFaqs,
-        'en'           => $langData['en'],
-        'ar'           => $langData['ar'],
-        'fa'           => $langData['fa'],
-        'zh'           => $langData['zh']
+        'id'              => $id,
+        'slug'            => $slug,
+        'program'         => $program,
+        'author'          => $author,
+        'category'        => $category,
+        'subcategory'     => $subcategory,
+        'target_programs' => $targetPrograms,
+        'featured_img'    => $featuredImg,
+        'publish_date'    => $publishDate,
+        'updated_at'      => date('Y-m-d H:i:s'),
+        'status'          => 'published',
+        'status_en'       => 'published',
+        'status_ar'       => 'published',
+        'status_fa'       => 'published',
+        'status_zh'       => 'published',
+        'faqs'            => $globalFaqs,
+        'en'              => $langData['en'],
+        'ar'              => $langData['ar'],
+        'fa'              => $langData['fa'],
+        'zh'              => $langData['zh']
     ];
 } else if ($id) {
     // Case 2: ID supplied, locate in draft snapshot
@@ -231,6 +239,17 @@ try {
     }
 } catch (Throwable $ssgErr) {
     error_log('[SharifCMS Blog SSG Error] ' . $ssgErr->getMessage());
+}
+
+// 5b. Trigger Homepage SSG Engine: Pre-render Latest Articles into #blog-slider-inner across all 4 languages
+$hpResult = null;
+try {
+    require_once __DIR__ . '/homepage-regen.php';
+    if (function_exists('regenerateHomepage')) {
+        $hpResult = regenerateHomepage($rootDir, $publishedSnapshot);
+    }
+} catch (Throwable $hpErr) {
+    error_log('[SharifCMS Homepage SSG Error] ' . $hpErr->getMessage());
 }
 
 // 6. Trigger Sitemap XML rebuild

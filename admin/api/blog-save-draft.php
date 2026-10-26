@@ -90,27 +90,35 @@ foreach ($languages as $lng) {
 // Global combined canonical FAQs (defaults to English or first non-empty)
 $globalFaqs = !empty($langData['en']['faqs']) ? $langData['en']['faqs'] : [];
 
+$targetPrograms = is_array($body['target_programs'] ?? null) ? $body['target_programs'] : [
+    $program,
+    $subcategory,
+    strtolower($category)
+];
+$targetPrograms = array_values(array_unique(array_filter($targetPrograms)));
+
 // Build unified blog object conforming to Sharif Group schema
 $blogItem = [
-    'id'           => $id,
-    'slug'         => $slug,
-    'program'      => $program,
-    'author'       => $author,
-    'category'     => $category,
-    'subcategory'  => $subcategory,
-    'featured_img' => $featuredImg,
-    'publish_date' => $publishDate,
-    'updated_at'   => date('Y-m-d H:i:s'),
-    'status'       => 'draft',
-    'status_en'    => 'draft',
-    'status_ar'    => 'draft',
-    'status_fa'    => 'draft',
-    'status_zh'    => 'draft',
-    'faqs'         => $globalFaqs,
-    'en'           => $langData['en'],
-    'ar'           => $langData['ar'],
-    'fa'           => $langData['fa'],
-    'zh'           => $langData['zh']
+    'id'              => $id,
+    'slug'            => $slug,
+    'program'         => $program,
+    'author'          => $author,
+    'category'        => $category,
+    'subcategory'     => $subcategory,
+    'target_programs' => $targetPrograms,
+    'featured_img'    => $featuredImg,
+    'publish_date'    => $publishDate,
+    'updated_at'      => date('Y-m-d H:i:s'),
+    'status'          => 'draft',
+    'status_en'       => 'draft',
+    'status_ar'       => 'draft',
+    'status_fa'       => 'draft',
+    'status_zh'       => 'draft',
+    'faqs'            => $globalFaqs,
+    'en'              => $langData['en'],
+    'ar'              => $langData['ar'],
+    'fa'              => $langData['fa'],
+    'zh'              => $langData['zh']
 ];
 
 // 1. Read current draft snapshot

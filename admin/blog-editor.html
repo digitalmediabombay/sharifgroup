@@ -1512,11 +1512,18 @@
         blogState.id = 'bid-' + Math.random().toString(36).substring(2, 9);
       }
 
+      const targetPrograms = [
+        blogState.program,
+        blogState.subcategory,
+        (blogState.category || '').toLowerCase()
+      ].filter(Boolean);
+
       return {
         id: blogState.id,
         program: blogState.program,
         category: blogState.category,
         subcategory: blogState.subcategory,
+        target_programs: targetPrograms,
         slug: blogState.slug,
         featured_img: blogState.featured_img,
         publish_date: blogState.publish_date,
@@ -1612,6 +1619,21 @@
 
       // Update local copy
       saveLocalDraft(payload);
+
+      // Sync into sgcms_blog_live for instant client-side rendering on Homepage and Program pages!
+      try {
+        let liveList = [];
+        const rawLive = localStorage.getItem('sgcms_blog_live');
+        if (rawLive) liveList = JSON.parse(rawLive);
+        if (!Array.isArray(liveList)) liveList = [];
+        const existingIdx = liveList.findIndex(b => (b.id && b.id === payload.id) || (b.slug && b.slug === payload.slug));
+        if (existingIdx >= 0) {
+          liveList[existingIdx] = payload;
+        } else {
+          liveList.unshift(payload);
+        }
+        localStorage.setItem('sgcms_blog_live', JSON.stringify(liveList));
+      } catch (e) {}
 
       try {
         const res = await fetch('/admin/api/blog-publish.php', {
