@@ -163,6 +163,16 @@ try {
     error_log('[SharifCMS Delete Blog Listing Regen Error] ' . $bre->getMessage());
 }
 
+// 5b. Regenerate Homepage slider across all 4 languages (removes deleted article card)
+try {
+    require_once __DIR__ . '/homepage-regen.php';
+    if (function_exists('regenerateHomepage')) {
+        regenerateHomepage($rootDir, $pubSnapshot);
+    }
+} catch (Throwable $hpe) {
+    error_log('[SharifCMS Delete Blog Homepage Regen Error] ' . $hpe->getMessage());
+}
+
 jsonResponse([
     'success'        => true,
     'message'        => 'Article permanently deleted from drafts, live site, and sitemap.',
