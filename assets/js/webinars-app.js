@@ -148,7 +148,7 @@
         "status_zh": "published",
         "speakers": [
             {
-                "name": "Mohammad Barselani",
+                "name": "Mohammad Borselani",
                 "title": "Senior Consultant, Caribbean Citizenship Programs",
                 "affiliation": "Sharif Group Dubai"
             },
@@ -235,7 +235,7 @@
             ],
             "speakers": [
                 {
-                    "name": "Mohammad Barselani",
+                    "name": "Mohammad Borselani",
                     "title": "Senior Consultant, Caribbean Citizenship Programs",
                     "affiliation": "Sharif Group Dubai"
                 },
@@ -249,32 +249,32 @@
                 {
                     "time": "0–5",
                     "topic": "Welcome and a short poll",
-                    "speaker": "Mohammad Barselani"
+                    "speaker": "Mohammad Borselani"
                 },
                 {
                     "time": "5–10",
                     "topic": "About Sharif Group and the speakers",
-                    "speaker": "Mohammad Barselani & Mehdi Yarahmadi"
+                    "speaker": "Mohammad Borselani & Mehdi Yarahmadi"
                 },
                 {
                     "time": "10–40",
                     "topic": "Main content",
-                    "speaker": "Mohammad Barselani & Mehdi Yarahmadi"
+                    "speaker": "Mohammad Borselani & Mehdi Yarahmadi"
                 },
                 {
                     "time": "40–45",
                     "topic": "Next step: free private consultation and checklist",
-                    "speaker": "Mohammad Barselani"
+                    "speaker": "Mohammad Borselani"
                 },
                 {
                     "time": "45–63",
                     "topic": "Live Q&A",
-                    "speaker": "Mohammad Barselani & Mehdi Yarahmadi"
+                    "speaker": "Mohammad Borselani & Mehdi Yarahmadi"
                 },
                 {
                     "time": "63–65",
                     "topic": "Summary and next session",
-                    "speaker": "Mohammad Barselani"
+                    "speaker": "Mohammad Borselani"
                 }
             ]
         },
@@ -355,7 +355,7 @@
             ],
             "speakers": [
                 {
-                    "name": "穆罕默德·巴尔塞拉尼 (Mohammad Barselani)",
+                    "name": "穆罕默德·巴尔塞拉尼 (Mohammad Borselani)",
                     "title": "加勒比公民身份项目高级顾问",
                     "affiliation": "Sharif Group 迪拜"
                 },
@@ -369,7 +369,7 @@
                 {
                     "time": "0–5",
                     "topic": "欢迎及简短投票",
-                    "speaker": "穆罕默德·巴尔塞拉尼 (Mohammad Barselani)"
+                    "speaker": "穆罕默德·巴尔塞拉尼 (Mohammad Borselani)"
                 },
                 {
                     "time": "5–10",
@@ -384,7 +384,7 @@
                 {
                     "time": "40–45",
                     "topic": "下一步：免费私人咨询与材料清单",
-                    "speaker": "穆罕默德·巴尔塞拉尼 (Mohammad Barselani)"
+                    "speaker": "穆罕默德·巴尔塞拉尼 (Mohammad Borselani)"
                 },
                 {
                     "time": "45–63",
@@ -394,7 +394,7 @@
                 {
                     "time": "63–65",
                     "topic": "总结及下期预告",
-                    "speaker": "穆罕默德·巴尔塞拉尼 (Mohammad Barselani)"
+                    "speaker": "穆罕默德·巴尔塞拉尼 (Mohammad Borselani)"
                 }
             ]
         },
@@ -410,32 +410,32 @@
             {
                 "time": "0–5",
                 "topic": "Welcome and a short poll",
-                "speaker": "Mohammad Barselani"
+                "speaker": "Mohammad Borselani"
             },
             {
                 "time": "5–10",
                 "topic": "About Sharif Group and the speakers",
-                "speaker": "Mohammad Barselani & Mehdi Yarahmadi"
+                "speaker": "Mohammad Borselani & Mehdi Yarahmadi"
             },
             {
                 "time": "10–40",
                 "topic": "Main content",
-                "speaker": "Mohammad Barselani & Mehdi Yarahmadi"
+                "speaker": "Mohammad Borselani & Mehdi Yarahmadi"
             },
             {
                 "time": "40–45",
                 "topic": "Next step: free private consultation and checklist",
-                "speaker": "Mohammad Barselani"
+                "speaker": "Mohammad Borselani"
             },
             {
                 "time": "45–63",
                 "topic": "Live Q&A",
-                "speaker": "Mohammad Barselani & Mehdi Yarahmadi"
+                "speaker": "Mohammad Borselani & Mehdi Yarahmadi"
             },
             {
                 "time": "63–65",
                 "topic": "Summary and next session",
-                "speaker": "Mohammad Barselani"
+                "speaker": "Mohammad Borselani"
             }
         ]
     },
@@ -1703,7 +1703,7 @@
     const agendaList = (Array.isArray(c.agenda) && c.agenda.length) ? c.agenda : (t('detail.agendaItems') || []);
     const defaultSpeakersByLang = {
       en: [
-        { name: "Mohammad Barselani", title: "Senior Consultant, Caribbean Citizenship Programs", affiliation: "Sharif Group Dubai" },
+        { name: "Mohammad Borselani", title: "Senior Consultant, Caribbean Citizenship Programs", affiliation: "Sharif Group Dubai" },
         { name: "Mehdi Yarahmadi", title: "Dominica Passport Program Specialist", affiliation: "Sharif Group Dubai" }
       ],
       fa: [
@@ -1715,7 +1715,7 @@
         { name: "مهدي يار أحمدي", title: "خبير برنامج جواز سفر دومينيكا", affiliation: "شريف جروب دبي" }
       ],
       zh: [
-        { name: "穆罕默德·巴尔塞拉尼 (Mohammad Barselani)", title: "加勒比公民身份项目高级顾问", affiliation: "Sharif Group 迪拜" },
+        { name: "穆罕默德·巴尔塞拉尼 (Mohammad Borselani)", title: "加勒比公民身份项目高级顾问", affiliation: "Sharif Group 迪拜" },
         { name: "迈赫迪·亚拉赫马迪 (Mehdi Yarahmadi)", title: "多米尼克护照项目专家", affiliation: "Sharif Group 迪拜" }
       ]
     };

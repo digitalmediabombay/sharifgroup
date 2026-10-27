@@ -120,12 +120,12 @@ window.WEBINAR_I18N = {
       detail: {
         recapTitle: "Session summary", home: "Home", about: "About this session", learn: "What you will learn", agenda: "Session agenda", speakers: "Speakers",
         agendaItems: [
-          { t: "0–5", l: "Welcome and a short poll", w: "Mohammad Barselani" },
-          { t: "5–10", l: "About Sharif Group and the speakers", w: "Mohammad Barselani & Mehdi Yarahmadi" },
-          { t: "10–40", l: "Main content", w: "Mohammad Barselani & Mehdi Yarahmadi" },
-          { t: "40–45", l: "Next step: free private consultation and checklist", w: "Mohammad Barselani" },
-          { t: "45–63", l: "Live Q&A", w: "Mohammad Barselani & Mehdi Yarahmadi" },
-          { t: "63–65", l: "Summary and next session", w: "Mohammad Barselani" }
+          { t: "0–5", l: "Welcome and a short poll", w: "Mohammad Borselani" },
+          { t: "5–10", l: "About Sharif Group and the speakers", w: "Mohammad Borselani & Mehdi Yarahmadi" },
+          { t: "10–40", l: "Main content", w: "Mohammad Borselani & Mehdi Yarahmadi" },
+          { t: "40–45", l: "Next step: free private consultation and checklist", w: "Mohammad Borselani" },
+          { t: "45–63", l: "Live Q&A", w: "Mohammad Borselani & Mehdi Yarahmadi" },
+          { t: "63–65", l: "Summary and next session", w: "Mohammad Borselani" }
         ],
         minutes: "min",
         expertName: "Senior Citizenship Specialist", expertRole: "Sharif Group, Dubai", tbd: "Name to be announced",
@@ -642,12 +642,12 @@ window.WEBINAR_I18N = {
       detail: {
         recapTitle: "讲座摘要", home: "首页", about: "关于本场讲座", learn: "您将了解", agenda: "讲座流程", speakers: "主讲嘉宾",
         agendaItems: [
-          { t: "0–5", l: "欢迎及简短投票", w: "穆罕默德·巴尔塞拉尼 (Mohammad Barselani)" },
+          { t: "0–5", l: "欢迎及简短投票", w: "穆罕默德·巴尔塞拉尼 (Mohammad Borselani)" },
           { t: "5–10", l: "介绍谢里夫集团及主讲嘉宾", w: "穆罕默德·巴尔塞拉尼与迈赫迪·亚拉赫马迪" },
           { t: "10–40", l: "主要内容", w: "穆罕默德·巴尔塞拉尼与迈赫迪·亚拉赫马迪" },
-          { t: "40–45", l: "下一步：免费私人咨询与材料清单", w: "穆罕默德·巴尔塞拉尼 (Mohammad Barselani)" },
+          { t: "40–45", l: "下一步：免费私人咨询与材料清单", w: "穆罕默德·巴尔塞拉尼 (Mohammad Borselani)" },
           { t: "45–63", l: "现场问答", w: "穆罕默德·巴尔塞拉尼与迈赫迪·亚拉赫马迪" },
-          { t: "63–65", l: "总结及下期预告", w: "穆罕默德·巴尔塞拉尼 (Mohammad Barselani)" }
+          { t: "63–65", l: "总结及下期预告", w: "穆罕默德·巴尔塞拉尼 (Mohammad Borselani)" }
         ],
         minutes: "分钟",
         expertName: "资深入籍顾问", expertRole: "谢里夫集团，迪拜", tbd: "姓名待公布",
