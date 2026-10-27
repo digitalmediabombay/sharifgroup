@@ -1,3 +1,4 @@
 website.zip
 *.zip
 scratch/
+.vscode/

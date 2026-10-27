@@ -116,7 +116,7 @@
     const rawOld = localStorage.getItem('sgcms_webinars');
     if (rawOld) {
       const pOld = JSON.parse(rawOld);
-      if (!Array.isArray(pOld) || pOld.length < 3 || !pOld[0].en || !pOld[0].en.title) {
+      if (!Array.isArray(pOld) || pOld.length < 3 || !pOld[0].en || !pOld[0].en.title || !pOld[0].en.outcomes || !pOld[0].en.outcomes.length) {
         localStorage.removeItem('sgcms_webinars');
         localStorage.removeItem('sgcms_webinars_live');
       }
@@ -125,93 +125,491 @@
 
   const BASELINE_SESSIONS = [
     {
-      id: "WEB01",
-      slug: "dominica-second-passport-for-afghans",
-      series: "dominica-pilot",
-      session_no: 1,
-      category: "Citizenship",
-      start_utc: "2026-10-29T15:30:00Z",
-      duration_min: 65,
-      event_status: "upcoming",
-      registration_open: true,
-      join_visibility: "public",
-      join_url: "",
-      en: {
-        title: "A Second Passport for Afghans: Introducing the Dominica Programme",
-        excerpt: "A free online session in Persian: what Dominica's citizenship programme is, why it matters for Afghans and who can apply."
-      },
-      fa: {
-        title: "پاسپورت دوم برای افغان‌ها: آشنایی با برنامه دومینیکا",
-        excerpt: "جلسه آنلاین و رایگان به زبان فارسی: برنامه شهروندی دومینیکا چیست، چرا برای افغان‌ها مهم است و چه کسانی می‌توانند درخواست بدهند."
-      },
-      ar: {
-        title: "جواز سفر ثانٍ للأفغان: التعريف ببرنامج دومينيكا",
-        excerpt: "جلسة مجانية عبر الإنترنت باللغة الفارسية: ما هو برنامج جنسية دومينيكا، ولماذا يهم الأفغان، ومن يحق له التقديم."
-      },
-      zh: {
-        title: "阿富汗人的第二本护照：多米尼克入籍项目介绍",
-        excerpt: "免费在线讲座（波斯语）：多米尼克投资入籍项目是什么、为何对阿富汗人重要、哪些人可以申请。"
-      }
+        "id": "WEB01",
+        "slug": "dominica-second-passport-for-afghans",
+        "series": "dominica-pilot",
+        "session_no": 1,
+        "category": "Citizenship",
+        "subcategory": "dominica",
+        "start_utc": "2026-10-29T15:30:00Z",
+        "date_confirmed": false,
+        "duration_min": 65,
+        "room_opens_min_before": 10,
+        "event_status": "upcoming",
+        "registration_open": true,
+        "capacity": 100,
+        "join_visibility": "public",
+        "join_url": "",
+        "language_code": "fa",
+        "utm_campaign": "dominica-pilot",
+        "status_en": "published",
+        "status_fa": "published",
+        "status_ar": "published",
+        "status_zh": "published",
+        "speakers": [
+            {
+                "name": "Mohammad Barselani",
+                "title": "Senior Consultant, Caribbean Citizenship Programs",
+                "affiliation": "Sharif Group Dubai"
+            },
+            {
+                "name": "Mehdi Yarahmadi",
+                "title": "Dominica Passport Program Specialist",
+                "affiliation": "Sharif Group Dubai"
+            }
+        ],
+        "fa": {
+            "title": "پاسپورت دوم برای افغان‌ها: آشنایی با برنامه دومینیکا",
+            "excerpt": "جلسه آنلاین و رایگان به زبان فارسی: برنامه شهروندی دومینیکا چیست، چرا برای افغان‌ها مهم است و چه کسانی می‌توانند درخواست بدهند.",
+            "body": [
+                "برای بسیاری از خانواده‌های افغان، هر سفر یعنی ماه‌ها انتظار برای ویزا. برنامه شهروندی از راه سرمایه‌گذاری دومینیکا یکی از مسیرهای قانونی برای داشتن پاسپورت دوم است و شهروندی افغانستان شما هم حفظ می‌شود.",
+                "در این جلسه کارشناسان شریف گروپ تصویر روشن و صادقانه‌ای از برنامه ارائه می‌کنند: گزینه‌های سرمایه‌گذاری، افزودن اعضای خانواده، زمان تقریبی، تغییرات سال ۲۰۲۶ و محدودیت‌هایی که پیش از تصمیم باید بدانید. و در پایان به پرسش‌های شما پاسخ داده می‌شود."
+            ],
+            "outcomes": [
+                "برنامه دومینیکا چیست و چرا برای افغان‌ها اهمیت دارد",
+                "دو گزینه سرمایه‌گذاری و هزینه‌ها به‌طور کلی",
+                "افزودن همسر، فرزندان و والدین به پرونده",
+                "زمان تقریبی از ثبت پرونده تا دریافت پاسپورت",
+                "تغییرات ۲۰۲۶: مصاحبه، بازدید حضوری و محدودیت‌ها",
+                "چه کسی می‌تواند درخواست بدهد و قدم بعدی چیست"
+            ],
+            "speakers": [
+                {
+                    "name": "محمد برسلانی",
+                    "title": "مشاور ارشد برنامه‌های شهروندی کارائیبی",
+                    "affiliation": "شریف گروپ دبی"
+                },
+                {
+                    "name": "مهدی یاراحمدی",
+                    "title": "کارشناس برنامه پاسپورت دومینیکا",
+                    "affiliation": "شریف گروپ دبی"
+                }
+            ],
+            "agenda": [
+                {
+                    "time": "۰–۵",
+                    "topic": "خوشامدگویی و نظرسنجی کوتاه",
+                    "speaker": "محمد برسلانی"
+                },
+                {
+                    "time": "۵–۱۰",
+                    "topic": "معرفی شریف گروپ و سخنرانان",
+                    "speaker": "محمد برسلانی و مهدی یاراحمدی"
+                },
+                {
+                    "time": "۱۰–۴۰",
+                    "topic": "محتوای اصلی جلسه",
+                    "speaker": "محمد برسلانی و مهدی یاراحمدی"
+                },
+                {
+                    "time": "۴۰–۴۵",
+                    "topic": "قدم بعدی: مشاوره خصوصی رایگان و چک‌لیست",
+                    "speaker": "محمد برسلانی"
+                },
+                {
+                    "time": "۴۵–۶۳",
+                    "topic": "پرسش‌وپاسخ زنده",
+                    "speaker": "محمد برسلانی و مهدی یاراحمدی"
+                },
+                {
+                    "time": "۶۳–۶۵",
+                    "topic": "جمع‌بندی و معرفی جلسه بعد",
+                    "speaker": "محمد برسلانی"
+                }
+            ]
+        },
+        "en": {
+            "title": "A Second Passport for Afghans: Introducing the Dominica Programme",
+            "excerpt": "A free online session in Persian: what Dominica's citizenship programme is, why it matters for Afghans and who can apply.",
+            "body": [
+                "For many Afghan families, every trip means months of waiting for a visa. Dominica's Citizenship by Investment programme is one of the legal routes to a second passport — and you keep your Afghan citizenship.",
+                "In this session, Sharif Group's specialists give a clear and honest picture of the programme: investment options, adding family members, approximate timelines, the 2026 changes and the limitations you should know before deciding. and we finish with your questions."
+            ],
+            "outcomes": [
+                "What the Dominica programme is and why it matters for Afghans",
+                "The two investment options and an overview of costs",
+                "Adding your spouse, children and parents to the application",
+                "Approximate timeline from filing to passport",
+                "2026 changes: interview, in-person visit and restrictions",
+                "Who can apply and what the next step is"
+            ],
+            "speakers": [
+                {
+                    "name": "Mohammad Barselani",
+                    "title": "Senior Consultant, Caribbean Citizenship Programs",
+                    "affiliation": "Sharif Group Dubai"
+                },
+                {
+                    "name": "Mehdi Yarahmadi",
+                    "title": "Dominica Passport Program Specialist",
+                    "affiliation": "Sharif Group Dubai"
+                }
+            ],
+            "agenda": [
+                {
+                    "time": "0–5",
+                    "topic": "Welcome and a short poll",
+                    "speaker": "Mohammad Barselani"
+                },
+                {
+                    "time": "5–10",
+                    "topic": "About Sharif Group and the speakers",
+                    "speaker": "Mohammad Barselani & Mehdi Yarahmadi"
+                },
+                {
+                    "time": "10–40",
+                    "topic": "Main content",
+                    "speaker": "Mohammad Barselani & Mehdi Yarahmadi"
+                },
+                {
+                    "time": "40–45",
+                    "topic": "Next step: free private consultation and checklist",
+                    "speaker": "Mohammad Barselani"
+                },
+                {
+                    "time": "45–63",
+                    "topic": "Live Q&A",
+                    "speaker": "Mohammad Barselani & Mehdi Yarahmadi"
+                },
+                {
+                    "time": "63–65",
+                    "topic": "Summary and next session",
+                    "speaker": "Mohammad Barselani"
+                }
+            ]
+        },
+        "ar": {
+            "title": "جواز سفر ثانٍ للأفغان: التعريف ببرنامج دومينيكا",
+            "excerpt": "جلسة مجانية عبر الإنترنت باللغة الفارسية: ما هو برنامج جنسية دومينيكا، ولماذا يهم الأفغان، ومن يحق له التقديم.",
+            "body": [
+                "بالنسبة لكثير من العائلات الأفغانية، يعني كل سفر انتظار تأشيرة لأشهر. يُعد برنامج الجنسية عن طريق الاستثمار في دومينيكا أحد المسارات القانونية للحصول على جواز سفر ثانٍ مع الاحتفاظ بالجنسية الأفغانية.",
+                "يقدّم خبراء مجموعة شريف في هذه الجلسة صورة واضحة وصادقة عن البرنامج: خيارات الاستثمار، وإضافة أفراد العائلة، والمدة التقريبية، وتغييرات عام 2026، والقيود التي يجب معرفتها قبل اتخاذ القرار. ونختتم بالإجابة عن أسئلتكم."
+            ],
+            "outcomes": [
+                "ما هو برنامج دومينيكا ولماذا يهم الأفغان",
+                "خيارا الاستثمار ونظرة عامة على التكاليف",
+                "إضافة الزوج والأبناء والوالدين إلى الطلب",
+                "المدة التقريبية من تقديم الملف حتى استلام الجواز",
+                "تغييرات 2026: المقابلة والزيارة الشخصية والقيود",
+                "من يحق له التقديم وما هي الخطوة التالية"
+            ],
+            "speakers": [
+                {
+                    "name": "محمد برسلاني",
+                    "title": "مستشار أول لبرامج الجنسية في دول الكاريبي",
+                    "affiliation": "شريف جروب دبي"
+                },
+                {
+                    "name": "مهدي يار أحمدي",
+                    "title": "خبير برنامج جواز سفر دومينيكا",
+                    "affiliation": "شريف جروب دبي"
+                }
+            ],
+            "agenda": [
+                {
+                    "time": "0–5",
+                    "topic": "ترحيب واستطلاع قصير",
+                    "speaker": "محمد برسلاني"
+                },
+                {
+                    "time": "5–10",
+                    "topic": "تعريف بمجموعة شريف والمتحدثين",
+                    "speaker": "محمد برسلاني ومهدي يار أحمدي"
+                },
+                {
+                    "time": "10–40",
+                    "topic": "المحتوى الرئيسي",
+                    "speaker": "محمد برسلاني ومهدي يار أحمدي"
+                },
+                {
+                    "time": "40–45",
+                    "topic": "الخطوة التالية: استشارة خاصة مجانية وقائمة المستندات",
+                    "speaker": "محمد برسلاني"
+                },
+                {
+                    "time": "45–63",
+                    "topic": "أسئلة وأجوبة مباشرة",
+                    "speaker": "محمد برسلاني ومهدي يار أحمدي"
+                },
+                {
+                    "time": "63–65",
+                    "topic": "الخلاصة والجلسة القادمة",
+                    "speaker": "محمد برسلاني"
+                }
+            ]
+        },
+        "zh": {
+            "title": "阿富汗人的第二本护照：多米尼克入籍项目介绍",
+            "excerpt": "免费在线讲座（波斯语）：多米尼克投资入籍项目是什么、为何对阿富汗人重要、哪些人可以申请。",
+            "body": [
+                "对许多阿富汗家庭而言，每一次出行都意味着数月的签证等待。多米尼克投资入籍项目是获得第二本护照的合法途径之一，且无需放弃阿富汗国籍。",
+                "本场讲座中，谢里夫集团的专家将清晰、坦诚地介绍该项目：投资方式、家庭成员随附、大致办理周期、2026年的新变化，以及决定前必须了解的限制。最后为您现场答疑。"
+            ],
+            "outcomes": [
+                "多米尼克项目是什么，为何对阿富汗人重要",
+                "两种投资方式及费用概览",
+                "配偶、子女及父母随附申请",
+                "从递交申请到获得护照的大致周期",
+                "2026年变化：面试、实地到访及限制",
+                "谁可以申请，以及下一步该怎么做"
+            ],
+            "speakers": [
+                {
+                    "name": "穆罕默德·巴尔塞拉尼 (Mohammad Barselani)",
+                    "title": "加勒比公民身份项目高级顾问",
+                    "affiliation": "Sharif Group 迪拜"
+                },
+                {
+                    "name": "迈赫迪·亚拉赫马迪 (Mehdi Yarahmadi)",
+                    "title": "多米尼克护照项目专家",
+                    "affiliation": "Sharif Group 迪拜"
+                }
+            ],
+            "agenda": [
+                {
+                    "time": "0–5",
+                    "topic": "欢迎及简短投票",
+                    "speaker": "穆罕默德·巴尔塞拉尼 (Mohammad Barselani)"
+                },
+                {
+                    "time": "5–10",
+                    "topic": "介绍谢里夫集团及主讲嘉宾",
+                    "speaker": "穆罕默德·巴尔塞拉尼与迈赫迪·亚拉赫马迪"
+                },
+                {
+                    "time": "10–40",
+                    "topic": "主要内容",
+                    "speaker": "穆罕默德·巴尔塞拉尼与迈赫迪·亚拉赫马迪"
+                },
+                {
+                    "time": "40–45",
+                    "topic": "下一步：免费私人咨询与材料清单",
+                    "speaker": "穆罕默德·巴尔塞拉尼 (Mohammad Barselani)"
+                },
+                {
+                    "time": "45–63",
+                    "topic": "现场问答",
+                    "speaker": "穆罕默德·巴尔塞拉尼与迈赫迪·亚拉赫马迪"
+                },
+                {
+                    "time": "63–65",
+                    "topic": "总结及下期预告",
+                    "speaker": "穆罕默德·巴尔塞拉尼 (Mohammad Barselani)"
+                }
+            ]
+        },
+        "outcomes": [
+            "What the Dominica programme is and why it matters for Afghans",
+            "The two investment options and an overview of costs",
+            "Adding your spouse, children and parents to the application",
+            "Approximate timeline from filing to passport",
+            "2026 changes: interview, in-person visit and restrictions",
+            "Who can apply and what the next step is"
+        ],
+        "agenda": [
+            {
+                "time": "0–5",
+                "topic": "Welcome and a short poll",
+                "speaker": "Mohammad Barselani"
+            },
+            {
+                "time": "5–10",
+                "topic": "About Sharif Group and the speakers",
+                "speaker": "Mohammad Barselani & Mehdi Yarahmadi"
+            },
+            {
+                "time": "10–40",
+                "topic": "Main content",
+                "speaker": "Mohammad Barselani & Mehdi Yarahmadi"
+            },
+            {
+                "time": "40–45",
+                "topic": "Next step: free private consultation and checklist",
+                "speaker": "Mohammad Barselani"
+            },
+            {
+                "time": "45–63",
+                "topic": "Live Q&A",
+                "speaker": "Mohammad Barselani & Mehdi Yarahmadi"
+            },
+            {
+                "time": "63–65",
+                "topic": "Summary and next session",
+                "speaker": "Mohammad Barselani"
+            }
+        ]
     },
     {
-      id: "WEB02",
-      slug: "dominica-from-decision-to-passport",
-      series: "dominica-pilot",
-      session_no: 2,
-      category: "Citizenship",
-      start_utc: "2026-11-12T15:30:00Z",
-      duration_min: 65,
-      event_status: "upcoming",
-      registration_open: false,
-      join_visibility: "registrants",
-      join_url: "",
-      en: {
-        title: "From Decision to Passport: Steps, Documents and Source of Funds",
-        excerpt: "The application steps, required documents (Tazkira, passport, financial records), proving and transferring source of funds, interview preparation and a full cost breakdown."
-      },
-      fa: {
-        title: "از تصمیم تا پاسپورت: مراحل، مدارک و منشأ پول",
-        excerpt: "مراحل پرونده، مدارک لازم (تذکره، پاسپورت، اسناد مالی)، اثبات و انتقال منشأ پول، آمادگی برای مصاحبه و ریز هزینه‌های کامل."
-      },
-      ar: {
-        title: "من القرار إلى الجواز: الخطوات والمستندات ومصدر الأموال",
-        excerpt: "مراحل الملف، والمستندات المطلوبة (التذكرة والجواز والسجلات المالية)، وإثبات مصدر الأموال وتحويلها، والاستعداد للمقابلة، وتفصيل كامل للتكاليف."
-      },
-      zh: {
-        title: "从决定到护照：流程、材料与资金来源",
-        excerpt: "申请流程、所需材料（身份证Tazkira、护照、财务文件）、资金来源证明与转账、面试准备及完整费用明细。"
-      }
+        "id": "WEB02",
+        "slug": "dominica-from-decision-to-passport",
+        "series": "dominica-pilot",
+        "session_no": 2,
+        "category": "Citizenship",
+        "subcategory": "dominica",
+        "start_utc": "2026-11-12T15:30:00Z",
+        "date_confirmed": false,
+        "duration_min": 65,
+        "room_opens_min_before": 10,
+        "event_status": "upcoming",
+        "registration_open": false,
+        "capacity": 100,
+        "join_visibility": "registrants",
+        "join_url": "",
+        "language_code": "fa-prs",
+        "utm_campaign": "dominica-pilot",
+        "status_en": "published",
+        "status_fa": "published",
+        "status_ar": "published",
+        "status_zh": "published",
+        "speakers": [
+            {
+                "key": "expert",
+                "photo": ""
+            },
+            {
+                "key": "host",
+                "photo": ""
+            }
+        ],
+        "fa": {
+            "title": "از تصمیم تا پاسپورت: مراحل، مدارک و منشأ پول",
+            "excerpt": "مراحل پرونده، مدارک لازم (تذکره، پاسپورت، اسناد مالی)، اثبات و انتقال منشأ پول، آمادگی برای مصاحبه و ریز هزینه‌های کامل.",
+            "body": [
+                "جزئیات این جلسه پس از برگزاری جلسه اول تکمیل می‌شود."
+            ],
+            "outcomes": [
+                "مراحل پرونده از ابتدا تا انتها",
+                "مدارک لازم: تذکره، پاسپورت و اسناد مالی",
+                "اثبات و انتقال منشأ پول",
+                "آمادگی برای مصاحبه و ریز هزینه‌ها"
+            ]
+        },
+        "en": {
+            "title": "From Decision to Passport: Steps, Documents and Source of Funds",
+            "excerpt": "The application steps, required documents (Tazkira, passport, financial records), proving and transferring source of funds, interview preparation and a full cost breakdown.",
+            "body": [
+                "Details will be completed after the first session."
+            ],
+            "outcomes": [
+                "The application, step by step",
+                "Documents: Tazkira, passport and financial records",
+                "Proving and transferring source of funds",
+                "Interview preparation and full costs"
+            ]
+        },
+        "ar": {
+            "title": "من القرار إلى الجواز: الخطوات والمستندات ومصدر الأموال",
+            "excerpt": "مراحل الملف، والمستندات المطلوبة (التذكرة والجواز والسجلات المالية)، وإثبات مصدر الأموال وتحويلها، والاستعداد للمقابلة، وتفصيل كامل للتكاليف.",
+            "body": [
+                "ستُستكمل تفاصيل هذه الجلسة بعد انعقاد الجلسة الأولى."
+            ],
+            "outcomes": [
+                "مراحل الملف خطوة بخطوة",
+                "المستندات: التذكرة والجواز والسجلات المالية",
+                "إثبات مصدر الأموال وتحويلها",
+                "الاستعداد للمقابلة وتفصيل التكاليف"
+            ]
+        },
+        "zh": {
+            "title": "从决定到护照：流程、材料与资金来源",
+            "excerpt": "申请流程、所需材料（身份证Tazkira、护照、财务文件）、资金来源证明与转账、面试准备及完整费用明细。",
+            "body": [
+                "本场详情将在第一场讲座后补充。"
+            ],
+            "outcomes": [
+                "申请流程逐步解析",
+                "材料：身份证、护照及财务文件",
+                "资金来源证明与转账",
+                "面试准备与完整费用"
+            ]
+        }
     },
     {
-      id: "WEB03",
-      slug: "dominica-your-questions-answered",
-      series: "dominica-pilot",
-      session_no: 3,
-      category: "Citizenship",
-      start_utc: "2026-11-26T15:30:00Z",
-      duration_min: 65,
-      event_status: "upcoming",
-      registration_open: false,
-      join_visibility: "registrants",
-      join_url: "",
-      en: {
-        title: "Your Questions, Our Answers",
-        excerpt: "Answers to the questions collected in earlier sessions and the registration form: life after the passport, travel, banking and family."
-      },
-      fa: {
-        title: "پرسش‌های شما، پاسخ‌های ما",
-        excerpt: "پاسخ به پرسش‌هایی که در جلسات قبل و فرم ثبت‌نام جمع شده: زندگی بعد از پاسپورت، سفر، بانک و خانواده."
-      },
-      ar: {
-        title: "أسئلتكم، وإجاباتنا",
-        excerpt: "إجابات عن الأسئلة التي جُمعت في الجلسات السابقة ونموذج التسجيل: الحياة بعد الجواز، والسفر، والبنوك، والعائلة."
-      },
-      zh: {
-        title: "您的问题，我们来解答",
-        excerpt: "解答往期讲座及报名表中收集的问题：入籍后的生活、出行、银行与家庭。"
-      }
+        "id": "WEB03",
+        "slug": "dominica-your-questions-answered",
+        "series": "dominica-pilot",
+        "session_no": 3,
+        "category": "Citizenship",
+        "subcategory": "dominica",
+        "start_utc": "2026-11-26T15:30:00Z",
+        "date_confirmed": false,
+        "duration_min": 65,
+        "room_opens_min_before": 10,
+        "event_status": "upcoming",
+        "registration_open": false,
+        "capacity": 100,
+        "join_visibility": "registrants",
+        "join_url": "",
+        "language_code": "fa-prs",
+        "utm_campaign": "dominica-pilot",
+        "status_en": "published",
+        "status_fa": "published",
+        "status_ar": "published",
+        "status_zh": "published",
+        "speakers": [
+            {
+                "key": "expert",
+                "photo": ""
+            },
+            {
+                "key": "host",
+                "photo": ""
+            }
+        ],
+        "fa": {
+            "title": "پرسش‌های شما، پاسخ‌های ما",
+            "excerpt": "پاسخ به پرسش‌هایی که در جلسات قبل و فرم ثبت‌نام جمع شده: زندگی بعد از پاسپورت، سفر، بانک و خانواده.",
+            "body": [
+                "محتوای این جلسه کاملاً بر اساس پرسش‌های شما ساخته می‌شود. پرسش خود را هنگام ثبت‌نام بنویسید."
+            ],
+            "outcomes": [
+                "زندگی بعد از گرفتن پاسپورت",
+                "سفر و ویزا",
+                "حساب بانکی",
+                "خانواده و فرزندان"
+            ]
+        },
+        "en": {
+            "title": "Your Questions, Our Answers",
+            "excerpt": "Answers to the questions collected in earlier sessions and the registration form: life after the passport, travel, banking and family.",
+            "body": [
+                "This session is built entirely on your questions. Add yours when you register."
+            ],
+            "outcomes": [
+                "Life after the passport",
+                "Travel and visas",
+                "Banking",
+                "Family and children"
+            ]
+        },
+        "ar": {
+            "title": "أسئلتكم، وإجاباتنا",
+            "excerpt": "إجابات عن الأسئلة التي جُمعت في الجلسات السابقة ونموذج التسجيل: الحياة بعد الجواز، والسفر، والبنوك، والعائلة.",
+            "body": [
+                "تُبنى هذه الجلسة بالكامل على أسئلتكم. أضف سؤالك عند التسجيل."
+            ],
+            "outcomes": [
+                "الحياة بعد الحصول على الجواز",
+                "السفر والتأشيرات",
+                "الحسابات المصرفية",
+                "العائلة والأبناء"
+            ]
+        },
+        "zh": {
+            "title": "您的问题，我们来解答",
+            "excerpt": "解答往期讲座及报名表中收集的问题：入籍后的生活、出行、银行与家庭。",
+            "body": [
+                "本场内容完全根据您的提问设计。报名时请留下您的问题。"
+            ],
+            "outcomes": [
+                "获得护照后的生活",
+                "出行与签证",
+                "银行开户",
+                "家庭与子女"
+            ]
+        }
     }
-  ];
+];
 
   function webinars() {
     let sourceList = null;
@@ -312,16 +710,56 @@
     if (w.join_visibility !== 'public' && Number(w.session_no) > 1) return 'locked';
     return (w.join_url && String(w.join_url).trim()) ? 'ready' : 'soon';
   };
+  const DEFAULT_OUTCOMES = {
+    en: [
+      "What the Dominica programme is and why it matters for Afghans",
+      "The two investment options and an overview of costs",
+      "Adding your spouse, children and parents to the application",
+      "Approximate timeline from filing to passport",
+      "2026 changes: interview, in-person visit and restrictions",
+      "Who can apply and what the next step is"
+    ],
+    fa: [
+      "برنامه دومینیکا چیست و چرا برای افغان‌ها اهمیت دارد",
+      "دو گزینه سرمایه‌گذاری و هزینه‌ها به‌طور کلی",
+      "افزودن همسر، فرزندان و والدین به پرونده",
+      "زمان تقریبی از ثبت پرونده تا دریافت پاسپورت",
+      "تغییرات ۲۰۲۶: مصاحبه، بازدید حضوری و محدودیت‌ها",
+      "چه کسی می‌تواند درخواست بدهد و قدم بعدی چیست"
+    ],
+    ar: [
+      "ما هو برنامج دومينيكا ولماذا يهم الأفغان",
+      "خيارا الاستثمار ونظرة عامة على التكاليف",
+      "إضافة الزوج والأبناء والوالدين إلى الطلب",
+      "المدة التقريبية من تقديم الملف حتى استلام الجواز",
+      "تغييرات 2026: المقابلة والزيارة الشخصية والقيود",
+      "من يحق له التقديم وما هي الخطوة التالية"
+    ],
+    zh: [
+      "多米尼克项目是什么，为何对阿富汗人重要",
+      "两种投资方式及费用概览",
+      "配偶、子女及父母随附申请",
+      "从递交申请到获得护照的大致周期",
+      "2026年变化：面试、实地到访及限制",
+      "谁可以申请，以及下一步该怎么做"
+    ]
+  };
   const C = w => {
-    if (!w) return { title: '', excerpt: '', series_tag: '', speakers: [] };
+    if (!w) return { title: '', excerpt: '', series_tag: '', speakers: [], outcomes: [], agenda: [] };
     const cur = w[lang] || {};
     const en = w.en || {};
+    const isS1 = Number(w.session_no) === 1 || w.slug === 'dominica-second-passport-for-afghans';
+    const defOutcomes = isS1 ? (DEFAULT_OUTCOMES[lang] || DEFAULT_OUTCOMES.en) : [];
+    const rawOutcomes = (Array.isArray(cur.outcomes) && cur.outcomes.length)
+      ? cur.outcomes
+      : ((Array.isArray(en.outcomes) && en.outcomes.length) ? en.outcomes : (Array.isArray(w.outcomes) && w.outcomes.length ? w.outcomes : defOutcomes));
     return {
       title: cur.title || en.title || w.title || ('Session ' + w.session_no),
       excerpt: cur.excerpt || en.excerpt || w.excerpt || '',
       series_tag: cur.series_tag || en.series_tag || w.series_tag || '',
-      body: cur.body || en.body || [],
-      outcomes: cur.outcomes || en.outcomes || [],
+      body: (Array.isArray(cur.body) && cur.body.length) ? cur.body : (Array.isArray(en.body) && en.body.length ? en.body : (Array.isArray(w.body) ? w.body : [])),
+      outcomes: rawOutcomes,
+      agenda: (Array.isArray(cur.agenda) && cur.agenda.length) ? cur.agenda : ((Array.isArray(en.agenda) && en.agenda.length) ? en.agenda : (Array.isArray(w.agenda) && w.agenda.length ? w.agenda : null)),
       speakers: (Array.isArray(cur.speakers) && cur.speakers.length) ? cur.speakers : ((Array.isArray(w.speakers) && w.speakers.length) ? w.speakers : [])
     };
   };
@@ -1261,7 +1699,7 @@
     document.title = `${c.title || ('Session ' + w.session_no)} | ${L().nav.webinars} | Sharif Group`;
     const others = webinars().filter(x => (x.series === w.series || !x.series) && x.id !== w.id);
     const bodyParas = (Array.isArray(c.body) ? c.body : (typeof c.body === 'string' ? [c.body] : [])).filter(Boolean);
-    const outcomeItems = (Array.isArray(c.outcomes) ? c.outcomes : (typeof c.outcomes === 'string' ? [c.outcomes] : [])).filter(Boolean);
+    const outcomeItems = (Array.isArray(c.outcomes) && c.outcomes.length) ? c.outcomes.filter(Boolean) : (isFirst ? (DEFAULT_OUTCOMES[lang] || DEFAULT_OUTCOMES.en) : []);
     const agendaList = (Array.isArray(c.agenda) && c.agenda.length) ? c.agenda : (t('detail.agendaItems') || []);
     const defaultSpeakersByLang = {
       en: [
@@ -1372,8 +1810,8 @@
       <div class="d-form" id="register">${formCard(w)}</div>
       <div class="d-main">
         <section class="block"><h2 class="block-title"><span class="bt-icon"><i class="fa-solid fa-circle-info"></i></span><span>${esc(t('detail.about'))}</span></h2><div class="prose card card--prose">${bodyParas.length ? bodyParas.map(p => `<p>${esc(p)}</p>`).join('') : `<p>${esc(c.excerpt || '')}</p>`}</div></section>
-        <section class="block"><h2 class="block-title"><span class="bt-icon"><i class="fa-solid fa-graduation-cap"></i></span><span>${esc(t('detail.learn'))}</span></h2><ul class="learn">${outcomeItems.length ? outcomeItems.map(o => `<li><div class="learn-ico"><i class="fa-solid fa-check"></i></div><span>${esc(o)}</span></li>`).join('') : `<li><div class="learn-ico"><i class="fa-solid fa-check"></i></div><span>${esc(t('common.free'))}</span></li>`}</ul></section>
-        <section class="block"><h2 class="block-title"><span class="bt-icon"><i class="fa-solid fa-list-check"></i></span><span>${esc(t('detail.agenda'))}</span></h2><ol class="agenda">${agendaList.map(a => `<li><span class="ag-time">${esc(a.time || a.t || '')}</span><span class="ag-label">${esc(a.topic || a.l || '')}<span class="ag-who">${esc(a.speaker || a.w || '')}</span></span></li>`).join('')}</ol></section>
+        <section class="block"><h2 class="block-title"><span class="bt-icon"><i class="fa-solid fa-graduation-cap"></i></span><span>${esc(t('detail.learn'))}</span></h2><ul class="learn">${(outcomeItems.length ? outcomeItems : (DEFAULT_OUTCOMES[lang] || DEFAULT_OUTCOMES.en)).map(o => `<li><div class="learn-ico"><i class="fa-solid fa-check"></i></div><span>${esc(o)}</span></li>`).join('')}</ul></section>
+        <section class="block"><h2 class="block-title"><span class="bt-icon"><i class="fa-solid fa-list-check"></i></span><span>${esc(t('detail.agenda'))}</span></h2><ol class="agenda">${agendaList.map(a => `<li><span class="ag-time">${esc(a.time || a.t || '')}</span><span class="ag-label">${esc(a.topic || a.l || '')}${(a.speaker || a.w) ? `<span class=\"ag-who\">${esc(a.speaker || a.w)}</span>` : ''}</span></li>`).join('')}</ol></section>
         <section class="block"><h2 class="block-title"><span class="bt-icon"><i class="fa-solid fa-users"></i></span><span>${esc(t('detail.speakers'))}</span></h2><div class="speakers">
           ${speakersList.map(sp => {
             if (Array.isArray(sp)) {

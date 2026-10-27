@@ -100,40 +100,38 @@
       "agendaItems": [
         {
           "t": "0–5",
-          "l": "Welcome in Dari and a short poll",
-          "w": "Host"
+          "l": "Welcome and a short poll",
+          "w": "Mohammad Barselani"
         },
         {
           "t": "5–10",
-          "l": "About Sharif Group and the speaker",
-          "w": "Host"
+          "l": "About Sharif Group and the speakers",
+          "w": "Mohammad Barselani & Mehdi Yarahmadi"
         },
         {
           "t": "10–40",
           "l": "Main content",
-          "w": "Speaker"
+          "w": "Mohammad Barselani & Mehdi Yarahmadi"
         },
         {
           "t": "40–45",
           "l": "Next step: free private consultation and checklist",
-          "w": "Speaker"
+          "w": "Mohammad Barselani"
         },
         {
           "t": "45–63",
           "l": "Live Q&A",
-          "w": "Host & speaker"
+          "w": "Mohammad Barselani & Mehdi Yarahmadi"
         },
         {
           "t": "63–65",
           "l": "Summary and next session",
-          "w": "Host"
+          "w": "Mohammad Barselani"
         }
       ],
       "minutes": "min",
       "expertName": "Senior Citizenship Specialist",
       "expertRole": "Sharif Group, Dubai",
-      "hostName": "Dari-speaking host",
-      "hostRole": "Moderates questions and chat",
       "tbd": "Name to be announced",
       "privacy": "Privacy during the session",
       "privacyItems": [
