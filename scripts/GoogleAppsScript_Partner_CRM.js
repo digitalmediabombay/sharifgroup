@@ -29,11 +29,14 @@
  *    - Review permissions if prompted and grant access to your Google account.
  * 
  * 6. Copy the resulting "Web app URL":
- *    (e.g., https://script.google.com/macros/s/AKfycb.../exec)
+ *    Active Deployment URL:
+ *    https://script.google.com/macros/s/AKfycbx866xd6P2fT7xqDJ1WGg10vSCXExEMnZylhrJHpMq0rCG0UotP23GIgbFEoK-0r7rQMA/exec
+ *    Deployment ID:
+ *    AKfycbx866xd6P2fT7xqDJ1WGg10vSCXExEMnZylhrJHpMq0rCG0UotP23GIgbFEoK-0r7rQMA
  * 
- * 7. Paste that URL into:
- *    - assets/js/partners-app.js  (Line ~10: const CRM_WEBHOOK_URL = "...")
- *    - sharif-partners-demo/assets/js/partners-app.js (Line ~13)
+ * 7. Configured in:
+ *    - assets/js/partners-app.js  (const CRM_WEBHOOK_URL = "...")
+ *    - sharif-partners-demo/assets/js/partners-app.js (const CRM_WEBHOOK_URL = "...")
  * ==============================================================================
  */
 
