@@ -197,20 +197,16 @@ function processPartnerApplication(data) {
     }
   }
 
+  var applicationStatus = "Pending Review";
   if (isDuplicate) {
-    // Record re-submission timestamp without overwriting primary application
-    sheet.getRange(existingRowIndex, 19).setValue("Re-applied: " + nowUtc);
-    sheet.getRange(existingRowIndex, 20).setValue(emailStatus);
-    return {
-      status: "success",
-      duplicate: true,
-      application_id: appId,
-      message: "Application re-confirmed.",
-      emailStatus: emailStatus
-    };
+    applicationStatus = "Re-submission (Duplicate Email)";
+    try {
+      sheet.getRange(existingRowIndex, 19).setValue("Re-applied: " + nowUtc);
+      sheet.getRange(existingRowIndex, 20).setValue(emailStatus);
+    } catch (e) {}
   }
 
-  // Append new clean row
+  // Always append new clean row so client immediately sees every submission
   sheet.appendRow([
     nowUtc,
     appId,
@@ -230,7 +226,7 @@ function processPartnerApplication(data) {
     message,
     lang,
     source,
-    "Pending Review",
+    applicationStatus,
     emailStatus
   ]);
 

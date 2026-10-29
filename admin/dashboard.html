@@ -8348,9 +8348,9 @@
                   </div>
                   <div id="wsess-agenda-list" style="display:flex;flex-direction:column;gap:6px">
                     ${(Array.isArray(selL.agenda) && selL.agenda.length ? selL.agenda : [
-                      { time: '00:00 - 00:10', topic: 'Welcome & Introduction to Programme', speaker: 'Host' },
-                      { time: '00:10 - 00:45', topic: 'Citizenship Requirements, Routes & Legal Updates', speaker: 'Lead Specialist' },
-                      { time: '00:45 - 01:05', topic: 'Live Open Q&A Session', speaker: 'All Panelists' }
+                      { time: '00:00 - 00:10', topic: 'Welcome & Introduction to Programme', speaker: '' },
+                      { time: '00:10 - 00:45', topic: 'Citizenship Requirements, Routes & Legal Updates', speaker: '' },
+                      { time: '00:45 - 01:05', topic: 'Live Open Q&A Session', speaker: '' }
                     ]).map(ag => `
                       <div class="wsess-agenda-item" style="display:grid;grid-template-columns:110px 1fr 100px 32px;gap:6px;align-items:center;background:var(--bg2);padding:6px;border-radius:6px;border:1px solid var(--border)">
                         <input class="form-input" value="${escH(ag.time || '')}" placeholder="e.g. 00:00 - 00:15" style="font-size:11px" oninput="markUnsaved()">
@@ -8959,6 +8959,7 @@
               ['en', 'fa', 'ar', 'zh'].forEach(lg => {
                 if (ws[lg] && ws[lg].title && ws[lg].title.trim()) match[lg] = ws[lg];
               });
+              if (ws.speakers && Array.isArray(ws.speakers) && ws.speakers.length) match.speakers = ws.speakers;
               if (ws.start_utc) match.start_utc = ws.start_utc;
               if (ws.join_url) match.join_url = ws.join_url;
             } else {
@@ -8978,6 +8979,7 @@
                   ['en', 'fa', 'ar', 'zh'].forEach(lg => {
                     if (cs[lg] && cs[lg].title && cs[lg].title.trim()) match[lg] = cs[lg];
                   });
+                  if (cs.speakers && Array.isArray(cs.speakers) && cs.speakers.length) match.speakers = cs.speakers;
                   if (cs.start_utc) match.start_utc = cs.start_utc;
                   if (cs.join_url) match.join_url = cs.join_url;
                 }
@@ -9007,17 +9009,17 @@
         // Speakers data extraction
         const selSpeakers = (selData && Array.isArray(selData.speakers) && selData.speakers.length)
           ? selData.speakers
-          : ((Array.isArray(selSession.speakers) && selSession.speakers.length) ? selSession.speakers : []);
+          : ((Array.isArray(selSession.speakers) && selSession.speakers.length) ? selSession.speakers : ((selSession.en && Array.isArray(selSession.en.speakers)) ? selSession.en.speakers : []));
         const sp1 = selSpeakers[0] || {};
         const sp2 = selSpeakers[1] || {};
 
-        const selSpeakerName = selData.speaker_name || sp1.name || (selNo === 1 ? 'Mohammad Borselani' : '');
-        const selSpeakerRole = selData.speaker_role || sp1.title || sp1.role || (selNo === 1 ? 'Senior Consultant, Caribbean Citizenship Programs' : '');
-        const selSpeakerAffil = selData.speaker_affiliation || sp1.affiliation || (selNo === 1 ? 'Sharif Group Dubai' : '');
+        const selSpeakerName = (selData && selData.speaker_name !== undefined) ? selData.speaker_name : (sp1.name || (selNo === 1 ? 'Mohammad Borsalani' : ''));
+        const selSpeakerRole = (selData && selData.speaker_role !== undefined) ? selData.speaker_role : (sp1.title || sp1.role || (selNo === 1 ? 'Senior Consultant, Caribbean Citizenship Programs' : ''));
+        const selSpeakerAffil = (selData && selData.speaker_affiliation !== undefined) ? selData.speaker_affiliation : (sp1.affiliation || (selNo === 1 ? 'Sharif Group Dubai' : ''));
 
-        const selSpeaker2Name = selData.speaker2_name || sp2.name || (selNo === 1 ? 'Mehdi Yarahmadi' : '');
-        const selSpeaker2Role = selData.speaker2_role || sp2.title || sp2.role || (selNo === 1 ? 'Dominica Passport Program Specialist' : '');
-        const selSpeaker2Affil = selData.speaker2_affiliation || sp2.affiliation || (selNo === 1 ? 'Sharif Group Dubai' : '');
+        const selSpeaker2Name = (selData && selData.speaker2_name !== undefined) ? selData.speaker2_name : (sp2.name || (selNo === 1 ? 'Mehdi Yarahmadi' : ''));
+        const selSpeaker2Role = (selData && selData.speaker2_role !== undefined) ? selData.speaker2_role : (sp2.title || sp2.role || (selNo === 1 ? 'Dominica Passport Program Specialist' : ''));
+        const selSpeaker2Affil = (selData && selData.speaker2_affiliation !== undefined) ? selData.speaker2_affiliation : (sp2.affiliation || (selNo === 1 ? 'Sharif Group Dubai' : ''));
 
         let dtLocalVal = '2026-10-29T19:30';
         try {
@@ -9271,7 +9273,7 @@
                       <label style="font-size:11px;font-weight:700;color:var(--text);display:block;margin-bottom:4px">
                         Speaker Name *
                       </label>
-                      <input type="text" class="form-input" id="wsch-speaker-name" value="${escH(selSpeakerName)}" placeholder="e.g. Mohammad Borselani" style="font-size:13px;padding:9px 12px">
+                      <input type="text" class="form-input" id="wsch-speaker-name" value="${escH(selSpeakerName)}" placeholder="e.g. Mohammad Borsalani" style="font-size:13px;padding:9px 12px">
                     </div>
 
                     <div class="form-group" style="margin-bottom:12px">
@@ -9450,29 +9452,112 @@
         
         localStorage.setItem('sgcms_webinar_schedule', JSON.stringify(schedule));
 
+        const localizeAdminSpeakerList = (list, code) => {
+          const DEFS = {
+            en: [
+              { name: "Mohammad Borsalani", title: "Senior Consultant, Caribbean Citizenship Programs", affiliation: "Sharif Group Dubai" },
+              { name: "Mehdi Yarahmadi", title: "Dominica Passport Program Specialist", affiliation: "Sharif Group Dubai" }
+            ],
+            fa: [
+              { name: "محمد برسلانی", title: "مشاور ارشد برنامه‌های شهروندی حوزه کارائیب", affiliation: "شریف گروپ دبی" },
+              { name: "مهدی یاراحمدی", title: "کارشناس برنامه پاسپورت دومینیکا", affiliation: "شریف گروپ دبی" }
+            ],
+            ar: [
+              { name: "محمد برسلاني", title: "مستشار أول لبرامج الجنسية في دول الكاريبي", affiliation: "شريف جروب دبي" },
+              { name: "مهدي يار أحمدي", title: "خبير برنامج جواز سفر دومينيكا", affiliation: "شريف جروب دبي" }
+            ],
+            zh: [
+              { name: "穆罕默德·巴尔塞拉尼 (Mohammad Borsalani)", title: "加勒比公民身份项目资深顾问", affiliation: "迪拜谢里夫集团" },
+              { name: "迈赫迪·亚拉赫马迪 (Mehdi Yarahmadi)", title: "多米尼克护照项目专家", affiliation: "迪拜谢里夫集团" }
+            ]
+          };
+          const defs = DEFS[code] || DEFS.en;
+          return list.map(sp => {
+            const n = sp.name || '';
+            if (/bors[ae]lani|برسلان|巴尔塞拉尼/i.test(n)) {
+              return { name: defs[0].name, title: defs[0].title, affiliation: defs[0].affiliation };
+            }
+            if (/yarahmad|یار\s*احمد|يار\s*أحمد|亚拉赫马迪/i.test(n)) {
+              return { name: defs[1].name, title: defs[1].title, affiliation: defs[1].affiliation };
+            }
+            return sp;
+          });
+        };
+
         // Update allSessions catalog in window.CMS and window.SGCMS_WEBINARS
         if (typeof window.SGCMS_WEBINARS !== 'undefined' && Array.isArray(window.SGCMS_WEBINARS)) {
           const match = window.SGCMS_WEBINARS.find(s => Number(s.session_no) === selNo);
           if (match) {
-            if (compiledSpeakers.length) match.speakers = compiledSpeakers;
+            if (compiledSpeakers.length) {
+              match.speakers = compiledSpeakers;
+              ['en', 'fa', 'ar', 'zh'].forEach(lgCode => {
+                if (match[lgCode] && typeof match[lgCode] === 'object') {
+                  match[lgCode].speakers = localizeAdminSpeakerList(compiledSpeakers, lgCode);
+                }
+              });
+            }
             if (startUtc) match.start_utc = startUtc;
             if (joinUrl) match.join_url = joinUrl;
             match.registration_open = (regStatus === 'open');
           }
         }
 
-        // Clear any old legacy drafts that might truncate live sessions
-        try {
-          const rawOld = localStorage.getItem('sgcms_webinars');
-          if (rawOld) {
-            const pOld = JSON.parse(rawOld);
-            if (!Array.isArray(pOld) || pOld.length < 3 || !pOld[0].en || !pOld[0].en.title) {
-              localStorage.removeItem('sgcms_webinars');
-              localStorage.removeItem('sgcms_webinars_live');
+        if (window.CMS && window.CMS.Webinars) {
+          try {
+            const cmsSessions = window.CMS.Webinars.get();
+            if (Array.isArray(cmsSessions)) {
+              const matchCms = cmsSessions.find(s => Number(s.session_no) === selNo);
+              if (matchCms) {
+                if (compiledSpeakers.length) {
+                  matchCms.speakers = compiledSpeakers;
+                  ['en', 'fa', 'ar', 'zh'].forEach(lgCode => {
+                    if (matchCms[lgCode] && typeof matchCms[lgCode] === 'object') {
+                      matchCms[lgCode].speakers = localizeAdminSpeakerList(compiledSpeakers, lgCode);
+                    }
+                  });
+                }
+                if (startUtc) matchCms.start_utc = startUtc;
+                if (joinUrl) matchCms.join_url = joinUrl;
+                matchCms.registration_open = (regStatus === 'open');
+                window.CMS.Webinars.save(cmsSessions);
+              }
             }
-          }
+          } catch(e) {}
+        }
+
+        // Also update any saved sgcms_webinars / sgcms_webinars_live in localStorage
+        try {
+          ['sgcms_webinars', 'sgcms_webinars_live'].forEach(sk => {
+            const raw = localStorage.getItem(sk);
+            if (raw) {
+              const parsed = JSON.parse(raw);
+              if (Array.isArray(parsed)) {
+                const item = parsed.find(s => Number(s.session_no) === selNo);
+                if (item) {
+                  if (compiledSpeakers.length) {
+                    item.speakers = compiledSpeakers;
+                    ['en', 'fa', 'ar', 'zh'].forEach(lgCode => {
+                      if (item[lgCode] && typeof item[lgCode] === 'object') {
+                        item[lgCode].speakers = localizeAdminSpeakerList(compiledSpeakers, lgCode);
+                      }
+                    });
+                  }
+                  if (startUtc) item.start_utc = startUtc;
+                  if (joinUrl) item.join_url = joinUrl;
+                  item.registration_open = (regStatus === 'open');
+                  localStorage.setItem(sk, JSON.stringify(parsed));
+                }
+              }
+            }
+          });
         } catch(e) {}
+
         window.dispatchEvent(new StorageEvent('storage', { key: 'sgcms_webinar_schedule' }));
+        window.dispatchEvent(new StorageEvent('storage', { key: 'sgcms_webinars' }));
+        window.dispatchEvent(new StorageEvent('storage', { key: 'sgcms_webinars_live' }));
+        try {
+          window.postMessage({ type: 'CMS_WEBINARS_UPDATED', schedule: schedule }, '*');
+        } catch(e) {}
 
         // Sync to backend save.php with credentials and auth headers
         try {

@@ -116,10 +116,19 @@
     const rawOld = localStorage.getItem('sgcms_webinars');
     if (rawOld) {
       const pOld = JSON.parse(rawOld);
-      if (!Array.isArray(pOld) || pOld.length < 3 || !pOld[0].en || !pOld[0].en.title || !pOld[0].en.outcomes || !pOld[0].en.outcomes.length) {
+      if (!Array.isArray(pOld) || pOld.length < 3 || !pOld[0].en || !pOld[0].en.title || !pOld[0].en.outcomes || !pOld[0].en.outcomes.length || (pOld[0].en.agenda && JSON.stringify(pOld[0].en.agenda).includes('ترحيب'))) {
         localStorage.removeItem('sgcms_webinars');
         localStorage.removeItem('sgcms_webinars_live');
       }
+    }
+    const rawOldLive = localStorage.getItem('sgcms_webinars_live');
+    if (rawOldLive && rawOldLive.includes('ترحيب') && rawOldLive.includes('"en"')) {
+      try {
+        const pLive = JSON.parse(rawOldLive);
+        if (pLive && pLive[0] && pLive[0].en && pLive[0].en.agenda && JSON.stringify(pLive[0].en.agenda).includes('ترحيب')) {
+          localStorage.removeItem('sgcms_webinars_live');
+        }
+      } catch(e) {}
     }
   } catch(e) {}
 
@@ -148,7 +157,7 @@
         "status_zh": "published",
         "speakers": [
             {
-                "name": "Mohammad Borselani",
+                "name": "Mohammad Borsalani",
                 "title": "Senior Consultant, Caribbean Citizenship Programs",
                 "affiliation": "Sharif Group Dubai"
             },
@@ -189,32 +198,32 @@
                 {
                     "time": "۰–۵",
                     "topic": "خوشامدگویی و نظرسنجی کوتاه",
-                    "speaker": "محمد برسلانی"
+                    "speaker": ""
                 },
                 {
                     "time": "۵–۱۰",
                     "topic": "معرفی شریف گروپ و سخنرانان",
-                    "speaker": "محمد برسلانی و مهدی یاراحمدی"
+                    "speaker": ""
                 },
                 {
                     "time": "۱۰–۴۰",
                     "topic": "محتوای اصلی جلسه",
-                    "speaker": "محمد برسلانی و مهدی یاراحمدی"
+                    "speaker": ""
                 },
                 {
                     "time": "۴۰–۴۵",
                     "topic": "قدم بعدی: مشاوره خصوصی رایگان و چک‌لیست",
-                    "speaker": "محمد برسلانی"
+                    "speaker": ""
                 },
                 {
                     "time": "۴۵–۶۳",
                     "topic": "پرسش‌وپاسخ زنده",
-                    "speaker": "محمد برسلانی و مهدی یاراحمدی"
+                    "speaker": ""
                 },
                 {
                     "time": "۶۳–۶۵",
                     "topic": "جمع‌بندی و معرفی جلسه بعد",
-                    "speaker": "محمد برسلانی"
+                    "speaker": ""
                 }
             ]
         },
@@ -235,7 +244,7 @@
             ],
             "speakers": [
                 {
-                    "name": "Mohammad Borselani",
+                    "name": "Mohammad Borsalani",
                     "title": "Senior Consultant, Caribbean Citizenship Programs",
                     "affiliation": "Sharif Group Dubai"
                 },
@@ -249,32 +258,32 @@
                 {
                     "time": "0–5",
                     "topic": "Welcome and a short poll",
-                    "speaker": "Mohammad Borselani"
+                    "speaker": ""
                 },
                 {
                     "time": "5–10",
                     "topic": "About Sharif Group and the speakers",
-                    "speaker": "Mohammad Borselani & Mehdi Yarahmadi"
+                    "speaker": ""
                 },
                 {
                     "time": "10–40",
                     "topic": "Main content",
-                    "speaker": "Mohammad Borselani & Mehdi Yarahmadi"
+                    "speaker": ""
                 },
                 {
                     "time": "40–45",
                     "topic": "Next step: free private consultation and checklist",
-                    "speaker": "Mohammad Borselani"
+                    "speaker": ""
                 },
                 {
                     "time": "45–63",
                     "topic": "Live Q&A",
-                    "speaker": "Mohammad Borselani & Mehdi Yarahmadi"
+                    "speaker": ""
                 },
                 {
                     "time": "63–65",
                     "topic": "Summary and next session",
-                    "speaker": "Mohammad Borselani"
+                    "speaker": ""
                 }
             ]
         },
@@ -309,32 +318,32 @@
                 {
                     "time": "0–5",
                     "topic": "ترحيب واستطلاع قصير",
-                    "speaker": "محمد برسلاني"
+                    "speaker": ""
                 },
                 {
                     "time": "5–10",
                     "topic": "تعريف بمجموعة شريف والمتحدثين",
-                    "speaker": "محمد برسلاني ومهدي يار أحمدي"
+                    "speaker": ""
                 },
                 {
                     "time": "10–40",
                     "topic": "المحتوى الرئيسي",
-                    "speaker": "محمد برسلاني ومهدي يار أحمدي"
+                    "speaker": ""
                 },
                 {
                     "time": "40–45",
                     "topic": "الخطوة التالية: استشارة خاصة مجانية وقائمة المستندات",
-                    "speaker": "محمد برسلاني"
+                    "speaker": ""
                 },
                 {
                     "time": "45–63",
                     "topic": "أسئلة وأجوبة مباشرة",
-                    "speaker": "محمد برسلاني ومهدي يار أحمدي"
+                    "speaker": ""
                 },
                 {
                     "time": "63–65",
                     "topic": "الخلاصة والجلسة القادمة",
-                    "speaker": "محمد برسلاني"
+                    "speaker": ""
                 }
             ]
         },
@@ -355,7 +364,7 @@
             ],
             "speakers": [
                 {
-                    "name": "穆罕默德·巴尔塞拉尼 (Mohammad Borselani)",
+                    "name": "穆罕默德·巴尔塞拉尼 (Mohammad Borsalani)",
                     "title": "加勒比公民身份项目高级顾问",
                     "affiliation": "Sharif Group 迪拜"
                 },
@@ -369,32 +378,32 @@
                 {
                     "time": "0–5",
                     "topic": "欢迎及简短投票",
-                    "speaker": "穆罕默德·巴尔塞拉尼 (Mohammad Borselani)"
+                    "speaker": ""
                 },
                 {
                     "time": "5–10",
                     "topic": "介绍谢里夫集团及主讲嘉宾",
-                    "speaker": "穆罕默德·巴尔塞拉尼与迈赫迪·亚拉赫马迪"
+                    "speaker": ""
                 },
                 {
                     "time": "10–40",
                     "topic": "主要内容",
-                    "speaker": "穆罕默德·巴尔塞拉尼与迈赫迪·亚拉赫马迪"
+                    "speaker": ""
                 },
                 {
                     "time": "40–45",
                     "topic": "下一步：免费私人咨询与材料清单",
-                    "speaker": "穆罕默德·巴尔塞拉尼 (Mohammad Borselani)"
+                    "speaker": ""
                 },
                 {
                     "time": "45–63",
                     "topic": "现场问答",
-                    "speaker": "穆罕默德·巴尔塞拉尼与迈赫迪·亚拉赫马迪"
+                    "speaker": ""
                 },
                 {
                     "time": "63–65",
                     "topic": "总结及下期预告",
-                    "speaker": "穆罕默德·巴尔塞拉尼 (Mohammad Borselani)"
+                    "speaker": ""
                 }
             ]
         },
@@ -410,32 +419,32 @@
             {
                 "time": "0–5",
                 "topic": "Welcome and a short poll",
-                "speaker": "Mohammad Borselani"
+                "speaker": ""
             },
             {
                 "time": "5–10",
                 "topic": "About Sharif Group and the speakers",
-                "speaker": "Mohammad Borselani & Mehdi Yarahmadi"
+                "speaker": ""
             },
             {
                 "time": "10–40",
                 "topic": "Main content",
-                "speaker": "Mohammad Borselani & Mehdi Yarahmadi"
+                "speaker": ""
             },
             {
                 "time": "40–45",
                 "topic": "Next step: free private consultation and checklist",
-                "speaker": "Mohammad Borselani"
+                "speaker": ""
             },
             {
                 "time": "45–63",
                 "topic": "Live Q&A",
-                "speaker": "Mohammad Borselani & Mehdi Yarahmadi"
+                "speaker": ""
             },
             {
                 "time": "63–65",
                 "topic": "Summary and next session",
-                "speaker": "Mohammad Borselani"
+                "speaker": ""
             }
         ]
     },
@@ -611,6 +620,82 @@
     }
 ];
 
+    const DEFAULT_SPEAKERS_BY_LANG = {
+    en: [
+      { name: "Mohammad Borsalani", title: "Senior Consultant, Caribbean Citizenship Programs", affiliation: "Sharif Group Dubai" },
+      { name: "Mehdi Yarahmadi", title: "Dominica Passport Program Specialist", affiliation: "Sharif Group Dubai" }
+    ],
+    fa: [
+      { name: "محمد برسلانی", title: "مشاور ارشد برنامه‌های شهروندی حوزه کارائیب", affiliation: "شریف گروپ دبی" },
+      { name: "مهدی یاراحمدی", title: "کارشناس برنامه پاسپورت دومینیکا", affiliation: "شریف گروپ دبی" }
+    ],
+    ar: [
+      { name: "محمد برسلاني", title: "مستشار أول لبرامج الجنسية في دول الكاريبي", affiliation: "شريف جروب دبي" },
+      { name: "مهدي يار أحمدي", title: "خبير برنامج جواز سفر دومينيكا", affiliation: "شريف جروب دبي" }
+    ],
+    zh: [
+      { name: "穆罕默德·巴尔塞拉尼 (Mohammad Borsalani)", title: "加勒比公民身份项目资深顾问", affiliation: "迪拜谢里夫集团" },
+      { name: "迈赫迪·亚拉赫马迪 (Mehdi Yarahmadi)", title: "多米尼克护照项目专家", affiliation: "迪拜谢里夫集团" }
+    ]
+  };
+
+  const isBorsalani = name => {
+    if (!name || typeof name !== 'string') return false;
+    return /bors[ae]lani|برسلان|巴尔塞拉尼/i.test(name);
+  };
+
+  const isYarahmadi = name => {
+    if (!name || typeof name !== 'string') return false;
+    return /yarahmad|یار\s*احمد|يار\s*أحمد|亚拉赫马迪/i.test(name);
+  };
+
+  const localizeSpeaker = (sp, targetLang) => {
+    if (!sp) return sp;
+    const tgt = targetLang || (typeof lang !== 'undefined' ? lang : 'en') || 'en';
+    const defs = DEFAULT_SPEAKERS_BY_LANG[tgt] || DEFAULT_SPEAKERS_BY_LANG.en;
+    
+    if (Array.isArray(sp)) {
+      const [k] = sp;
+      if (k === 'host') return null;
+      if (k === 'expert' || isBorsalani(k)) return defs[0];
+      if (k === 'expert2' || isYarahmadi(k)) return defs[1];
+    }
+    
+    const name = typeof sp === 'string' ? sp : (sp.name || '');
+    if (isBorsalani(name)) {
+      return {
+        name: defs[0].name,
+        title: defs[0].title,
+        affiliation: defs[0].affiliation,
+        note: (sp && typeof sp === 'object') ? (sp.note || '') : ''
+      };
+    }
+    if (isYarahmadi(name)) {
+      return {
+        name: defs[1].name,
+        title: defs[1].title,
+        affiliation: defs[1].affiliation,
+        note: (sp && typeof sp === 'object') ? (sp.note || '') : ''
+      };
+    }
+    return sp;
+  };
+
+  const localizeSpeakers = (list, targetLang) => {
+    const tgt = targetLang || (typeof lang !== 'undefined' ? lang : 'en') || 'en';
+    if (!Array.isArray(list) || !list.length) {
+      return (DEFAULT_SPEAKERS_BY_LANG[tgt] || DEFAULT_SPEAKERS_BY_LANG.en).slice();
+    }
+    return list
+      .map(sp => localizeSpeaker(sp, tgt))
+      .filter(Boolean)
+      .filter(sp => {
+        if (Array.isArray(sp)) return sp[0] !== 'host';
+        const roleStr = (((sp && sp.title) || '') + ' ' + ((sp && sp.role) || '') + ' ' + ((sp && sp.note) || '')).toLowerCase();
+        return !roleStr.includes('host') && !roleStr.includes('مجری') && !roleStr.includes('مقدّم') && !roleStr.includes('主持人');
+      });
+  };
+
   function webinars() {
     let sourceList = null;
     if (typeof window.SGCMS_WEBINARS !== 'undefined' && Array.isArray(window.SGCMS_WEBINARS) && window.SGCMS_WEBINARS.length >= 3) {
@@ -653,6 +738,33 @@
         if (sData.reg_status) {
           w.reg_status = sData.reg_status;
           w.registration_open = (sData.reg_status === 'open');
+        }
+        let spList = null;
+        if (Array.isArray(sData.speakers) && sData.speakers.length) {
+          spList = sData.speakers;
+        } else if (sData.speaker_name) {
+          spList = [
+            {
+              name: sData.speaker_name,
+              title: sData.speaker_role || 'Senior Consultant, Caribbean Citizenship Programs',
+              affiliation: sData.speaker_affiliation || 'Sharif Group Dubai'
+            }
+          ];
+          if (sData.speaker2_name) {
+            spList.push({
+              name: sData.speaker2_name,
+              title: sData.speaker2_role || 'Dominica Passport Program Specialist',
+              affiliation: sData.speaker2_affiliation || 'Sharif Group Dubai'
+            });
+          }
+        }
+        if (spList && spList.length) {
+          w.speakers = spList;
+          w.speakers_updated = true;
+          ['en', 'fa', 'ar', 'zh'].forEach(lgCode => {
+            if (!w[lgCode]) w[lgCode] = {};
+            w[lgCode].speakers = localizeSpeakers(spList, lgCode);
+          });
         }
       }
       if (!w.reg_status) {
@@ -741,7 +853,17 @@
       body: (Array.isArray(cur.body) && cur.body.length) ? cur.body : (Array.isArray(en.body) && en.body.length ? en.body : (Array.isArray(w.body) ? w.body : [])),
       outcomes: rawOutcomes,
       agenda: (Array.isArray(cur.agenda) && cur.agenda.length) ? cur.agenda : ((Array.isArray(en.agenda) && en.agenda.length) ? en.agenda : (Array.isArray(w.agenda) && w.agenda.length ? w.agenda : null)),
-      speakers: (Array.isArray(cur.speakers) && cur.speakers.length) ? cur.speakers : ((Array.isArray(w.speakers) && w.speakers.length) ? w.speakers : [])
+      speakers: (() => {
+        let rawSpeakers = [];
+        if (Array.isArray(cur.speakers) && cur.speakers.length) {
+          rawSpeakers = cur.speakers;
+        } else if (Array.isArray(w.speakers) && w.speakers.length) {
+          rawSpeakers = w.speakers;
+        } else if (Array.isArray(en.speakers) && en.speakers.length) {
+          rawSpeakers = en.speakers;
+        }
+        return localizeSpeakers(rawSpeakers, lang);
+      })()
     };
   };
   const startOf = w => new Date(w.start_utc);
@@ -1681,8 +1803,16 @@
     const others = webinars().filter(x => (x.series === w.series || !x.series) && x.id !== w.id);
     const bodyParas = (Array.isArray(c.body) ? c.body : (typeof c.body === 'string' ? [c.body] : [])).filter(Boolean);
     const outcomeItems = (Array.isArray(c.outcomes) && c.outcomes.length) ? c.outcomes.filter(Boolean) : (isFirst ? (DEFAULT_OUTCOMES[lang] || DEFAULT_OUTCOMES.en) : []);
-    const agendaList = (Array.isArray(c.agenda) && c.agenda.length) ? c.agenda : (t('detail.agendaItems') || []);
-    const speakersList = (Array.isArray(c.speakers) && c.speakers.length) ? c.speakers : [['expert', I.user], ['host', I.mic]];
+    let agendaList = (Array.isArray(c.agenda) && c.agenda.length) ? c.agenda : (t('detail.agendaItems') || []);
+    if (lang === 'en' && Array.isArray(agendaList) && agendaList.some(item => /[؀-ۿ]/.test(item.topic || ''))) {
+      agendaList = t('detail.agendaItems') || [];
+    }
+    const defaultTwoSpeakers = DEFAULT_SPEAKERS_BY_LANG[lang] || DEFAULT_SPEAKERS_BY_LANG.en;
+    let speakersList = (Array.isArray(c.speakers) && c.speakers.length)
+      ? c.speakers
+      : ((Array.isArray(w.speakers) && w.speakers.length) ? w.speakers : defaultTwoSpeakers);
+    speakersList = localizeSpeakers(speakersList, lang);
+    if (!speakersList.length) speakersList = defaultTwoSpeakers;
 
     return `
     <section class="hero hero--detail">
@@ -1717,7 +1847,7 @@
       <div class="d-main">
         <section class="block"><h2 class="block-title"><span class="bt-icon"><i class="fa-solid fa-circle-info"></i></span><span>${esc(t('detail.about'))}</span></h2><div class="prose card card--prose">${bodyParas.length ? bodyParas.map(p => `<p>${esc(p)}</p>`).join('') : `<p>${esc(c.excerpt || '')}</p>`}</div></section>
         <section class="block"><h2 class="block-title"><span class="bt-icon"><i class="fa-solid fa-graduation-cap"></i></span><span>${esc(t('detail.learn'))}</span></h2><ul class="learn">${(outcomeItems.length ? outcomeItems : (DEFAULT_OUTCOMES[lang] || DEFAULT_OUTCOMES.en)).map(o => `<li><div class="learn-ico"><i class="fa-solid fa-check"></i></div><span>${esc(o)}</span></li>`).join('')}</ul></section>
-        <section class="block"><h2 class="block-title"><span class="bt-icon"><i class="fa-solid fa-list-check"></i></span><span>${esc(t('detail.agenda'))}</span></h2><ol class="agenda">${agendaList.map(a => `<li><span class="ag-time">${esc(a.time || a.t || '')}</span><span class="ag-label">${esc(a.topic || a.l || '')}${(a.speaker || a.w) ? `<span class=\"ag-who\">${esc(a.speaker || a.w)}</span>` : ''}</span></li>`).join('')}</ol></section>
+        <section class="block"><h2 class="block-title"><span class="bt-icon"><i class="fa-solid fa-list-check"></i></span><span>${esc(t('detail.agenda'))}</span></h2><ol class="agenda">${agendaList.map(a => `<li><span class="ag-time">${esc(a.time || a.t || '')}</span><span class="ag-label">${esc(a.topic || a.l || '')}</span></li>`).join('')}</ol></section>
         <section class="block"><h2 class="block-title"><span class="bt-icon"><i class="fa-solid fa-users"></i></span><span>${esc(t('detail.speakers'))}</span></h2><div class="speakers">
           ${speakersList.map(sp => {
             if (Array.isArray(sp)) {

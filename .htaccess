@@ -41,6 +41,9 @@
     RewriteRule ^(ar|fa|zh)/Events/?$ /$1/events/ [R=301,L]
     RewriteRule ^(ar|fa|zh)/Events/(.+)$ /$1/events/$2 [R=301,L]
 
+    # 5c. Partners thanks routing
+    RewriteRule ^(?:(ar|fa|zh)/)?partners/thanks/?$ /$1/partners/thanks/index.html [L,QSA]
+
     # 6. Redirect legacy .html URLs from old canonicals to clean folders
     RewriteRule ^programs/st-kitts\.html$ /programs/citizenshipbyinvestment/stkitts/ [R=301,L]
     RewriteRule ^programs/grenada\.html$ /programs/citizenshipbyinvestment/grenada/ [R=301,L]

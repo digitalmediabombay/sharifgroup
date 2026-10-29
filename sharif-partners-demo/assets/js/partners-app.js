@@ -10,7 +10,9 @@
   'use strict';
 
   const LANGS = ['fa', 'en', 'ar', 'zh'];
-  const CRM_WEBHOOK_URL = 'https://script.google.com/macros/s/AKfycbx866xd6P2fT7xqDJ1WGg10vSCXExEMnZylhrJHpMq0rCG0UotP23GIgbFEoK-0r7rQMA/exec';
+    const PRIMARY_CRM_WEBHOOK_URL = "https://script.google.com/macros/s/AKfycbx866xd6P2fT7xqDJ1WGg10vSCXExEMnZylhrJHpMq0rCG0UotP23GIgbFEoK-0r7rQMA/exec";
+  const UNIFIED_CRM_WEBHOOK_URL = "https://script.google.com/macros/s/AKfycbwRFNqHPPeGo4UqWU7jkhMdJPCTNkirDhCEvBQjWc9YUFufe535vIl89vYyg4NiRhnt_Q/exec";
+  const CRM_WEBHOOK_URL = PRIMARY_CRM_WEBHOOK_URL;
   const SITE = 'https://www.sharifgroup.ae/';
   const FOOTER_VIDEO = 'assets/videos/footer_bg_e58bba71.mp4';
   const FOOTER_LOGO = 'assets/images/vector_2d09c4bb.svg';
@@ -890,54 +892,97 @@
       });
       $('#formAlert').classList.toggle('show', !!first);
       if (first) { first.focus(); first.scrollIntoView({ block: 'center' }); return; }
-      const apps = store.get(K.apps, []);
-      const dup = apps.find(a => a.email === email);
-      const btn = $('button[type="submit"]', form); btn.disabled = true; btn.textContent = t('form.sending');
-      setTimeout(() => {
-        let rec = dup;
-        if (!dup) {
-          rec = {
-            form_id: 'partner-application',
-            application_id: 'PAR-' + Date.now().toString(36).toUpperCase().slice(-6),
-            submitted_at_utc: new Date().toISOString(),
-            partner_type: type, fullName: name, company, country,
-            dialCode: dial, phone: `${dial} ${local}`, whatsapp_e164: dial + local, email,
-            message: String(fd.get('message') || '').trim(), consent: 'yes', lang,
-            source: `${SITE}${prefix()}partners/`, page: `/${prefix()}partners/`
-          };
-          apps.push(rec); store.set(K.apps, apps);
-          console.info('[Sharif partners demo] Payload dispatched to CRM_WEBHOOK_URL:', rec);
-        }
-        store.set(K.last, { id: rec.application_id, dup: !!dup });
+      const apps = Array.isArray(store.get(K.apps, [])) ? store.get(K.apps, []) : [];
+      const dup = apps.find(a => a && a.email === email);
+      const btn = $('button[type="submit"]', form);
+      if (btn) {
+        btn.disabled = true;
+        btn.innerHTML = `<span style="display:inline-flex;align-items:center;gap:8px;">${I.spark || ''}<span>${t('form.sending') || 'Sending...'}</span></span>`;
+      }
 
-        // Dispatch to Live Google Apps Script CRM Webhook
-        if (CRM_WEBHOOK_URL) {
-          fetch(CRM_WEBHOOK_URL, {
+      // Always compile a fresh, complete partner application record
+      const rec = {
+        form_id: 'partner-application',
+        application_id: 'PAR-' + Date.now().toString(36).toUpperCase().slice(-6),
+        submitted_at_utc: new Date().toISOString(),
+        partner_type: type,
+        fullName: name,
+        company: company,
+        country: country,
+        dialCode: dial,
+        phone: `${dial} ${local}`,
+        whatsapp_e164: dial + local,
+        email: email,
+        website: String(fd.get('website') || '').trim(),
+        message: String(fd.get('message') || '').trim(),
+        consent: 'yes',
+        lang: lang,
+        source: `${SITE}${prefix()}partners/`,
+        page: `/${prefix()}partners/`
+      };
+      apps.push(rec);
+      store.set(K.apps, apps);
+      store.set(K.last, { id: rec.application_id, dup: !!dup });
+
+      // Dispatch to Live Google Apps Script CRM Webhooks (Primary & Unified Fallback)
+      const payloadString = JSON.stringify(rec);
+      const postHeaders = { 'Content-Type': 'text/plain;charset=utf-8' };
+      const webhooks = [
+        typeof PRIMARY_CRM_WEBHOOK_URL !== 'undefined' ? PRIMARY_CRM_WEBHOOK_URL : null,
+        typeof UNIFIED_CRM_WEBHOOK_URL !== 'undefined' ? UNIFIED_CRM_WEBHOOK_URL : null,
+        typeof CRM_WEBHOOK_URL !== 'undefined' ? CRM_WEBHOOK_URL : null
+      ].filter(Boolean);
+
+      [...new Set(webhooks)].forEach(url => {
+        try {
+          fetch(url, {
             method: 'POST',
             mode: 'no-cors',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify(rec)
-          }).catch(err => console.warn('Partner CRM sync error:', err));
+            headers: postHeaders,
+            body: payloadString
+          }).catch(err => console.warn('Partner CRM sync warning:', err));
+        } catch (e) {
+          console.warn('Partner CRM sync error:', e);
         }
+      });
 
+      setTimeout(() => {
         location.hash = '#/partners/thanks';
-      }, 500);
+        route();
+      }, 400);
     });
   }
 
   /* ---------- THANKS ---------- */
   function viewThanks() {
-    const last = store.get(K.last, null);
-    const rec = last && store.get(K.apps, []).find(a => a.application_id === last.id);
-    document.title = `${t('thanks.eyebrow')} | Sharif Group`;
-    return `<div class="container"><div class="thanks">
-      <div class="thanks-icon">${I.check}</div>
-      <span class="eyebrow eyebrow--bronze caps">${esc(t('thanks.eyebrow'))}</span>
-      <h1 class="display h-lg on-light" style="margin:10px 0 12px">${esc(t('thanks.title', { name: rec ? rec.fullName : '' }))}</h1>
-      <p class="lede" style="color:var(--text)">${esc(last && last.dup ? t('thanks.already') : t('thanks.text'))}</p>
-      ${rec ? `<p style="font-size:13px;color:var(--muted)">${esc(t('thanks.ref'))}: <span class="ref">${esc(rec.application_id)}</span></p>` : ''}
-      <div class="btn-row" style="margin-top:28px"><a class="btn btn--dark" href="#/partners">${esc(t('thanks.back'))}</a><a class="btn btn--ghost" href="${SITE + prefix()}">${esc(t('thanks.home'))}</a></div>
-    </div></div>`;
+    try {
+      const last = store.get(K.last, null);
+      const apps = Array.isArray(store.get(K.apps, [])) ? store.get(K.apps, []) : [];
+      const rec = (last && last.id) ? apps.find(a => a && a.application_id === last.id) : (apps.length ? apps[apps.length - 1] : null);
+      document.title = `${t('thanks.eyebrow') || 'Application received'} | Sharif Group`;
+      const applicantName = rec ? (rec.fullName || rec.name || '') : '';
+      const thanksTitle = t('thanks.title', { name: applicantName }) || (applicantName ? `Thank you, ${applicantName}!` : 'Thank you!');
+      const thanksMsg = (last && last.dup)
+        ? (t('thanks.already') || 'We already have an application with this email address. Our team will be in touch.')
+        : (t('thanks.text') || 'We have received your application. Our partnerships team will contact you on WhatsApp or by email.');
+
+      return `<div class="container"><div class="thanks">
+        <div class="thanks-icon">${I.check || '<i class="fa-solid fa-check"></i>'}</div>
+        <span class="eyebrow eyebrow--bronze caps">${esc(t('thanks.eyebrow') || 'Application received')}</span>
+        <h1 class="display h-lg on-light" style="margin:10px 0 12px">${esc(thanksTitle)}</h1>
+        <p class="lede" style="color:var(--text)">${esc(thanksMsg)}</p>
+        ${rec && rec.application_id ? `<p style="font-size:13px;color:var(--muted)">${esc(t('thanks.ref') || 'Reference')}: <span class="ref">${esc(rec.application_id)}</span></p>` : ''}
+        <div class="btn-row" style="margin-top:28px"><a class="btn btn--dark" href="#/partners">${esc(t('thanks.back') || 'Back to partner page')}</a><a class="btn btn--ghost" href="${SITE + prefix()}">${esc(t('thanks.home') || 'Go to homepage')}</a></div>
+      </div></div>`;
+    } catch (err) {
+      console.error('viewThanks render error:', err);
+      return `<div class="container"><div class="thanks">
+        <div class="thanks-icon">✓</div>
+        <h1 class="display h-lg on-light" style="margin:10px 0 12px">Thank You!</h1>
+        <p class="lede" style="color:var(--text)">We have received your application. Our partnerships team will contact you on WhatsApp or by email.</p>
+        <div class="btn-row" style="margin-top:28px"><a class="btn btn--dark" href="#/partners">Back to partner page</a><a class="btn btn--ghost" href="${SITE + prefix()}">Go to homepage</a></div>
+      </div></div>`;
+    }
   }
 
   /* ---------- ADMIN ---------- */

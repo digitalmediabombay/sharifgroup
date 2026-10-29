@@ -24,7 +24,7 @@ window.SGCMS_WEBINARS = [
         "status_zh": "published",
         "speakers": [
             {
-                "name": "Mohammad Borselani",
+                "name": "Mohammad Borsalani",
                 "title": "Senior Consultant, Caribbean Citizenship Programs",
                 "affiliation": "Sharif Group Dubai"
             },
@@ -65,32 +65,32 @@ window.SGCMS_WEBINARS = [
                 {
                     "time": "۰–۵",
                     "topic": "خوشامدگویی و نظرسنجی کوتاه",
-                    "speaker": "محمد برسلانی"
+                    "speaker": ""
                 },
                 {
                     "time": "۵–۱۰",
                     "topic": "معرفی شریف گروپ و سخنرانان",
-                    "speaker": "محمد برسلانی و مهدی یاراحمدی"
+                    "speaker": ""
                 },
                 {
                     "time": "۱۰–۴۰",
                     "topic": "محتوای اصلی جلسه",
-                    "speaker": "محمد برسلانی و مهدی یاراحمدی"
+                    "speaker": ""
                 },
                 {
                     "time": "۴۰–۴۵",
                     "topic": "قدم بعدی: مشاوره خصوصی رایگان و چک‌لیست",
-                    "speaker": "محمد برسلانی"
+                    "speaker": ""
                 },
                 {
                     "time": "۴۵–۶۳",
                     "topic": "پرسش‌وپاسخ زنده",
-                    "speaker": "محمد برسلانی و مهدی یاراحمدی"
+                    "speaker": ""
                 },
                 {
                     "time": "۶۳–۶۵",
                     "topic": "جمع‌بندی و معرفی جلسه بعد",
-                    "speaker": "محمد برسلانی"
+                    "speaker": ""
                 }
             ]
         },
@@ -111,7 +111,7 @@ window.SGCMS_WEBINARS = [
             ],
             "speakers": [
                 {
-                    "name": "Mohammad Borselani",
+                    "name": "Mohammad Borsalani",
                     "title": "Senior Consultant, Caribbean Citizenship Programs",
                     "affiliation": "Sharif Group Dubai"
                 },
@@ -125,32 +125,32 @@ window.SGCMS_WEBINARS = [
                 {
                     "time": "0–5",
                     "topic": "Welcome and a short poll",
-                    "speaker": "Mohammad Borselani"
+                    "speaker": ""
                 },
                 {
                     "time": "5–10",
                     "topic": "About Sharif Group and the speakers",
-                    "speaker": "Mohammad Borselani & Mehdi Yarahmadi"
+                    "speaker": ""
                 },
                 {
                     "time": "10–40",
                     "topic": "Main content",
-                    "speaker": "Mohammad Borselani & Mehdi Yarahmadi"
+                    "speaker": ""
                 },
                 {
                     "time": "40–45",
                     "topic": "Next step: free private consultation and checklist",
-                    "speaker": "Mohammad Borselani"
+                    "speaker": ""
                 },
                 {
                     "time": "45–63",
                     "topic": "Live Q&A",
-                    "speaker": "Mohammad Borselani & Mehdi Yarahmadi"
+                    "speaker": ""
                 },
                 {
                     "time": "63–65",
                     "topic": "Summary and next session",
-                    "speaker": "Mohammad Borselani"
+                    "speaker": ""
                 }
             ]
         },
@@ -185,32 +185,32 @@ window.SGCMS_WEBINARS = [
                 {
                     "time": "0–5",
                     "topic": "ترحيب واستطلاع قصير",
-                    "speaker": "محمد برسلاني"
+                    "speaker": ""
                 },
                 {
                     "time": "5–10",
                     "topic": "تعريف بمجموعة شريف والمتحدثين",
-                    "speaker": "محمد برسلاني ومهدي يار أحمدي"
+                    "speaker": ""
                 },
                 {
                     "time": "10–40",
                     "topic": "المحتوى الرئيسي",
-                    "speaker": "محمد برسلاني ومهدي يار أحمدي"
+                    "speaker": ""
                 },
                 {
                     "time": "40–45",
                     "topic": "الخطوة التالية: استشارة خاصة مجانية وقائمة المستندات",
-                    "speaker": "محمد برسلاني"
+                    "speaker": ""
                 },
                 {
                     "time": "45–63",
                     "topic": "أسئلة وأجوبة مباشرة",
-                    "speaker": "محمد برسلاني ومهدي يار أحمدي"
+                    "speaker": ""
                 },
                 {
                     "time": "63–65",
                     "topic": "الخلاصة والجلسة القادمة",
-                    "speaker": "محمد برسلاني"
+                    "speaker": ""
                 }
             ]
         },
@@ -231,7 +231,7 @@ window.SGCMS_WEBINARS = [
             ],
             "speakers": [
                 {
-                    "name": "穆罕默德·巴尔塞拉尼 (Mohammad Borselani)",
+                    "name": "穆罕默德·巴尔塞拉尼 (Mohammad Borsalani)",
                     "title": "加勒比公民身份项目高级顾问",
                     "affiliation": "Sharif Group 迪拜"
                 },
@@ -245,32 +245,32 @@ window.SGCMS_WEBINARS = [
                 {
                     "time": "0–5",
                     "topic": "欢迎及简短投票",
-                    "speaker": "穆罕默德·巴尔塞拉尼 (Mohammad Borselani)"
+                    "speaker": ""
                 },
                 {
                     "time": "5–10",
                     "topic": "介绍谢里夫集团及主讲嘉宾",
-                    "speaker": "穆罕默德·巴尔塞拉尼与迈赫迪·亚拉赫马迪"
+                    "speaker": ""
                 },
                 {
                     "time": "10–40",
                     "topic": "主要内容",
-                    "speaker": "穆罕默德·巴尔塞拉尼与迈赫迪·亚拉赫马迪"
+                    "speaker": ""
                 },
                 {
                     "time": "40–45",
                     "topic": "下一步：免费私人咨询与材料清单",
-                    "speaker": "穆罕默德·巴尔塞拉尼 (Mohammad Borselani)"
+                    "speaker": ""
                 },
                 {
                     "time": "45–63",
                     "topic": "现场问答",
-                    "speaker": "穆罕默德·巴尔塞拉尼与迈赫迪·亚拉赫马迪"
+                    "speaker": ""
                 },
                 {
                     "time": "63–65",
                     "topic": "总结及下期预告",
-                    "speaker": "穆罕默德·巴尔塞拉尼 (Mohammad Borselani)"
+                    "speaker": ""
                 }
             ]
         },
@@ -286,32 +286,32 @@ window.SGCMS_WEBINARS = [
             {
                 "time": "0–5",
                 "topic": "Welcome and a short poll",
-                "speaker": "Mohammad Borselani"
+                "speaker": ""
             },
             {
                 "time": "5–10",
                 "topic": "About Sharif Group and the speakers",
-                "speaker": "Mohammad Borselani & Mehdi Yarahmadi"
+                "speaker": ""
             },
             {
                 "time": "10–40",
                 "topic": "Main content",
-                "speaker": "Mohammad Borselani & Mehdi Yarahmadi"
+                "speaker": ""
             },
             {
                 "time": "40–45",
                 "topic": "Next step: free private consultation and checklist",
-                "speaker": "Mohammad Borselani"
+                "speaker": ""
             },
             {
                 "time": "45–63",
                 "topic": "Live Q&A",
-                "speaker": "Mohammad Borselani & Mehdi Yarahmadi"
+                "speaker": ""
             },
             {
                 "time": "63–65",
                 "topic": "Summary and next session",
-                "speaker": "Mohammad Borselani"
+                "speaker": ""
             }
         ]
     },

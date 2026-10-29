@@ -10,9 +10,14 @@ def create_partners_zip():
         'assets/js/partners-i18n.js',
         'assets/css/partners.css',
         'partners/index.html',
+        'partners/thanks/index.html',
         'fa/partners/index.html',
+        'fa/partners/thanks/index.html',
         'ar/partners/index.html',
-        'zh/partners/index.html'
+        'ar/partners/thanks/index.html',
+        'zh/partners/index.html',
+        'zh/partners/thanks/index.html',
+        '.htaccess'
     ]
 
     print(f"Creating Partners Update ZIP: {output_zip}...")

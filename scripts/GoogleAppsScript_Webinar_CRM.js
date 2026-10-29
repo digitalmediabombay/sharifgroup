@@ -567,12 +567,15 @@ function handlePartnerApplication(data) {
     }
   }
 
+  var applicationStatus = "Pending Review";
   if (isDuplicate) {
-    sheet.getRange(existingRowIndex, 19).setValue("Re-applied: " + nowUtc);
-    return { status: "success", duplicate: true, message: "Existing partner application confirmed." };
+    applicationStatus = "Re-submission (Duplicate Email)";
+    try {
+      sheet.getRange(existingRowIndex, 19).setValue("Re-applied: " + nowUtc);
+    } catch (e) {}
   }
 
-  // Append new clean row
+  // Append new clean row (always logs every submission)
   sheet.appendRow([
     nowUtc,
     appId,
@@ -592,7 +595,7 @@ function handlePartnerApplication(data) {
     message,
     lang,
     source,
-    "Pending Review",
+    applicationStatus,
     emailStatus
   ]);
 

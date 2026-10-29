@@ -52,6 +52,17 @@ def create_events_zip():
         'zh/blog/index.html'
     ]
 
+    # Dynamically include all physical session detail pages
+    for root_folder in ['events', 'fa/events', 'ar/events', 'zh/events', 'webinars', 'fa/webinars', 'ar/webinars', 'zh/webinars']:
+        full_rf = os.path.join(root_dir, root_folder)
+        if os.path.exists(full_rf):
+            for sub in os.listdir(full_rf):
+                sub_p = os.path.join(full_rf, sub, 'index.html')
+                if os.path.isfile(sub_p):
+                    rel = os.path.relpath(sub_p, root_dir).replace(os.sep, '/')
+                    if rel not in events_files:
+                        events_files.append(rel)
+
     print(f"Creating Events Update ZIP: {output_zip}...")
     with zipfile.ZipFile(output_zip, 'w', compression=zipfile.ZIP_DEFLATED, compresslevel=9) as zipf:
         for rel_path in events_files:

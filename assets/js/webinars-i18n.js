@@ -120,12 +120,12 @@ window.WEBINAR_I18N = {
       detail: {
         recapTitle: "Session summary", home: "Home", about: "About this session", learn: "What you will learn", agenda: "Session agenda", speakers: "Speakers",
         agendaItems: [
-          { t: "0–5", l: "Welcome and a short poll", w: "Mohammad Borselani" },
-          { t: "5–10", l: "About Sharif Group and the speakers", w: "Mohammad Borselani & Mehdi Yarahmadi" },
-          { t: "10–40", l: "Main content", w: "Mohammad Borselani & Mehdi Yarahmadi" },
-          { t: "40–45", l: "Next step: free private consultation and checklist", w: "Mohammad Borselani" },
-          { t: "45–63", l: "Live Q&A", w: "Mohammad Borselani & Mehdi Yarahmadi" },
-          { t: "63–65", l: "Summary and next session", w: "Mohammad Borselani" }
+          { t: "0–5", l: "Welcome and a short poll", w: "" },
+          { t: "5–10", l: "About Sharif Group and the speakers", w: "" },
+          { t: "10–40", l: "Main content", w: "" },
+          { t: "40–45", l: "Next step: free private consultation and checklist", w: "" },
+          { t: "45–63", l: "Live Q&A", w: "" },
+          { t: "63–65", l: "Summary and next session", w: "" }
         ],
         minutes: "min",
         expertName: "Senior Citizenship Specialist", expertRole: "Sharif Group, Dubai", tbd: "Name to be announced",
@@ -294,12 +294,12 @@ window.WEBINAR_I18N = {
       detail: {
         recapTitle: "خلاصه جلسه", home: "خانه", about: "درباره این جلسه", learn: "در این جلسه یاد می‌گیرید", agenda: "برنامه جلسه", speakers: "سخنرانان",
         agendaItems: [
-          { t: "۰–۵", l: "خوشامدگویی و نظرسنجی کوتاه", w: "محمد برسلانی" },
-          { t: "۵–۱۰", l: "معرفی شریف گروپ و سخنرانان", w: "محمد برسلانی و مهدی یاراحمدی" },
-          { t: "۱۰–۴۰", l: "محتوای اصلی جلسه", w: "محمد برسلانی و مهدی یاراحمدی" },
-          { t: "۴۰–۴۵", l: "قدم بعدی: مشاوره خصوصی رایگان و چک‌لیست", w: "محمد برسلانی" },
-          { t: "۴۵–۶۳", l: "پرسش‌وپاسخ زنده", w: "محمد برسلانی و مهدی یاراحمدی" },
-          { t: "۶۳–۶۵", l: "جمع‌بندی و معرفی جلسه بعد", w: "محمد برسلانی" }
+          { t: "۰–۵", l: "خوشامدگویی و نظرسنجی کوتاه", w: "" },
+          { t: "۵–۱۰", l: "معرفی شریف گروپ و سخنرانان", w: "" },
+          { t: "۱۰–۴۰", l: "محتوای اصلی جلسه", w: "" },
+          { t: "۴۰–۴۵", l: "قدم بعدی: مشاوره خصوصی رایگان و چک‌لیست", w: "" },
+          { t: "۴۵–۶۳", l: "پرسش‌وپاسخ زنده", w: "" },
+          { t: "۶۳–۶۵", l: "جمع‌بندی و معرفی جلسه بعد", w: "" }
         ],
         minutes: "دقیقه",
         expertName: "کارشناس ارشد شهروندی", expertRole: "شریف گروپ، دبی", tbd: "نام پس از تأیید اعلام می‌شود",
@@ -468,12 +468,12 @@ window.WEBINAR_I18N = {
       detail: {
         recapTitle: "ملخص الجلسة", home: "الرئيسية", about: "عن هذه الجلسة", learn: "ما ستتعلمه", agenda: "جدول الجلسة", speakers: "المتحدثون",
         agendaItems: [
-          { t: "0–5", l: "ترحيب واستطلاع قصير", w: "محمد برسلاني" },
-          { t: "5–10", l: "تعريف بمجموعة شريف والمتحدثين", w: "محمد برسلاني ومهدي يار أحمدي" },
-          { t: "10–40", l: "المحتوى الرئيسي", w: "محمد برسلاني ومهدي يار أحمدي" },
-          { t: "40–45", l: "الخطوة التالية: استشارة خاصة مجانية وقائمة المستندات", w: "محمد برسلاني" },
-          { t: "45–63", l: "أسئلة وأجوبة مباشرة", w: "محمد برسلاني ومهدي يار أحمدي" },
-          { t: "63–65", l: "الخلاصة والجلسة القادمة", w: "محمد برسلاني" }
+          { t: "0–5", l: "ترحيب واستطلاع قصير", w: "" },
+          { t: "5–10", l: "تعريف بمجموعة شريف والمتحدثين", w: "" },
+          { t: "10–40", l: "المحتوى الرئيسي", w: "" },
+          { t: "40–45", l: "الخطوة التالية: استشارة خاصة مجانية وقائمة المستندات", w: "" },
+          { t: "45–63", l: "أسئلة وأجوبة مباشرة", w: "" },
+          { t: "63–65", l: "الخلاصة والجلسة القادمة", w: "" }
         ],
         minutes: "دقيقة",
         expertName: "أخصائي أول في الجنسية", expertRole: "مجموعة شريف، دبي", tbd: "يُعلن الاسم لاحقاً",
@@ -642,12 +642,12 @@ window.WEBINAR_I18N = {
       detail: {
         recapTitle: "讲座摘要", home: "首页", about: "关于本场讲座", learn: "您将了解", agenda: "讲座流程", speakers: "主讲嘉宾",
         agendaItems: [
-          { t: "0–5", l: "欢迎及简短投票", w: "穆罕默德·巴尔塞拉尼 (Mohammad Borselani)" },
-          { t: "5–10", l: "介绍谢里夫集团及主讲嘉宾", w: "穆罕默德·巴尔塞拉尼与迈赫迪·亚拉赫马迪" },
-          { t: "10–40", l: "主要内容", w: "穆罕默德·巴尔塞拉尼与迈赫迪·亚拉赫马迪" },
-          { t: "40–45", l: "下一步：免费私人咨询与材料清单", w: "穆罕默德·巴尔塞拉尼 (Mohammad Borselani)" },
-          { t: "45–63", l: "现场问答", w: "穆罕默德·巴尔塞拉尼与迈赫迪·亚拉赫马迪" },
-          { t: "63–65", l: "总结及下期预告", w: "穆罕默德·巴尔塞拉尼 (Mohammad Borselani)" }
+          { t: "0–5", l: "欢迎及简短投票", w: "" },
+          { t: "5–10", l: "介绍谢里夫集团及主讲嘉宾", w: "" },
+          { t: "10–40", l: "主要内容", w: "" },
+          { t: "40–45", l: "下一步：免费私人咨询与材料清单", w: "" },
+          { t: "45–63", l: "现场问答", w: "" },
+          { t: "63–65", l: "总结及下期预告", w: "" }
         ],
         minutes: "分钟",
         expertName: "资深入籍顾问", expertRole: "谢里夫集团，迪拜", tbd: "姓名待公布",

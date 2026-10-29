@@ -7,7 +7,9 @@
 
   const urlParams = new URLSearchParams(window.location.search);
   const DEMO = urlParams.get('demo') === '1';
-  const CRM_WEBHOOK_URL = "https://script.google.com/macros/s/AKfycbx866xd6P2fT7xqDJ1WGg10vSCXExEMnZylhrJHpMq0rCG0UotP23GIgbFEoK-0r7rQMA/exec";
+    const PRIMARY_CRM_WEBHOOK_URL = "https://script.google.com/macros/s/AKfycbx866xd6P2fT7xqDJ1WGg10vSCXExEMnZylhrJHpMq0rCG0UotP23GIgbFEoK-0r7rQMA/exec";
+  const UNIFIED_CRM_WEBHOOK_URL = "https://script.google.com/macros/s/AKfycbwRFNqHPPeGo4UqWU7jkhMdJPCTNkirDhCEvBQjWc9YUFufe535vIl89vYyg4NiRhnt_Q/exec";
+  const CRM_WEBHOOK_URL = PRIMARY_CRM_WEBHOOK_URL;
   const LANGS = ['fa', 'en', 'ar', 'zh'];
   const SITE = window.location.protocol === 'file:' ? 'https://www.sharifgroup.ae/' : '/';
   const DIAL = [
@@ -1139,56 +1141,72 @@
       if (alertEl) alertEl.classList.toggle('show', !!first);
       if (first) { first.focus(); first.scrollIntoView({ block: 'center' }); return; }
 
-      const apps = store.get(K.apps, []);
-      const dup = apps.find(a => a.email === email);
+      const apps = Array.isArray(store.get(K.apps, [])) ? store.get(K.apps, []) : [];
+      const dup = apps.find(a => a && a.email === email);
       const btn = $('button[type="submit"]', form);
-      if (btn) { btn.disabled = true; btn.textContent = t('form.sending') || 'Submitting...'; }
-
-      let rec = dup;
-      if (!dup) {
-        rec = {
-          form_id: 'partner-application',
-          application_id: 'PAR-' + Date.now().toString(36).toUpperCase().slice(-6),
-          submitted_at_utc: new Date().toISOString(),
-          partner_type: type,
-          fullName: name,
-          company: company,
-          job_title: String(fd.get('job_title') || '').trim(),
-          country: country,
-          city: String(fd.get('city') || '').trim(),
-          dialCode: dial,
-          phone: `${dial} ${local}`,
-          whatsapp_e164: dial + local,
-          email: email,
-          website: web,
-          programmes: fd.getAll('programmes').join(', '),
-          referrals_per_year: String(fd.get('referrals_per_year') || ''),
-          heard_from: String(fd.get('heard_from') || ''),
-          message: String(fd.get('message') || '').trim(),
-          consent: 'yes',
-          lang: lang,
-          source: `${SITE}${prefix()}partners/`,
-          page: `/${prefix()}partners/`
-        };
-        apps.push(rec);
-        store.set(K.apps, apps);
+      if (btn) {
+        btn.disabled = true;
+        btn.innerHTML = `<span style="display:inline-flex;align-items:center;gap:8px;">${I.spark || ''}<span>${t('form.sending') || 'Sending...'}</span></span>`;
       }
+
+      // Always create a complete, fresh partner application record
+      const rec = {
+        form_id: 'partner-application',
+        application_id: 'PAR-' + Date.now().toString(36).toUpperCase().slice(-6),
+        submitted_at_utc: new Date().toISOString(),
+        partner_type: type,
+        fullName: name,
+        company: company,
+        job_title: String(fd.get('job_title') || '').trim(),
+        country: country,
+        city: String(fd.get('city') || '').trim(),
+        dialCode: dial,
+        phone: `${dial} ${local}`,
+        whatsapp_e164: dial + local,
+        email: email,
+        website: String(fd.get('website') || '').trim(),
+        programmes: fd.getAll('programmes').join(', '),
+        referrals_per_year: String(fd.get('referrals_per_year') || ''),
+        heard_from: String(fd.get('heard_from') || ''),
+        message: String(fd.get('message') || '').trim(),
+        consent: 'yes',
+        lang: lang,
+        source: `${SITE}${prefix()}partners/`,
+        page: `/${prefix()}partners/`
+      };
+      apps.push(rec);
+      store.set(K.apps, apps);
       store.set(K.last, { id: rec.application_id, dup: !!dup });
 
-      // Dispatch to Live Google Apps Script CRM Webhook
-      if (CRM_WEBHOOK_URL) {
-        fetch(CRM_WEBHOOK_URL, {
-          method: 'POST',
-          mode: 'no-cors',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify(rec)
-        }).catch(err => console.warn('Partner CRM sync error:', err));
-      }
+      // Dispatch to Live Google Apps Script CRM Webhooks (Primary & Unified Fallback)
+      const payloadString = JSON.stringify(rec);
+      const postHeaders = { 'Content-Type': 'text/plain;charset=utf-8' };
+      const webhooks = [
+        typeof PRIMARY_CRM_WEBHOOK_URL !== 'undefined' ? PRIMARY_CRM_WEBHOOK_URL : null,
+        typeof UNIFIED_CRM_WEBHOOK_URL !== 'undefined' ? UNIFIED_CRM_WEBHOOK_URL : null,
+        typeof CRM_WEBHOOK_URL !== 'undefined' ? CRM_WEBHOOK_URL : null
+      ].filter(Boolean);
 
+      // Deduplicate webhooks
+      [...new Set(webhooks)].forEach(url => {
+        try {
+          fetch(url, {
+            method: 'POST',
+            mode: 'no-cors',
+            headers: postHeaders,
+            body: payloadString
+          }).catch(err => console.warn('Partner CRM sync warning:', err));
+        } catch (e) {
+          console.warn('Partner CRM sync error:', e);
+        }
+      });
+
+      // Smooth transition to Thank-you page with guaranteed fallback
       setTimeout(() => {
         const thanksUrl = `${SITE}${prefix()}partners/thanks/` + (DEMO ? '?demo=1' : '');
         if (window.location.protocol === 'file:') {
           location.hash = '#/partners/thanks';
+          route();
         } else {
           try {
             history.pushState({ page: 'thanks' }, '', thanksUrl);
@@ -1197,24 +1215,50 @@
             window.location.href = thanksUrl;
           }
         }
-      }, 500);
+        // Safety guard: if form is still visible after 600ms, force direct navigation
+        setTimeout(() => {
+          if (document.getElementById('partnerForm')) {
+            window.location.href = thanksUrl;
+          }
+        }, 600);
+      }, 400);
     });
   }
 
   /* ---------- THANKS PAGE ---------- */
   function viewThanks() {
-    const last = store.get(K.last, null);
-    const rec = last && store.get(K.apps, []).find(a => a.application_id === last.id);
-    document.title = `${t('thanks.eyebrow')} | Sharif Group`;
-    return `<div class="container"><div class="thanks">
-      <div class="thanks-icon">${I.check}</div>
-      <span class="eyebrow eyebrow--bronze caps">${esc(t('thanks.eyebrow'))}</span>
-      <h1 class="display h-lg on-light" style="margin:10px 0 12px">${esc(t('thanks.title', { name: rec ? rec.fullName : '' }))}</h1>
-      <p class="lede" style="color:var(--text)">${esc(last && last.dup ? t('thanks.already') : t('thanks.text'))}</p>
-      ${rec ? `<p style="font-size:13px;color:var(--muted)">${esc(t('thanks.ref'))}: <span class="ref">${esc(rec.application_id)}</span></p>` : ''}
-      <div class="summary-card"><div class="summary-body"><ol class="timeline">${t('thanks.steps').map((s, i) => `<li class="${i === 0 ? 'done' : ''}"><strong>${esc(s.t)}</strong><span>${esc(s.d)}</span></li>`).join('')}</ol></div></div>
-      <div class="btn-row" style="margin-top:28px"><a class="btn btn--dark" href="${SITE + prefix()}partners/">${esc(t('thanks.back'))}</a><a class="btn btn--ghost" href="${SITE + prefix()}">${esc(t('thanks.home'))}</a></div>
-    </div></div>`;
+    try {
+      const last = store.get(K.last, null);
+      const apps = Array.isArray(store.get(K.apps, [])) ? store.get(K.apps, []) : [];
+      const rec = (last && last.id) ? apps.find(a => a && a.application_id === last.id) : (apps.length ? apps[apps.length - 1] : null);
+      document.title = `${t('thanks.eyebrow') || 'Application received'} | Sharif Group`;
+      const rawSteps = t('thanks.steps') || t('steps.items');
+      const stepsList = Array.isArray(rawSteps) ? rawSteps : [];
+      const applicantName = rec ? (rec.fullName || rec.name || '') : '';
+      const thanksTitle = t('thanks.title', { name: applicantName }) || (applicantName ? `Thank you, ${applicantName}!` : 'Thank you!');
+      const thanksMsg = (last && last.dup)
+        ? (t('thanks.already') || 'We already have an application with this email address. Our team will be in touch.')
+        : (t('thanks.text') || 'We have received your application. Our partnerships team will contact you on WhatsApp or by email.');
+
+      return `<div class="container"><div class="thanks">
+        <div class="thanks-icon">${I.check || '<i class="fa-solid fa-check"></i>'}</div>
+        <span class="eyebrow eyebrow--bronze caps">${esc(t('thanks.eyebrow') || 'Application received')}</span>
+        <h1 class="display h-lg on-light" style="margin:10px 0 12px">${esc(thanksTitle)}</h1>
+        <p class="lede" style="color:var(--text)">${esc(thanksMsg)}</p>
+        ${rec && rec.application_id ? `<p style="font-size:13px;color:var(--muted)">${esc(t('thanks.ref') || 'Reference')}: <span class="ref">${esc(rec.application_id)}</span></p>` : ''}
+        ${stepsList.length ? `<div class="summary-card"><div class="summary-body"><ol class="timeline">${stepsList.map((s, i) => `<li class="${i === 0 ? 'done' : ''}"><strong>${esc((s && s.t) || '')}</strong><span>${esc((s && s.d) || '')}</span></li>`).join('')}</ol></div></div>` : ''}
+        <div class="btn-row" style="margin-top:28px"><a class="btn btn--dark" href="${SITE + prefix()}partners/">${esc(t('thanks.back') || 'Back to partner page')}</a><a class="btn btn--ghost" href="${SITE + prefix()}">${esc(t('thanks.home') || 'Go to homepage')}</a></div>
+      </div></div>`;
+    } catch (err) {
+      console.error('viewThanks render error:', err);
+      return `<div class="container"><div class="thanks">
+        <div class="thanks-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M5 12l5 5L20 7"/></svg></div>
+        <span class="eyebrow eyebrow--bronze caps">Application received</span>
+        <h1 class="display h-lg on-light" style="margin:10px 0 12px">Thank You!</h1>
+        <p class="lede" style="color:var(--text)">We have received your application. Our partnerships team will contact you on WhatsApp or by email.</p>
+        <div class="btn-row" style="margin-top:28px"><a class="btn btn--dark" href="${SITE + prefix()}partners/">Back to partner page</a><a class="btn btn--ghost" href="${SITE + prefix()}">Go to homepage</a></div>
+      </div></div>`;
+    }
   }
 
   /* ---------- event bindings & scroll handling ---------- */
@@ -1240,12 +1284,13 @@
   function parseRoute() {
     if (location.hash && location.hash.length > 1) {
       const p = location.hash.replace(/^#\/?/, '').split('/').filter(Boolean);
-      if (p[0] === 'partners' && p[1] === 'thanks') return { page: 'thanks' };
+      if (p.includes('thanks')) return { page: 'thanks' };
       return { page: 'partners' };
     }
     const path = location.pathname.replace(/^\/+|\/+$/g, '');
     const segs = path.split('/').filter(Boolean);
     const pIdx = segs.indexOf('partners');
+    if (segs.includes('thanks')) return { page: 'thanks' };
     if (pIdx !== -1) {
       const rest = segs.slice(pIdx + 1);
       if (rest[0] === 'thanks') return { page: 'thanks' };

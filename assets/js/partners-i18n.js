@@ -199,7 +199,21 @@ window.PARTNER_I18N = {
         "already": "We already have an application with this email address. Our team will be in touch.",
         "ref": "Reference",
         "back": "Back to partner page",
-        "home": "Go to homepage"
+        "home": "Go to homepage",
+        "steps": [
+          {
+            "t": "Application Received",
+            "d": "Your application has been logged with our Dubai partnership desk."
+          },
+          {
+            "t": "Introductory Call",
+            "d": "We connect to review commission tiers, client profiles, and program options."
+          },
+          {
+            "t": "Agreement & Portal Access",
+            "d": "Formal agreement signed and access to partner collaterals and case tracking."
+          }
+        ]
       },
       "demo": {
         "fab": "Demo controls",
@@ -451,7 +465,21 @@ window.PARTNER_I18N = {
         "already": "درخواستی با این ایمیل قبلاً ثبت شده است. تیم ما با شما تماس می‌گیرد.",
         "ref": "کد پیگیری",
         "back": "بازگشت به صفحه همکاری",
-        "home": "رفتن به صفحه اصلی"
+        "home": "رفتن به صفحه اصلی",
+        "steps": [
+          {
+            "t": "ثبت اولیه درخواست",
+            "d": "درخواست شما در سیستم پذیرش همکاران ثبت و به تیم تخصصی ارجاع شد."
+          },
+          {
+            "t": "جلسه معارفه و بررسی",
+            "d": "طی ۲۴ ساعت برای تعیین ساختار کمیسیون و بررسی فرصت‌های همکاری تماس می‌گیریم."
+          },
+          {
+            "t": "عقد قرارداد و آغاز همکاری",
+            "d": "قرارداد رسمی همکاری تنظیم و دسترسی به پورتال پرونده‌ها فعال می‌شود."
+          }
+        ]
       },
       "demo": {
         "fab": "کنترل دمو",
@@ -703,7 +731,21 @@ window.PARTNER_I18N = {
         "already": "لدينا طلب مسجّل بهذا البريد الإلكتروني. سيتواصل معك فريقنا.",
         "ref": "رقم المرجع",
         "back": "العودة إلى صفحة الشراكة",
-        "home": "الصفحة الرئيسية"
+        "home": "الصفحة الرئيسية",
+        "steps": [
+          {
+            "t": "استلام الطلب وتوثيقه",
+            "d": "تم تسجيل بيانات طلب الشراكة بنجاح وإحالتها لمكتب شراكات دبي."
+          },
+          {
+            "t": "مكالمة التعارف والتدقيق",
+            "d": "نتواصل معك خلال ۲۴ ساعة لمناقشة نسب العمولات وآلية إحالة العملاء."
+          },
+          {
+            "t": "توقيع الاتفاقية وتفعيل الشراكة",
+            "d": "توقيع اتفاقية الشراكة الرسمية وبدء استلام ملفات العملاء مباشرة."
+          }
+        ]
       },
       "demo": {
         "fab": "تحكم العرض",
@@ -955,7 +997,21 @@ window.PARTNER_I18N = {
         "already": "该邮箱已提交过申请，我们的团队会与您联系。",
         "ref": "申请编号",
         "back": "返回合作页面",
-        "home": "前往首页"
+        "home": "前往首页",
+        "steps": [
+          {
+            "t": "合作申请已归档",
+            "d": "您的申请信息已录入迪拜总部合作招募系统。"
+          },
+          {
+            "t": "专属沟通与资质审核",
+            "d": "24 小时内与您线上沟通，明确佣金机制与合作细节。"
+          },
+          {
+            "t": "签署协议与正式合作",
+            "d": "完成合规协议签署，享受项目全权直办与高额佣金结算。"
+          }
+        ]
       },
       "demo": {
         "fab": "演示控制",
