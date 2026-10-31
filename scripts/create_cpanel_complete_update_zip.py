@@ -106,3 +106,4 @@ def build_complete_zip():
 
 if __name__ == '__main__':
     build_complete_zip()
+
