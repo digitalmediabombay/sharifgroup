@@ -26,3 +26,4 @@ for path in ['blog/index.html', 'ar/blog/index.html', 'fa/blog/index.html', 'zh/
         print('Updated', path)
     else:
         print('Target not found in', path)
+

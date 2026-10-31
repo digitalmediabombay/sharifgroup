@@ -24,6 +24,8 @@ def create_events_zip():
         'assets/js/webinars-app.js',
         'assets/js/webinars-data.js',
         'assets/js/webinars-i18n.js',
+        'assets/js/blog-webinar-banner.js',
+        'assets/js/language-switcher.js',
         'assets/css/webinars.css',
 
         # Locales with webinar translations

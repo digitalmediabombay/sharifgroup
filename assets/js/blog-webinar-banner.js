@@ -1,13 +1,14 @@
 /**
- * Sharif Group - Dynamic Blog Webinar Floating Banner & Reopen Trigger
+ * Sharif Group - Dynamic Blog & Program Webinar Floating Banner & Reopen Trigger
  * Automatically displays a luxury floating promotional card for webinars
- * that match the topic/country of the current blog article.
+ * that match the topic/country of the current page.
  * Sits cleanly above the WhatsApp widget with minimize & reopen support.
+ * Automatically rotates to the next upcoming session when a session concludes.
  */
 (function() {
   'use strict';
 
-  // Prevent multiple initializations
+  // Prevent duplicate instances
   if (window.__sgWebinarBannerLoaded) return;
   window.__sgWebinarBannerLoaded = true;
 
@@ -21,20 +22,101 @@
     return 'en';
   }
 
-  // Extract current page topic/context (blog slug, country program slug, or category)
+  // Known country keyword mapping to ensure strict, accurate matching
+  var KNOWN_COUNTRIES = [
+    { key: 'dominica', terms: ['dominica'] },
+    { key: 'stkitts', terms: ['stkitts', 'st-kitts', 'saint-kitts', 'stkitts-and-nevis', 'saint kitts'] },
+    { key: 'antigua', terms: ['antigua', 'antigua-and-barbuda', 'antiguaandbarbuda'] },
+    { key: 'grenada', terms: ['grenada'] },
+    { key: 'stlucia', terms: ['stlucia', 'st-lucia', 'saint-lucia'] },
+    { key: 'vanuatu', terms: ['vanuatu'] },
+    { key: 'nauru', terms: ['nauru'] },
+    { key: 'sao-tome', terms: ['sao-tome', 'sao tome', 'sao-tome-and-principe'] },
+    { key: 'portugal', terms: ['portugal'] },
+    { key: 'greece', terms: ['greece'] },
+    { key: 'panama', terms: ['panama'] },
+    { key: 'uae', terms: ['uae', 'dubai'] }
+  ];
+
+  function getCountryKey(str) {
+    if (!str) return null;
+    str = String(str).toLowerCase();
+    for (var i = 0; i < KNOWN_COUNTRIES.length; i++) {
+      var kc = KNOWN_COUNTRIES[i];
+      for (var j = 0; j < kc.terms.length; j++) {
+        if (str.indexOf(kc.terms[j]) !== -1) {
+          return kc.key;
+        }
+      }
+    }
+    return null;
+  }
+
+  // Check if a webinar is genuinely upcoming (has not concluded)
+  function isWebinarUpcoming(w, nowMs) {
+    if (!w) return false;
+    nowMs = nowMs || Date.now();
+    
+    // Explicitly ended or cancelled status
+    if (w.event_status === 'ended' || w.event_status === 'cancelled') {
+      return false;
+    }
+
+    // Check if start time + duration has passed
+    if (w.start_utc) {
+      var startMs = new Date(w.start_utc).getTime();
+      if (!isNaN(startMs)) {
+        var durationMs = ((w.duration_min || 120) * 60 * 1000);
+        if (nowMs >= (startMs + durationMs)) {
+          return false;
+        }
+      }
+    }
+
+    return true;
+  }
+
+  // Extract current page topic/context
   function getPageContext() {
     var path = (window.location && window.location.pathname) ? window.location.pathname.toLowerCase() : '';
     path = path.replace(/index\.html$/i, '').replace(/\/+$/, '');
-    var parts = path.split('/').filter(Boolean);
 
-    // Strip out language segment if present (fa, ar, zh)
-    if (parts.length > 0 && ['fa', 'ar', 'zh'].indexOf(parts[0]) !== -1) {
-      parts.shift();
+    // Pages that must NEVER show the promotional webinar popup
+    var blacklist = [
+      '/admin',
+      '/events',
+      '/webinars',
+      '/partners',
+      '/contact',
+      '/aboutus',
+      '/about-founder',
+      '/eligibilitychecker',
+      '/socialresponsibility',
+      '/privacypolicy',
+      '/termsofuse',
+      '/cookiepolicy',
+      '404'
+    ];
+    for (var b = 0; b < blacklist.length; b++) {
+      if (path.indexOf(blacklist[b]) !== -1) {
+        return null;
+      }
     }
 
-    // Do NOT show on webinars hub or admin studio
-    if (path.indexOf('webinar') !== -1 || path.indexOf('admin') !== -1) {
+    var href = (window.location && window.location.href) ? window.location.href.toLowerCase() : '';
+    var search = (window.location && window.location.search) ? window.location.search.toLowerCase() : '';
+    if (search.indexOf('cms_editor') !== -1 || search.indexOf('cms_preview') !== -1 || href.indexOf('dashboard.html') !== -1) {
       return null;
+    }
+    if (window.self !== window.top) {
+      return null;
+    }
+
+    var parts = path.split('/').filter(Boolean);
+
+    // Strip language prefix (fa, ar, zh)
+    if (parts.length > 0 && ['fa', 'ar', 'zh'].indexOf(parts[0]) !== -1) {
+      parts.shift();
     }
 
     var isBlog = parts.indexOf('blog') !== -1;
@@ -42,38 +124,30 @@
     var isCitizenship = path.indexOf('citizenship') !== -1;
     var isResidency = path.indexOf('residency') !== -1;
 
-    // Only run on blog, program, citizenship or residency pages
+    // Only run on blog, programs, citizenship or residency pages
     if (!isBlog && !isProgram && !isCitizenship && !isResidency) {
       return null;
     }
 
-    // Determine specific program or article slug
     var specificSlug = null;
+    var countryKey = null;
+
     if (isBlog) {
       var bIdx = parts.indexOf('blog');
       if (bIdx !== -1 && parts.length > bIdx + 1) {
         specificSlug = parts[bIdx + 1].toLowerCase().trim();
+        countryKey = getCountryKey(specificSlug) || getCountryKey(document.title);
       }
     } else if (isProgram) {
       // e.g. ["programs", "citizenshipbyinvestment", "dominica"]
       if (parts.length >= 3) {
         specificSlug = parts[2].toLowerCase().trim();
+        countryKey = getCountryKey(specificSlug);
       } else if (parts.length >= 2) {
-        specificSlug = parts[1].toLowerCase().trim();
+        // e.g. ["programs", "citizenshipbyinvestment"] -> category hub
+        specificSlug = null;
       }
     }
-
-    var canonical = document.querySelector('link[rel="canonical"]');
-    var canonicalUrl = (canonical && canonical.href) ? canonical.href.toLowerCase() : '';
-
-    var pageText = (
-      path + ' ' +
-      canonicalUrl + ' ' +
-      (specificSlug || '') + ' ' +
-      (document.title || '') + ' ' +
-      (document.querySelector('meta[name="keywords"]')?.content || '') + ' ' +
-      (document.querySelector('meta[name="description"]')?.content || '')
-    ).toLowerCase();
 
     return {
       path: path,
@@ -83,7 +157,7 @@
       isCitizenship: isCitizenship,
       isResidency: isResidency,
       specificSlug: specificSlug,
-      pageText: pageText
+      countryKey: countryKey
     };
   }
 
@@ -123,48 +197,61 @@
     }
   };
 
-  // Find matching webinar based on page context (country, subcategory, keywords, category)
-  function findMatchingWebinar(catalog, ctx) {
+  // Find matching upcoming webinar based on page context
+  function findMatchingWebinar(catalog, ctx, nowMs) {
     if (!catalog || !catalog.length || !ctx) return null;
+    nowMs = nowMs || Date.now();
 
-    // Prioritize webinars that are open for registration or scheduled
-    var list = catalog.slice().sort(function(a, b) {
-      if (a.registration_open && !b.registration_open) return -1;
-      if (!a.registration_open && b.registration_open) return 1;
-      return (a.session_no || 0) - (b.session_no || 0);
+    // 1. Filter out all webinars that have ended or passed their duration
+    var upcomingList = catalog.filter(function(w) {
+      return isWebinarUpcoming(w, nowMs);
+    }).sort(function(a, b) {
+      // Sort upcoming webinars chronologically
+      var tA = a.start_utc ? new Date(a.start_utc).getTime() : 0;
+      var tB = b.start_utc ? new Date(b.start_utc).getTime() : 0;
+      return tA - tB;
     });
 
-    // 1. Direct subcategory / country matching (e.g. Dominica, Grenada, Saint Kitts, Vanuatu, etc.)
-    for (var i = 0; i < list.length; i++) {
-      var w = list[i];
-      var subcat = (w.subcategory || '').toLowerCase().trim();
-      if (subcat && ctx.pageText.indexOf(subcat) !== -1) {
-        return w;
-      }
-      var wKeywords = (w.slug || '').split('-').filter(function(k) {
-        return k.length > 3 && ['second', 'passport', 'introducing', 'pilot', 'programme', 'program', 'questions'].indexOf(k) === -1;
-      });
-      for (var j = 0; j < wKeywords.length; j++) {
-        if (ctx.pageText.indexOf(wKeywords[j]) !== -1) {
+    if (!upcomingList.length) {
+      return null; // All events have concluded
+    }
+
+    // 2. If page is dedicated to a specific country (Dominica, St. Kitts, etc.)
+    if (ctx.countryKey) {
+      for (var i = 0; i < upcomingList.length; i++) {
+        var w = upcomingList[i];
+        var wCountry = getCountryKey(w.subcategory || w.slug);
+        if (wCountry === ctx.countryKey) {
           return w;
+        }
+      }
+      // If user is viewing a country program without any upcoming webinar, do not show an unrelated country!
+      return null;
+    }
+
+    // 3. Category Hub: /programs/citizenshipbyinvestment/ or /citizenshipbyinvestment/
+    if (ctx.isCitizenship) {
+      for (var j = 0; j < upcomingList.length; j++) {
+        var cw = upcomingList[j];
+        if ((cw.category || '').toLowerCase() === 'citizenship') {
+          return cw;
         }
       }
     }
 
-    // 2. If visitor is on a general Category Hub page (e.g. /citizenshipbyinvestment/ or /residencybyinvestment/)
-    // and NOT on a specific country program page (e.g. not /programs/citizenshipbyinvestment/grenada/),
-    // match the active webinar belonging to this broad category!
-    if (!ctx.specificSlug) {
-      for (var k = 0; k < list.length; k++) {
-        var cw = list[k];
-        var cat = (cw.category || '').toLowerCase().trim();
-        if (ctx.isCitizenship && cat === 'citizenship') {
-          return cw;
-        }
-        if (ctx.isResidency && cat === 'residency') {
-          return cw;
+    // 4. Category Hub: /programs/residencybyinvestment/ or /residencybyinvestment/
+    if (ctx.isResidency) {
+      for (var k = 0; k < upcomingList.length; k++) {
+        var rw = upcomingList[k];
+        if ((rw.category || '').toLowerCase() === 'residency') {
+          return rw;
         }
       }
+    }
+
+    // 5. General Blog Hub (/blog/) or general citizenship blog article
+    if (ctx.isBlog) {
+      return upcomingList[0];
     }
 
     return null;
@@ -174,7 +261,6 @@
   function formatSessionDate(utcStr, lang) {
     try {
       var d = new Date(utcStr);
-      var tz = 'Asia/Kabul';
       var loc = { fa: 'fa-AF-u-ca-gregory', ar: 'ar-AE', zh: 'zh-CN', en: 'en-GB' }[lang] || 'en-GB';
       return new Intl.DateTimeFormat(loc, { weekday: 'short', day: 'numeric', month: 'short' }).format(d);
     } catch(e) {
@@ -271,7 +357,6 @@
         background: rgba(255, 255, 255, 0.1);
         transform: scale(1.1);
       }
-      /* Bold, clean, solid title */
       .sg-wb-title {
         font-family: 'Playfair Display', Georgia, serif;
         font-style: normal;
@@ -338,7 +423,7 @@
         transform: translateX(-4px);
       }
 
-      /* Reopen Trigger Badge — Appears above WhatsApp when banner is closed */
+      /* Reopen Trigger Badge — Appears above WhatsApp when banner is minimized */
       .sg-wb-reopen-btn {
         position: fixed;
         bottom: 104px;
@@ -426,7 +511,9 @@
 
   // Build and display the floating banner with reopen trigger
   function showBanner(webinar) {
-    if (document.querySelector('.sg-wb-banner')) return;
+    // If an existing banner is already shown for this webinar, keep it
+    var existingBanner = document.querySelector('.sg-wb-banner');
+    if (existingBanner) return;
 
     var lang = getLang();
     var c = webinar[lang] || webinar.en || {};
@@ -434,7 +521,8 @@
     var tUI = I18N[lang] || I18N.en;
 
     var dateStr = webinar.start_utc ? formatSessionDate(webinar.start_utc, lang) : '';
-    var webinarUrl = (lang === 'en' ? '' : '/' + lang) + '/webinars/' + webinar.slug + '/';
+    // Canonical events path with trailing slash
+    var eventUrl = (lang === 'en' ? '' : '/' + lang) + '/events/' + webinar.slug + '/';
 
     injectStyles();
 
@@ -443,6 +531,7 @@
     banner.className = 'sg-wb-banner';
     banner.setAttribute('role', 'complementary');
     banner.setAttribute('aria-label', tUI.badge);
+    banner.setAttribute('data-webinar-slug', webinar.slug);
 
     var arrowIcon = (lang === 'fa' || lang === 'ar') ? '←' : '→';
 
@@ -456,7 +545,7 @@
       </div>
       <h4 class="sg-wb-title">${title}</h4>
       ${dateStr ? `<div class="sg-wb-meta"><i class="fa-regular fa-calendar-check"></i><span>${tUI.datePrefix} ${dateStr}</span></div>` : ''}
-      <a class="sg-wb-btn" href="${webinarUrl}">
+      <a class="sg-wb-btn" href="${eventUrl}">
         <span>${tUI.cta}</span>
         <span class="sg-wb-btn-arrow">${arrowIcon}</span>
       </a>
@@ -477,41 +566,73 @@
     document.body.appendChild(banner);
     document.body.appendChild(reopenBtn);
 
-    // Close action: hides banner, shows reopen button
+    var dismissalKey = 'sg_dismissed_webinar_' + webinar.slug;
+
+    // Close action: hides banner, saves session dismissal, shows reopen button
     var closeBtn = banner.querySelector('.sg-wb-close');
     closeBtn.addEventListener('click', function(e) {
       e.preventDefault();
       banner.classList.remove('sg-wb-visible');
+      try {
+        sessionStorage.setItem(dismissalKey, 'true');
+      } catch(err) {}
       setTimeout(function() {
         reopenBtn.classList.add('sg-wb-reopen-visible');
       }, 250);
     });
 
-    // Reopen action: hides reopen button, shows banner
+    // Reopen action: hides reopen button, clears session dismissal, shows banner
     reopenBtn.addEventListener('click', function(e) {
       e.preventDefault();
+      try {
+        sessionStorage.removeItem(dismissalKey);
+      } catch(err) {}
       reopenBtn.classList.remove('sg-wb-reopen-visible');
       setTimeout(function() {
         banner.classList.add('sg-wb-visible');
       }, 200);
     });
 
-    // Animate banner in after 1.5 seconds of reading
-    setTimeout(function() {
-      banner.classList.add('sg-wb-visible');
-    }, 1500);
+    // Check if dismissed previously in this session
+    var wasDismissed = false;
+    try {
+      wasDismissed = sessionStorage.getItem(dismissalKey) === 'true';
+    } catch(err) {}
+
+    if (wasDismissed) {
+      // Show compact reopen trigger pill instead of interrupting
+      reopenBtn.classList.add('sg-wb-reopen-visible');
+    } else {
+      // Animate banner in after 1.5 seconds
+      setTimeout(function() {
+        banner.classList.add('sg-wb-visible');
+      }, 1500);
+    }
   }
 
   // Load webinar catalog and initialize banner matching
   function init() {
     var ctx = getPageContext();
-    if (!ctx) return; // Only run on blog, programs, citizenship or residency pages
+    if (!ctx) {
+      // If we are on an excluded page, clean up any lingering banners
+      var lingeringBanner = document.querySelector('.sg-wb-banner');
+      if (lingeringBanner) lingeringBanner.remove();
+      var lingeringReopen = document.querySelector('.sg-wb-reopen-btn');
+      if (lingeringReopen) lingeringReopen.remove();
+      return;
+    }
 
     function proceed(catalog) {
       if (!catalog || !catalog.length) return;
       var match = findMatchingWebinar(catalog, ctx);
       if (match) {
         showBanner(match);
+      } else {
+        // If no match found for this page, remove any lingering banner
+        var lingeringBanner = document.querySelector('.sg-wb-banner');
+        if (lingeringBanner) lingeringBanner.remove();
+        var lingeringReopen = document.querySelector('.sg-wb-reopen-btn');
+        if (lingeringReopen) lingeringReopen.remove();
       }
     }
 

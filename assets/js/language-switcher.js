@@ -1701,7 +1701,10 @@
             var href = (window.location && window.location.href) ? window.location.href.toLowerCase() : '';
             var search = (window.location && window.location.search) ? window.location.search.toLowerCase() : '';
             if (path.indexOf('/admin/') !== -1 || path.indexOf('admin') !== -1 || href.indexOf('dashboard.html') !== -1) return;
-            if (path.indexOf('/webinars') !== -1) return;
+            if (path.indexOf('/webinars') !== -1 || path.indexOf('/events') !== -1) return;
+            if (path.indexOf('/partners') !== -1 || path.indexOf('/contact') !== -1 || path.indexOf('/eligibilitychecker') !== -1) return;
+            if (path.indexOf('/aboutus') !== -1 || path.indexOf('/about-founder') !== -1 || path.indexOf('/socialresponsibility') !== -1) return;
+            if (path.indexOf('/privacypolicy') !== -1 || path.indexOf('/termsofuse') !== -1 || path.indexOf('/cookiepolicy') !== -1 || path.indexOf('404') !== -1) return;
             if (window.self !== window.top) return;
             if (search.indexOf('cms_editor') !== -1 || search.indexOf('cms_preview') !== -1) return;
 
