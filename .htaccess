@@ -3,6 +3,9 @@
 # Optimized for Hostinger AlmaLinux VPS / cPanel
 # ==============================================================================
 
+# Custom 404 Error Document
+ErrorDocument 404 /404.html
+
 <IfModule mod_rewrite.c>
     RewriteEngine On
     RewriteBase /
@@ -73,10 +76,12 @@
     # 8b. Automated Multilingual XML Sitemap Engine
     RewriteRule ^sitemap\.xml$ sitemap.php [L]
 
-    # 9. Clean Language Path Rewrites for Blog, Events & Partners
+    # 8c. Explicit 404 for deleted or non-existent blog articles (never fallback to blog index)
     RewriteCond %{REQUEST_FILENAME} !-f
     RewriteCond %{REQUEST_FILENAME} !-d
-    RewriteRule ^(ar|fa|zh)/blog/([^/]+)/?$ /$1/blog/index.html [L,QSA]
+    RewriteRule ^(?:(ar|fa|zh)/)?blog/(?!index\.html$|blog\.html$)[^/]+/?$ - [R=404,L]
+
+    # 9. Clean Language Path Rewrites for Events & Partners
 
     RewriteCond %{REQUEST_FILENAME} !-f
     RewriteCond %{REQUEST_FILENAME} !-d
@@ -105,10 +110,7 @@
     RewriteCond %{REQUEST_FILENAME} !-d
     RewriteRule ^(ar|fa|zh)/(.*)$ /$2 [L,QSA]
 
-    # 11. Blog, Events & Partners slug fallback
-    RewriteCond %{REQUEST_FILENAME} !-f
-    RewriteCond %{REQUEST_FILENAME} !-d
-    RewriteRule ^blog/([^/]+)/?$ /blog/index.html [L,QSA]
+    # 11. Events & Partners slug fallback
 
     RewriteCond %{REQUEST_FILENAME} !-f
     RewriteCond %{REQUEST_FILENAME} !-d

@@ -8749,6 +8749,10 @@ window.__PRE_RENDERED_CMS_BLOGS = [{"id":"bid-izo738","slug":"dominica-passport-
                         return;
                     }
                     window.__blogRetryCount = 0;
+                    if (slug && slug !== 'index.html' && slug !== 'blog' && slug !== 'blog.html') {
+                        window.location.replace('/404.html');
+                        return;
+                    }
                     if (listingSection && detailSection) {
                         listingSection.style.display = '';
                         detailSection.classList.add('hidden');
