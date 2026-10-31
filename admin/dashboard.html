@@ -3801,7 +3801,7 @@
         if (!wrap || !sel) return;
         const subcatMap = (typeof BLOG_SUBCATEGORIES !== 'undefined' ? BLOG_SUBCATEGORIES : {
           'Citizenship': [
-            { val: '', text: 'VIEW ALL PROGRAMS' },
+            { val: '', text: 'None — General Citizenship (No Specific Country)' },
             { val: 'dominica', text: 'Dominica' },
             { val: 'st-kitts', text: 'St. Kitts & Nevis' },
             { val: 'antigua', text: 'Antigua & Barbuda' },
@@ -3812,7 +3812,7 @@
             { val: 'nauru', text: 'Republic of Nauru' }
           ],
           'Residency': [
-            { val: '', text: 'All Residency Programs' },
+            { val: '', text: 'None — General Residency (No Specific Country)' },
             { val: 'portugal', text: 'Portugal' },
             { val: 'greece', text: 'Greece' },
             { val: 'panama', text: 'Panama' },
@@ -7132,7 +7132,7 @@
       // ──────────────────────────────────────────────────────────
       const BLOG_SUBCATEGORIES = {
         'Citizenship': [
-          { val: '', text: 'VIEW ALL PROGRAMS' },
+          { val: '', text: 'None — General Citizenship (No Specific Country)' },
           { val: 'dominica', text: 'Dominica' },
           { val: 'st-kitts', text: 'St. Kitts & Nevis' },
           { val: 'antigua', text: 'Antigua & Barbuda' },
@@ -7143,7 +7143,7 @@
           { val: 'nauru', text: 'Republic of Nauru' }
         ],
         'Residency': [
-          { val: '', text: 'All Residency Programs' },
+          { val: '', text: 'None — General Residency (No Specific Country)' },
           { val: 'portugal', text: 'Portugal' },
           { val: 'greece', text: 'Greece' },
           { val: 'panama', text: 'Panama' },
@@ -7436,7 +7436,7 @@
     </div>
     <div class="form-row form-row-2" id="blog-subcat-wrap" style="${(catVal === 'Citizenship' || catVal === 'Residency') ? '' : 'display:none'}">
       <div class="form-group" style="grid-column:1/-1">
-        <label class="form-label">Primary Program / Country Focus</label>
+        <label class="form-label">Primary Program / Country Focus <span style="font-size:11px;color:var(--muted);font-weight:400">(Optional — select None for general news)</span></label>
         <select class="form-select" id="blog-subcategory" onchange="markUnsaved();syncSubcategoryToTargets(this.value);broadcastBlogDraft()">
         </select>
       </div>
@@ -7654,7 +7654,7 @@
           if (document.getElementById('blog-author')) item.author = document.getElementById('blog-author').value.trim() || item.author || 'Sharif Group Advisory';
           if (document.getElementById('blog-author-title')) item.author_title = document.getElementById('blog-author-title').value.trim() || item.author_title || 'Senior Immigration Partner';
           if (document.getElementById('blog-category')) item.category = document.getElementById('blog-category').value || item.category || 'Citizenship';
-          if (document.getElementById('blog-subcategory')) item.subcategory = document.getElementById('blog-subcategory').value || item.subcategory || '';
+          if (document.getElementById('blog-subcategory')) item.subcategory = document.getElementById('blog-subcategory').value;
           
           const checkedTargets = Array.from(document.querySelectorAll('.blog-target-prog-cb:checked')).map(cb => cb.value);
           item.target_programs = checkedTargets;

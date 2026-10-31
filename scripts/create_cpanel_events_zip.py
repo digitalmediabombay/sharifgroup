@@ -40,6 +40,7 @@ def create_events_zip():
         'admin/api/draft_content.json',
         'admin/api/webinars-regen.php',
         'admin/dashboard.html',
+        'admin/blog-editor.html',
 
         # Homepages featuring the updated webinar card
         'index.html',

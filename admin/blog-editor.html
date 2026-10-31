@@ -892,7 +892,8 @@
         <label class="form-label" for="program-select">Select Program / Category <span class="req">*</span></label>
         <select id="program-select" class="form-select" onchange="handleProgramChange()">
           <optgroup label="Citizenship by Investment">
-            <option value="dominica" data-cat="Citizenship" data-sub="dominica" selected>Dominica — Citizenship</option>
+            <option value="citizenship" data-cat="Citizenship" data-sub="" selected>Citizenship — General (No Specific Country / All Programs)</option>
+            <option value="dominica" data-cat="Citizenship" data-sub="dominica">Dominica — Citizenship</option>
             <option value="st-kitts" data-cat="Citizenship" data-sub="st-kitts">St. Kitts & Nevis — Citizenship</option>
             <option value="antigua" data-cat="Citizenship" data-sub="antigua">Antigua & Barbuda — Citizenship</option>
             <option value="saint-lucia" data-cat="Citizenship" data-sub="saint-lucia">Saint Lucia — Citizenship</option>
@@ -902,6 +903,7 @@
             <option value="nauru" data-cat="Citizenship" data-sub="nauru">Nauru — Citizenship</option>
           </optgroup>
           <optgroup label="Residency by Investment">
+            <option value="residency" data-cat="Residency" data-sub="">Residency — General (No Specific Country / All Programs)</option>
             <option value="portugal" data-cat="Residency" data-sub="portugal">Portugal — Golden Visa</option>
             <option value="greece" data-cat="Residency" data-sub="greece">Greece — Golden Visa</option>
             <option value="uae" data-cat="Residency" data-sub="uae">UAE — Golden Visa</option>
@@ -1215,9 +1217,9 @@
     // In-memory unified state
     const blogState = {
       id: null,
-      program: 'dominica',
+      program: 'citizenship',
       category: 'Citizenship',
-      subcategory: 'dominica',
+      subcategory: '',
       slug: '',
       featured_img: '',
       publish_date: new Date().toISOString().split('T')[0],
@@ -1277,7 +1279,8 @@
       const opt = select.options[select.selectedIndex];
       blogState.program = select.value;
       blogState.category = opt.getAttribute('data-cat') || 'Citizenship';
-      blogState.subcategory = opt.getAttribute('data-sub') || select.value;
+      const sub = opt.getAttribute('data-sub');
+      blogState.subcategory = (sub !== null && sub !== undefined) ? sub : select.value;
       markDirty();
     }
 
@@ -1728,7 +1731,7 @@
       }
 
       const targetPrograms = [
-        blogState.program,
+        blogState.subcategory ? blogState.program : null,
         blogState.subcategory,
         (blogState.category || '').toLowerCase()
       ].filter(Boolean);
@@ -1960,10 +1963,25 @@
       document.getElementById('current-mode-badge').textContent = 'Editing: ' + (blog.id || blog.slug);
 
       const pSelect = document.getElementById('program-select');
+      let matchedProg = false;
       for (let i = 0; i < pSelect.options.length; i++) {
-        if (pSelect.options[i].value === blogState.program || pSelect.options[i].getAttribute('data-sub') === blogState.subcategory) {
+        const opt = pSelect.options[i];
+        const optSub = opt.getAttribute('data-sub');
+        if (opt.value === blogState.program || (optSub && optSub === blogState.subcategory)) {
           pSelect.selectedIndex = i;
+          matchedProg = true;
           break;
+        }
+      }
+      if (!matchedProg) {
+        for (let i = 0; i < pSelect.options.length; i++) {
+          const opt = pSelect.options[i];
+          const optCat = opt.getAttribute('data-cat') || '';
+          const optSub = opt.getAttribute('data-sub');
+          if (optCat.toLowerCase() === (blogState.category || '').toLowerCase() && !optSub) {
+            pSelect.selectedIndex = i;
+            break;
+          }
         }
       }
 
