@@ -430,6 +430,11 @@ function handleServiceSelectionChange(selectEl) {
   }
 }
 
+// Helper to normalize Eastern Arabic and Persian digits to standard Latin (0-9)
+const toLatinDigits = s => String(s || '')
+  .replace(/[۰-۹]/g, c => '۰۱۲۳۴۵۶۷۸۹'.indexOf(c))
+  .replace(/[٠-٩]/g, c => '٠١٢٣٤٥٦٧٨٩'.indexOf(c));
+
 // 3. Central Submission Handler
 async function handleContactSubmit(event) {
   event.preventDefault();
@@ -446,11 +451,21 @@ async function handleContactSubmit(event) {
   const formData = new FormData(form);
   const payload = Object.fromEntries(formData.entries());
 
-  // Phone number & Dial Code handling
-  const dialCode = form.querySelector('.dial-code-hidden-value')?.value || '+971';
-  const rawPhone = form.querySelector('input[type="tel"]')?.value || '';
+  // Detect submission language from pathname or document lang
+  const pathParts = window.location.pathname.replace(/^\/+/, '').split('/');
+  const pageLang = ['fa', 'ar', 'zh'].includes(pathParts[0]) ? pathParts[0] : (document.documentElement.lang || 'en');
+  payload.lang = pageLang;
+
+  // Phone number & Dial Code handling with digit normalization
+  const dialCode = toLatinDigits(form.querySelector('.dial-code-hidden-value')?.value || '+971').trim();
+  const rawPhone = toLatinDigits(form.querySelector('input[type="tel"]')?.value || '').trim();
   payload.dialCode = dialCode;
   payload.phone = `${dialCode} ${rawPhone}`.trim();
+
+  // Normalize email digits if present
+  if (payload.email) {
+    payload.email = toLatinDigits(payload.email).trim();
+  }
 
   // Full name handling (Salutation removed)
   if (!payload.fullName && (payload.firstName || payload.lastName)) {
@@ -466,7 +481,7 @@ async function handleContactSubmit(event) {
       await fetch(CRM_WEBHOOK_URL, {
         method: 'POST',
         mode: 'no-cors',
-        headers: { 'Content-Type': 'application/json' },
+        headers: { 'Content-Type': 'text/plain;charset=utf-8' },
         body: JSON.stringify(payload)
       });
     }

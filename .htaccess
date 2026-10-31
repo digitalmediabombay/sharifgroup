@@ -10,6 +10,9 @@ ErrorDocument 404 /404.html
     RewriteEngine On
     RewriteBase /
 
+    # 0. Route localized asset requests (/ar/assets/..., /fa/assets/..., /zh/assets/...) directly to root /assets/...
+    RewriteRule ^(?:ar|fa|zh)/assets/(.*)$ /assets/$1 [L,NC]
+
     # 1. Strip /index.html from all URLs (301 redirect to clean trailing slash)
     RewriteCond %{THE_REQUEST} \s/index\.html(?:\s|\?) [NC]
     RewriteRule ^index\.html$ / [R=301,L]

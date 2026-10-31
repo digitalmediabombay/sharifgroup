@@ -20,13 +20,15 @@ def create_events_zip():
         'ar/webinars/index.html',
         'zh/webinars/index.html',
 
-        # Core frontend JS & CSS for events
+        # Core frontend JS & CSS for events & forms
         'assets/js/webinars-app.js',
         'assets/js/webinars-data.js',
         'assets/js/webinars-i18n.js',
         'assets/js/blog-webinar-banner.js',
         'assets/js/language-switcher.js',
+        'assets/js/forms.js',
         'assets/css/webinars.css',
+        '.htaccess',
 
         # Locales with webinar translations
         'assets/locales/en.json',
