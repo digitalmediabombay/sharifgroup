@@ -21,12 +21,31 @@ def build_complete_zip():
             line = line.strip().replace('\\', '/')
             if not line:
                 continue
-            # Ignore demo folders and local scripts
-            if line.startswith(('Sharif-Webinars-Demo_1/', 'sharif-partners-demo/', 'scripts/')):
+            if line.startswith(('Sharif-Webinars-Demo_1/', 'sharif-partners-demo/', 'scripts/', 'scratch/')):
                 continue
             files_to_pack.add(line)
     except Exception as e:
         print(f"Git diff warning: {e}")
+
+    # Also collect any unstaged/staged working tree changes
+    try:
+        status_out = subprocess.check_output(
+            ['git', 'status', '--porcelain'],
+            cwd=root_dir,
+            text=True
+        )
+        for line in status_out.strip().split('\n'):
+            line = line.strip()
+            if not line:
+                continue
+            parts = line.split(maxsplit=1)
+            if len(parts) == 2:
+                path = parts[1].strip().replace('\\', '/')
+                if path.startswith(('Sharif-Webinars-Demo_1/', 'sharif-partners-demo/', 'scripts/', 'scratch/')):
+                    continue
+                files_to_pack.add(path)
+    except Exception as e:
+        print(f"Git status warning: {e}")
 
     # 2. Add all key core files to guarantee completeness
     core_files = [
@@ -35,9 +54,15 @@ def build_complete_zip():
         'index.html',
         'blog/index.html',
         'events/index.html',
+        'events/webinar-live.json',
         'webinars/index.html',
         'partners/index.html',
         'partners/thanks/index.html',
+        'citizenshipbyinvestment/index.html',
+        'residencybyinvestment/index.html',
+        'realestate/index.html',
+        'educationaladvisory/index.html',
+        'contact/index.html',
         'data/sgcms_webinars.json',
         'admin/blog-editor.html',
         'admin/dashboard.html',
@@ -65,7 +90,17 @@ def build_complete_zip():
     for cf in core_files:
         files_to_pack.add(cf)
 
-    # 3. Add all event & webinar physical session detail pages in all languages
+    # 3. Add all program pages across all 4 languages (EN, AR, FA, ZH)
+    for lang_prefix in ['', 'ar/', 'fa/', 'zh/']:
+        base_prog = os.path.join(root_dir, lang_prefix + 'programs')
+        if os.path.exists(base_prog):
+            for r, _, fs in os.walk(base_prog):
+                for f in fs:
+                    if f.endswith('.html'):
+                        rel = os.path.relpath(os.path.join(r, f), root_dir).replace('\\', '/')
+                        files_to_pack.add(rel)
+
+    # 4. Add all event & webinar physical session detail pages in all languages
     for lang_prefix in ['', 'fa/', 'ar/', 'zh/']:
         for sec in ['events', 'webinars']:
             base_p = os.path.join(root_dir, lang_prefix + sec)
@@ -75,6 +110,17 @@ def build_complete_zip():
                     if os.path.isfile(sub_idx):
                         rel = os.path.relpath(sub_idx, root_dir).replace('\\', '/')
                         files_to_pack.add(rel)
+
+    # 5. Add all standalone landing pages in all languages
+    for lang_prefix in ['', 'ar/', 'fa/', 'zh/']:
+        for sec in ['citizenshipbyinvestment', 'residencybyinvestment', 'realestate', 'educationaladvisory', 'contact', 'aboutus', 'about-founder', 'eligibilitychecker', 'cookiepolicy', 'privacypolicy', 'termsofuse', 'socialresponsibility']:
+            page_p = os.path.join(root_dir, lang_prefix + sec, 'index.html')
+            if os.path.isfile(page_p):
+                rel = os.path.relpath(page_p, root_dir).replace('\\', '/')
+                files_to_pack.add(rel)
+
+    # Filter out zip file itself if accidentally added
+    files_to_pack.discard('cpanel_complete_update.zip')
 
     # Convert to sorted list
     sorted_files = sorted(list(files_to_pack))
@@ -106,4 +152,3 @@ def build_complete_zip():
 
 if __name__ == '__main__':
     build_complete_zip()
-

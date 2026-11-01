@@ -408,6 +408,62 @@ const SUB_PROGRAM_LOCALIZED = {
   }
 };
 
+// --- TOAST NOTIFICATION UTILITY ---
+function showFormNotification(message, type) {
+  type = type || 'success';
+  let toast = document.getElementById('sg-form-toast');
+  if (!toast) {
+    toast = document.createElement('div');
+    toast.id = 'sg-form-toast';
+    toast.className = 'fixed bottom-6 right-6 z-[9999] max-w-md p-4 rounded-xl shadow-2xl text-xs font-medium transition-all duration-300 transform translate-y-12 opacity-0 flex items-center space-x-3 pointer-events-none';
+    document.body.appendChild(toast);
+  }
+  
+  if (type === 'success') {
+    toast.style.backgroundColor = '#1C1917';
+    toast.style.color = '#F5F5F4';
+    toast.style.border = '1px solid #786142';
+    toast.innerHTML = `<span style="font-size:1.2rem;color:#C5A880;margin-right:8px;">✓</span><span>${message}</span>`;
+  } else {
+    toast.style.backgroundColor = '#7F1D1D';
+    toast.style.color = '#FEE2E2';
+    toast.style.border = '1px solid #EF4444';
+    toast.innerHTML = `<span style="font-size:1.2rem;color:#FCA5A5;margin-right:8px;">⚠</span><span>${message}</span>`;
+  }
+
+  toast.classList.remove('translate-y-12', 'opacity-0');
+  toast.classList.add('translate-y-0', 'opacity-100');
+  
+  setTimeout(() => {
+    toast.classList.remove('translate-y-0', 'opacity-100');
+    toast.classList.add('translate-y-12', 'opacity-0');
+  }, 6000);
+}
+window.showFormNotification = showFormNotification;
+
+const TRANSMIT_MESSAGES = {
+  en: {
+    transmitting: 'Transmitting...',
+    success: 'Inquiry submitted successfully. Our advisory team will contact you shortly.',
+    error: 'Failed to send request. Please check your connection or contact us via WhatsApp.'
+  },
+  ar: {
+    transmitting: 'جارٍ الإرسال...',
+    success: 'تم إرسال استفسارك بنجاح. سيتواصل معك مستشارونا المتخصصون قريباً.',
+    error: 'تعذر إرسال الطلب. يرجى التحقق من اتصال الإنترنت أو التواصل معنا عبر واتساب.'
+  },
+  fa: {
+    transmitting: 'در حال ارسال...',
+    success: 'درخواست شما با موفقیت ثبت شد. مشاوران شریف گروپ به زودی با شما تماس خواهند گرفت.',
+    error: 'ارسال درخواست با خطا مواجه شد. لطفاً اتصال اینترنت خود را بررسی کنید یا از طریق واتس‌اپ پیام دهید.'
+  },
+  zh: {
+    transmitting: '正在提交...',
+    success: '您的咨询已成功提交。我们的专属顾问将尽快与您联系。',
+    error: '提交失败，请检查网络连接或通过 WhatsApp 与我们联系。'
+  }
+};
+
 function handleServiceSelectionChange(selectEl) {
   const selectedService = selectEl.value;
   const form = selectEl.closest('form');
@@ -430,6 +486,39 @@ function handleServiceSelectionChange(selectEl) {
   }
 }
 
+// Auto-detect page category and pre-populate targetProgram dropdown if present
+function autoInitStandaloneForms() {
+  const path = (window.location.pathname || '').toLowerCase();
+  document.querySelectorAll('select[name="targetProgram"]').forEach(sel => {
+    if (!sel.value) {
+      if (path.includes('citizenshipbyinvestment') || path.includes('/citizenship')) {
+        sel.value = 'citizenship';
+        handleServiceSelectionChange(sel);
+      } else if (path.includes('residencybyinvestment') || path.includes('/residency')) {
+        sel.value = 'residency';
+        handleServiceSelectionChange(sel);
+      } else if (path.includes('realestate')) {
+        sel.value = 'real-estate';
+        handleServiceSelectionChange(sel);
+      } else if (path.includes('educationaladvisory')) {
+        sel.value = 'education';
+        handleServiceSelectionChange(sel);
+      }
+    }
+  });
+
+  // Ensure subProgram does not block submission when empty
+  document.querySelectorAll('select[name="subProgram"], #sub-service-choice-standalone').forEach(subSel => {
+    subSel.removeAttribute('required');
+  });
+}
+
+if (document.readyState === 'loading') {
+  document.addEventListener('DOMContentLoaded', autoInitStandaloneForms);
+} else {
+  autoInitStandaloneForms();
+}
+
 // Helper to normalize Eastern Arabic and Persian digits to standard Latin (0-9)
 const toLatinDigits = s => String(s || '')
   .replace(/[۰-۹]/g, c => '۰۱۲۳۴۵۶۷۸۹'.indexOf(c))
@@ -438,27 +527,33 @@ const toLatinDigits = s => String(s || '')
 // 3. Central Submission Handler
 async function handleContactSubmit(event) {
   event.preventDefault();
-  const form = event.target;
+  const form = event.target || event.currentTarget;
+  if (!form) return;
+
   const submitBtn = form.querySelector('button[type="submit"]');
   const originalBtnText = submitBtn ? submitBtn.innerHTML : '';
-  const successBox = form.querySelector('#contact-form-success') || form.querySelector('#standalone-form-success');
-
-  if (submitBtn) {
-    submitBtn.disabled = true;
-    submitBtn.textContent = 'Transmitting...';
-  }
-
-  const formData = new FormData(form);
-  const payload = Object.fromEntries(formData.entries());
+  const successBox = form.querySelector('#contact-form-success') || 
+                     form.querySelector('#standalone-form-success') ||
+                     document.getElementById('contact-form-success') ||
+                     document.getElementById('standalone-form-success');
 
   // Detect submission language from pathname or document lang
   const pathParts = window.location.pathname.replace(/^\/+/, '').split('/');
   const pageLang = ['fa', 'ar', 'zh'].includes(pathParts[0]) ? pathParts[0] : (document.documentElement.lang || 'en');
+  const i18nMsg = TRANSMIT_MESSAGES[pageLang] || TRANSMIT_MESSAGES['en'];
+
+  if (submitBtn) {
+    submitBtn.disabled = true;
+    submitBtn.textContent = i18nMsg.transmitting;
+  }
+
+  const formData = new FormData(form);
+  const payload = Object.fromEntries(formData.entries());
   payload.lang = pageLang;
 
   // Phone number & Dial Code handling with digit normalization
-  const dialCode = toLatinDigits(form.querySelector('.dial-code-hidden-value')?.value || '+971').trim();
-  const rawPhone = toLatinDigits(form.querySelector('input[type="tel"]')?.value || '').trim();
+  const dialCode = toLatinDigits(form.querySelector('.dial-code-hidden-value')?.value || payload.dialCode || '+971').trim();
+  const rawPhone = toLatinDigits(form.querySelector('input[type="tel"]')?.value || payload.phone || '').trim();
   payload.dialCode = dialCode;
   payload.phone = `${dialCode} ${rawPhone}`.trim();
 
@@ -470,6 +565,37 @@ async function handleContactSubmit(event) {
   // Full name handling (Salutation removed)
   if (!payload.fullName && (payload.firstName || payload.lastName)) {
     payload.fullName = `${payload.firstName || ''} ${payload.lastName || ''}`.trim();
+  }
+
+  // Map country/residence for CRM
+  if (!payload.country) {
+    payload.country = payload.residence || payload.nationality || '';
+  }
+
+  // Map service/program clearly for Google Sheet
+  if (!payload.service) {
+    payload.service = payload.targetProgram || payload.program || payload.investmentRoute || '';
+    if (payload.subProgram) {
+      payload.service += (payload.service ? ` (${payload.subProgram})` : payload.subProgram);
+    }
+  }
+
+  // Enriched notes
+  const extraDetails = [];
+  if (payload.investmentRoute) extraDetails.push(`Route: ${payload.investmentRoute}`);
+  if (payload.budget) extraDetails.push(`Budget: ${payload.budget}`);
+  if (payload.familyMembers) extraDetails.push(`Family: ${payload.familyMembers}`);
+  if (payload.preferredLanguage) extraDetails.push(`Pref. Lang: ${payload.preferredLanguage}`);
+  if (payload.timeline) extraDetails.push(`Timeline: ${payload.timeline}`);
+  if (payload.objective) extraDetails.push(`Objective: ${payload.objective}`);
+  if (payload.preferredMethod) extraDetails.push(`Method: ${payload.preferredMethod}`);
+  if (payload.timezone) extraDetails.push(`Timezone: ${payload.timezone}`);
+  if (payload.preferredDate) extraDetails.push(`Date: ${payload.preferredDate}`);
+  if (payload.address) extraDetails.push(`Address: ${payload.address}`);
+
+  if (extraDetails.length > 0) {
+    const existingNotes = payload.notes || '';
+    payload.notes = existingNotes ? `${existingNotes}\n---\n[Details] ${extraDetails.join(' | ')}` : extraDetails.join(' | ');
   }
 
   payload.source = window.location.href;
@@ -487,13 +613,19 @@ async function handleContactSubmit(event) {
     }
 
     form.reset();
+
+    // Show inline success box if present
     if (successBox) {
       successBox.classList.remove('hidden');
       successBox.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
     }
+
+    // Always show modern floating confirmation toast
+    showFormNotification(i18nMsg.success, 'success');
+
   } catch (error) {
     console.error("Transmission error:", error);
-    alert('Failed to send request. Please check your connection.');
+    showFormNotification(i18nMsg.error, 'error');
   } finally {
     if (submitBtn) {
       submitBtn.disabled = false;
@@ -501,3 +633,9 @@ async function handleContactSubmit(event) {
     }
   }
 }
+
+// Explicit global exposure
+window.handleServiceSelectionChange = handleServiceSelectionChange;
+window.handleContactSubmit = handleContactSubmit;
+window.toLatinDigits = toLatinDigits;
+window.autoInitStandaloneForms = autoInitStandaloneForms;
