@@ -1,4 +1,4 @@
-/**
+/* /**
  * ==============================================================================
  * SHARIF GROUP — MASTER MULTI-PROGRAM CRM & WEBHOOK (Google Apps Script)
  * ==============================================================================
@@ -174,21 +174,21 @@ function handleStandardLead(data) {
       to: CONFIG.ADMIN_EMAIL,
       subject: "⚡ New Lead [" + programTabName + "]: " + leadName + " (" + leadLang.toUpperCase() + ")",
       body: "New Website Consultation Lead Received:\n\n" +
-            "• Program Sheet Tab:  " + programTabName + "\n" +
-            "• Full Name:          " + leadName + "\n" +
-            "• Email Address:      " + (leadEmail || "Not provided") + "\n" +
-            "• Phone Number:       " + (leadPhone || "Not provided") + "\n" +
-            "• Program / Service:  " + leadService + "\n" +
-            "• Country:            " + (leadCountry || "Not specified") + "\n" +
-            "• Language:           " + leadLang.toUpperCase() + "\n" +
-            "• Form ID:            " + formId + "\n" +
-            "• Timestamp:          " + nowUtc + "\n" +
-            "• Page:               " + (pagePath || sourceUrl) + "\n\n" +
-            "----------------------------------------------------\n" +
-            "CLIENT NOTES & DETAILS:\n" +
-            "----------------------------------------------------\n" +
-            (leadNotes || "None") + "\n\n" +
-            "View in Google Sheet:\n" + ss.getUrl()
+        "• Program Sheet Tab:  " + programTabName + "\n" +
+        "• Full Name:          " + leadName + "\n" +
+        "• Email Address:      " + (leadEmail || "Not provided") + "\n" +
+        "• Phone Number:       " + (leadPhone || "Not provided") + "\n" +
+        "• Program / Service:  " + leadService + "\n" +
+        "• Country:            " + (leadCountry || "Not specified") + "\n" +
+        "• Language:           " + leadLang.toUpperCase() + "\n" +
+        "• Form ID:            " + formId + "\n" +
+        "• Timestamp:          " + nowUtc + "\n" +
+        "• Page:               " + (pagePath || sourceUrl) + "\n\n" +
+        "----------------------------------------------------\n" +
+        "CLIENT NOTES & DETAILS:\n" +
+        "----------------------------------------------------\n" +
+        (leadNotes || "None") + "\n\n" +
+        "View in Google Sheet:\n" + ss.getUrl()
     });
     emailStatus = "Sent via Google Mail (" + nowUtc + ")";
   } catch (adminErr) {
@@ -243,82 +243,62 @@ function resolveProgramTabName(data) {
     (data.notes || "")
   ).toLowerCase();
 
-  // 1. Dominica
+  // 1. Countries First (Dominica, Grenada, Antigua, Saint Lucia, St Kitts, Vanuatu, Nauru, Sao Tome, Greece, Portugal, Panama)
   if (text.indexOf("dominica") !== -1 || text.indexOf("دومینیکا") !== -1 || text.indexOf("دومينيكا") !== -1 || text.indexOf("多米尼克") !== -1) {
     return "Dominica";
   }
-
-  // 2. Real Estate (checked before general UAE)
-  if (text.indexOf("realestate") !== -1 || text.indexOf("real estate") !== -1 || text.indexOf("عقارات") !== -1 || text.indexOf("املاک") !== -1 || text.indexOf("ملک") !== -1 || text.indexOf("房产") !== -1) {
-    return "Dubai_Real_Estate";
-  }
-
-  // 3. UAE / Dubai Residency & Golden Visa
-  if (text.indexOf("uae") !== -1 || text.indexOf("dubai") !== -1 || text.indexOf("امارات") !== -1 || text.indexOf("دبی") !== -1 || text.indexOf("دبي") !== -1 || text.indexOf("golden visa") !== -1 || text.indexOf("ویزای طلایی") !== -1 || text.indexOf("阿联酋") !== -1) {
-    return "UAE";
-  }
-
-  // 4. Grenada
   if (text.indexOf("grenada") !== -1 || text.indexOf("گرانادا") !== -1 || text.indexOf("غرينادا") !== -1 || text.indexOf("格林纳达") !== -1) {
     return "Grenada";
   }
-
-  // 5. Antigua & Barbuda
   if (text.indexOf("antigua") !== -1 || text.indexOf("آنتیگوا") !== -1 || text.indexOf("أنتيغوا") !== -1 || text.indexOf("安提瓜") !== -1) {
     return "Antigua_Barbuda";
   }
-
-  // 6. Saint Lucia
   if (text.indexOf("stlucia") !== -1 || text.indexOf("st lucia") !== -1 || text.indexOf("saint lucia") !== -1 || text.indexOf("سنت لوسیا") !== -1 || text.indexOf("سانت لوسيا") !== -1 || text.indexOf("圣卢西亚") !== -1) {
     return "Saint_Lucia";
   }
-
-  // 7. St. Kitts & Nevis
   if (text.indexOf("stkitts") !== -1 || text.indexOf("st kitts") !== -1 || text.indexOf("saint kitts") !== -1 || text.indexOf("سنت کیتس") !== -1 || text.indexOf("سانت كيتس") !== -1 || text.indexOf("圣基茨") !== -1) {
     return "St_Kitts";
   }
-
-  // 8. Vanuatu
   if (text.indexOf("vanuatu") !== -1 || text.indexOf("وانواتو") !== -1 || text.indexOf("فانواتو") !== -1 || text.indexOf("瓦努阿图") !== -1) {
     return "Vanuatu";
   }
-
-  // 9. Nauru
   if (text.indexOf("nauru") !== -1 || text.indexOf("نائورو") !== -1 || text.indexOf("ناورو") !== -1 || text.indexOf("瑙鲁") !== -1) {
     return "Nauru";
   }
-
-  // 10. Sao Tome & Principe
   if (text.indexOf("sao tome") !== -1 || text.indexOf("sao-tome") !== -1 || text.indexOf("سائوتومه") !== -1 || text.indexOf("ساو تومي") !== -1 || text.indexOf("圣多美") !== -1) {
     return "Sao_Tome";
   }
-
-  // 11. Greece Golden Visa
   if (text.indexOf("greece") !== -1 || text.indexOf("یونان") !== -1 || text.indexOf("اليونان") !== -1 || text.indexOf("希腊") !== -1) {
     return "Greece";
   }
-
-  // 12. Portugal Golden Visa
   if (text.indexOf("portugal") !== -1 || text.indexOf("پرتغال") !== -1 || text.indexOf("البرتغال") !== -1 || text.indexOf("葡萄牙") !== -1) {
     return "Portugal";
   }
-
-  // 13. Panama Residency
   if (text.indexOf("panama") !== -1 || text.indexOf("پاناما") !== -1 || text.indexOf("بنما") !== -1 || text.indexOf("巴拿马") !== -1) {
     return "Panama";
   }
 
-  // 14. Educational Advisory
-  if (text.indexOf("education") !== -1 || text.indexOf("advisory") !== -1 || text.indexOf("تحصیلی") !== -1 || text.indexOf("تعليمي") !== -1 || text.indexOf("教育") !== -1) {
+  // 2. Dubai Real Estate
+  if (text.indexOf("realestate") !== -1 || text.indexOf("real estate") !== -1 || text.indexOf("عقارات") !== -1 || text.indexOf("املاک") !== -1 || text.indexOf("ملک") !== -1 || text.indexOf("property") !== -1 || text.indexOf("off-plan") !== -1 || text.indexOf("offplan") !== -1 || text.indexOf("房产") !== -1) {
+    return "Dubai_Real_Estate";
+  }
+
+  // 3. UAE / Dubai Residency & UAE Golden Visa
+  if (text.indexOf("uae") !== -1 || text.indexOf("dubai") !== -1 || text.indexOf("امارات") !== -1 || text.indexOf("دبی") !== -1 || text.indexOf("دبي") !== -1 || text.indexOf("emirates") !== -1 || text.indexOf("uae golden visa") !== -1 || text.indexOf("ویزای طلایی امارات") !== -1 || text.indexOf("阿联酋") !== -1) {
+    return "UAE";
+  }
+
+  // 4. Educational Advisory
+  if (text.indexOf("educationaladvisory") !== -1 || text.indexOf("educational advisory") !== -1 || text.indexOf("education") !== -1 || text.indexOf("تحصیلی") !== -1 || text.indexOf("تعليمي") !== -1 || text.indexOf("boarding school") !== -1 || text.indexOf("university admission") !== -1 || text.indexOf("教育") !== -1) {
     return "Educational_Advisory";
   }
 
-  // 15. Eligibility Checker
-  if (text.indexOf("eligibility") !== -1 || text.indexOf("checker") !== -1 || text.indexOf("ارزیابی") !== -1 || text.indexOf("اهلية") !== -1) {
+  // 5. Eligibility Assessment
+  if (text.indexOf("eligibilitychecker") !== -1 || text.indexOf("eligibility") !== -1 || text.indexOf("checker") !== -1 || text.indexOf("ارزیابی") !== -1 || text.indexOf("اهلية") !== -1) {
     return "Eligibility_Checker";
   }
 
-  // 16. Broad Categories
+  // 6. Broad Categories
   if (text.indexOf("citizenship") !== -1 || text.indexOf("passport") !== -1 || text.indexOf("شهروندی") !== -1 || text.indexOf("جنسية") !== -1) {
     return "General_Citizenship";
   }
@@ -382,16 +362,16 @@ function handlePartnerApplication(data) {
       to: CONFIG.ADMIN_EMAIL,
       subject: "🤝 New Partner Application: " + fullName + " (" + (company || "Individual") + ")",
       body: "New Partner Application Received:\n\n" +
-            "• Application ID: " + appId + "\n" +
-            "• Full Name:      " + fullName + "\n" +
-            "• Company / Firm: " + (company || "None") + "\n" +
-            "• Job Title:      " + (jobTitle || "None") + "\n" +
-            "• Email:          " + email + "\n" +
-            "• Phone:          " + (dialCode ? dialCode + " " : "") + phone + "\n" +
-            "• Country/City:   " + country + (city ? ", " + city : "") + "\n" +
-            "• Language:       " + lang.toUpperCase() + "\n" +
-            "• Timestamp:      " + nowUtc + "\n\n" +
-            "View in Google Sheet:\n" + ss.getUrl()
+        "• Application ID: " + appId + "\n" +
+        "• Full Name:      " + fullName + "\n" +
+        "• Company / Firm: " + (company || "None") + "\n" +
+        "• Job Title:      " + (jobTitle || "None") + "\n" +
+        "• Email:          " + email + "\n" +
+        "• Phone:          " + (dialCode ? dialCode + " " : "") + phone + "\n" +
+        "• Country/City:   " + country + (city ? ", " + city : "") + "\n" +
+        "• Language:       " + lang.toUpperCase() + "\n" +
+        "• Timestamp:      " + nowUtc + "\n\n" +
+        "View in Google Sheet:\n" + ss.getUrl()
     });
   } catch (adminErr) {
     Logger.log("Admin notify error: " + adminErr.message);
@@ -452,14 +432,14 @@ function handleWebinarRegistration(data) {
       to: CONFIG.ADMIN_EMAIL,
       subject: "🔔 New Event Registration: " + fullName + " (" + webinarId + ")",
       body: "New Event Registration Received:\n\n" +
-            "• Full Name:        " + fullName + "\n" +
-            "• Email:            " + (email || "Not provided") + "\n" +
-            "• Phone:            " + ((dialCode ? dialCode + " " : "") + rawPhone).trim() + "\n" +
-            "• Country:          " + residence + "\n" +
-            "• Webinar Session:  " + webinarId + "\n" +
-            "• Language:         " + lang.toUpperCase() + "\n" +
-            "• Timestamp:        " + nowUtc + "\n\n" +
-            "View in Google Sheet:\n" + ss.getUrl()
+        "• Full Name:        " + fullName + "\n" +
+        "• Email:            " + (email || "Not provided") + "\n" +
+        "• Phone:            " + ((dialCode ? dialCode + " " : "") + rawPhone).trim() + "\n" +
+        "• Country:          " + residence + "\n" +
+        "• Webinar Session:  " + webinarId + "\n" +
+        "• Language:         " + lang.toUpperCase() + "\n" +
+        "• Timestamp:        " + nowUtc + "\n\n" +
+        "View in Google Sheet:\n" + ss.getUrl()
     });
   } catch (adminErr) {
     Logger.log("Admin notify error: " + adminErr.message);
