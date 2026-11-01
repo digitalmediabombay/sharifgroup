@@ -7,8 +7,8 @@
 
   const urlParams = new URLSearchParams(window.location.search);
   const DEMO = urlParams.get('demo') === '1';
-    const PRIMARY_CRM_WEBHOOK_URL = "https://script.google.com/macros/s/AKfycbx866xd6P2fT7xqDJ1WGg10vSCXExEMnZylhrJHpMq0rCG0UotP23GIgbFEoK-0r7rQMA/exec";
-  const UNIFIED_CRM_WEBHOOK_URL = "https://script.google.com/macros/s/AKfycbwRFNqHPPeGo4UqWU7jkhMdJPCTNkirDhCEvBQjWc9YUFufe535vIl89vYyg4NiRhnt_Q/exec";
+    const PRIMARY_CRM_WEBHOOK_URL = "https://script.google.com/macros/s/AKfycbw4LokqwBBc3Bonz4G93DCopLbb6EB6evtZbsEkCaHBPnuIdlSlAT18PWDh2v_ix5IR/exec";
+  const UNIFIED_CRM_WEBHOOK_URL = "https://script.google.com/macros/s/AKfycbw4LokqwBBc3Bonz4G93DCopLbb6EB6evtZbsEkCaHBPnuIdlSlAT18PWDh2v_ix5IR/exec";
   const CRM_WEBHOOK_URL = PRIMARY_CRM_WEBHOOK_URL;
   const LANGS = ['fa', 'en', 'ar', 'zh'];
   const SITE = window.location.protocol === 'file:' ? 'https://www.sharifgroup.ae/' : '/';

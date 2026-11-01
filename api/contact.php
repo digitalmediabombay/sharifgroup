@@ -47,7 +47,7 @@ if (!empty($data['website_url_honeypot'])) {
 $ADMIN_EMAIL   = 'mohammad@sharifgroup.ae';
 $SENDER_EMAIL  = 'mohammad@sharifgroup.ae';
 $SENDER_NAME   = 'Sharif Group CRM';
-$CRM_WEBHOOK   = 'https://script.google.com/macros/s/AKfycbyO6vUrWreO-zeAj1gfmWTish9ntgeYOaUthNSmFRAFfdG6trRgoLjmo1JN-Z57_hdK/exec';
+$CRM_WEBHOOK   = 'https://script.google.com/macros/s/AKfycbw4LokqwBBc3Bonz4G93DCopLbb6EB6evtZbsEkCaHBPnuIdlSlAT18PWDh2v_ix5IR/exec';
 
 // Extract Form Fields
 $fullName = trim($data['fullName'] ?? '');
@@ -185,3 +185,4 @@ echo json_encode([
     'email_sent' => $adminEmailSent,
     'message' => 'Inquiry recorded successfully.'
 ]);
+

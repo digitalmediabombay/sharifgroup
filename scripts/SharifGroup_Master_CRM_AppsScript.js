@@ -1,4 +1,4 @@
-/**
+/* /**
  * ==============================================================================
  * SHARIF GROUP — MASTER CRM & WEBHOOK CONTROLLER (Google Apps Script)
  * ==============================================================================
@@ -179,20 +179,20 @@ function handleStandardLead(data) {
       to: CONFIG.ADMIN_EMAIL,
       subject: "⚡ New Website Lead: " + leadName + " (" + (leadService || "General") + " | " + leadLang.toUpperCase() + ")",
       body: "New Website Consultation Lead Received:\n\n" +
-            "• Full Name:         " + leadName + "\n" +
-            "• Email Address:     " + (leadEmail || "Not provided") + "\n" +
-            "• Phone Number:      " + (leadPhone || "Not provided") + "\n" +
-            "• Program / Service: " + leadService + "\n" +
-            "• Country:           " + (leadCountry || "Not specified") + "\n" +
-            "• Language:          " + leadLang.toUpperCase() + "\n" +
-            "• Form ID:           " + formId + "\n" +
-            "• Timestamp:         " + nowUtc + "\n" +
-            "• Page:              " + (pagePath || sourceUrl) + "\n\n" +
-            "----------------------------------------------------\n" +
-            "CLIENT NOTES & DETAILS:\n" +
-            "----------------------------------------------------\n" +
-            (leadNotes || "None") + "\n\n" +
-            "View in Google Sheet:\n" + ss.getUrl()
+        "• Full Name:         " + leadName + "\n" +
+        "• Email Address:     " + (leadEmail || "Not provided") + "\n" +
+        "• Phone Number:      " + (leadPhone || "Not provided") + "\n" +
+        "• Program / Service: " + leadService + "\n" +
+        "• Country:           " + (leadCountry || "Not specified") + "\n" +
+        "• Language:          " + leadLang.toUpperCase() + "\n" +
+        "• Form ID:           " + formId + "\n" +
+        "• Timestamp:         " + nowUtc + "\n" +
+        "• Page:              " + (pagePath || sourceUrl) + "\n\n" +
+        "----------------------------------------------------\n" +
+        "CLIENT NOTES & DETAILS:\n" +
+        "----------------------------------------------------\n" +
+        (leadNotes || "None") + "\n\n" +
+        "View in Google Sheet:\n" + ss.getUrl()
     });
     emailStatus = "Sent via Google Mail (" + nowUtc + ")";
   } catch (adminErr) {
@@ -301,7 +301,7 @@ function handlePartnerApplication(data) {
     applicationStatus = "Re-submission (Duplicate Email)";
     try {
       sheet.getRange(existingRowIndex, 19).setValue("Re-applied: " + nowUtc);
-    } catch (e) {}
+    } catch (e) { }
   }
 
   sheet.appendRow([
@@ -333,22 +333,22 @@ function handlePartnerApplication(data) {
       to: CONFIG.ADMIN_EMAIL,
       subject: "🤝 New Partner Application: " + fullName + " (" + (company || "Individual") + ")",
       body: "New Partner Application Received:\n\n" +
-            "• Application ID: " + appId + "\n" +
-            "• Full Name:      " + fullName + "\n" +
-            "• Company / Firm: " + (company || "None") + "\n" +
-            "• Job Title:      " + (jobTitle || "None") + "\n" +
-            "• Partner Type:   " + (partnerType || "General") + "\n" +
-            "• Email:          " + email + "\n" +
-            "• Phone:          " + (dialCode ? dialCode + " " : "") + phone + "\n" +
-            "• Country/City:   " + country + (city ? ", " + city : "") + "\n" +
-            "• Est. Referrals: " + (referrals || "Not specified") + "\n" +
-            "• Language:       " + lang.toUpperCase() + "\n" +
-            "• Timestamp:      " + nowUtc + "\n\n" +
-            "----------------------------------------------------\n" +
-            "CONFIDENTIAL MESSAGE:\n" +
-            "----------------------------------------------------\n" +
-            (message || "None") + "\n\n" +
-            "View in Google Sheet:\n" + ss.getUrl()
+        "• Application ID: " + appId + "\n" +
+        "• Full Name:      " + fullName + "\n" +
+        "• Company / Firm: " + (company || "None") + "\n" +
+        "• Job Title:      " + (jobTitle || "None") + "\n" +
+        "• Partner Type:   " + (partnerType || "General") + "\n" +
+        "• Email:          " + email + "\n" +
+        "• Phone:          " + (dialCode ? dialCode + " " : "") + phone + "\n" +
+        "• Country/City:   " + country + (city ? ", " + city : "") + "\n" +
+        "• Est. Referrals: " + (referrals || "Not specified") + "\n" +
+        "• Language:       " + lang.toUpperCase() + "\n" +
+        "• Timestamp:      " + nowUtc + "\n\n" +
+        "----------------------------------------------------\n" +
+        "CONFIDENTIAL MESSAGE:\n" +
+        "----------------------------------------------------\n" +
+        (message || "None") + "\n\n" +
+        "View in Google Sheet:\n" + ss.getUrl()
     });
   } catch (adminErr) {
     Logger.log("Admin notify error: " + adminErr.message);
@@ -465,15 +465,15 @@ function handleWebinarRegistration(data) {
       to: CONFIG.ADMIN_EMAIL,
       subject: "🔔 New Event Registration: " + fullName + " (" + webinarId + ")",
       body: "New Event Registration Received:\n\n" +
-            "• Full Name:        " + fullName + "\n" +
-            "• Email:            " + (email || "Not provided") + "\n" +
-            "• Phone:            " + ((dialCode ? dialCode + " " : "") + rawPhone).trim() + "\n" +
-            "• Country:          " + residence + "\n" +
-            "• Webinar Session:  " + webinarId + "\n" +
-            "• Language:         " + lang.toUpperCase() + "\n" +
-            "• Timestamp:        " + nowUtc + "\n" +
-            "• Page:             " + page + "\n\n" +
-            "View in Google Sheet:\n" + ss.getUrl()
+        "• Full Name:        " + fullName + "\n" +
+        "• Email:            " + (email || "Not provided") + "\n" +
+        "• Phone:            " + ((dialCode ? dialCode + " " : "") + rawPhone).trim() + "\n" +
+        "• Country:          " + residence + "\n" +
+        "• Webinar Session:  " + webinarId + "\n" +
+        "• Language:         " + lang.toUpperCase() + "\n" +
+        "• Timestamp:        " + nowUtc + "\n" +
+        "• Page:             " + page + "\n\n" +
+        "View in Google Sheet:\n" + ss.getUrl()
     });
   } catch (adminErr) {
     Logger.log("Admin notify error: " + adminErr.message);
@@ -520,10 +520,10 @@ function sendWebinarConfirmationEmail(recipientEmail, recipientName, webinarId, 
   var subject = (lang === "fa")
     ? "تاییدیه ثبت‌نام وبینار شریف گروپ | Sharif Group Webinar Confirmation"
     : (lang === "ar")
-    ? "تأكيد التسجيل في فعالية شريف جروب | Sharif Group Event Confirmation"
-    : (lang === "zh")
-    ? "盛睿集团讲座报名确认函 | Sharif Group Event Confirmation"
-    : "Sharif Group Webinar Confirmation | تاییدیه ثبت‌نام وبینار شریف گروپ";
+      ? "تأكيد التسجيل في فعالية شريف جروب | Sharif Group Event Confirmation"
+      : (lang === "zh")
+        ? "盛睿集团讲座报名确认函 | Sharif Group Event Confirmation"
+        : "Sharif Group Webinar Confirmation | تاییدیه ثبت‌نام وبینار شریف گروپ";
 
   var htmlContent = getWebinarEmailTemplate(recipientName, lang);
 
@@ -542,10 +542,10 @@ function sendPartnerConfirmationEmail(recipientEmail, recipientName, application
   var subject = (lang === "fa")
     ? "تأییدیه دریافت درخواست همکاری شریف گروپ — " + applicationId
     : (lang === "ar")
-    ? "تأكيد استلام طلب الشراكة — شريف جروب (" + applicationId + ")"
-    : (lang === "zh")
-    ? "盛睿集团官方合作伙伴申请确认函 — " + applicationId
-    : "Sharif Group — Partnership Application Received (" + applicationId + ")";
+      ? "تأكيد استلام طلب الشراكة — شريف جروب (" + applicationId + ")"
+      : (lang === "zh")
+        ? "盛睿集团官方合作伙伴申请确认函 — " + applicationId
+        : "Sharif Group — Partnership Application Received (" + applicationId + ")";
 
   var htmlContent = getPartnerEmailTemplate(recipientName, applicationId, company, lang);
 
@@ -572,10 +572,10 @@ function getWebinarEmailTemplate(name, lang) {
   var bodyText = (lang === "fa")
     ? "از ثبت‌نام شما در وبینار تخصصی شریف گروپ سپاسگزاریم. لینک ورود اختصاصی جلسه به زودی برای شما ارسال خواهد شد."
     : (lang === "ar")
-    ? "نشكركم على التسجيل في فعاليتنا المباشرة. سيتم تزويدكم برابط الدخول المباشر قبل انطلاق الجلسة."
-    : (lang === "zh")
-    ? "感谢您报名参加盛睿集团（Sharif Group）专题线上讲座。直播间直达链接将在活动开始前发送至您的联系方式。"
-    : "Thank you for registering for our exclusive online session. The direct link to join will be active and sent to your contact details before the session starts.";
+      ? "نشكركم على التسجيل في فعاليتنا المباشرة. سيتم تزويدكم برابط الدخول المباشر قبل انطلاق الجلسة."
+      : (lang === "zh")
+        ? "感谢您报名参加盛睿集团（Sharif Group）专题线上讲座。直播间直达链接将在活动开始前发送至您的联系方式。"
+        : "Thank you for registering for our exclusive online session. The direct link to join will be active and sent to your contact details before the session starts.";
 
   return '<!DOCTYPE html><html lang="' + lang + '" dir="' + dir + '"><body style="margin:0;padding:24px 12px;background-color:#FAF6EE;font-family:sans-serif;color:#111;">' +
     '<table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0"><tr><td align="center">' +
@@ -648,9 +648,9 @@ function testEmailPermissions() {
     to: CONFIG.ADMIN_EMAIL,
     subject: "✅ Sharif Group Master CRM — Test Alert",
     body: "This is a verification test from your Sharif Group Master CRM Google Spreadsheet.\n\n" +
-          "• Status: Google MailApp is operational!\n" +
-          "• Daily Quota Remaining: " + quota + " emails\n" +
-          "• Timestamp: " + new Date().toISOString()
+      "• Status: Google MailApp is operational!\n" +
+      "• Daily Quota Remaining: " + quota + " emails\n" +
+      "• Timestamp: " + new Date().toISOString()
   });
 
   SpreadsheetApp.getUi().alert("✅ Test email successfully sent to " + CONFIG.ADMIN_EMAIL + "!\nDaily quota remaining: " + quota);
@@ -674,3 +674,5 @@ function showAllStats() {
     "Total Inquiries: " + (c1 + c2 + c3)
   );
 }
+
+ */

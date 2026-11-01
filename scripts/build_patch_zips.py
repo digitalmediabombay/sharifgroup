@@ -12,7 +12,10 @@ patch_zip = os.path.join(root_dir, 'cpanel_forms_patch.zip')
 patch_files = [
     '.htaccess',
     'api/contact.php',
+    'api/event-register.php',
     'assets/js/forms.js',
+    'assets/js/partners-app.js',
+    'assets/js/webinars-app.js',
     'assets/js/language-switcher.js',
     'index.html',
     'ar/index.html',

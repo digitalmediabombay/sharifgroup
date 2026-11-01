@@ -9,8 +9,10 @@ def create_changed_only_zip():
     files = [
         '.htaccess',
         'api/contact.php',
+        'api/event-register.php',
         'admin/blog-editor.html',
         'assets/js/forms.js',
+        'assets/js/partners-app.js',
         'assets/js/language-switcher.js',
         'assets/js/blog-webinar-banner.js',
         'assets/js/webinars-app.js',
