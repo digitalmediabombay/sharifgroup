@@ -1,4 +1,4 @@
-/**
+/* /**
  * ==============================================================================
  * SHARIF GROUP — MASTER MULTI-PROGRAM CRM & WEBHOOK (Google Apps Script)
  * ==============================================================================
@@ -174,21 +174,21 @@ function handleStandardLead(data) {
       to: CONFIG.ADMIN_EMAIL,
       subject: "⚡ New Lead [" + programTabName + "]: " + leadName + " (" + leadLang.toUpperCase() + ")",
       body: "New Website Consultation Lead Received:\n\n" +
-            "• Program Sheet Tab:  " + programTabName + "\n" +
-            "• Full Name:          " + leadName + "\n" +
-            "• Email Address:      " + (leadEmail || "Not provided") + "\n" +
-            "• Phone Number:       " + (leadPhone || "Not provided") + "\n" +
-            "• Program / Service:  " + leadService + "\n" +
-            "• Country:            " + (leadCountry || "Not specified") + "\n" +
-            "• Language:           " + leadLang.toUpperCase() + "\n" +
-            "• Form ID:            " + formId + "\n" +
-            "• Timestamp:          " + nowUtc + "\n" +
-            "• Page:               " + (pagePath || sourceUrl) + "\n\n" +
-            "----------------------------------------------------\n" +
-            "CLIENT NOTES & DETAILS:\n" +
-            "----------------------------------------------------\n" +
-            (leadNotes || "None") + "\n\n" +
-            "View in Google Sheet:\n" + ss.getUrl()
+        "• Program Sheet Tab:  " + programTabName + "\n" +
+        "• Full Name:          " + leadName + "\n" +
+        "• Email Address:      " + (leadEmail || "Not provided") + "\n" +
+        "• Phone Number:       " + (leadPhone || "Not provided") + "\n" +
+        "• Program / Service:  " + leadService + "\n" +
+        "• Country:            " + (leadCountry || "Not specified") + "\n" +
+        "• Language:           " + leadLang.toUpperCase() + "\n" +
+        "• Form ID:            " + formId + "\n" +
+        "• Timestamp:          " + nowUtc + "\n" +
+        "• Page:               " + (pagePath || sourceUrl) + "\n\n" +
+        "----------------------------------------------------\n" +
+        "CLIENT NOTES & DETAILS:\n" +
+        "----------------------------------------------------\n" +
+        (leadNotes || "None") + "\n\n" +
+        "View in Google Sheet:\n" + ss.getUrl()
     });
     emailStatus = "Sent via Google Mail (" + nowUtc + ")";
   } catch (adminErr) {
@@ -382,16 +382,16 @@ function handlePartnerApplication(data) {
       to: CONFIG.ADMIN_EMAIL,
       subject: "🤝 New Partner Application: " + fullName + " (" + (company || "Individual") + ")",
       body: "New Partner Application Received:\n\n" +
-            "• Application ID: " + appId + "\n" +
-            "• Full Name:      " + fullName + "\n" +
-            "• Company / Firm: " + (company || "None") + "\n" +
-            "• Job Title:      " + (jobTitle || "None") + "\n" +
-            "• Email:          " + email + "\n" +
-            "• Phone:          " + (dialCode ? dialCode + " " : "") + phone + "\n" +
-            "• Country/City:   " + country + (city ? ", " + city : "") + "\n" +
-            "• Language:       " + lang.toUpperCase() + "\n" +
-            "• Timestamp:      " + nowUtc + "\n\n" +
-            "View in Google Sheet:\n" + ss.getUrl()
+        "• Application ID: " + appId + "\n" +
+        "• Full Name:      " + fullName + "\n" +
+        "• Company / Firm: " + (company || "None") + "\n" +
+        "• Job Title:      " + (jobTitle || "None") + "\n" +
+        "• Email:          " + email + "\n" +
+        "• Phone:          " + (dialCode ? dialCode + " " : "") + phone + "\n" +
+        "• Country/City:   " + country + (city ? ", " + city : "") + "\n" +
+        "• Language:       " + lang.toUpperCase() + "\n" +
+        "• Timestamp:      " + nowUtc + "\n\n" +
+        "View in Google Sheet:\n" + ss.getUrl()
     });
   } catch (adminErr) {
     Logger.log("Admin notify error: " + adminErr.message);
@@ -452,14 +452,14 @@ function handleWebinarRegistration(data) {
       to: CONFIG.ADMIN_EMAIL,
       subject: "🔔 New Event Registration: " + fullName + " (" + webinarId + ")",
       body: "New Event Registration Received:\n\n" +
-            "• Full Name:        " + fullName + "\n" +
-            "• Email:            " + (email || "Not provided") + "\n" +
-            "• Phone:            " + ((dialCode ? dialCode + " " : "") + rawPhone).trim() + "\n" +
-            "• Country:          " + residence + "\n" +
-            "• Webinar Session:  " + webinarId + "\n" +
-            "• Language:         " + lang.toUpperCase() + "\n" +
-            "• Timestamp:        " + nowUtc + "\n\n" +
-            "View in Google Sheet:\n" + ss.getUrl()
+        "• Full Name:        " + fullName + "\n" +
+        "• Email:            " + (email || "Not provided") + "\n" +
+        "• Phone:            " + ((dialCode ? dialCode + " " : "") + rawPhone).trim() + "\n" +
+        "• Country:          " + residence + "\n" +
+        "• Webinar Session:  " + webinarId + "\n" +
+        "• Language:         " + lang.toUpperCase() + "\n" +
+        "• Timestamp:        " + nowUtc + "\n\n" +
+        "View in Google Sheet:\n" + ss.getUrl()
     });
   } catch (adminErr) {
     Logger.log("Admin notify error: " + adminErr.message);
