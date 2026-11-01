@@ -8,6 +8,7 @@ def create_changed_only_zip():
 
     files = [
         '.htaccess',
+        'api/contact.php',
         'admin/blog-editor.html',
         'assets/js/forms.js',
         'assets/js/language-switcher.js',
@@ -84,3 +85,4 @@ def create_changed_only_zip():
 
 if __name__ == '__main__':
     create_changed_only_zip()
+

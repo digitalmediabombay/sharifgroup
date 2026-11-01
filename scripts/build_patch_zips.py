@@ -11,6 +11,7 @@ create_cpanel_changed_only_zip.create_changed_only_zip()
 patch_zip = os.path.join(root_dir, 'cpanel_forms_patch.zip')
 patch_files = [
     '.htaccess',
+    'api/contact.php',
     'assets/js/forms.js',
     'assets/js/language-switcher.js',
     'index.html',
@@ -60,3 +61,4 @@ with zipfile.ZipFile(patch_zip, 'w', compression=zipfile.ZIP_DEFLATED, compressl
 
 size_mb = os.path.getsize(patch_zip) / (1024 * 1024)
 print(f"Created: {patch_zip} ({size_mb:.2f} MB, {len(patch_files)} files)")
+

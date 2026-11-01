@@ -603,6 +603,16 @@ async function handleContactSubmit(event) {
   payload.form_id = form.id || 'program-consult-form';
 
   try {
+    // 1. Dispatch to direct server mailer API (authenticated email to mohammad@sharifgroup.ae + local data backup)
+    try {
+      fetch('/api/contact.php', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(payload)
+      }).catch(function() {});
+    } catch (apiErr) {}
+
+    // 2. Dispatch to Google Apps Script CRM Webhook (Google Sheets sync)
     if (CRM_WEBHOOK_URL) {
       await fetch(CRM_WEBHOOK_URL, {
         method: 'POST',
