@@ -1,4 +1,4 @@
-/* /**
+/**
  * ==============================================================================
  * SHARIF GROUP — MASTER MULTI-PROGRAM CRM & WEBHOOK (Google Apps Script)
  * ==============================================================================
@@ -24,18 +24,9 @@
  *   • Partner Applications  ➔ "Partner_Applications"
  *   • Event Registrations   ➔ "Event_Registrations"
  * 
- * ------------------------------------------------------------------------------
- * HOW TO UPDATE IN GOOGLE SHEETS:
- * ------------------------------------------------------------------------------
- * 1. Open your Google Spreadsheet (e.g. "Sharif Group — Master CRM 2026").
- * 2. Click: Extensions > Apps Script
- * 3. Select all existing code, delete it, and paste this entire file.
- * 4. Click Save (💾).
- * 5. Click the blue "Deploy" button (top right) > "Manage deployments".
- * 6. Click the pencil icon (Edit) on the active deployment:
- *    - Version: Choose "New version"
- *    - Click "Deploy".
- *    (Your existing Web App URL will remain unchanged!)
+ * NOTE: Phone numbers are automatically escaped with a leading apostrophe (')
+ * and formatted as Plain Text to prevent Google Sheets from evaluating "+..."
+ * as a formula (which causes #ERROR!).
  * ==============================================================================
  */
 
@@ -83,7 +74,7 @@ function doGet(e) {
     timestamp: new Date().toISOString(),
     dailyEmailQuotaRemaining: quota,
     adminNotificationEmail: CONFIG.ADMIN_EMAIL,
-    instructions: "POST JSON or form data. Automatically routes to program-specific tab & All_Leads."
+    instructions: "POST JSON. Routes automatically to program-specific tab & All_Leads."
   })).setMimeType(ContentService.MimeType.JSON);
 }
 
@@ -96,7 +87,7 @@ function doPost(e) {
     lock.waitLock(30000);
   } catch (err) {
     return ContentService
-      .createTextOutput(JSON.stringify({ status: "error", message: "Server busy, please retry in a moment." }))
+      .createTextOutput(JSON.stringify({ status: "error", message: "Server busy, retry in a moment." }))
       .setMimeType(ContentService.MimeType.JSON);
   }
 
@@ -154,7 +145,12 @@ function handleStandardLead(data) {
   var nowUtc = new Date().toISOString();
   var leadName = (data.fullName || ((data.firstName || "") + " " + (data.lastName || "")).trim() || "Website Client");
   var leadEmail = (data.email || "").toLowerCase().trim();
-  var leadPhone = (data.phone || (data.dialCode ? (data.dialCode + " " + (data.rawPhone || "")) : "")).trim();
+  
+  // Phone formatting: Escape leading '+' so Google Sheets never interprets it as a math formula (#ERROR!)
+  var rawPhone = (data.phone || (data.dialCode ? (data.dialCode + " " + (data.rawPhone || "")) : "")).trim();
+  var cleanPhone = rawPhone.replace(/^'+/, "").trim();
+  var safePhone = cleanPhone ? ("'" + cleanPhone) : "";
+
   var leadService = data.service || data.targetProgram || data.program || data.investmentRoute || "General Consultation";
   var leadCountry = data.country || data.residence || data.citizenship || "";
   var leadNotes = data.notes || data.message || data.confidentialNotes || "";
@@ -174,21 +170,21 @@ function handleStandardLead(data) {
       to: CONFIG.ADMIN_EMAIL,
       subject: "⚡ New Lead [" + programTabName + "]: " + leadName + " (" + leadLang.toUpperCase() + ")",
       body: "New Website Consultation Lead Received:\n\n" +
-        "• Program Sheet Tab:  " + programTabName + "\n" +
-        "• Full Name:          " + leadName + "\n" +
-        "• Email Address:      " + (leadEmail || "Not provided") + "\n" +
-        "• Phone Number:       " + (leadPhone || "Not provided") + "\n" +
-        "• Program / Service:  " + leadService + "\n" +
-        "• Country:            " + (leadCountry || "Not specified") + "\n" +
-        "• Language:           " + leadLang.toUpperCase() + "\n" +
-        "• Form ID:            " + formId + "\n" +
-        "• Timestamp:          " + nowUtc + "\n" +
-        "• Page:               " + (pagePath || sourceUrl) + "\n\n" +
-        "----------------------------------------------------\n" +
-        "CLIENT NOTES & DETAILS:\n" +
-        "----------------------------------------------------\n" +
-        (leadNotes || "None") + "\n\n" +
-        "View in Google Sheet:\n" + ss.getUrl()
+            "• Program Sheet Tab:  " + programTabName + "\n" +
+            "• Full Name:          " + leadName + "\n" +
+            "• Email Address:      " + (leadEmail || "Not provided") + "\n" +
+            "• Phone Number:       " + (cleanPhone || "Not provided") + "\n" +
+            "• Program / Service:  " + leadService + "\n" +
+            "• Country:            " + (leadCountry || "Not specified") + "\n" +
+            "• Language:           " + leadLang.toUpperCase() + "\n" +
+            "• Form ID:            " + formId + "\n" +
+            "• Timestamp:          " + nowUtc + "\n" +
+            "• Page:               " + (pagePath || sourceUrl) + "\n\n" +
+            "----------------------------------------------------\n" +
+            "CLIENT NOTES & DETAILS:\n" +
+            "----------------------------------------------------\n" +
+            (leadNotes || "None") + "\n\n" +
+            "View in Google Sheet:\n" + ss.getUrl()
     });
     emailStatus = "Sent via Google Mail (" + nowUtc + ")";
   } catch (adminErr) {
@@ -200,7 +196,7 @@ function handleStandardLead(data) {
     nowUtc,
     leadName,
     leadEmail,
-    leadPhone,
+    safePhone,
     leadCountry,
     leadService,
     leadLang,
@@ -243,7 +239,7 @@ function resolveProgramTabName(data) {
     (data.notes || "")
   ).toLowerCase();
 
-  // 1. Countries First (Dominica, Grenada, Antigua, Saint Lucia, St Kitts, Vanuatu, Nauru, Sao Tome, Greece, Portugal, Panama)
+  // 1. Countries First (Guarantees no false positives from words like 'golden visa' or 'advisory')
   if (text.indexOf("dominica") !== -1 || text.indexOf("دومینیکا") !== -1 || text.indexOf("دومينيكا") !== -1 || text.indexOf("多米尼克") !== -1) {
     return "Dominica";
   }
@@ -329,8 +325,13 @@ function handlePartnerApplication(data) {
   var jobTitle = data.job_title || "";
   var country = data.country || "";
   var city = data.city || "";
-  var dialCode = data.dialCode || "";
-  var phone = data.whatsapp_e164 || data.phone || "";
+  
+  // Safe phone escaping
+  var dialCode = (data.dialCode || "").trim().replace(/^'+/, "");
+  var safeDialCode = dialCode ? ("'" + dialCode) : "";
+  var rawPhone = (data.whatsapp_e164 || data.phone || "").trim().replace(/^'+/, "");
+  var safePhone = rawPhone ? ("'" + rawPhone) : "";
+
   var email = (data.email || "").toLowerCase().trim();
   var website = data.website || "";
   var programmes = data.programmes || "";
@@ -351,39 +352,28 @@ function handlePartnerApplication(data) {
 
   sheet.appendRow([
     nowUtc, appId, fullName, partnerType, company, jobTitle,
-    country, city, dialCode, phone, email, website,
+    country, city, safeDialCode, safePhone, email, website,
     programmes, referrals, heardFrom, message, lang, source,
     "Pending Review", emailStatus
   ]);
 
-  // Dispatch instant admin email
   try {
     MailApp.sendEmail({
       to: CONFIG.ADMIN_EMAIL,
       subject: "🤝 New Partner Application: " + fullName + " (" + (company || "Individual") + ")",
       body: "New Partner Application Received:\n\n" +
-        "• Application ID: " + appId + "\n" +
-        "• Full Name:      " + fullName + "\n" +
-        "• Company / Firm: " + (company || "None") + "\n" +
-        "• Job Title:      " + (jobTitle || "None") + "\n" +
-        "• Email:          " + email + "\n" +
-        "• Phone:          " + (dialCode ? dialCode + " " : "") + phone + "\n" +
-        "• Country/City:   " + country + (city ? ", " + city : "") + "\n" +
-        "• Language:       " + lang.toUpperCase() + "\n" +
-        "• Timestamp:      " + nowUtc + "\n\n" +
-        "View in Google Sheet:\n" + ss.getUrl()
+            "• Application ID: " + appId + "\n" +
+            "• Full Name:      " + fullName + "\n" +
+            "• Company / Firm: " + (company || "None") + "\n" +
+            "• Email:          " + email + "\n" +
+            "• Phone:          " + (dialCode ? dialCode + " " : "") + rawPhone + "\n" +
+            "• Country/City:   " + country + (city ? ", " + city : "") + "\n" +
+            "• Timestamp:      " + nowUtc + "\n\n" +
+            "View in Google Sheet:\n" + ss.getUrl()
     });
-  } catch (adminErr) {
-    Logger.log("Admin notify error: " + adminErr.message);
-  }
+  } catch (adminErr) {}
 
-  return {
-    status: "success",
-    tab: CONFIG.PARTNER_TAB,
-    application_id: appId,
-    message: "Partner application submitted successfully.",
-    emailStatus: emailStatus
-  };
+  return { status: "success", tab: CONFIG.PARTNER_TAB, message: "Partner application submitted successfully." };
 }
 
 // ==============================================================================
@@ -401,8 +391,13 @@ function handleWebinarRegistration(data) {
   var webinarId = data.webinar_id || "WEB01";
   var webinarSlug = data.slug || "";
   var fullName = data.fullName || data.name || "Attendee";
-  var dialCode = data.dialCode || "";
-  var rawPhone = (data.whatsapp_e164 || data.phone || "").trim();
+  
+  // Safe phone escaping
+  var dialCode = (data.dialCode || "").trim().replace(/^'+/, "");
+  var safeDialCode = dialCode ? ("'" + dialCode) : "";
+  var rawPhone = (data.whatsapp_e164 || data.phone || "").trim().replace(/^'+/, "");
+  var safePhone = rawPhone ? ("'" + rawPhone) : "";
+
   var email = (data.email || "").toLowerCase().trim();
   var residence = data.residence_country || data.country || "";
   var question = data.question || "";
@@ -421,36 +416,28 @@ function handleWebinarRegistration(data) {
   }
 
   sheet.appendRow([
-    nowUtc, webinarId, webinarSlug, fullName, dialCode, rawPhone,
+    nowUtc, webinarId, webinarSlug, fullName, safeDialCode, safePhone,
     email, residence, question, newsletter, lang, source, page,
     "Registered", emailStatus
   ]);
 
-  // Dispatch instant admin email
   try {
     MailApp.sendEmail({
       to: CONFIG.ADMIN_EMAIL,
       subject: "🔔 New Event Registration: " + fullName + " (" + webinarId + ")",
       body: "New Event Registration Received:\n\n" +
-        "• Full Name:        " + fullName + "\n" +
-        "• Email:            " + (email || "Not provided") + "\n" +
-        "• Phone:            " + ((dialCode ? dialCode + " " : "") + rawPhone).trim() + "\n" +
-        "• Country:          " + residence + "\n" +
-        "• Webinar Session:  " + webinarId + "\n" +
-        "• Language:         " + lang.toUpperCase() + "\n" +
-        "• Timestamp:        " + nowUtc + "\n\n" +
-        "View in Google Sheet:\n" + ss.getUrl()
+            "• Full Name:        " + fullName + "\n" +
+            "• Email:            " + email + "\n" +
+            "• Phone:            " + ((dialCode ? dialCode + " " : "") + rawPhone).trim() + "\n" +
+            "• Country:          " + residence + "\n" +
+            "• Webinar Session:  " + webinarId + "\n" +
+            "• Language:         " + lang.toUpperCase() + "\n" +
+            "• Timestamp:        " + nowUtc + "\n\n" +
+            "View in Google Sheet:\n" + ss.getUrl()
     });
-  } catch (adminErr) {
-    Logger.log("Admin notify error: " + adminErr.message);
-  }
+  } catch (adminErr) {}
 
-  return {
-    status: "success",
-    tab: CONFIG.EVENT_TAB,
-    message: "Registration recorded successfully.",
-    emailStatus: emailStatus
-  };
+  return { status: "success", tab: CONFIG.EVENT_TAB, message: "Registration recorded successfully." };
 }
 
 // ==============================================================================
@@ -474,6 +461,12 @@ function getOrCreateTab(ss, preferredName, fallbacks, headers) {
     .setBackground("#070E1A")
     .setFontColor("#C5A880");
   sheet.setFrozenRows(1);
+
+  // Set all columns format to plain text to avoid formula injection / #ERROR!
+  try {
+    sheet.getRange(1, 1, Math.max(sheet.getMaxRows(), 50), headers.length).setNumberFormat("@");
+  } catch (e) {}
+
   return sheet;
 }
 
@@ -508,14 +501,71 @@ function sendPartnerConfirmationEmail(recipientEmail, recipientName, application
 }
 
 // ==============================================================================
-// UI MENU FOR SPREADSHEET OWNER
+// UI MENU & AUTOMATIC CLEANUP UTILITY
 // ==============================================================================
 function onOpen() {
   SpreadsheetApp.getUi()
     .createMenu("⭐ Sharif Group CRM")
+    .addItem("🔧 Fix Existing Phone Number #ERROR! (Clean All)", "fixExistingPhoneErrors")
     .addItem("🛠️ Create All Program Tabs Now", "initializeAllProgramTabs")
     .addItem("✉️ Send Test Admin Email Alert", "testEmailPermissions")
     .addToUi();
+}
+
+/**
+ * One-click utility that scans every sheet tab, converts phone numbers to clean text,
+ * and eliminates all #ERROR! formula parse errors.
+ */
+function fixExistingPhoneErrors() {
+  var ss = SpreadsheetApp.getActiveSpreadsheet();
+  var sheets = ss.getSheets();
+  var fixedCount = 0;
+
+  for (var s = 0; s < sheets.length; s++) {
+    var sheet = sheets[s];
+    var lastRow = sheet.getLastRow();
+    if (lastRow < 2) continue;
+
+    var lastCol = sheet.getLastColumn();
+    var headers = sheet.getRange(1, 1, 1, lastCol).getValues()[0];
+    
+    // Find Phone column
+    var phoneCols = [];
+    for (var c = 0; c < headers.length; c++) {
+      var h = String(headers[c] || "").toLowerCase();
+      if (h.indexOf("phone") !== -1 || h.indexOf("dial") !== -1) {
+        phoneCols.push(c + 1);
+      }
+    }
+
+    for (var i = 0; i < phoneCols.length; i++) {
+      var col = phoneCols[i];
+      var range = sheet.getRange(2, col, lastRow - 1, 1);
+      
+      // Set column format to plain text
+      range.setNumberFormat("@");
+
+      var formulas = range.getFormulas();
+      var values = range.getValues();
+
+      for (var r = 0; r < values.length; r++) {
+        var formula = formulas[r][0];
+        var val = values[r][0];
+
+        if (formula && formula.charAt(0) === "+") {
+          range.getCell(r + 1, 1).setValue("'" + formula);
+          fixedCount++;
+        } else if (String(val) === "#ERROR!" || String(val).indexOf("ERROR") !== -1) {
+          if (formula) {
+            range.getCell(r + 1, 1).setValue("'" + formula);
+            fixedCount++;
+          }
+        }
+      }
+    }
+  }
+
+  SpreadsheetApp.getUi().alert("✅ Phone number formatting fixed across all sheets!\nFixed " + fixedCount + " formula errors.");
 }
 
 function initializeAllProgramTabs() {
@@ -545,7 +595,6 @@ function initializeAllProgramTabs() {
     getOrCreateTab(ss, programTabs[i], [], LEAD_HEADERS);
   }
 
-  // Partner & Event tabs
   getOrCreateTab(ss, CONFIG.PARTNER_TAB, [], [
     "Timestamp (UTC)", "Application ID", "Full Name", "Partner Type", "Company / Firm", "Job Title",
     "Country", "City", "Dial Code", "Phone (WhatsApp)", "Email Address", "Website / LinkedIn",
@@ -559,7 +608,7 @@ function initializeAllProgramTabs() {
     "Language", "Source URL", "Page Path", "Status", "Email Dispatch Status"
   ]);
 
-  SpreadsheetApp.getUi().alert("✅ Success: All program-specific tabs have been created and formatted with luxury gold & navy styling!");
+  SpreadsheetApp.getUi().alert("✅ All program tabs have been created!");
 }
 
 function testEmailPermissions() {
@@ -567,7 +616,7 @@ function testEmailPermissions() {
   MailApp.sendEmail({
     to: CONFIG.ADMIN_EMAIL,
     subject: "✅ Sharif Group Master CRM — Test Alert",
-    body: "Operational test from your Sharif Group Master CRM.\nDaily Quota: " + quota
+    body: "Operational test.\nDaily Quota: " + quota
   });
   SpreadsheetApp.getUi().alert("✅ Test email sent to " + CONFIG.ADMIN_EMAIL);
 }
