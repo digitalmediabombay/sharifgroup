@@ -1,39 +1,65 @@
 /**
  * ==============================================================================
- * Sharif Group — Unified Webhook & Webinar Registration CRM (Google Apps Script)
+ * SHARIF GROUP — MASTER CRM & WEBHOOK CONTROLLER (Google Apps Script)
  * ==============================================================================
- * Instructions:
- * 1. Open your Google Spreadsheet (e.g. "Sharif Group CRM 2026").
- * 2. Click "Extensions" > "Apps Script".
- * 3. Replace all existing code with this script.
- * 4. Google Mail (MailApp) handles confirmation emails automatically out-of-the-box
- *    using your Google account. No external API keys or domain verifications required!
- * 5. (Optional) If you ever want to use Resend API, add Script Properties:
- *    - RESEND_API_KEY : Your Resend API key (e.g. re_xxxxxxxxx)
- *    - SENDER_EMAIL   : webinars@sharifgroup.ae
- * 6. Click "Deploy" > "Manage Deployments" > "New Deployment" > Web App.
- *    - Execute as: "Me"
- *    - Who has access: "Anyone"
- * 7. Copy the Web App URL and set CRM_WEBHOOK_URL in assets/js/webinars-app.js.
+ * Single Web App URL for ALL website forms:
+ *   1. Programs & Consultations (Citizenship, Residency, Real Estate, Advisory, Contact, Eligibility)
+ *   2. Partner Applications (B2B Partnerships)
+ *   3. Event Registrations (Webinars & Live Sessions)
+ * 
+ * ------------------------------------------------------------------------------
+ * STEP-BY-STEP SETUP INSTRUCTIONS:
+ * ------------------------------------------------------------------------------
+ * 1. Open Google Sheets (https://sheets.new) and name the spreadsheet:
+ *    "Sharif Group — Master CRM 2026"
+ * 
+ * 2. In Google Sheets, click:
+ *    Extensions > Apps Script
+ * 
+ * 3. Delete any default code in Code.gs, paste this ENTIRE file, and click Save (💾).
+ * 
+ * 4. Click the blue "Deploy" button (top right) > "New deployment".
+ *    - Click the gear icon next to "Select type" and choose: "Web app"
+ *    - Description: "Sharif Group Master CRM v1"
+ *    - Execute as: "Me (<your-google-email>)"
+ *    - Who has access: "Anyone"   <-- [CRITICAL: Allows website visitors to submit forms]
+ * 
+ * 5. Click "Deploy".
+ *    - Click "Review permissions", select your account, click "Advanced" > "Go to Untitled project (unsafe)", and click "Allow".
+ * 
+ * 6. Copy the resulting "Web app URL":
+ *    (It looks like: https://script.google.com/macros/s/AKfycb.../exec)
+ * 
+ * 7. Paste that single Web App URL in your chat with Antigravity!
+ *    We will update it across all website forms so everything connects instantly.
  * ==============================================================================
  */
 
 // Global Configuration
 const CONFIG = {
-  WEBINAR_SHEET_NAME: "Webinar_Registrations",
-  PARTNER_SHEET_NAME: "Partner_Applications",
-  LEADS_SHEET_NAME: "Inquiries",
+  // Tab Names inside the Spreadsheet
+  LEADS_TAB: "Programs_and_Leads",
+  PARTNER_TAB: "Partner_Applications",
+  EVENT_TAB: "Event_Registrations",
+
+  // Fallback Tab Names (if migrating an older sheet)
+  FALLBACK_LEADS: ["Inquiries", "Website_Leads", "Sheet1"],
+  FALLBACK_EVENTS: ["Webinar_Registrations"],
+
+  // Admin Notification Recipient
   ADMIN_EMAIL: "mohammad@sharifgroup.ae",
-  SENDER_NAME: "Sharif Group",
+  SENDER_NAME: "Sharif Group CRM",
   REPLY_TO_EMAIL: "mohammad@sharifgroup.ae",
   DEFAULT_SENDER: "Sharif Group <mohammad@sharifgroup.ae>",
-  RESEND_API_URL: "https://api.resend.com/emails",
-  // Default to Google Mail (MailApp) as requested by client
-  PREFER_GOOGLE_MAIL: true
+
+  // Built-in Google MailApp (Requires zero external API keys)
+  PREFER_GOOGLE_MAIL: true,
+  RESEND_API_URL: "https://api.resend.com/emails"
 };
 
 /**
  * Diagnostic GET endpoint
+ * Test by pasting the Web App URL directly in any browser window
  */
 function doGet(e) {
   var quota = -1;
@@ -42,57 +68,62 @@ function doGet(e) {
   } catch (err) {
     quota = "Error: " + err.message;
   }
+
   return ContentService.createTextOutput(JSON.stringify({
     status: "online",
-    service: "Sharif Group Unified CRM",
+    service: "Sharif Group Master CRM Unified Webhook",
     timestamp: new Date().toISOString(),
     dailyEmailQuotaRemaining: quota,
-    adminEmail: CONFIG.ADMIN_EMAIL,
-    instructions: "POST json with form_id: 'webinar-registration', 'partner-application', or standard leads."
+    adminNotificationEmail: CONFIG.ADMIN_EMAIL,
+    managedTabs: [CONFIG.LEADS_TAB, CONFIG.PARTNER_TAB, CONFIG.EVENT_TAB],
+    instructions: "POST JSON or form data. Routes automatically by form_id to the appropriate tab."
   })).setMimeType(ContentService.MimeType.JSON);
 }
 
 /**
- * Handle incoming POST requests from website forms
+ * Main Central POST Endpoint with Concurrency Lock
  */
 function doPost(e) {
   var lock = LockService.getScriptLock();
   try {
-    // Wait up to 30 seconds for concurrent requests
+    // Wait up to 30 seconds for concurrent submissions to prevent collision
     lock.waitLock(30000);
   } catch (err) {
     return ContentService
-      .createTextOutput(JSON.stringify({ status: "error", message: "Server busy, try again" }))
+      .createTextOutput(JSON.stringify({ status: "error", message: "Server busy, please retry in a moment." }))
       .setMimeType(ContentService.MimeType.JSON);
   }
 
   try {
-    var rawData = e.postData.contents;
+    var rawData = (e && e.postData && e.postData.contents) ? e.postData.contents : "{}";
     var data = {};
 
     try {
       data = JSON.parse(rawData);
     } catch (parseErr) {
-      // Fallback if form-encoded
-      data = e.parameter || {};
+      data = (e && e.parameter) ? e.parameter : {};
     }
 
-    var formId = data.form_id || (data.webinar_id ? "webinar-registration" : "contact");
+    var formId = String(data.form_id || (data.webinar_id ? "webinar-registration" : "consultation-lead")).toLowerCase();
 
-    if (formId === "webinar-registration") {
-      var result = handleWebinarRegistration(data);
-      lock.releaseLock();
-      return ContentService
-        .createTextOutput(JSON.stringify(result))
-        .setMimeType(ContentService.MimeType.JSON);
-    } else if (formId === "partner-application") {
+    // 1. Route to Partner Applications
+    if (formId === "partner-application" || formId.indexOf("partner") !== -1) {
       var partnerResult = handlePartnerApplication(data);
       lock.releaseLock();
       return ContentService
         .createTextOutput(JSON.stringify(partnerResult))
         .setMimeType(ContentService.MimeType.JSON);
-    } else {
-      // Standard lead from contact or program forms
+    }
+    // 2. Route to Event / Webinar Registrations
+    else if (formId === "webinar-registration" || data.webinar_id || formId.indexOf("webinar") !== -1 || formId.indexOf("event") !== -1) {
+      var webinarResult = handleWebinarRegistration(data);
+      lock.releaseLock();
+      return ContentService
+        .createTextOutput(JSON.stringify(webinarResult))
+        .setMimeType(ContentService.MimeType.JSON);
+    }
+    // 3. Route All Other Forms to Programs & Consultations
+    else {
       var leadResult = handleStandardLead(data);
       lock.releaseLock();
       return ContentService
@@ -108,423 +139,121 @@ function doPost(e) {
   }
 }
 
-/**
- * Handle Webinar Registrations with Deduplication & Google Mail Confirmation
- */
-function handleWebinarRegistration(data) {
+// ==============================================================================
+// 1. PROGRAMS & CONSULTATION LEADS (All Citizenship, Residency, Real Estate, Advisory, Contact, Eligibility)
+// ==============================================================================
+function handleStandardLead(data) {
   var ss = SpreadsheetApp.getActiveSpreadsheet();
-  var sheet = ss.getSheetByName(CONFIG.WEBINAR_SHEET_NAME);
-
-  // If sheet doesn't exist, create it with formatted headers
-  if (!sheet) {
-    sheet = ss.insertSheet(CONFIG.WEBINAR_SHEET_NAME);
-    var headers = [
-      "Timestamp (UTC)",
-      "Webinar ID",
-      "Webinar Slug",
-      "Full Name",
-      "Dial Code",
-      "Phone Number",
-      "Email Address",
-      "Country of Residence",
-      "Questions / Notes",
-      "Newsletter Opt-In",
-      "Language",
-      "Source URL",
-      "Page Path",
-      "Status",
-      "Email Dispatch Status"
-    ];
-    sheet.appendRow(headers);
-    sheet.getRange(1, 1, 1, headers.length)
-      .setFontWeight("bold")
-      .setBackground("#070E1A")
-      .setFontColor("#C5A880");
-    sheet.setFrozenRows(1);
-  }
-
-  var nowUtc = new Date().toISOString();
-  var webinarId = data.webinar_id || "WEB01";
-  var webinarSlug = data.slug || "";
-  var fullName = data.fullName || data.name || "";
-  var dialCode = data.dialCode || "";
-  var rawPhone = data.whatsapp_e164 || data.phone || "";
-  var email = data.email || "";
-  var residence = data.residence_country || data.country || "";
-  var question = data.question || "";
-  var newsletter = data.newsletter_optin ? "Yes" : "No";
-  var lang = data.lang || "fa";
-  var source = data.source || "";
-  var page = data.page || "";
-
-  // Check for duplicate registrations by (webinar_id + phone)
-  var dataRange = sheet.getDataRange();
-  var values = dataRange.getValues();
-  var isDuplicate = false;
-  var existingRowIndex = -1;
-
-  for (var i = 1; i < values.length; i++) {
-    var rowWebinarId = String(values[i][1] || "").trim();
-    var rowPhone = String(values[i][5] || "").replace(/[^\d+]/g, "").trim();
-    if (rowWebinarId === webinarId && rowPhone === rawPhone) {
-      isDuplicate = true;
-      existingRowIndex = i + 1;
-      break;
-    }
-  }
-
-  var emailStatus = "Not Sent (No Email Provided)";
-
-  // Send automatic confirmation email via Google Mail (or Resend fallback)
-  if (email && email.indexOf("@") !== -1) {
-    try {
-      emailStatus = sendConfirmationEmail(email, fullName, webinarId, lang);
-    } catch (mailErr) {
-      emailStatus = "Failed: " + mailErr.toString();
-    }
-  }
-
-  if (isDuplicate) {
-    // Note duplicate timestamp in existing row without adding spam entry
-    sheet.getRange(existingRowIndex, 14).setValue("Duplicate Re-registration: " + nowUtc);
-    if (email) sheet.getRange(existingRowIndex, 7).setValue(email);
-    sheet.getRange(existingRowIndex, 15).setValue(emailStatus);
-    return { status: "success", duplicate: true, message: "Existing registration confirmed.", emailStatus: emailStatus };
-  }
-
-  // Append new clean row
-  sheet.appendRow([
-    nowUtc,
-    webinarId,
-    webinarSlug,
-    fullName,
-    dialCode,
-    rawPhone,
-    email,
-    residence,
-    question,
-    newsletter,
-    lang,
-    source,
-    page,
-    "Registered",
-    emailStatus
+  var sheet = getOrCreateTab(ss, CONFIG.LEADS_TAB, CONFIG.FALLBACK_LEADS, [
+    "Timestamp (UTC)",
+    "Full Name",
+    "Email Address",
+    "Phone Number",
+    "Country / Residence",
+    "Program / Service",
+    "Language",
+    "Notes & Details",
+    "Source URL",
+    "Page Path",
+    "Form ID",
+    "Email Status"
   ]);
 
-  // Dispatch instant admin notification alert to Mohammad
+  var nowUtc = new Date().toISOString();
+  var leadName = (data.fullName || ((data.firstName || "") + " " + (data.lastName || "")).trim() || "Website Client");
+  var leadEmail = (data.email || "").toLowerCase().trim();
+  var leadPhone = (data.phone || (data.dialCode ? (data.dialCode + " " + (data.rawPhone || "")) : "")).trim();
+  var leadService = data.service || data.targetProgram || data.program || data.investmentRoute || "General Consultation";
+  var leadCountry = data.country || data.residence || data.citizenship || "";
+  var leadNotes = data.notes || data.message || data.confidentialNotes || "";
+  var leadLang = (data.lang || "en").toLowerCase();
+  var sourceUrl = data.source || "";
+  var pagePath = data.page || "";
+  var formId = data.form_id || "consultation-lead";
+
+  var emailStatus = "Pending";
+
+  // Dispatch instant admin email alert to Mohammad
   try {
     MailApp.sendEmail({
       to: CONFIG.ADMIN_EMAIL,
-      subject: "🔔 New Webinar Registration: " + fullName,
-      body: "New Webinar Registration Received:\n\n" +
-            "• Name: " + fullName + "\n" +
-            "• Email: " + email + "\n" +
-            "• Phone: " + ((dialCode ? dialCode + " " : "") + rawPhone).trim() + "\n" +
-            "• Country: " + residence + "\n" +
-            "• Webinar Session: " + webinarId + "\n" +
-            "• Language: " + lang + "\n" +
-            "• Timestamp: " + new Date().toISOString() + "\n" +
-            "• Page: " + page + "\n\n" +
-            "View registrations in Google Sheet: " + ss.getUrl()
+      subject: "⚡ New Website Lead: " + leadName + " (" + (leadService || "General") + " | " + leadLang.toUpperCase() + ")",
+      body: "New Website Consultation Lead Received:\n\n" +
+            "• Full Name:         " + leadName + "\n" +
+            "• Email Address:     " + (leadEmail || "Not provided") + "\n" +
+            "• Phone Number:      " + (leadPhone || "Not provided") + "\n" +
+            "• Program / Service: " + leadService + "\n" +
+            "• Country:           " + (leadCountry || "Not specified") + "\n" +
+            "• Language:          " + leadLang.toUpperCase() + "\n" +
+            "• Form ID:           " + formId + "\n" +
+            "• Timestamp:         " + nowUtc + "\n" +
+            "• Page:              " + (pagePath || sourceUrl) + "\n\n" +
+            "----------------------------------------------------\n" +
+            "CLIENT NOTES & DETAILS:\n" +
+            "----------------------------------------------------\n" +
+            (leadNotes || "None") + "\n\n" +
+            "View in Google Sheet:\n" + ss.getUrl()
     });
+    emailStatus = "Sent via Google Mail (" + nowUtc + ")";
   } catch (adminErr) {
+    emailStatus = "Failed: " + adminErr.message;
     Logger.log("Admin notify error: " + adminErr.message);
   }
 
-  return { status: "success", duplicate: false, message: "Registration recorded successfully.", emailStatus: emailStatus };
-}
-
-/**
- * Handle Standard Contact & Eligibility Leads
- */
-function handleStandardLead(data) {
-  var ss = SpreadsheetApp.getActiveSpreadsheet();
-  var sheet = ss.getSheetByName(CONFIG.LEADS_SHEET_NAME);
-
-  if (!sheet) {
-    sheet = ss.insertSheet(CONFIG.LEADS_SHEET_NAME);
-    var headers = ["Timestamp", "Full Name", "Email", "Phone", "Country", "Program/Service", "Notes", "Source URL", "Form ID"];
-    sheet.appendRow(headers);
-    sheet.getRange(1, 1, 1, headers.length).setFontWeight("bold").setBackground("#F1F5F9");
-    sheet.setFrozenRows(1);
-  }
-
-  var leadName = data.fullName || ((data.firstName || "") + " " + (data.lastName || "")).trim();
-  var leadEmail = data.email || "";
-  var leadPhone = data.phone || "";
-  var leadService = data.service || data.program || data.programChoice || "";
-  var leadCountry = data.country || data.citizenship || "";
-  var leadNotes = data.notes || data.message || data.confidentialNotes || "";
-
   sheet.appendRow([
-    new Date().toISOString(),
+    nowUtc,
     leadName,
     leadEmail,
     leadPhone,
     leadCountry,
     leadService,
+    leadLang,
     leadNotes,
-    data.source || "",
-    data.form_id || "general"
+    sourceUrl,
+    pagePath,
+    formId,
+    emailStatus
   ]);
 
-  // Dispatch instant admin alert to Mohammad
-  try {
-    MailApp.sendEmail({
-      to: CONFIG.ADMIN_EMAIL,
-      subject: "⚡ New Website Inquiry: " + leadName + " (" + (leadService || "General") + ")",
-      body: "New Website Lead Received:\n\n" +
-            "• Name: " + leadName + "\n" +
-            "• Email: " + leadEmail + "\n" +
-            "• Phone: " + leadPhone + "\n" +
-            "• Service: " + leadService + "\n" +
-            "• Country: " + leadCountry + "\n" +
-            "• Notes: " + leadNotes + "\n" +
-            "• Form ID: " + (data.form_id || "general") + "\n" +
-            "• Source: " + (data.source || "") + "\n\n" +
-            "View in Google Sheet: " + ss.getUrl()
-    });
-  } catch (adminErr) {
-    Logger.log("Admin notify error: " + adminErr.message);
-  }
-
-  return { status: "success", message: "Inquiry saved." };
-}
-
-/**
- * Smart Confirmation Email Dispatcher (Google Mail + Resend Support)
- */
-function sendConfirmationEmail(recipientEmail, recipientName, webinarId, lang) {
-  var subject = (lang === "fa")
-    ? "تاییدیه ثبت‌نام وبینار شریف گروپ | Sharif Group Webinar Confirmation"
-    : "Sharif Group Webinar Confirmation | تاییدیه ثبت‌نام وبینار شریف گروپ";
-  var htmlContent = getEmailTemplate(recipientName, lang);
-  var plainText = (lang === "fa")
-    ? "سلام " + (recipientName || "دوست گرامی") + "،\n\nثبت‌نام شما در وبینار شریف گروپ با موفقیت انجام شد.\nلینک ورود به جلسه قبل از شروع برای شما ارسال خواهد شد.\n\nشریف گروپ دبی"
-    : "Dear " + (recipientName || "Valued Client") + ",\n\nYour registration for the Sharif Group live webinar has been confirmed.\nThe direct joining link will be sent to you before the session starts.\n\nSharif Group Dubai";
-
-  var scriptProperties = PropertiesService.getScriptProperties();
-  var resendApiKey = scriptProperties.getProperty("RESEND_API_KEY");
-  var fromAddress = scriptProperties.getProperty("SENDER_EMAIL") || CONFIG.DEFAULT_SENDER;
-
-  // 1. Primary: Use Google Mail (MailApp) directly (Zero setup required)
-  if (CONFIG.PREFER_GOOGLE_MAIL || !resendApiKey) {
-    try {
-      MailApp.sendEmail({
-        to: recipientEmail,
-        subject: subject,
-        body: plainText,
-        htmlBody: htmlContent,
-        name: CONFIG.SENDER_NAME,
-        replyTo: CONFIG.REPLY_TO_EMAIL
-      });
-      return "Sent via Google Mail (" + new Date().toISOString() + ")";
-    } catch (gmailErr) {
-      // If Google Mail hits daily quota and Resend key is set, fallback to Resend
-      if (resendApiKey) {
-        return sendViaResend(recipientEmail, subject, htmlContent, resendApiKey, fromAddress) + " (Google Mail failed: " + gmailErr.message + ")";
-      }
-      return "Google Mail Error: " + gmailErr.message;
-    }
-  }
-
-  // 2. If configured to try Resend first, attempt Resend with Google Mail fallback
-  try {
-    var resendStatus = sendViaResend(recipientEmail, subject, htmlContent, resendApiKey, fromAddress);
-    if (resendStatus.indexOf("Sent successfully") !== -1) {
-      return resendStatus;
-    }
-    // Fallback to Google Mail if Resend returns an error
-    MailApp.sendEmail({
-      to: recipientEmail,
-      subject: subject,
-      body: plainText,
-      htmlBody: htmlContent,
-      name: CONFIG.SENDER_NAME,
-      replyTo: CONFIG.REPLY_TO_EMAIL
-    });
-    return "Sent via Google Mail (Resend fallback: " + resendStatus + ")";
-  } catch (err) {
-    try {
-      MailApp.sendEmail({
-        to: recipientEmail,
-        subject: subject,
-        body: plainText,
-        htmlBody: htmlContent,
-        name: CONFIG.SENDER_NAME,
-        replyTo: CONFIG.REPLY_TO_EMAIL
-      });
-      return "Sent via Google Mail (Resend exception fallback)";
-    } catch (finalErr) {
-      return "Email Dispatch Error: " + finalErr.message;
-    }
-  }
-}
-
-/**
- * Resend.com Dispatcher Helper
- */
-function sendViaResend(recipientEmail, subject, htmlContent, apiKey, fromAddress) {
-  var payload = {
-    from: fromAddress,
-    to: [recipientEmail],
-    subject: subject,
-    html: htmlContent
+  return {
+    status: "success",
+    tab: CONFIG.LEADS_TAB,
+    message: "Inquiry saved successfully.",
+    emailStatus: emailStatus
   };
-
-  var options = {
-    method: "post",
-    contentType: "application/json",
-    headers: {
-      "Authorization": "Bearer " + apiKey
-    },
-    payload: JSON.stringify(payload),
-    muteHttpExceptions: true
-  };
-
-  var response = UrlFetchApp.fetch(CONFIG.RESEND_API_URL, options);
-  var code = response.getResponseCode();
-  var resText = response.getContentText();
-
-  if (code >= 200 && code < 300) {
-    return "Sent successfully via Resend";
-  } else {
-    return "Resend Error " + code + ": " + resText;
-  }
 }
 
-/**
- * Multilingual Branded HTML Email Template
- */
-function getEmailTemplate(name, lang) {
-  var isFa = lang === "fa";
-  var greeting = isFa ? ("سلام " + (name || "دوست گرامی") + "،") : ("Dear " + (name || "Valued Client") + ",");
-
-  return `
-  <!DOCTYPE html>
-  <html>
-  <head><meta charset="utf-8"></head>
-  <body style="font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif; background: #FAF6EE; padding: 24px; color: #111;">
-    <div style="max-width: 600px; margin: 0 auto; background: #ffffff; border-radius: 16px; border: 1px solid #E2E8F0; overflow: hidden; box-shadow: 0 4px 20px rgba(0,0,0,0.06);">
-      <div style="background: #070E1A; padding: 28px 32px; text-align: center;">
-        <span style="font-size: 20px; font-weight: 700; letter-spacing: 0.15em; color: #C5A880; text-transform: uppercase;">SHARIF GROUP</span>
-      </div>
-      <div style="padding: 32px; direction: ${isFa ? 'rtl' : 'ltr'}; text-align: ${isFa ? 'right' : 'left'};">
-        <h2 style="color: #070E1A; margin-top: 0;">${isFa ? 'ثبت‌نام شما با موفقیت تایید شد' : 'Your Webinar Registration is Confirmed'}</h2>
-        <p style="font-size: 15px; color: #475569; line-height: 1.6;">${greeting}</p>
-        <p style="font-size: 15px; color: #475569; line-height: 1.6;">
-          ${isFa
-            ? 'از ثبت‌نام شما در وبینار تخصصی «پاسپورت دوم برای افغان‌ها: آشنایی با برنامه دومینیکا» سپاسگزاریم. لینک ورود به اتاق وبینار و یادآوری‌ها قبل از شروع جلسه برای شما ارسال خواهد شد.'
-            : 'Thank you for registering for our live webinar: "A Second Passport for Afghans: Introducing the Dominica Programme". The direct joining link will appear on the webinar page and will be sent to your WhatsApp/email before the session starts.'}
-        </p>
-        
-        <div style="background: #FAF6EE; border-radius: 12px; padding: 20px; margin: 24px 0; border: 1px solid #E5E0D8;">
-          <p style="margin: 0 0 8px 0; font-size: 14px; font-weight: bold; color: #786142;">${isFa ? 'زمان برگزاری جلسه:' : 'Session Schedule:'}</p>
-          <p style="margin: 0; font-size: 14px; color: #334155;">
-            • ${isFa ? 'کابل: پنجشنبه ۸ عقرب / ساعت ۲۰:۰۰' : 'Kabul Time: Thursday 29 October, 20:00'}<br/>
-            • ${isFa ? 'دبی: پنجشنبه ۲۹ اکتبر / ساعت ۱۹:۳۰' : 'Dubai Time: Thursday 29 October, 19:30'}<br/>
-            • ${isFa ? 'مدت زمان: ۶۵ دقیقه (همراه با پرسش و پاسخ)' : 'Duration: 65 minutes (including Q&A)'}
-          </p>
-        </div>
-
-        <p style="font-size: 13px; color: #64748B; line-height: 1.6;">
-          ${isFa
-            ? 'نکته: ورود به وبینار مستقیماً از طریق مرورگر تلفن همراه امکان‌پذیر است و نیاز به نصب هیچ‌گونه نرم‌افزاری ندارد.'
-            : 'Note: You can join the webinar directly from your mobile browser without installing any application.'}
-        </p>
-        <div style="margin-top: 32px; padding-top: 20px; border-top: 1px solid #E2E8F0; text-align: center; font-size: 12px; color: #94A3B8;">
-          Sharif Group Dubai • 116 The Binary Tower, Business Bay, Dubai, UAE<br/>
-          WhatsApp: +971 4 357 8737 | mohammad@sharifgroup.ae
-        </div>
-      </div>
-    </div>
-  </body>
-  </html>
-  `;
-}
-
-/**
- * Custom spreadsheet menu for stats
- */
-function onOpen() {
-  var ui = SpreadsheetApp.getUi();
-  ui.createMenu("Sharif Group CRM")
-    .addItem("Refresh Partner Application Stats", "showPartnerStats")
-    .addItem("Refresh Webinar Stats", "showRegistrationStats")
-    .addToUi();
-}
-
-function showRegistrationStats() {
-  var ss = SpreadsheetApp.getActiveSpreadsheet();
-  var sheet = ss.getSheetByName(CONFIG.WEBINAR_SHEET_NAME);
-  if (!sheet) {
-    SpreadsheetApp.getUi().alert("No webinar registrations sheet found yet.");
-    return;
-  }
-  var count = Math.max(0, sheet.getLastRow() - 1);
-  SpreadsheetApp.getUi().alert("Total Webinar Registrations: " + count);
-}
-
-function showPartnerStats() {
-  var ss = SpreadsheetApp.getActiveSpreadsheet();
-  var sheet = ss.getSheetByName(CONFIG.PARTNER_SHEET_NAME);
-  if (!sheet) {
-    SpreadsheetApp.getUi().alert("No partner applications sheet found yet.");
-    return;
-  }
-  var count = Math.max(0, sheet.getLastRow() - 1);
-  SpreadsheetApp.getUi().alert("Total Partner Applications: " + count);
-}
-
-/**
- * ==============================================================================
- * PARTNER APPLICATIONS CRM HANDLER & NOTIFICATIONS
- * ==============================================================================
- */
-
-/**
- * Handle Partner Applications with Deduplication & Confirmation Email
- */
+// ==============================================================================
+// 2. PARTNER APPLICATIONS (B2B Onboarding)
+// ==============================================================================
 function handlePartnerApplication(data) {
   var ss = SpreadsheetApp.getActiveSpreadsheet();
-  var sheet = ss.getSheetByName(CONFIG.PARTNER_SHEET_NAME);
-
-  // If sheet doesn't exist, create it with formatted headers
-  if (!sheet) {
-    sheet = ss.insertSheet(CONFIG.PARTNER_SHEET_NAME);
-    var headers = [
-      "Timestamp (UTC)",
-      "Application ID",
-      "Full Name",
-      "Partner Type",
-      "Company / Firm",
-      "Job Title",
-      "Country",
-      "City",
-      "Dial Code",
-      "Phone Number",
-      "Email Address",
-      "Website",
-      "Programmes of Interest",
-      "Estimated Referrals / Year",
-      "Heard From",
-      "Confidential Message",
-      "Language",
-      "Source URL",
-      "Status",
-      "Confirmation Email Status"
-    ];
-    sheet.appendRow(headers);
-    sheet.getRange(1, 1, 1, headers.length)
-      .setFontWeight("bold")
-      .setBackground("#070E1A")
-      .setFontColor("#C5A880");
-    sheet.setFrozenRows(1);
-  }
+  var sheet = getOrCreateTab(ss, CONFIG.PARTNER_TAB, [], [
+    "Timestamp (UTC)",
+    "Application ID",
+    "Full Name",
+    "Partner Type",
+    "Company / Firm",
+    "Job Title",
+    "Country",
+    "City",
+    "Dial Code",
+    "Phone (WhatsApp)",
+    "Email Address",
+    "Website / LinkedIn",
+    "Programmes of Interest",
+    "Est. Annual Referrals",
+    "Heard From",
+    "Confidential Message",
+    "Language",
+    "Source URL",
+    "Status",
+    "Confirmation Email Status"
+  ]);
 
   var nowUtc = new Date().toISOString();
-  var appId = data.application_id || ("PAR-" + Utilities.getUuid().slice(0, 8).toUpperCase());
-  var fullName = data.fullName || data.name || "";
+  var appId = data.application_id || ("PAR-" + Utilities.getUuid().slice(0, 6).toUpperCase());
+  var fullName = data.fullName || data.name || "Partner Applicant";
   var partnerType = data.partner_type || "";
   var company = data.company || "";
   var jobTitle = data.job_title || "";
@@ -538,7 +267,7 @@ function handlePartnerApplication(data) {
   var referrals = data.referrals_per_year || "";
   var heardFrom = data.heard_from || "";
   var message = data.message || "";
-  var lang = data.lang || "en";
+  var lang = (data.lang || "en").toLowerCase();
   var source = data.source || "";
 
   // Check for duplicate application by email
@@ -575,7 +304,6 @@ function handlePartnerApplication(data) {
     } catch (e) {}
   }
 
-  // Append new clean row (always logs every submission)
   sheet.appendRow([
     nowUtc,
     appId,
@@ -599,221 +327,350 @@ function handlePartnerApplication(data) {
     emailStatus
   ]);
 
-  // Dispatch instant admin alert to Mohammad
+  // Dispatch instant admin notification alert to Mohammad
   try {
     MailApp.sendEmail({
       to: CONFIG.ADMIN_EMAIL,
-      subject: "🤝 New Partner Application: " + fullName + (company ? " (" + company + ")" : ""),
+      subject: "🤝 New Partner Application: " + fullName + " (" + (company || "Individual") + ")",
       body: "New Partner Application Received:\n\n" +
             "• Application ID: " + appId + "\n" +
-            "• Full Name: " + fullName + "\n" +
-            "• Partner Type: " + partnerType + "\n" +
-            "• Company: " + (company || "N/A") + "\n" +
-            "• Job Title: " + (jobTitle || "N/A") + "\n" +
-            "• Email: " + email + "\n" +
-            "• Phone: " + phone + "\n" +
-            "• Country & City: " + country + (city ? " / " + city : "") + "\n" +
-            "• Website: " + (website || "N/A") + "\n" +
-            "• Programmes: " + (programmes || "All Programmes") + "\n" +
-            "• Est. Annual Referrals: " + referrals + "\n" +
-            "• Heard From: " + heardFrom + "\n" +
-            "• Confidential Notes: " + message + "\n" +
-            "• Language: " + lang + "\n" +
-            "• Timestamp: " + nowUtc + "\n\n" +
-            "View Applications in Google Sheet: " + ss.getUrl()
+            "• Full Name:      " + fullName + "\n" +
+            "• Company / Firm: " + (company || "None") + "\n" +
+            "• Job Title:      " + (jobTitle || "None") + "\n" +
+            "• Partner Type:   " + (partnerType || "General") + "\n" +
+            "• Email:          " + email + "\n" +
+            "• Phone:          " + (dialCode ? dialCode + " " : "") + phone + "\n" +
+            "• Country/City:   " + country + (city ? ", " + city : "") + "\n" +
+            "• Est. Referrals: " + (referrals || "Not specified") + "\n" +
+            "• Language:       " + lang.toUpperCase() + "\n" +
+            "• Timestamp:      " + nowUtc + "\n\n" +
+            "----------------------------------------------------\n" +
+            "CONFIDENTIAL MESSAGE:\n" +
+            "----------------------------------------------------\n" +
+            (message || "None") + "\n\n" +
+            "View in Google Sheet:\n" + ss.getUrl()
     });
   } catch (adminErr) {
     Logger.log("Admin notify error: " + adminErr.message);
   }
 
-  return { status: "success", duplicate: false, message: "Partner application submitted successfully." };
+  return {
+    status: "success",
+    tab: CONFIG.PARTNER_TAB,
+    duplicate: isDuplicate,
+    application_id: appId,
+    message: "Partner application submitted successfully.",
+    emailStatus: emailStatus
+  };
 }
 
-/**
- * Partner Confirmation Email Dispatcher
- */
-function sendPartnerConfirmationEmail(recipientEmail, recipientName, applicationId, company, lang) {
-  var isFa = lang === "fa";
-  var isAr = lang === "ar";
-  var isZh = lang === "zh";
+// ==============================================================================
+// 3. EVENT & WEBINAR REGISTRATIONS
+// ==============================================================================
+function handleWebinarRegistration(data) {
+  var ss = SpreadsheetApp.getActiveSpreadsheet();
+  var sheet = getOrCreateTab(ss, CONFIG.EVENT_TAB, CONFIG.FALLBACK_EVENTS, [
+    "Timestamp (UTC)",
+    "Webinar ID",
+    "Webinar Slug",
+    "Full Name",
+    "Dial Code",
+    "Phone Number",
+    "Email Address",
+    "Country of Residence",
+    "Questions / Notes",
+    "Newsletter Opt-In",
+    "Language",
+    "Source URL",
+    "Page Path",
+    "Status",
+    "Email Dispatch Status"
+  ]);
 
-  var subject = "Sharif Group | Partnership Application Received (" + applicationId + ")";
-  if (isFa) subject = "تاییدیه دریافت درخواست همکاری شریف گروپ (" + applicationId + ")";
-  else if (isAr) subject = "تأكيد استلام طلب الشراكة - مجموعة شريف (" + applicationId + ")";
-  else if (isZh) subject = "谢里夫集团 | 合作伙伴申请已确认 (" + applicationId + ")";
+  var nowUtc = new Date().toISOString();
+  var webinarId = data.webinar_id || "WEB01";
+  var webinarSlug = data.slug || "";
+  var fullName = data.fullName || data.name || "Attendee";
+  var dialCode = data.dialCode || "";
+  var rawPhone = (data.whatsapp_e164 || data.phone || "").trim();
+  var email = (data.email || "").toLowerCase().trim();
+  var residence = data.residence_country || data.country || "";
+  var question = data.question || "";
+  var newsletter = data.newsletter_optin ? "Yes" : "No";
+  var lang = (data.lang || "fa").toLowerCase();
+  var source = data.source || "";
+  var page = data.page || "";
 
-  var htmlContent = getPartnerEmailTemplate(recipientName, applicationId, company, lang);
-  var plainText = (isFa)
-    ? "سلام " + (recipientName || "همکار گرامی") + "،\n\nدرخواست همکاری شما با کد رهگیری " + applicationId + " با موفقیت دریافت شد. تیم روابط بین‌الملل شریف گروپ ظرف حداکثر ۲ روز کاری جهت بررسی مدارک و آغاز همکاری با شما تماس خواهد گرفت.\n\nشریف گروپ دبی\nmohammad@sharifgroup.ae"
-    : (isAr)
-    ? "مرحباً " + (recipientName || "شريكنا العزيز") + "،\n\nتم استلام طلب الشراكة بنجاح برقم مرجعي: " + applicationId + ". سيتواصل معك فريق علاقات الشركاء خلال يومي عمل لمناقشة التفاصيل وبدء التعاون.\n\nمجموعة شريف دبي\nmohammad@sharifgroup.ae"
-    : (isZh)
-    ? "尊敬的 " + (recipientName || "合作伙伴") + "：\n\n您的合作伙伴申请已成功送达，申请编号：" + applicationId + "。我们的战略合作团队将在2个工作日内与您联系，安排对接事宜。\n\n迪拜谢里夫集团\nmohammad@sharifgroup.ae"
-    : "Dear " + (recipientName || "Valued Partner") + ",\n\nThank you for applying to become an official Sharif Group Partner. Your application reference is " + applicationId + ".\nOur Global Partnerships team will review your credentials and contact you within 2 business days to schedule an introductory onboarding call.\n\nSharif Group Dubai\nmohammad@sharifgroup.ae";
+  // Check duplicate registrations by (webinar_id + phone)
+  var dataRange = sheet.getDataRange();
+  var values = dataRange.getValues();
+  var isDuplicate = false;
+  var existingRowIndex = -1;
 
-  var scriptProperties = PropertiesService.getScriptProperties();
-  var resendApiKey = scriptProperties.getProperty("RESEND_API_KEY");
-  var fromAddress = scriptProperties.getProperty("SENDER_EMAIL") || CONFIG.DEFAULT_SENDER;
-
-  if (CONFIG.PREFER_GOOGLE_MAIL || !resendApiKey) {
-    try {
-      MailApp.sendEmail({
-        to: recipientEmail,
-        subject: subject,
-        body: plainText,
-        htmlBody: htmlContent,
-        name: CONFIG.SENDER_NAME,
-        replyTo: CONFIG.REPLY_TO_EMAIL
-      });
-      return "Sent via Google Mail (" + new Date().toISOString() + ")";
-    } catch (gmailErr) {
-      if (resendApiKey) {
-        return sendViaResend(recipientEmail, subject, htmlContent, resendApiKey, fromAddress) + " (Google Mail failed: " + gmailErr.message + ")";
-      }
-      return "Google Mail Error: " + gmailErr.message;
+  for (var i = 1; i < values.length; i++) {
+    var rowWebinarId = String(values[i][1] || "").trim();
+    var rowPhone = String(values[i][5] || "").replace(/[^\d+]/g, "").trim();
+    if (rowWebinarId === webinarId && rowPhone === rawPhone) {
+      isDuplicate = true;
+      existingRowIndex = i + 1;
+      break;
     }
   }
 
+  var emailStatus = "Not Sent (No Email Provided)";
+
+  // Send automatic confirmation email to attendee
+  if (email && email.indexOf("@") !== -1) {
+    try {
+      emailStatus = sendWebinarConfirmationEmail(email, fullName, webinarId, lang);
+    } catch (mailErr) {
+      emailStatus = "Failed: " + mailErr.toString();
+    }
+  }
+
+  if (isDuplicate && existingRowIndex > 0) {
+    if (email) sheet.getRange(existingRowIndex, 7).setValue(email);
+    sheet.getRange(existingRowIndex, 15).setValue(emailStatus);
+    return {
+      status: "success",
+      tab: CONFIG.EVENT_TAB,
+      duplicate: true,
+      message: "Existing registration confirmed.",
+      emailStatus: emailStatus
+    };
+  }
+
+  // Append new clean row
+  sheet.appendRow([
+    nowUtc,
+    webinarId,
+    webinarSlug,
+    fullName,
+    dialCode,
+    rawPhone,
+    email,
+    residence,
+    question,
+    newsletter,
+    lang,
+    source,
+    page,
+    "Registered",
+    emailStatus
+  ]);
+
+  // Dispatch instant admin notification alert to Mohammad
   try {
-    return sendViaResend(recipientEmail, subject, htmlContent, resendApiKey, fromAddress);
-  } catch (err) {
     MailApp.sendEmail({
-      to: recipientEmail,
-      subject: subject,
-      body: plainText,
-      htmlBody: htmlContent,
-      name: CONFIG.SENDER_NAME,
-      replyTo: CONFIG.REPLY_TO_EMAIL
+      to: CONFIG.ADMIN_EMAIL,
+      subject: "🔔 New Event Registration: " + fullName + " (" + webinarId + ")",
+      body: "New Event Registration Received:\n\n" +
+            "• Full Name:        " + fullName + "\n" +
+            "• Email:            " + (email || "Not provided") + "\n" +
+            "• Phone:            " + ((dialCode ? dialCode + " " : "") + rawPhone).trim() + "\n" +
+            "• Country:          " + residence + "\n" +
+            "• Webinar Session:  " + webinarId + "\n" +
+            "• Language:         " + lang.toUpperCase() + "\n" +
+            "• Timestamp:        " + nowUtc + "\n" +
+            "• Page:             " + page + "\n\n" +
+            "View in Google Sheet:\n" + ss.getUrl()
     });
-    return "Sent via Google Mail (Fallback)";
+  } catch (adminErr) {
+    Logger.log("Admin notify error: " + adminErr.message);
   }
+
+  return {
+    status: "success",
+    tab: CONFIG.EVENT_TAB,
+    duplicate: false,
+    message: "Registration recorded successfully.",
+    emailStatus: emailStatus
+  };
 }
 
-/**
- * Multilingual Branded Partner HTML Email Template
- */
+// ==============================================================================
+// HELPER: GET OR AUTO-CREATE FORMATTED SHEET TAB
+// ==============================================================================
+function getOrCreateTab(ss, preferredName, fallbacks, headers) {
+  var sheet = ss.getSheetByName(preferredName);
+  if (sheet) return sheet;
+
+  if (fallbacks && fallbacks.length > 0) {
+    for (var i = 0; i < fallbacks.length; i++) {
+      var fb = ss.getSheetByName(fallbacks[i]);
+      if (fb) return fb;
+    }
+  }
+
+  // Insert new tab and format headers with Sharif Gold & Navy
+  sheet = ss.insertSheet(preferredName);
+  sheet.appendRow(headers);
+  sheet.getRange(1, 1, 1, headers.length)
+    .setFontWeight("bold")
+    .setBackground("#070E1A")
+    .setFontColor("#C5A880");
+  sheet.setFrozenRows(1);
+  return sheet;
+}
+
+// ==============================================================================
+// CONFIRMATION EMAIL DISPATCHERS
+// ==============================================================================
+function sendWebinarConfirmationEmail(recipientEmail, recipientName, webinarId, lang) {
+  var subject = (lang === "fa")
+    ? "تاییدیه ثبت‌نام وبینار شریف گروپ | Sharif Group Webinar Confirmation"
+    : (lang === "ar")
+    ? "تأكيد التسجيل في فعالية شريف جروب | Sharif Group Event Confirmation"
+    : (lang === "zh")
+    ? "盛睿集团讲座报名确认函 | Sharif Group Event Confirmation"
+    : "Sharif Group Webinar Confirmation | تاییدیه ثبت‌نام وبینار شریف گروپ";
+
+  var htmlContent = getWebinarEmailTemplate(recipientName, lang);
+
+  MailApp.sendEmail({
+    to: recipientEmail,
+    subject: subject,
+    htmlBody: htmlContent,
+    name: CONFIG.SENDER_NAME,
+    replyTo: CONFIG.REPLY_TO_EMAIL
+  });
+
+  return "Sent via Google Mail (" + new Date().toISOString() + ")";
+}
+
+function sendPartnerConfirmationEmail(recipientEmail, recipientName, applicationId, company, lang) {
+  var subject = (lang === "fa")
+    ? "تأییدیه دریافت درخواست همکاری شریف گروپ — " + applicationId
+    : (lang === "ar")
+    ? "تأكيد استلام طلب الشراكة — شريف جروب (" + applicationId + ")"
+    : (lang === "zh")
+    ? "盛睿集团官方合作伙伴申请确认函 — " + applicationId
+    : "Sharif Group — Partnership Application Received (" + applicationId + ")";
+
+  var htmlContent = getPartnerEmailTemplate(recipientName, applicationId, company, lang);
+
+  MailApp.sendEmail({
+    to: recipientEmail,
+    subject: subject,
+    htmlBody: htmlContent,
+    name: "Sharif Group Partnerships",
+    replyTo: CONFIG.REPLY_TO_EMAIL
+  });
+
+  return "Sent via Google Mail (" + new Date().toISOString() + ")";
+}
+
+// ==============================================================================
+// BRANDED EMAIL TEMPLATES
+// ==============================================================================
+function getWebinarEmailTemplate(name, lang) {
+  var isRtl = (lang === "fa" || lang === "ar");
+  var dir = isRtl ? "rtl" : "ltr";
+  var align = isRtl ? "right" : "left";
+
+  var heading = (lang === "fa") ? "ثبت‌نام وبینار تأیید شد" : (lang === "ar") ? "تم تأكيد تسجيلكم في الفعالية" : (lang === "zh") ? "您的讲座报名已确认" : "Webinar Registration Confirmed";
+  var bodyText = (lang === "fa")
+    ? "از ثبت‌نام شما در وبینار تخصصی شریف گروپ سپاسگزاریم. لینک ورود اختصاصی جلسه به زودی برای شما ارسال خواهد شد."
+    : (lang === "ar")
+    ? "نشكركم على التسجيل في فعاليتنا المباشرة. سيتم تزويدكم برابط الدخول المباشر قبل انطلاق الجلسة."
+    : (lang === "zh")
+    ? "感谢您报名参加盛睿集团（Sharif Group）专题线上讲座。直播间直达链接将在活动开始前发送至您的联系方式。"
+    : "Thank you for registering for our exclusive online session. The direct link to join will be active and sent to your contact details before the session starts.";
+
+  return '<!DOCTYPE html><html lang="' + lang + '" dir="' + dir + '"><body style="margin:0;padding:24px 12px;background-color:#FAF6EE;font-family:sans-serif;color:#111;">' +
+    '<table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0"><tr><td align="center">' +
+    '<table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0" style="max-width:600px;background:#fff;border-radius:16px;border:1px solid #E5E0D8;overflow:hidden;">' +
+    '<tr><td style="background:#070E1A;padding:32px 24px;text-align:center;"><span style="font-size:22px;font-weight:700;letter-spacing:0.18em;color:#C5A880;text-transform:uppercase;">SHARIF GROUP</span></td></tr>' +
+    '<tr><td style="padding:36px 32px;direction:' + dir + ';text-align:' + align + ';"><h1 style="color:#070E1A;font-size:22px;font-weight:700;">' + heading + '</h1>' +
+    '<p style="font-size:15px;line-height:1.7;color:#334155;">' + bodyText + '</p>' +
+    '<p style="font-size:13px;color:#64748B;margin-top:24px;">Sharif Group • Private Advisory & Citizenship</p></td></tr>' +
+    '</table></td></tr></table></body></html>';
+}
+
 function getPartnerEmailTemplate(name, applicationId, company, lang) {
-  var isFa = lang === "fa";
-  var isAr = lang === "ar";
-  var isRtl = isFa || isAr;
+  var isRtl = (lang === "fa" || lang === "ar");
+  var dir = isRtl ? "rtl" : "ltr";
+  var align = isRtl ? "right" : "left";
 
-  var title = "Partnership Application Received";
-  var greeting = "Dear " + (name || "Valued Partner") + ",";
-  var intro = "Thank you for submitting your partnership application to Sharif Group Dubai. We are delighted by your interest in joining our global network of introducers, law firms, and advisory agencies.";
-  var refLabel = "Application Reference";
-  var nextTitle = "What Happens Next?";
-  var step1 = "<strong>1. Compliance & Document Review:</strong> Our partnerships desk reviews your firm profile within 2 business days.";
-  var step2 = "<strong>2. Strategic Onboarding Call:</strong> A dedicated Relationship Manager connects with you to discuss commission structures and referral protocols.";
-  var step3 = "<strong>3. Agreement & Partner Kit:</strong> Formal B2B agreement execution and access to marketing collateral, co-branded decks, and private client processing pipelines.";
-  var contactNote = "If you have any immediate questions, feel free to reply directly to this email or reach our partnerships desk via WhatsApp.";
-
-  if (isFa) {
-    title = "درخواست همکاری شما دریافت شد";
-    greeting = "سلام " + (name || "همکار گرامی") + "،";
-    intro = "از ارسال درخواست همکاری شما با شریف گروپ دبی صمیمانه سپاسگزاریم. ما از پیوستن آژانس‌ها و معرف‌های معتبر به شبکه جهانی خود بسیار خرسندیم.";
-    refLabel = "کد پیگیری درخواست";
-    nextTitle = "مراحل بعدی چیست؟";
-    step1 = "<strong>۱. بررسی مدارک و انطباق:</strong> تیم ارزیابی بین‌الملل حداکثر ظرف ۲ روز کاری پروفایل کاری شما را بررسی می‌کند.";
-    step2 = "<strong>۲. جلسه معارفه و تعیین شرایط:</strong> مدیر روابط اختصاصی شما جهت هماهنگی ساختار کمیسیون‌ها و رویه‌های معرفی با شما تماس خواهد گرفت.";
-    step3 = "<strong>۳. عقد قرارداد و اعطای ابزارها:</strong> امضای تفاهم‌نامه رسمی همکاری و ارائه پکیج مارکتینگ، بروشورهای اختصاصی و کانال پردازش سریع پرونده‌ها.";
-    contactNote = "در صورت نیاز به ارتباط فوری، می‌توانید مستقیماً به این ایمیل پاسخ داده یا از طریق واتس‌اپ با بخش همکاران در تماس باشید.";
-  } else if (isAr) {
-    title = "تم استلام طلب الشراكة بنجاح";
-    greeting = "عزيزنا " + (name || "الشريك المحترم") + "،";
-    intro = "نشكرك على تقديم طلب الانضمام إلى شبكة شركاء مجموعة شريف في دبي. يسعدنا توسيع آفاق التعاون المشترك في مجال الجنسية والإقامة عبر الاستثمار.";
-    refLabel = "رقم الطلب المرجعي";
-    nextTitle = "الخطوات التالية:";
-    step1 = "<strong>١. التدقيق والامتثال:</strong> يقوم فريق الشراكات بمراجعة بياناتكم خلال يومي عمل.";
-    step2 = "<strong>٢. جلسة التعارف وتحديد العمولات:</strong> يتواصل معكم مدير حسابات مخصص لمناقشة نماذج العمولات وآليات الإحالة.";
-    step3 = "<strong>٣. توقيع الاتفاقية وحزمة الشريك:</strong> إبرام عقد الشراكة وتسليم المواد الترويجية وقنوات التقديم السريعة.";
-    contactNote = "إذا كانت لديكم أية استفسارات عاجلة، يمكنكم الرد مباشرة على هذا البريد أو التواصل عبر الواتساب.";
-  } else if (lang === "zh") {
-    title = "合作伙伴申请已确认送达";
-    greeting = "尊敬的 " + (name || "合作伙伴") + "：";
-    intro = "非常感谢您申请成为迪拜谢里夫集团官方合作伙伴。我们非常期待与具有远见的专业机构携手，共同拓展全球第二身份与海外资产配置市场。";
-    refLabel = "申请追踪编号";
-    nextTitle = "后续流程安排：";
-    step1 = "<strong>1. 资质合规审核：</strong> 我们的合规与战略合作团队将在2个工作日内完成初步审核。";
-    step2 = "<strong>2. 专属顾问对接：</strong> 专属机构关系经理将与您沟通，明确佣金机制、引荐流程与合作模式。";
-    step3 = "<strong>3. 协议签署与赋能：</strong> 签署正式B2B合作协议，获取联合品牌资料包与VIP快速递件通道。";
-    contactNote = "如有任何即时疑问，可直接回复此邮件，或通过官方 WhatsApp 与我们的合作团队取得联系。";
-  }
-
-  return `
-  <!DOCTYPE html>
-  <html>
-  <head><meta charset="utf-8"></head>
-  <body style="font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif; background: #FAF6EE; padding: 24px; color: #111; margin: 0;">
-    <div style="max-width: 620px; margin: 0 auto; background: #ffffff; border-radius: 16px; border: 1px solid #E2E8F0; overflow: hidden; box-shadow: 0 4px 20px rgba(0,0,0,0.06);">
-      <div style="background: #070E1A; padding: 28px 32px; text-align: center;">
-        <span style="font-size: 20px; font-weight: 700; letter-spacing: 0.15em; color: #C5A880; text-transform: uppercase;">SHARIF GROUP</span>
-        <div style="font-size: 11px; letter-spacing: 0.2em; color: #94A3B8; text-transform: uppercase; margin-top: 4px;">GLOBAL CITIZENSHIP & RESIDENCY PARTNERSHIPS</div>
-      </div>
-      <div style="padding: 32px; direction: ${isRtl ? 'rtl' : 'ltr'}; text-align: ${isRtl ? 'right' : 'left'};">
-        <h2 style="color: #070E1A; margin-top: 0; font-size: 20px;">${title}</h2>
-        <p style="font-size: 15px; color: #475569; line-height: 1.6;">${greeting}</p>
-        <p style="font-size: 14px; color: #475569; line-height: 1.6;">${intro}</p>
-        
-        <div style="background: #FAF6EE; border-radius: 12px; padding: 18px 22px; margin: 22px 0; border: 1px solid #E5E0D8; text-align: center;">
-          <div style="font-size: 12px; font-weight: 600; color: #786142; text-transform: uppercase; letter-spacing: 0.1em;">${refLabel}</div>
-          <div style="font-size: 22px; font-weight: 800; color: #070E1A; letter-spacing: 0.08em; margin-top: 4px; font-family: monospace;">${applicationId}</div>
-          ${company ? `<div style="font-size: 12px; color: #64748B; margin-top: 4px;">${company}</div>` : ''}
-        </div>
-
-        <div style="margin: 22px 0;">
-          <h3 style="font-size: 14px; color: #070E1A; text-transform: uppercase; letter-spacing: 0.05em; margin-bottom: 12px;">${nextTitle}</h3>
-          <div style="font-size: 13px; color: #334155; line-height: 1.7; padding-${isRtl ? 'right' : 'left'}: 4px;">
-            <div style="margin-bottom: 10px;">${step1}</div>
-            <div style="margin-bottom: 10px;">${step2}</div>
-            <div>${step3}</div>
-          </div>
-        </div>
-
-        <p style="font-size: 13px; color: #64748B; line-height: 1.6; margin-top: 24px; background: #F8FAFC; padding: 14px 18px; border-radius: 8px; border: 1px solid #EDF2F7;">
-          ${contactNote}
-        </p>
-
-        <div style="margin-top: 32px; padding-top: 20px; border-top: 1px solid #E2E8F0; text-align: center; font-size: 12px; color: #94A3B8; line-height: 1.6;">
-          Sharif Group Dubai • 116 The Binary Tower, Business Bay, Dubai, UAE<br/>
-          Direct Inquiries: <a href="mailto:mohammad@sharifgroup.ae" style="color: #786142; text-decoration: none;">mohammad@sharifgroup.ae</a> | WhatsApp: +971 4 357 8737
-        </div>
-      </div>
-    </div>
-  </body>
-  </html>
-  `;
+  return '<!DOCTYPE html><html lang="' + lang + '" dir="' + dir + '"><body style="margin:0;padding:24px 12px;background-color:#FAF6EE;font-family:sans-serif;color:#111;">' +
+    '<table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0"><tr><td align="center">' +
+    '<table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0" style="max-width:600px;background:#fff;border-radius:16px;border:1px solid #E5E0D8;overflow:hidden;">' +
+    '<tr><td style="background:#070E1A;padding:32px 24px;text-align:center;"><span style="font-size:22px;font-weight:700;letter-spacing:0.18em;color:#C5A880;text-transform:uppercase;">SHARIF GROUP</span><div style="font-size:11px;color:#94A3B8;letter-spacing:0.12em;margin-top:4px;">PARTNERSHIPS NETWORK</div></td></tr>' +
+    '<tr><td style="padding:36px 32px;direction:' + dir + ';text-align:' + align + ';"><h1 style="color:#070E1A;font-size:22px;font-weight:700;">Partnership Application Received</h1>' +
+    '<p style="font-size:15px;line-height:1.7;color:#334155;">Dear ' + name + ',<br/><br/>Thank you for submitting your partnership application to the Sharif Group Network. Your application <strong>#' + applicationId + '</strong> has been queued for institutional review by our partnerships desk.</p>' +
+    '<div style="background:#F8FAFC;border:1px solid #E2E8F0;border-radius:8px;padding:16px;margin:20px 0;"><strong>Application Reference:</strong> ' + applicationId + '<br/><strong>Company / Firm:</strong> ' + (company || "Individual / Not Specified") + '<br/><strong>Desk Review SLA:</strong> 24 to 48 Hours</div>' +
+    '<p style="font-size:13px;color:#64748B;">Sharif Group Partnerships Desk • Dubai, UAE</p></td></tr>' +
+    '</table></td></tr></table></body></html>';
 }
 
-/**
- * ==============================================================================
- * ONE-CLICK PERMISSION & AUTHORIZATION TESTER
- * ==============================================================================
- * Select "testEmailPermissions" from the Apps Script function dropdown and click "Run".
- * Google will display the "Authorization Required" popup.
-/**
- * BARE AUTHORIZATION TRIGGER (NO TRY/CATCH)
- * Select "authorizeMailNow" and click "Run".
- * Because there is no try/catch, Google CANNOT swallow the permission check
- * and will immediately pop up the "Authorization Required" window!
- */
-function authorizeMailNow() {
-  var remaining = MailApp.getRemainingDailyQuota();
-  Logger.log("Permission granted! Remaining quota: " + remaining);
+// ==============================================================================
+// UI MENU & DIAGNOSTICS FOR SPREADSHEET OWNER
+// ==============================================================================
+function onOpen() {
+  SpreadsheetApp.getUi()
+    .createMenu("⭐ Sharif Group CRM")
+    .addItem("🛠️ Setup / Refresh All 3 Tabs", "initializeAllTabs")
+    .addItem("✉️ Send Test Admin Email Alert", "testEmailPermissions")
+    .addItem("📊 View Lead Counts & Stats", "showAllStats")
+    .addToUi();
+}
+
+function initializeAllTabs() {
+  var ss = SpreadsheetApp.getActiveSpreadsheet();
+
+  // Tab 1: Programs & Consultations
+  getOrCreateTab(ss, CONFIG.LEADS_TAB, CONFIG.FALLBACK_LEADS, [
+    "Timestamp (UTC)", "Full Name", "Email Address", "Phone Number", "Country / Residence",
+    "Program / Service", "Language", "Notes & Details", "Source URL", "Page Path", "Form ID", "Email Status"
+  ]);
+
+  // Tab 2: Partner Applications
+  getOrCreateTab(ss, CONFIG.PARTNER_TAB, [], [
+    "Timestamp (UTC)", "Application ID", "Full Name", "Partner Type", "Company / Firm", "Job Title",
+    "Country", "City", "Dial Code", "Phone (WhatsApp)", "Email Address", "Website / LinkedIn",
+    "Programmes of Interest", "Est. Annual Referrals", "Heard From", "Confidential Message",
+    "Language", "Source URL", "Status", "Confirmation Email Status"
+  ]);
+
+  // Tab 3: Event Registrations
+  getOrCreateTab(ss, CONFIG.EVENT_TAB, CONFIG.FALLBACK_EVENTS, [
+    "Timestamp (UTC)", "Webinar ID", "Webinar Slug", "Full Name", "Dial Code", "Phone Number",
+    "Email Address", "Country of Residence", "Questions / Notes", "Newsletter Opt-In",
+    "Language", "Source URL", "Page Path", "Status", "Email Dispatch Status"
+  ]);
+
+  SpreadsheetApp.getUi().alert("✅ Success: All 3 CRM tabs (Programs, Partners, Events) have been created and formatted with luxury styling!");
 }
 
 function testEmailPermissions() {
-  var quota = -1;
-  try {
-    quota = MailApp.getRemainingDailyQuota();
-    Logger.log("✅ Remaining Google Mail quota: " + quota);
-  } catch (err) {
-    Logger.log("❌ Quota error: " + err.message);
-  }
+  var quota = MailApp.getRemainingDailyQuota();
+  MailApp.sendEmail({
+    to: CONFIG.ADMIN_EMAIL,
+    subject: "✅ Sharif Group Master CRM — Test Alert",
+    body: "This is a verification test from your Sharif Group Master CRM Google Spreadsheet.\n\n" +
+          "• Status: Google MailApp is operational!\n" +
+          "• Daily Quota Remaining: " + quota + " emails\n" +
+          "• Timestamp: " + new Date().toISOString()
+  });
 
-  var testRecipient = CONFIG.ADMIN_EMAIL;
-  Logger.log("📤 Sending test confirmation email to: " + testRecipient);
-  var status = sendConfirmationEmail(testRecipient, "Test Attendee", "WEB01", "en");
-  Logger.log("📬 Dispatch result: " + status);
+  SpreadsheetApp.getUi().alert("✅ Test email successfully sent to " + CONFIG.ADMIN_EMAIL + "!\nDaily quota remaining: " + quota);
 }
 
+function showAllStats() {
+  var ss = SpreadsheetApp.getActiveSpreadsheet();
+  var s1 = ss.getSheetByName(CONFIG.LEADS_TAB);
+  var s2 = ss.getSheetByName(CONFIG.PARTNER_TAB);
+  var s3 = ss.getSheetByName(CONFIG.EVENT_TAB);
 
+  var c1 = s1 ? Math.max(0, s1.getLastRow() - 1) : 0;
+  var c2 = s2 ? Math.max(0, s2.getLastRow() - 1) : 0;
+  var c3 = s3 ? Math.max(0, s3.getLastRow() - 1) : 0;
+
+  SpreadsheetApp.getUi().alert(
+    "📊 Sharif Group Master CRM Statistics:\n\n" +
+    "• Programs & Consultations: " + c1 + " leads\n" +
+    "• Partner Applications:     " + c2 + " applications\n" +
+    "• Event Registrations:      " + c3 + " attendees\n\n" +
+    "Total Inquiries: " + (c1 + c2 + c3)
+  );
+}
