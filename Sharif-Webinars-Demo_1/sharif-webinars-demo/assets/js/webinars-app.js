@@ -892,7 +892,7 @@
       { h: SITE + p + 'aboutus/', l: N.aboutUs, dd: 'about' },
       { h: SITE + p + 'contact/', l: N.contact },
       { h: SITE + p + 'blog/', l: N.blog },
-      { h: `${SITE}${p}events/`, l: N.webinars, active: 1, isNew: 1 }
+      { h: `${SITE}${p}events/`, l: N.webinars, active: 1, isNew: 0 }
     ];
   }
   function headerHTML(staticCopy) {
@@ -1031,7 +1031,7 @@
         <span class="nav-sep" aria-hidden="true">|</span>
         <a class="nav-link caps" href="${SITE + p}blog/">${esc(N.blog)}</a>
         <span class="nav-sep" aria-hidden="true">|</span>
-        <a class="nav-link caps is-active" href="${SITE + p}events/" aria-current="page">${esc(N.webinars)} <span class="nav-new">${esc(t('common.isNew'))}</span></a>
+        <a class="nav-link caps is-active" href="${SITE + p}events/" aria-current="page">${esc(N.webinars)}</a>
       </nav>
       </div>
 
@@ -1192,8 +1192,8 @@
             <li><a class="hover:text-luxury-gold transition" data-i18n="footer.educationalAdvisory" href="${SITE + p}educationaladvisory/">${esc(F.educationalAdvisory)}</a></li>
             <li><a class="hover:text-luxury-gold transition" data-i18n="footer.contactUs" href="${SITE + p}contact/">${esc(F.contactUs)}</a></li>
             <li><a class="hover:text-luxury-gold transition" data-i18n="footer.insightsBlog" href="${SITE + p}blog/">${esc(F.insightsBlog)}</a></li>
-            <li><a class="hover:text-luxury-gold transition inline-flex items-center gap-1.5 foot-new-row" href="${SITE + p}events/"><span data-i18n="footer.webinars">${esc(F.webinars)}</span> <span class="nav-new-badge ml-1.5 px-1.5 py-0.5 rounded-full bg-[#786142] text-white text-[8px] font-bold leading-none inline-flex items-center justify-center shrink-0 tracking-wider" data-i18n="nav.newBadge">${esc(t('common.isNew') || 'New')}</span></a></li>
-            <li><a class="hover:text-luxury-gold transition inline-flex items-center gap-1.5 foot-new-row" href="${SITE + p}partners/"><span data-i18n="footer.partnerWithUs">${esc(F.partnerWithUs || 'Partner With Us')}</span> <span class="nav-new-badge ml-1.5 px-1.5 py-0.5 rounded-full bg-[#786142] text-white text-[8px] font-bold leading-none inline-flex items-center justify-center shrink-0 tracking-wider" data-i18n="nav.newBadge">${esc(t('common.isNew') || 'New')}</span></a></li>
+            <li><a class="hover:text-luxury-gold transition inline-flex items-center gap-1.5 foot-new-row" href="${SITE + p}events/"><span data-i18n="footer.webinars">${esc(F.webinars)}</span> </a></li>
+            <li><a class="hover:text-luxury-gold transition inline-flex items-center gap-1.5 foot-new-row" href="${SITE + p}partners/"><span data-i18n="footer.partnerWithUs">${esc(F.partnerWithUs || 'Partner With Us')}</span> </a></li>
             <li><a class="hover:text-luxury-gold transition" data-i18n="footer.eligibilityChecker" href="${SITE + p}eligibilitychecker/">${esc(F.eligibilityChecker)}</a></li>
           </ul>
         </div>
@@ -1338,7 +1338,7 @@
           <a href="${SITE + p}about-founder/">${esc(N.aboutFounder)}</a>
           <a href="${SITE + p}socialresponsibility/">${esc(N.socialResp)}</a>
           <a href="${SITE + p}blog/">${esc(N.blog)}</a>
-          <a href="${SITE + p}events/" class="is-active">${esc(N.webinars)} <span class="nav-new">${esc(t('common.isNew'))}</span></a>
+          <a href="${SITE + p}events/" class="is-active">${esc(N.webinars)}</a>
           <a href="${SITE + p}contact/">${esc(N.contact)}</a>
         </div>
       </nav>

@@ -893,3 +893,7 @@ main:focus { outline: none; }
 .held--light strong { color: var(--ink); }
 .locked--light { background: var(--cream); border-color: var(--line-2); color: var(--text); }
 .join-light .note { color: var(--muted); }
+
+
+/* Global suppression of 'New' badges */
+.sg-badge-new, .nav-new-badge, .nav-new, [data-i18n="nav.newBadge"], .foot-new-row .nav-new-badge { display: none !important; }

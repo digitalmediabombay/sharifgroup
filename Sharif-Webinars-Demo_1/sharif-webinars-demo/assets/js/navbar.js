@@ -439,7 +439,7 @@
                     <div class="sg-mm-card-partner-content">
                       <div class="sg-mm-card-partner-text">
                         <span class="sg-mm-card-title">${esc(n.becomePartner)}</span>
-                        <span class="sg-badge-new">${esc(n.newBadge)}</span>
+                        
                       </div>
                     </div>
                   </a>
@@ -463,7 +463,7 @@
           <div class="sg-nav-item">
             <a class="sg-nav-link" href="${site + p}events/">
               <span>${esc(n.webinars)}</span>
-              <span class="sg-badge-new">${esc(n.newBadge)}</span>
+              
             </a>
           </div>
         </nav>
@@ -585,7 +585,7 @@
           <li><a href="${site + p}aboutus/">${esc(n.aboutSharif)}</a></li>
           <li><a href="${site + p}about-founder/">${esc(n.aboutFounder)}</a></li>
           <li><a href="${site + p}socialresponsibility/">${esc(n.socialResp)}</a></li>
-          <li><a href="${isPartnerDemo ? '#/partners' : site + p + 'partners/'}" style="color:var(--sg-gold-dark);font-weight:700;display:flex;align-items:center;justify-content:space-between;padding:8px 0;"><span>${esc(n.becomePartner)}</span><span class="sg-badge-new">${esc(n.newBadge)}</span></a></li>
+          <li><a href="${isPartnerDemo ? '#/partners' : site + p + 'partners/'}" style="color:var(--sg-gold-dark);font-weight:700;display:flex;align-items:center;justify-content:space-between;padding:8px 0;"><span>${esc(n.becomePartner)}</span></a></li>
         </ul>
       </div>
 
@@ -601,7 +601,7 @@
       </a>
 
       <a class="sg-drawer-link-direct" href="${site + p}events/">
-        <span>${esc(n.webinars)} <span class="sg-badge-new">${esc(n.newBadge)}</span></span>
+        <span>${esc(n.webinars)} </span>
         <i class="fa-solid fa-arrow-right"></i>
       </a>
 

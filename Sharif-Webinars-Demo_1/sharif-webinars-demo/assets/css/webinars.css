@@ -3530,3 +3530,7 @@ main:focus { outline: none; }
   }
 }
 
+
+
+/* Global suppression of 'New' badges */
+.sg-badge-new, .nav-new-badge, .nav-new, [data-i18n="nav.newBadge"], .foot-new-row .nav-new-badge { display: none !important; }

@@ -232,7 +232,7 @@
                 <a class="mm-card mm-card--partner is-active" href="${SITE + p}partners/">
                   <img src="${imgRel('card.webp')}" alt="Become a Partner" loading="lazy">
                   <div class="mm-card-overlay mm-card-overlay--gold"></div>
-                  <span class="mm-card-title caps">${esc(N.becomePartner)} <span class="nav-new">${esc(t('common.isNew'))}</span></span>
+                  <span class="mm-card-title caps">${esc(N.becomePartner)}</span>
                 </a>
               </div>
             </div>
@@ -404,8 +404,8 @@
             <li><a class="hover:text-luxury-gold transition" href="${SITE + p}educationaladvisory/">${esc(F.educationalAdvisory || 'Educational Advisory')}</a></li>
             <li><a class="hover:text-luxury-gold transition" href="${SITE + p}contact/">${esc(F.contactUs || 'Contact Us')}</a></li>
             <li><a class="hover:text-luxury-gold transition" href="${SITE + p}blog/">${esc(F.insightsBlog || 'Insights & Blog')}</a></li>
-            <li><a class="hover:text-luxury-gold transition inline-flex items-center gap-1.5 foot-new-row" href="${SITE + p}events/"><span>${esc(F.webinars || 'Events')}</span> <span class="nav-new-badge ml-1.5 px-1.5 py-0.5 rounded-full bg-[#786142] text-white text-[8px] font-bold leading-none inline-flex items-center justify-center shrink-0 tracking-wider">${esc(t('common.isNew') || 'New')}</span></a></li>
-            <li><a class="hover:text-luxury-gold transition inline-flex items-center gap-1.5 foot-new-row" href="${SITE + p}partners/"><span>${esc(F.partnerWithUs || 'Partner With Us')}</span> <span class="nav-new-badge ml-1.5 px-1.5 py-0.5 rounded-full bg-[#786142] text-white text-[8px] font-bold leading-none inline-flex items-center justify-center shrink-0 tracking-wider">${esc(t('common.isNew') || 'New')}</span></a></li>
+            <li><a class="hover:text-luxury-gold transition inline-flex items-center gap-1.5 foot-new-row" href="${SITE + p}events/"><span>${esc(F.webinars || \'Events\')}</span></a></li>
+            <li><a class="hover:text-luxury-gold transition inline-flex items-center gap-1.5 foot-new-row" href="${SITE + p}partners/"><span>${esc(F.partnerWithUs || \'Partner With Us\')}</span></a></li>
             <li><a class="hover:text-luxury-gold transition" href="${SITE + p}eligibilitychecker/">${esc(F.eligibilityChecker || 'Eligibility Checker')}</a></li>
           </ul>
         </div>
@@ -477,7 +477,7 @@
       if (legacyDrawer) legacyDrawer.style.display = 'none';
     } else {
       $('#siteHeader').innerHTML = headerHTML(false);
-      $('#drawer').innerHTML = navItems().map(i => `<a href="${i.h}">${esc(i.l)}</a>${i.about ? `<a class="drawer-sub is-active" href="${SITE + p}partners/">${esc(N.becomePartner)} <span class="nav-new">${esc(t('common.isNew'))}</span></a>` : ''}`).join('') +
+      $('#drawer').innerHTML = navItems().map(i => `<a href="${i.h}">${esc(i.l)}</a>${i.about ? `<a class="drawer-sub is-active" href="${SITE + p}partners/">${esc(N.becomePartner)}</a>` : ''}`).join('') +
         `<div class="drawer-ctas"><a href="${SITE + p}eligibilitychecker/">${esc(N.eligibilityChecker)}</a><a class="solid" href="${SITE + p}contact/">${esc(N.bookConsultation)}</a></div>`;
     }
 
@@ -1014,7 +1014,7 @@
     return `<form class="form" id="partnerForm" novalidate>
       <div class="form-alert" role="alert" id="formAlert">${F('alert')}</div>
       
-      <!-- Row 1: 3 Columns (Matches Program Pages UI/UX) -->
+      <!-- Row 1: Full Name, Email, WhatsApp / Phone -->
       <div class="form-grid-3">
         <div class="field">
           <label class="field-label-caps" for="f-name">${F('name')}<span class="req">*</span></label>
@@ -1036,8 +1036,8 @@
         </div>
       </div>
 
-      <!-- Row 2: 2 Columns -->
-      <div class="form-grid-2">
+      <!-- Row 2: Company / Firm, Job Title, Website or LinkedIn -->
+      <div class="form-grid-3">
         <div class="field" id="company-field">
           <label class="field-label-caps" for="f-company">${F('company')}<span class="req">*</span></label>
           <input class="input" id="f-company" name="company" autocomplete="organization" placeholder="e.g. Legal Partners LLC" maxlength="120">
@@ -1045,26 +1045,75 @@
           <span class="err">${F('errCompany')}</span>
         </div>
         <div class="field">
-          <label class="field-label-caps" for="f-country">${F('country')}<span class="req">*</span></label>
-          <input class="input" id="f-country" name="country" autocomplete="country-name" placeholder="e.g. UAE, Saudi Arabia, USA" maxlength="60">
-          <span class="err">${F('errCountry')}</span>
+          <label class="field-label-caps" for="f-job">${F('jobTitle')}</label>
+          <input class="input" id="f-job" name="job_title" placeholder="e.g. Managing Partner, Director" maxlength="80">
+        </div>
+        <div class="field">
+          <label class="field-label-caps" for="f-web">${F('website')}</label>
+          <input class="input" id="f-web" name="website" placeholder="https://linkedin.com/in/... or website" maxlength="120" dir="ltr">
         </div>
       </div>
 
-      <!-- Row 3: Partner Category / Type Selection -->
+      <!-- Row 3: Country & City -->
+      <div class="form-grid-2">
+        <div class="field">
+          <label class="field-label-caps" for="f-country">${F('country')}<span class="req">*</span></label>
+          <input class="input" id="f-country" name="country" autocomplete="country-name" placeholder="e.g. UAE, Saudi Arabia, UK" maxlength="60">
+          <span class="err">${F('errCountry')}</span>
+        </div>
+        <div class="field">
+          <label class="field-label-caps" for="f-city">${F('city')}</label>
+          <input class="input" id="f-city" name="city" placeholder="e.g. Dubai, Riyadh, London" maxlength="60">
+        </div>
+      </div>
+
+      <!-- Row 4: Programmes of Interest, Est. Annual Referrals, Heard From -->
+      <div class="form-grid-3">
+        <div class="field">
+          <label class="field-label-caps" for="f-programmes">${F('programmes')}</label>
+          <select class="select" id="f-programmes" name="programmes">
+            <option value="all">${F('programmesOptAll')}</option>
+            <option value="cbi">${F('programmesOptCbi')}</option>
+            <option value="rbi">${F('programmesOptRbi')}</option>
+            <option value="realestate">${F('programmesOptRealEstate')}</option>
+            <option value="education">${F('programmesOptEducation')}</option>
+          </select>
+        </div>
+        <div class="field">
+          <label class="field-label-caps" for="f-referrals">${F('referrals')}</label>
+          <select class="select" id="f-referrals" name="referrals_per_year">
+            <option value="1-5">${F('referralsOpt1')}</option>
+            <option value="5-15" selected>${F('referralsOpt2')}</option>
+            <option value="15-30">${F('referralsOpt3')}</option>
+            <option value="30+">${F('referralsOpt4')}</option>
+          </select>
+        </div>
+        <div class="field">
+          <label class="field-label-caps" for="f-heard">${F('heardFrom')}</label>
+          <select class="select" id="f-heard" name="heard_from">
+            <option value="search">${F('heardOptSearch')}</option>
+            <option value="social" selected>${F('heardOptSocial')}</option>
+            <option value="referral">${F('heardOptReferral')}</option>
+            <option value="event">${F('heardOptEvent')}</option>
+            <option value="other">${F('heardOptOther')}</option>
+          </select>
+        </div>
+      </div>
+
+      <!-- Row 5: Partner Category / Type Selection -->
       <fieldset class="field" id="f-type-wrap" style="margin:6px 0 22px;">
         <legend class="field-label-caps">${F('type')}<span class="req">*</span></legend>
         <div class="type-grid">${types}</div>
         <span class="err">${F('errType')}</span>
       </fieldset>
 
-      <!-- Row 4: Confidential Notes -->
+      <!-- Row 6: Confidential Notes -->
       <div class="field" style="margin-bottom:22px;">
         <label class="field-label-caps" for="f-msg">${F('message')} <span class="opt" style="font-weight:normal;color:#737373;text-transform:none;">(${esc(t('common.optional'))})</span></label>
         <textarea class="textarea" id="f-msg" name="message" maxlength="1000" rows="3" placeholder="...Detail any specific partnership parameters, portfolio size, or questions"></textarea>
       </div>
 
-      <!-- Row 5: Consent Checkbox -->
+      <!-- Row 7: Consent Checkbox -->
       <div class="field" id="consent-field" style="border-top:1px solid rgba(0,0,0,0.08);padding-top:16px;margin-bottom:20px;">
         <label class="check" style="cursor:pointer;display:flex;align-items:flex-start;gap:10px;">
           <input type="checkbox" id="f-consent" name="consent" value="yes" style="margin-top:3px;">
@@ -1075,7 +1124,7 @@
 
       <div class="hp" aria-hidden="true"><label>Company website<input name="hp_url" tabindex="-1" autocomplete="off"></label></div>
 
-      <!-- Row 6: Centered CTA Button -->
+      <!-- Row 8: Centered CTA Button -->
       <div style="text-align:center;padding-top:6px;">
         <button class="btn-program-submit" type="submit">${F('submit')} →</button>
       </div>

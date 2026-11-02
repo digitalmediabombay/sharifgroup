@@ -572,6 +572,15 @@ async function handleContactSubmit(event) {
     payload.country = payload.residence || payload.nationality || '';
   }
 
+  // Normalize dedicated questionnaire fields for CRM
+  payload.familyMembers = payload.familyMembers || payload.family || payload.familySize || '';
+  payload.investmentRoute = payload.investmentRoute || payload.route || '';
+  payload.budget = payload.budget || payload.budgetTier || '';
+  payload.objective = payload.objective || payload.primaryObjective || (Array.isArray(payload.goals) ? payload.goals.join(', ') : (payload.goals || ''));
+  payload.timeline = payload.timeline || payload.planningTimeline || '';
+  payload.nationality = payload.nationality || payload.citizenship || '';
+  payload.residence = payload.residence || payload.country || '';
+
   // Map service/program clearly for Google Sheet
   if (!payload.service) {
     payload.service = payload.targetProgram || payload.program || payload.investmentRoute || '';

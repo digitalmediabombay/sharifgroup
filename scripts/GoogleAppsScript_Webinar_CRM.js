@@ -3,14 +3,16 @@
  * SHARIF GROUP — 7-CATEGORY MASTER CRM & WEBHOOK (Google Apps Script)
  * ==============================================================================
  * Purpose:
- * Organizes ALL website inquiries into 7 clean, dedicated sheet tabs:
+ * Organizes ALL website inquiries into 7 clean, dedicated sheet tabs with
+ * full questionnaire parameter tracking:
  * 
  *   1. Citizenship          ➔ All CBI programs (Dominica, Grenada, Antigua, Saint Lucia, St Kitts, Vanuatu, Nauru, Sao Tome, etc.)
+ *                              Tracking: Investment Route, Budget, Family Members, Primary Objective, Planning Timeline
  *   2. Residency            ➔ All Golden Visa & Residency programs (UAE Golden Visa, Greece, Portugal, Panama, etc.)
  *   3. Real Estate          ➔ Dubai Real Estate & Property investment leads
  *   4. Educational Advisory ➔ Global student & school advisory leads
  *   5. General Enquiries    ➔ Contact Us form & General inquiries
- *   6. Partnership          ➔ B2B Partner applications
+ *   6. Partnership          ➔ B2B Partner applications (Partner Type, Job Title, City, Programmes, Referrals, etc.)
  *   7. Event                ➔ Webinar & Live Session registrations
  * 
  * NOTE: Phone numbers are automatically escaped with a leading apostrophe (')
@@ -35,14 +37,20 @@ const CONFIG = {
   REPLY_TO_EMAIL: "mohammad@sharifgroup.ae"
 };
 
-// Headers for Category Tabs (Citizenship, Residency, Real Estate, Education, General)
+// Full Headers for Category Tabs (Citizenship, Residency, Real Estate, Education, General)
 const CATEGORY_HEADERS = [
   "Timestamp (UTC)",
   "Full Name",
   "Email Address",
   "Phone Number",
+  "Nationality",
   "Country / Residence",
   "Program / Route",
+  "Investment Route",
+  "Approx Budget",
+  "Family Members",
+  "Primary Objective",
+  "Planning Timeline",
   "Language",
   "Notes & Details",
   "Source URL",
@@ -120,7 +128,12 @@ function doGet(e) {
       CONFIG.TAB_PARTNERSHIP,
       CONFIG.TAB_EVENT
     ],
-    instructions: "POST JSON or form data. Automatically routes to one of the 7 clean category tabs."
+    features: [
+      "Dedicated Citizenship Questionnaire Columns (Route, Budget, Family, Objective, Timeline)",
+      "Dedicated Partner Onboarding Columns (Job Title, City, Programmes, Referrals, Heard From)",
+      "Automatic Phone #ERROR! Prevention (Plain text + leading apostrophe escape)",
+      "Instant Admin Email Alerts with full dossier"
+    ]
   })).setMimeType(ContentService.MimeType.JSON);
 }
 
@@ -191,24 +204,25 @@ function handleCategoryLead(data) {
   var cleanPhone = rawPhone.replace(/^'+/, "").trim();
   var safePhone = cleanPhone ? ("'" + cleanPhone) : "";
 
-  var leadService = data.service || data.targetProgram || data.program || data.investmentRoute || "General Consultation";
-  var leadCountry = data.country || data.residence || data.citizenship || "";
+  var leadNationality = (data.nationality || data.citizenship || "").trim();
+  var leadResidence = (data.residence || data.country || "").trim();
+  var leadService = data.service || data.targetProgram || data.program || "General Consultation";
   
-  // Extra metadata from eligibility checker or detailed questionnaires
-  var extraDetails = [];
-  if (data.citizenship && data.citizenship !== leadCountry) extraDetails.push("Citizenship: " + data.citizenship);
-  if (data.residence && data.residence !== leadCountry) extraDetails.push("Residence: " + data.residence);
-  if (data.familySize) extraDetails.push("Family: " + data.familySize);
-  if (data.budgetTier) extraDetails.push("Budget: " + data.budgetTier);
-  if (data.goals) extraDetails.push("Goals: " + data.goals);
+  // Dedicated citizenship & residency questionnaire parameters
+  var investmentRoute = data.investmentRoute || data.route || "";
+  var budget = data.budget || data.budgetTier || "";
+  var familyMembers = data.familyMembers || data.family || data.familySize || "";
+  var objective = data.objective || data.primaryObjective || (Array.isArray(data.goals) ? data.goals.join(", ") : (data.goals || ""));
+  var timeline = data.timeline || data.planningTimeline || "";
 
-  var baseNotes = (data.notes || data.message || data.confidentialNotes || "").trim();
-  var leadNotes = baseNotes;
-  if (extraDetails.length > 0) {
-    leadNotes = (baseNotes ? baseNotes + "\n" : "") + "[" + extraDetails.join(" | ") + "]";
-  }
+  var friendlyRoute = formatRoute(investmentRoute);
+  var friendlyBudget = formatBudget(budget);
+  var friendlyFamily = formatFamily(familyMembers);
+  var friendlyObjective = formatObjective(objective);
+  var friendlyTimeline = formatTimeline(timeline);
 
-  var leadLang = (data.lang || "en").toLowerCase();
+  var leadLang = (data.lang || data.preferredLanguage || "en").toLowerCase();
+  var leadNotes = (data.notes || data.message || data.confidentialNotes || "").trim();
   var sourceUrl = data.source || "";
   var pagePath = data.page || "";
   var formId = data.form_id || "consultation-lead";
@@ -223,16 +237,22 @@ function handleCategoryLead(data) {
       to: CONFIG.ADMIN_EMAIL,
       subject: "⚡ New Lead [" + targetTabName + "]: " + leadName + " (" + (leadService || "General") + " | " + leadLang.toUpperCase() + ")",
       body: "New Website Lead Received:\n\n" +
-            "• Category Sheet Tab: " + targetTabName + "\n" +
-            "• Full Name:          " + leadName + "\n" +
-            "• Email Address:      " + (leadEmail || "Not provided") + "\n" +
-            "• Phone Number:       " + (cleanPhone || "Not provided") + "\n" +
-            "• Program / Route:    " + leadService + "\n" +
-            "• Country:            " + (leadCountry || "Not specified") + "\n" +
-            "• Language:           " + leadLang.toUpperCase() + "\n" +
-            "• Form ID:            " + formId + "\n" +
-            "• Timestamp:          " + nowUtc + "\n" +
-            "• Page:               " + (pagePath || sourceUrl) + "\n\n" +
+            "• Category Sheet Tab:  " + targetTabName + "\n" +
+            "• Full Name:           " + leadName + "\n" +
+            "• Email Address:       " + (leadEmail || "Not provided") + "\n" +
+            "• Phone Number:        " + (cleanPhone || "Not provided") + "\n" +
+            "• Current Nationality: " + (leadNationality || "Not specified") + "\n" +
+            "• Residence Country:   " + (leadResidence || "Not specified") + "\n" +
+            "• Target Program:      " + leadService + "\n" +
+            "• Investment Route:    " + (friendlyRoute || "Not specified") + "\n" +
+            "• Approx. Budget:      " + (friendlyBudget || "Not specified") + "\n" +
+            "• Family Members:      " + (friendlyFamily || "Not specified") + "\n" +
+            "• Primary Objective:   " + (friendlyObjective || "Not specified") + "\n" +
+            "• Planning Timeline:   " + (friendlyTimeline || "Not specified") + "\n" +
+            "• Language:            " + leadLang.toUpperCase() + "\n" +
+            "• Form ID:             " + formId + "\n" +
+            "• Timestamp (UTC):     " + nowUtc + "\n" +
+            "• Page:                " + (pagePath || sourceUrl) + "\n\n" +
             "----------------------------------------------------\n" +
             "CLIENT NOTES & DETAILS:\n" +
             "----------------------------------------------------\n" +
@@ -242,7 +262,6 @@ function handleCategoryLead(data) {
     emailStatus = "Sent via Google Mail (" + nowUtc + ")";
   } catch (adminErr) {
     emailStatus = "Failed: " + adminErr.message;
-    Logger.log("Admin notify error: " + adminErr.message);
   }
 
   var row = [
@@ -250,8 +269,14 @@ function handleCategoryLead(data) {
     leadName,
     leadEmail,
     safePhone,
-    leadCountry,
+    leadNationality,
+    leadResidence,
     leadService,
+    friendlyRoute,
+    friendlyBudget,
+    friendlyFamily,
+    friendlyObjective,
+    friendlyTimeline,
     leadLang,
     leadNotes,
     sourceUrl,
@@ -347,7 +372,7 @@ function handlePartnerApplication(data) {
   var fullName = data.fullName || data.name || "Partner Applicant";
   var partnerType = data.partner_type || "";
   var company = data.company || "";
-  var jobTitle = data.job_title || "";
+  var jobTitle = data.job_title || data.jobTitle || "";
   var country = data.country || "";
   var city = data.city || "";
   
@@ -357,13 +382,17 @@ function handlePartnerApplication(data) {
   var safePhone = rawPhone ? ("'" + rawPhone) : "";
 
   var email = (data.email || "").toLowerCase().trim();
-  var website = data.website || "";
-  var programmes = data.programmes || "";
-  var referrals = data.referrals_per_year || "";
-  var heardFrom = data.heard_from || "";
-  var message = data.message || "";
+  var website = data.website || data.linkedin || "";
+  var programmes = data.programmes || data.programs || "";
+  var referrals = data.referrals_per_year || data.referrals || "";
+  var heardFrom = data.heard_from || data.heardFrom || "";
+  var message = data.message || data.notes || "";
   var lang = (data.lang || "en").toLowerCase();
   var source = data.source || "";
+
+  var friendlyProgrammes = formatProgrammes(programmes);
+  var friendlyReferrals = formatReferrals(referrals);
+  var friendlyHeard = formatHeard(heardFrom);
 
   var emailStatus = "Not Sent (No Email)";
   if (email && email.indexOf("@") !== -1) {
@@ -375,10 +404,26 @@ function handlePartnerApplication(data) {
   }
 
   sheet.appendRow([
-    nowUtc, appId, fullName, partnerType, company, jobTitle,
-    country, city, safeDialCode, safePhone, email, website,
-    programmes, referrals, heardFrom, message, lang, source,
-    "Pending Review", emailStatus
+    nowUtc,
+    appId,
+    fullName,
+    partnerType,
+    company,
+    jobTitle,
+    country,
+    city,
+    safeDialCode,
+    safePhone,
+    email,
+    website,
+    friendlyProgrammes,
+    friendlyReferrals,
+    friendlyHeard,
+    message,
+    lang,
+    source,
+    "Pending Review",
+    emailStatus
   ]);
 
   try {
@@ -386,14 +431,24 @@ function handlePartnerApplication(data) {
       to: CONFIG.ADMIN_EMAIL,
       subject: "🤝 New Partner Application: " + fullName + " (" + (company || "Individual") + ")",
       body: "New Partner Application Received:\n\n" +
-            "• Application ID: " + appId + "\n" +
-            "• Full Name:      " + fullName + "\n" +
-            "• Company / Firm: " + (company || "None") + "\n" +
-            "• Job Title:      " + (jobTitle || "None") + "\n" +
-            "• Email:          " + email + "\n" +
-            "• Phone:          " + (dialCode ? dialCode + " " : "") + rawPhone + "\n" +
-            "• Country/City:   " + country + (city ? ", " + city : "") + "\n" +
-            "• Timestamp:      " + nowUtc + "\n\n" +
+            "• Application ID:          " + appId + "\n" +
+            "• Full Name:               " + fullName + "\n" +
+            "• Partner Type:            " + partnerType + "\n" +
+            "• Company / Firm:          " + (company || "None (Individual)") + "\n" +
+            "• Job Title / Role:        " + (jobTitle || "Not specified") + "\n" +
+            "• Website / LinkedIn:      " + (website || "Not provided") + "\n" +
+            "• Email Address:           " + email + "\n" +
+            "• WhatsApp / Phone:        " + ((dialCode ? dialCode + " " : "") + rawPhone).trim() + "\n" +
+            "• Country:                 " + country + "\n" +
+            "• City:                    " + (city || "Not specified") + "\n" +
+            "• Programmes of Interest:  " + (friendlyProgrammes || "All Programmes") + "\n" +
+            "• Est. Annual Referrals:   " + (friendlyReferrals || "Not specified") + "\n" +
+            "• Heard From:              " + (friendlyHeard || "Not specified") + "\n" +
+            "• Timestamp (UTC):         " + nowUtc + "\n\n" +
+            "----------------------------------------------------\n" +
+            "CONFIDENTIAL MESSAGE:\n" +
+            "----------------------------------------------------\n" +
+            (message || "None") + "\n\n" +
             "View in Google Sheet:\n" + ss.getUrl()
     });
   } catch (adminErr) {}
@@ -461,47 +516,149 @@ function handleWebinarRegistration(data) {
 }
 
 // ==============================================================================
-// HELPER: GET OR AUTO-CREATE FORMATTED SHEET TAB
+// HELPER: VALUE FORMATTERS FOR CLEAN SPREADSHEET REPORTING
+// ==============================================================================
+function formatObjective(val) {
+  if (!val) return "";
+  var s = String(val).toLowerCase().trim();
+  if (s === "global-mobility" || s.indexOf("mobility") !== -1 || s.indexOf("travel") !== -1) return "Global Mobility & Visa-Free Travel";
+  if (s === "plan-b" || s.indexOf("plan b") !== -1 || s.indexOf("passport") !== -1) return "Secure Second Passport (Plan B)";
+  if (s === "tax-optimization" || s.indexOf("tax") !== -1 || s.indexOf("wealth") !== -1) return "Wealth Preservation & Tax Structuring";
+  if (s === "family-future" || s.indexOf("family") !== -1 || s.indexOf("children") !== -1) return "Security & Future for Children";
+  return String(val);
+}
+
+function formatTimeline(val) {
+  if (!val) return "";
+  var s = String(val).toLowerCase().trim();
+  if (s === "immediate" || s.indexOf("immediate") !== -1 || s.indexOf("0") !== -1) return "Immediately (0–3 months)";
+  if (s === "short_term" || s.indexOf("short") !== -1 || s.indexOf("3-6") !== -1 || s.indexOf("3–6") !== -1) return "3–6 months";
+  if (s === "planning" || s.indexOf("plan") !== -1 || s.indexOf("6-12") !== -1 || s.indexOf("6–12") !== -1) return "6–12 months";
+  return String(val);
+}
+
+function formatFamily(val) {
+  if (!val) return "";
+  var s = String(val).toLowerCase().trim();
+  if (s === "single" || s.indexOf("single") !== -1) return "Single Applicant";
+  if (s === "couple" || s.indexOf("spouse") !== -1) return "Applicant + Spouse";
+  if (s === "family_small" || s.indexOf("small") !== -1 || s.indexOf("4") !== -1) return "Family up to 4";
+  if (s === "family_large" || s.indexOf("large") !== -1 || s.indexOf("5") !== -1) return "Family of 5+";
+  return String(val);
+}
+
+function formatBudget(val) {
+  if (!val) return "";
+  var s = String(val).toLowerCase().trim();
+  if (s === "200k-250k" || s.indexOf("200k") !== -1) return "$200,000 – $250,000";
+  if (s === "250k-350k" || s.indexOf("250k") !== -1) return "$250,000 – $350,000";
+  if (s === "350k+" || s.indexOf("350k") !== -1) return "$350,000+";
+  return String(val);
+}
+
+function formatRoute(val) {
+  if (!val) return "";
+  var s = String(val).toLowerCase().trim();
+  if (s === "edf-donation" || s.indexOf("donation") !== -1 || s.indexOf("edf") !== -1 || s.indexOf("fund") !== -1) return "Economic Diversification Fund ($200k+)";
+  if (s === "real-estate" || s.indexOf("property") !== -1 || s.indexOf("estate") !== -1) return "Approved Real Estate Project ($200k+)";
+  return String(val);
+}
+
+function formatProgrammes(val) {
+  if (!val) return "";
+  var s = String(val).toLowerCase().trim();
+  if (s === "all") return "All Programmes (Citizenship & Residency)";
+  if (s === "cbi") return "Citizenship by Investment (Caribbean & Vanuatu)";
+  if (s === "rbi") return "Residency & Golden Visas (UAE, Greece, Portugal)";
+  if (s === "realestate") return "Dubai Real Estate Investment";
+  if (s === "education") return "Global Educational Advisory";
+  return String(val);
+}
+
+function formatReferrals(val) {
+  if (!val) return "";
+  var s = String(val).toLowerCase().trim();
+  if (s === "1-5") return "1 – 5 clients / year";
+  if (s === "5-15") return "5 – 15 clients / year";
+  if (s === "15-30") return "15 – 30 clients / year";
+  if (s === "30+") return "30+ clients / year";
+  return String(val);
+}
+
+function formatHeard(val) {
+  if (!val) return "";
+  var s = String(val).toLowerCase().trim();
+  if (s === "search") return "Google / Online Search";
+  if (s === "social") return "LinkedIn / Social Media";
+  if (s === "referral") return "Referral / Industry Colleague";
+  if (s === "event") return "Webinar / Event / Conference";
+  if (s === "other") return "Other";
+  return String(val);
+}
+
+// ==============================================================================
+// HELPER: GET OR AUTO-CREATE/SYNC FORMATTED SHEET TAB
 // ==============================================================================
 function getOrCreateTab(ss, preferredName, headers) {
+  var sheet = null;
+
   // 1. Direct match
-  var sheet = ss.getSheetByName(preferredName);
-  if (sheet) return sheet;
+  sheet = ss.getSheetByName(preferredName);
 
   // 2. Space <-> Underscore interchangeability
-  var altName = preferredName.indexOf(" ") !== -1 
-    ? preferredName.replace(/ /g, "_") 
-    : preferredName.replace(/_/g, " ");
-  sheet = ss.getSheetByName(altName);
-  if (sheet) return sheet;
+  if (!sheet) {
+    var altName = preferredName.indexOf(" ") !== -1 
+      ? preferredName.replace(/ /g, "_") 
+      : preferredName.replace(/_/g, " ");
+    sheet = ss.getSheetByName(altName);
+  }
 
   // 3. Flexible match across all existing sheets (case-insensitive, space/underscore, real state)
-  var allSheets = ss.getSheets();
-  var normalizedPreferred = preferredName.toLowerCase().replace(/[^a-z0-9]/g, "");
-  for (var i = 0; i < allSheets.length; i++) {
-    var existingSheet = allSheets[i];
-    var existingName = existingSheet.getName();
-    var normalizedExisting = existingName.toLowerCase().replace(/[^a-z0-9]/g, "");
-    
-    if (normalizedExisting === normalizedPreferred) {
-      return existingSheet;
-    }
-    // Handle "realstate" vs "realestate"
-    if ((normalizedPreferred.indexOf("realestate") !== -1 || normalizedPreferred.indexOf("realstate") !== -1) &&
-        (normalizedExisting.indexOf("realestate") !== -1 || normalizedExisting.indexOf("realstate") !== -1)) {
-      return existingSheet;
-    }
-    // Handle "generalenquir" vs "generalinquair"
-    if (normalizedPreferred.indexOf("general") !== -1 && normalizedExisting.indexOf("general") !== -1) {
-      return existingSheet;
-    }
-    // Handle "education"
-    if (normalizedPreferred.indexOf("education") !== -1 && normalizedExisting.indexOf("education") !== -1) {
-      return existingSheet;
+  if (!sheet) {
+    var allSheets = ss.getSheets();
+    var normalizedPreferred = preferredName.toLowerCase().replace(/[^a-z0-9]/g, "");
+    for (var i = 0; i < allSheets.length; i++) {
+      var existingSheet = allSheets[i];
+      var existingName = existingSheet.getName();
+      var normalizedExisting = existingName.toLowerCase().replace(/[^a-z0-9]/g, "");
+      
+      if (normalizedExisting === normalizedPreferred) {
+        sheet = existingSheet;
+        break;
+      }
+      if ((normalizedPreferred.indexOf("realestate") !== -1 || normalizedPreferred.indexOf("realstate") !== -1) &&
+          (normalizedExisting.indexOf("realestate") !== -1 || normalizedExisting.indexOf("realstate") !== -1)) {
+        sheet = existingSheet;
+        break;
+      }
+      if (normalizedPreferred.indexOf("general") !== -1 && normalizedExisting.indexOf("general") !== -1) {
+        sheet = existingSheet;
+        break;
+      }
+      if (normalizedPreferred.indexOf("education") !== -1 && normalizedExisting.indexOf("education") !== -1) {
+        sheet = existingSheet;
+        break;
+      }
     }
   }
 
-  // 4. Create new tab if not found
+  // 4. If sheet exists, check if row 1 headers need upgrade/sync
+  if (sheet) {
+    try {
+      var curCols = sheet.getLastColumn();
+      if (curCols < headers.length) {
+        sheet.getRange(1, 1, 1, headers.length).setValues([headers]);
+        sheet.getRange(1, 1, 1, headers.length)
+          .setFontWeight("bold")
+          .setBackground("#070E1A")
+          .setFontColor("#C5A880");
+        sheet.setFrozenRows(1);
+      }
+    } catch (syncErr) {}
+    return sheet;
+  }
+
+  // 5. Create new tab if not found
   sheet = ss.insertSheet(preferredName);
   sheet.appendRow(headers);
   sheet.getRange(1, 1, 1, headers.length)
@@ -584,13 +741,13 @@ function initializeAll7Tabs() {
   } catch (e) {}
 
   SpreadsheetApp.getUi().alert(
-    "✅ All 7 Clean CRM Tabs are ready and formatted!\n\n" +
-    "1. " + CONFIG.TAB_CITIZENSHIP + "\n" +
+    "✅ All 7 Clean CRM Tabs are ready and formatted with full questionnaire tracking!\n\n" +
+    "1. " + CONFIG.TAB_CITIZENSHIP + " (with Investment Route, Budget, Family, Objective, Timeline)\n" +
     "2. " + CONFIG.TAB_RESIDENCY + "\n" +
     "3. " + CONFIG.TAB_REAL_ESTATE + "\n" +
     "4. " + CONFIG.TAB_EDUCATION + "\n" +
     "5. " + CONFIG.TAB_GENERAL + "\n" +
-    "6. " + CONFIG.TAB_PARTNERSHIP + "\n" +
+    "6. " + CONFIG.TAB_PARTNERSHIP + " (with Job Title, City, Programmes, Referrals, Heard From)\n" +
     "7. " + CONFIG.TAB_EVENT
   );
 }

@@ -1046,3 +1046,7 @@ html[lang="ar"] .sg-drawer-link-direct {
   padding: 12px 20px !important;
   font-size: 12px !important;
 }
+
+
+/* Global suppression of 'New' badges */
+.sg-badge-new, .nav-new-badge, .nav-new, [data-i18n="nav.newBadge"], .foot-new-row .nav-new-badge { display: none !important; }
