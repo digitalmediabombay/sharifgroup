@@ -914,10 +914,7 @@ html[lang="ar"] .timeline-congrats-title {
   box-shadow: 0 10px 30px rgba(0, 0, 0, 0.4) !important;
   overflow: hidden !important;
   cursor: pointer !important;
-  transition: transform 2.2s cubic-bezier(0.16, 1, 0.3, 1),
-              border-color 2.2s cubic-bezier(0.16, 1, 0.3, 1),
-              box-shadow 2.2s cubic-bezier(0.16, 1, 0.3, 1),
-              background-color 2.2s cubic-bezier(0.16, 1, 0.3, 1) !important;
+  transition: transform 0.4s cubic-bezier(0.16, 1, 0.3, 1), border-color 0.35s ease, box-shadow 0.35s ease, background-color 0.35s ease !important;
   will-change: transform, box-shadow, border-color !important;
   box-sizing: border-box !important;
 }
@@ -937,7 +934,7 @@ html[lang="ar"] .timeline-congrats-title {
   background-position: center !important;
   opacity: 0.14 !important;
   pointer-events: none !important;
-  transition: transform 2.2s cubic-bezier(0.16, 1, 0.3, 1), opacity 2.2s cubic-bezier(0.16, 1, 0.3, 1) !important;
+  transition: transform 0.4s cubic-bezier(0.16, 1, 0.3, 1), opacity 0.4s ease !important;
 }
 
 .who-acc-item:hover .who-acc-bg,
@@ -994,11 +991,7 @@ html[lang="ar"] .timeline-congrats-title {
   justify-content: center !important;
   font-size: 18px !important;
   flex-shrink: 0 !important;
-  transition: transform 1.8s cubic-bezier(0.16, 1, 0.3, 1),
-              background-color 1.8s ease,
-              border-color 1.8s ease,
-              color 1.8s ease,
-              box-shadow 1.8s ease !important;
+  transition: transform 0.35s cubic-bezier(0.16, 1, 0.3, 1), background-color 0.35s ease, border-color 0.35s ease, color 0.35s ease, box-shadow 0.35s ease !important;
 }
 
 .who-acc-icon svg {
@@ -1070,7 +1063,7 @@ html[lang="ar"] .who-acc-title {
   background: rgba(0, 0, 0, 0.25) !important;
   white-space: nowrap !important;
   flex-shrink: 0 !important;
-  transition: all 1.8s cubic-bezier(0.16, 1, 0.3, 1) !important;
+  transition: all 0.35s ease !important;
 }
 
 @media (max-width: 640px) {
@@ -1079,6 +1072,7 @@ html[lang="ar"] .who-acc-title {
   }
 }
 
+.who-acc-item:hover .who-acc-badge,
 .who-acc-item.is-active .who-acc-badge {
   border-color: #C5A880 !important;
   background: rgba(197, 168, 128, 0.18) !important;
@@ -1090,9 +1084,10 @@ html[lang="ar"] .who-acc-title {
 .who-acc-grid {
   display: grid !important;
   grid-template-rows: 0fr !important;
-  transition: grid-template-rows 2.4s cubic-bezier(0.16, 1, 0.3, 1) !important;
+  transition: grid-template-rows 0.4s cubic-bezier(0.16, 1, 0.3, 1) !important;
 }
 
+.who-acc-item:hover .who-acc-grid,
 .who-acc-item.is-active .who-acc-grid {
   grid-template-rows: 1fr !important;
 }
@@ -1102,15 +1097,14 @@ html[lang="ar"] .who-acc-title {
   overflow: hidden !important;
   opacity: 0 !important;
   transform: translateY(18px) !important;
-  transition: opacity 1.6s cubic-bezier(0.16, 1, 0.3, 1),
-              transform 1.8s cubic-bezier(0.16, 1, 0.3, 1) !important;
+  transition: opacity 0.3s ease, transform 0.3s cubic-bezier(0.16, 1, 0.3, 1) !important;
 }
 
+.who-acc-item:hover .who-acc-body,
 .who-acc-item.is-active .who-acc-body {
   opacity: 1 !important;
   transform: translateY(0) !important;
-  transition: opacity 1.8s cubic-bezier(0.16, 1, 0.3, 1) 0.25s,
-              transform 1.8s cubic-bezier(0.16, 1, 0.3, 1) 0.25s !important;
+  transition: opacity 0.35s ease 0.05s, transform 0.35s cubic-bezier(0.16, 1, 0.3, 1) 0.05s !important;
 }
 
 .who-acc-content {
