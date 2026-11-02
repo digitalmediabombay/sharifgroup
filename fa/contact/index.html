@@ -1072,9 +1072,35 @@ html[lang="fa"] #main-header nav a,
 </div>
 <div>
 <label class="block text-[10px] uppercase tracking-wider text-neutral-400 font-bold mb-1.5" data-i18n="contact.subProgram">مسیر فرعی برنامه <span class="text-red-500">*</span></label>
-<select class="w-full bg-white border border-neutral-200 rounded-xl px-4 py-3 text-xs focus:outline-none focus:border-luxury-gold shadow-sm" id="sub-service-choice-standalone" name="subProgram" required="">
-<option data-i18n="contact.selectSubProgram" value="">انتخاب مسیر فرعی</option>
-</select>
+<select class="w-full bg-white border border-neutral-200 rounded-xl px-4 py-3 text-xs focus:outline-none focus:border-luxury-gold shadow-sm" id="sub-service-choice-standalone" name="subProgram">
+                                <option value="" data-i18n="contact.selectSubProgram">انتخاب مسیر فرعی برنامه</option>
+                                <optgroup label="اخذ شهروندی و پاسپورت از طریق سرمایه‌گذاری">
+                                    <option value="dominica">دومینیکا | پاسپورت</option>
+                                    <option value="stkitts">سنت کیتس و نویس | پاسپورت</option>
+                                    <option value="antigua">آنتیگوا و باربودا | پاسپورت</option>
+                                    <option value="stlucia">سنت لوسیا | پاسپورت</option>
+                                    <option value="grenada">گرانادا | پاسپورت</option>
+                                    <option value="vanuatu">وانواتو | پاسپورت</option>
+                                    <option value="saotome">سائوتومه و پرنسیپ | پاسپورت</option>
+                                    <option value="nauru">جمهوری نائورو | پاسپورت</option>
+                                </optgroup>
+                                <optgroup label="اخذ اقامت و ویزای طلایی (Golden Visa)">
+                                    <option value="uae-gv">امارات متحده عربی | ویزای طلایی ۱۰ ساله</option>
+                                    <option value="greece-gv">یونان | ویزای طلایی اروپا</option>
+                                    <option value="portugal-gv">پرتغال | ویزای طلایی سرمایه‌گذاری</option>
+                                    <option value="panama-pr">پاناما | اقامت دائم سرمایه‌گذار واجد شرایط</option>
+                                </optgroup>
+                                <optgroup label="املاک دبی و سرمایه‌گذاری ملکی">
+                                    <option value="dubai-offplan">پروژه‌های در حال ساخت و پیش‌فروش دبی</option>
+                                    <option value="dubai-ready">خانه‌ها، آپارتمان‌ها و ویلاهای آماده دبی</option>
+                                    <option value="commercial-re">املاک تجاری و اداری سرمایه‌گذاری</option>
+                                </optgroup>
+                                <optgroup label="مشاوره تحصیلی و پذیرش دانشگاه‌های بین‌المللی">
+                                    <option value="boarding-schools">مدارس شبانه‌روزی نخبگان بریتانیا و سوئیس</option>
+                                    <option value="undergrad">پذیرش دوره‌های کارشناسی دانشگاهی</option>
+                                    <option value="postgrad">تحصیلات تکمیلی، کارشناسی ارشد و ام‌بی‌ای</option>
+                                </optgroup>
+                            </select>
 </div>
 </div>
 <!-- Row 4: Preferred Language, Preferred Date & Preferred Method -->
@@ -1496,47 +1522,8 @@ html[lang="fa"] #main-header nav a,
             }
         });
 
-        // Sub-service Options Dynamic Populator
-        const optionsMap = {
-            citizenship: [
-                "Dominica | Passport",
-                "St. Kitts & Nevis | Passport",
-                "Antigua & Barbuda | Passport",
-                "Saint Lucia | Passport",
-                "Grenada | Passport",
-                "Vanuatu | Passport",
-                "São Tomé and Príncipe | Passport",
-                "Republic of Nauru | Passport"
-            ],
-            residency: [
-                "Portugal | Golden Visa",
-                "Greece | Golden Visa",
-                "Panama | Golden Visa",
-                "United Arab Emirates | Golden Visa"
-            ],
-            "real-estate": [
-                "New & Off-Plan Launches",
-                "Ready Homes & Villas",
-                "Commercial & Rental Assets",
-                "UAE 10-Year Golden Visa (AED 2M+)"
-            ],
-            education: [
-                "UK Boarding Schools (Prep & Senior)",
-                "Swiss Elite Boarding Academies",
-                "UK Undergraduate & Postgraduate Degrees",
-                "European English-Taught Programs"
-            ]
-        };
-
-        function handleServiceSelectionChange(selectElem) {
-            const subSelect = document.getElementById('sub-service-choice-standalone');
-            if (!subSelect) return;
-            subSelect.innerHTML = '<option value="">Select Sub-Program</option>';
-
-            const selectedService = selectElem.value;
-            if (optionsMap[selectedService]) {
-                optionsMap[selectedService].forEach(optionText => {
-                    subSelect.innerHTML += `<option value="${optionText}">${optionText}</option>`;
+        // Sub-service Options dynamic population handled centrally via /assets/js/forms.js
+">${optionText}</option>`;
                 });
             }
         }

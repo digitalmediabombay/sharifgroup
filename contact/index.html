@@ -1387,8 +1387,34 @@ html[lang="fa"] #main-header nav a,
                             <select
                                 name="subProgram"
                                 class="w-full bg-white border border-neutral-200 rounded-xl px-4 py-3 text-xs focus:outline-none focus:border-luxury-gold shadow-sm"
-                                id="sub-service-choice-standalone" required="">
-                                <option value="" data-i18n="contact.selectSubProgram">Select Sub-Program</option>
+                                id="sub-service-choice-standalone">
+                                <option value="" data-i18n="contact.selectSubProgram">Select Sub-Program Pathway</option>
+                                <optgroup label="Citizenship By Investment (Passports)">
+                                    <option value="dominica">Dominica | Passport</option>
+                                    <option value="stkitts">St. Kitts &amp; Nevis | Passport</option>
+                                    <option value="antigua">Antigua &amp; Barbuda | Passport</option>
+                                    <option value="stlucia">Saint Lucia | Passport</option>
+                                    <option value="grenada">Grenada | Passport</option>
+                                    <option value="vanuatu">Vanuatu | Passport</option>
+                                    <option value="saotome">São Tomé and Príncipe | Passport</option>
+                                    <option value="nauru">Republic of Nauru | Passport</option>
+                                </optgroup>
+                                <optgroup label="Residency By Investment (Golden Visas)">
+                                    <option value="uae-gv">United Arab Emirates | Golden Visa</option>
+                                    <option value="greece-gv">Greece | Golden Visa</option>
+                                    <option value="portugal-gv">Portugal | Golden Visa</option>
+                                    <option value="panama-pr">Panama | Qualified Investor PR</option>
+                                </optgroup>
+                                <optgroup label="Dubai Real Estate &amp; Property">
+                                    <option value="dubai-offplan">Dubai Off-Plan / New Launch</option>
+                                    <option value="dubai-ready">Dubai Ready Homes &amp; Luxury Villas</option>
+                                    <option value="commercial-re">Commercial &amp; Rental Assets</option>
+                                </optgroup>
+                                <optgroup label="Global Educational Advisory">
+                                    <option value="boarding-schools">UK &amp; Swiss Boarding Schools</option>
+                                    <option value="undergrad">Undergraduate Degrees Placement</option>
+                                    <option value="postgrad">Postgraduate &amp; MBA Admission</option>
+                                </optgroup>
                             </select>
                         </div>
                     </div>
@@ -1903,47 +1929,8 @@ html[lang="fa"] #main-header nav a,
             }
         });
 
-        // Sub-service Options Dynamic Populator
-        const optionsMap = {
-            citizenship: [
-                "Dominica | Passport",
-                "St. Kitts & Nevis | Passport",
-                "Antigua & Barbuda | Passport",
-                "Saint Lucia | Passport",
-                "Grenada | Passport",
-                "Vanuatu | Passport",
-                "São Tomé and Príncipe | Passport",
-                "Republic of Nauru | Passport"
-            ],
-            residency: [
-                "Portugal | Golden Visa",
-                "Greece | Golden Visa",
-                "Panama | Golden Visa",
-                "United Arab Emirates | Golden Visa"
-            ],
-            "real-estate": [
-                "New & Off-Plan Launches",
-                "Ready Homes & Villas",
-                "Commercial & Rental Assets",
-                "UAE 10-Year Golden Visa (AED 2M+)"
-            ],
-            education: [
-                "UK Boarding Schools (Prep & Senior)",
-                "Swiss Elite Boarding Academies",
-                "UK Undergraduate & Postgraduate Degrees",
-                "European English-Taught Programs"
-            ]
-        };
-
-        function handleServiceSelectionChange(selectElem) {
-            const subSelect = document.getElementById('sub-service-choice-standalone');
-            if (!subSelect) return;
-            subSelect.innerHTML = '<option value="">Select Sub-Program</option>';
-
-            const selectedService = selectElem.value;
-            if (optionsMap[selectedService]) {
-                optionsMap[selectedService].forEach(optionText => {
-                    subSelect.innerHTML += `<option value="${optionText}">${optionText}</option>`;
+        // Sub-service Options dynamic population handled centrally via /assets/js/forms.js
+">${optionText}</option>`;
                 });
             }
         }

@@ -344,67 +344,115 @@ const SUB_PROGRAM_MAP = {
 
 const SUB_PROGRAM_LOCALIZED = {
   ar: {
-    placeholder: 'اختر المسار الفرعي',
-    dominica: 'دومينيكا',
-    antigua: 'أنتيغوا وبربودا',
-    grenada: 'غرينادا',
-    stkitts: 'سانت كيتس ونيفيس',
-    stlucia: 'سانت لوسيا',
-    vanuatu: 'فانواتو',
-    nauru: 'جمهورية ناورو',
-    saotome: 'ساو تومي وبرينسيب',
-    'uae-gv': 'التأشيرة الذهبية للإمارات',
-    'greece-gv': 'التأشيرة الذهبية لليونان',
-    'portugal-gv': 'التأشيرة الذهبية للبرتغال',
-    'panama-pr': 'الإقامة الدائمة في بنما (المستثمر المؤهل)',
-    'dubai-offplan': 'عقارات دبي على الخارطة',
-    'dubai-ready': 'منازل وفلل جاهزة في دبي',
-    'commercial-re': 'مساحات تجارية ومكتبية',
+    placeholder: 'اختر المسار الفرعي للبرنامج',
+    dominica: 'دومينيكا | جواز سفر',
+    antigua: 'أنتيغوا وبربودا | جواز سفر',
+    grenada: 'غرينادا | جواز سفر',
+    stkitts: 'سانت كيتس ونيفيس | جواز سفر',
+    stlucia: 'سانت لوسيا | جواز سفر',
+    vanuatu: 'فانواتو | جواز سفر',
+    nauru: 'جمهورية ناورو | جواز سفر',
+    saotome: 'ساو تومي وبرينسيب | جواز سفر',
+    'uae-gv': 'الإمارات العربية المتحدة | التأشيرة الذهبية',
+    'greece-gv': 'اليونان | التأشيرة الذهبية',
+    'portugal-gv': 'البرتغال | التأشيرة الذهبية',
+    'panama-pr': 'بنما | إقامة المستثمر المؤهل',
+    'dubai-offplan': 'عقارات دبي على الخارطة والمشاريع الجديدة',
+    'dubai-ready': 'المنازل والفلل الجاهزة في دبي',
+    'commercial-re': 'المساحات التجارية والأصول الاستثمارية',
     'boarding-schools': 'المدارس الداخلية في بريطانيا وسويسرا',
-    undergrad: 'القبول الجامعي (البكالوريوس)',
+    undergrad: 'القبول الجامعي لدرجة البكالوريوس',
     postgrad: 'الدراسات العليا وماجستير إدارة الأعمال'
   },
   fa: {
-    placeholder: 'انتخاب زیربرنامه',
-    dominica: 'دومینیکا',
-    antigua: 'آنتیگوا و باربودا',
-    grenada: 'گرانادا',
-    stkitts: 'سنت کیتس و نویس',
-    stlucia: 'سنت لوسیا',
-    vanuatu: 'وانواتو',
-    nauru: 'جمهوری نائورو',
-    saotome: 'سائوتومه و پرنسیپ',
-    'uae-gv': 'ویزای طلایی امارات',
-    'greece-gv': 'ویزای طلایی یونان',
-    'portugal-gv': 'ویزای طلایی پرتغال',
-    'panama-pr': 'اقامت دائم پاناما (سرمایه‌گذار واجد شرایط)',
-    'dubai-offplan': 'املاک در حال ساخت دبی',
-    'dubai-ready': 'خانه‌ها و ویلاهای آماده دبی',
-    'commercial-re': 'املاک تجاری و اداری',
-    'boarding-schools': 'مدارس شبانه‌روزی بریتانیا و سوئیس',
-    undergrad: 'پذیرش دوره کارشناسی',
-    postgrad: 'تحصیلات تکمیلی و ام‌بی‌ای'
+    placeholder: 'انتخاب مسیر فرعی برنامه',
+    dominica: 'دومینیکا | پاسپورت',
+    antigua: 'آنتیگوا و باربودا | پاسپورت',
+    grenada: 'گرانادا | پاسپورت',
+    stkitts: 'سنت کیتس و نویس | پاسپورت',
+    stlucia: 'سنت لوسیا | پاسپورت',
+    vanuatu: 'وانواتو | پاسپورت',
+    nauru: 'جمهوری نائورو | پاسپورت',
+    saotome: 'سائوتومه و پرنسیپ | پاسپورت',
+    'uae-gv': 'امارات متحده عربی | ویزای طلایی ۱۰ ساله',
+    'greece-gv': 'یونان | ویزای طلایی اروپا',
+    'portugal-gv': 'پرتغال | ویزای طلایی سرمایه‌گذاری',
+    'panama-pr': 'پاناما | اقامت دائم سرمایه‌گذار واجد شرایط',
+    'dubai-offplan': 'پروژه‌های در حال ساخت و پیش‌فروش دبی',
+    'dubai-ready': 'خانه‌ها، آپارتمان‌ها و ویلاهای آماده دبی',
+    'commercial-re': 'املاک تجاری و اداری سرمایه‌گذاری',
+    'boarding-schools': 'مدارس شبانه‌روزی نخبگان بریتانیا و سوئیس',
+    undergrad: 'پذیرش دوره‌های کارشناسی دانشگاهی',
+    postgrad: 'تحصیلات تکمیلی، کارشناسی ارشد و ام‌بی‌ای'
   },
   zh: {
-    placeholder: '请选择子项目',
-    dominica: '多米尼克',
-    antigua: '安提瓜和巴布达',
-    grenada: '格林纳达',
-    stkitts: '圣基茨和尼维斯',
-    stlucia: '圣卢西亚',
-    vanuatu: '瓦努阿图',
-    nauru: '瑙鲁共和国',
-    saotome: '圣多美和普林西比',
-    'uae-gv': '阿联酋黄金签证',
-    'greece-gv': '希腊黄金签证',
-    'portugal-gv': '葡萄牙黄金签证',
-    'panama-pr': '巴拿马合格投资者永久居留',
-    'dubai-offplan': '迪拜期房 / 新发项目',
-    'dubai-ready': '现房与高端别墅',
-    'commercial-re': '商业与写字楼物业',
-    'boarding-schools': '英国与瑞士寄宿学校',
-    undergrad: '本科申请',
-    postgrad: '研究生与MBA录取'
+    placeholder: '请选择细分通道',
+    dominica: '多米尼克 | 第二护照',
+    antigua: '安提瓜和巴布达 | 第二护照',
+    grenada: '格林纳达 | 第二护照',
+    stkitts: '圣基茨和尼维斯 | 第二护照',
+    stlucia: '圣卢西亚 | 第二护照',
+    vanuatu: '瓦努阿图 | 第二护照',
+    nauru: '瑙鲁共和国 | 第二护照',
+    saotome: '圣多美和普林西比 | 第二护照',
+    'uae-gv': '阿拉伯联合酋长国 | 10年黄金签证',
+    'greece-gv': '希腊 | 欧洲黄金签证',
+    'portugal-gv': '葡萄牙 | 黄金居留签证',
+    'panama-pr': '巴拿马 | 合格投资者永久居留',
+    'dubai-offplan': '迪拜期房 / 全球首发项目',
+    'dubai-ready': '现房与高端奢华别墅',
+    'commercial-re': '商业物业与投资型办公楼',
+    'boarding-schools': '英国与瑞士顶尖寄宿学校',
+    undergrad: '海外名校本科申请录取',
+    postgrad: '研究生与MBA高级学位录取'
+  },
+  en: {
+    placeholder: 'Select Sub-Program Pathway',
+    dominica: 'Dominica | Passport',
+    antigua: 'Antigua & Barbuda | Passport',
+    grenada: 'Grenada | Passport',
+    stkitts: 'St. Kitts & Nevis | Passport',
+    stlucia: 'Saint Lucia | Passport',
+    vanuatu: 'Vanuatu | Passport',
+    nauru: 'Republic of Nauru | Passport',
+    saotome: 'São Tomé & Príncipe | Passport',
+    'uae-gv': 'United Arab Emirates | Golden Visa',
+    'greece-gv': 'Greece | Golden Visa',
+    'portugal-gv': 'Portugal | Golden Visa',
+    'panama-pr': 'Panama | Qualified Investor PR',
+    'dubai-offplan': 'Dubai Off-Plan / New Launch',
+    'dubai-ready': 'Ready Homes & Luxury Villas',
+    'commercial-re': 'Commercial & Rental Assets',
+    'boarding-schools': 'UK & Swiss Boarding Schools',
+    undergrad: 'Undergraduate Degrees Placement',
+    postgrad: 'Postgraduate & MBA Admission'
+  }
+};
+
+const CATEGORY_GROUP_TITLES = {
+  en: {
+    citizenship: 'Citizenship By Investment (Passports)',
+    residency: 'Residency By Investment (Golden Visas)',
+    'real-estate': 'Dubai Real Estate & Property',
+    education: 'Global Educational Advisory'
+  },
+  ar: {
+    citizenship: 'الجنسية عن طريق الاستثمار (جوازات السفر)',
+    residency: 'الإقامة عن طريق الاستثمار (التأشيرة الذهبية)',
+    'real-estate': 'عقارات دبي والاستثمار العقاري',
+    education: 'الاستشارات التعليمية والقبول الجامعي'
+  },
+  fa: {
+    citizenship: 'اخذ شهروندی و پاسپورت از طریق سرمایه‌گذاری',
+    residency: 'اخذ اقامت و ویزای طلایی (Golden Visa)',
+    'real-estate': 'املاک دبی و سرمایه‌گذاری ملکی',
+    education: 'مشاوره تحصیلی و پذیرش دانشگاه‌های بین‌المللی'
+  },
+  zh: {
+    citizenship: '投资入籍项目（第二护照）',
+    residency: '投资居留项目（黄金签证）',
+    'real-estate': '迪拜房产与高端置业',
+    education: '全球优质教育与名校咨询'
   }
 };
 
@@ -465,51 +513,114 @@ const TRANSMIT_MESSAGES = {
 };
 
 function handleServiceSelectionChange(selectEl) {
-  const selectedService = selectEl.value;
-  const form = selectEl.closest('form');
-  const subSelect = form.querySelector('#sub-service-choice') || form.querySelector('#sub-service-choice-standalone');
+  let selectedService = '';
+  let form = null;
+
+  if (selectEl && selectEl.nodeType === 1) {
+    selectedService = selectEl.value || '';
+    form = selectEl.closest('form');
+  } else if (typeof selectEl === 'string') {
+    selectedService = selectEl;
+  }
+
+  if (!form) {
+    form = document.querySelector('#standalone-contact-form') || 
+           document.querySelector('#contact-portal-form') || 
+           document.querySelector('form[onsubmit*="handleContactSubmit"]');
+  }
+  if (!form) return;
+
+  const subSelect = form.querySelector('#sub-service-choice') || 
+                    form.querySelector('#sub-service-choice-standalone') || 
+                    form.querySelector('select[name="subProgram"]');
   if (!subSelect) return;
   
   const curLang = (window.getCurrentLanguage ? window.getCurrentLanguage() : document.documentElement.lang) || 'en';
-  const loc = SUB_PROGRAM_LOCALIZED[curLang];
-  const placeholderText = (loc && loc.placeholder) ? loc.placeholder : 'Select Sub-Program';
+  const loc = SUB_PROGRAM_LOCALIZED[curLang] || SUB_PROGRAM_LOCALIZED['en'];
+  const placeholderText = (loc && loc.placeholder) ? loc.placeholder : 'Select Sub-Program Pathway';
 
-  subSelect.innerHTML = `<option value="" data-i18n="contact.selectSubProgram">${placeholderText}</option>`;
+  const previousValue = subSelect.value;
+  subSelect.innerHTML = `<option value="">${placeholderText}</option>`;
 
-  if (SUB_PROGRAM_MAP[selectedService]) {
+  if (selectedService && SUB_PROGRAM_MAP[selectedService]) {
+    // 1. Specific service category selected -> populate only its sub-programs
     SUB_PROGRAM_MAP[selectedService].forEach(sub => {
       const opt = document.createElement('option');
       opt.value = sub.value;
       opt.textContent = (loc && loc[sub.value]) ? loc[sub.value] : sub.label;
+      if (opt.value === previousValue) opt.selected = true;
       subSelect.appendChild(opt);
+    });
+  } else {
+    // 2. No specific service selected yet -> populate ALL 18+ sub-programs grouped by category!
+    const catTitles = CATEGORY_GROUP_TITLES[curLang] || CATEGORY_GROUP_TITLES['en'];
+    Object.keys(SUB_PROGRAM_MAP).forEach(catKey => {
+      const group = document.createElement('optgroup');
+      group.label = catTitles[catKey] || catKey;
+      SUB_PROGRAM_MAP[catKey].forEach(sub => {
+        const opt = document.createElement('option');
+        opt.value = sub.value;
+        opt.textContent = (loc && loc[sub.value]) ? loc[sub.value] : sub.label;
+        if (opt.value === previousValue) opt.selected = true;
+        group.appendChild(opt);
+      });
+      subSelect.appendChild(group);
+    });
+  }
+
+  // 3. Two-way listener: selecting a sub-program auto-selects matching category in main dropdown
+  if (!subSelect.dataset.syncBound) {
+    subSelect.dataset.syncBound = 'true';
+    subSelect.addEventListener('change', function() {
+      const chosenVal = this.value;
+      if (!chosenVal) return;
+      for (const [catKey, items] of Object.entries(SUB_PROGRAM_MAP)) {
+        if (items.some(item => item.value === chosenVal)) {
+          const pForm = this.closest('form');
+          if (pForm) {
+            const mainSel = pForm.querySelector('select[name="targetProgram"]') || 
+                            pForm.querySelector('select[name="programChoice"]') || 
+                            pForm.querySelector('#primary-service-choice');
+            if (mainSel && mainSel.value !== catKey) {
+              mainSel.value = catKey;
+            }
+          }
+          break;
+        }
+      }
     });
   }
 }
 
-// Auto-detect page category and pre-populate targetProgram dropdown if present
+// Auto-detect page category and pre-populate targetProgram & subProgram dropdowns
 function autoInitStandaloneForms() {
   const path = (window.location.pathname || '').toLowerCase();
-  document.querySelectorAll('select[name="targetProgram"]').forEach(sel => {
+
+  // 1. Check all primary service dropdowns
+  document.querySelectorAll('select[name="targetProgram"], select[name="programChoice"]').forEach(sel => {
     if (!sel.value) {
       if (path.includes('citizenshipbyinvestment') || path.includes('/citizenship')) {
         sel.value = 'citizenship';
-        handleServiceSelectionChange(sel);
       } else if (path.includes('residencybyinvestment') || path.includes('/residency')) {
         sel.value = 'residency';
-        handleServiceSelectionChange(sel);
       } else if (path.includes('realestate')) {
         sel.value = 'real-estate';
-        handleServiceSelectionChange(sel);
       } else if (path.includes('educationaladvisory')) {
         sel.value = 'education';
-        handleServiceSelectionChange(sel);
       }
     }
+    // Always populate sub-programs (categorized optgroups if empty, filtered if category selected)
+    handleServiceSelectionChange(sel);
   });
 
-  // Ensure subProgram does not block submission when empty
-  document.querySelectorAll('select[name="subProgram"], #sub-service-choice-standalone').forEach(subSel => {
+  // 2. Also ensure any standalone sub-program dropdowns are populated
+  document.querySelectorAll('select[name="subProgram"], #sub-service-choice-standalone, #sub-service-choice').forEach(subSel => {
     subSel.removeAttribute('required');
+    if (subSel.options.length <= 1) {
+      const parentForm = subSel.closest('form');
+      const mainSel = parentForm ? (parentForm.querySelector('select[name="targetProgram"]') || parentForm.querySelector('select[name="programChoice"]')) : null;
+      handleServiceSelectionChange(mainSel || subSel);
+    }
   });
 }
 

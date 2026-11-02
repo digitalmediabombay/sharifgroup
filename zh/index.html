@@ -1833,8 +1833,34 @@ html[lang="ar"] .cd-lbl {
 <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
 <div>
 <label class="block text-[10px] uppercase tracking-wider text-neutral-700 font-bold mb-1"><span data-i18n="contact.subProgram">细分通道选项</span> <span class="text-red-500">*</span></label>
-<select class="w-full bg-white/95 border border-neutral-300 rounded-xl px-4 py-3 text-xs focus:outline-none focus:border-[#786142] transition shadow-sm" id="sub-service-choice" name="subProgram" required="">
-<option data-i18n="contact.selectSubProgram" value="">请选择细分通道</option>
+<select class="w-full bg-white/95 border border-neutral-300 rounded-xl px-4 py-3 text-xs focus:outline-none focus:border-[#786142] transition shadow-sm" id="sub-service-choice" name="subProgram">
+                                <option value="" data-i18n="contact.selectSubProgram">请选择细分通道</option>
+                                <optgroup label="投资入籍项目（第二护照）">
+                                    <option value="dominica">多米尼克 | 第二护照</option>
+                                    <option value="stkitts">圣基茨和尼维斯 | 第二护照</option>
+                                    <option value="antigua">安提瓜和巴布达 | 第二护照</option>
+                                    <option value="stlucia">圣卢西亚 | 第二护照</option>
+                                    <option value="grenada">格林纳达 | 第二护照</option>
+                                    <option value="vanuatu">瓦努阿图 | 第二护照</option>
+                                    <option value="saotome">圣多美和普林西比 | 第二护照</option>
+                                    <option value="nauru">瑙鲁共和国 | 第二护照</option>
+                                </optgroup>
+                                <optgroup label="投资居留项目（黄金签证）">
+                                    <option value="uae-gv">阿拉伯联合酋长国 | 10年黄金签证</option>
+                                    <option value="greece-gv">希腊 | 欧洲黄金签证</option>
+                                    <option value="portugal-gv">葡萄牙 | 黄金居留签证</option>
+                                    <option value="panama-pr">巴拿马 | 合格投资者永久居留</option>
+                                </optgroup>
+                                <optgroup label="迪拜房产与高端置业">
+                                    <option value="dubai-offplan">迪拜期房 / 全球首发项目</option>
+                                    <option value="dubai-ready">现房与高端奢华别墅</option>
+                                    <option value="commercial-re">商业物业与投资型办公楼</option>
+                                </optgroup>
+                                <optgroup label="全球优质教育与名校咨询">
+                                    <option value="boarding-schools">英国与瑞士顶尖寄宿学校</option>
+                                    <option value="undergrad">海外名校本科申请录取</option>
+                                    <option value="postgrad">研究生与MBA高级学位录取</option>
+                                </optgroup>
 </select>
 </div>
 <div>

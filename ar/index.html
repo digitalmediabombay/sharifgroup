@@ -1833,8 +1833,34 @@ html[lang="ar"] .cd-lbl {
 <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
 <div>
 <label class="block text-[10px] uppercase tracking-wider text-neutral-700 font-bold mb-1"><span data-i18n="contact.subProgram">المسار الفرعي للبرنامج</span> <span class="text-red-500">*</span></label>
-<select class="w-full bg-white/95 border border-neutral-300 rounded-xl px-4 py-3 text-xs focus:outline-none focus:border-[#786142] transition shadow-sm" id="sub-service-choice" name="subProgram" required="">
-<option data-i18n="contact.selectSubProgram" value="">اختر المسار الفرعي</option>
+<select class="w-full bg-white/95 border border-neutral-300 rounded-xl px-4 py-3 text-xs focus:outline-none focus:border-[#786142] transition shadow-sm" id="sub-service-choice" name="subProgram">
+                                <option value="" data-i18n="contact.selectSubProgram">اختر المسار الفرعي للبرنامج</option>
+                                <optgroup label="الجنسية عن طريق الاستثمار (جوازات السفر)">
+                                    <option value="dominica">دومينيكا | جواز سفر</option>
+                                    <option value="stkitts">سانت كيتس ونيفيس | جواز سفر</option>
+                                    <option value="antigua">أنتيغوا وبربودا | جواز سفر</option>
+                                    <option value="stlucia">سانت لوسيا | جواز سفر</option>
+                                    <option value="grenada">غرينادا | جواز سفر</option>
+                                    <option value="vanuatu">فانواتو | جواز سفر</option>
+                                    <option value="saotome">ساو تومي وبرينسيب | جواز سفر</option>
+                                    <option value="nauru">جمهورية ناورو | جواز سفر</option>
+                                </optgroup>
+                                <optgroup label="الإقامة عن طريق الاستثمار (التأشيرة الذهبية)">
+                                    <option value="uae-gv">الإمارات العربية المتحدة | التأشيرة الذهبية</option>
+                                    <option value="greece-gv">اليونان | التأشيرة الذهبية</option>
+                                    <option value="portugal-gv">البرتغال | التأشيرة الذهبية</option>
+                                    <option value="panama-pr">بنما | إقامة المستثمر المؤهل</option>
+                                </optgroup>
+                                <optgroup label="عقارات دبي والاستثمار العقاري">
+                                    <option value="dubai-offplan">عقارات دبي على الخارطة والمشاريع الجديدة</option>
+                                    <option value="dubai-ready">المنازل والفلل الجاهزة في دبي</option>
+                                    <option value="commercial-re">المساحات التجارية والأصول الاستثمارية</option>
+                                </optgroup>
+                                <optgroup label="الاستشارات التعليمية والقبول الجامعي">
+                                    <option value="boarding-schools">المدارس الداخلية في بريطانيا وسويسرا</option>
+                                    <option value="undergrad">القبول الجامعي لدرجة البكالوريوس</option>
+                                    <option value="postgrad">الدراسات العليا وماجستير إدارة الأعمال</option>
+                                </optgroup>
 </select>
 </div>
 <div>
