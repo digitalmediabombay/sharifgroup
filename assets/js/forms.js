@@ -569,7 +569,7 @@ async function handleContactSubmit(event) {
 
   // Map country/residence for CRM
   if (!payload.country) {
-    payload.country = payload.residence || payload.nationality || '';
+    payload.country = payload.residence || payload.nationality || payload.address || payload.timezone || '';
   }
 
   // Normalize dedicated questionnaire fields for CRM
@@ -582,22 +582,28 @@ async function handleContactSubmit(event) {
   payload.residence = payload.residence || payload.country || '';
 
   // Map service/program clearly for Google Sheet
+  const primaryProgram = payload.programChoice || payload.targetProgram || payload.program || payload.investmentRoute || '';
   if (!payload.service) {
-    payload.service = payload.targetProgram || payload.program || payload.investmentRoute || '';
+    payload.service = primaryProgram;
     if (payload.subProgram) {
       payload.service += (payload.service ? ` (${payload.subProgram})` : payload.subProgram);
     }
+  } else if (payload.subProgram && !payload.service.includes(payload.subProgram)) {
+    payload.service += ` (${payload.subProgram})`;
   }
 
   // Enriched notes
   const extraDetails = [];
+  if (payload.programChoice) extraDetails.push(`Program: ${payload.programChoice}`);
+  if (payload.subProgram) extraDetails.push(`Sub-Program: ${payload.subProgram}`);
   if (payload.investmentRoute) extraDetails.push(`Route: ${payload.investmentRoute}`);
   if (payload.budget) extraDetails.push(`Budget: ${payload.budget}`);
   if (payload.familyMembers) extraDetails.push(`Family: ${payload.familyMembers}`);
   if (payload.preferredLanguage) extraDetails.push(`Pref. Lang: ${payload.preferredLanguage}`);
   if (payload.timeline) extraDetails.push(`Timeline: ${payload.timeline}`);
   if (payload.objective) extraDetails.push(`Objective: ${payload.objective}`);
-  if (payload.preferredMethod) extraDetails.push(`Method: ${payload.preferredMethod}`);
+  const contactMethod = payload.contactMethod || payload.preferredMethod || '';
+  if (contactMethod) extraDetails.push(`Method: ${contactMethod}`);
   if (payload.timezone) extraDetails.push(`Timezone: ${payload.timezone}`);
   if (payload.preferredDate) extraDetails.push(`Date: ${payload.preferredDate}`);
   if (payload.address) extraDetails.push(`Address: ${payload.address}`);

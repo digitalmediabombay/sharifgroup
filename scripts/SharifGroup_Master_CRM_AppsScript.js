@@ -206,7 +206,10 @@ function handleCategoryLead(data) {
 
   var leadNationality = (data.nationality || data.citizenship || "").trim();
   var leadResidence = (data.residence || data.country || "").trim();
-  var leadService = data.service || data.targetProgram || data.program || "General Consultation";
+  var leadService = data.service || data.programChoice || data.targetProgram || data.program || "General Consultation";
+  if (data.subProgram && leadService.indexOf(data.subProgram) === -1) {
+    leadService += " (" + data.subProgram + ")";
+  }
 
   // Dedicated citizenship & residency questionnaire parameters
   var investmentRoute = data.investmentRoute || data.route || "";
@@ -304,6 +307,7 @@ function handleCategoryLead(data) {
 function resolveCategoryTabName(data) {
   var text = (
     (data.service || "") + " " +
+    (data.programChoice || "") + " " +
     (data.subProgram || "") + " " +
     (data.targetProgram || "") + " " +
     (data.program || "") + " " +
@@ -315,9 +319,10 @@ function resolveCategoryTabName(data) {
 
   // 1. Real Estate (checked first so property queries don't get mixed with residency)
   if (text.indexOf("realestate") !== -1 || text.indexOf("real estate") !== -1 ||
-    text.indexOf("property") !== -1 || text.indexOf("off-plan") !== -1 ||
-    text.indexOf("offplan") !== -1 || text.indexOf("عقارات") !== -1 ||
-    text.indexOf("املاک") !== -1 || text.indexOf("ملک") !== -1 || text.indexOf("房产") !== -1) {
+    text.indexOf("real-estate") !== -1 || text.indexOf("property") !== -1 ||
+    text.indexOf("off-plan") !== -1 || text.indexOf("offplan") !== -1 ||
+    text.indexOf("عقارات") !== -1 || text.indexOf("املاک") !== -1 ||
+    text.indexOf("ملک") !== -1 || text.indexOf("房产") !== -1) {
     return CONFIG.TAB_REAL_ESTATE;
   }
 

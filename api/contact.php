@@ -61,8 +61,11 @@ if (empty($fullName)) {
 $email       = trim(strtolower($data['email'] ?? ''));
 $dialCode    = trim($data['dialCode'] ?? '');
 $phone       = trim($data['phone'] ?? '');
-$country     = trim($data['country'] ?? $data['residence'] ?? $data['nationality'] ?? '');
-$service     = trim($data['service'] ?? $data['targetProgram'] ?? $data['program'] ?? $data['investmentRoute'] ?? 'General Consultation');
+$country     = trim($data['country'] ?? $data['residence'] ?? $data['nationality'] ?? $data['address'] ?? $data['timezone'] ?? '');
+$service     = trim($data['service'] ?? $data['programChoice'] ?? $data['targetProgram'] ?? $data['program'] ?? $data['investmentRoute'] ?? 'General Consultation');
+if (!empty($data['subProgram']) && stripos($service, (string)$data['subProgram']) === false) {
+    $service .= ' (' . $data['subProgram'] . ')';
+}
 $notes       = trim($data['notes'] ?? $data['message'] ?? $data['confidentialNotes'] ?? '');
 $lang        = strtolower(trim($data['lang'] ?? 'en'));
 $source      = trim($data['source'] ?? '');

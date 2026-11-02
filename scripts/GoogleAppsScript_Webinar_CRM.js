@@ -198,7 +198,7 @@ function handleCategoryLead(data) {
   var nowUtc = new Date().toISOString();
   var leadName = (data.fullName || ((data.firstName || "") + " " + (data.lastName || "")).trim() || "Website Client");
   var leadEmail = (data.email || "").toLowerCase().trim();
-  
+
   // Safe phone escaping: Avoid #ERROR! formula evaluation in Google Sheets
   var rawPhone = (data.phone || (data.dialCode ? (data.dialCode + " " + (data.rawPhone || "")) : "")).trim();
   var cleanPhone = rawPhone.replace(/^'+/, "").trim();
@@ -206,8 +206,11 @@ function handleCategoryLead(data) {
 
   var leadNationality = (data.nationality || data.citizenship || "").trim();
   var leadResidence = (data.residence || data.country || "").trim();
-  var leadService = data.service || data.targetProgram || data.program || "General Consultation";
-  
+  var leadService = data.service || data.programChoice || data.targetProgram || data.program || "General Consultation";
+  if (data.subProgram && leadService.indexOf(data.subProgram) === -1) {
+    leadService += " (" + data.subProgram + ")";
+  }
+
   // Dedicated citizenship & residency questionnaire parameters
   var investmentRoute = data.investmentRoute || data.route || "";
   var budget = data.budget || data.budgetTier || "";
@@ -238,27 +241,27 @@ function handleCategoryLead(data) {
       to: CONFIG.ADMIN_EMAIL,
       subject: "⚡ New Lead [" + targetTabName + "]: " + leadName + " (" + (leadService || "General") + " | " + friendlyLang + ")",
       body: "New Website Lead Received:\n\n" +
-            "• Category Sheet Tab:  " + targetTabName + "\n" +
-            "• Full Name:           " + leadName + "\n" +
-            "• Email Address:       " + (leadEmail || "Not provided") + "\n" +
-            "• Phone Number:        " + (cleanPhone || "Not provided") + "\n" +
-            "• Current Nationality: " + (leadNationality || "Not specified") + "\n" +
-            "• Residence Country:   " + (leadResidence || "Not specified") + "\n" +
-            "• Target Program:      " + leadService + "\n" +
-            "• Investment Route:    " + (friendlyRoute || "Not specified") + "\n" +
-            "• Approx. Budget:      " + (friendlyBudget || "Not specified") + "\n" +
-            "• Family Members:      " + (friendlyFamily || "Not specified") + "\n" +
-            "• Primary Objective:   " + (friendlyObjective || "Not specified") + "\n" +
-            "• Planning Timeline:   " + (friendlyTimeline || "Not specified") + "\n" +
-            "• Preferred Language:  " + friendlyLang + "\n" +
-            "• Form ID:             " + formId + "\n" +
-            "• Timestamp (UTC):     " + nowUtc + "\n" +
-            "• Page:                " + (pagePath || sourceUrl) + "\n\n" +
-            "----------------------------------------------------\n" +
-            "CLIENT NOTES & DETAILS:\n" +
-            "----------------------------------------------------\n" +
-            (leadNotes || "None") + "\n\n" +
-            "View in Google Sheet:\n" + ss.getUrl()
+        "• Category Sheet Tab:  " + targetTabName + "\n" +
+        "• Full Name:           " + leadName + "\n" +
+        "• Email Address:       " + (leadEmail || "Not provided") + "\n" +
+        "• Phone Number:        " + (cleanPhone || "Not provided") + "\n" +
+        "• Current Nationality: " + (leadNationality || "Not specified") + "\n" +
+        "• Residence Country:   " + (leadResidence || "Not specified") + "\n" +
+        "• Target Program:      " + leadService + "\n" +
+        "• Investment Route:    " + (friendlyRoute || "Not specified") + "\n" +
+        "• Approx. Budget:      " + (friendlyBudget || "Not specified") + "\n" +
+        "• Family Members:      " + (friendlyFamily || "Not specified") + "\n" +
+        "• Primary Objective:   " + (friendlyObjective || "Not specified") + "\n" +
+        "• Planning Timeline:   " + (friendlyTimeline || "Not specified") + "\n" +
+        "• Preferred Language:  " + friendlyLang + "\n" +
+        "• Form ID:             " + formId + "\n" +
+        "• Timestamp (UTC):     " + nowUtc + "\n" +
+        "• Page:                " + (pagePath || sourceUrl) + "\n\n" +
+        "----------------------------------------------------\n" +
+        "CLIENT NOTES & DETAILS:\n" +
+        "----------------------------------------------------\n" +
+        (leadNotes || "None") + "\n\n" +
+        "View in Google Sheet:\n" + ss.getUrl()
     });
     emailStatus = "Sent via Google Mail (" + nowUtc + ")";
   } catch (adminErr) {
@@ -304,6 +307,7 @@ function handleCategoryLead(data) {
 function resolveCategoryTabName(data) {
   var text = (
     (data.service || "") + " " +
+    (data.programChoice || "") + " " +
     (data.subProgram || "") + " " +
     (data.targetProgram || "") + " " +
     (data.program || "") + " " +
@@ -315,45 +319,46 @@ function resolveCategoryTabName(data) {
 
   // 1. Real Estate (checked first so property queries don't get mixed with residency)
   if (text.indexOf("realestate") !== -1 || text.indexOf("real estate") !== -1 ||
-      text.indexOf("property") !== -1 || text.indexOf("off-plan") !== -1 ||
-      text.indexOf("offplan") !== -1 || text.indexOf("عقارات") !== -1 ||
-      text.indexOf("املاک") !== -1 || text.indexOf("ملک") !== -1 || text.indexOf("房产") !== -1) {
+    text.indexOf("real-estate") !== -1 || text.indexOf("property") !== -1 ||
+    text.indexOf("off-plan") !== -1 || text.indexOf("offplan") !== -1 ||
+    text.indexOf("عقارات") !== -1 || text.indexOf("املاک") !== -1 ||
+    text.indexOf("ملک") !== -1 || text.indexOf("房产") !== -1) {
     return CONFIG.TAB_REAL_ESTATE;
   }
 
   // 2. Educational Advisory
   if (text.indexOf("educationaladvisory") !== -1 || text.indexOf("educational advisory") !== -1 ||
-      text.indexOf("education") !== -1 || text.indexOf("school") !== -1 ||
-      text.indexOf("university") !== -1 || text.indexOf("تحصیلی") !== -1 ||
-      text.indexOf("تعليمي") !== -1 || text.indexOf("教育") !== -1) {
+    text.indexOf("education") !== -1 || text.indexOf("school") !== -1 ||
+    text.indexOf("university") !== -1 || text.indexOf("تحصیلی") !== -1 ||
+    text.indexOf("تعليمي") !== -1 || text.indexOf("教育") !== -1) {
     return CONFIG.TAB_EDUCATION;
   }
 
   // 3. Citizenship (All CBI countries + keywords)
   if (text.indexOf("citizenship") !== -1 || text.indexOf("passport") !== -1 ||
-      text.indexOf("cbi") !== -1 || text.indexOf("شهروندی") !== -1 ||
-      text.indexOf("پاسپورت") !== -1 || text.indexOf("جنسية") !== -1 ||
-      text.indexOf("جواز") !== -1 || text.indexOf("入籍") !== -1 || text.indexOf("护照") !== -1 ||
-      text.indexOf("dominica") !== -1 || text.indexOf("دومینیکا") !== -1 || text.indexOf("دومينيكا") !== -1 || text.indexOf("多米尼克") !== -1 ||
-      text.indexOf("grenada") !== -1 || text.indexOf("گرانادا") !== -1 || text.indexOf("غرينادا") !== -1 || text.indexOf("格林纳达") !== -1 ||
-      text.indexOf("antigua") !== -1 || text.indexOf("آنتیگوا") !== -1 || text.indexOf("أنتيغوا") !== -1 || text.indexOf("安提瓜") !== -1 ||
-      text.indexOf("stlucia") !== -1 || text.indexOf("st lucia") !== -1 || text.indexOf("saint lucia") !== -1 || text.indexOf("سنت لوسیا") !== -1 || text.indexOf("سانت لوسيا") !== -1 || text.indexOf("圣卢西亚") !== -1 ||
-      text.indexOf("stkitts") !== -1 || text.indexOf("st kitts") !== -1 || text.indexOf("saint kitts") !== -1 || text.indexOf("سنت کیتس") !== -1 || text.indexOf("سانت كيتس") !== -1 || text.indexOf("圣基茨") !== -1 ||
-      text.indexOf("vanuatu") !== -1 || text.indexOf("وانواتو") !== -1 || text.indexOf("فانواتو") !== -1 || text.indexOf("瓦努阿图") !== -1 ||
-      text.indexOf("nauru") !== -1 || text.indexOf("نائورو") !== -1 || text.indexOf("ناورو") !== -1 || text.indexOf("瑙鲁") !== -1 ||
-      text.indexOf("sao tome") !== -1 || text.indexOf("sao-tome") !== -1 || text.indexOf("سائوتومه") !== -1 || text.indexOf("ساو تومي") !== -1 || text.indexOf("圣多美") !== -1) {
+    text.indexOf("cbi") !== -1 || text.indexOf("شهروندی") !== -1 ||
+    text.indexOf("پاسپورت") !== -1 || text.indexOf("جنسية") !== -1 ||
+    text.indexOf("جواز") !== -1 || text.indexOf("入籍") !== -1 || text.indexOf("护照") !== -1 ||
+    text.indexOf("dominica") !== -1 || text.indexOf("دومینیکا") !== -1 || text.indexOf("دومينيكا") !== -1 || text.indexOf("多米尼克") !== -1 ||
+    text.indexOf("grenada") !== -1 || text.indexOf("گرانادا") !== -1 || text.indexOf("غرينادا") !== -1 || text.indexOf("格林纳达") !== -1 ||
+    text.indexOf("antigua") !== -1 || text.indexOf("آنتیگوا") !== -1 || text.indexOf("أنتيغوا") !== -1 || text.indexOf("安提瓜") !== -1 ||
+    text.indexOf("stlucia") !== -1 || text.indexOf("st lucia") !== -1 || text.indexOf("saint lucia") !== -1 || text.indexOf("سنت لوسیا") !== -1 || text.indexOf("سانت لوسيا") !== -1 || text.indexOf("圣卢西亚") !== -1 ||
+    text.indexOf("stkitts") !== -1 || text.indexOf("st kitts") !== -1 || text.indexOf("saint kitts") !== -1 || text.indexOf("سنت کیتس") !== -1 || text.indexOf("سانت كيتس") !== -1 || text.indexOf("圣基茨") !== -1 ||
+    text.indexOf("vanuatu") !== -1 || text.indexOf("وانواتو") !== -1 || text.indexOf("فانواتو") !== -1 || text.indexOf("瓦努阿图") !== -1 ||
+    text.indexOf("nauru") !== -1 || text.indexOf("نائورو") !== -1 || text.indexOf("ناورو") !== -1 || text.indexOf("瑙鲁") !== -1 ||
+    text.indexOf("sao tome") !== -1 || text.indexOf("sao-tome") !== -1 || text.indexOf("سائوتومه") !== -1 || text.indexOf("ساو تومي") !== -1 || text.indexOf("圣多美") !== -1) {
     return CONFIG.TAB_CITIZENSHIP;
   }
 
   // 4. Residency (All RBI countries + Golden Visa keywords)
   if (text.indexOf("residency") !== -1 || text.indexOf("golden visa") !== -1 ||
-      text.indexOf("golden-visa") !== -1 || text.indexOf("اقامت") !== -1 ||
-      text.indexOf("إقامة") !== -1 || text.indexOf("ویزای طلایی") !== -1 ||
-      text.indexOf("居留") !== -1 || text.indexOf("黄金签证") !== -1 ||
-      text.indexOf("uae") !== -1 || text.indexOf("dubai") !== -1 || text.indexOf("امارات") !== -1 || text.indexOf("دبی") !== -1 || text.indexOf("دبي") !== -1 || text.indexOf("阿联酋") !== -1 ||
-      text.indexOf("greece") !== -1 || text.indexOf("یونان") !== -1 || text.indexOf("اليونان") !== -1 || text.indexOf("希腊") !== -1 ||
-      text.indexOf("portugal") !== -1 || text.indexOf("پرتغال") !== -1 || text.indexOf("البرتغال") !== -1 || text.indexOf("葡萄牙") !== -1 ||
-      text.indexOf("panama") !== -1 || text.indexOf("پاناما") !== -1 || text.indexOf("بنما") !== -1 || text.indexOf("巴拿马") !== -1) {
+    text.indexOf("golden-visa") !== -1 || text.indexOf("اقامت") !== -1 ||
+    text.indexOf("إقامة") !== -1 || text.indexOf("ویزای طلایی") !== -1 ||
+    text.indexOf("居留") !== -1 || text.indexOf("黄金签证") !== -1 ||
+    text.indexOf("uae") !== -1 || text.indexOf("dubai") !== -1 || text.indexOf("امارات") !== -1 || text.indexOf("دبی") !== -1 || text.indexOf("دبي") !== -1 || text.indexOf("阿联酋") !== -1 ||
+    text.indexOf("greece") !== -1 || text.indexOf("یونان") !== -1 || text.indexOf("اليونان") !== -1 || text.indexOf("希腊") !== -1 ||
+    text.indexOf("portugal") !== -1 || text.indexOf("پرتغال") !== -1 || text.indexOf("البرتغال") !== -1 || text.indexOf("葡萄牙") !== -1 ||
+    text.indexOf("panama") !== -1 || text.indexOf("پاناما") !== -1 || text.indexOf("بنما") !== -1 || text.indexOf("巴拿马") !== -1) {
     return CONFIG.TAB_RESIDENCY;
   }
 
@@ -376,7 +381,7 @@ function handlePartnerApplication(data) {
   var jobTitle = data.job_title || data.jobTitle || "";
   var country = data.country || "";
   var city = data.city || "";
-  
+
   var dialCode = (data.dialCode || "").trim().replace(/^'+/, "");
   var safeDialCode = dialCode ? ("'" + dialCode) : "";
   var rawPhone = (data.whatsapp_e164 || data.phone || "").trim().replace(/^'+/, "");
@@ -433,28 +438,28 @@ function handlePartnerApplication(data) {
       to: CONFIG.ADMIN_EMAIL,
       subject: "🤝 New Partner Application: " + fullName + " (" + (company || "Individual") + ")",
       body: "New Partner Application Received:\n\n" +
-            "• Application ID:          " + appId + "\n" +
-            "• Full Name:               " + fullName + "\n" +
-            "• Partner Type:            " + partnerType + "\n" +
-            "• Company / Firm:          " + (company || "None (Individual)") + "\n" +
-            "• Job Title / Role:        " + (jobTitle || "Not specified") + "\n" +
-            "• Preferred Language:      " + friendlyLang + "\n" +
-            "• Website / LinkedIn:      " + (website || "Not provided") + "\n" +
-            "• Email Address:           " + email + "\n" +
-            "• WhatsApp / Phone:        " + ((dialCode ? dialCode + " " : "") + rawPhone).trim() + "\n" +
-            "• Country:                 " + country + "\n" +
-            "• City:                    " + (city || "Not specified") + "\n" +
-            "• Programmes of Interest:  " + (friendlyProgrammes || "All Programmes") + "\n" +
-            "• Est. Annual Referrals:   " + (friendlyReferrals || "Not specified") + "\n" +
-            "• Heard From:              " + (friendlyHeard || "Not specified") + "\n" +
-            "• Timestamp (UTC):         " + nowUtc + "\n\n" +
-            "----------------------------------------------------\n" +
-            "CONFIDENTIAL MESSAGE:\n" +
-            "----------------------------------------------------\n" +
-            (message || "None") + "\n\n" +
-            "View in Google Sheet:\n" + ss.getUrl()
+        "• Application ID:          " + appId + "\n" +
+        "• Full Name:               " + fullName + "\n" +
+        "• Partner Type:            " + partnerType + "\n" +
+        "• Company / Firm:          " + (company || "None (Individual)") + "\n" +
+        "• Job Title / Role:        " + (jobTitle || "Not specified") + "\n" +
+        "• Preferred Language:      " + friendlyLang + "\n" +
+        "• Website / LinkedIn:      " + (website || "Not provided") + "\n" +
+        "• Email Address:           " + email + "\n" +
+        "• WhatsApp / Phone:        " + ((dialCode ? dialCode + " " : "") + rawPhone).trim() + "\n" +
+        "• Country:                 " + country + "\n" +
+        "• City:                    " + (city || "Not specified") + "\n" +
+        "• Programmes of Interest:  " + (friendlyProgrammes || "All Programmes") + "\n" +
+        "• Est. Annual Referrals:   " + (friendlyReferrals || "Not specified") + "\n" +
+        "• Heard From:              " + (friendlyHeard || "Not specified") + "\n" +
+        "• Timestamp (UTC):         " + nowUtc + "\n\n" +
+        "----------------------------------------------------\n" +
+        "CONFIDENTIAL MESSAGE:\n" +
+        "----------------------------------------------------\n" +
+        (message || "None") + "\n\n" +
+        "View in Google Sheet:\n" + ss.getUrl()
     });
-  } catch (adminErr) {}
+  } catch (adminErr) { }
 
   return { status: "success", tab: CONFIG.TAB_PARTNERSHIP, message: "Partner application submitted successfully." };
 }
@@ -470,7 +475,7 @@ function handleWebinarRegistration(data) {
   var webinarId = data.webinar_id || "WEB01";
   var webinarSlug = data.slug || "";
   var fullName = data.fullName || data.name || "Attendee";
-  
+
   var dialCode = (data.dialCode || "").trim().replace(/^'+/, "");
   var safeDialCode = dialCode ? ("'" + dialCode) : "";
   var rawPhone = (data.whatsapp_e164 || data.phone || "").trim().replace(/^'+/, "");
@@ -505,16 +510,16 @@ function handleWebinarRegistration(data) {
       to: CONFIG.ADMIN_EMAIL,
       subject: "🔔 New Event Registration: " + fullName + " (" + webinarId + ")",
       body: "New Event Registration Received:\n\n" +
-            "• Full Name:        " + fullName + "\n" +
-            "• Email:            " + email + "\n" +
-            "• Phone:            " + ((dialCode ? dialCode + " " : "") + rawPhone).trim() + "\n" +
-            "• Country:          " + residence + "\n" +
-            "• Webinar Session:  " + webinarId + "\n" +
-            "• Language:         " + friendlyLang + "\n" +
-            "• Timestamp:        " + nowUtc + "\n\n" +
-            "View in Google Sheet:\n" + ss.getUrl()
+        "• Full Name:        " + fullName + "\n" +
+        "• Email:            " + email + "\n" +
+        "• Phone:            " + ((dialCode ? dialCode + " " : "") + rawPhone).trim() + "\n" +
+        "• Country:          " + residence + "\n" +
+        "• Webinar Session:  " + webinarId + "\n" +
+        "• Language:         " + friendlyLang + "\n" +
+        "• Timestamp:        " + nowUtc + "\n\n" +
+        "View in Google Sheet:\n" + ss.getUrl()
     });
-  } catch (adminErr) {}
+  } catch (adminErr) { }
 
   return { status: "success", tab: CONFIG.TAB_EVENT, message: "Registration recorded successfully." };
 }
@@ -633,8 +638,8 @@ function getOrCreateTab(ss, preferredName, headers) {
 
   // 2. Space <-> Underscore interchangeability
   if (!sheet) {
-    var altName = preferredName.indexOf(" ") !== -1 
-      ? preferredName.replace(/ /g, "_") 
+    var altName = preferredName.indexOf(" ") !== -1
+      ? preferredName.replace(/ /g, "_")
       : preferredName.replace(/_/g, " ");
     sheet = ss.getSheetByName(altName);
   }
@@ -647,13 +652,13 @@ function getOrCreateTab(ss, preferredName, headers) {
       var existingSheet = allSheets[i];
       var existingName = existingSheet.getName();
       var normalizedExisting = existingName.toLowerCase().replace(/[^a-z0-9]/g, "");
-      
+
       if (normalizedExisting === normalizedPreferred) {
         sheet = existingSheet;
         break;
       }
       if ((normalizedPreferred.indexOf("realestate") !== -1 || normalizedPreferred.indexOf("realstate") !== -1) &&
-          (normalizedExisting.indexOf("realestate") !== -1 || normalizedExisting.indexOf("realstate") !== -1)) {
+        (normalizedExisting.indexOf("realestate") !== -1 || normalizedExisting.indexOf("realstate") !== -1)) {
         sheet = existingSheet;
         break;
       }
@@ -680,7 +685,7 @@ function getOrCreateTab(ss, preferredName, headers) {
           .setFontColor("#C5A880");
         sheet.setFrozenRows(1);
       }
-    } catch (syncErr) {}
+    } catch (syncErr) { }
     return sheet;
   }
 
@@ -696,7 +701,7 @@ function getOrCreateTab(ss, preferredName, headers) {
   // Set Plain Text format on columns to prevent formula parsing (#ERROR!)
   try {
     sheet.getRange(1, 1, Math.max(sheet.getMaxRows(), 100), headers.length).setNumberFormat("@");
-  } catch (e) {}
+  } catch (e) { }
 
   return sheet;
 }
@@ -765,7 +770,7 @@ function initializeAll7Tabs() {
     catSheet.setFrozenRows(1);
     try {
       catSheet.getRange(1, 1, Math.max(catSheet.getMaxRows(), 100), CATEGORY_HEADERS.length).setNumberFormat("@");
-    } catch (e) {}
+    } catch (e) { }
   }
 
   var partSheet = getOrCreateTab(ss, CONFIG.TAB_PARTNERSHIP, PARTNER_HEADERS);
@@ -777,7 +782,7 @@ function initializeAll7Tabs() {
   partSheet.setFrozenRows(1);
   try {
     partSheet.getRange(1, 1, Math.max(partSheet.getMaxRows(), 100), PARTNER_HEADERS.length).setNumberFormat("@");
-  } catch (e) {}
+  } catch (e) { }
 
   var eventSheet = getOrCreateTab(ss, CONFIG.TAB_EVENT, EVENT_HEADERS);
   eventSheet.getRange(1, 1, 1, EVENT_HEADERS.length).setValues([EVENT_HEADERS]);
@@ -788,12 +793,12 @@ function initializeAll7Tabs() {
   eventSheet.setFrozenRows(1);
   try {
     eventSheet.getRange(1, 1, Math.max(eventSheet.getMaxRows(), 100), EVENT_HEADERS.length).setNumberFormat("@");
-  } catch (e) {}
+  } catch (e) { }
 
   // Auto clean phone columns
   try {
     fixExistingPhoneErrors();
-  } catch (e) {}
+  } catch (e) { }
 
   SpreadsheetApp.getUi().alert(
     "✅ All 7 Clean CRM Tabs are ready and formatted with full questionnaire tracking!\n\n" +
@@ -822,7 +827,7 @@ function fixExistingPhoneErrors() {
 
     var lastCol = sheet.getLastColumn();
     var headers = sheet.getRange(1, 1, 1, lastCol).getValues()[0];
-    
+
     var phoneCols = [];
     for (var c = 0; c < headers.length; c++) {
       var h = String(headers[c] || "").toLowerCase();
