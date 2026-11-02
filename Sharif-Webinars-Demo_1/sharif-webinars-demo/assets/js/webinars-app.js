@@ -2040,7 +2040,7 @@
         fetch('/api/event-register.php', {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify(rec)
+          body: JSON.stringify({ ...rec, crm_synced: true })
         }).catch(err => console.warn('Server registration notice:', err));
       }
 
@@ -2050,7 +2050,7 @@
           method: 'POST',
           mode: 'no-cors',
           headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify(rec)
+          body: JSON.stringify({ ...rec, crm_synced: true })
         }).catch(err => console.warn('CRM sync error:', err));
       }
 

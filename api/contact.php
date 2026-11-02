@@ -150,7 +150,8 @@ try {
 }
 
 // 3. Background Sync to Google Apps Script CRM (Google Sheets)
-if (!empty($CRM_WEBHOOK)) {
+// Skip if client-side already synced directly to avoid duplicate sheet entries
+if (!empty($CRM_WEBHOOK) && empty($data['crm_synced'])) {
     try {
         $crmPayload = json_encode([
             'form_id' => $formId,

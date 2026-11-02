@@ -742,7 +742,7 @@ async function handleContactSubmit(event) {
       fetch('/api/contact.php', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(payload)
+        body: JSON.stringify({ ...payload, crm_synced: true })
       }).catch(function() {});
     } catch (apiErr) {}
 

@@ -204,6 +204,21 @@ function handleCategoryLead(data) {
   var cleanPhone = rawPhone.replace(/^'+/, "").trim();
   var safePhone = cleanPhone ? ("'" + cleanPhone) : "";
 
+  // Deduplication guard: Prevent duplicate submissions within 20 seconds
+  var cache = CacheService.getScriptCache();
+  var dedupeIdentity = (data.inquiry_id || leadEmail || cleanPhone.replace(/[^0-9]/g, "") || leadName).toLowerCase().replace(/[^a-z0-9]/g, "");
+  if (dedupeIdentity.length >= 3) {
+    var dedupeKey = "lead_" + dedupeIdentity.slice(0, 45);
+    if (cache.get(dedupeKey)) {
+      return {
+        status: "ignored_duplicate",
+        targetTab: resolveCategoryTabName(data),
+        message: "Duplicate lead submission ignored (debounced within 20s)."
+      };
+    }
+    cache.put(dedupeKey, "1", 20); // 20-second debounce lock
+  }
+
   var leadNationality = (data.nationality || data.citizenship || "").trim();
   var leadResidence = (data.residence || data.country || "").trim();
   var leadService = data.service || data.programChoice || data.targetProgram || data.program || "General Consultation";
@@ -416,6 +431,22 @@ function handlePartnerApplication(data) {
   var safePhone = rawPhone ? ("'" + rawPhone) : "";
 
   var email = (data.email || "").toLowerCase().trim();
+
+  // Deduplication guard: Prevent duplicate partner submissions within 20 seconds
+  var cache = CacheService.getScriptCache();
+  var dedupeIdentity = (data.application_id || email || rawPhone.replace(/[^0-9]/g, "") || fullName).toLowerCase().replace(/[^a-z0-9]/g, "");
+  if (dedupeIdentity.length >= 3) {
+    var dedupeKey = "partner_" + dedupeIdentity.slice(0, 45);
+    if (cache.get(dedupeKey)) {
+      return {
+        status: "ignored_duplicate",
+        tab: CONFIG.TAB_PARTNERSHIP,
+        message: "Duplicate partner application ignored (debounced within 20s)."
+      };
+    }
+    cache.put(dedupeKey, "1", 20);
+  }
+
   var website = data.website || data.linkedin || "";
   var programmes = data.programmes || data.programs || "";
   var referrals = data.referrals_per_year || data.referrals || "";
@@ -510,6 +541,22 @@ function handleWebinarRegistration(data) {
   var safePhone = rawPhone ? ("'" + rawPhone) : "";
 
   var email = (data.email || "").toLowerCase().trim();
+
+  // Deduplication guard: Prevent duplicate webinar submissions within 20 seconds
+  var cache = CacheService.getScriptCache();
+  var dedupeIdentity = (data.registration_id || (email + "_" + webinarId) || rawPhone.replace(/[^0-9]/g, "") || fullName).toLowerCase().replace(/[^a-z0-9]/g, "");
+  if (dedupeIdentity.length >= 3) {
+    var dedupeKey = "event_" + dedupeIdentity.slice(0, 45);
+    if (cache.get(dedupeKey)) {
+      return {
+        status: "ignored_duplicate",
+        tab: CONFIG.TAB_EVENT,
+        message: "Duplicate event registration ignored (debounced within 20s)."
+      };
+    }
+    cache.put(dedupeKey, "1", 20);
+  }
+
   var residence = data.residence_country || data.country || "";
   var question = data.question || "";
   var newsletter = data.newsletter_optin ? "Yes" : "No";
