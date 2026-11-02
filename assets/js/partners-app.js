@@ -1368,7 +1368,7 @@
         </div>
       `).join('');
 
-      $('.country-item', dialList).forEach(item => {
+      $$('.country-item', dialList).forEach(item => {
         item.addEventListener('click', e => {
           e.stopPropagation();
           const code = item.dataset.code;
@@ -1394,7 +1394,7 @@
         dialBtn.setAttribute('aria-expanded', String(isOpen));
         if (isOpen && dialSearch) {
           dialSearch.value = '';
-          $('.country-item', dialList).forEach(it => it.style.display = 'flex');
+          $$('.country-item', dialList).forEach(it => it.style.display = 'flex');
           setTimeout(() => dialSearch.focus(), 50);
         }
       });
@@ -1403,7 +1403,7 @@
     if (dialSearch && dialList) {
       dialSearch.addEventListener('input', () => {
         const q = dialSearch.value.toLowerCase().trim();
-        $('.country-item', dialList).forEach(it => {
+        $$('.country-item', dialList).forEach(it => {
           const match = it.dataset.name.includes(q) || it.dataset.code.includes(q);
           it.style.display = match ? 'flex' : 'none';
         });
