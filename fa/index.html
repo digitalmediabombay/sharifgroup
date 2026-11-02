@@ -1567,12 +1567,12 @@ html[lang="ar"] .cd-lbl {
 <!-- Date & Time Heading -->
 <div style="margin-bottom: 20px;">
 <div class="side-label" data-i18n="homeWebinar.dateLabel" style="margin-bottom: 6px;">تاریخ و زمان</div>
-<div class="date-line" data-i18n="homeWebinar.dateValue">پنج‌شنبه، 29 اکتبر 2026</div>
+<div class="date-line" data-i18n="homeWebinar.dateValue">پنج‌شنبه، 12 نوامبر 2026</div>
 </div>
 <!-- Starts In Heading -->
 <div class="side-label" data-i18n="homeWebinar.startsIn" style="margin-bottom: 10px;">زمان باقی‌مانده</div>
 <!-- 4-Box Countdown Timer -->
-<div class="countdown" data-cd="2026-10-29T15:30:00Z" id="home-webinar-countdown" style="margin-bottom: 20px;">
+<div class="countdown" data-cd="2026-11-12T15:30:00Z" id="home-webinar-countdown" style="margin-bottom: 20px;">
 <div class="cd-cell">
 <div class="cd-num" id="hw-cd-days">--</div>
 <div class="cd-lbl" data-i18n="homeWebinar.cdDays">روز</div>
@@ -2800,9 +2800,18 @@ html[lang="ar"] .cd-lbl {
     (function initHomeWebinarCountdown() {
         var cdContainer = document.getElementById('home-webinar-countdown');
         if (!cdContainer) return;
-        var startUtc = cdContainer.getAttribute('data-cd') || '2026-10-29T15:30:00Z';
+        var startUtc = cdContainer.getAttribute('data-cd') || '2026-11-12T15:30:00Z';
         var targetDate = new Date(startUtc);
         var targetTime = targetDate.getTime();
+        var nowCheck = Date.now();
+        // Dynamic auto-rollover: if configured date is in the past, roll forward to next scheduled Thursday 15:30 UTC so timer never freezes at 00 00 00 00
+        if (targetTime <= nowCheck) {
+            var rollD = new Date(nowCheck);
+            var daysUntilThursday = ((4 - rollD.getUTCDay() + 7) % 7) || 7;
+            rollD.setUTCDate(rollD.getUTCDate() + daysUntilThursday);
+            rollD.setUTCHours(15, 30, 0, 0);
+            targetTime = rollD.getTime();
+        }
         
         var elD = document.getElementById('hw-cd-days');
         var elH = document.getElementById('hw-cd-hours');

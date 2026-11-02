@@ -140,7 +140,7 @@
         "session_no": 1,
         "category": "Citizenship",
         "subcategory": "dominica",
-        "start_utc": "2026-10-29T15:30:00Z",
+        "start_utc": "2026-11-12T15:30:00Z",
         "date_confirmed": false,
         "duration_min": 65,
         "room_opens_min_before": 10,
