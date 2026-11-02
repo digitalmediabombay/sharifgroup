@@ -6,12 +6,12 @@
  * Organizes ALL website inquiries into 7 clean, dedicated sheet tabs with
  * full questionnaire parameter tracking:
  * 
- *   1. Citizenship          ➔ All CBI programs (Dominica, Grenada, Antigua, Saint Lucia, St Kitts, Vanuatu, Nauru, Sao Tome, etc.)
+ *   1. General Enquiries    ➔ Home Page (#contact-portal-form) & Contact Us forms (General Queries)
+ *   2. Citizenship          ➔ Dedicated CBI program pages (Dominica, Grenada, Antigua, Saint Lucia, St Kitts, Vanuatu, Nauru, Sao Tome, etc.)
  *                              Tracking: Investment Route, Budget, Family Members, Primary Objective, Planning Timeline
- *   2. Residency            ➔ All Golden Visa & Residency programs (UAE Golden Visa, Greece, Portugal, Panama, etc.)
- *   3. Real Estate          ➔ Dubai Real Estate & Property investment leads
- *   4. Educational Advisory ➔ Global student & school advisory leads
- *   5. General Enquiries    ➔ Contact Us form & General inquiries
+ *   3. Residency            ➔ Dedicated RBI & Golden Visa program pages (UAE Golden Visa, Greece, Portugal, Panama, etc.)
+ *   4. Real Estate          ➔ Dedicated Dubai Real Estate & Property investment pages
+ *   5. Educational Advisory ➔ Dedicated global student & school advisory pages
  *   6. Partnership          ➔ B2B Partner applications (Partner Type, Job Title, City, Programmes, Referrals, etc.)
  *   7. Event                ➔ Webinar & Live Session registrations
  * 
@@ -303,8 +303,36 @@ function handleCategoryLead(data) {
 
 /**
  * Smart Category Resolver: Routes leads to Citizenship, Residency, Real Estate, Educational Advisory, or General Enquiries
+ * NOTE: Home Page and Contact Us forms are ALWAYS routed directly to General Enquiries / General Queries tab.
  */
 function resolveCategoryTabName(data) {
+  var formId = String(data.form_id || "").toLowerCase().trim();
+  var page = String(data.page || "").toLowerCase().trim();
+  var source = String(data.source || "").toLowerCase().trim();
+  var targetTab = String(data.targetTab || "").toLowerCase().trim();
+
+  // 1. Explicit override if targetTab specifies general
+  if (targetTab.indexOf("general") !== -1) {
+    return CONFIG.TAB_GENERAL;
+  }
+
+  // 2. Home Page Form -> ALWAYS route to General Enquiries (General Queries)
+  var isHomePage = (formId === "contact-portal-form") ||
+    (page === "" || page === "/" || page === "/index.html" ||
+     page === "/fa" || page === "/fa/" || page === "/fa/index.html" ||
+     page === "/ar" || page === "/ar/" || page === "/ar/index.html" ||
+     page === "/zh" || page === "/zh/" || page === "/zh/index.html") ||
+    (source.indexOf("sharifgroup.ae") !== -1 && (source.endsWith(".ae/") || source.endsWith(".ae") || source.indexOf("/index.html") !== -1));
+
+  // 3. Contact Us Page Form -> ALWAYS route to General Enquiries (General Queries)
+  var isContactPage = (page.indexOf("/contact") !== -1 || page.indexOf("contact.html") !== -1 ||
+    source.indexOf("/contact") !== -1 || formId === "contact-form" || formId === "contact-us" ||
+    (page.indexOf("contact") !== -1 && formId === "standalone-contact-form"));
+
+  if (isHomePage || isContactPage) {
+    return CONFIG.TAB_GENERAL;
+  }
+
   var text = (
     (data.service || "") + " " +
     (data.programChoice || "") + " " +
@@ -317,7 +345,7 @@ function resolveCategoryTabName(data) {
     (data.notes || "")
   ).toLowerCase();
 
-  // 1. Real Estate (checked first so property queries don't get mixed with residency)
+  // 4. Real Estate (checked first so property queries don't get mixed with residency)
   if (text.indexOf("realestate") !== -1 || text.indexOf("real estate") !== -1 ||
     text.indexOf("real-estate") !== -1 || text.indexOf("property") !== -1 ||
     text.indexOf("off-plan") !== -1 || text.indexOf("offplan") !== -1 ||
@@ -326,7 +354,7 @@ function resolveCategoryTabName(data) {
     return CONFIG.TAB_REAL_ESTATE;
   }
 
-  // 2. Educational Advisory
+  // 5. Educational Advisory
   if (text.indexOf("educationaladvisory") !== -1 || text.indexOf("educational advisory") !== -1 ||
     text.indexOf("education") !== -1 || text.indexOf("school") !== -1 ||
     text.indexOf("university") !== -1 || text.indexOf("تحصیلی") !== -1 ||
@@ -334,7 +362,7 @@ function resolveCategoryTabName(data) {
     return CONFIG.TAB_EDUCATION;
   }
 
-  // 3. Citizenship (All CBI countries + keywords)
+  // 6. Citizenship (All CBI countries + keywords)
   if (text.indexOf("citizenship") !== -1 || text.indexOf("passport") !== -1 ||
     text.indexOf("cbi") !== -1 || text.indexOf("شهروندی") !== -1 ||
     text.indexOf("پاسپورت") !== -1 || text.indexOf("جنسية") !== -1 ||
@@ -350,7 +378,7 @@ function resolveCategoryTabName(data) {
     return CONFIG.TAB_CITIZENSHIP;
   }
 
-  // 4. Residency (All RBI countries + Golden Visa keywords)
+  // 7. Residency (All RBI countries + Golden Visa keywords)
   if (text.indexOf("residency") !== -1 || text.indexOf("golden visa") !== -1 ||
     text.indexOf("golden-visa") !== -1 || text.indexOf("اقامت") !== -1 ||
     text.indexOf("إقامة") !== -1 || text.indexOf("ویزای طلایی") !== -1 ||
@@ -362,7 +390,7 @@ function resolveCategoryTabName(data) {
     return CONFIG.TAB_RESIDENCY;
   }
 
-  // 5. Default Fallback
+  // 8. Default Fallback
   return CONFIG.TAB_GENERAL;
 }
 
@@ -635,6 +663,14 @@ function getOrCreateTab(ss, preferredName, headers) {
 
   // 1. Direct match
   sheet = ss.getSheetByName(preferredName);
+
+  // 1b. Direct alias match for General Enquiries / General Queries
+  if (!sheet && preferredName === CONFIG.TAB_GENERAL) {
+    sheet = ss.getSheetByName("General Queries") ||
+            ss.getSheetByName("General_Queries") ||
+            ss.getSheetByName("General Inquiries") ||
+            ss.getSheetByName("General");
+  }
 
   // 2. Space <-> Underscore interchangeability
   if (!sheet) {

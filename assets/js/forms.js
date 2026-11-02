@@ -617,6 +617,14 @@ async function handleContactSubmit(event) {
   payload.page = window.location.pathname;
   payload.form_id = form.id || 'program-consult-form';
 
+  // Explicitly route Home Page & Contact Us submissions to General Enquiries (General Queries)
+  const curPath = (window.location.pathname || '').toLowerCase();
+  const isHome = form.id === 'contact-portal-form' || curPath === '' || curPath === '/' || curPath.endsWith('/index.html') || curPath.endsWith('/fa/') || curPath.endsWith('/ar/') || curPath.endsWith('/zh/');
+  const isContact = curPath.includes('/contact') || form.id === 'contact-form' || (form.id === 'standalone-contact-form' && curPath.includes('contact'));
+  if (isHome || isContact) {
+    payload.targetTab = 'General Enquiries';
+  }
+
   try {
     // 1. Dispatch to direct server mailer API (authenticated email to mohammad@sharifgroup.ae + local data backup)
     try {

@@ -164,6 +164,7 @@ if (!empty($CRM_WEBHOOK)) {
             'lang' => $lang,
             'source' => $source,
             'page' => $page,
+            'targetTab' => $data['targetTab'] ?? '',
             'timestamp' => $nowUtc
         ]);
 
