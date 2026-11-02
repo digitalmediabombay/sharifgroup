@@ -74,6 +74,26 @@ $formId      = trim($data['form_id'] ?? 'consultation-form');
 $nowUtc      = gmdate('Y-m-d H:i:s') . ' UTC';
 $inquiryId   = 'INQ-' . strtoupper(substr(uniqid(), -6));
 
+$targetTab   = trim($data['targetTab'] ?? '');
+if (empty($targetTab)) {
+    $curPath = strtolower($page . ' ' . $source);
+    if (strpos($curPath, '/residency') !== false || strpos($curPath, 'portugal') !== false || strpos($curPath, 'greece') !== false || strpos($curPath, 'uae') !== false || strpos($curPath, 'panama') !== false) {
+        $targetTab = 'Residency';
+    } elseif (strpos($curPath, '/citizenship') !== false || strpos($curPath, 'dominica') !== false || strpos($curPath, 'grenada') !== false || strpos($curPath, 'antigua') !== false || strpos($curPath, 'stlucia') !== false || strpos($curPath, 'stkitts') !== false || strpos($curPath, 'vanuatu') !== false || strpos($curPath, 'nauru') !== false || strpos($curPath, 'sao tome') !== false) {
+        $targetTab = 'Citizenship';
+    } elseif (strpos($curPath, '/realestate') !== false) {
+        $targetTab = 'Real Estate';
+    } elseif (strpos($curPath, '/educationaladvisory') !== false) {
+        $targetTab = 'Educational Advisory';
+    }
+
+    $isContact = (strpos($curPath, '/contact') !== false || $formId === 'contact-form' || $formId === 'contact-us');
+    $isHome = ($formId === 'contact-portal-form' || $page === '' || $page === '/' || $page === '/index.html' || $page === '/fa/' || $page === '/ar/' || $page === '/zh/');
+    if ($isHome || $isContact) {
+        $targetTab = 'General Enquiries';
+    }
+}
+
 // 1. Dispatch Instant Admin Notification Email to Mohammad
 $adminEmailSent = false;
 $adminEmailError = null;
@@ -165,7 +185,7 @@ if (!empty($CRM_WEBHOOK) && empty($data['crm_synced'])) {
             'lang' => $lang,
             'source' => $source,
             'page' => $page,
-            'targetTab' => $data['targetTab'] ?? '',
+            'targetTab' => $targetTab,
             'timestamp' => $nowUtc
         ]);
 

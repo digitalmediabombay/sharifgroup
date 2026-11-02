@@ -326,86 +326,167 @@ function resolveCategoryTabName(data) {
   var source = String(data.source || "").toLowerCase().trim();
   var targetTab = String(data.targetTab || "").toLowerCase().trim();
 
-  // 1. Explicit override if targetTab specifies general
-  if (targetTab.indexOf("general") !== -1) {
-    return CONFIG.TAB_GENERAL;
+  // 1. Explicit targetTab overrides (passed directly from client or API)
+  if (targetTab) {
+    if (targetTab.indexOf("general") !== -1 || targetTab.indexOf("quer") !== -1 || targetTab.indexOf("enquir") !== -1) {
+      return CONFIG.TAB_GENERAL;
+    }
+    if (targetTab.indexOf("residency") !== -1) {
+      return CONFIG.TAB_RESIDENCY;
+    }
+    if (targetTab.indexOf("citizenship") !== -1) {
+      return CONFIG.TAB_CITIZENSHIP;
+    }
+    if (targetTab.indexOf("real") !== -1 || targetTab.indexOf("property") !== -1) {
+      return CONFIG.TAB_REAL_ESTATE;
+    }
+    if (targetTab.indexOf("education") !== -1) {
+      return CONFIG.TAB_EDUCATION;
+    }
   }
 
   // 2. Home Page Form -> ALWAYS route to General Enquiries (General Queries)
-  var isHomePage = (formId === "contact-portal-form") ||
-    (page === "" || page === "/" || page === "/index.html" ||
-     page === "/fa" || page === "/fa/" || page === "/fa/index.html" ||
-     page === "/ar" || page === "/ar/" || page === "/ar/index.html" ||
-     page === "/zh" || page === "/zh/" || page === "/zh/index.html") ||
-    (source.indexOf("sharifgroup.ae") !== -1 && (source.endsWith(".ae/") || source.endsWith(".ae") || source.indexOf("/index.html") !== -1));
+  // Match ONLY the root homepage, not sub-pages like /programs/.../index.html
+  var isRootPage = (
+    page === "" || page === "/" || page === "/index.html" ||
+    page === "/fa" || page === "/fa/" || page === "/fa/index.html" ||
+    page === "/ar" || page === "/ar/" || page === "/ar/index.html" ||
+    page === "/zh" || page === "/zh/" || page === "/zh/index.html"
+  );
+  var isRootSource = (
+    source.endsWith("sharifgroup.ae") || source.endsWith("sharifgroup.ae/") ||
+    source.endsWith("sharifgroup.ae/index.html") ||
+    source.endsWith("sharifgroup.ae/fa") || source.endsWith("sharifgroup.ae/fa/") || source.endsWith("sharifgroup.ae/fa/index.html") ||
+    source.endsWith("sharifgroup.ae/ar") || source.endsWith("sharifgroup.ae/ar/") || source.endsWith("sharifgroup.ae/ar/index.html") ||
+    source.endsWith("sharifgroup.ae/zh") || source.endsWith("sharifgroup.ae/zh/") || source.endsWith("sharifgroup.ae/zh/index.html")
+  );
+  var isHomePage = (formId === "contact-portal-form") || (isRootPage && (page !== "" || isRootSource));
 
   // 3. Contact Us Page Form -> ALWAYS route to General Enquiries (General Queries)
-  var isContactPage = (page.indexOf("/contact") !== -1 || page.indexOf("contact.html") !== -1 ||
+  var isContactPage = (
+    page.indexOf("/contact") !== -1 || page.indexOf("contact.html") !== -1 ||
     source.indexOf("/contact") !== -1 || formId === "contact-form" || formId === "contact-us" ||
-    (page.indexOf("contact") !== -1 && formId === "standalone-contact-form"));
+    (page.indexOf("contact") !== -1 && formId === "standalone-contact-form")
+  );
 
   if (isHomePage || isContactPage) {
     return CONFIG.TAB_GENERAL;
   }
 
-  var text = (
-    (data.service || "") + " " +
-    (data.programChoice || "") + " " +
-    (data.subProgram || "") + " " +
-    (data.targetProgram || "") + " " +
-    (data.program || "") + " " +
-    (data.investmentRoute || "") + " " +
-    (data.page || "") + " " +
-    (data.source || "") + " " +
-    (data.notes || "")
-  ).toLowerCase();
-
-  // 4. Real Estate (checked first so property queries don't get mixed with residency)
-  if (text.indexOf("realestate") !== -1 || text.indexOf("real estate") !== -1 ||
-    text.indexOf("real-estate") !== -1 || text.indexOf("property") !== -1 ||
-    text.indexOf("off-plan") !== -1 || text.indexOf("offplan") !== -1 ||
-    text.indexOf("عقارات") !== -1 || text.indexOf("املاک") !== -1 ||
-    text.indexOf("ملک") !== -1 || text.indexOf("房产") !== -1) {
+  // 4. Dedicated Page URL Path checks (Page URL defines the exact program domain!)
+  if (page.indexOf("/residency") !== -1 || source.indexOf("/residency") !== -1) {
+    return CONFIG.TAB_RESIDENCY;
+  }
+  if (page.indexOf("/citizenship") !== -1 || source.indexOf("/citizenship") !== -1) {
+    return CONFIG.TAB_CITIZENSHIP;
+  }
+  if (page.indexOf("/realestate") !== -1 || source.indexOf("/realestate") !== -1) {
     return CONFIG.TAB_REAL_ESTATE;
   }
-
-  // 5. Educational Advisory
-  if (text.indexOf("educationaladvisory") !== -1 || text.indexOf("educational advisory") !== -1 ||
-    text.indexOf("education") !== -1 || text.indexOf("school") !== -1 ||
-    text.indexOf("university") !== -1 || text.indexOf("تحصیلی") !== -1 ||
-    text.indexOf("تعليمي") !== -1 || text.indexOf("教育") !== -1) {
+  if (page.indexOf("/educationaladvisory") !== -1 || source.indexOf("/educationaladvisory") !== -1) {
     return CONFIG.TAB_EDUCATION;
   }
 
-  // 6. Citizenship (All CBI countries + keywords)
-  if (text.indexOf("citizenship") !== -1 || text.indexOf("passport") !== -1 ||
-    text.indexOf("cbi") !== -1 || text.indexOf("شهروندی") !== -1 ||
-    text.indexOf("پاسپورت") !== -1 || text.indexOf("جنسية") !== -1 ||
-    text.indexOf("جواز") !== -1 || text.indexOf("入籍") !== -1 || text.indexOf("护照") !== -1 ||
-    text.indexOf("dominica") !== -1 || text.indexOf("دومینیکا") !== -1 || text.indexOf("دومينيكا") !== -1 || text.indexOf("多米尼克") !== -1 ||
-    text.indexOf("grenada") !== -1 || text.indexOf("گرانادا") !== -1 || text.indexOf("غرينادا") !== -1 || text.indexOf("格林纳达") !== -1 ||
-    text.indexOf("antigua") !== -1 || text.indexOf("آنتیگوا") !== -1 || text.indexOf("أنتيغوا") !== -1 || text.indexOf("安提瓜") !== -1 ||
-    text.indexOf("stlucia") !== -1 || text.indexOf("st lucia") !== -1 || text.indexOf("saint lucia") !== -1 || text.indexOf("سنت لوسیا") !== -1 || text.indexOf("سانت لوسيا") !== -1 || text.indexOf("圣卢西亚") !== -1 ||
-    text.indexOf("stkitts") !== -1 || text.indexOf("st kitts") !== -1 || text.indexOf("saint kitts") !== -1 || text.indexOf("سنت کیتس") !== -1 || text.indexOf("سانت كيتس") !== -1 || text.indexOf("圣基茨") !== -1 ||
-    text.indexOf("vanuatu") !== -1 || text.indexOf("وانواتو") !== -1 || text.indexOf("فانواتو") !== -1 || text.indexOf("瓦努阿图") !== -1 ||
-    text.indexOf("nauru") !== -1 || text.indexOf("نائورو") !== -1 || text.indexOf("ناورو") !== -1 || text.indexOf("瑙鲁") !== -1 ||
-    text.indexOf("sao tome") !== -1 || text.indexOf("sao-tome") !== -1 || text.indexOf("سائوتومه") !== -1 || text.indexOf("ساو تومي") !== -1 || text.indexOf("圣多美") !== -1) {
-    return CONFIG.TAB_CITIZENSHIP;
-  }
+  // 5. Program & Service tokens (Explicit program names take priority over generic words in user notes)
+  var programText = (
+    (data.program || "") + " " +
+    (data.programChoice || "") + " " +
+    (data.subProgram || "") + " " +
+    (data.targetProgram || "") + " " +
+    (data.service || "")
+  ).toLowerCase();
 
-  // 7. Residency (All RBI countries + Golden Visa keywords)
-  if (text.indexOf("residency") !== -1 || text.indexOf("golden visa") !== -1 ||
-    text.indexOf("golden-visa") !== -1 || text.indexOf("اقامت") !== -1 ||
-    text.indexOf("إقامة") !== -1 || text.indexOf("ویزای طلایی") !== -1 ||
-    text.indexOf("居留") !== -1 || text.indexOf("黄金签证") !== -1 ||
-    text.indexOf("uae") !== -1 || text.indexOf("dubai") !== -1 || text.indexOf("امارات") !== -1 || text.indexOf("دبی") !== -1 || text.indexOf("دبي") !== -1 || text.indexOf("阿联酋") !== -1 ||
-    text.indexOf("greece") !== -1 || text.indexOf("یونان") !== -1 || text.indexOf("اليونان") !== -1 || text.indexOf("希腊") !== -1 ||
-    text.indexOf("portugal") !== -1 || text.indexOf("پرتغال") !== -1 || text.indexOf("البرتغال") !== -1 || text.indexOf("葡萄牙") !== -1 ||
-    text.indexOf("panama") !== -1 || text.indexOf("پاناما") !== -1 || text.indexOf("بنما") !== -1 || text.indexOf("巴拿马") !== -1) {
+  // Specific Residency Programs:
+  if (
+    programText.indexOf("portugal") !== -1 || programText.indexOf("پرتغال") !== -1 || programText.indexOf("البرتغال") !== -1 || programText.indexOf("葡萄牙") !== -1 ||
+    programText.indexOf("greece") !== -1 || programText.indexOf("یونان") !== -1 || programText.indexOf("اليونان") !== -1 || programText.indexOf("希腊") !== -1 ||
+    programText.indexOf("uae-gv") !== -1 || programText.indexOf("golden visa") !== -1 || programText.indexOf("golden-visa") !== -1 ||
+    programText.indexOf("panama") !== -1 || programText.indexOf("پاناما") !== -1 || programText.indexOf("بنما") !== -1 || programText.indexOf("巴拿马") !== -1 ||
+    programText.indexOf("residency") !== -1 || programText.indexOf("اقامت") !== -1 || programText.indexOf("إقامة") !== -1 || programText.indexOf("居留") !== -1
+  ) {
     return CONFIG.TAB_RESIDENCY;
   }
 
-  // 8. Default Fallback
+  // Specific Citizenship Programs:
+  if (
+    programText.indexOf("dominica") !== -1 || programText.indexOf("دومینیکا") !== -1 || programText.indexOf("دومينيكا") !== -1 || programText.indexOf("多米尼克") !== -1 ||
+    programText.indexOf("grenada") !== -1 || programText.indexOf("گرانادا") !== -1 || programText.indexOf("غرينادا") !== -1 || programText.indexOf("格林纳达") !== -1 ||
+    programText.indexOf("antigua") !== -1 || programText.indexOf("آنتیگوا") !== -1 || programText.indexOf("أنتيغوا") !== -1 || programText.indexOf("安提瓜") !== -1 ||
+    programText.indexOf("stlucia") !== -1 || programText.indexOf("st lucia") !== -1 || programText.indexOf("saint lucia") !== -1 || programText.indexOf("سنت لوسیا") !== -1 || programText.indexOf("سانت لوسيا") !== -1 || programText.indexOf("圣卢西亚") !== -1 ||
+    programText.indexOf("stkitts") !== -1 || programText.indexOf("st kitts") !== -1 || programText.indexOf("saint kitts") !== -1 || programText.indexOf("سنت کیتس") !== -1 || programText.indexOf("سانت كيتس") !== -1 || programText.indexOf("圣基茨") !== -1 ||
+    programText.indexOf("vanuatu") !== -1 || programText.indexOf("وانواتو") !== -1 || programText.indexOf("فانواتو") !== -1 || programText.indexOf("瓦努阿图") !== -1 ||
+    programText.indexOf("nauru") !== -1 || programText.indexOf("نائورو") !== -1 || programText.indexOf("ناورو") !== -1 || programText.indexOf("瑙鲁") !== -1 ||
+    programText.indexOf("sao tome") !== -1 || programText.indexOf("sao-tome") !== -1 || programText.indexOf("saotome") !== -1 || programText.indexOf("سائوتومه") !== -1 || programText.indexOf("ساو تومي") !== -1 || programText.indexOf("圣多美") !== -1 ||
+    programText.indexOf("cbi") !== -1 || programText.indexOf("citizenship") !== -1 || programText.indexOf("passport") !== -1 ||
+    programText.indexOf("شهروندی") !== -1 || programText.indexOf("پاسپورت") !== -1 || programText.indexOf("جنسية") !== -1 || programText.indexOf("جواز") !== -1 ||
+    programText.indexOf("入籍") !== -1 || programText.indexOf("护照") !== -1
+  ) {
+    return CONFIG.TAB_CITIZENSHIP;
+  }
+
+  // Real Estate:
+  if (
+    programText.indexOf("realestate") !== -1 || programText.indexOf("real estate") !== -1 ||
+    programText.indexOf("dubai-offplan") !== -1 || programText.indexOf("dubai-ready") !== -1 || programText.indexOf("commercial-re") !== -1 ||
+    programText.indexOf("property") !== -1 || programText.indexOf("off-plan") !== -1 ||
+    programText.indexOf("عقارات") !== -1 || programText.indexOf("املاک") !== -1 || programText.indexOf("ملک") !== -1 || programText.indexOf("房产") !== -1
+  ) {
+    return CONFIG.TAB_REAL_ESTATE;
+  }
+
+  // Educational Advisory:
+  if (
+    programText.indexOf("educationaladvisory") !== -1 || programText.indexOf("educational advisory") !== -1 ||
+    programText.indexOf("boarding-schools") !== -1 || programText.indexOf("undergrad") !== -1 || programText.indexOf("postgrad") !== -1 ||
+    programText.indexOf("education") !== -1 || programText.indexOf("school") !== -1 || programText.indexOf("university") !== -1 ||
+    programText.indexOf("تحصیلی") !== -1 || programText.indexOf("تعليمي") !== -1 || programText.indexOf("教育") !== -1
+  ) {
+    return CONFIG.TAB_EDUCATION;
+  }
+
+  // 6. Broad text match (including notes, investmentRoute, page, source)
+  var allText = (programText + " " + (data.investmentRoute || "") + " " + (data.page || "") + " " + (data.source || "") + " " + (data.notes || "")).toLowerCase();
+
+  // Check country names first before generic words like "citizenship"
+  if (
+    allText.indexOf("portugal") !== -1 || allText.indexOf("پرتغال") !== -1 || allText.indexOf("البرتغال") !== -1 || allText.indexOf("葡萄牙") !== -1 ||
+    allText.indexOf("greece") !== -1 || allText.indexOf("یونان") !== -1 || allText.indexOf("اليونان") !== -1 || allText.indexOf("希腊") !== -1 ||
+    allText.indexOf("uae-gv") !== -1 || allText.indexOf("golden visa") !== -1 || allText.indexOf("golden-visa") !== -1 ||
+    allText.indexOf("panama") !== -1 || allText.indexOf("پاناما") !== -1 || allText.indexOf("بنما") !== -1 || allText.indexOf("巴拿马") !== -1
+  ) {
+    return CONFIG.TAB_RESIDENCY;
+  }
+
+  if (
+    allText.indexOf("dominica") !== -1 || allText.indexOf("grenada") !== -1 || allText.indexOf("antigua") !== -1 ||
+    allText.indexOf("stlucia") !== -1 || allText.indexOf("st lucia") !== -1 || allText.indexOf("saint lucia") !== -1 ||
+    allText.indexOf("stkitts") !== -1 || allText.indexOf("st kitts") !== -1 || allText.indexOf("saint kitts") !== -1 ||
+    allText.indexOf("vanuatu") !== -1 || allText.indexOf("nauru") !== -1 || allText.indexOf("sao tome") !== -1 || allText.indexOf("saotome") !== -1
+  ) {
+    return CONFIG.TAB_CITIZENSHIP;
+  }
+
+  if (allText.indexOf("residency") !== -1 || allText.indexOf("اقامت") !== -1 || allText.indexOf("إقامة") !== -1 || allText.indexOf("居留") !== -1) {
+    return CONFIG.TAB_RESIDENCY;
+  }
+
+  if (
+    allText.indexOf("citizenship") !== -1 || allText.indexOf("passport") !== -1 || allText.indexOf("cbi") !== -1 ||
+    allText.indexOf("شهروندی") !== -1 || allText.indexOf("پاسپورت") !== -1 || allText.indexOf("جنسية") !== -1 ||
+    allText.indexOf("جواز") !== -1 || allText.indexOf("入籍") !== -1 || allText.indexOf("护照") !== -1
+  ) {
+    return CONFIG.TAB_CITIZENSHIP;
+  }
+
+  if (allText.indexOf("realestate") !== -1 || allText.indexOf("real estate") !== -1 || allText.indexOf("property") !== -1) {
+    return CONFIG.TAB_REAL_ESTATE;
+  }
+
+  if (allText.indexOf("education") !== -1 || allText.indexOf("school") !== -1 || allText.indexOf("university") !== -1) {
+    return CONFIG.TAB_EDUCATION;
+  }
+
+  // 7. Default Fallback
   return CONFIG.TAB_GENERAL;
 }
 

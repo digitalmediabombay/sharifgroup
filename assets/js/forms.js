@@ -692,11 +692,80 @@ async function handleContactSubmit(event) {
   payload.nationality = payload.nationality || payload.citizenship || '';
   payload.residence = payload.residence || payload.country || '';
 
+  // Detect program and target category tab from URL or context
+  const curPath = (window.location.pathname || '').toLowerCase();
+  let detectedProgram = '';
+  let detectedTab = '';
+
+  if (curPath.includes('/residencybyinvestment/portugal') || curPath.includes('/portugal')) {
+    detectedProgram = 'Portugal Golden Visa';
+    detectedTab = 'Residency';
+  } else if (curPath.includes('/residencybyinvestment/greece') || curPath.includes('/greece')) {
+    detectedProgram = 'Greece Golden Visa';
+    detectedTab = 'Residency';
+  } else if (curPath.includes('/residencybyinvestment/uae') || curPath.includes('/uae')) {
+    detectedProgram = 'UAE Golden Visa';
+    detectedTab = 'Residency';
+  } else if (curPath.includes('/residencybyinvestment/panama') || curPath.includes('/panama')) {
+    detectedProgram = 'Panama Residency';
+    detectedTab = 'Residency';
+  } else if (curPath.includes('/residencybyinvestment') || curPath.includes('/residency')) {
+    detectedTab = 'Residency';
+  } else if (curPath.includes('/citizenshipbyinvestment/dominica') || curPath.includes('/dominica')) {
+    detectedProgram = 'Dominica CBI';
+    detectedTab = 'Citizenship';
+  } else if (curPath.includes('/citizenshipbyinvestment/grenada') || curPath.includes('/grenada')) {
+    detectedProgram = 'Grenada CBI';
+    detectedTab = 'Citizenship';
+  } else if (curPath.includes('/citizenshipbyinvestment/antigua') || curPath.includes('/antigua')) {
+    detectedProgram = 'Antigua & Barbuda CBI';
+    detectedTab = 'Citizenship';
+  } else if (curPath.includes('/citizenshipbyinvestment/stlucia') || curPath.includes('/stlucia')) {
+    detectedProgram = 'Saint Lucia CBI';
+    detectedTab = 'Citizenship';
+  } else if (curPath.includes('/citizenshipbyinvestment/stkitts') || curPath.includes('/stkitts')) {
+    detectedProgram = 'St. Kitts & Nevis CBI';
+    detectedTab = 'Citizenship';
+  } else if (curPath.includes('/citizenshipbyinvestment/vanuatu') || curPath.includes('/vanuatu')) {
+    detectedProgram = 'Vanuatu CBI';
+    detectedTab = 'Citizenship';
+  } else if (curPath.includes('/citizenshipbyinvestment/nauru') || curPath.includes('/nauru')) {
+    detectedProgram = 'Nauru CBI';
+    detectedTab = 'Citizenship';
+  } else if (curPath.includes('/citizenshipbyinvestment/sao-tome') || curPath.includes('/saotome')) {
+    detectedProgram = 'Sao Tome & Principe CBI';
+    detectedTab = 'Citizenship';
+  } else if (curPath.includes('/citizenshipbyinvestment') || curPath.includes('/citizenship')) {
+    detectedTab = 'Citizenship';
+  } else if (curPath.includes('/realestate')) {
+    detectedProgram = 'Real Estate';
+    detectedTab = 'Real Estate';
+  } else if (curPath.includes('/educationaladvisory')) {
+    detectedProgram = 'Educational Advisory';
+    detectedTab = 'Educational Advisory';
+  }
+
+  if (detectedProgram && !payload.program && !payload.programChoice) {
+    payload.program = detectedProgram;
+  }
+  if (detectedTab && !payload.targetTab) {
+    payload.targetTab = detectedTab;
+  }
+
+  // Explicitly route Home Page & Contact Us submissions to General Enquiries (General Queries)
+  const isHome = form.id === 'contact-portal-form' || curPath === '' || curPath === '/' || curPath.endsWith('/index.html') || curPath.endsWith('/fa/') || curPath.endsWith('/ar/') || curPath.endsWith('/zh/');
+  const isContact = curPath.includes('/contact') || form.id === 'contact-form' || (form.id === 'standalone-contact-form' && curPath.includes('contact'));
+  if (isHome || isContact) {
+    payload.targetTab = 'General Enquiries';
+  }
+
   // Map service/program clearly for Google Sheet
-  const primaryProgram = payload.programChoice || payload.targetProgram || payload.program || payload.investmentRoute || '';
+  const primaryProgram = payload.program || payload.programChoice || payload.targetProgram || payload.investmentRoute || '';
   if (!payload.service) {
     payload.service = primaryProgram;
-    if (payload.subProgram) {
+    if (payload.investmentRoute && payload.program && !payload.program.includes(payload.investmentRoute)) {
+      payload.service += ` (${payload.investmentRoute})`;
+    } else if (payload.subProgram) {
       payload.service += (payload.service ? ` (${payload.subProgram})` : payload.subProgram);
     }
   } else if (payload.subProgram && !payload.service.includes(payload.subProgram)) {
@@ -705,7 +774,8 @@ async function handleContactSubmit(event) {
 
   // Enriched notes
   const extraDetails = [];
-  if (payload.programChoice) extraDetails.push(`Program: ${payload.programChoice}`);
+  if (payload.program) extraDetails.push(`Program: ${payload.program}`);
+  else if (payload.programChoice) extraDetails.push(`Program: ${payload.programChoice}`);
   if (payload.subProgram) extraDetails.push(`Sub-Program: ${payload.subProgram}`);
   if (payload.investmentRoute) extraDetails.push(`Route: ${payload.investmentRoute}`);
   if (payload.budget) extraDetails.push(`Budget: ${payload.budget}`);
@@ -727,14 +797,6 @@ async function handleContactSubmit(event) {
   payload.source = window.location.href;
   payload.page = window.location.pathname;
   payload.form_id = form.id || 'program-consult-form';
-
-  // Explicitly route Home Page & Contact Us submissions to General Enquiries (General Queries)
-  const curPath = (window.location.pathname || '').toLowerCase();
-  const isHome = form.id === 'contact-portal-form' || curPath === '' || curPath === '/' || curPath.endsWith('/index.html') || curPath.endsWith('/fa/') || curPath.endsWith('/ar/') || curPath.endsWith('/zh/');
-  const isContact = curPath.includes('/contact') || form.id === 'contact-form' || (form.id === 'standalone-contact-form' && curPath.includes('contact'));
-  if (isHome || isContact) {
-    payload.targetTab = 'General Enquiries';
-  }
 
   try {
     // 1. Dispatch to direct server mailer API (authenticated email to mohammad@sharifgroup.ae + local data backup)
