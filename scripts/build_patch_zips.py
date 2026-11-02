@@ -19,6 +19,7 @@ patch_files = [
     'assets/js/partners-i18n.js',
     'assets/js/webinars-app.js',
     'assets/js/language-switcher.js',
+    'partners/index.html',
     'index.html',
     'ar/index.html',
     'fa/index.html',
