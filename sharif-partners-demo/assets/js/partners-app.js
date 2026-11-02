@@ -261,8 +261,8 @@
             <li><a class="hover:text-luxury-gold transition" href="${SITE + p}educationaladvisory/">${esc(F.educationalAdvisory || 'Educational Advisory')}</a></li>
             <li><a class="hover:text-luxury-gold transition" href="${SITE + p}contact/">${esc(F.contactUs || 'Contact Us')}</a></li>
             <li><a class="hover:text-luxury-gold transition" href="${SITE + p}blog/">${esc(F.insightsBlog || 'Insights & Blog')}</a></li>
-            <li><a class="hover:text-luxury-gold transition inline-flex items-center gap-1.5 foot-new-row" href="${SITE + p}events/"><span>${esc(F.webinars || \'Events\')}</span></a></li>
-            <li><a class="hover:text-luxury-gold transition inline-flex items-center gap-1.5 foot-new-row" href="#/partners"><span>${esc(F.partnerWithUs || \'Partner With Us\')}</span></a></li>
+            <li><a class="hover:text-luxury-gold transition inline-flex items-center gap-1.5 foot-new-row" href="${SITE + p}events/"><span>${esc(F.webinars || 'Events')}</span></a></li>
+            <li><a class="hover:text-luxury-gold transition inline-flex items-center gap-1.5 foot-new-row" href="#/partners"><span>${esc(F.partnerWithUs || 'Partner With Us')}</span></a></li>
             <li><a class="hover:text-luxury-gold transition" href="${SITE + p}eligibilitychecker/">${esc(F.eligibilityChecker || 'Eligibility Checker')}</a></li>
           </ul>
         </div>
