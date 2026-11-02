@@ -44,9 +44,9 @@ if (!empty($data['website_url_honeypot'])) {
 }
 
 // Configuration
-$ADMIN_EMAIL   = 'mohammad@sharifgroup.ae';
-$SENDER_EMAIL  = 'mohammad@sharifgroup.ae';
-$SENDER_NAME   = 'Sharif Group CRM';
+$ADMIN_EMAIL   = 'contact@sharifgroup.ae';
+$SENDER_EMAIL  = 'contact@sharifgroup.ae';
+$SENDER_NAME   = 'Sharif Group';
 $CRM_WEBHOOK   = 'https://script.google.com/macros/s/AKfycbxZIEa4TJ2sHW0hdkL1MRmfEasE0MbEa3rruAebGFrmyt0JMjerMXnTKePAWdzmesRYaQ/exec';
 
 // Extract Form Fields
@@ -135,6 +135,30 @@ if (!empty($ADMIN_EMAIL)) {
     if (!$adminEmailSent) {
         $adminEmailError = 'Native mailer returned false';
     }
+}
+
+// 1.1 Automated Client Confirmation Receipt (From: contact@sharifgroup.ae)
+$clientEmailSent = false;
+if (!empty($email) && filter_var($email, FILTER_VALIDATE_EMAIL)) {
+    $clientSubject = ($lang === 'fa')
+        ? 'تایید دریافت پیام شما در شریف گروپ دبی [کد پیگیری: ' . $inquiryId . ']'
+        : (($lang === 'ar')
+            ? 'تأكيد استلام استفساركم لدى مجموعة شريف دبي [المرجع: ' . $inquiryId . ']'
+            : 'Thank you for contacting Sharif Group Dubai [Ref: ' . $inquiryId . ']');
+
+    $encodedClientSubject = '=?UTF-8?B?' . base64_encode($clientSubject) . '?=';
+    $clientBody = ($lang === 'fa')
+        ? "سلام " . $fullName . " گرامی،\n\nاز تماس شما با شریف گروپ دبی سپاسگزاریم. درخواست مشاوره شما در خصوص (" . ($service ?: 'مشاوره اختصاصی') . ") با کد رهگیری " . $inquiryId . " با موفقیت در سیستم ثبت گردید.\n\nمشاوران ارشد ما درخواست شما را بررسی نموده و ظرف حداکثر ۲۴ ساعت کاری با شما تماس خواهند گرفت.\n\nبا احترام،\nشریف گروپ دبی\nبرج باینری ۱۱۶، بیزینس بی، دبی، امارات متحده عربی\nایمیل: contact@sharifgroup.ae\nوبسایت: https://sharifgroup.ae"
+        : (($lang === 'ar')
+            ? "مرحباً " . $fullName . "،\n\nشكراً لتواصلكم مع مجموعة شريف دبي. تم استلام طلبكم بخصوص (" . ($service ?: 'الاستشارة الخاصة') . ") بنجاح برقم مرجعي " . $inquiryId . ".\n\nسيقوم فريق الاستشارات الخاصة لدينا بمراجعة طلبكم والتواصل معكم خلال 24 ساعة عمل.\n\nمع التحية والتقدير،\nمجموعة شريف دبي\nبرج باينري 116، الخليج التجاري، دبی، الإمارات العربية المتحدة\ncontact@sharifgroup.ae\nhttps://sharifgroup.ae"
+            : "Dear " . $fullName . ",\n\nThank you for contacting Sharif Group Dubai. We have received your inquiry regarding " . ($service ?: 'our advisory services') . " (Reference ID: " . $inquiryId . ").\n\nOur senior private client advisors will carefully review your requirements and connect with you within 24 business hours.\n\nWarm regards,\nSharif Group Dubai\n116 The Binary Tower, Business Bay, Dubai, UAE\nEmail: contact@sharifgroup.ae\nWebsite: https://sharifgroup.ae");
+
+    $clientHeaders = "From: " . sprintf('=?UTF-8?B?%s?= <%s>', base64_encode($SENDER_NAME), $SENDER_EMAIL) . "\r\n"
+        . "Reply-To: " . $SENDER_EMAIL . "\r\n"
+        . "Content-Type: text/plain; charset=UTF-8\r\n"
+        . "X-Mailer: PHP/" . phpversion();
+
+    $clientEmailSent = @mail($email, $encodedClientSubject, $clientBody, $clientHeaders, "-f" . $SENDER_EMAIL);
 }
 
 // 2. Local JSON Backup (Never lose any lead)

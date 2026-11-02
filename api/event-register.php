@@ -42,8 +42,8 @@ if (!empty($data['company'])) {
 }
 
 // Configuration
-$ADMIN_EMAIL   = 'mohammad@sharifgroup.ae';
-$SENDER_EMAIL  = 'mohammad@sharifgroup.ae';
+$ADMIN_EMAIL   = 'contact@sharifgroup.ae';
+$SENDER_EMAIL  = 'contact@sharifgroup.ae';
 $SENDER_NAME   = 'Sharif Group';
 $CRM_WEBHOOK   = 'https://script.google.com/macros/s/AKfycbxZIEa4TJ2sHW0hdkL1MRmfEasE0MbEa3rruAebGFrmyt0JMjerMXnTKePAWdzmesRYaQ/exec';
 
@@ -303,7 +303,7 @@ function getEmailTemplate($name, $lang, $webinarTitle = '') {
               <div style="margin-top:36px;padding-top:24px;border-top:1px solid #E2E8F0;text-align:center;font-size:12px;color:#94A3B8;line-height:1.6;">
                 <strong>Sharif Group Dubai</strong> • 116 The Binary Tower, Business Bay, Dubai, UAE<br/>
                 Tel: +971 4 357 8737 • WhatsApp: +971 4 357 8737<br/>
-                Email: <a href="mailto:mohammad@sharifgroup.ae" style="color:#C5A880;text-decoration:none;">mohammad@sharifgroup.ae</a> • <a href="https://sharifgroup.ae" style="color:#C5A880;text-decoration:none;">sharifgroup.ae</a>
+                Email: <a href="mailto:contact@sharifgroup.ae" style="color:#C5A880;text-decoration:none;">contact@sharifgroup.ae</a> • <a href="https://sharifgroup.ae" style="color:#C5A880;text-decoration:none;">sharifgroup.ae</a>
               </div>
             </td>
           </tr>

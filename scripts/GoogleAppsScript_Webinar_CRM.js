@@ -31,10 +31,19 @@ const CONFIG = {
   TAB_PARTNERSHIP: "Partnership",
   TAB_EVENT: "Event",
 
-  // Admin Notification Recipient
-  ADMIN_EMAIL: "mohammad@sharifgroup.ae",
+  // Google Workspace Account Hosting this CRM Sheet
+  SHEET_OWNER: "mohammad@sharifgroup.ae",
+
+  // Admin Notification Alerts (Received at this address for all leads/applications)
+  ADMIN_EMAIL: "contact@sharifgroup.ae",
+
+  // Outgoing Sender & Client Communication
   SENDER_NAME: "Sharif Group",
-  REPLY_TO_EMAIL: "contact@sharifgroup.ae"
+  SENDER_EMAIL: "contact@sharifgroup.ae",
+  REPLY_TO_EMAIL: "contact@sharifgroup.ae",
+
+  // Auto-send instant confirmation receipt to client when they enter their email
+  SEND_CLIENT_CONFIRMATION: true
 };
 
 // Full Headers for Category Tabs (Citizenship, Residency, Real Estate, Education, General)
@@ -250,9 +259,9 @@ function handleCategoryLead(data) {
   var targetTabName = resolveCategoryTabName(data);
   var emailStatus = "Pending";
 
-  // Dispatch instant admin email alert to Mohammad
+  // Dispatch instant admin email alert to contact@sharifgroup.ae
   try {
-    MailApp.sendEmail({
+    sendSmartEmail({
       to: CONFIG.ADMIN_EMAIL,
       subject: "⚡ New Lead [" + targetTabName + "]: " + leadName + " (" + (leadService || "General") + " | " + friendlyLang + ")",
       body: "New Website Lead Received:\n\n" +
@@ -278,7 +287,17 @@ function handleCategoryLead(data) {
         (leadNotes || "None") + "\n\n" +
         "View in Google Sheet:\n" + ss.getUrl()
     });
-    emailStatus = "Sent via Google Mail (" + nowUtc + ")";
+    emailStatus = "Admin alerted (" + CONFIG.ADMIN_EMAIL + ")";
+
+    // Send instant confirmation receipt to client if email provided
+    if (CONFIG.SEND_CLIENT_CONFIRMATION && leadEmail && leadEmail.indexOf("@") !== -1) {
+      try {
+        sendLeadConfirmationEmail(leadEmail, leadName, leadService, (data.lang || "en"));
+        emailStatus += " + Client confirmed (" + leadEmail + ")";
+      } catch (clientErr) {
+        // Non-fatal client send error
+      }
+    }
   } catch (adminErr) {
     emailStatus = "Failed: " + adminErr.message;
   }
@@ -574,7 +593,7 @@ function handlePartnerApplication(data) {
   ]);
 
   try {
-    MailApp.sendEmail({
+    sendSmartEmail({
       to: CONFIG.ADMIN_EMAIL,
       subject: "🤝 New Partner Application: " + fullName + " (" + (company || "Individual") + ")",
       body: "New Partner Application Received:\n\n" +
@@ -662,7 +681,7 @@ function handleWebinarRegistration(data) {
   ]);
 
   try {
-    MailApp.sendEmail({
+    sendSmartEmail({
       to: CONFIG.ADMIN_EMAIL,
       subject: "🔔 New Event Registration: " + fullName + " (" + webinarId + ")",
       body: "New Event Registration Received:\n\n" +
@@ -875,7 +894,7 @@ function sendWebinarConfirmationEmail(recipientEmail, recipientName, webinarId, 
     ? "تاییدیه ثبت‌نام وبینار شریف گروپ | Sharif Group Webinar Confirmation"
     : "Sharif Group Webinar Confirmation | تاییدیه ثبت‌نام وبینار شریف گروپ";
 
-  MailApp.sendEmail({
+  sendSmartEmail({
     to: recipientEmail,
     subject: subject,
     htmlBody: "<p>Dear " + recipientName + ",<br/>Your webinar registration is confirmed.</p>",
@@ -887,7 +906,7 @@ function sendWebinarConfirmationEmail(recipientEmail, recipientName, webinarId, 
 
 function sendPartnerConfirmationEmail(recipientEmail, recipientName, applicationId, company, lang) {
   var subject = "Sharif Group — Partnership Application Received (" + applicationId + ")";
-  MailApp.sendEmail({
+  sendSmartEmail({
     to: recipientEmail,
     subject: subject,
     htmlBody: "<p>Dear " + recipientName + ",<br/>Your partner application #" + applicationId + " has been received.</p>",
@@ -900,6 +919,104 @@ function sendPartnerConfirmationEmail(recipientEmail, recipientName, application
 // ==============================================================================
 // UI MENU & AUTOMATIC CLEANUP UTILITY
 // ==============================================================================
+
+/**
+ * Smart Email Dispatcher:
+ * Tries sending via GmailApp using the configured SENDER_EMAIL alias (contact@sharifgroup.ae)
+ * if verified in the sheet owner's Gmail (mohammad@sharifgroup.ae).
+ * If alias is not set up or throws, smoothly falls back to MailApp with replyTo: contact@sharifgroup.ae.
+ */
+function sendSmartEmail(options) {
+  var to = options.to;
+  var subject = options.subject;
+  var body = options.body || "";
+  var name = options.name || CONFIG.SENDER_NAME;
+  var replyTo = options.replyTo || CONFIG.REPLY_TO_EMAIL;
+  var targetFrom = options.from || CONFIG.SENDER_EMAIL;
+
+  var mailOptions = {
+    name: name,
+    replyTo: replyTo
+  };
+  if (options.htmlBody) {
+    mailOptions.htmlBody = options.htmlBody;
+  }
+
+  var sent = false;
+  try {
+    var aliases = GmailApp.getAliases();
+    var hasAlias = false;
+    for (var i = 0; i < aliases.length; i++) {
+      if (aliases[i].toLowerCase() === targetFrom.toLowerCase()) {
+        hasAlias = true;
+        break;
+      }
+    }
+    if (hasAlias) {
+      mailOptions.from = targetFrom;
+      GmailApp.sendEmail(to, subject, body, mailOptions);
+      sent = true;
+    }
+  } catch (aliasErr) {
+    // If GmailApp alias lookup or sending fails, continue to MailApp fallback
+  }
+
+  if (!sent) {
+    MailApp.sendEmail(to, subject, body, mailOptions);
+  }
+}
+
+/**
+ * Sends a luxury, branded confirmation email to the website client
+ */
+function sendLeadConfirmationEmail(leadEmail, leadName, leadService, lang) {
+  if (!leadEmail || leadEmail.indexOf("@") === -1) return "No email provided";
+
+  var isFa = (lang === "fa" || lang === "fa-ir" || lang === "persian" || lang === "dari");
+  var isAr = (lang === "ar" || lang === "ar-ae" || lang === "arabic");
+
+  var subject = isFa
+    ? "تایید دریافت پیام شما در شریف گروپ دبی | Sharif Group Dubai"
+    : (isAr
+      ? "تأكيد استلام استفساركم لدى مجموعة شريف دبي | Sharif Group Dubai"
+      : "Thank you for contacting Sharif Group Dubai | Confirmation");
+
+  var htmlBody = '<div style="font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,Helvetica,Arial,sans-serif;max-width:600px;margin:0 auto;background:#0B132B;color:#FFFFFF;border-radius:12px;overflow:hidden;border:1px solid #C5A880;">' +
+    '<div style="background:#070E1A;padding:28px 32px;text-align:center;border-bottom:1px solid rgba(197,168,128,0.3);">' +
+    '  <h1 style="color:#C5A880;font-size:22px;margin:0;letter-spacing:1px;font-weight:700;">SHARIF GROUP</h1>' +
+    '  <p style="color:#94A3B8;font-size:12px;margin:6px 0 0 0;letter-spacing:1px;text-transform:uppercase;">Private Client Advisory & Citizenship by Investment</p>' +
+    '</div>' +
+    '<div style="padding:32px 32px 24px 32px;color:#E2E8F0;font-size:15px;line-height:1.7;">' +
+    (isFa
+      ? ('<p style="direction:rtl;text-align:right;">سلام <strong>' + leadName + '</strong> گرامی،</p>' +
+         '<p style="direction:rtl;text-align:right;">از پیام شما به شریف گروپ دبی درباره <strong>' + (leadService || 'مشاوره اختصاصی') + '</strong> سپاسگزاریم.</p>' +
+         '<p style="direction:rtl;text-align:right;">مشاوران ارشد ما جزئیات درخواست شما را به صورت محرمانه بررسی نموده و ظرف حداکثر ۲۴ ساعت کاری با شما تماس خواهند گرفت.</p>')
+      : (isAr
+        ? ('<p style="direction:rtl;text-align:right;">مرحباً <strong>' + leadName + '</strong>،</p>' +
+           '<p style="direction:rtl;text-align:right;">شكراً لتواصلكم مع مجموعة شريف دبي. تم استلام طلبكم بنجاح بخصوص <strong>' + (leadService || 'الاستشارة الخاصة') + '</strong>.</p>' +
+           '<p style="direction:rtl;text-align:right;">سيقوم مستشارنا الخاص بمراجعة متطلباتكم والتواصل معكم خلال 24 ساعة عمل.</p>')
+        : ('<p>Dear <strong>' + leadName + '</strong>,</p>' +
+           '<p>Thank you for reaching out to <strong>Sharif Group Dubai</strong>. We have successfully received your inquiry regarding <strong>' + (leadService || 'Private Client Consultation') + '</strong>.</p>' +
+           '<p>Our senior advisory team is reviewing your requirements under strict confidentiality and will reach out to you within 24 business hours.</p>'))) +
+    '</div>' +
+    '<div style="background:#070E1A;padding:20px 32px;border-top:1px solid rgba(197,168,128,0.2);text-align:center;font-size:12px;color:#94A3B8;line-height:1.6;">' +
+    '  <strong style="color:#C5A880;">Sharif Group Dubai</strong> • 116 The Binary Tower, Business Bay, Dubai, UAE<br/>' +
+    '  Email: <a href="mailto:contact@sharifgroup.ae" style="color:#C5A880;text-decoration:none;">contact@sharifgroup.ae</a> • ' +
+    '  Website: <a href="https://sharifgroup.ae" style="color:#C5A880;text-decoration:none;">sharifgroup.ae</a>' +
+    '</div>' +
+    '</div>';
+
+  sendSmartEmail({
+    to: leadEmail,
+    subject: subject,
+    htmlBody: htmlBody,
+    name: CONFIG.SENDER_NAME,
+    replyTo: CONFIG.REPLY_TO_EMAIL
+  });
+
+  return "Confirmation sent to client (" + leadEmail + ")";
+}
+
 function onOpen() {
   SpreadsheetApp.getUi()
     .createMenu("⭐ Sharif Group CRM")
@@ -1034,10 +1151,10 @@ function fixExistingPhoneErrors() {
 
 function testEmailPermissions() {
   var quota = MailApp.getRemainingDailyQuota();
-  MailApp.sendEmail({
+  sendSmartEmail({
     to: CONFIG.ADMIN_EMAIL,
     subject: "✅ Sharif Group Master CRM — Test Alert",
-    body: "Operational test.\nDaily Quota: " + quota
+    body: "Operational test.\nDaily Quota: " + quota + "\nSender: " + CONFIG.SENDER_EMAIL + "\nRecipient: " + CONFIG.ADMIN_EMAIL
   });
   SpreadsheetApp.getUi().alert("✅ Test email sent to " + CONFIG.ADMIN_EMAIL);
 }

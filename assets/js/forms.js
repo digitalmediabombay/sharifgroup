@@ -799,7 +799,7 @@ async function handleContactSubmit(event) {
   payload.form_id = form.id || 'program-consult-form';
 
   try {
-    // 1. Dispatch to direct server mailer API (authenticated email to mohammad@sharifgroup.ae + local data backup)
+    // 1. Dispatch to direct server mailer API (authenticated email to contact@sharifgroup.ae + local data backup)
     try {
       fetch('/api/contact.php', {
         method: 'POST',

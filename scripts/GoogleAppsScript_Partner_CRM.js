@@ -43,10 +43,10 @@
 // Global Configuration
 const CONFIG = {
   SHEET_NAME: "Partner_Applications",
-  ADMIN_EMAIL: "mohammad@sharifgroup.ae",
+  ADMIN_EMAIL: "contact@sharifgroup.ae",
   SENDER_NAME: "Sharif Group Partnerships",
-  REPLY_TO_EMAIL: "mohammad@sharifgroup.ae",
-  DEFAULT_SENDER: "Sharif Group <mohammad@sharifgroup.ae>",
+  REPLY_TO_EMAIL: "contact@sharifgroup.ae",
+  DEFAULT_SENDER: "Sharif Group <contact@sharifgroup.ae>",
   RESEND_API_URL: "https://api.resend.com/emails",
   // Uses built-in Google MailApp by default (no external API keys needed)
   PREFER_GOOGLE_MAIL: true
@@ -281,12 +281,12 @@ function sendPartnerConfirmationEmail(recipientEmail, recipientName, application
 
   var htmlContent = getPartnerEmailTemplate(recipientName, applicationId, company, lang);
   var plainText = (isFa)
-    ? "سلام " + (recipientName || "همکار گرامی") + "،\n\nدرخواست همکاری شما با کد رهگیری " + applicationId + " با موفقیت دریافت شد. تیم روابط بین‌الملل شریف گروپ ظرف حداکثر ۲ روز کاری جهت بررسی مدارک و آغاز همکاری با شما تماس خواهد گرفت.\n\nشریف گروپ دبی\nmohammad@sharifgroup.ae"
+    ? "سلام " + (recipientName || "همکار گرامی") + "،\n\nدرخواست همکاری شما با کد رهگیری " + applicationId + " با موفقیت دریافت شد. تیم روابط بین‌الملل شریف گروپ ظرف حداکثر ۲ روز کاری جهت بررسی مدارک و آغاز همکاری با شما تماس خواهد گرفت.\n\nشریف گروپ دبی\ncontact@sharifgroup.ae"
     : (isAr)
-    ? "مرحباً " + (recipientName || "شريكنا العزيز") + "،\n\nتم استلام طلب الشراكة بنجاح برقم مرجعي: " + applicationId + ". سيتواصل معك فريق علاقات الشركاء خلال يومي عمل لمناقشة التفاصيل وبدء التعاون.\n\nمجموعة شريف دبي\nmohammad@sharifgroup.ae"
+    ? "مرحباً " + (recipientName || "شريكنا العزيز") + "،\n\nتم استلام طلب الشراكة بنجاح برقم مرجعي: " + applicationId + ". سيتواصل معك فريق علاقات الشركاء خلال يومي عمل لمناقشة التفاصيل وبدء التعاون.\n\nمجموعة شريف دبي\ncontact@sharifgroup.ae"
     : (isZh)
-    ? "尊敬的 " + (recipientName || "合作伙伴") + "：\n\n您的合作伙伴申请已成功送达，申请编号：" + applicationId + "。我们的战略合作团队将在2个工作日内与您联系，安排对接事宜。\n\n迪拜谢里夫集团\nmohammad@sharifgroup.ae"
-    : "Dear " + (recipientName || "Valued Partner") + ",\n\nThank you for applying to become an official Sharif Group Partner. Your application reference is " + applicationId + ".\nOur Global Partnerships team will review your credentials and contact you within 2 business days to schedule an introductory onboarding call.\n\nSharif Group Dubai\nmohammad@sharifgroup.ae";
+    ? "尊敬的 " + (recipientName || "合作伙伴") + "：\n\n您的合作伙伴申请已成功送达，申请编号：" + applicationId + "。我们的战略合作团队将在2个工作日内与您联系，安排对接事宜。\n\n迪拜谢里夫集团\ncontact@sharifgroup.ae"
+    : "Dear " + (recipientName || "Valued Partner") + ",\n\nThank you for applying to become an official Sharif Group Partner. Your application reference is " + applicationId + ".\nOur Global Partnerships team will review your credentials and contact you within 2 business days to schedule an introductory onboarding call.\n\nSharif Group Dubai\ncontact@sharifgroup.ae";
 
   var scriptProperties = PropertiesService.getScriptProperties();
   var resendApiKey = scriptProperties.getProperty("RESEND_API_KEY");
@@ -452,7 +452,7 @@ function getPartnerEmailTemplate(name, applicationId, company, lang) {
     '            <table cellpadding="0" cellspacing="0" border="0" style="margin-top:10px;">' +
     '              <tr>' +
     '                <td style="background-color:#C5A880;border-radius:6px;padding:12px 24px;text-align:center;">' +
-    '                  <a href="mailto:mohammad@sharifgroup.ae" style="color:#070E1A;text-decoration:none;font-weight:700;font-size:13px;letter-spacing:0.5px;display:inline-block;">Contact Partnerships Desk</a>' +
+    '                  <a href="mailto:contact@sharifgroup.ae" style="color:#070E1A;text-decoration:none;font-weight:700;font-size:13px;letter-spacing:0.5px;display:inline-block;">Contact Partnerships Desk</a>' +
     '                </td>' +
     '              </tr>' +
     '            </table>' +
