@@ -1225,7 +1225,7 @@
                 <i class="fa-solid fa-chevron-down" style="font-size:9px;margin-left:6px;opacity:0.6;"></i>
               </button>
               <div class="custom-select-dropdown" id="partner-dial-dropdown">
-                <input type="text" placeholder="Search code/country..." id="partner-dial-search" autocomplete="off">
+                <input type="text" placeholder="Search Code Or Country..." id="partner-dial-search" autocomplete="off">
                 <div class="country-list-container" id="partner-dial-list"></div>
               </div>
             </div>
@@ -1240,17 +1240,17 @@
       <div class="form-grid-3">
         <div class="field" id="company-field">
           <label class="field-label-caps" for="f-company">${F('company')}<span class="req">*</span></label>
-          <input class="input" id="f-company" name="company" autocomplete="organization" placeholder="e.g. Legal Partners LLC" maxlength="120">
+          <input class="input" id="f-company" name="company" autocomplete="organization" placeholder="E.g. Legal Partners LLC" maxlength="120">
           <span class="hint" style="font-size:11px;color:#737373;margin-top:3px;display:block;">${F('companyHint')}</span>
           <span class="err">${F('errCompany')}</span>
         </div>
         <div class="field">
           <label class="field-label-caps" for="f-job">${F('jobTitle')}</label>
-          <input class="input" id="f-job" name="job_title" placeholder="e.g. Managing Partner, Director" maxlength="80">
+          <input class="input" id="f-job" name="job_title" placeholder="E.g. Managing Partner, Director" maxlength="80">
         </div>
         <div class="field">
           <label class="field-label-caps" for="f-web">${F('website')}</label>
-          <input class="input" id="f-web" name="website" placeholder="https://linkedin.com/in/... or website" maxlength="120" dir="ltr">
+          <input class="input" id="f-web" name="website" placeholder="Website Or LinkedIn Profile URL" maxlength="120" dir="ltr">
         </div>
       </div>
 
@@ -1258,12 +1258,12 @@
       <div class="form-grid-3">
         <div class="field">
           <label class="field-label-caps" for="f-country">${F('country')}<span class="req">*</span></label>
-          <input class="input" id="f-country" name="country" autocomplete="country-name" placeholder="e.g. UAE, Saudi Arabia, UK" maxlength="60">
+          <input class="input" id="f-country" name="country" autocomplete="country-name" placeholder="E.g. UAE, Saudi Arabia, UK" maxlength="60">
           <span class="err">${F('errCountry')}</span>
         </div>
         <div class="field">
           <label class="field-label-caps" for="f-city">${F('city')}</label>
-          <input class="input" id="f-city" name="city" placeholder="e.g. Dubai, Riyadh, London" maxlength="60">
+          <input class="input" id="f-city" name="city" placeholder="E.g. Dubai, Riyadh, London" maxlength="60">
         </div>
         <div class="field">
           <label class="field-label-caps" for="f-preflang">${F('prefLang')}</label>
@@ -1323,7 +1323,7 @@
       <!-- Row 6: Confidential Notes -->
       <div class="field" style="margin-bottom:22px;">
         <label class="field-label-caps" for="f-msg">${F('message')} <span class="opt" style="font-weight:normal;color:#737373;text-transform:none;">(${esc(t('common.optional'))})</span></label>
-        <textarea class="textarea" id="f-msg" name="message" maxlength="1000" rows="3" placeholder="...Detail any specific partnership parameters, portfolio size, or questions"></textarea>
+        <textarea class="textarea" id="f-msg" name="message" maxlength="1000" rows="3" placeholder="Detail Any Specific Partnership Parameters, Portfolio Size, Or Questions..."></textarea>
       </div>
 
       <!-- Row 7: Consent Checkbox -->
@@ -1335,7 +1335,7 @@
         <span class="err">${F('errConsent')}</span>
       </div>
 
-      <div class="hp" aria-hidden="true"><label>Company website<input name="hp_url" tabindex="-1" autocomplete="off"></label></div>
+      <div class="hp" aria-hidden="true"><label>Company Website<input name="hp_url" tabindex="-1" autocomplete="off"></label></div>
 
       <!-- Row 8: Centered CTA Button -->
       <div style="text-align:center;padding-top:6px;">
