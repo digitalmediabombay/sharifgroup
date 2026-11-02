@@ -113,6 +113,17 @@
 
   // Clean up any stale partial draft in localStorage so official sessions are never truncated
   try {
+    const rawSchStale = localStorage.getItem('sgcms_webinar_schedule');
+    if (rawSchStale) {
+      try {
+        const pSch = JSON.parse(rawSchStale);
+        if (pSch && pSch.sessions && pSch.sessions[1] && pSch.sessions[1].start_utc) {
+          if (new Date(pSch.sessions[1].start_utc).getTime() <= Date.now()) {
+            localStorage.removeItem('sgcms_webinar_schedule');
+          }
+        }
+      } catch(e) {}
+    }
     const rawOld = localStorage.getItem('sgcms_webinars');
     if (rawOld) {
       const pOld = JSON.parse(rawOld);

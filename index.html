@@ -2845,28 +2845,48 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
     (function initHomeWebinarCountdown() {
         var cdContainer = document.getElementById('home-webinar-countdown');
         if (!cdContainer) return;
-        var startUtc = cdContainer.getAttribute('data-cd') || '2026-11-12T15:30:00Z';
+
+        // 1. Purge stale past schedules from localStorage so old cached dates never override live dates
         try {
             var rawSch = localStorage.getItem('sgcms_webinar_schedule');
             if (rawSch) {
                 var sch = JSON.parse(rawSch);
                 var actNo = Number(sch.active_session_no) || 1;
                 if (sch.sessions && sch.sessions[actNo] && sch.sessions[actNo].start_utc) {
-                    startUtc = sch.sessions[actNo].start_utc;
+                    var testTime = new Date(sch.sessions[actNo].start_utc).getTime();
+                    if (!isNaN(testTime) && testTime <= Date.now()) {
+                        localStorage.removeItem('sgcms_webinar_schedule');
+                        localStorage.removeItem('sgcms_webinars');
+                        localStorage.removeItem('sgcms_webinars_live');
+                    }
                 }
             }
         } catch(e) {}
+
+        // 2. Read official data-cd attribute from DOM (set to '2026-11-12T15:30:00Z')
+        var startUtc = cdContainer.getAttribute('data-cd') || '2026-11-12T15:30:00Z';
+        try {
+            var rawSch2 = localStorage.getItem('sgcms_webinar_schedule');
+            if (rawSch2) {
+                var sch2 = JSON.parse(rawSch2);
+                var actNo2 = Number(sch2.active_session_no) || 1;
+                if (sch2.sessions && sch2.sessions[actNo2] && sch2.sessions[actNo2].start_utc) {
+                    var futureTime = new Date(sch2.sessions[actNo2].start_utc).getTime();
+                    if (!isNaN(futureTime) && futureTime > Date.now()) {
+                        startUtc = sch2.sessions[actNo2].start_utc;
+                    }
+                }
+            }
+        } catch(e) {}
+
+        // 3. Fallback: If for any reason startUtc is in the past, force official target date
+        if (new Date(startUtc).getTime() <= Date.now()) {
+            startUtc = '2026-11-12T15:30:00Z';
+            cdContainer.setAttribute('data-cd', startUtc);
+        }
+
         var targetDate = new Date(startUtc);
         var targetTime = targetDate.getTime();
-        var nowCheck = Date.now();
-        // Dynamic auto-rollover: if configured date is in the past, roll forward to next scheduled Thursday 15:30 UTC so timer never freezes at 00 00 00 00
-        if (targetTime <= nowCheck) {
-            var rollD = new Date(nowCheck);
-            var daysUntilThursday = ((4 - rollD.getUTCDay() + 7) % 7) || 7;
-            rollD.setUTCDate(rollD.getUTCDate() + daysUntilThursday);
-            rollD.setUTCHours(15, 30, 0, 0);
-            targetTime = rollD.getTime();
-        }
         
         var elD = document.getElementById('hw-cd-days');
         var elH = document.getElementById('hw-cd-hours');
