@@ -981,7 +981,7 @@ function sendLeadConfirmationEmail(leadEmail, leadName, leadService, lang) {
       ? "تأكيد استلام استفساركم لدى مجموعة شريف دبي | Sharif Group Dubai"
       : "Thank you for contacting Sharif Group Dubai | Confirmation");
 
-  var htmlBody = '<div style="font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,Helvetica,Arial,sans-serif;max-width:600px;margin:0 auto;background:#0B132B;color:#FFFFFF;border-radius:12px;overflow:hidden;border:1px solid #C5A880;">' +
+  var htmlBody = '<div style="font-family:-apple-system,BlinkMacSystemFont,\'Segoe UI\',Roboto,Helvetica,Arial,sans-serif;max-width:600px;margin:0 auto;background:#0B132B;color:#FFFFFF;border-radius:12px;overflow:hidden;border:1px solid #C5A880;">' +
     '<div style="background:#070E1A;padding:28px 32px;text-align:center;border-bottom:1px solid rgba(197,168,128,0.3);">' +
     '  <h1 style="color:#C5A880;font-size:22px;margin:0;letter-spacing:1px;font-weight:700;">SHARIF GROUP</h1>' +
     '  <p style="color:#94A3B8;font-size:12px;margin:6px 0 0 0;letter-spacing:1px;text-transform:uppercase;">Private Client Advisory & Citizenship by Investment</p>' +

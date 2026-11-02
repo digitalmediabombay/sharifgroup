@@ -814,9 +814,9 @@ function getOrCreateTab(ss, preferredName, headers) {
   // 1b. Direct alias match for General Enquiries / General Queries
   if (!sheet && preferredName === CONFIG.TAB_GENERAL) {
     sheet = ss.getSheetByName("General Queries") ||
-            ss.getSheetByName("General_Queries") ||
-            ss.getSheetByName("General Inquiries") ||
-            ss.getSheetByName("General");
+      ss.getSheetByName("General_Queries") ||
+      ss.getSheetByName("General Inquiries") ||
+      ss.getSheetByName("General");
   }
 
   // 2. Space <-> Underscore interchangeability
@@ -981,7 +981,7 @@ function sendLeadConfirmationEmail(leadEmail, leadName, leadService, lang) {
       ? "تأكيد استلام استفساركم لدى مجموعة شريف دبي | Sharif Group Dubai"
       : "Thank you for contacting Sharif Group Dubai | Confirmation");
 
-  var htmlBody = '<div style="font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,Helvetica,Arial,sans-serif;max-width:600px;margin:0 auto;background:#0B132B;color:#FFFFFF;border-radius:12px;overflow:hidden;border:1px solid #C5A880;">' +
+  var htmlBody = '<div style="font-family:-apple-system,BlinkMacSystemFont,\'Segoe UI\',Roboto,Helvetica,Arial,sans-serif;max-width:600px;margin:0 auto;background:#0B132B;color:#FFFFFF;border-radius:12px;overflow:hidden;border:1px solid #C5A880;">' +
     '<div style="background:#070E1A;padding:28px 32px;text-align:center;border-bottom:1px solid rgba(197,168,128,0.3);">' +
     '  <h1 style="color:#C5A880;font-size:22px;margin:0;letter-spacing:1px;font-weight:700;">SHARIF GROUP</h1>' +
     '  <p style="color:#94A3B8;font-size:12px;margin:6px 0 0 0;letter-spacing:1px;text-transform:uppercase;">Private Client Advisory & Citizenship by Investment</p>' +
@@ -989,15 +989,15 @@ function sendLeadConfirmationEmail(leadEmail, leadName, leadService, lang) {
     '<div style="padding:32px 32px 24px 32px;color:#E2E8F0;font-size:15px;line-height:1.7;">' +
     (isFa
       ? ('<p style="direction:rtl;text-align:right;">سلام <strong>' + leadName + '</strong> گرامی،</p>' +
-         '<p style="direction:rtl;text-align:right;">از پیام شما به شریف گروپ دبی درباره <strong>' + (leadService || 'مشاوره اختصاصی') + '</strong> سپاسگزاریم.</p>' +
-         '<p style="direction:rtl;text-align:right;">مشاوران ارشد ما جزئیات درخواست شما را به صورت محرمانه بررسی نموده و ظرف حداکثر ۲۴ ساعت کاری با شما تماس خواهند گرفت.</p>')
+        '<p style="direction:rtl;text-align:right;">از پیام شما به شریف گروپ دبی درباره <strong>' + (leadService || 'مشاوره اختصاصی') + '</strong> سپاسگزاریم.</p>' +
+        '<p style="direction:rtl;text-align:right;">مشاوران ارشد ما جزئیات درخواست شما را به صورت محرمانه بررسی نموده و ظرف حداکثر ۲۴ ساعت کاری با شما تماس خواهند گرفت.</p>')
       : (isAr
         ? ('<p style="direction:rtl;text-align:right;">مرحباً <strong>' + leadName + '</strong>،</p>' +
-           '<p style="direction:rtl;text-align:right;">شكراً لتواصلكم مع مجموعة شريف دبي. تم استلام طلبكم بنجاح بخصوص <strong>' + (leadService || 'الاستشارة الخاصة') + '</strong>.</p>' +
-           '<p style="direction:rtl;text-align:right;">سيقوم مستشارنا الخاص بمراجعة متطلباتكم والتواصل معكم خلال 24 ساعة عمل.</p>')
+          '<p style="direction:rtl;text-align:right;">شكراً لتواصلكم مع مجموعة شريف دبي. تم استلام طلبكم بنجاح بخصوص <strong>' + (leadService || 'الاستشارة الخاصة') + '</strong>.</p>' +
+          '<p style="direction:rtl;text-align:right;">سيقوم مستشارنا الخاص بمراجعة متطلباتكم والتواصل معكم خلال 24 ساعة عمل.</p>')
         : ('<p>Dear <strong>' + leadName + '</strong>,</p>' +
-           '<p>Thank you for reaching out to <strong>Sharif Group Dubai</strong>. We have successfully received your inquiry regarding <strong>' + (leadService || 'Private Client Consultation') + '</strong>.</p>' +
-           '<p>Our senior advisory team is reviewing your requirements under strict confidentiality and will reach out to you within 24 business hours.</p>'))) +
+          '<p>Thank you for reaching out to <strong>Sharif Group Dubai</strong>. We have successfully received your inquiry regarding <strong>' + (leadService || 'Private Client Consultation') + '</strong>.</p>' +
+          '<p>Our senior advisory team is reviewing your requirements under strict confidentiality and will reach out to you within 24 business hours.</p>'))) +
     '</div>' +
     '<div style="background:#070E1A;padding:20px 32px;border-top:1px solid rgba(197,168,128,0.2);text-align:center;font-size:12px;color:#94A3B8;line-height:1.6;">' +
     '  <strong style="color:#C5A880;">Sharif Group Dubai</strong> • 116 The Binary Tower, Business Bay, Dubai, UAE<br/>' +
