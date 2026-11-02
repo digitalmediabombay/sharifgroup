@@ -221,7 +221,8 @@ function handleCategoryLead(data) {
   var friendlyObjective = formatObjective(objective);
   var friendlyTimeline = formatTimeline(timeline);
 
-  var leadLang = (data.lang || data.preferredLanguage || "en").toLowerCase();
+  var preferredLanguage = data.preferredLanguage || data.lang || "en";
+  var friendlyLang = formatLanguage(preferredLanguage);
   var leadNotes = (data.notes || data.message || data.confidentialNotes || "").trim();
   var sourceUrl = data.source || "";
   var pagePath = data.page || "";
@@ -235,7 +236,7 @@ function handleCategoryLead(data) {
   try {
     MailApp.sendEmail({
       to: CONFIG.ADMIN_EMAIL,
-      subject: "⚡ New Lead [" + targetTabName + "]: " + leadName + " (" + (leadService || "General") + " | " + leadLang.toUpperCase() + ")",
+      subject: "⚡ New Lead [" + targetTabName + "]: " + leadName + " (" + (leadService || "General") + " | " + friendlyLang + ")",
       body: "New Website Lead Received:\n\n" +
             "• Category Sheet Tab:  " + targetTabName + "\n" +
             "• Full Name:           " + leadName + "\n" +
@@ -249,7 +250,7 @@ function handleCategoryLead(data) {
             "• Family Members:      " + (friendlyFamily || "Not specified") + "\n" +
             "• Primary Objective:   " + (friendlyObjective || "Not specified") + "\n" +
             "• Planning Timeline:   " + (friendlyTimeline || "Not specified") + "\n" +
-            "• Language:            " + leadLang.toUpperCase() + "\n" +
+            "• Preferred Language:  " + friendlyLang + "\n" +
             "• Form ID:             " + formId + "\n" +
             "• Timestamp (UTC):     " + nowUtc + "\n" +
             "• Page:                " + (pagePath || sourceUrl) + "\n\n" +
@@ -277,7 +278,7 @@ function handleCategoryLead(data) {
     friendlyFamily,
     friendlyObjective,
     friendlyTimeline,
-    leadLang,
+    friendlyLang,
     leadNotes,
     sourceUrl,
     pagePath,
@@ -387,7 +388,8 @@ function handlePartnerApplication(data) {
   var referrals = data.referrals_per_year || data.referrals || "";
   var heardFrom = data.heard_from || data.heardFrom || "";
   var message = data.message || data.notes || "";
-  var lang = (data.lang || "en").toLowerCase();
+  var preferredLanguage = data.preferredLanguage || data.lang || "en";
+  var friendlyLang = formatLanguage(preferredLanguage);
   var source = data.source || "";
 
   var friendlyProgrammes = formatProgrammes(programmes);
@@ -397,7 +399,7 @@ function handlePartnerApplication(data) {
   var emailStatus = "Not Sent (No Email)";
   if (email && email.indexOf("@") !== -1) {
     try {
-      emailStatus = sendPartnerConfirmationEmail(email, fullName, appId, company, lang);
+      emailStatus = sendPartnerConfirmationEmail(email, fullName, appId, company, preferredLanguage);
     } catch (mailErr) {
       emailStatus = "Failed: " + mailErr.toString();
     }
@@ -420,7 +422,7 @@ function handlePartnerApplication(data) {
     friendlyReferrals,
     friendlyHeard,
     message,
-    lang,
+    friendlyLang,
     source,
     "Pending Review",
     emailStatus
@@ -436,6 +438,7 @@ function handlePartnerApplication(data) {
             "• Partner Type:            " + partnerType + "\n" +
             "• Company / Firm:          " + (company || "None (Individual)") + "\n" +
             "• Job Title / Role:        " + (jobTitle || "Not specified") + "\n" +
+            "• Preferred Language:      " + friendlyLang + "\n" +
             "• Website / LinkedIn:      " + (website || "Not provided") + "\n" +
             "• Email Address:           " + email + "\n" +
             "• WhatsApp / Phone:        " + ((dialCode ? dialCode + " " : "") + rawPhone).trim() + "\n" +
@@ -477,14 +480,15 @@ function handleWebinarRegistration(data) {
   var residence = data.residence_country || data.country || "";
   var question = data.question || "";
   var newsletter = data.newsletter_optin ? "Yes" : "No";
-  var lang = (data.lang || "fa").toLowerCase();
+  var preferredLanguage = data.preferredLanguage || data.lang || "fa";
+  var friendlyLang = formatLanguage(preferredLanguage);
   var source = data.source || "";
   var page = data.page || "";
 
   var emailStatus = "Not Sent (No Email Provided)";
   if (email && email.indexOf("@") !== -1) {
     try {
-      emailStatus = sendWebinarConfirmationEmail(email, fullName, webinarId, lang);
+      emailStatus = sendWebinarConfirmationEmail(email, fullName, webinarId, preferredLanguage);
     } catch (mailErr) {
       emailStatus = "Failed: " + mailErr.toString();
     }
@@ -492,7 +496,7 @@ function handleWebinarRegistration(data) {
 
   sheet.appendRow([
     nowUtc, webinarId, webinarSlug, fullName, safeDialCode, safePhone,
-    email, residence, question, newsletter, lang, source, page,
+    email, residence, question, newsletter, friendlyLang, source, page,
     "Registered", emailStatus
   ]);
 
@@ -506,7 +510,7 @@ function handleWebinarRegistration(data) {
             "• Phone:            " + ((dialCode ? dialCode + " " : "") + rawPhone).trim() + "\n" +
             "• Country:          " + residence + "\n" +
             "• Webinar Session:  " + webinarId + "\n" +
-            "• Language:         " + lang.toUpperCase() + "\n" +
+            "• Language:         " + friendlyLang + "\n" +
             "• Timestamp:        " + nowUtc + "\n\n" +
             "View in Google Sheet:\n" + ss.getUrl()
     });
@@ -559,8 +563,16 @@ function formatBudget(val) {
 function formatRoute(val) {
   if (!val) return "";
   var s = String(val).toLowerCase().trim();
-  if (s === "edf-donation" || s.indexOf("donation") !== -1 || s.indexOf("edf") !== -1 || s.indexOf("fund") !== -1) return "Economic Diversification Fund ($200k+)";
+  if (s === "edf-donation" || s.indexOf("edf") !== -1) return "Economic Diversification Fund ($200k+)";
+  if (s === "ntf-donation" || s.indexOf("ntf") !== -1) return "National Transformation Fund ($235k+)";
+  if (s === "ndf-donation" || s.indexOf("ndf") !== -1) return "National Development Fund ($230k+)";
+  if (s === "nef-donation" || s.indexOf("nef") !== -1) return "National Economic Fund ($240k+)";
+  if (s === "sisc-contribution" || s.indexOf("sisc") !== -1) return "Sustainable Island State Contribution ($250k+)";
+  if (s === "dsp-donation" || s.indexOf("dsp") !== -1) return "Development Support Program ($130k+)";
+  if (s === "climate-resilience" || s.indexOf("climate") !== -1) return "Climate Resilience Fund ($105k+)";
+  if (s === "public-investment" || s.indexOf("infrastructure") !== -1) return "National Infrastructure Fund ($90k+)";
   if (s === "real-estate" || s.indexOf("property") !== -1 || s.indexOf("estate") !== -1) return "Approved Real Estate Project ($200k+)";
+  if (s.indexOf("donation") !== -1 || s.indexOf("fund") !== -1) return "Government Fund Donation";
   return String(val);
 }
 
@@ -593,6 +605,20 @@ function formatHeard(val) {
   if (s === "referral") return "Referral / Industry Colleague";
   if (s === "event") return "Webinar / Event / Conference";
   if (s === "other") return "Other";
+  return String(val);
+}
+
+function formatLanguage(val) {
+  if (!val) return "English";
+  var s = String(val).toLowerCase().trim();
+  if (s === "en" || s === "english") return "English";
+  if (s === "ar" || s === "arabic") return "Arabic (العربية)";
+  if (s === "fa" || s === "farsi" || s === "persian") return "Persian (فارسی)";
+  if (s === "ru" || s === "russian") return "Russian (Русский)";
+  if (s === "fr" || s === "french") return "French (Français)";
+  if (s === "hi" || s === "hindi" || s === "urdu") return "Hindi / Urdu";
+  if (s === "es" || s === "spanish") return "Spanish (Español)";
+  if (s === "zh" || s === "chinese") return "Chinese (中文)";
   return String(val);
 }
 
@@ -729,11 +755,40 @@ function initializeAll7Tabs() {
   ];
 
   for (var i = 0; i < categoryTabs.length; i++) {
-    getOrCreateTab(ss, categoryTabs[i], CATEGORY_HEADERS);
+    var catSheet = getOrCreateTab(ss, categoryTabs[i], CATEGORY_HEADERS);
+    // Explicitly guarantee headers match the latest schema
+    catSheet.getRange(1, 1, 1, CATEGORY_HEADERS.length).setValues([CATEGORY_HEADERS]);
+    catSheet.getRange(1, 1, 1, CATEGORY_HEADERS.length)
+      .setFontWeight("bold")
+      .setBackground("#070E1A")
+      .setFontColor("#C5A880");
+    catSheet.setFrozenRows(1);
+    try {
+      catSheet.getRange(1, 1, Math.max(catSheet.getMaxRows(), 100), CATEGORY_HEADERS.length).setNumberFormat("@");
+    } catch (e) {}
   }
 
-  getOrCreateTab(ss, CONFIG.TAB_PARTNERSHIP, PARTNER_HEADERS);
-  getOrCreateTab(ss, CONFIG.TAB_EVENT, EVENT_HEADERS);
+  var partSheet = getOrCreateTab(ss, CONFIG.TAB_PARTNERSHIP, PARTNER_HEADERS);
+  partSheet.getRange(1, 1, 1, PARTNER_HEADERS.length).setValues([PARTNER_HEADERS]);
+  partSheet.getRange(1, 1, 1, PARTNER_HEADERS.length)
+    .setFontWeight("bold")
+    .setBackground("#070E1A")
+    .setFontColor("#C5A880");
+  partSheet.setFrozenRows(1);
+  try {
+    partSheet.getRange(1, 1, Math.max(partSheet.getMaxRows(), 100), PARTNER_HEADERS.length).setNumberFormat("@");
+  } catch (e) {}
+
+  var eventSheet = getOrCreateTab(ss, CONFIG.TAB_EVENT, EVENT_HEADERS);
+  eventSheet.getRange(1, 1, 1, EVENT_HEADERS.length).setValues([EVENT_HEADERS]);
+  eventSheet.getRange(1, 1, 1, EVENT_HEADERS.length)
+    .setFontWeight("bold")
+    .setBackground("#070E1A")
+    .setFontColor("#C5A880");
+  eventSheet.setFrozenRows(1);
+  try {
+    eventSheet.getRange(1, 1, Math.max(eventSheet.getMaxRows(), 100), EVENT_HEADERS.length).setNumberFormat("@");
+  } catch (e) {}
 
   // Auto clean phone columns
   try {
@@ -747,7 +802,7 @@ function initializeAll7Tabs() {
     "3. " + CONFIG.TAB_REAL_ESTATE + "\n" +
     "4. " + CONFIG.TAB_EDUCATION + "\n" +
     "5. " + CONFIG.TAB_GENERAL + "\n" +
-    "6. " + CONFIG.TAB_PARTNERSHIP + " (with Job Title, City, Programmes, Referrals, Heard From)\n" +
+    "6. " + CONFIG.TAB_PARTNERSHIP + " (with Job Title, City, Preferred Language, Programmes, Referrals, Heard From)\n" +
     "7. " + CONFIG.TAB_EVENT
   );
 }

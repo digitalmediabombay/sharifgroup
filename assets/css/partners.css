@@ -3221,3 +3221,103 @@ html[lang="ar"] .overview-title-highlight {
 
 /* Global suppression of 'New' badges */
 .sg-badge-new, .nav-new-badge, .nav-new, [data-i18n="nav.newBadge"], .foot-new-row .nav-new-badge { display: none !important; }
+
+
+/* Custom Country Select Dropdown matching Home Page */
+.custom-select-wrapper {
+  position: relative;
+  width: 140px;
+  flex-shrink: 0;
+}
+.custom-select-btn {
+  width: 100%;
+  height: 48px;
+  background: #fff;
+  border: 1px solid var(--line-2);
+  border-right: none;
+  border-top-left-radius: 12px;
+  border-bottom-left-radius: 12px;
+  border-top-right-radius: 0;
+  border-bottom-right-radius: 0;
+  padding: 0 12px;
+  font-size: 13px;
+  font-weight: 500;
+  color: var(--ink);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  cursor: pointer;
+  transition: border-color .2s, box-shadow .2s;
+  box-sizing: border-box;
+}
+.custom-select-btn:hover, .custom-select-btn:focus {
+  outline: none;
+  border-color: var(--bronze);
+}
+.custom-select-dropdown {
+  display: none;
+  position: absolute;
+  top: calc(100% + 4px);
+  left: 0;
+  z-index: 100;
+  width: 300px;
+  max-width: 90vw;
+  background: #fff;
+  border: 1px solid var(--line-2);
+  border-radius: 12px;
+  box-shadow: 0 10px 25px rgba(0,0,0,0.14);
+  padding: 8px;
+  box-sizing: border-box;
+}
+.custom-select-dropdown.active {
+  display: block;
+}
+.custom-select-dropdown input {
+  width: 100%;
+  padding: 8px 12px;
+  margin-bottom: 8px;
+  border: 1px solid var(--line-2);
+  border-radius: 8px;
+  font-size: 12px;
+  outline: none;
+  box-sizing: border-box;
+}
+.custom-select-dropdown input:focus {
+  border-color: var(--bronze);
+}
+.country-list-container {
+  max-height: 200px;
+  overflow-y: auto;
+}
+.country-item {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 7px 10px;
+  border-radius: 6px;
+  cursor: pointer;
+  font-size: 12.5px;
+  transition: background 0.15s;
+}
+.country-item:hover {
+  background: #f5f5f5;
+}
+.country-item .country-code {
+  color: #737373;
+  font-weight: 600;
+}
+.country-item .country-name {
+  color: #171717;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+[dir="rtl"] .custom-select-btn {
+  border-right: 1px solid var(--line-2);
+  border-left: none;
+  border-radius: 0 12px 12px 0;
+}
+[dir="rtl"] .custom-select-dropdown {
+  left: auto;
+  right: 0;
+}
