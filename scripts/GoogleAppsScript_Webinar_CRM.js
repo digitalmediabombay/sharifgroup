@@ -33,8 +33,8 @@ const CONFIG = {
 
   // Admin Notification Recipient
   ADMIN_EMAIL: "mohammad@sharifgroup.ae",
-  SENDER_NAME: "Sharif Group CRM",
-  REPLY_TO_EMAIL: "mohammad@sharifgroup.ae"
+  SENDER_NAME: "Sharif Group",
+  REPLY_TO_EMAIL: "contact@sharifgroup.ae"
 };
 
 // Full Headers for Category Tabs (Citizenship, Residency, Real Estate, Education, General)
