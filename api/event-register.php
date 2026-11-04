@@ -45,7 +45,7 @@ if (!empty($data['company'])) {
 $ADMIN_EMAIL   = 'contact@sharifgroup.ae';
 $SENDER_EMAIL  = 'contact@sharifgroup.ae';
 $SENDER_NAME   = 'Sharif Group';
-$CRM_WEBHOOK   = 'https://script.google.com/macros/s/AKfycbxZIEa4TJ2sHW0hdkL1MRmfEasE0MbEa3rruAebGFrmyt0JMjerMXnTKePAWdzmesRYaQ/exec';
+$CRM_WEBHOOK   = 'https://script.google.com/macros/s/AKfycby30xpRFvm-ZHoFTlMAY-JkVKNfwP1ccA4pKJS5kr_KJvYEljYgh2u129peMGl8ut5s/exec';
 
 // Extract Form Fields
 $fullName    = trim($data['fullName'] ?? $data['name'] ?? 'Valued Client');

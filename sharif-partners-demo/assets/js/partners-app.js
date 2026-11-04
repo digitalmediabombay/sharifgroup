@@ -10,8 +10,8 @@
   'use strict';
 
   const LANGS = ['fa', 'en', 'ar', 'zh'];
-    const PRIMARY_CRM_WEBHOOK_URL = "https://script.google.com/macros/s/AKfycbxZIEa4TJ2sHW0hdkL1MRmfEasE0MbEa3rruAebGFrmyt0JMjerMXnTKePAWdzmesRYaQ/exec";
-  const UNIFIED_CRM_WEBHOOK_URL = "https://script.google.com/macros/s/AKfycbxZIEa4TJ2sHW0hdkL1MRmfEasE0MbEa3rruAebGFrmyt0JMjerMXnTKePAWdzmesRYaQ/exec";
+    const PRIMARY_CRM_WEBHOOK_URL = "https://script.google.com/macros/s/AKfycby30xpRFvm-ZHoFTlMAY-JkVKNfwP1ccA4pKJS5kr_KJvYEljYgh2u129peMGl8ut5s/exec";
+  const UNIFIED_CRM_WEBHOOK_URL = "https://script.google.com/macros/s/AKfycby30xpRFvm-ZHoFTlMAY-JkVKNfwP1ccA4pKJS5kr_KJvYEljYgh2u129peMGl8ut5s/exec";
   const CRM_WEBHOOK_URL = PRIMARY_CRM_WEBHOOK_URL;
   const SITE = 'https://www.sharifgroup.ae/';
   const FOOTER_VIDEO = 'assets/videos/footer_bg_e58bba71.mp4';
