@@ -619,12 +619,18 @@
 
   // Bind interactive behavior
   function bindNavbarEvents(headerEl, drawerEl) {
+    // Guard: only bind events once per header element
+    if (headerEl.__sgEventsbound) return;
+    headerEl.__sgEventsbound = true;
+
     // 1. Language switcher toggle
     const langBtn = headerEl.querySelector('#sgLangBtn');
     const langWrap = headerEl.querySelector('#sgLangWrap');
     if (langBtn && langWrap) {
+      // Use a named handler so it can't be double-registered
       langBtn.addEventListener('click', function(e) {
         e.stopPropagation();
+        e.preventDefault();
         const isOpen = langWrap.classList.toggle('is-open');
         langBtn.setAttribute('aria-expanded', isOpen ? 'true' : 'false');
       });
@@ -746,31 +752,44 @@
       if (!headerEl.id || headerEl.id === 'siteHeader') headerEl.id = 'main-header';
     }
 
-    // Remove legacy old mobile drawers if present to avoid dual menus
-    const oldDrawers = document.querySelectorAll('#drawer, #mobile-menu-drawer');
-    oldDrawers.forEach(d => {
-      if (d.id !== 'sgDrawer') d.style.display = 'none';
-    });
-
-    // Remove legacy mega-dropdown blocks inside header to prevent layout collision
-    const oldMega = headerEl.querySelectorAll('.mega-dropdown, .mega-menu');
-    oldMega.forEach(m => m.remove());
-
-    // Inject Navbar HTML
-    headerEl.innerHTML = renderNavbarHTML();
-
-    // Check or create Drawer
+    // Check if navbar markup is already pre-rendered in HTML
+    const isPreRendered = !!headerEl.querySelector('.sg-header-inner');
     let drawerEl = document.getElementById('sgDrawer');
-    if (!drawerEl) {
-      const tempDiv = document.createElement('div');
-      tempDiv.innerHTML = renderDrawerHTML();
-      drawerEl = tempDiv.firstElementChild;
-      headerEl.insertAdjacentElement('afterend', drawerEl);
+
+    if (!isPreRendered) {
+      // Remove legacy old mobile drawers if present to avoid dual menus
+      const oldDrawers = document.querySelectorAll('#drawer, #mobile-menu-drawer');
+      oldDrawers.forEach(d => {
+        if (d.id !== 'sgDrawer') d.style.display = 'none';
+      });
+
+      // Remove legacy mega-dropdown blocks inside header to prevent layout collision
+      const oldMega = headerEl.querySelectorAll('.mega-dropdown, .mega-menu');
+      oldMega.forEach(m => m.remove());
+
+      // Inject Navbar HTML
+      headerEl.innerHTML = renderNavbarHTML();
+
+      // Check or create Drawer
+      if (!drawerEl) {
+        const tempDiv = document.createElement('div');
+        tempDiv.innerHTML = renderDrawerHTML();
+        drawerEl = tempDiv.firstElementChild;
+        headerEl.insertAdjacentElement('afterend', drawerEl);
+      } else {
+        const tempDiv = document.createElement('div');
+        tempDiv.innerHTML = renderDrawerHTML();
+        drawerEl.replaceWith(tempDiv.firstElementChild);
+        drawerEl = document.getElementById('sgDrawer');
+      }
     } else {
-      const tempDiv = document.createElement('div');
-      tempDiv.innerHTML = renderDrawerHTML();
-      drawerEl.replaceWith(tempDiv.firstElementChild);
-      drawerEl = document.getElementById('sgDrawer');
+      // If drawer is missing for any reason, inject it
+      if (!drawerEl) {
+        const tempDiv = document.createElement('div');
+        tempDiv.innerHTML = renderDrawerHTML();
+        drawerEl = tempDiv.firstElementChild;
+        headerEl.insertAdjacentElement('afterend', drawerEl);
+      }
     }
 
     // Bind events

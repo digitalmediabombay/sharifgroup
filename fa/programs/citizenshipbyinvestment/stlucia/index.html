@@ -362,219 +362,8 @@
         }
     
 
-/* Header Universal Anti-Collision & Proportional Luxury Navigation */
-.nav-new-badge,
-#main-header [data-i18n="nav.newBadge"] {
-    display: inline-flex !important;
-    align-items: center !important;
-    justify-content: center !important;
-    font-size: 7px !important;
-    line-height: 1 !important;
-    padding: 2px 4.5px !important;
-    border-radius: 9999px !important;
-    background-color: #786142 !important;
-    color: #ffffff !important;
-    font-weight: 700 !important;
-    letter-spacing: 0 !important;
-    margin-left: 3.5px !important;
-    margin-right: 0 !important;
-    vertical-align: middle !important;
-    flex-shrink: 0 !important;
-    white-space: nowrap !important;
-}
-[dir="rtl"] .nav-new-badge,
-[dir="rtl"] #main-header [data-i18n="nav.newBadge"] {
-    margin-left: 0 !important;
-    margin-right: 3.5px !important;
-}
-#main-header {
-    width: 100% !important;
-}
-#main-header > div {
-    max-width: 1600px !important;
-    width: 100% !important;
-    margin-left: auto !important;
-    margin-right: auto !important;
-    padding-left: clamp(12px, 2vw, 32px) !important;
-    padding-right: clamp(12px, 2vw, 32px) !important;
-    display: flex !important;
-    align-items: center !important;
-    justify-content: space-between !important;
-    gap: 8px !important;
-}
-#main-header > div > div:first-child {
-    display: flex !important;
-    align-items: center !important;
-    gap: clamp(8px, 1.2vw, 18px) !important;
-    min-width: 0 !important;
-    flex-shrink: 1 !important;
-}
-#main-header > div > div:first-child > :not([hidden]) ~ :not([hidden]),
-#main-header nav > :not([hidden]) ~ :not([hidden]),
-#main-header nav > * {
-    margin-left: 0 !important;
-    margin-right: 0 !important;
-}
-#main-header #nav-logo {
-    height: 42px !important;
-    width: auto !important;
-    flex-shrink: 0 !important;
-}
-#main-header nav {
-    display: flex !important;
-    align-items: center !important;
-    gap: clamp(4px, 0.6vw, 10px) !important;
-    white-space: nowrap !important;
-    flex-wrap: nowrap !important;
-}
-#main-header nav a,
-#main-header nav > div > a {
-    font-size: 10px !important;
-    font-weight: 700 !important;
-    letter-spacing: 0.07em !important;
-    text-transform: uppercase !important;
-    color: #404040 !important;
-    padding: 6px clamp(3px, 0.4vw, 8px) !important;
-    transition: color 0.2s ease !important;
-    white-space: nowrap !important;
-    display: inline-flex !important;
-    align-items: center !important;
-}
-#main-header nav a:hover,
-#main-header nav > div > a:hover {
-    color: #c5a880 !important;
-}
-#main-header .nav-sep,
-#main-header nav span.text-neutral-300 {
-    font-size: 10px !important;
-    color: #d4d4d4 !important;
-    opacity: 0.65 !important;
-    padding: 0 1px !important;
-    margin: 0 !important;
-    user-select: none !important;
-}
-#main-header div.hidden.lg\:flex.shrink-0,
-#main-header > div > div:last-child {
-    display: flex !important;
-    align-items: center !important;
-    gap: clamp(6px, 0.8vw, 12px) !important;
-    flex-shrink: 0 !important;
-    margin-inline-start: auto !important;
-    margin-inline-end: 0 !important;
-}
-html[dir="rtl"] #main-header div.hidden.lg\:flex.shrink-0,
-html[dir="rtl"] #main-header > div > div:last-child,
-[dir="rtl"] #main-header div.hidden.lg\:flex.shrink-0,
-[dir="rtl"] #main-header > div > div:last-child,
-html[lang="ar"] #main-header div.hidden.lg\:flex.shrink-0,
-html[lang="ar"] #main-header > div > div:last-child,
-html[lang="fa"] #main-header div.hidden.lg\:flex.shrink-0,
-html[lang="fa"] #main-header > div > div:last-child {
-    margin-left: 0 !important;
-    margin-right: auto !important;
-}
-#main-header div.hidden.lg\:flex.shrink-0 > :not([hidden]) ~ :not([hidden]) {
-    margin-left: 0 !important;
-    margin-right: 0 !important;
-}
-#main-header a[data-i18n="nav.eligibilityChecker"],
-#main-header a[data-i18n="nav.bookConsultation"],
-#main-header a[href*="eligibilitychecker"],
-#main-header a[href*="contact"] {
-    height: 34px !important;
-    padding: 0 clamp(10px, 1vw, 16px) !important;
-    font-size: 10px !important;
-    font-weight: 700 !important;
-    letter-spacing: 0.07em !important;
-    text-transform: uppercase !important;
-    border-radius: 9999px !important;
-    white-space: nowrap !important;
-    display: inline-flex !important;
-    align-items: center !important;
-    justify-content: center !important;
-    transition: all 0.25s ease !important;
-}
-#main-header .lang-switcher-wrapper button,
-#main-header #lang-switcher-btn {
-    height: 32px !important;
-    padding: 0 10px !important;
-    font-size: 10px !important;
-    font-weight: 700 !important;
-    letter-spacing: 0.05em !important;
-    border-radius: 9999px !important;
-    white-space: nowrap !important;
-    display: inline-flex !important;
-    align-items: center !important;
-    gap: 4px !important;
-}
-@media (max-width: 1480px) {
-    #main-header .nav-sep,
-    #main-header nav span.text-neutral-300,
-    #main-header > div > div:first-child > span.text-neutral-300 {
-        display: none !important;
-    }
-    #main-header nav {
-        gap: 0.25rem 0.45rem !important;
-    }
-    #main-header nav a,
-    #main-header nav > div > a {
-        font-size: 9.5px !important;
-        letter-spacing: 0.05em !important;
-        padding: 4px 5px !important;
-    }
-    #main-header a[data-i18n="nav.eligibilityChecker"],
-    #main-header a[data-i18n="nav.bookConsultation"],
-    #main-header a[href*="eligibilitychecker"],
-    #main-header a[href*="contact"] {
-        height: 32px !important;
-        padding: 0 10px !important;
-        font-size: 9.5px !important;
-        letter-spacing: 0.05em !important;
-    }
-}
-@media (max-width: 1280px) {
-    #main-header nav {
-        gap: 0.2rem 0.35rem !important;
-    }
-    #main-header nav a,
-    #main-header nav > div > a {
-        font-size: 9px !important;
-        letter-spacing: 0.03em !important;
-        padding: 4px 4px !important;
-    }
-    #main-header a[data-i18n="nav.eligibilityChecker"],
-    #main-header a[data-i18n="nav.bookConsultation"],
-    #main-header a[href*="eligibilitychecker"],
-    #main-header a[href*="contact"] {
-        height: 30px !important;
-        padding: 0 8px !important;
-        font-size: 9px !important;
-        letter-spacing: 0.03em !important;
-    }
-}
-@media (max-width: 1140px) {
-    #main-header nav,
-    #main-header div.hidden.lg\:flex.shrink-0 > a,
-    #main-header > div > div:last-child > a,
-    #main-header > div > div:first-child > span {
-        display: none !important;
-    }
-    #main-header button[onclick*="toggleMobileMenu"],
-    #main-header button[aria-label="Toggle Navigation Menu"],
-    #main-header button[aria-label="Toggle Menu"],
-    #main-header .lg\:hidden,
-    #main-header .xl\:hidden {
-        display: flex !important;
-    }
-}
-html[lang="ar"] #main-header nav a,
-html[lang="fa"] #main-header nav a,
-[dir="rtl"] #main-header nav a,
-[dir="rtl"] #main-header a[data-i18n="nav.eligibilityChecker"],
-[dir="rtl"] #main-header a[data-i18n="nav.bookConsultation"] {
-    letter-spacing: 0 !important;
-}
 </style>
+<link rel="stylesheet" href="/assets/css/navbar.css" />
 <link href="../../../assets/css/multilingual.css?v=20261017_v3" rel="stylesheet"/>
 <!-- CMS Live Studio Integration (Active inside dashboard editor) -->
 <script>
@@ -603,330 +392,328 @@ html[lang="fa"] #main-header nav a,
 <!-- Google Tag Manager (noscript) -->
 <noscript><iframe height="0" src="https://www.googletagmanager.com/ns.html?id=GTM-WQV73SMP" style="display:none;visibility:hidden" width="0"></iframe></noscript>
 <!-- End Google Tag Manager (noscript) -->
-<!-- HEADER COMPONENT -->
-<header class="fixed top-0 left-0 w-full z-[100] border-b border-neutral-200 transition-all duration-500 bg-white mega-blur" id="main-header">
-<div class="max-w-[1600px] w-full mx-auto px-4 sm:px-8 h-20 flex items-center justify-between relative">
-<div class="flex items-center space-x-5">
-<a class="flex items-center shrink-0" href="/fa/" onclick="sessionStorage.setItem('sharif_preloader_shown', 'true');">
-<img alt="Sharif Group Logo" class="h-14 w-auto object-contain transition-all duration-500 opacity-100" id="nav-logo" src="../../../assets/images/vector_b5a81734.svg"/>
-</a>
-<span class="hidden lg:inline text-neutral-300 font-light">|</span>
-<nav class="hidden lg:flex items-center space-x-4 text-[11px] font-bold tracking-[0.18em] uppercase text-neutral-600 whitespace-nowrap">
-<div class="relative py-6" onmouseenter="openMegaMenu('citizenship-menu')">
-<a class="hover:text-luxury-gold transition duration-200 flex items-center gap-1.5" href="/fa/citizenshipbyinvestment/"><span data-i18n="nav.citizenship">شهروندی</span> <i class="fa-solid fa-chevron-down text-[8px] transition-transform duration-300" id="arrow-citizenship-menu"></i></a>
-</div>
-<span class="nav-sep text-neutral-300 font-light">|</span>
-<div class="relative py-6" onmouseenter="openMegaMenu('residency-menu')">
-<a class="hover:text-luxury-gold transition duration-200 flex items-center gap-1.5" href="/fa/residencybyinvestment/"><span data-i18n="nav.residency">اقامت</span> <i class="fa-solid fa-chevron-down text-[8px] transition-transform duration-300" id="arrow-residency-menu"></i></a>
-</div>
-<span class="nav-sep text-neutral-300 font-light">|</span>
-<div class="relative py-6" onmouseenter="openMegaMenu('services-menu')">
-<a class="hover:text-luxury-gold transition duration-200 flex items-center gap-1.5" href="/fa/realestate/"><span data-i18n="nav.moreServices">سایر خدمات</span> <i class="fa-solid fa-chevron-down text-[8px] transition-transform duration-300" id="arrow-services-menu"></i></a>
-</div>
-<span class="nav-sep text-neutral-300 font-light">|</span>
-<div class="relative py-6" onmouseenter="openMegaMenu('about-menu')">
-<a class="hover:text-luxury-gold transition duration-200 flex items-center gap-1.5" href="/fa/aboutus/"><span data-i18n="nav.aboutUs">درباره ما</span> <i class="fa-solid fa-chevron-down text-[8px] transition-transform duration-300" id="arrow-about-menu"></i></a>
-</div>
-<span class="nav-sep text-neutral-300 font-light">|</span>
-<a class="hover:text-luxury-gold transition duration-200 py-6" data-i18n="nav.contact" href="/fa/contact/" onmouseenter="scheduleMenuClose()">تماس با ما</a>
-<span class="nav-sep text-neutral-300 font-light">|</span>
-<a class="hover:text-luxury-gold transition duration-200 py-6" data-i18n="nav.blog" href="/fa/blog/" onmouseenter="scheduleMenuClose()">بلاگ</a>
-<span class="nav-sep text-neutral-300 font-light">|</span>
-<a class="hover:text-luxury-gold transition duration-200 py-2 inline-flex items-center" href="/fa/webinars/" onmouseenter="typeof closeAllMegaMenus === 'function' ? closeAllMegaMenus() : (typeof scheduleMenuClose === 'function' ? scheduleMenuClose() : null)">
-<span data-i18n="nav.webinars">رویدادها</span>
-<span class="nav-new-badge ml-1.5 px-1.5 py-0.5 rounded-full bg-[#786142] text-white text-[7.5px] font-bold leading-none inline-flex items-center justify-center shrink-0" data-i18n="nav.newBadge" style="margin-left: 5px; background-color: #786142; color: #ffffff; border-radius: 9999px; padding: 2px 5px; font-size: 7.5px; font-weight: 700; line-height: 1; display: inline-flex; align-items: center; white-space: nowrap;">جدید</span>
-</a>
-</nav>
-</div>
-<!-- Right Action Pill Buttons -->
-<div class="hidden lg:flex items-center space-x-3 shrink-0">
-<a class="px-5 py-2.5 rounded-full border border-[#786142] text-[#786142] text-[11px] font-bold uppercase tracking-[0.18em] hover:bg-[#786142] hover:text-white transition-all duration-300 whitespace-nowrap" data-i18n="nav.eligibilityChecker" href="/fa/eligibilitychecker/">بررسی شرایط واجد بودن</a>
-<a class="px-5 py-2.5 rounded-full border border-neutral-900 text-neutral-900 text-[11px] font-bold uppercase tracking-[0.18em] hover:bg-luxury-gold hover:border-luxury-gold hover:text-white transition-all duration-300 whitespace-nowrap" data-i18n="nav.bookConsultation" href="/fa/contact/">رزرو مشاوره</a>
-<!-- Language Switcher Dropdown -->
-<div class="relative lang-switcher-wrapper">
-<button class="flex items-center space-x-1.5 px-3 py-2 rounded-full border border-neutral-300 hover:border-luxury-gold bg-white/95 text-neutral-800 text-[11px] font-bold tracking-wider uppercase transition-all duration-300 focus:outline-none cursor-pointer shadow-sm" id="lang-switcher-btn" onclick="toggleLangDropdown(event)" type="button">
-<i class="fa-solid fa-globe text-luxury-gold text-xs"></i>
-<span id="current-lang-text">FA</span>
-<i class="fa-solid fa-chevron-down text-[8px] text-neutral-400 transition-transform duration-200" id="lang-arrow-icon"></i>
-</button>
-<div class="hidden absolute right-0 mt-2 w-44 bg-white/95 rounded-2xl shadow-2xl border border-neutral-200/80 py-2 z-50 overflow-hidden" id="lang-dropdown-menu">
-<a class="lang-option" data-lang="en" href="/programs/citizenshipbyinvestment/stlucia/" onclick="switchLanguage('en', event)">
-<span data-i18n="langSwitcher.en">انگلیسی</span>
-<span class="text-[10px] text-neutral-400">EN</span>
-</a>
-<a class="lang-option" data-lang="ar" href="/ar/programs/citizenshipbyinvestment/stlucia/" onclick="switchLanguage('ar', event)">
-<span class="font-medium" data-i18n="langSwitcher.ar">عربی</span>
-<span class="text-[10px] text-neutral-400">AR</span>
-</a>
-<a class="lang-option active-lang" data-lang="fa" href="/fa/programs/citizenshipbyinvestment/stlucia/" onclick="switchLanguage('fa', event)">
-<span class="font-medium" data-i18n="langSwitcher.fa">فارسی</span>
-<span class="text-[10px] text-neutral-400">FA</span>
-</a>
-<a class="lang-option" data-lang="zh" href="/zh/programs/citizenshipbyinvestment/stlucia/" onclick="switchLanguage('zh', event)">
-<span class="font-medium" data-i18n="langSwitcher.zh">چینی</span>
-<span class="text-[10px] text-neutral-400">ZH</span>
-</a>
-</div>
-</div>
-</div>
-<!-- Mobile Navigation Toggle Button -->
-<button aria-label="Toggle Navigation Menu" class="lg:hidden flex flex-col items-end space-y-1.5 focus:outline-none p-2 z-[110]" onclick="toggleMobileMenu()">
-<span class="w-6 h-[2px] bg-neutral-900 transition-all duration-300 origin-center" id="mob-bar1"></span>
-<span class="w-4 h-[2px] bg-neutral-900 transition-all duration-300 origin-center" id="mob-bar2"></span>
-<span class="w-6 h-[2px] bg-neutral-900 transition-all duration-300 origin-center" id="mob-bar3"></span>
-</button>
-</div>
-<!-- MEGA MENU CITIZENSHIP -->
-<div class="mega-dropdown absolute left-0 w-full bg-white border-b border-neutral-200 shadow-2xl opacity-0 translate-y-[-10px] pointer-events-none transition-all duration-300 z-40" id="citizenship-menu" onmouseenter="clearMenuCloseTimer()" onmouseleave="scheduleMenuClose()">
-<div class="max-w-7xl mx-auto px-8 py-10 grid grid-cols-12 gap-4">
-<div class="col-span-3 flex flex-col items-center justify-center text-center pr-4 border-r border-neutral-200">
-<p class="font-serif text-3xl text-neutral-900 font-bold leading-tight mb-4" data-i18n="nav.citizenship">شهروندی</p>
-<a class="px-4 py-1.5 border border-neutral-400 text-[11px] font-bold tracking-[0.18em] uppercase rounded-full hover:bg-luxury-dark hover:text-white transition whitespace-nowrap" data-i18n="megaMenu.allCitizenshipPrograms" href="/fa/citizenshipbyinvestment/">همه برنامه‌های شهروندی</a>
-</div>
-<div class="col-span-5 px-6">
-<p class="text-[11px] font-bold tracking-[0.18em] uppercase text-luxury-gold mb-6 text-center lg:text-left" data-i18n="megaMenu.caribbeanPortfolios">برنامه‌های حوزه کارائیب</p>
-<ul class="space-y-4">
-<li class="flex items-center group">
-<a class="flex items-center space-x-3" href="/fa/programs/citizenshipbyinvestment/dominica/">
-<img alt="Dominica" class="w-12 h-8 object-cover rounded-sm border border-neutral-200 shadow-sm" src="https://flagcdn.com/dm.svg"/>
-<span class="text-[11px] font-bold tracking-[0.18em] uppercase text-neutral-700 group-hover:text-luxury-gold transition" data-i18n="services.cbi.dominica">دومینیکا | پاسپورت</span>
-</a>
-</li>
-<li class="flex items-center group">
-<a class="flex items-center space-x-3" href="/fa/programs/citizenshipbyinvestment/stkitts/">
-<img alt="St. Kitts" class="w-12 h-8 object-cover rounded-sm border border-neutral-200 shadow-sm" src="https://flagcdn.com/kn.svg"/>
-<span class="text-[11px] font-bold tracking-[0.18em] uppercase text-neutral-700 group-hover:text-luxury-gold transition" data-i18n="services.cbi.kitts">سنت کیتس و نویس | پاسپورت</span>
-</a>
-</li>
-<li class="flex items-center group">
-<a class="flex items-center space-x-3" href="/fa/programs/citizenshipbyinvestment/antiguaandbarbuda/">
-<img alt="Antigua" class="w-12 h-8 object-cover rounded-sm border border-neutral-200 shadow-sm" src="https://flagcdn.com/ag.svg"/>
-<span class="text-[11px] font-bold tracking-[0.18em] uppercase text-neutral-700 group-hover:text-luxury-gold transition" data-i18n="services.cbi.antigua">آنتیگوا و باربودا | پاسپورت</span>
-</a>
-</li>
-<li class="flex items-center group">
-<a class="flex items-center space-x-3" href="/fa/">
-<img alt="Saint Lucia" class="w-12 h-8 object-cover rounded-sm border border-neutral-200 shadow-sm" src="https://flagcdn.com/lc.svg"/>
-<span class="text-[11px] font-bold tracking-[0.18em] uppercase text-neutral-700 group-hover:text-luxury-gold transition" data-i18n="services.cbi.lucia">سنت لوسیا | پاسپورت</span>
-</a>
-</li>
-<li class="flex items-center group">
-<a class="flex items-center space-x-3" href="/fa/programs/citizenshipbyinvestment/grenada/">
-<img alt="Grenada" class="w-12 h-8 object-cover rounded-sm border border-neutral-200 shadow-sm" src="https://flagcdn.com/gd.svg"/>
-<span class="text-[11px] font-bold tracking-[0.18em] uppercase text-neutral-700 group-hover:text-luxury-gold transition" data-i18n="services.cbi.grenada">گرانادا | پاسپورت</span>
-</a>
-</li>
-</ul>
-</div>
-<div class="col-span-4 px-6">
-<p class="text-[11px] font-bold tracking-[0.18em] uppercase text-neutral-400 mb-6 text-center lg:text-left" data-i18n="megaMenu.globalPortfolios">برنامه‌های جهانی</p>
-<ul class="space-y-4">
-<li class="flex items-center group">
-<a class="flex items-center space-x-3" href="/fa/programs/citizenshipbyinvestment/vanuatu/">
-<img alt="Vanuatu" class="w-12 h-8 object-cover rounded-sm border border-neutral-200 shadow-sm" src="https://flagcdn.com/vu.svg"/>
-<span class="text-[11px] font-bold tracking-[0.18em] uppercase text-neutral-700 group-hover:text-luxury-gold transition" data-i18n="services.cbi.vanuatu">وانواتو | پاسپورت</span>
-</a>
-</li>
-<li class="flex items-center group">
-<a class="flex items-center space-x-3" href="/fa/programs/citizenshipbyinvestment/sao-tome-and-principe/">
-<img alt="São Tomé &amp; Príncipe" class="w-12 h-8 object-cover rounded-sm border border-neutral-200 shadow-sm" src="https://flagcdn.com/st.svg"/>
-<span class="text-[11px] font-bold tracking-[0.18em] uppercase text-neutral-700 group-hover:text-luxury-gold transition" data-i18n="services.cbi.saotome">سائوتومه و پرنسیپ | پاسپورت</span>
-</a>
-</li>
-<li class="flex items-center group">
-<a class="flex items-center space-x-3" href="/fa/programs/citizenshipbyinvestment/nauru/">
-<img alt="Republic of Nauru" class="w-12 h-8 object-cover rounded-sm border border-neutral-200 shadow-sm" src="https://flagcdn.com/nr.svg"/>
-<span class="text-[11px] font-bold tracking-[0.18em] uppercase text-neutral-700 group-hover:text-luxury-gold transition" data-i18n="services.cbi.nauru">جمهوری نائورو | پاسپورت</span>
-</a>
-</li>
-</ul>
-</div>
-</div>
-</div>
-<!-- MEGA MENU RESIDENCY -->
-<div class="mega-dropdown absolute left-0 w-full bg-white border-b border-neutral-200 shadow-2xl opacity-0 translate-y-[-10px] pointer-events-none transition-all duration-300 z-40" id="residency-menu" onmouseenter="clearMenuCloseTimer()" onmouseleave="scheduleMenuClose()">
-<div class="max-w-7xl mx-auto px-8 py-10 grid grid-cols-12 gap-4">
-<div class="col-span-3 flex flex-col items-center justify-center text-center pr-4 border-r border-neutral-200">
-<p class="font-serif text-3xl text-neutral-900 font-bold leading-tight mb-4" data-i18n="nav.residency">اقامت</p>
-<a class="px-4 py-1.5 border border-neutral-400 text-[11px] font-bold tracking-[0.18em] uppercase rounded-full hover:bg-luxury-dark hover:text-white transition whitespace-nowrap" data-i18n="megaMenu.allResidencyPrograms" href="/fa/residencybyinvestment/">همه برنامه‌های اقامت</a>
-</div>
-<div class="col-span-5 px-6">
-<p class="text-[11px] font-bold tracking-[0.18em] uppercase text-luxury-gold mb-6 text-center lg:text-left" data-i18n="megaMenu.europeanPortfolios">برنامه‌های اروپایی</p>
-<ul class="space-y-4">
-<li class="flex items-center group">
-<a class="flex items-center space-x-3" href="/fa/programs/residencybyinvestment/portugal/">
-<img alt="Portugal" class="w-12 h-8 object-cover rounded-sm border border-neutral-200 shadow-sm" src="https://flagcdn.com/pt.svg"/>
-<span class="text-[11px] font-bold tracking-[0.18em] uppercase text-neutral-700 group-hover:text-luxury-gold transition" data-i18n="services.rbi.portugal">پرتغال | ویزای طلایی</span>
-</a>
-</li>
-<li class="flex items-center group">
-<a class="flex items-center space-x-3" href="/fa/programs/residencybyinvestment/greece/">
-<img alt="Greece" class="w-12 h-8 object-cover rounded-sm border border-neutral-200 shadow-sm" src="https://flagcdn.com/gr.svg"/>
-<span class="text-[11px] font-bold tracking-[0.18em] uppercase text-neutral-700 group-hover:text-luxury-gold transition" data-i18n="services.rbi.greece">یونان | ویزای طلایی</span>
-</a>
-</li>
-</ul>
-</div>
-<div class="col-span-4 px-6">
-<p class="text-[11px] font-bold tracking-[0.18em] uppercase text-neutral-400 mb-6 text-center lg:text-left" data-i18n="megaMenu.americasUAE">قاره آمریکا و امارات</p>
-<ul class="space-y-4">
-<li class="flex items-center group">
-<a class="flex items-center space-x-3" href="/fa/programs/residencybyinvestment/panama/">
-<img alt="Panama" class="w-12 h-8 object-cover rounded-sm border border-neutral-200 shadow-sm" src="https://flagcdn.com/pa.svg"/>
-<span class="text-[11px] font-bold tracking-[0.18em] uppercase text-neutral-700 group-hover:text-luxury-gold transition" data-i18n="services.rbi.panama">پاناما | ویزای طلایی</span>
-</a>
-</li>
-<li class="flex items-center group">
-<a class="flex items-center space-x-3" href="/fa/programs/residencybyinvestment/uae/">
-<img alt="UAE" class="w-12 h-8 object-cover rounded-sm border border-neutral-200 shadow-sm" src="https://flagcdn.com/ae.svg"/>
-<span class="text-[11px] font-bold tracking-[0.18em] uppercase text-neutral-700 group-hover:text-luxury-gold transition" data-i18n="services.rbi.uae">امارات متحده عربی | ویزای طلایی</span>
-</a>
-</li>
-</ul>
-</div>
-</div>
-</div>
-<!-- MEGA MENU OTHER SERVICES -->
-<div class="mega-dropdown absolute left-0 w-full bg-white border-b border-neutral-200 shadow-2xl opacity-0 translate-y-[-10px] pointer-events-none transition-all duration-300 z-40" id="services-menu" onmouseenter="clearMenuCloseTimer()" onmouseleave="scheduleMenuClose()">
-<div class="max-w-7xl mx-auto px-8 py-10 grid grid-cols-12 gap-4">
-<div class="col-span-3 flex flex-col items-center justify-center text-center pr-4 border-r border-neutral-200">
-<p class="font-serif text-3xl text-neutral-900 font-bold leading-tight mb-4" data-i18n="megaMenu.otherServices">سایر خدمات</p>
-<a class="px-4 py-1.5 border border-neutral-400 text-[11px] font-bold tracking-[0.18em] uppercase rounded-full hover:bg-luxury-dark hover:text-white transition whitespace-nowrap" data-i18n="megaMenu.moreServicesTitle" href="/fa/realestate/">سایر خدمات</a>
-</div>
-<div class="col-span-9 px-6 flex items-center justify-start gap-4">
-<div class="relative flex-1 max-w-[220px] rounded-[20px] shadow-md overflow-hidden group border border-luxury-gold/50">
-<img alt="Real Estate" class="absolute inset-0 w-full h-full object-cover transition-transform duration-500 group-hover:scale-110" src="../../../assets/images/isdubairealestateago_3194a5.webp"/>
-<div class="absolute inset-0 bg-neutral-950/65 group-hover:bg-neutral-950/50 transition-colors duration-300">
-</div>
-<a class="relative z-10 text-[11px] font-bold tracking-[0.18em] text-white block text-center leading-tight py-12 px-4 uppercase" data-i18n="megaMenu.realEstateAdvisory" href="/fa/realestate/">مشاوره املاک و مستغلات</a>
-</div>
-<div class="relative flex-1 max-w-[220px] rounded-[20px] shadow-md overflow-hidden group border border-luxury-gold/50">
-<img alt="Educational Advisory" class="absolute inset-0 w-full h-full object-cover transition-transform duration-500 group-hover:scale-110" src="../../../assets/images/photo-154133990719_46b647.webp"/>
-<div class="absolute inset-0 bg-neutral-950/65 group-hover:bg-neutral-950/50 transition-colors duration-300">
-</div>
-<a class="relative z-10 text-[11px] font-bold tracking-[0.18em] text-white block text-center leading-tight py-12 px-4 uppercase" data-i18n="megaMenu.educationalAdvisory" href="/fa/educationaladvisory/">مشاوره آموزشی</a>
-</div>
-</div>
-</div>
-</div>
-<!-- MEGA MENU ABOUT -->
-<div class="mega-dropdown absolute left-0 w-full bg-white border-b border-neutral-200 shadow-2xl opacity-0 translate-y-[-10px] pointer-events-none transition-all duration-300 z-40" id="about-menu" onmouseenter="clearMenuCloseTimer()" onmouseleave="scheduleMenuClose()">
-<div class="max-w-7xl mx-auto px-8 py-10 grid grid-cols-12 gap-4">
-<div class="col-span-3 flex flex-col items-center justify-center text-center pr-4 border-r border-neutral-200">
-<p class="font-serif text-3xl text-neutral-900 font-bold leading-tight mb-4" data-i18n="megaMenu.corporateIdentity">هویت سازمانی</p>
-<a class="px-4 py-1.5 border border-neutral-400 text-[11px] font-bold tracking-[0.18em] uppercase rounded-full hover:bg-luxury-dark hover:text-white transition whitespace-nowrap" data-i18n="megaMenu.aboutTitle" href="/fa/aboutus/">درباره شریف گروپ</a>
-</div>
-<div class="col-span-9 px-6 flex items-center justify-start gap-4">
-<div class="relative flex-1 max-w-[260px] rounded-[20px] shadow-md overflow-hidden group border border-luxury-gold/50">
-<img alt="Sharif Group" class="absolute inset-0 w-full h-full object-cover transition-transform duration-500 group-hover:scale-110" src="../../../assets/images/dubai-office-2.webp"/>
-<div class="absolute inset-0 bg-neutral-950/65 group-hover:bg-neutral-950/50 transition-colors duration-300">
-</div>
-<a class="relative z-10 text-[11px] font-bold tracking-[0.18em] text-white block text-center leading-tight py-12 px-4 uppercase" data-i18n="megaMenu.aboutTitle" href="/fa/aboutus/">درباره شریف گروپ</a>
-</div>
-<div class="relative flex-1 max-w-[260px] rounded-[20px] shadow-md overflow-hidden group border border-luxury-gold/50">
-<img alt="Founder" class="absolute inset-0 w-full h-full object-cover transition-transform duration-500 group-hover:scale-110" src="../../../alirezasharif.svg"/>
-<div class="absolute inset-0 bg-neutral-950/65 group-hover:bg-neutral-950/50 transition-colors duration-300">
-</div>
-<a class="relative z-10 text-[11px] font-bold tracking-[0.18em] text-white block text-center leading-tight py-12 px-4 uppercase" data-i18n="megaMenu.aboutFounder" href="/fa/about-founder/">درباره بنیان‌گذار | علی شریف</a>
-</div>
-<div class="relative flex-1 max-w-[260px] rounded-[20px] shadow-md overflow-hidden group border border-luxury-gold/50">
-<img alt="Social Responsibility" class="absolute inset-0 w-full h-full object-cover transition-transform duration-500 group-hover:scale-110" src="../../../assets/images/photo-148852178799_7302db.webp"/>
-<div class="absolute inset-0 bg-neutral-950/65 group-hover:bg-neutral-950/50 transition-colors duration-300">
-</div>
-<a class="relative z-10 text-[11px] font-bold tracking-[0.18em] text-white block text-center leading-tight py-12 px-4 uppercase" data-i18n="megaMenu.socialResponsibility" href="/fa/socialresponsibility/">مسئولیت اجتماعی</a>
-</div>
-</div>
-</div>
-</div>
+<!-- HEADER COMPONENT (UNIVERSAL NAVBAR) -->
+<header class="site-header" id="main-header">
+<div class="sg-header-inner">
+      <!-- Left: Logo & Menu -->
+      <div class="sg-brand-group">
+        <a class="sg-brand" href="/fa/" aria-label="Sharif Group Home">
+          <img src="/assets/images/vector_b5a81734.svg" onerror="if(this.src.indexOf('vector_b5a81734')!==-1){this.src='/assets/images/logo.svg';}else if(this.src.indexOf('logo.svg')!==-1){this.src='/assets/images/vector_2d09c4bb.svg';}" alt="Sharif Group Logo" id="nav-logo" width="50" height="56">
+        </a>
+        <span class="sg-brand-sep" aria-hidden="true">|</span>
+
+        <nav class="sg-main-nav" aria-label="Main Navigation">
+          <!-- 1. Citizenship with Mega Menu -->
+          <div class="sg-nav-item" data-sg-dd="cbi">
+            <a class="sg-nav-link" href="/fa/citizenshipbyinvestment/">
+              <span>شهروندی</span>
+              <i class="fa-solid fa-chevron-down sg-chev"></i>
+            </a>
+            <div class="sg-mega-menu">
+              <div class="sg-mm-inner">
+                <div class="sg-mm-side">
+                  <p class="sg-mm-title">شهروندی از طریق سرمایه‌گذاری</p>
+                  <a class="sg-mm-all-btn" href="/fa/citizenshipbyinvestment/">تمام برنامه‌های شهروندی</a>
+                </div>
+                <div>
+                  <span class="sg-mm-col-head">برنامه‌های کارائیب</span>
+                  <ul class="sg-mm-list">
+                    <li><a href="/fa/programs/citizenshipbyinvestment/dominica/"><img src="https://flagcdn.com/dm.svg" alt="Dominica" class="sg-flag-icon"><span>دومینیکا | پاسپورت</span></a></li>
+                    <li><a href="/fa/programs/citizenshipbyinvestment/stkitts/"><img src="https://flagcdn.com/kn.svg" alt="St. Kitts & Nevis" class="sg-flag-icon"><span>سنت کیتس و نویس | پاسپورت</span></a></li>
+                    <li><a href="/fa/programs/citizenshipbyinvestment/antiguaandbarbuda/"><img src="https://flagcdn.com/ag.svg" alt="Antigua & Barbuda" class="sg-flag-icon"><span>آنتیگوا و باربودا | پاسپورت</span></a></li>
+                    <li><a href="/fa/programs/citizenshipbyinvestment/stlucia/"><img src="https://flagcdn.com/lc.svg" alt="Saint Lucia" class="sg-flag-icon"><span>سنت لوسیا | پاسپورت</span></a></li>
+                    <li><a href="/fa/programs/citizenshipbyinvestment/grenada/"><img src="https://flagcdn.com/gd.svg" alt="Grenada" class="sg-flag-icon"><span>گرانادا | پاسپورت</span></a></li>
+                  </ul>
+                </div>
+                <div>
+                  <span class="sg-mm-col-head sg-mm-col-head--alt">برنامه‌های جهانی</span>
+                  <ul class="sg-mm-list">
+                    <li><a href="/fa/programs/citizenshipbyinvestment/vanuatu/"><img src="https://flagcdn.com/vu.svg" alt="Vanuatu" class="sg-flag-icon"><span>وانواتو | پاسپورت</span></a></li>
+                    <li><a href="/fa/programs/citizenshipbyinvestment/sao-tome-and-principe/"><img src="https://flagcdn.com/st.svg" alt="São Tomé and Príncipe" class="sg-flag-icon"><span>سائوتومه و پرنسیپ | پاسپورت</span></a></li>
+                    <li><a href="/fa/programs/citizenshipbyinvestment/nauru/"><img src="https://flagcdn.com/nr.svg" alt="Republic of Nauru" class="sg-flag-icon"><span>جمهوری نائورو | پاسپورت</span></a></li>
+                  </ul>
+                </div>
+              </div>
+            </div>
+          </div>
+          <span class="sg-nav-sep" aria-hidden="true">|</span>
+
+          <!-- 2. Residency with Mega Menu -->
+          <div class="sg-nav-item" data-sg-dd="rbi">
+            <a class="sg-nav-link" href="/fa/residencybyinvestment/">
+              <span>اقامت</span>
+              <i class="fa-solid fa-chevron-down sg-chev"></i>
+            </a>
+            <div class="sg-mega-menu">
+              <div class="sg-mm-inner">
+                <div class="sg-mm-side">
+                  <p class="sg-mm-title">اقامت از طریق سرمایه‌گذاری</p>
+                  <a class="sg-mm-all-btn" href="/fa/residencybyinvestment/">تمام برنامه‌های اقامت</a>
+                </div>
+                <div>
+                  <span class="sg-mm-col-head">برنامه‌های اروپایی</span>
+                  <ul class="sg-mm-list">
+                    <li><a href="/fa/programs/residencybyinvestment/portugal/"><img src="https://flagcdn.com/pt.svg" alt="Portugal" class="sg-flag-icon"><span>پرتغال | ویزای طلایی</span></a></li>
+                    <li><a href="/fa/programs/residencybyinvestment/greece/"><img src="https://flagcdn.com/gr.svg" alt="Greece" class="sg-flag-icon"><span>یونان | ویزای طلایی</span></a></li>
+                  </ul>
+                </div>
+                <div>
+                  <span class="sg-mm-col-head sg-mm-col-head--alt">قاره آمریکا و امارات</span>
+                  <ul class="sg-mm-list">
+                    <li><a href="/fa/programs/residencybyinvestment/panama/"><img src="https://flagcdn.com/pa.svg" alt="Panama" class="sg-flag-icon"><span>پاناما | ویزای طلایی</span></a></li>
+                    <li><a href="/fa/programs/residencybyinvestment/uae/"><img src="https://flagcdn.com/ae.svg" alt="UAE" class="sg-flag-icon"><span>امارات متحده عربی | ویزای طلایی</span></a></li>
+                  </ul>
+                </div>
+              </div>
+            </div>
+          </div>
+          <span class="sg-nav-sep" aria-hidden="true">|</span>
+
+          <!-- 3. Other Services with Mega Menu -->
+          <div class="sg-nav-item" data-sg-dd="services">
+            <a class="sg-nav-link" href="/fa/realestate/">
+              <span>خدمات دیگر</span>
+              <i class="fa-solid fa-chevron-down sg-chev"></i>
+            </a>
+            <div class="sg-mega-menu">
+              <div class="sg-mm-inner sg-mm-cards-layout">
+                <div class="sg-mm-side">
+                  <p class="sg-mm-title">خدمات دیگر</p>
+                  <a class="sg-mm-all-btn" href="/fa/realestate/">مشاهده همه خدمات</a>
+                </div>
+                <div class="sg-mm-cards-grid">
+                  <a class="sg-mm-card" href="/fa/realestate/">
+                    <img src="/assets/images/isdubairealestateago_3194a5.webp" alt="Real Estate" loading="lazy">
+                    <div class="sg-mm-card-overlay"></div>
+                    <span class="sg-mm-card-title">مشاوره املاک و مستغلات</span>
+                  </a>
+                  <a class="sg-mm-card" href="/fa/educationaladvisory/">
+                    <img src="/assets/images/photo-154133990719_46b647.webp" alt="Educational Advisory" loading="lazy">
+                    <div class="sg-mm-card-overlay"></div>
+                    <span class="sg-mm-card-title">مشاوره تحصیلی</span>
+                  </a>
+                </div>
+              </div>
+            </div>
+          </div>
+          <span class="sg-nav-sep" aria-hidden="true">|</span>
+
+          <!-- 4. About Us with Mega Menu -->
+          <div class="sg-nav-item" data-sg-dd="about">
+            <a class="sg-nav-link" href="/fa/aboutus/">
+              <span>درباره ما</span>
+              <i class="fa-solid fa-chevron-down sg-chev"></i>
+            </a>
+            <div class="sg-mega-menu">
+              <div class="sg-mm-inner sg-mm-cards-layout">
+                <div class="sg-mm-side">
+                  <p class="sg-mm-title">درباره شریف گروپ</p>
+                  <a class="sg-mm-all-btn" href="/fa/aboutus/">داستان ما</a>
+                </div>
+                <div class="sg-mm-cards-grid">
+                  <a class="sg-mm-card" href="/fa/aboutus/">
+                    <img src="/assets/images/dubai-office-2.webp" alt="About Sharif Group" loading="lazy">
+                    <div class="sg-mm-card-overlay"></div>
+                    <span class="sg-mm-card-title">درباره شریف گروپ</span>
+                  </a>
+                  <a class="sg-mm-card" href="/fa/about-founder/">
+                    <img src="/assets/images/alirezasharif.svg" alt="About Founder | Ali Sharif" loading="lazy">
+                    <div class="sg-mm-card-overlay"></div>
+                    <span class="sg-mm-card-title">درباره بنیان‌گذار | علی شریف</span>
+                  </a>
+                  <a class="sg-mm-card" href="/fa/socialresponsibility/">
+                    <img src="/assets/images/photo-148852178799_7302db.webp" alt="Social Responsibility" loading="lazy">
+                    <div class="sg-mm-card-overlay"></div>
+                    <span class="sg-mm-card-title">مسئولیت اجتماعی</span>
+                  </a>
+                  <a class="sg-mm-card sg-mm-card-partner" href="/fa/partners/">
+                    <img src="/assets/images/card.webp" alt="همکار ما شوید" loading="lazy">
+                    <div class="sg-mm-card-overlay sg-mm-card-partner-overlay"></div>
+                    <div class="sg-mm-card-partner-content">
+                      <div class="sg-mm-card-partner-text">
+                        <span class="sg-mm-card-title">همکار ما شوید</span>
+                        
+                      </div>
+                    </div>
+                  </a>
+                </div>
+              </div>
+            </div>
+          </div>
+          <span class="sg-nav-sep" aria-hidden="true">|</span>
+
+          <!-- 5. Direct links -->
+          <div class="sg-nav-item">
+            <a class="sg-nav-link" href="/fa/contact/">تماس با ما</a>
+          </div>
+          <span class="sg-nav-sep" aria-hidden="true">|</span>
+
+          <div class="sg-nav-item">
+            <a class="sg-nav-link" href="/fa/blog/">وبلاگ</a>
+          </div>
+          <span class="sg-nav-sep" aria-hidden="true">|</span>
+
+          <div class="sg-nav-item">
+            <a class="sg-nav-link" href="/fa/events/">
+              <span>رویدادها</span>
+              
+            </a>
+          </div>
+        </nav>
+      </div>
+
+      <!-- Right Action Items -->
+      <div class="sg-right-actions">
+        <a class="sg-pill-btn sg-btn-eligibility" href="/fa/eligibilitychecker/">
+          بررسی واجد شرایط بودن
+        </a>
+        <a class="sg-pill-btn sg-btn-consult" href="/fa/contact/">
+          رزرو مشاوره
+        </a>
+
+        <!-- Language Switcher Dropdown -->
+        <div class="sg-lang-wrap" id="sgLangWrap">
+          <button class="sg-lang-btn" type="button" aria-haspopup="true" aria-expanded="false" id="sgLangBtn">
+            <i class="fa-solid fa-globe"></i>
+            <span>فارسی</span>
+            <i class="fa-solid fa-chevron-down sg-lang-arrow"></i>
+          </button>
+          <ul class="sg-lang-menu" id="sgLangMenu" role="menu">
+            <li class="sg-lang-item">
+        <a href="/" data-lang="en" class="sg-lang-link lang-option">
+          <span>English</span>
+          <small>EN</small>
+        </a>
+      </li><li class="sg-lang-item">
+        <a href="/ar/" data-lang="ar" class="sg-lang-link lang-option">
+          <span>العربية</span>
+          <small>AR</small>
+        </a>
+      </li><li class="sg-lang-item is-current">
+        <a href="/fa/" data-lang="fa" class="sg-lang-link lang-option">
+          <span>فارسی</span>
+          <small>FA</small>
+        </a>
+      </li><li class="sg-lang-item">
+        <a href="/zh/" data-lang="zh" class="sg-lang-link lang-option">
+          <span>中文</span>
+          <small>ZH</small>
+        </a>
+      </li>
+          </ul>
+        </div>
+
+        <!-- Mobile Hamburger Toggle -->
+        <button class="sg-mob-toggle" type="button" aria-label="Toggle Navigation Menu" id="sgMobToggle">
+          <span class="sg-mob-bar"></span>
+          <span class="sg-mob-bar"></span>
+          <span class="sg-mob-bar"></span>
+        </button>
+      </div>
+    </div>
 </header>
-<!-- MOBILE NAVIGATION DRAWER (OUTSIDE HEADER) -->
-<div class="fixed inset-x-0 top-20 bottom-0 bg-white z-[999] transform translate-x-full transition-transform duration-300 ease-in-out overflow-y-auto lg:hidden shadow-2xl" id="mobile-menu-drawer">
-<div class="p-6 space-y-6 bg-white min-h-full">
-<nav class="space-y-4 text-xs font-bold tracking-[0.18em] uppercase text-neutral-800">
-<div>
-<a class="block py-2.5 border-b border-neutral-100 hover:text-luxury-gold transition" href="/fa/" onclick="sessionStorage.setItem('sharif_preloader_shown', 'true');">HOME</a>
-</div>
-<!-- Citizenship Mobile Dropdown -->
-<div class="border-b border-neutral-100 pb-2">
-<button class="w-full flex items-center justify-between py-2.5 focus:outline-none hover:text-luxury-gold transition" onclick="toggleMobileSubmenu('mob-citizenship', this)" type="button">
-<span>CITIZENSHIP BY INVESTMENT</span>
-<i class="fa-solid fa-chevron-down text-[10px] transition-transform duration-300"></i>
-</button>
-<div class="hidden pl-4 pt-2 space-y-2.5 text-[11px] text-neutral-600" id="mob-citizenship">
-<a class="block font-bold text-luxury-gold hover:text-luxury-dark transition" href="/fa/citizenshipbyinvestment/">VIEW ALL PROGRAMS</a>
-<a class="block hover:text-luxury-gold transition" data-i18n="services.cbi.dominica" href="/fa/programs/citizenshipbyinvestment/dominica/">دومینیکا | پاسپورت</a>
-<a class="block hover:text-luxury-gold transition" data-i18n="services.cbi.kitts" href="/fa/programs/citizenshipbyinvestment/stkitts/">سنت کیتس و نویس | پاسپورت</a>
-<a class="block hover:text-luxury-gold transition" data-i18n="services.cbi.antigua" href="/fa/programs/citizenshipbyinvestment/antiguaandbarbuda/">آنتیگوا و باربودا | پاسپورت</a>
-<a class="block text-[#786142] font-bold hover:text-luxury-gold transition" data-i18n="services.cbi.lucia" href="/fa/">سنت لوسیا | پاسپورت</a>
-<a class="block hover:text-luxury-gold transition" data-i18n="services.cbi.grenada" href="/fa/programs/citizenshipbyinvestment/grenada/">گرانادا | پاسپورت</a>
-<a class="block hover:text-luxury-gold transition" data-i18n="services.cbi.vanuatu" href="/fa/programs/citizenshipbyinvestment/vanuatu/">وانواتو | پاسپورت</a>
-<a class="block hover:text-luxury-gold transition" data-i18n="services.cbi.saotome" href="/fa/programs/citizenshipbyinvestment/sao-tome-and-principe/">سائوتومه و پرنسیپ | پاسپورت</a>
-<a class="block hover:text-luxury-gold transition" data-i18n="services.cbi.nauru" href="/fa/programs/citizenshipbyinvestment/nauru/">جمهوری نائورو | پاسپورت</a>
-</div>
-</div>
-<!-- Residency Mobile Dropdown -->
-<div class="border-b border-neutral-100 pb-2">
-<button class="w-full flex items-center justify-between py-2.5 focus:outline-none hover:text-luxury-gold transition" onclick="toggleMobileSubmenu('mob-residency', this)" type="button">
-<span>RESIDENCY BY INVESTMENT</span>
-<i class="fa-solid fa-chevron-down text-[10px] transition-transform duration-300"></i>
-</button>
-<div class="hidden pl-4 pt-2 space-y-2.5 text-[11px] text-neutral-600" id="mob-residency">
-<a class="block font-bold text-luxury-gold hover:text-luxury-dark transition" href="/fa/residencybyinvestment/">VIEW ALL PROGRAMS</a>
-<a class="block hover:text-luxury-gold transition" href="/fa/programs/residencybyinvestment/portugal/">PORTUGAL | GOLDEN VISA</a>
-<a class="block hover:text-luxury-gold transition" href="/fa/programs/residencybyinvestment/greece/">GREECE | GOLDEN VISA</a>
-<a class="block hover:text-luxury-gold transition" href="/fa/programs/residencybyinvestment/panama/">PANAMA | GOLDEN VISA</a>
-<a class="block hover:text-luxury-gold transition" href="/fa/programs/residencybyinvestment/uae/">UNITED ARAB EMIRATES | GOLDEN VISA</a>
-</div>
-</div>
-<!-- Other Services Mobile Dropdown -->
-<div class="border-b border-neutral-100 pb-2">
-<button class="w-full flex items-center justify-between py-2.5 focus:outline-none hover:text-luxury-gold transition" onclick="toggleMobileSubmenu('mob-services', this)" type="button">
-<span>OTHER SERVICES</span>
-<i class="fa-solid fa-chevron-down text-[10px] transition-transform duration-300"></i>
-</button>
-<div class="hidden pl-4 pt-2 space-y-2.5 text-[11px] text-neutral-600" id="mob-services">
-<a class="block hover:text-luxury-gold transition" href="/fa/realestate/">REAL
-                            ESTATE</a>
-<a class="block hover:text-luxury-gold transition" href="/fa/educationaladvisory/">EDUCATIONAL ADVISORY</a>
-</div>
-</div>
-<!-- About Us Mobile Dropdown -->
-<div class="border-b border-neutral-100 pb-2">
-<button class="w-full flex items-center justify-between py-2.5 focus:outline-none hover:text-luxury-gold transition" onclick="toggleMobileSubmenu('mob-about', this)" type="button">
-<span>ABOUT US</span>
-<i class="fa-solid fa-chevron-down text-[10px] transition-transform duration-300"></i>
-</button>
-<div class="hidden pl-4 pt-2 space-y-2.5 text-[11px] text-neutral-600" id="mob-about">
-<a class="block hover:text-luxury-gold transition" href="/fa/aboutus/">SHARIF
-                            GROUP OVERVIEW</a>
-<a class="block hover:text-luxury-gold transition" href="/fa/about-founder/">FOUNDER
-                            | ALI SHARIF</a>
-<a class="block hover:text-luxury-gold transition" href="/fa/socialresponsibility/">SOCIAL RESPONSIBILITY</a>
-</div>
-</div>
-<div>
-<a class="block py-2.5 border-b border-neutral-100 hover:text-luxury-gold transition" href="/fa/contact/">CONTACT US</a>
-</div>
-<div>
-<a class="block py-2.5 border-b border-neutral-100 hover:text-luxury-gold transition" href="/fa/blog/">BLOG</a>
-</div>
-<div>
-<a class="py-2.5 border-b border-neutral-100 hover:text-luxury-gold transition flex items-center justify-between" href="/fa/webinars/" onclick="toggleMobileMenu()">
-<span data-i18n="mobileMenu.webinars">رویدادها</span>
-<span class="inline-block text-[8px] leading-none px-1.5 py-0.5 rounded-full bg-[#786142] text-white tracking-wider font-bold" data-i18n="nav.newBadge">جدید</span>
-</a>
-</div>
-</nav>
-<div class="pt-4 flex flex-col space-y-3 pb-8">
-<a class="w-full py-3 text-center rounded-full border border-[#786142] text-[#786142] text-xs font-bold uppercase tracking-[0.18em] hover:bg-[#786142] hover:text-white transition" href="#program-consult-form-section" onclick="toggleMobileMenu()">
-                    ELIGIBILITY CHECKER
-                </a>
-<a class="w-full py-3 text-center rounded-full bg-neutral-900 text-white text-xs font-bold uppercase tracking-[0.18em] hover:bg-luxury-gold transition" href="/fa/contact/">
-                    BOOK CONSULTATION
-                </a>
-</div>
-</div>
-</div>
+
+<nav class="sg-drawer" id="sgDrawer" aria-label="Mobile Navigation">
+      <div class="sg-drawer-langs">
+        <a href="/" class="sg-drawer-lang-btn" data-lang="en">
+        English
+      </a><a href="/ar/" class="sg-drawer-lang-btn" data-lang="ar">
+        العربية
+      </a><a href="/fa/" class="sg-drawer-lang-btn is-active" data-lang="fa">
+        فارسی
+      </a><a href="/zh/" class="sg-drawer-lang-btn" data-lang="zh">
+        中文
+      </a>
+      </div>
+
+      <a class="sg-pill-btn sg-btn-eligibility" href="/fa/eligibilitychecker/" style="width:100%;text-align:center;">
+        بررسی واجد شرایط بودن
+      </a>
+
+      <!-- Accordion: Citizenship -->
+      <div class="sg-drawer-acc-item">
+        <button class="sg-drawer-acc-head" type="button">
+          <span>شهروندی</span>
+          <i class="fa-solid fa-chevron-down"></i>
+        </button>
+        <ul class="sg-drawer-acc-body">
+          <li><a href="/fa/citizenshipbyinvestment/" style="font-weight:700;color:var(--sg-gold-dark);">★ تمام برنامه‌های شهروندی</a></li>
+          <li><a href="/fa/programs/citizenshipbyinvestment/dominica/">دومینیکا | پاسپورت</a></li>
+          <li><a href="/fa/programs/citizenshipbyinvestment/stkitts/">سنت کیتس و نویس | پاسپورت</a></li>
+          <li><a href="/fa/programs/citizenshipbyinvestment/antiguaandbarbuda/">آنتیگوا و باربودا | پاسپورت</a></li>
+          <li><a href="/fa/programs/citizenshipbyinvestment/stlucia/">سنت لوسیا | پاسپورت</a></li>
+          <li><a href="/fa/programs/citizenshipbyinvestment/grenada/">گرانادا | پاسپورت</a></li>
+          <li><a href="/fa/programs/citizenshipbyinvestment/vanuatu/">وانواتو | پاسپورت</a></li>
+          <li><a href="/fa/programs/citizenshipbyinvestment/sao-tome-and-principe/">سائوتومه و پرنسیپ | پاسپورت</a></li>
+          <li><a href="/fa/programs/citizenshipbyinvestment/nauru/">جمهوری نائورو | پاسپورت</a></li>
+        </ul>
+      </div>
+
+      <!-- Accordion: Residency -->
+      <div class="sg-drawer-acc-item">
+        <button class="sg-drawer-acc-head" type="button">
+          <span>اقامت</span>
+          <i class="fa-solid fa-chevron-down"></i>
+        </button>
+        <ul class="sg-drawer-acc-body">
+          <li><a href="/fa/residencybyinvestment/" style="font-weight:700;color:var(--sg-gold-dark);">★ تمام برنامه‌های اقامت</a></li>
+          <li><a href="/fa/programs/residencybyinvestment/portugal/">پرتغال | ویزای طلایی</a></li>
+          <li><a href="/fa/programs/residencybyinvestment/greece/">یونان | ویزای طلایی</a></li>
+          <li><a href="/fa/programs/residencybyinvestment/panama/">پاناما | ویزای طلایی</a></li>
+          <li><a href="/fa/programs/residencybyinvestment/uae/">امارات متحده عربی | ویزای طلایی</a></li>
+        </ul>
+      </div>
+
+      <!-- Accordion: Other Services -->
+      <div class="sg-drawer-acc-item">
+        <button class="sg-drawer-acc-head" type="button">
+          <span>خدمات دیگر</span>
+          <i class="fa-solid fa-chevron-down"></i>
+        </button>
+        <ul class="sg-drawer-acc-body">
+          <li><a href="/fa/realestate/">مشاوره املاک و مستغلات</a></li>
+          <li><a href="/fa/educationaladvisory/">مشاوره تحصیلی</a></li>
+        </ul>
+      </div>
+
+      <!-- Accordion: About Us -->
+      <div class="sg-drawer-acc-item">
+        <button class="sg-drawer-acc-head" type="button">
+          <span>درباره ما</span>
+          <i class="fa-solid fa-chevron-down"></i>
+        </button>
+        <ul class="sg-drawer-acc-body">
+          <li><a href="/fa/aboutus/">درباره شریف گروپ</a></li>
+          <li><a href="/fa/about-founder/">درباره بنیان‌گذار | علی شریف</a></li>
+          <li><a href="/fa/socialresponsibility/">مسئولیت اجتماعی</a></li>
+          <li><a href="/fa/partners/" style="color:var(--sg-gold-dark);font-weight:700;display:flex;align-items:center;justify-content:space-between;padding:8px 0;"><span>همکار ما شوید</span></a></li>
+        </ul>
+      </div>
+
+      <!-- Direct Links -->
+      <a class="sg-drawer-link-direct" href="/fa/contact/">
+        <span>تماس با ما</span>
+        <i class="fa-solid fa-arrow-right"></i>
+      </a>
+
+      <a class="sg-drawer-link-direct" href="/fa/blog/">
+        <span>وبلاگ</span>
+        <i class="fa-solid fa-arrow-right"></i>
+      </a>
+
+      <a class="sg-drawer-link-direct" href="/fa/events/">
+        <span>رویدادها </span>
+        <i class="fa-solid fa-arrow-right"></i>
+      </a>
+
+      <!-- Bottom CTAs -->
+      <div class="sg-drawer-ctas">
+        <a class="sg-pill-btn sg-btn-consult" href="/fa/contact/">
+          رزرو مشاوره
+        </a>
+      </div>
+    </nav>
+
 <!-- MAIN VIEWPORT CONTAINER -->
 <main class="pt-20 min-h-[70vh]" id="app-view">
 <!-- SUB-HEADER SHORTCUT BAR -->
@@ -3644,6 +3431,7 @@ html[lang="fa"] #main-header nav a,
         // Flag that the user is coming from an internal page of Sharif Group website
         sessionStorage.setItem('sharif_preloader_shown', 'true');
     </script>
+<script defer="" src="/assets/js/navbar.js"></script>
 <script src="/assets/js/language-switcher.js"></script>
 <script src="/assets/js/forms.js"></script>
 </body>

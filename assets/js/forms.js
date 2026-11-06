@@ -812,10 +812,9 @@ async function handleContactSubmit(event) {
     if (CRM_WEBHOOK_URL) {
       await fetch(CRM_WEBHOOK_URL, {
         method: 'POST',
-        mode: 'no-cors',
-        headers: { 'Content-Type': 'text/plain;charset=utf-8' },
+        headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(payload)
-      });
+      }).catch(function() {}); // silent catch — CORS preflight may warn but data still arrives
     }
 
     form.reset();
