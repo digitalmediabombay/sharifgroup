@@ -568,7 +568,7 @@
             <img alt="Investment Migration Council" class="h-10 w-auto brightness-0 invert object-contain foot-imc-logo" src="${IMC_LOGO}" loading="lazy" decoding="async"/>
           </div>
           <div class="text-xs text-neutral-300 space-y-3 pt-2 foot-contact-list">
-            <p class="flex items-start"><i class="fa-solid fa-location-dot mt-1 mr-3 text-luxury-gold text-sm foot-ico"></i> <span>${esc(F.address || '116, The Binary Tower, Business Bay, Dubai, United Arab Emirates')}</span></p>
+            <p class="flex items-start"><i class="fa-solid fa-location-dot mt-1 mr-3 text-luxury-gold text-sm foot-ico"></i> <a class="hover:text-white transition" href="https://www.google.com/maps/dir/?api=1&destination=SHARIF+GROUP%2C+Office+116%2C+The+Binary+Tower%2C+Dubai&destination_place_id=ChIJA0KG8UtpXz4RZOLt_xMkAH8" target="_blank" rel="noopener noreferrer"><span>${esc(F.address || '116, The Binary Tower, Business Bay, Dubai, United Arab Emirates')}</span></a></p>
             <p class="flex items-center"><i class="fa-solid fa-phone mr-3 text-luxury-gold text-sm foot-ico"></i> <a class="hover:text-white transition ltr" href="tel:+97143578737">+971 4 357 8737</a></p>
             <p class="flex items-center"><i class="fa-solid fa-envelope mr-3 text-luxury-gold text-sm foot-ico"></i> <a class="hover:text-white transition ltr" href="mailto:contact@sharifgroup.ae">contact@sharifgroup.ae</a></p>
           </div>
