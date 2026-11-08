@@ -1040,11 +1040,23 @@ html[lang="ar"] .sg-drawer-link-direct {
   padding-bottom: 20px !important;
 }
 
-.sg-drawer-ctas a {
+.sg-drawer-ctas a,
+.sg-drawer > .sg-btn-eligibility {
   width: 100% !important;
   text-align: center !important;
   padding: 12px 20px !important;
   font-size: 12px !important;
+  border: 1px solid #171717 !important;
+  color: #171717 !important;
+  background: transparent !important;
+  border-radius: 9999px !important;
+  box-sizing: border-box !important;
+}
+
+.sg-drawer > .sg-btn-eligibility:hover {
+  border-color: var(--sg-gold) !important;
+  background: var(--sg-gold) !important;
+  color: #ffffff !important;
 }
 
 
