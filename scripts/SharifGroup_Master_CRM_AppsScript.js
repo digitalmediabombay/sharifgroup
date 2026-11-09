@@ -124,6 +124,7 @@ function doGet(e) {
 
   return ContentService.createTextOutput(JSON.stringify({
     status: "online",
+    version: "2.2-qa-fixes",
     service: "Sharif Group 7-Category Master CRM",
     timestamp: new Date().toISOString(),
     dailyEmailQuotaRemaining: quota,
@@ -138,8 +139,10 @@ function doGet(e) {
       CONFIG.TAB_EVENT
     ],
     features: [
-      "Dedicated Citizenship Questionnaire Columns (Route, Budget, Family, Objective, Timeline)",
-      "Dedicated Partner Onboarding Columns (Job Title, City, Programmes, Referrals, Heard From)",
+      "Exact Budget Range Mapping without substring collision",
+      "Explicit Portugal CMVM Regulated Fund and Property Desk Route Mapping",
+      "Non-blocking QA/TEST Lead Processing and 5s Rapid Submission Debounce",
+      "Dynamic Partner Status vs Confirmation Email Column Alignment",
       "Automatic Phone #ERROR! Prevention (Plain text + leading apostrophe escape)",
       "Instant Admin Email Alerts with full dossier"
     ]
@@ -213,23 +216,46 @@ function handleCategoryLead(data) {
   var cleanPhone = rawPhone.replace(/^'+/, "").trim();
   var safePhone = cleanPhone ? ("'" + cleanPhone) : "";
 
-  // Deduplication guard: Prevent duplicate submissions within 20 seconds
+  // Resolve target tab upfront so dedupe key is accurately scoped
+  var targetTabName = resolveCategoryTabName(data);
+
+  // Deduplication guard: Prevent accidental double-clicks within 5 seconds for same form
+  // NOTE: Test submissions (QA / TEST in name or email) and unique inquiry IDs are NEVER blocked!
+  var isTestSubmission = (
+    leadName.toLowerCase().indexOf("test") !== -1 ||
+    leadName.toLowerCase().indexOf("qa") !== -1 ||
+    leadEmail.indexOf("test") !== -1 ||
+    Boolean(data.is_test)
+  );
+
   var cache = CacheService.getScriptCache();
-  var dedupeIdentity = (data.inquiry_id || leadEmail || cleanPhone.replace(/[^0-9]/g, "") || leadName).toLowerCase().replace(/[^a-z0-9]/g, "");
-  if (dedupeIdentity.length >= 3) {
+  var dedupeIdentity = (data.inquiry_id || (leadEmail + "_" + (data.form_id || targetTabName)) || cleanPhone || leadName).toLowerCase().replace(/[^a-z0-9_]/g, "");
+
+  if (!isTestSubmission && dedupeIdentity.length >= 3) {
     var dedupeKey = "lead_" + dedupeIdentity.slice(0, 45);
     if (cache.get(dedupeKey)) {
       return {
         status: "ignored_duplicate",
-        targetTab: resolveCategoryTabName(data),
-        message: "Duplicate lead submission ignored (debounced within 20s)."
+        targetTab: targetTabName,
+        message: "Duplicate lead submission ignored (debounced within 5s)."
       };
     }
-    cache.put(dedupeKey, "1", 20); // 20-second debounce lock
+    cache.put(dedupeKey, "1", 5); // 5-second debounce lock
   }
 
   var leadNationality = (data.nationality || data.citizenship || "").trim();
   var leadResidence = (data.residence || data.country || "").trim();
+
+  // Prevent UTC / GMT timezone strings from contaminating Country / Residence column
+  if (leadResidence && (/^UTC[+-]/i.test(leadResidence) || /^GMT[+-]/i.test(leadResidence))) {
+    if (!data.notes || data.notes.indexOf(leadResidence) === -1) {
+      data.notes = (data.notes ? data.notes + " | " : "") + "Timezone: " + leadResidence;
+    }
+    leadResidence = "";
+  }
+  if (leadNationality && (/^UTC[+-]/i.test(leadNationality) || /^GMT[+-]/i.test(leadNationality))) {
+    leadNationality = "";
+  }
   var leadService = data.service || data.programChoice || data.targetProgram || data.program || "General Consultation";
   if (data.subProgram && leadService.indexOf(data.subProgram) === -1) {
     leadService += " (" + data.subProgram + ")";
@@ -255,8 +281,8 @@ function handleCategoryLead(data) {
   var pagePath = data.page || "";
   var formId = data.form_id || "consultation-lead";
 
-  // Resolve to one of the 5 category tabs
-  var targetTabName = resolveCategoryTabName(data);
+  // Category tab resolved upfront for dedupe scoping
+  targetTabName = targetTabName || resolveCategoryTabName(data);
   var emailStatus = "Pending";
 
   // Dispatch instant admin email alert to contact@sharifgroup.ae
@@ -392,7 +418,21 @@ function resolveCategoryTabName(data) {
     return CONFIG.TAB_GENERAL;
   }
 
-  // 4. Dedicated Page URL Path checks (Page URL defines the exact program domain!)
+  // 4. Eligibility Checker Forms -> ALWAYS route to Citizenship (or Residency if user assessed for residency)
+  if (
+    page.indexOf("eligibility") !== -1 ||
+    source.indexOf("eligibility") !== -1 ||
+    formId.indexOf("eligibility") !== -1 ||
+    formId === "onpage-lead-form"
+  ) {
+    var checkProgram = String(data.targetProgram || data.program || "").toLowerCase();
+    if (checkProgram.indexOf("residency") !== -1 || checkProgram.indexOf("golden") !== -1) {
+      return CONFIG.TAB_RESIDENCY;
+    }
+    return CONFIG.TAB_CITIZENSHIP;
+  }
+
+  // 5. Dedicated Page URL Path checks (Page URL defines the exact program domain!)
   if (page.indexOf("/residency") !== -1 || source.indexOf("/residency") !== -1) {
     return CONFIG.TAB_RESIDENCY;
   }
@@ -532,19 +572,26 @@ function handlePartnerApplication(data) {
 
   var email = (data.email || "").toLowerCase().trim();
 
-  // Deduplication guard: Prevent duplicate partner submissions within 20 seconds
+  // Deduplication guard: Prevent duplicate partner submissions within 5 seconds
+  var isTestSubmission = (
+    fullName.toLowerCase().indexOf("test") !== -1 ||
+    fullName.toLowerCase().indexOf("qa") !== -1 ||
+    email.indexOf("test") !== -1 ||
+    Boolean(data.is_test)
+  );
+
   var cache = CacheService.getScriptCache();
   var dedupeIdentity = (data.application_id || email || rawPhone.replace(/[^0-9]/g, "") || fullName).toLowerCase().replace(/[^a-z0-9]/g, "");
-  if (dedupeIdentity.length >= 3) {
+  if (!isTestSubmission && dedupeIdentity.length >= 3) {
     var dedupeKey = "partner_" + dedupeIdentity.slice(0, 45);
     if (cache.get(dedupeKey)) {
       return {
         status: "ignored_duplicate",
         tab: CONFIG.TAB_PARTNERSHIP,
-        message: "Duplicate partner application ignored (debounced within 20s)."
+        message: "Duplicate partner application ignored (debounced within 5s)."
       };
     }
-    cache.put(dedupeKey, "1", 20);
+    cache.put(dedupeKey, "1", 5);
   }
 
   var website = data.website || data.linkedin || "";
@@ -569,6 +616,16 @@ function handlePartnerApplication(data) {
     }
   }
 
+  // Dynamic Header Column Alignment: Ensure "Pending Review" lands under Status and emailStatus lands under Confirmation Email Status
+  var partnerHeaders = sheet.getRange(1, 1, 1, Math.max(sheet.getLastColumn(), 20)).getValues()[0];
+  var col19Head = String(partnerHeaders[18] || "").toLowerCase();
+  var valCol19 = "Pending Review";
+  var valCol20 = emailStatus;
+  if (col19Head.indexOf("email") !== -1 || col19Head.indexOf("mail") !== -1) {
+    valCol19 = emailStatus;
+    valCol20 = "Pending Review";
+  }
+
   sheet.appendRow([
     nowUtc,
     appId,
@@ -588,8 +645,8 @@ function handlePartnerApplication(data) {
     message,
     friendlyLang,
     source,
-    "Pending Review",
-    emailStatus
+    valCol19,
+    valCol20
   ]);
 
   try {
@@ -704,12 +761,42 @@ function handleWebinarRegistration(data) {
 // ==============================================================================
 function formatObjective(val) {
   if (!val) return "";
-  var s = String(val).toLowerCase().trim();
-  if (s === "global-mobility" || s.indexOf("mobility") !== -1 || s.indexOf("travel") !== -1) return "Global Mobility & Visa-Free Travel";
-  if (s === "plan-b" || s.indexOf("plan b") !== -1 || s.indexOf("passport") !== -1) return "Secure Second Passport (Plan B)";
-  if (s === "tax-optimization" || s.indexOf("tax") !== -1 || s.indexOf("wealth") !== -1) return "Wealth Preservation & Tax Structuring";
-  if (s === "family-future" || s.indexOf("family") !== -1 || s.indexOf("children") !== -1) return "Security & Future for Children";
-  return String(val);
+  var rawList = Array.isArray(val) ? val : String(val).split(/[,;|]/);
+  var formatted = [];
+
+  for (var i = 0; i < rawList.length; i++) {
+    var s = String(rawList[i]).toLowerCase().trim();
+    if (!s) continue;
+    if (s === "mobility" || s === "global-mobility" || s.indexOf("mobility") !== -1 || s.indexOf("travel") !== -1) {
+      formatted.push("Global Mobility & Visa-Free Travel");
+    } else if (s === "security" || s === "plan-b" || s.indexOf("plan b") !== -1 || s.indexOf("passport") !== -1 || s.indexOf("security") !== -1) {
+      formatted.push("Security & Second Passport (Plan B)");
+    } else if (s === "tax" || s === "tax-optimization" || s.indexOf("tax") !== -1 || s.indexOf("wealth") !== -1) {
+      formatted.push("Wealth Preservation & Tax Structuring");
+    } else if (s === "family" || s === "family-future" || s.indexOf("family") !== -1 || s.indexOf("children") !== -1) {
+      formatted.push("Security & Future for Children");
+    } else if (s === "lifestyle" || s === "minimal-stay" || s.indexOf("presence") !== -1) {
+      formatted.push("European Residence & Minimal Physical Presence");
+    } else if (s.indexOf("eu-citizenship") !== -1 || s.indexOf("citizenship pathway") !== -1) {
+      formatted.push("Pathway to EU Citizenship (5 Years)");
+    } else if (s.indexOf("schengen") !== -1) {
+      formatted.push("Visa-Free Schengen Mobility");
+    } else if (s.indexOf("family-inclusion") !== -1) {
+      formatted.push("Include Dependent Children & Parents");
+    } else if (s.indexOf("tax-planning") !== -1) {
+      formatted.push("International Tax & Wealth Planning");
+    } else {
+      formatted.push(rawList[i].trim());
+    }
+  }
+
+  var unique = [];
+  for (var j = 0; j < formatted.length; j++) {
+    if (unique.indexOf(formatted[j]) === -1) {
+      unique.push(formatted[j]);
+    }
+  }
+  return unique.length > 0 ? unique.join(", ") : String(val);
 }
 
 function formatTimeline(val) {
@@ -733,16 +820,79 @@ function formatFamily(val) {
 
 function formatBudget(val) {
   if (!val) return "";
-  var s = String(val).toLowerCase().trim();
-  if (s === "200k-250k" || s.indexOf("200k") !== -1) return "$200,000 – $250,000";
-  if (s === "250k-350k" || s.indexOf("250k") !== -1) return "$250,000 – $350,000";
-  if (s === "350k+" || s.indexOf("350k") !== -1) return "$350,000+";
+  var s = String(val).toLowerCase().trim().replace(/\s+/g, "");
+
+  var exactMap = {
+    "under_100k": "$100,000 or under",
+    "under100k": "$100,000 or under",
+    "100_200k": "$100,000 – $200,000",
+    "100k-200k": "$100,000 – $200,000",
+    "200_350k": "$200,000 – $350,000",
+    "200k-350k": "$200,000 – $350,000",
+    "350_600k": "$350,000 – $600,000",
+    "350k-600k": "$350,000 – $600,000",
+    "over_600k": "$600,000 or more",
+    "over600k": "$600,000 or more",
+    "600k+": "$600,000 or more",
+    "200k-250k": "$200,000 – $250,000",
+    "250k-350k": "$250,000 – $350,000",
+    "350k+": "$350,000+",
+    "250k-500k": "€250,000 – €500,000",
+    "500k-750k": "€500,000 – €750,000",
+    "750k-1m": "€750,000 – €1,000,000",
+    "1m+": "€1,000,000+",
+    "2m+": "AED 2,000,000+",
+    "aed2m+": "AED 2,000,000+",
+    "300k+": "$300,000+"
+  };
+
+  if (exactMap[s]) {
+    return exactMap[s];
+  }
+
+  // Exact bounds fallback without collision
+  if (s.indexOf("100_200") !== -1 || s.indexOf("100k-200") !== -1) return "$100,000 – $200,000";
+  if (s.indexOf("200_350") !== -1 || s.indexOf("200k-350") !== -1) return "$200,000 – $350,000";
+  if (s.indexOf("350_600") !== -1 || s.indexOf("350k-600") !== -1) return "$350,000 – $600,000";
+  if (s.indexOf("over_600") !== -1 || s.indexOf("600k") !== -1) return "$600,000 or more";
+  if (s.indexOf("500k-750") !== -1) return "€500,000 – €750,000";
+  if (s.indexOf("750k-1m") !== -1) return "€750,000 – €1,000,000";
+  if (s.indexOf("250k-500") !== -1) return "€250,000 – €500,000";
+  if (s.indexOf("200k-250") !== -1) return "$200,000 – $250,000";
+  if (s.indexOf("250k-350") !== -1) return "$250,000 – $350,000";
+  if (s.indexOf("350k") !== -1) return "$350,000+";
+
   return String(val);
 }
 
 function formatRoute(val) {
   if (!val) return "";
   var s = String(val).toLowerCase().trim();
+
+  // Portugal RBI
+  if (s === "regulated-fund" || s.indexOf("regulated-fund") !== -1 || s.indexOf("investment fund") !== -1 || s.indexOf("cmvm") !== -1) return "CMVM Regulated Investment Fund (€500k)";
+  if (s === "cultural-heritage" || s.indexOf("cultural") !== -1) return "Cultural Heritage / Arts (€250k)";
+  if (s === "scientific-research" || s.indexOf("scientific") !== -1) return "Scientific Research (€500k)";
+  if (s === "business-job-creation" || s.indexOf("job-creation") !== -1) return "Business & Job Creation (€500k)";
+
+  // Greece Golden Visa
+  if (s === "real-estate-250k" || (s.indexOf("250k") !== -1 && s.indexOf("greece") !== -1)) return "Commercial-to-Residential Conversion (€250k)";
+  if (s === "real-estate-400k" || (s.indexOf("400k") !== -1 && s.indexOf("greece") !== -1)) return "Regional Property Investment (€400k)";
+  if (s === "real-estate-800k" || (s.indexOf("800k") !== -1 && s.indexOf("greece") !== -1)) return "Prime Tier Property Investment (€800k)";
+
+  // Panama Residency
+  if (s.indexOf("qualified-investor") !== -1 || s.indexOf("panama-real-estate") !== -1) return "Real Estate Investment ($300k+)";
+  if (s.indexOf("bank-deposit") !== -1) return "Fixed-Term Bank Deposit ($750k+)";
+
+  // UAE Golden Visa
+  if (s === "property-2m" || s.indexOf("uae-property") !== -1 || (s.indexOf("2m") !== -1 && s.indexOf("uae") !== -1)) return "Real Estate Purchase (AED 2M+)";
+
+  // Real Estate (Property desk)
+  if (s === "ready-villas" || s.indexOf("ready") !== -1 || s.indexOf("villa") !== -1) return "Ready Homes & Luxury Villas";
+  if (s === "golden-visa" || s.indexOf("golden-visa") !== -1) return "Golden Visa Property (AED 2M+)";
+  if (s === "off-plan" || s.indexOf("off-plan") !== -1 || s.indexOf("offplan") !== -1) return "Off-Plan & High ROI Projects";
+
+  // Caribbean & Pacific CBI routes
   if (s === "edf-donation" || s.indexOf("edf") !== -1) return "Economic Diversification Fund ($200k+)";
   if (s === "ntf-donation" || s.indexOf("ntf") !== -1) return "National Transformation Fund ($235k+)";
   if (s === "ndf-donation" || s.indexOf("ndf") !== -1) return "National Development Fund ($230k+)";
@@ -752,7 +902,8 @@ function formatRoute(val) {
   if (s === "climate-resilience" || s.indexOf("climate") !== -1) return "Climate Resilience Fund ($105k+)";
   if (s === "public-investment" || s.indexOf("infrastructure") !== -1) return "National Infrastructure Fund ($90k+)";
   if (s === "real-estate" || s.indexOf("property") !== -1 || s.indexOf("estate") !== -1) return "Approved Real Estate Project ($200k+)";
-  if (s.indexOf("donation") !== -1 || s.indexOf("fund") !== -1) return "Government Fund Donation";
+  if (s.indexOf("donation") !== -1 || s.indexOf("fund donation") !== -1) return "Government Fund Donation";
+
   return String(val);
 }
 
