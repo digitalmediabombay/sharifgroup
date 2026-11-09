@@ -61,18 +61,26 @@ if (empty($fullName)) {
 $email       = trim(strtolower($data['email'] ?? ''));
 $dialCode    = trim($data['dialCode'] ?? '');
 $phone       = trim($data['phone'] ?? '');
-$country     = trim($data['country'] ?? $data['residence'] ?? $data['nationality'] ?? $data['address'] ?? $data['timezone'] ?? '');
+$country     = trim($data['country'] ?? $data['residence'] ?? $data['nationality'] ?? $data['address'] ?? '');
+$timezone    = trim($data['timezone'] ?? '');
+$propertyInterest = trim($data['propertyInterest'] ?? $data['property_interest'] ?? '');
 $service     = trim($data['service'] ?? $data['programChoice'] ?? $data['targetProgram'] ?? $data['program'] ?? $data['investmentRoute'] ?? 'General Consultation');
 if (!empty($data['subProgram']) && stripos($service, (string)$data['subProgram']) === false) {
     $service .= ' (' . $data['subProgram'] . ')';
 }
 $notes       = trim($data['notes'] ?? $data['message'] ?? $data['confidentialNotes'] ?? '');
+if (!empty($timezone) && stripos($notes, $timezone) === false) {
+    $notes = $notes ? ($notes . ' | Timezone: ' . $timezone) : ('Timezone: ' . $timezone);
+}
+if (!empty($propertyInterest) && stripos($notes, $propertyInterest) === false) {
+    $notes = $notes ? ($notes . ' | Property Interest: ' . $propertyInterest) : ('Property Interest: ' . $propertyInterest);
+}
 $lang        = strtolower(trim($data['lang'] ?? 'en'));
 $source      = trim($data['source'] ?? '');
 $page        = trim($data['page'] ?? '');
 $formId      = trim($data['form_id'] ?? 'consultation-form');
 $nowUtc      = gmdate('Y-m-d H:i:s') . ' UTC';
-$inquiryId   = 'INQ-' . strtoupper(substr(uniqid(), -6));
+$inquiryId   = !empty($data['inquiry_id']) ? trim($data['inquiry_id']) : ('INQ-' . strtoupper(substr(uniqid(), -6)));
 
 $targetTab   = trim($data['targetTab'] ?? '');
 if (empty($targetTab)) {
@@ -194,8 +202,7 @@ try {
 }
 
 // 3. Background Sync to Google Apps Script CRM (Google Sheets)
-// Skip if client-side already synced directly to avoid duplicate sheet entries
-if (!empty($CRM_WEBHOOK) && empty($data['crm_synced'])) {
+if (!empty($CRM_WEBHOOK)) {
     try {
         $crmPayload = json_encode([
             'form_id' => $formId,
@@ -206,7 +213,13 @@ if (!empty($CRM_WEBHOOK) && empty($data['crm_synced'])) {
             'country' => $country,
             'service' => $service,
             'notes' => $notes,
+            'investmentRoute' => trim($data['investmentRoute'] ?? $propertyInterest ?? ''),
+            'budget' => trim($data['budget'] ?? $data['budgetTier'] ?? ''),
+            'familyMembers' => trim($data['familyMembers'] ?? ''),
+            'objective' => trim($data['objective'] ?? ''),
+            'timeline' => trim($data['timeline'] ?? ''),
             'lang' => $lang,
+            'preferredLanguage' => trim($data['preferredLanguage'] ?? $lang),
             'source' => $source,
             'page' => $page,
             'targetTab' => $targetTab,
@@ -219,7 +232,7 @@ if (!empty($CRM_WEBHOOK) && empty($data['crm_synced'])) {
         curl_setopt($ch, CURLOPT_HTTPHEADER, ['Content-Type: application/json']);
         curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
         curl_setopt($ch, CURLOPT_FOLLOWLOCATION, true);
-        curl_setopt($ch, CURLOPT_TIMEOUT, 3);
+        curl_setopt($ch, CURLOPT_TIMEOUT, 4);
         curl_setopt($ch, CURLOPT_CONNECTTIMEOUT, 2);
         @curl_exec($ch);
     } catch (\Throwable $t) {

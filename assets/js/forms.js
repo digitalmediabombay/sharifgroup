@@ -678,14 +678,15 @@ async function handleContactSubmit(event) {
     payload.fullName = `${payload.firstName || ''} ${payload.lastName || ''}`.trim();
   }
 
-  // Map country/residence for CRM
+  // Map country/residence for CRM (strictly country/residence/nationality, never timezone)
   if (!payload.country) {
-    payload.country = payload.residence || payload.nationality || payload.address || payload.timezone || '';
+    payload.country = payload.residence || payload.nationality || '';
   }
 
   // Normalize dedicated questionnaire fields for CRM
+  payload.propertyInterest = payload.propertyInterest || payload.property_interest || payload.propertyType || '';
   payload.familyMembers = payload.familyMembers || payload.family || payload.familySize || '';
-  payload.investmentRoute = payload.investmentRoute || payload.route || '';
+  payload.investmentRoute = payload.investmentRoute || payload.route || payload.propertyInterest || '';
   payload.budget = payload.budget || payload.budgetTier || '';
   payload.objective = payload.objective || payload.primaryObjective || (Array.isArray(payload.goals) ? payload.goals.join(', ') : (payload.goals || ''));
   payload.timeline = payload.timeline || payload.planningTimeline || '';
@@ -777,6 +778,7 @@ async function handleContactSubmit(event) {
   if (payload.program) extraDetails.push(`Program: ${payload.program}`);
   else if (payload.programChoice) extraDetails.push(`Program: ${payload.programChoice}`);
   if (payload.subProgram) extraDetails.push(`Sub-Program: ${payload.subProgram}`);
+  if (payload.propertyInterest) extraDetails.push(`Property Interest: ${payload.propertyInterest}`);
   if (payload.investmentRoute) extraDetails.push(`Route: ${payload.investmentRoute}`);
   if (payload.budget) extraDetails.push(`Budget: ${payload.budget}`);
   if (payload.familyMembers) extraDetails.push(`Family: ${payload.familyMembers}`);
@@ -794,27 +796,36 @@ async function handleContactSubmit(event) {
     payload.notes = existingNotes ? `${existingNotes}\n---\n[Details] ${extraDetails.join(' | ')}` : extraDetails.join(' | ');
   }
 
+  // Unique inquiry identifier for CRM tracking and deduplication
+  if (!payload.inquiry_id) {
+    payload.inquiry_id = 'INQ-' + Date.now().toString(36).toUpperCase() + '-' + Math.random().toString(36).substring(2, 6).toUpperCase();
+  }
+
   payload.source = window.location.href;
   payload.page = window.location.pathname;
   payload.form_id = form.id || 'program-consult-form';
 
   try {
-    // 1. Dispatch to direct server mailer API (authenticated email to contact@sharifgroup.ae + local data backup)
+    // 1. Dispatch to direct server mailer API (authenticated email to contact@sharifgroup.ae + local data backup + background CRM sync)
     try {
       fetch('/api/contact.php', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ ...payload, crm_synced: true })
+        body: JSON.stringify(payload)
       }).catch(function() {});
     } catch (apiErr) {}
 
-    // 2. Dispatch to Google Apps Script CRM Webhook (Google Sheets sync)
+    // 2. Dispatch directly to Google Apps Script CRM Webhook (Google Sheets sync)
+    // NOTE: Uses text/plain with no-cors to eliminate browser preflight (OPTIONS) blocking
     if (CRM_WEBHOOK_URL) {
       await fetch(CRM_WEBHOOK_URL, {
         method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
+        mode: 'no-cors',
+        headers: { 'Content-Type': 'text/plain;charset=utf-8' },
         body: JSON.stringify(payload)
-      }).catch(function() {}); // silent catch — CORS preflight may warn but data still arrives
+      }).catch(function(e) {
+        console.warn('Direct CRM sync notice:', e);
+      });
     }
 
     form.reset();

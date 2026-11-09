@@ -1602,31 +1602,58 @@
 
             function submitOnPageLead(e) {
                 e.preventDefault();
+                const currentLang = (typeof window.getCurrentLanguage === 'function')
+                    ? window.getCurrentLanguage()
+                    : (document.documentElement.lang || 'en');
+
+                const selectedGoals = (latestCalculation.goals && latestCalculation.goals.length > 0)
+                    ? latestCalculation.goals
+                    : (typeof getSelectedGoals === 'function' ? getSelectedGoals() : []);
+
+                const inqId = "INQ-ELG-" + Date.now().toString(36).toUpperCase() + "-" + Math.random().toString(36).substring(2, 6).toUpperCase();
+
                 const leadData = {
+                    inquiry_id: inqId,
+                    form_id: "eligibility-checker-form",
+                    targetTab: "Citizenship",
                     fullName: document.getElementById("lead_name").value.trim(),
                     email: document.getElementById("lead_email").value.trim(),
                     phone: document.getElementById("lead_phone").value.trim(),
                     notes: document.getElementById("lead_notes").value.trim(),
-                    targetProgram: selectedTargetProgram,
+                    service: selectedTargetProgram || "General CBI Assessment",
+                    targetProgram: selectedTargetProgram || "General CBI Assessment",
                     citizenship: latestCalculation.citizenship || "",
+                    nationality: latestCalculation.citizenship || "",
                     residence: latestCalculation.residence || "",
+                    country: latestCalculation.residence || "",
                     familySize: latestCalculation.family || "",
-                    budgetTier: latestCalculation.budgetKey || "",
-                    goals: (latestCalculation.goals || []).join(", "),
-                    source: "Sharif Group Eligibility Checker",
+                    familyMembers: latestCalculation.family || "",
+                    budgetTier: latestCalculation.budgetKey || (document.getElementById("cbi_budget") ? document.getElementById("cbi_budget").value : ""),
+                    budget: latestCalculation.budgetKey || (document.getElementById("cbi_budget") ? document.getElementById("cbi_budget").value : ""),
+                    goals: selectedGoals.join(", "),
+                    objective: selectedGoals.join(", "),
+                    lang: currentLang,
+                    preferredLanguage: currentLang,
+                    source: window.location.href,
+                    page: window.location.pathname,
                     submittedAt: new Date().toISOString()
                 };
 
-                // Dispatch to CRM or backend webhook endpoint
-                if (typeof handleContactSubmit === "function") {
-                    // Integrated with centralized forms.js handler
-                }
+                // 1. Dispatch to direct server mailer API (cPanel authenticated mailer + local backup)
+                try {
+                    fetch('/api/contact.php', {
+                        method: 'POST',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify(leadData)
+                    }).catch(function() {});
+                } catch (apiErr) {}
 
+                // 2. Dispatch to Google Apps Script CRM Webhook (Google Sheets sync)
                 if (LEAD_WEBHOOK_URL) {
                     fetch(LEAD_WEBHOOK_URL, {
                         method: "POST",
                         mode: "no-cors",
-                        headers: { "Content-Type": "application/json" },
+                        headers: { "Content-Type": "text/plain;charset=utf-8" },
                         body: JSON.stringify(leadData)
                     }).catch(err => console.error("Webhook error:", err));
                 }
