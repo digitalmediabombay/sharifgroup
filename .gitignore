@@ -2,3 +2,5 @@ website.zip
 *.zip
 scratch/
 .vscode/
+data/inquiries.json
+data/event_registrations.json

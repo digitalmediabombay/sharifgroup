@@ -10,7 +10,11 @@ ErrorDocument 404 /404.html
     RewriteEngine On
     RewriteBase /
 
-    # 0. Route localized asset requests (/ar/assets/..., /fa/assets/..., /zh/assets/...) directly to root /assets/...
+    # 0. Block direct public HTTP access to sensitive data directory and backup files
+    RewriteRule ^data(/.*)?$ - [F,L,NC]
+    RewriteRule ^(?:inquiries|event_registrations)\.json$ - [F,L,NC]
+
+    # 0b. Route localized asset requests (/ar/assets/..., /fa/assets/..., /zh/assets/...) directly to root /assets/...
     RewriteRule ^(?:ar|fa|zh)/assets/(.*)$ /assets/$1 [L,NC]
 
     # 1. Strip /index.html from all URLs (301 redirect to clean trailing slash)

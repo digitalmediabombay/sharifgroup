@@ -145,6 +145,10 @@
   ],
   "rewrites": [
     {
+      "source": "/data/:path*",
+      "destination": "/404.html"
+    },
+    {
       "source": "/fa/events/(.+)",
       "destination": "/fa/events/"
     },
