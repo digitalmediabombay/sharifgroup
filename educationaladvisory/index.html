@@ -2534,12 +2534,12 @@ Apply for a Personalized <span class="italic text-[#786142] font-serif font-norm
 <!-- Row 2: Applicant Background -->
 <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
 <div>
-<label class="block text-[10px] uppercase tracking-wider text-neutral-700 font-bold mb-1.5"><span data-i18n="pages.education.placeholderNationality">Current Nationality</span> <span class="text-red-500">*</span></label>
-<input name="nationality" class="w-full bg-white/95 border border-neutral-300 rounded-xl px-4 py-3 text-xs focus:outline-none focus:border-[#786142] transition shadow-sm" placeholder="e.g. Indian, British, Emirati" required="" type="text"/>
+<label class="block text-[10px] uppercase tracking-wider text-neutral-700 font-bold mb-1.5"><span data-i18n="pages.education.form_label_nationality">Current Nationality</span> <span class="text-red-500">*</span></label>
+<input class="w-full bg-white/95 border border-neutral-300 rounded-xl px-4 py-3 text-xs focus:outline-none focus:border-[#786142] transition shadow-sm" data-i18n-placeholder="pages.education.placeholderNationality" name="nationality" placeholder="e.g. Indian, British, Emirati" required="" type="text"/>
 </div>
 <div>
-<label class="block text-[10px] uppercase tracking-wider text-neutral-700 font-bold mb-1.5"><span data-i18n="pages.education.placeholderResidence">Country of Residence</span> <span class="text-red-500">*</span></label>
-<input name="residence" class="w-full bg-white/95 border border-neutral-300 rounded-xl px-4 py-3 text-xs focus:outline-none focus:border-[#786142] transition shadow-sm" placeholder="e.g. UAE, Saudi Arabia, Qatar" required="" type="text"/>
+<label class="block text-[10px] uppercase tracking-wider text-neutral-700 font-bold mb-1.5"><span data-i18n="pages.education.form_label_residence">Country of Residence</span> <span class="text-red-500">*</span></label>
+<input class="w-full bg-white/95 border border-neutral-300 rounded-xl px-4 py-3 text-xs focus:outline-none focus:border-[#786142] transition shadow-sm" data-i18n-placeholder="pages.education.placeholderResidence" name="residence" placeholder="e.g. UAE, Saudi Arabia, Qatar" required="" type="text"/>
 </div>
 <div>
 <label class="block text-[10px] uppercase tracking-wider text-neutral-700 font-bold mb-1.5"><span data-i18n="pages.education.form_label_lang">Preferred Language</span> <span class="text-red-500">*</span></label>
@@ -2597,8 +2597,7 @@ Apply for a Personalized <span class="italic text-[#786142] font-serif font-norm
 <div>
 <label class="block text-[10px] uppercase tracking-wider text-neutral-700 font-bold mb-1.5"><span data-i18n="pages.education.form_label_intake">Target Intake Year</span> <span class="text-red-500">*</span></label>
 <select name="intakeTimeline" class="w-full bg-white/95 border border-neutral-300 rounded-xl px-4 py-3 text-xs focus:outline-none focus:border-[#786142] transition shadow-sm" required="">
-<option value="sep-2026" data-i18n="pages.education.form_opt_intake1">September 2026</option>
-<option value="jan-2027" data-i18n="pages.education.form_opt_intake2">January / Spring 2027</option>
+<option selected="" value="jan-2027" data-i18n="pages.education.form_opt_intake2">January / Spring 2027</option>
 <option value="sep-2027" data-i18n="pages.education.form_opt_intake3">September 2027</option>
 <option value="2028-beyond" data-i18n="pages.education.form_opt_intake4">2028 or Later</option>
 </select>

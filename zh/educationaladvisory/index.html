@@ -2524,16 +2524,17 @@ j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
 <!-- Row 2: Applicant Background -->
 <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
 <div>
-<label class="block text-[10px] uppercase tracking-wider text-neutral-700 font-bold mb-1.5"><span data-i18n="pages.education.placeholderNationality">例如：印度、英国、埃及</span> <span class="text-red-500">*</span></label>
-<input class="w-full bg-white/95 border border-neutral-300 rounded-xl px-4 py-3 text-xs focus:outline-none focus:border-[#786142] transition shadow-sm" name="nationality" placeholder="e.g. Indian, British, Emirati" required="" type="text"/>
+<label class="block text-[10px] uppercase tracking-wider text-neutral-700 font-bold mb-1.5"><span data-i18n="pages.education.form_label_nationality">当前国籍</span> <span class="text-red-500">*</span></label>
+<input class="w-full bg-white/95 border border-neutral-300 rounded-xl px-4 py-3 text-xs focus:outline-none focus:border-[#786142] transition shadow-sm" data-i18n-placeholder="pages.education.placeholderNationality" name="nationality" placeholder="e.g. Indian, British, Emirati" required="" type="text"/>
 </div>
 <div>
-<label class="block text-[10px] uppercase tracking-wider text-neutral-700 font-bold mb-1.5"><span data-i18n="pages.education.placeholderResidence">例如：阿联酋、沙特阿拉伯、英国</span> <span class="text-red-500">*</span></label>
-<input class="w-full bg-white/95 border border-neutral-300 rounded-xl px-4 py-3 text-xs focus:outline-none focus:border-[#786142] transition shadow-sm" name="residence" placeholder="e.g. UAE, Saudi Arabia, Qatar" required="" type="text"/>
+<label class="block text-[10px] uppercase tracking-wider text-neutral-700 font-bold mb-1.5"><span data-i18n="pages.education.form_label_residence">常住国家/地区</span> <span class="text-red-500">*</span></label>
+<input class="w-full bg-white/95 border border-neutral-300 rounded-xl px-4 py-3 text-xs focus:outline-none focus:border-[#786142] transition shadow-sm" data-i18n-placeholder="pages.education.placeholderResidence" name="residence" placeholder="e.g. UAE, Saudi Arabia, Qatar" required="" type="text"/>
 </div>
 <div>
 <label class="block text-[10px] uppercase tracking-wider text-neutral-700 font-bold mb-1.5"><span data-i18n="pages.education.form_label_lang">沟通偏好语言</span> <span class="text-red-500">*</span></label>
 <select class="w-full bg-white/95 border border-neutral-300 rounded-xl px-4 py-3 text-xs focus:outline-none focus:border-[#786142] transition shadow-sm" name="preferredLanguage" required="">
+<option value="chinese" selected="">中文 (Chinese)</option>
 <option data-i18n="pages.education.opt_lang_en" value="english">英语</option>
 <option data-i18n="pages.education.opt_lang_ar" value="arabic">阿拉伯语</option>
 <option data-i18n="pages.education.opt_lang_ru" value="russian">俄语</option>
