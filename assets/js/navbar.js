@@ -768,7 +768,17 @@
       });
     }
 
-    // 4. Header scroll shadow
+    // 4. Mega-menu desktop hover & focus safeguard
+    headerEl.querySelectorAll('.sg-nav-item').forEach(item => {
+      item.addEventListener('mouseenter', () => { item.classList.add('is-open'); });
+      item.addEventListener('mouseleave', () => { item.classList.remove('is-open'); });
+      item.addEventListener('focusin', () => { item.classList.add('is-open'); });
+      item.addEventListener('focusout', (e) => {
+        if (!item.contains(e.relatedTarget)) item.classList.remove('is-open');
+      });
+    });
+
+    // 5. Header scroll shadow
     window.addEventListener('scroll', function() {
       if (window.scrollY > 10) {
         headerEl.classList.add('is-scrolled');
