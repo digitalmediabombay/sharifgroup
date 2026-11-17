@@ -282,6 +282,8 @@
     const logoUrl = getAssetUrl('assets/images/vector_b5a81734.svg');
     const fallbackLogoUrl = getAssetUrl('assets/images/logo.svg');
     const isPartnerDemo = checkIsPartnerDemo();
+    const isContactPage = (typeof window !== 'undefined' && window.location && window.location.pathname.includes('/contact/'));
+    const consultHref = isContactPage ? '#program-consult-form-section' : (site + p + 'contact/');
 
     // Language options
     const langs = ['en', 'ar', 'fa', 'zh'];
@@ -476,7 +478,7 @@
         <a class="sg-pill-btn sg-btn-eligibility" href="${site + p}eligibilitychecker/">
           ${esc(n.eligibilityChecker)}
         </a>
-        <a class="sg-pill-btn sg-btn-consult" href="${site + p}contact/">
+        <a class="sg-pill-btn sg-btn-consult" href="${consultHref}">
           ${esc(n.bookConsultation)}
         </a>
 
@@ -512,6 +514,8 @@
     const p = getLangPrefix(lang);
     const site = getRootSite();
     const isPartnerDemo = checkIsPartnerDemo();
+    const isContactPage = (typeof window !== 'undefined' && window.location && window.location.pathname.includes('/contact/'));
+    const consultHref = isContactPage ? '#program-consult-form-section' : (site + p + 'contact/');
 
     const langs = ['en', 'ar', 'fa', 'zh'];
     const drawerLangsHTML = langs.map(l => {
@@ -609,7 +613,7 @@
 
       <!-- Bottom CTAs -->
       <div class="sg-drawer-ctas">
-        <a class="sg-pill-btn sg-btn-consult" href="${site + p}contact/">
+        <a class="sg-pill-btn sg-btn-consult" href="${consultHref}">
           ${esc(n.bookConsultation)}
         </a>
       </div>
@@ -683,10 +687,12 @@
     // 2. Mobile toggle
     const mobToggle = headerEl.querySelector('#sgMobToggle');
     if (mobToggle && drawerEl) {
+      mobToggle.setAttribute('aria-expanded', 'false');
       mobToggle.addEventListener('click', function(e) {
         e.stopPropagation();
         const isOpen = drawerEl.classList.toggle('is-open');
         headerEl.classList.toggle('drawer-open', isOpen);
+        mobToggle.setAttribute('aria-expanded', isOpen ? 'true' : 'false');
         document.body.style.overflow = isOpen ? 'hidden' : '';
       });
 
@@ -695,10 +701,61 @@
         if (e.target.closest('a')) {
           drawerEl.classList.remove('is-open');
           headerEl.classList.remove('drawer-open');
+          mobToggle.setAttribute('aria-expanded', 'false');
           document.body.style.overflow = '';
         }
       });
     }
+
+    // 2b. Keyboard accessibility (Escape key)
+    document.addEventListener('keydown', function(e) {
+      if (e.key === 'Escape' || e.key === 'Esc') {
+        let handled = false;
+        if (langWrap && langWrap.classList.contains('is-open')) {
+          langWrap.classList.remove('is-open');
+          if (langBtn) {
+            langBtn.setAttribute('aria-expanded', 'false');
+            langBtn.focus();
+          }
+          handled = true;
+        }
+        if (drawerEl && drawerEl.classList.contains('is-open')) {
+          drawerEl.classList.remove('is-open');
+          headerEl.classList.remove('drawer-open');
+          document.body.style.overflow = '';
+          if (mobToggle) {
+            mobToggle.setAttribute('aria-expanded', 'false');
+            mobToggle.focus();
+          }
+          handled = true;
+        }
+        if (handled) e.preventDefault();
+      }
+    });
+
+    // 2c. Smooth Consultation Navigation (T21)
+    const consultBtns = document.querySelectorAll('.sg-btn-consult');
+    consultBtns.forEach(btn => {
+      btn.addEventListener('click', function(e) {
+        const targetSection = document.getElementById('program-consult-form-section') ||
+                              document.getElementById('standalone-contact-form');
+        if (targetSection) {
+          e.preventDefault();
+          if (drawerEl && drawerEl.classList.contains('is-open')) {
+            drawerEl.classList.remove('is-open');
+            headerEl.classList.remove('drawer-open');
+            if (mobToggle) mobToggle.setAttribute('aria-expanded', 'false');
+            document.body.style.overflow = '';
+          }
+          const prefersReduced = window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+          targetSection.scrollIntoView({ behavior: prefersReduced ? 'auto' : 'smooth', block: 'start' });
+          const firstField = targetSection.querySelector('input:not([type="hidden"]), select, textarea');
+          if (firstField) {
+            setTimeout(() => { firstField.focus({ preventScroll: true }); }, prefersReduced ? 50 : 450);
+          }
+        }
+      });
+    });
 
     // 3. Mobile accordions
     if (drawerEl) {

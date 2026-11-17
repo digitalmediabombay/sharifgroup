@@ -1,10 +1,22 @@
-# Sharif Group CMS - API Security & Rewrite Configuration
+# ==============================================================================
+# Sharif Group CMS - API Security & Rewrite Configuration (.htaccess)
+# ==============================================================================
+
+# 1. Disable Directory Indexing
+Options -Indexes
+
+# 2. Block Direct HTTP Access to all JSON snapshots, auth tokens, configs, and logs
+<FilesMatch "(^\.|\.(json|lock|log|env|sql|bak|dist|md|sh)$)">
+    Order Allow,Deny
+    Deny from all
+</FilesMatch>
+
 <Files "config.php">
     Order Allow,Deny
     Deny from all
 </Files>
 
-# Ensure PHP errors are logged, not leaked (wrapped for PHP-FPM / fcgid / cPanel compatibility)
+# 3. Ensure PHP errors are logged internally, not leaked to browser
 <IfModule mod_php.c>
     php_flag display_errors off
     php_flag log_errors on
@@ -14,11 +26,10 @@
     php_flag log_errors on
 </IfModule>
 
-# Optional Pretty URL rewrites & Authorization Header Pass-through
+# 4. Authorization Header Pass-through & Rewrites (cPanel / FastCGI / PHP-FPM)
 <IfModule mod_rewrite.c>
     RewriteEngine On
 
-    # Crucial for cPanel / FastCGI / PHP-FPM: Pass Authorization header to PHP $_SERVER
     SetEnvIf Authorization "(.*)" HTTP_AUTHORIZATION=$1
     RewriteCond %{HTTP:Authorization} ^(.*)
     RewriteRule .* - [e=HTTP_AUTHORIZATION:%1]
@@ -33,12 +44,9 @@
     RewriteRule ^ai/?$ ai.php [L,QSA]
 </IfModule>
 
-# Zero-Cache rule for all dynamic CMS API endpoints & JSON snapshots
+# 5. Zero-Cache rule for all dynamic CMS API endpoints
 <IfModule mod_headers.c>
-    <FilesMatch "\.(php|json)$">
-        Header set Cache-Control "no-cache, no-store, must-revalidate, max-age=0"
-        Header set Pragma "no-cache"
-        Header set Expires "0"
-    </FilesMatch>
+    Header set Cache-Control "no-cache, no-store, must-revalidate, max-age=0"
+    Header set Pragma "no-cache"
+    Header set Expires "0"
 </IfModule>
-

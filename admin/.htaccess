@@ -1,4 +1,27 @@
-# Disallow indexing of admin files
+# ------------------------------------------------------------------------------
+# Sharif Group CMS - Admin Area Security Configuration (.htaccess)
+# ------------------------------------------------------------------------------
+
+# 1. Disable Directory Indexing
+Options -Indexes
+
+# 2. Block Search Engine Crawlers & Archivers
 <IfModule mod_headers.c>
     Header set X-Robots-Tag "noindex, nofollow, noarchive, nosnippet"
+    Header set Cache-Control "no-cache, no-store, must-revalidate, max-age=0"
+    Header set Pragma "no-cache"
+    Header set Expires "0"
 </IfModule>
+
+# 3. Block Direct HTTP Access to all data, draft, backup, log, and documentation files
+<FilesMatch "(^\.|\.(json|lock|log|env|sql|bak|dist|md|sh)$)">
+    Order Allow,Deny
+    Deny from all
+</FilesMatch>
+
+# 4. Optional IP Allow-list / Security Perimeter
+# To restrict all /admin/ access to specific office/VPN IPs, uncomment below:
+# <RequireAll>
+#     Require ip 127.0.0.1
+#     # Require ip YOUR_OFFICE_STATIC_IP
+# </RequireAll>

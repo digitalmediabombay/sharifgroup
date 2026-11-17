@@ -51,7 +51,7 @@
     <meta property="og:description" content="Obtain Republic of Nauru citizenship in 3 to 4 months with zero residency required. Starting from $115,000. Apply now with Sharif Group in Dubai."/>
     <meta property="og:type" content="website" />
     <meta property="og:url" content="https://sharifgroup.ae/programs/citizenshipbyinvestment/nauru/" />
-    <meta property="og:image" content="https://naurupassport.net/Nauru-01.jpg" />
+    <meta property="og:image" content="https://sharifgroup.ae/assets/images/nauru-citizenship-guide.jpg" />
     <meta property="og:site_name" content="Sharif Group Dubai" />
     <meta property="og:locale" content="en_US" />
 
@@ -59,7 +59,7 @@
     <meta name="twitter:card" content="summary_large_image" />
     <meta name="twitter:title" content="Nauru Citizenship by Investment | Sharif Group Dubai"/>
     <meta name="twitter:description" content="Obtain Republic of Nauru citizenship in 3 to 4 months with zero residency required. Starting from $115,000. Apply now with Sharif Group in Dubai."/>
-    <meta name="twitter:image" content="https://naurupassport.net/Nauru-01.jpg" />
+    <meta name="twitter:image" content="https://sharifgroup.ae/assets/images/nauru-citizenship-guide.jpg" />
 
     <!-- Comprehensive Schema.org JSON-LD for Search Engines & LLMs -->
     <script type="application/ld+json">
@@ -363,7 +363,7 @@
     
 
 </style>
-    <link rel="stylesheet" href="/assets/css/navbar.css" />
+    <link rel="stylesheet" href="/assets/css/navbar.css?v=20261117" />
 <link href="../../../assets/css/multilingual.css?v=20261017_v3" rel="stylesheet" />
     <!-- CMS Live Studio Integration (Active inside dashboard editor) -->
     <script>
@@ -843,16 +843,16 @@
                     style="opacity: 1; background-image: linear-gradient(rgba(11,15,20,0.55), rgba(11,15,20,0.65)), url('https://ntlinternational.com/wp-content/uploads/2026/04/Nauru-tropical_pacific_island_aerial.webp');">
                 </div>
                 <div class="dominica-hero-slide absolute inset-0 bg-cover bg-center transition-opacity duration-1000"
-                    style="opacity: 0; background-image: linear-gradient(rgba(11,15,20,0.55), rgba(11,15,20,0.65)), url('https://cdn.henleyglobal.com/storage/app/media/COUNTRIES/nauru-beach.jpg');">
+                    style="opacity: 0;" data-bg="linear-gradient(rgba(11,15,20,0.55), rgba(11,15,20,0.65)), url('https://cdn.henleyglobal.com/storage/app/media/COUNTRIES/nauru-beach.jpg');">
                 </div>
                 <div class="dominica-hero-slide absolute inset-0 bg-cover bg-center transition-opacity duration-1000"
-                    style="opacity: 0; background-image: linear-gradient(rgba(11,15,20,0.55), rgba(11,15,20,0.65)), url('https://api.oneworld.id/uploads/yaren_10_6ce2ccbbd6.jpg');">
+                    style="opacity: 0;" data-bg="linear-gradient(rgba(11,15,20,0.55), rgba(11,15,20,0.65)), url('https://api.oneworld.id/uploads/yaren_10_6ce2ccbbd6.jpg');">
                 </div>
                 <div class="dominica-hero-slide absolute inset-0 bg-cover bg-center transition-opacity duration-1000"
-                    style="opacity: 0; background-image: linear-gradient(rgba(11,15,20,0.55), rgba(11,15,20,0.65)), url('https://passportivity.com/wp/2026/04/citizenship-by-investment-nauru-image1.webp');">
+                    style="opacity: 0;" data-bg="linear-gradient(rgba(11,15,20,0.55), rgba(11,15,20,0.65)), url('https://passportivity.com/wp/2026/04/citizenship-by-investment-nauru-image1.webp');">
                 </div>
                 <div class="dominica-hero-slide absolute inset-0 bg-cover bg-center transition-opacity duration-1000"
-                    style="opacity: 0; background-image: linear-gradient(rgba(11,15,20,0.55), rgba(11,15,20,0.65)), url('/assets/images/Caribbean-beach-1-.webp');">
+                    style="opacity: 0;" data-bg="linear-gradient(rgba(11,15,20,0.55), rgba(11,15,20,0.65)), url('/assets/images/Caribbean-beach-1-.webp');">
                 </div>
             </div>
             <div class="absolute inset-0 bg-gradient-to-t from-neutral-950/80 via-transparent to-neutral-950/40 z-0">
@@ -3517,10 +3517,10 @@
         <div class="absolute inset-0 z-0 overflow-hidden pointer-events-none">
             <canvas class="absolute inset-0 w-full h-full object-cover" id="footer-seamless-canvas"></canvas>
             <video class="hidden" id="footer-hidden-video" muted="" playsinline="" preload="none">
-                <source src="../../../assets/videos/footer_bg_e58bba71.mp4" type="video/mp4" />
+                <source data-src="/assets/videos/footer_bg_e58bba71.mp4" type="video/mp4" />
             </video>
             <video class="hidden" id="footer-hidden-video-2" muted="" playsinline="" preload="none">
-                <source src="../../../assets/videos/footer_bg_e58bba71.mp4" type="video/mp4" />
+                <source data-src="/assets/videos/footer_bg_e58bba71.mp4" type="video/mp4" />
             </video>
             <div class="absolute inset-0 bg-gradient-to-b from-black/30 via-black/45 to-black/75"></div>
         </div>
@@ -3727,7 +3727,26 @@
             const v2 = document.getElementById("footer-hidden-video-2");
             const canvas = document.getElementById("footer-seamless-canvas");
             if (!v1 || !v2 || !canvas) return;
+
+            // T09: Prevent 13.5MB video decoding and 60fps canvas loop on mobile
+            if (window.innerWidth < 768 || window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
+                canvas.style.display = 'none';
+                return;
+            }
+
             const ctx = canvas.getContext("2d", { alpha: false });
+            let videoSourcesAttached = false;
+            function attachVideoSources() {
+                if (videoSourcesAttached) return;
+                videoSourcesAttached = true;
+                [v1, v2].forEach(v => {
+                    const s = v.querySelector('source[data-src]');
+                    if (s && !s.src) {
+                        s.src = s.getAttribute('data-src');
+                        v.load();
+                    }
+                });
+            }
 
             let activeVideo = v1;
             let standbyVideo = v2;
@@ -3779,6 +3798,7 @@
                     entries.forEach((entry) => {
                         isFooterVisible = entry.isIntersecting;
                         if (isFooterVisible) {
+                            if (typeof attachVideoSources === "function") attachVideoSources();
                             activeVideo.play().catch(() => {});
                             if (!animationFrameId) renderFrame();
                         } else {
@@ -3813,13 +3833,24 @@
 
         // Hero Slideshow Autoplay
         let activeIndex = 0;
-        const slides = document.querySelectorAll('.dominica-hero-slide');
+        const slides = document.querySelectorAll('.dominica-hero-slide, .stlucia-hero-slide, .hero-slide');
         if (slides.length > 0) {
+            function loadSlideBg(el) {
+                if (el && el.dataset.bg && !el.style.backgroundImage) {
+                    el.style.backgroundImage = el.dataset.bg;
+                }
+            }
+            if (slides.length > 1) {
+                setTimeout(() => loadSlideBg(slides[1]), 1200);
+            }
             setInterval(() => {
                 slides[activeIndex].style.opacity = '0';
                 activeIndex = (activeIndex + 1) % slides.length;
+                loadSlideBg(slides[activeIndex]);
                 slides[activeIndex].style.opacity = '1';
-            }, 3000);
+                const nextIdx = (activeIndex + 1) % slides.length;
+                loadSlideBg(slides[nextIdx]);
+            }, 3500);
         }
 
         // FAQ Accordion Toggle
@@ -4507,9 +4538,9 @@
         // Flag that the user is coming from an internal page of Sharif Group website
         sessionStorage.setItem('sharif_preloader_shown', 'true');
     </script>
-    <script defer="" src="/assets/js/navbar.js"></script>
-<script src="/assets/js/language-switcher.js"></script>
-    <script src="/assets/js/forms.js"></script>
+    <script defer="" src="/assets/js/navbar.js?v=20261117"></script>
+<script src="/assets/js/language-switcher.js?v=20261117"></script>
+    <script src="/assets/js/forms.js?v=20261117"></script>
 </body>
 
 </html>

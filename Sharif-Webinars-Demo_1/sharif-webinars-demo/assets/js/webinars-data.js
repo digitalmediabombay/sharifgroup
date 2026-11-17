@@ -7,12 +7,12 @@ window.SGCMS_WEBINARS = [
         "session_no": 1,
         "category": "Citizenship",
         "subcategory": "dominica",
-        "start_utc": "2026-10-29T15:30:00Z",
-        "date_confirmed": false,
+        "start_utc": "2026-11-12T15:30:00Z",
+        "date_confirmed": true,
         "duration_min": 65,
         "room_opens_min_before": 10,
-        "event_status": "ended",
-        "registration_open": false,
+        "event_status": "upcoming",
+        "registration_open": true,
         "capacity": 100,
         "join_visibility": "public",
         "join_url": "",
@@ -322,7 +322,7 @@ window.SGCMS_WEBINARS = [
         "session_no": 2,
         "category": "Citizenship",
         "subcategory": "dominica",
-        "start_utc": "2026-11-12T15:30:00Z",
+        "start_utc": "2026-11-19T15:30:00Z",
         "date_confirmed": true,
         "duration_min": 65,
         "room_opens_min_before": 10,
@@ -398,7 +398,9 @@ window.SGCMS_WEBINARS = [
                 "资金来源证明与转账",
                 "面试准备与完整费用"
             ]
-        }
+        },
+        "reg_status": "open",
+        "updated_at": "2026-11-17 08:31:01"
     },
     {
         "id": "WEB03",

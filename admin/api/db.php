@@ -9,7 +9,19 @@ require_once __DIR__ . '/config.php';
 header('Content-Type: application/json; charset=utf-8');
 $allowedOrigin = isset($_SERVER['HTTP_ORIGIN']) ? $_SERVER['HTTP_ORIGIN'] : '';
 $requestHost = isset($_SERVER['HTTP_HOST']) ? $_SERVER['HTTP_HOST'] : '';
-if (!empty($allowedOrigin) && parse_url($allowedOrigin, PHP_URL_HOST) === $requestHost) {
+$originHost = !empty($allowedOrigin) ? parse_url($allowedOrigin, PHP_URL_HOST) : '';
+$isAllowedOrigin = false;
+if (!empty($allowedOrigin)) {
+    if ($originHost === $requestHost ||
+        preg_match('/\.vercel\.app$/i', $originHost) ||
+        $originHost === 'localhost' ||
+        $originHost === '127.0.0.1' ||
+        $originHost === 'sharifgroup.ae' ||
+        $originHost === 'www.sharifgroup.ae') {
+        $isAllowedOrigin = true;
+    }
+}
+if ($isAllowedOrigin) {
     header('Access-Control-Allow-Origin: ' . $allowedOrigin);
     header('Access-Control-Allow-Credentials: true');
 }
@@ -167,6 +179,12 @@ function getJsonBody() {
         return $parsed;
     }
     $raw = file_get_contents('php://input');
+    if (!$raw && !empty($GLOBALS['HTTP_RAW_POST_DATA'])) {
+        $raw = $GLOBALS['HTTP_RAW_POST_DATA'];
+    }
+    if (!$raw && php_sapi_name() === 'cli' && defined('STDIN')) {
+        $raw = @stream_get_contents(STDIN);
+    }
     if (!$raw) {
         $parsed = [];
         return $parsed;
@@ -277,6 +295,7 @@ function requireAdminAuth() {
     }
 
     // 3. Verify Token
+    // 3. Strictly Verify Token against session or authorized server token cache
     if (!empty($token)) {
         // A. Match session token
         if (!empty($_SESSION['sgcms_token']) && hash_equals($_SESSION['sgcms_token'], $token)) {
@@ -290,24 +309,9 @@ function requireAdminAuth() {
             $_SESSION['sgcms_token'] = $token;
             return $cached[$token]['user'];
         }
-
-        // C. If DB is online, verify any valid admin user in cms_users
-        $db = getDb(true);
-        if ($db) {
-            try {
-                $stmt = $db->query("SELECT id, email, name, role FROM cms_users LIMIT 1");
-                $u = $stmt->fetch();
-                if ($u) {
-                    $_SESSION['sgcms_user'] = $u;
-                    $_SESSION['sgcms_token'] = $token;
-                    saveCachedToken($token, $u);
-                    return $u;
-                }
-            } catch (Exception $e) {}
-        }
     }
 
-    // 4. Unauthenticated
+    // 4. Unauthenticated - Deny access
     jsonResponse([
         'success' => false,
         'error'   => 'Authentication required. Please log in to Sharif Group CMS.',
@@ -317,23 +321,39 @@ function requireAdminAuth() {
 
 /**
  * Safely writes JSON content snapshot to disk
+ * Primary public snapshot is saved to /assets/data/published_content.json
  */
 function writePublishedSnapshot(array $data) {
-    $file = __DIR__ . '/published_content.json';
+    $primaryFile = dirname(dirname(__DIR__)) . '/assets/data/published_content.json';
+    $legacyFile  = __DIR__ . '/published_content.json';
+
+    $dir = dirname($primaryFile);
+    if (!is_dir($dir)) {
+        @mkdir($dir, 0755, true);
+    }
+
     $json = json_encode($data, JSON_UNESCAPED_UNICODE | JSON_PRETTY_PRINT | JSON_UNESCAPED_SLASHES);
-    $tmp = $file . '.tmp.' . bin2hex(random_bytes(4));
+    $success = false;
+
+    // 1. Write to primary public location (/assets/data/)
+    $tmp = $primaryFile . '.tmp.' . bin2hex(random_bytes(4));
     if (@file_put_contents($tmp, $json) !== false) {
-        @rename($tmp, $file);
-        @chmod($file, 0666);
-        return true;
+        @rename($tmp, $primaryFile);
+        @chmod($primaryFile, 0666);
+        $success = true;
+    } else {
+        $res = @file_put_contents($primaryFile, $json, LOCK_EX);
+        if ($res !== false) {
+            @chmod($primaryFile, 0666);
+            $success = true;
+        }
     }
-    // Direct write fallback
-    $res = @file_put_contents($file, $json, LOCK_EX);
-    if ($res !== false) {
-        @chmod($file, 0666);
-        return true;
-    }
-    return false;
+
+    // 2. Mirror to legacy location for admin compatibility
+    @file_put_contents($legacyFile, $json, LOCK_EX);
+    @chmod($legacyFile, 0666);
+
+    return $success;
 }
 
 function writeDraftSnapshot(array $data) {
@@ -354,7 +374,10 @@ function writeDraftSnapshot(array $data) {
 }
 
 function readPublishedSnapshot() {
-    $file = __DIR__ . '/published_content.json';
+    $primaryFile = dirname(dirname(__DIR__)) . '/assets/data/published_content.json';
+    $legacyFile  = __DIR__ . '/published_content.json';
+
+    $file = file_exists($primaryFile) ? $primaryFile : $legacyFile;
     if (!file_exists($file)) return [];
     $raw = @file_get_contents($file);
     if (!$raw) return [];

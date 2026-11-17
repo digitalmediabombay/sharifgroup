@@ -7,6 +7,11 @@
  * Works seamlessly with zero-config Google Translate (dict-chrome-ex / at) or AI keys.
  */
 
+if (basename($_SERVER['PHP_SELF']) === 'translate_sync.php') {
+    require_once __DIR__ . '/db.php';
+    requireAdminAuth();
+}
+
 if (!function_exists('translateTextServer')) {
 
     /**

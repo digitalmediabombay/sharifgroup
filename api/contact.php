@@ -37,10 +37,74 @@ if (!$data || !is_array($data)) {
     $data = $_POST;
 }
 
-// Honeypot check (hidden spam traps)
-if (!empty($data['website_url_honeypot'])) {
-    echo json_encode(['status' => 'success', 'message' => 'Spam detected']);
+// Honeypot check (hidden spam traps - B4 anti-abuse)
+if (!empty($data['website_url_honeypot']) || !empty($data['company_url']) || !empty($data['website']) || !empty($data['hp_check']) || !empty($data['fax'])) {
+    echo json_encode(['status' => 'success', 'message' => 'Inquiry received.']);
     exit;
+}
+
+// IP-based Rate Limiting (B4: max 12 submissions per minute per IP)
+$clientIp = $_SERVER['HTTP_CF_CONNECTING_IP'] ?? $_SERVER['HTTP_X_FORWARDED_FOR'] ?? $_SERVER['REMOTE_ADDR'] ?? '127.0.0.1';
+$clientIp = trim(explode(',', $clientIp)[0]);
+$rateFile = sys_get_temp_dir() . '/sharif_rate_' . md5($clientIp) . '.json';
+$rateNow = time();
+$rateData = ['count' => 0, 'first' => $rateNow];
+if (file_exists($rateFile)) {
+    $rawRate = @file_get_contents($rateFile);
+    if ($rawRate) {
+        $parsedRate = json_decode($rawRate, true);
+        if ($parsedRate && ($rateNow - ($parsedRate['first'] ?? 0)) < 60) {
+            $rateData = $parsedRate;
+        }
+    }
+}
+$rateData['count']++;
+@file_put_contents($rateFile, json_encode($rateData));
+if ($rateData['count'] > 12) {
+    http_response_code(429);
+    echo json_encode(['status' => 'error', 'message' => 'Rate limit reached. Please retry in 60 seconds.']);
+    exit;
+}
+
+// E.164 Phone Normalization Helper (B3)
+function normalizePhone($rawPhone, $dialCode = '') {
+    $eastern = ['۰','۱','۲','۳','۴','۵','۶','۷','۸','۹','٠','١','٢','٣','٤','٥','٦','٧','٨','٩'];
+    $latin   = ['0','1','2','3','4','5','6','7','8','9','0','1','2','3','4','5','6','7','8','9'];
+    $raw = str_replace($eastern, $latin, trim((string)$rawPhone));
+    $dial = str_replace($eastern, $latin, trim((string)$dialCode));
+    if (!empty($dial) && strpos($dial, '+') !== 0) $dial = '+' . $dial;
+
+    $clean = preg_replace('/[^\d+]/', '', $raw);
+    if (strpos($clean, '00') === 0) {
+        $clean = '+' . substr($clean, 2);
+    }
+    if (strpos($clean, '+') === 0) {
+        if (preg_match('/^(\+\d{1,4})(.*)$/', $clean, $m)) {
+            $dial = $m[1];
+            $clean = $m[2];
+        }
+    } else {
+        $dialDigits = preg_replace('/\D/', '', $dial);
+        if (!empty($dialDigits) && strpos($clean, $dialDigits) === 0 && strlen($clean) > strlen($dialDigits) + 5) {
+            $clean = substr($clean, strlen($dialDigits));
+        }
+    }
+    $clean = ltrim($clean, '0');
+    $localDigits = preg_replace('/\D/', '', $clean);
+    $dialDigits = preg_replace('/\D/', '', $dial);
+    $totalDigits = strlen($dialDigits . $localDigits);
+
+    $isValid = strlen($localDigits) >= 5 && $totalDigits >= 7 && $totalDigits <= 15;
+    $e164 = $isValid ? ($dial . $localDigits) : trim($dial . $localDigits);
+    $formatted = $isValid ? ($dial . ' ' . $localDigits) : trim($dial . ' ' . $raw);
+
+    return [
+        'valid' => $isValid,
+        'dialCode' => $dial ?: '+971',
+        'local' => $localDigits,
+        'e164' => $e164,
+        'formatted' => $formatted
+    ];
 }
 
 // Configuration
@@ -60,24 +124,71 @@ if (empty($fullName)) {
 
 $email       = trim(strtolower($data['email'] ?? ''));
 $dialCode    = trim($data['dialCode'] ?? '');
-$phone       = trim($data['phone'] ?? '');
-$country     = trim($data['country'] ?? $data['residence'] ?? $data['nationality'] ?? $data['address'] ?? '');
+$rawPhoneInput = trim($data['phone'] ?? '');
+$parsedPhone = normalizePhone($rawPhoneInput, $dialCode);
+$dialCode    = $parsedPhone['dialCode'];
+$phone       = $parsedPhone['formatted'];
+$whatsappE164= $parsedPhone['e164'];
+$country     = trim($data['country'] ?? $data['residence'] ?? $data['nationality'] ?? '');
+$address     = trim($data['address'] ?? '');
 $timezone    = trim($data['timezone'] ?? '');
 $propertyInterest = trim($data['propertyInterest'] ?? $data['property_interest'] ?? '');
 $service     = trim($data['service'] ?? $data['programChoice'] ?? $data['targetProgram'] ?? $data['program'] ?? $data['investmentRoute'] ?? 'General Consultation');
 if (!empty($data['subProgram']) && stripos($service, (string)$data['subProgram']) === false) {
     $service .= ' (' . $data['subProgram'] . ')';
 }
+
+// Education Advisory fields
+$studentAgeGrade   = trim($data['student_age'] ?? $data['studentAgeGrade'] ?? '');
+$studyLevel        = trim($data['study_level'] ?? $data['studyLevel'] ?? '');
+$targetDestination = trim($data['destination'] ?? $data['targetDestination'] ?? '');
+$intakeTimeline    = trim($data['intake'] ?? $data['intakeTimeline'] ?? '');
+
+// Social Responsibility fields
+$organization    = trim($data['organization'] ?? '');
+$orgType         = trim($data['orgType'] ?? $data['org_type'] ?? '');
+$preferredDate   = trim($data['preferredDate'] ?? $data['preferred_date'] ?? '');
+$preferredMethod = trim($data['preferredMethod'] ?? $data['preferred_method'] ?? '');
+
+// T05: Enforce temporal date validation for consultation bookings
+if (!empty($preferredDate)) {
+    $dt = DateTime::createFromFormat('Y-m-d', $preferredDate);
+    if ($dt && $dt->format('Y-m-d') === $preferredDate) {
+        $today = new DateTime('today', new DateTimeZone('UTC'));
+        $graceWindow = clone $today;
+        $graceWindow->modify('-1 day'); // Allow timezone edge cases (up to 24h behind)
+        if ($dt < $graceWindow) {
+            http_response_code(422);
+            echo json_encode([
+                'status' => 'error',
+                'success' => false,
+                'message' => 'Preferred consultation date cannot be in the past.',
+                'field' => 'preferredDate'
+            ]);
+            exit;
+        }
+    }
+}
+
 $notes       = trim($data['notes'] ?? $data['message'] ?? $data['confidentialNotes'] ?? '');
 if (!empty($timezone) && stripos($notes, $timezone) === false) {
     $notes = $notes ? ($notes . ' | Timezone: ' . $timezone) : ('Timezone: ' . $timezone);
+}
+if (!empty($address) && stripos($notes, $address) === false) {
+    $notes = $notes ? ($notes . ' | Address: ' . $address) : ('Address: ' . $address);
+}
+if (!empty($organization) && stripos($notes, $organization) === false) {
+    $notes = $notes ? ($notes . ' | Organization: ' . $organization . ($orgType ? " ($orgType)" : '')) : ('Organization: ' . $organization . ($orgType ? " ($orgType)" : ''));
 }
 if (!empty($propertyInterest) && stripos($notes, $propertyInterest) === false) {
     $notes = $notes ? ($notes . ' | Property Interest: ' . $propertyInterest) : ('Property Interest: ' . $propertyInterest);
 }
 $lang        = strtolower(trim($data['lang'] ?? 'en'));
+$siteLangMap = ['en' => 'English', 'ar' => 'Arabic', 'fa' => 'Persian', 'zh' => 'Chinese'];
+$siteLanguage = trim($data['site_language'] ?? $siteLangMap[$lang] ?? 'English');
 $source      = trim($data['source'] ?? '');
-$page        = trim($data['page'] ?? '');
+$page        = trim($data['page_path'] ?? $data['page'] ?? '');
+$pagePath    = $page;
 $formId      = trim($data['form_id'] ?? 'consultation-form');
 $nowUtc      = gmdate('Y-m-d H:i:s') . ' UTC';
 $inquiryId   = !empty($data['inquiry_id']) ? trim($data['inquiry_id']) : ('INQ-' . strtoupper(substr(uniqid(), -6)));
@@ -201,7 +312,9 @@ try {
     // Silent catch so backup error does not stop response
 }
 
-// 3. Background Sync to Google Apps Script CRM (Google Sheets)
+// 3. Central Sync to Google Apps Script CRM (Google Sheets)
+$crmSynced = false;
+$crmMessage = '';
 if (!empty($CRM_WEBHOOK)) {
     try {
         $crmPayload = json_encode([
@@ -209,8 +322,12 @@ if (!empty($CRM_WEBHOOK)) {
             'inquiry_id' => $inquiryId,
             'fullName' => $fullName,
             'email' => $email,
+            'dialCode' => $dialCode,
             'phone' => $phone,
+            'whatsapp_e164' => $whatsappE164,
             'country' => $country,
+            'address' => $address,
+            'timezone' => $timezone,
             'service' => $service,
             'notes' => $notes,
             'investmentRoute' => trim($data['investmentRoute'] ?? $propertyInterest ?? ''),
@@ -220,8 +337,23 @@ if (!empty($CRM_WEBHOOK)) {
             'timeline' => trim($data['timeline'] ?? ''),
             'lang' => $lang,
             'preferredLanguage' => trim($data['preferredLanguage'] ?? $lang),
+            'site_language' => $siteLanguage,
+            'siteLanguage' => $siteLanguage,
             'source' => $source,
-            'page' => $page,
+            'page' => $pagePath,
+            'page_path' => $pagePath,
+            'student_age' => $studentAgeGrade,
+            'studentAgeGrade' => $studentAgeGrade,
+            'study_level' => $studyLevel,
+            'studyLevel' => $studyLevel,
+            'destination' => $targetDestination,
+            'targetDestination' => $targetDestination,
+            'intake' => $intakeTimeline,
+            'intakeTimeline' => $intakeTimeline,
+            'organization' => $organization,
+            'orgType' => $orgType,
+            'preferredDate' => $preferredDate,
+            'preferredMethod' => $preferredMethod,
             'targetTab' => $targetTab,
             'timestamp' => $nowUtc
         ]);
@@ -229,22 +361,33 @@ if (!empty($CRM_WEBHOOK)) {
         $ch = curl_init($CRM_WEBHOOK);
         curl_setopt($ch, CURLOPT_POST, true);
         curl_setopt($ch, CURLOPT_POSTFIELDS, $crmPayload);
-        curl_setopt($ch, CURLOPT_HTTPHEADER, ['Content-Type: application/json']);
+        curl_setopt($ch, CURLOPT_HTTPHEADER, ['Content-Type: text/plain;charset=utf-8']);
         curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
         curl_setopt($ch, CURLOPT_FOLLOWLOCATION, true);
-        curl_setopt($ch, CURLOPT_TIMEOUT, 4);
-        curl_setopt($ch, CURLOPT_CONNECTTIMEOUT, 2);
-        @curl_exec($ch);
+        curl_setopt($ch, CURLOPT_TIMEOUT, 8);
+        curl_setopt($ch, CURLOPT_CONNECTTIMEOUT, 4);
+        $crmResponse = @curl_exec($ch);
+        $httpCode = curl_getinfo($ch, CURLINFO_HTTP_CODE);
+        curl_close($ch);
+
+        if ($httpCode >= 200 && $httpCode < 400 && !empty($crmResponse)) {
+            $parsed = json_decode($crmResponse, true);
+            if ($parsed && (($parsed['status'] ?? '') === 'success' || ($parsed['status'] ?? '') === 'ignored_duplicate')) {
+                $crmSynced = true;
+                $crmMessage = $parsed['message'] ?? 'Lead synced to Google Master Sheet.';
+            }
+        }
     } catch (\Throwable $t) {
-        // Opportunistic execution
+        // Fallback gracefully
     }
 }
 
-// Return Clean Response
+// Return Clean Response with verified confirmed status
 echo json_encode([
     'status' => 'success',
     'inquiry_id' => $inquiryId,
     'email_sent' => $adminEmailSent,
-    'message' => 'Inquiry recorded successfully.'
+    'crm_synced' => $crmSynced,
+    'message' => $crmMessage ?: 'Inquiry recorded and verified successfully.'
 ]);
 

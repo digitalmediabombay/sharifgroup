@@ -85,7 +85,9 @@ function buildSitemapXml($rootDir, $writeToDisk = false) {
     // Load deleted slugs blacklist from published_content.json if present
     $deletedSlugs = [];
     $cmsBlogs = [];
-    $publishedJsonFile = $rootDir . '/admin/api/published_content.json';
+    $primaryPubJsonFile = $rootDir . '/assets/data/published_content.json';
+    $legacyPubJsonFile  = $rootDir . '/admin/api/published_content.json';
+    $publishedJsonFile  = file_exists($primaryPubJsonFile) ? $primaryPubJsonFile : $legacyPubJsonFile;
     if (file_exists($publishedJsonFile)) {
         $jsonStr = @file_get_contents($publishedJsonFile);
         if ($jsonStr) {
@@ -150,6 +152,17 @@ function buildSitemapXml($rootDir, $writeToDisk = false) {
     }
 
     // Build hash map of deleted slugs / IDs for fast exclusion
+    $permanentBlacklist = [
+        'sample',
+        'sample-dominicaartcile',
+        'sample-dominicaarticle',
+        'sample-article',
+        'sample-post',
+        'sampledominicaartcile',
+        'sampledominicaarticle'
+    ];
+    $deletedSlugs = array_merge($deletedSlugs, $permanentBlacklist);
+
     $deletedMap = [];
     foreach ($deletedSlugs as $ds) {
         $clean = strtolower(trim((string)$ds));
@@ -165,6 +178,7 @@ function buildSitemapXml($rootDir, $writeToDisk = false) {
             if (!is_array($b) || !empty($b['deleted']) || ($b['status'] ?? '') === 'deleted') continue;
             $as = strtolower(trim($b['slug'] ?? ($b['en']['slug'] ?? '')));
             $aid = strtolower(trim($b['id'] ?? ''));
+            if (in_array($as, $permanentBlacklist) || in_array($aid, $permanentBlacklist)) continue;
             if ($as !== '' && isset($deletedMap[$as])) {
                 unset($deletedMap[$as]);
                 $reHealed = true;

@@ -173,7 +173,9 @@ function regenerateBlogListings($rootDir = null, $publishedSnapshot = null) {
         return ['success' => false, 'error' => 'Invalid root directory: ' . $rootDir];
     }
 
-    $pubFile = $rootDir . '/admin/api/published_content.json';
+    $primaryPub = $rootDir . '/assets/data/published_content.json';
+    $legacyPub  = $rootDir . '/admin/api/published_content.json';
+    $pubFile    = file_exists($primaryPub) ? $primaryPub : $legacyPub;
     if ($publishedSnapshot === null) {
         if (!file_exists($pubFile)) {
             return ['success' => false, 'error' => 'published_content.json not found'];
@@ -874,6 +876,10 @@ FAQSEC;
 
 // Allow direct HTTP / CLI invocation
 if (php_sapi_name() === 'cli' || (isset($_SERVER['SCRIPT_FILENAME']) && realpath($_SERVER['SCRIPT_FILENAME']) === __FILE__)) {
+    if (php_sapi_name() !== 'cli') {
+        require_once __DIR__ . '/db.php';
+        requireAdminAuth();
+    }
     $rootDir = realpath(dirname(__DIR__, 2));
     $res = regenerateBlogListings($rootDir);
     if (php_sapi_name() === 'cli') {

@@ -14,8 +14,13 @@ header('Cache-Control: no-cache, no-store, must-revalidate, max-age=0');
 header('Pragma: no-cache');
 header('Expires: 0');
 
+require_once __DIR__ . '/admin/api/db.php';
+requireAdminAuth();
+
 $rootDir = __DIR__;
-$pubFile = $rootDir . '/admin/api/published_content.json';
+$primaryPubFile = $rootDir . '/assets/data/published_content.json';
+$legacyPubFile  = $rootDir . '/admin/api/published_content.json';
+$pubFile = file_exists($primaryPubFile) ? $primaryPubFile : $legacyPubFile;
 $draftFile = $rootDir . '/admin/api/draft_content.json';
 
 $log = [];

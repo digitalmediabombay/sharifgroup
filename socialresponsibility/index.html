@@ -164,7 +164,7 @@
         href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Playfair+Display:ital,wght@0,400;0,600;0,700;1,400&display=swap"
         rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    <link rel="stylesheet" href="/assets/css/navbar.css" />
+    <link rel="stylesheet" href="/assets/css/navbar.css?v=20261117" />
 <link rel="stylesheet" href="../assets/css/multilingual.css?v=20261017_v3">
 
     <style>
@@ -1544,7 +1544,7 @@
                                 class="block text-[10px] uppercase tracking-wider text-neutral-400 font-bold mb-1.5"><span
                                     data-i18n="pages.socialResp.formLabel9">Nature of Collaboration</span> <span
                                     class="text-red-500">*</span></label>
-                            <select name="subProgram" required
+                            <select name="subProgram"
                                 class="w-full bg-white border border-neutral-200 rounded-xl px-4 py-3 text-xs focus:outline-none focus:border-luxury-gold shadow-sm">
                                 <option value="">Select Option</option>
                                 <option value="grant" data-i18n="pages.socialResp.formOption_grant">Scholarship /
@@ -1646,10 +1646,10 @@
         <div class="absolute inset-0 z-0 overflow-hidden pointer-events-none">
             <canvas class="absolute inset-0 w-full h-full object-cover" id="footer-seamless-canvas"></canvas>
             <video class="hidden" id="footer-hidden-video" muted="" playsinline="" preload="none">
-                <source src="/assets/videos/footer_bg_e58bba71.mp4" type="video/mp4" />
+                <source data-src="/assets/videos/footer_bg_e58bba71.mp4" type="video/mp4" />
             </video>
             <video class="hidden" id="footer-hidden-video-2" muted="" playsinline="" preload="none">
-                <source src="/assets/videos/footer_bg_e58bba71.mp4" type="video/mp4" />
+                <source data-src="/assets/videos/footer_bg_e58bba71.mp4" type="video/mp4" />
             </video>
             <div class="absolute inset-0 bg-gradient-to-b from-black/30 via-black/45 to-black/75"></div>
         </div>
@@ -1875,7 +1875,26 @@
             const v2 = document.getElementById("footer-hidden-video-2");
             const canvas = document.getElementById("footer-seamless-canvas");
             if (!v1 || !v2 || !canvas) return;
+
+            // T09: Prevent 13.5MB video decoding and 60fps canvas loop on mobile
+            if (window.innerWidth < 768 || window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
+                canvas.style.display = 'none';
+                return;
+            }
+
             const ctx = canvas.getContext("2d", { alpha: false });
+            let videoSourcesAttached = false;
+            function attachVideoSources() {
+                if (videoSourcesAttached) return;
+                videoSourcesAttached = true;
+                [v1, v2].forEach(v => {
+                    const s = v.querySelector('source[data-src]');
+                    if (s && !s.src) {
+                        s.src = s.getAttribute('data-src');
+                        v.load();
+                    }
+                });
+            }
 
             let activeVideo = v1;
             let standbyVideo = v2;
@@ -1927,6 +1946,7 @@
                     entries.forEach((entry) => {
                         isFooterVisible = entry.isIntersecting;
                         if (isFooterVisible) {
+                            if (typeof attachVideoSources === "function") attachVideoSources();
                             activeVideo.play().catch(() => {});
                             if (!animationFrameId) renderFrame();
                         } else {
@@ -2321,9 +2341,9 @@
         sessionStorage.setItem('sharif_preloader_shown', 'true');
     </script>
 
-    <script defer="" src="/assets/js/navbar.js"></script>
-<script src="/assets/js/language-switcher.js"></script>
-    <script src="/assets/js/forms.js"></script>
+    <script defer="" src="/assets/js/navbar.js?v=20261117"></script>
+<script src="/assets/js/language-switcher.js?v=20261117"></script>
+    <script src="/assets/js/forms.js?v=20261117"></script>
 </body>
 
 </html>

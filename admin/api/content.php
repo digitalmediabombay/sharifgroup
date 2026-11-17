@@ -19,6 +19,8 @@ $db = getDb(true);
 // Preload fallback snapshot
 $snapshot = [];
 if ($mode === 'draft') {
+    // Draft content is strictly restricted to authenticated administrators
+    requireAdminAuth();
     $snapshot = readDraftSnapshot();
     if (empty($snapshot)) {
         $snapshot = readPublishedSnapshot();

@@ -298,7 +298,7 @@ j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
     
 
 </style>
-<link rel="stylesheet" href="/assets/css/navbar.css" />
+<link rel="stylesheet" href="/assets/css/navbar.css?v=20261117" />
 <link href="../assets/css/multilingual.css?v=20261017_v3" rel="stylesheet"/>
 </head>
 <body class="bg-luxury-light text-luxury-dark font-sans overflow-x-hidden">
@@ -1353,7 +1353,7 @@ j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
 </div>
 </div>
 <div class="pt-2">
-<a class="inline-flex items-center justify-between w-full py-4 px-6 bg-[#FAF6EE] hover:bg-[#786142] text-neutral-900 hover:text-white rounded-2xl text-xs font-bold uppercase tracking-widest transition-all duration-300 border border-[#786142]/30 group/btn" href="#program-consult-form-section"><i class="fa-solid fa-arrow-right transition-transform duration-300 group-hover/btn:translate-x-1"></i> <span data-i18n="pages.education.path_board_btn_uk">استكشف المدارس الداخلية البريطانية</span></a>
+<a class="inline-flex items-center justify-between w-full py-4 px-6 bg-[#FAF6EE] hover:bg-[#786142] text-neutral-900 hover:text-white rounded-2xl text-xs font-bold uppercase tracking-widest transition-all duration-300 border border-[#786142]/30 group/btn" href="#program-consult-form-section" onclick="preselectEduProgram('boarding-school', 'uk', '35k-50k')"><i class="fa-solid fa-arrow-right transition-transform duration-300 group-hover/btn:translate-x-1"></i> <span data-i18n="pages.education.path_board_btn_uk">استكشف المدارس الداخلية البريطانية</span></a>
 </div>
 </div>
 </div>
@@ -1397,7 +1397,7 @@ j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
 </div>
 </div>
 <div class="pt-2">
-<a class="inline-flex items-center justify-between w-full py-4 px-6 bg-[#FAF6EE] hover:bg-[#786142] text-neutral-900 hover:text-white rounded-2xl text-xs font-bold uppercase tracking-widest transition-all duration-300 border border-[#786142]/30 group/btn" href="#program-consult-form-section"><i class="fa-solid fa-arrow-right transition-transform duration-300 group-hover/btn:translate-x-1"></i> <span data-i18n="pages.education.path_board_btn_ch">استكشف المدارس الداخلية السويسرية</span></a>
+<a class="inline-flex items-center justify-between w-full py-4 px-6 bg-[#FAF6EE] hover:bg-[#786142] text-neutral-900 hover:text-white rounded-2xl text-xs font-bold uppercase tracking-widest transition-all duration-300 border border-[#786142]/30 group/btn" href="#program-consult-form-section" onclick="preselectEduProgram('boarding-school', 'switzerland', '80k-plus')"><i class="fa-solid fa-arrow-right transition-transform duration-300 group-hover/btn:translate-x-1"></i> <span data-i18n="pages.education.path_board_btn_ch">استكشف المدارس الداخلية السويسرية</span></a>
 </div>
 </div>
 <div class="lg:col-span-6 relative min-h-[420px] bg-neutral-950 overflow-hidden order-1 lg:order-2">
@@ -2621,10 +2621,10 @@ j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
 <div class="absolute inset-0 z-0 overflow-hidden pointer-events-none">
 <canvas class="absolute inset-0 w-full h-full object-cover" id="footer-seamless-canvas"></canvas>
 <video class="hidden" id="footer-hidden-video" muted="" playsinline="" preload="none">
-<source src="/assets/videos/footer_bg_e58bba71.mp4" type="video/mp4"/>
+<source data-src="/assets/videos/footer_bg_e58bba71.mp4" type="video/mp4"/>
 </video>
 <video class="hidden" id="footer-hidden-video-2" muted="" playsinline="" preload="none">
-<source src="/assets/videos/footer_bg_e58bba71.mp4" type="video/mp4"/>
+<source data-src="/assets/videos/footer_bg_e58bba71.mp4" type="video/mp4"/>
 </video>
 <div class="absolute inset-0 bg-gradient-to-b from-black/30 via-black/45 to-black/75"></div>
 </div>
@@ -2776,7 +2776,26 @@ j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
             const v2 = document.getElementById("footer-hidden-video-2");
             const canvas = document.getElementById("footer-seamless-canvas");
             if (!v1 || !v2 || !canvas) return;
+
+            // T09: Prevent 13.5MB video decoding and 60fps canvas loop on mobile
+            if (window.innerWidth < 768 || window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
+                canvas.style.display = 'none';
+                return;
+            }
+
             const ctx = canvas.getContext("2d", { alpha: false });
+            let videoSourcesAttached = false;
+            function attachVideoSources() {
+                if (videoSourcesAttached) return;
+                videoSourcesAttached = true;
+                [v1, v2].forEach(v => {
+                    const s = v.querySelector('source[data-src]');
+                    if (s && !s.src) {
+                        s.src = s.getAttribute('data-src');
+                        v.load();
+                    }
+                });
+            }
 
             let activeVideo = v1;
             let standbyVideo = v2;
@@ -2828,6 +2847,7 @@ j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
                     entries.forEach((entry) => {
                         isFooterVisible = entry.isIntersecting;
                         if (isFooterVisible) {
+                            if (typeof attachVideoSources === "function") attachVideoSources();
                             activeVideo.play().catch(() => {});
                             if (!animationFrameId) renderFrame();
                         } else {
@@ -3360,8 +3380,8 @@ document.addEventListener('DOMContentLoaded', () => {
     // Flag that the user is coming from an internal page of Sharif Group website
     sessionStorage.setItem('sharif_preloader_shown', 'true');
 </script>
-<script defer="" src="/assets/js/navbar.js"></script>
-<script src="/assets/js/language-switcher.js"></script>
-<script src="/assets/js/forms.js"></script>
+<script defer="" src="/assets/js/navbar.js?v=20261117"></script>
+<script src="/assets/js/language-switcher.js?v=20261117"></script>
+<script src="/assets/js/forms.js?v=20261117"></script>
 </body>
 </html>

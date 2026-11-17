@@ -252,7 +252,7 @@
     
 
 </style>
-<link rel="stylesheet" href="/assets/css/navbar.css" />
+<link rel="stylesheet" href="/assets/css/navbar.css?v=20261117" />
 <link href="../assets/css/multilingual.css?v=20261017_v3" rel="stylesheet"/>
 <!-- CMS Live Studio Integration (Active inside dashboard editor) -->
 <script>
@@ -456,7 +456,7 @@
         <a class="sg-pill-btn sg-btn-eligibility" href="/ar/eligibilitychecker/">
           التحقق من الأهلية
         </a>
-        <a class="sg-pill-btn sg-btn-consult" href="/ar/contact/">
+        <a class="sg-pill-btn sg-btn-consult" href="#program-consult-form-section">
           حجز استشارة
         </a>
 
@@ -597,7 +597,7 @@
 
       <!-- Bottom CTAs -->
       <div class="sg-drawer-ctas">
-        <a class="sg-pill-btn sg-btn-consult" href="/ar/contact/">
+        <a class="sg-pill-btn sg-btn-consult" href="#program-consult-form-section">
           حجز استشارة
         </a>
       </div>
@@ -645,7 +645,7 @@
 </div>
 <div class="grid grid-cols-1 md:grid-cols-2 gap-8 max-w-5xl mx-auto">
 <!-- Clickable Office Address Card (Official Google Maps Pin Color) -->
-<a class="bg-white p-8 md:p-10 rounded-3xl border border-neutral-200/80 shadow-lg space-y-6 neon-card-hover group text-left flex flex-col justify-between cursor-pointer" href="https://maps.google.com/?q=Sharif+Group+The+Binary+Tower+Business+Bay+Dubai" target="_blank">
+<a class="bg-white p-8 md:p-10 rounded-3xl border border-neutral-200/80 shadow-lg space-y-6 neon-card-hover group text-left flex flex-col justify-between cursor-pointer" href="https://www.google.com/maps/dir/?api=1&destination=SHARIF+GROUP%2C+Office+116%2C+The+Binary+Tower%2C+Dubai&destination_place_id=ChIJA0KG8UtpXz4RZOLt_xMkAH8" target="_blank" rel="noopener noreferrer">
 <div class="space-y-4">
 <div class="w-14 h-14 rounded-2xl bg-[#EA4335]/15 text-[#EA4335] flex items-center justify-center text-2xl font-bold icon-hover-box">
 <i class="fa-solid fa-location-dot"></i>
@@ -795,7 +795,7 @@
 </div>
 </section>
 <!-- SECTION 5: PROGRAM CONSULTATION FORM SECTION (BACKGROUND: GOLD / SECTION-COPPER #FAF6EE) -->
-<section class="py-24 px-6 bg-[#FAF6EE] relative overflow-hidden border-t border-neutral-200/80" id="program-consult-form-section">
+<section class="py-24 px-6 bg-[#FAF6EE] relative overflow-hidden border-t border-neutral-200/80" id="program-consult-form-section" style="scroll-margin-top: 100px;">
 <div class="absolute inset-0 z-0 pointer-events-none bg-no-repeat bg-center bg-contain opacity-6" style="background-image: url('https://upload.wikimedia.org/wikipedia/commons/8/80/World_map_-_low_resolution.svg'); filter: sepia(0.1) saturate(0.8) brightness(1.5) contrast(0.5);">
 </div>
 <div class="absolute inset-0 z-0 pointer-events-none bg-gradient-to-b from-[#FAF6EE] via-[#FAF6EE]/90 to-[#FAF6EE]">
@@ -809,7 +809,7 @@
 <div class="w-16 h-[2px] bg-[#786142] mx-auto my-2"></div>
 <p class="text-xs md:text-sm text-neutral-600 font-light max-w-2xl mx-auto leading-relaxed" data-i18n="contact.consultationDesc">أكمل نموذج الاستفسار السريع أدناه. سيقيّم فريق الاستشارات لدينا في دبي ملفك ويُعدّ لك عرضًا سريًا.</p>
 </div>
-<form class="space-y-6 max-w-5xl mx-auto text-start" id="standalone-contact-form" onsubmit="handleContactSubmit(event)">
+<form class="space-y-6 max-w-5xl mx-auto text-start" id="standalone-contact-form" method="POST" action="/api/contact.php" onsubmit="handleContactSubmit(event)">
 <!-- Row 1: First Name & Last Name -->
 <div class="grid grid-cols-1 sm:grid-cols-2 gap-6">
 <div>
@@ -939,9 +939,8 @@
 <option value="UTC-01:00">UTC-01:00 (Azores, Cape Verde)</option>
 <option value="UTC+00:00">UTC+00:00 (GMT / London, Lisbon, Casablanca)</option>
 <option value="UTC+01:00">UTC+01:00 (Central European Time - Paris, Berlin, Rome)</option>
-<option value="UTC+02:00">UTC+02:00 (Eastern European Time - Cairo, Athens, Istanbul)
-                            </option>
-<option value="UTC+03:00">UTC+03:00 (Moscow, Riyadh, Nairobi)</option>
+<option value="UTC+02:00">UTC+02:00 (Eastern European Time - Cairo, Athens)</option>
+<option value="UTC+03:00">UTC+03:00 (Arabia & Turkey Time - Riyadh, Istanbul, Moscow)</option>
 <option value="UTC+03:30">UTC+03:30 (Tehran)</option>
 <option selected="" value="UTC+04:00">UTC+04:00 (GST - Gulf Standard Time / Dubai, Abu
                                 Dhabi)</option>
@@ -992,10 +991,10 @@
 <div class="absolute inset-0 z-0 overflow-hidden pointer-events-none">
 <canvas class="absolute inset-0 w-full h-full object-cover" id="footer-seamless-canvas"></canvas>
 <video class="hidden" id="footer-hidden-video" muted="" playsinline="" preload="none">
-<source src="/assets/videos/footer_bg_e58bba71.mp4" type="video/mp4"/>
+<source data-src="/assets/videos/footer_bg_e58bba71.mp4" type="video/mp4"/>
 </video>
 <video class="hidden" id="footer-hidden-video-2" muted="" playsinline="" preload="none">
-<source src="/assets/videos/footer_bg_e58bba71.mp4" type="video/mp4"/>
+<source data-src="/assets/videos/footer_bg_e58bba71.mp4" type="video/mp4"/>
 </video>
 <div class="absolute inset-0 bg-gradient-to-b from-black/30 via-black/45 to-black/75"></div>
 </div>
@@ -1170,7 +1169,26 @@
             const v2 = document.getElementById("footer-hidden-video-2");
             const canvas = document.getElementById("footer-seamless-canvas");
             if (!v1 || !v2 || !canvas) return;
+
+            // T09: Prevent 13.5MB video decoding and 60fps canvas loop on mobile
+            if (window.innerWidth < 768 || window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
+                canvas.style.display = 'none';
+                return;
+            }
+
             const ctx = canvas.getContext("2d", { alpha: false });
+            let videoSourcesAttached = false;
+            function attachVideoSources() {
+                if (videoSourcesAttached) return;
+                videoSourcesAttached = true;
+                [v1, v2].forEach(v => {
+                    const s = v.querySelector('source[data-src]');
+                    if (s && !s.src) {
+                        s.src = s.getAttribute('data-src');
+                        v.load();
+                    }
+                });
+            }
 
             let activeVideo = v1;
             let standbyVideo = v2;
@@ -1222,6 +1240,7 @@
                     entries.forEach((entry) => {
                         isFooterVisible = entry.isIntersecting;
                         if (isFooterVisible) {
+                            if (typeof attachVideoSources === "function") attachVideoSources();
                             activeVideo.play().catch(() => {});
                             if (!animationFrameId) renderFrame();
                         } else {
@@ -1310,10 +1329,7 @@
         });
 
         // Sub-service Options dynamic population handled centrally via /assets/js/forms.js
-">${optionText}</option>`;
-                });
-            }
-        }
+
 
         // Country Dial Code Pickers
         const countryCodes = [
@@ -1560,9 +1576,9 @@
         // Bypass Preloader when returning from internal pages
         sessionStorage.setItem('sharif_preloader_shown', 'true');
     </script>
-<script defer="" src="/assets/js/navbar.js"></script>
-<script src="/assets/js/language-switcher.js"></script>
+<script defer="" src="/assets/js/navbar.js?v=20261117"></script>
+<script src="/assets/js/language-switcher.js?v=20261117"></script>
 <!-- Sharif Group CMS Live Preview Loader -->
-<script src="/assets/js/forms.js"></script>
+<script src="/assets/js/forms.js?v=20261117"></script>
 </body>
 </html>

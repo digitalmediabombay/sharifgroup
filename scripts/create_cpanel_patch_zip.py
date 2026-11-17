@@ -19,6 +19,7 @@ def create_patch_zip():
         'admin/api/delete-blog.php',
         'admin/api/save.php',
         'admin/api/webinars-regen.php',
+        'assets/data/published_content.json',
         'admin/api/published_content.json',
         'admin/api/draft_content.json',
         'admin/dashboard.html',

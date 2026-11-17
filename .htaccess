@@ -1,10 +1,19 @@
 # ==============================================================================
-# Sharif Group - Apache Performance & Caching Configuration (.htaccess)
+# Sharif Group - Apache Performance & Security Configuration (.htaccess)
 # Optimized for Hostinger AlmaLinux VPS / cPanel
 # ==============================================================================
 
+# Disable directory indexing across the entire website
+Options -Indexes
+
 # Custom 404 Error Document
 ErrorDocument 404 /404.html
+
+# Block direct HTTP access to sensitive files, manifests, logs, and documentation
+<FilesMatch "(^package\.json$|^package-lock\.json$|^composer\.(json|lock)$|^\.git|\.md$|\.env$|\.sql$|\.log$|\.bak$)">
+    Order Allow,Deny
+    Deny from all
+</FilesMatch>
 
 <IfModule mod_rewrite.c>
     RewriteEngine On
@@ -15,9 +24,14 @@ ErrorDocument 404 /404.html
     RewriteCond %{HTTP_HOST} ^www\.(.+)$ [NC]
     RewriteRule ^ https://sharifgroup.ae%{REQUEST_URI} [R=301,L,NE]
 
-    # 0a. Block direct public HTTP access to sensitive data directory and backup files
+    # 0a. Block direct public HTTP access to sensitive data directory, drafts, manifests, and documentation
     RewriteRule ^data(/.*)?$ - [F,L,NC]
     RewriteRule ^(?:inquiries|event_registrations)\.json$ - [F,L,NC]
+    RewriteRule ^admin/api/(.*)\.json$ - [F,L,NC]
+    RewriteRule ^package\.json$ - [F,L,NC]
+    RewriteRule ^package-lock\.json$ - [F,L,NC]
+    RewriteRule ^(?:composer\.json|composer\.lock)$ - [F,L,NC]
+    RewriteRule ^(?:step\.md|DESIGN_SYSTEM\.md|dynamic_content\.md|.*\.md)$ - [F,L,NC]
 
     # 0b. Route localized asset requests (/ar/assets/..., /fa/assets/..., /zh/assets/...) directly to root /assets/...
     RewriteRule ^(?:ar|fa|zh)/assets/(.*)$ /assets/$1 [L,NC]
@@ -88,7 +102,10 @@ ErrorDocument 404 /404.html
     # 8b. Automated Multilingual XML Sitemap Engine
     RewriteRule ^sitemap\.xml$ sitemap.php [L]
 
-    # 8c. Explicit 404 for deleted or non-existent blog articles (never fallback to blog index)
+    # 8c. Explicit 410 Gone for unpublished sample / test articles
+    RewriteRule ^(?:(ar|fa|zh)/)?blog/(?:sample|sample-dominicaartcile|sample-dominicaarticle)(?:/.*)?$ - [G,L,NC]
+
+    # 8d. Explicit 404 for deleted or non-existent blog articles (never fallback to blog index)
     RewriteCond %{REQUEST_FILENAME} !-f
     RewriteCond %{REQUEST_FILENAME} !-d
     RewriteRule ^(?:(ar|fa|zh)/)?blog/(?!index\.html$|blog\.html$)[^/]+/?$ - [R=404,L]

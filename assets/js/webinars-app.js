@@ -17,8 +17,24 @@
   const SITE = window.location.protocol === 'file:' ? 'https://www.sharifgroup.ae/' : '/';
   const TZ = { kabul: 'Asia/Kabul', dubai: 'Asia/Dubai', istanbul: 'Europe/Istanbul' };
   const DIAL = [
-    ['+93', 'AF'], ['+971', 'AE'], ['+90', 'TR'], ['+98', 'IR'], ['+92', 'PK'], ['+966', 'SA'],
-    ['+974', 'QA'], ['+968', 'OM'], ['+49', 'DE'], ['+44', 'GB'], ['+1', 'US/CA'], ['+61', 'AU'], ['+86', 'CN']
+    ['+93', 'AF - Afghanistan'], ['+971', 'AE - United Arab Emirates'], ['+90', 'TR - Turkey'], ['+98', 'IR - Iran'],
+    ['+92', 'PK - Pakistan'], ['+966', 'SA - Saudi Arabia'], ['+974', 'QA - Qatar'], ['+968', 'OM - Oman'],
+    ['+965', 'KW - Kuwait'], ['+973', 'BH - Bahrain'], ['+44', 'GB - United Kingdom'], ['+1', 'US/CA - USA & Canada'],
+    ['+49', 'DE - Germany'], ['+33', 'FR - France'], ['+31', 'NL - Netherlands'], ['+46', 'SE - Sweden'],
+    ['+41', 'CH - Switzerland'], ['+39', 'IT - Italy'], ['+34', 'ES - Spain'], ['+351', 'PT - Portugal'],
+    ['+30', 'GR - Greece'], ['+357', 'CY - Cyprus'], ['+356', 'MT - Malta'], ['+43', 'AT - Austria'],
+    ['+32', 'BE - Belgium'], ['+45', 'DK - Denmark'], ['+47', 'NO - Norway'], ['+358', 'FI - Finland'],
+    ['+48', 'PL - Poland'], ['+353', 'IE - Ireland'], ['+61', 'AU - Australia'], ['+64', 'NZ - New Zealand'],
+    ['+86', 'CN - China'], ['+91', 'IN - India'], ['+60', 'MY - Malaysia'], ['+65', 'SG - Singapore'],
+    ['+62', 'ID - Indonesia'], ['+66', 'TH - Thailand'], ['+81', 'JP - Japan'], ['+82', 'KR - South Korea'],
+    ['+7', 'RU/KZ - Russia / Kazakhstan'], ['+20', 'EG - Egypt'], ['+964', 'IQ - Iraq'], ['+963', 'SY - Syria'],
+    ['+961', 'LB - Lebanon'], ['+962', 'JO - Jordan'], ['+967', 'YE - Yemen'], ['+992', 'TJ - Tajikistan'],
+    ['+998', 'UZ - Uzbekistan'], ['+993', 'TM - Turkmenistan'], ['+996', 'KG - Kyrgyzstan'], ['+994', 'AZ - Azerbaijan'],
+    ['+374', 'AM - Armenia'], ['+995', 'GE - Georgia'], ['+212', 'MA - Morocco'], ['+213', 'DZ - Algeria'],
+    ['+216', 'TN - Tunisia'], ['+249', 'SD - Sudan'], ['+252', 'SO - Somalia'], ['+27', 'ZA - South Africa'],
+    ['+55', 'BR - Brazil'], ['+52', 'MX - Mexico'], ['+54', 'AR - Argentina'], ['+1-767', 'DM - Dominica'],
+    ['+1-869', 'KN - St. Kitts & Nevis'], ['+1-758', 'LC - St. Lucia'], ['+1-268', 'AG - Antigua & Barbuda'],
+    ['+1-473', 'GD - Grenada'], ['+678', 'VU - Vanuatu'], ['+674', 'NR - Nauru'], ['+239', 'ST - São Tomé & Príncipe']
   ];
   const PHONE_RULES = { '+93': /^7\d{8}$/, '+971': /^5\d{8}$/, '+90': /^5\d{9}$/, '+98': /^9\d{9}$/ };
 
@@ -28,10 +44,21 @@
   const $$ = (s, el = document) => [...el.querySelectorAll(s)];
   const esc = s => String(s ?? '').replace(/[&<>"']/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]));
 
-  /* ---------- safe storage ---------- */
+  /* ---------- safe storage (T32: privacy hygiene & TTL) ---------- */
   const mem = {};
   const store = {
-    get(k, fb) { try { const v = localStorage.getItem(k); return v == null ? fb : JSON.parse(v); } catch (e) { return k in mem ? mem[k] : fb; } },
+    get(k, fb) {
+      try {
+        const v = localStorage.getItem(k);
+        if (v == null) return fb;
+        const parsed = JSON.parse(v);
+        if (Array.isArray(parsed)) {
+          const now = Date.now();
+          return parsed.filter(item => !item.expires_at || item.expires_at > now);
+        }
+        return parsed;
+      } catch (e) { return k in mem ? mem[k] : fb; }
+    },
     set(k, v) { try { localStorage.setItem(k, JSON.stringify(v)); } catch (e) { mem[k] = v; } },
     del(k) { try { localStorage.removeItem(k); } catch (e) { delete mem[k]; } }
   };
@@ -743,6 +770,7 @@
       // 1. Apply overrides from CRM schedule if present (time, link, and reg_status)
       if (schedule && schedule.sessions && schedule.sessions[w.session_no]) {
         const sData = schedule.sessions[w.session_no];
+        if (sData.status) w.event_status = sData.status;
         if (sData.start_utc) w.start_utc = sData.start_utc;
         if (typeof sData.join_url === 'string') w.join_url = sData.join_url.trim();
         if (typeof sData.duration_min !== 'undefined') w.duration_min = sData.duration_min;
@@ -782,19 +810,23 @@
         w.reg_status = w.registration_open ? 'open' : 'soon';
       }
 
-      // 2. Compute dynamic time status & 2-Hour Auto-Expiry Lifecycle
-      const startMs = Date.parse(w.start_utc);
-      if (!isNaN(startMs)) {
-        if (now > (startMs + TWO_HOURS)) {
-          // Rule: After 2 hours, link is automatically removed from public website
-          w.event_status = 'ended';
-          w.join_url = '';
-        } else if (now >= startMs && now <= (startMs + TWO_HOURS)) {
-          // Rule: During 2-hour window, session is live
-          w.event_status = 'live';
-        } else {
-          // Upcoming
-          w.event_status = 'upcoming';
+      // 2. Compute dynamic time status & 2-Hour Auto-Expiry Lifecycle (T30: preserve cancelled/postponed)
+      if (w.event_status === 'cancelled' || w.event_status === 'postponed' || w.status === 'cancelled' || w.status === 'postponed') {
+        w.event_status = w.event_status || w.status;
+      } else {
+        const startMs = Date.parse(w.start_utc);
+        if (!isNaN(startMs)) {
+          if (now > (startMs + TWO_HOURS)) {
+            // Rule: After 2 hours, link is automatically removed from public website
+            w.event_status = 'ended';
+            w.join_url = '';
+          } else if (now >= startMs && now <= (startMs + TWO_HOURS)) {
+            // Rule: During 2-hour window, session is live
+            w.event_status = 'live';
+          } else {
+            // Upcoming
+            w.event_status = 'upcoming';
+          }
         }
       }
 
@@ -805,8 +837,9 @@
   }
   const byslug = s => webinars().find(w => w.slug === s || (w.id && w.id.toLowerCase() === String(s).toLowerCase()) || ('session-' + w.session_no) === s);
   
-  /* held (ended) | locked | soon | ready */
+  /* held (ended) | locked | soon | ready | cancelled | postponed */
   const linkState = w => {
+    if (w.event_status === 'cancelled' || w.event_status === 'postponed') return w.event_status;
     const now = Date.now();
     const stTime = startOf(w).getTime();
     const TWO_HOURS = 2 * 60 * 60 * 1000;
@@ -879,18 +912,62 @@
   };
   const startOf = w => new Date(w.start_utc);
 
-  /* featured(): Returns whichever session admin marked active in CRM, defaulting to first upcoming */
+  /* featured(): 4-tier unified hero derivation engine (Phase 3D)
+     Tier 1: Explicit admin override (if pinned and not ended)
+     Tier 2: Currently LIVE session
+     Tier 3: Earliest UPCOMING session
+     Tier 4: Series concluded (all sessions ended)
+  */
   const featured = () => {
-    let activeNo = 1;
+    const all = webinars();
+    if (!all || !all.length) return null;
+
+    let pinnedNo = null;
+
+    // Check window global first (public synchronization)
+    if (typeof window.SGCMS_HERO_SESSION_NO === 'number' && window.SGCMS_HERO_SESSION_NO > 0) {
+      pinnedNo = window.SGCMS_HERO_SESSION_NO;
+    }
+
+    // Check localStorage schedule override (admin simulation or local preview)
     try {
       const schStr = localStorage.getItem('sgcms_webinar_schedule');
       if (schStr) {
         const sch = JSON.parse(schStr);
-        if (sch.active_session_no) activeNo = Number(sch.active_session_no);
+        if (sch.active_session_no) pinnedNo = Number(sch.active_session_no);
       }
     } catch (e) {}
-    const all = webinars();
-    return all.find(w => Number(w.session_no) === activeNo) || all.find(w => w.event_status !== 'ended') || all[0];
+
+    // Tier 1: If admin pinned a session and that session is NOT ended, feature it
+    if (pinnedNo) {
+      const pinned = all.find(w => Number(w.session_no) === pinnedNo);
+      if (pinned && pinned.event_status !== 'ended') {
+        pinned._hero_source = 'pinned';
+        return pinned;
+      }
+    }
+
+    // Tier 2: Check for any currently LIVE session
+    const live = all.find(w => w.event_status === 'live');
+    if (live) {
+      live._hero_source = 'live';
+      return live;
+    }
+
+    // Tier 3: Earliest UPCOMING session
+    const upcoming = all.find(w => w.event_status === 'upcoming');
+    if (upcoming) {
+      upcoming._hero_source = 'upcoming';
+      return upcoming;
+    }
+
+    // Tier 4: All sessions have concluded
+    const lastSession = all[all.length - 1];
+    const concludedSession = Object.assign({}, lastSession, {
+      all_ended: true,
+      _hero_source: 'concluded'
+    });
+    return concludedSession;
   };
 
   /* ---------- shell: header / footer ---------- */
@@ -1529,14 +1606,18 @@
   function joinAction(w, light) {
     const st = linkState(w), live = w.event_status === 'live';
     const opens = new Date(startOf(w).getTime() - w.room_opens_min_before * 60000);
+    if (st === 'cancelled') return `<div class="held${light ? ' held--light' : ''}"><div class="notice-ico"><i class="fa-solid fa-ban text-red-500"></i></div><div><strong>${esc(t('status.cancelled') || 'Cancelled')}</strong><p class="notice-desc">This session has been cancelled.</p></div></div>`;
+    if (st === 'postponed') return `<div class="held${light ? ' held--light' : ''}"><div class="notice-ico"><i class="fa-solid fa-clock text-amber-500"></i></div><div><strong>${esc(t('status.postponed') || 'Postponed')}</strong><p class="notice-desc">This session has been postponed to a future date.</p></div></div>`;
     if (st === 'held') return `<div class="held${light ? ' held--light' : ''}"><div class="notice-ico"><i class="fa-regular fa-circle-check"></i></div><div><strong>${esc(t('detail.heldTitle'))}</strong><p class="notice-desc">${esc(t('detail.heldText'))}</p></div></div>`;
     if (st === 'locked') return `<div class="locked${light ? ' locked--light' : ''}"><div class="notice-ico"><i class="fa-solid fa-lock"></i></div><div><strong>${esc(t('detail.lockedTitle'))}</strong><p class="notice-desc">${esc(t('detail.lockedText'))}</p></div></div>`;
     if (st === 'soon') return `<div class="soon-wrap"><span class="btn btn--soon${light ? ' btn--soon-light' : ''} btn--block" role="status"><i class="fa-regular fa-clock"></i><span>${esc(t('detail.linkSoon'))}</span></span><p class="note"><i class="fa-solid fa-link"></i><span>${esc(t('detail.linkSoonNote'))}</span></p></div>`;
     return `<a class="btn btn--bronze btn--block" href="${esc(w.join_url)}" data-join target="_blank" rel="noopener"><i class="fa-solid fa-video"></i><span>${esc(live ? t('detail.joinNow') : t('detail.joinBtn'))}</span></a>
       ${live ? '' : `<p class="note"><i class="fa-regular fa-clock"></i><span>${esc(t('detail.roomOpens', { time: tm(opens, TZ.kabul) }))}</span></p>`}`;
   }
-  const pageUrl = w => `${SITE}${prefix()}events/${w.slug}/`;
-  const waShare = w => `https://wa.me/?text=${encodeURIComponent(C(w).title + ' — ' + pageUrl(w))}`;
+  const CANONICAL_ORIGIN = 'https://sharifgroup.ae';
+  const canonicalUrl = w => `${CANONICAL_ORIGIN}/${prefix()}events/${w.slug}/`.replace(/([^:])\/\/+/g, '$1/');
+  const pageUrl = w => (window.location.protocol === 'file:' ? canonicalUrl(w) : `/${prefix()}events/${w.slug}/`.replace(/\/+/g, '/'));
+  const waShare = w => `https://wa.me/?text=${encodeURIComponent(C(w).title + ' — ' + canonicalUrl(w))}`;
 
   function webinarImg(sessionNo) {
     const num = Number(sessionNo) || 1;
@@ -1581,10 +1662,18 @@
 
   /* ---------- LIST PAGE ---------- */
   function viewList() {
-    const all = webinars(), f = featured(), fc = C(f), d = startOf(f);
+    const all = webinars();
+    const f = featured();
+    if (!all || !all.length || !f) return viewNotFound();
+
+    const fc = C(f), d = startOf(f);
     const st = linkState(f);
     const live = f.event_status === 'live';
-    let series = all.filter(w => !w.series || w.series === f.series || w.series === 'dominica-pilot');
+    const isSeriesConcluded = Boolean(f.all_ended);
+
+    // Dynamic series resolver (Phase 3D: works for any series without hardcoding)
+    const activeSeriesId = f.series || (typeof window.SGCMS_ACTIVE_SERIES === 'string' ? window.SGCMS_ACTIVE_SERIES : (all[0] && all[0].series) || 'dominica-pilot');
+    let series = all.filter(w => !w.series || w.series === activeSeriesId);
     if (!series.length) series = all;
     document.title = L().meta.title;
     return `
@@ -1601,37 +1690,68 @@
     <section class="feature"><div class="container">
       <article class="feature-card">
         <div class="feature-main">
-          <div class="btn-row" style="gap:8px;align-items:center">
-            <span class="eyebrow eyebrow--bronze caps">${I.spark}${esc(t('list.nextEyebrow'))} · ${esc(t('common.sessionN', { n: pad2(f.session_no) }))}</span>
-            ${statusBadge(f)}
-          </div>
-          <h2 class="display h-md on-light">${esc(fc.title)}</h2>
-          <p>${esc(fc.excerpt)}</p>
-          <div class="chips">
-            <span class="chip">${I.clock}${esc(t('common.min', { n: n(f.duration_min) }))}</span>
-            <span class="chip">${I.mic}${esc(t('common.lang'))}</span>
-            <span class="chip">${I.phone}${esc(t('list.noInstall'))}</span>
-            <span class="chip">${I.checkCircle}${esc(t('common.free'))}</span>
-            ${f.join_visibility === 'public' ? `<span class="chip">${I.link}${esc(t('status.publicLink'))}</span>` : ''}
-          </div>
-          <div class="btn-row">
-            ${st === 'held' ? `<span class="btn btn--soon btn--soon-light" style="border-color:rgba(239,68,68,0.3);color:#ef4444;background:rgba(239,68,68,0.08)" role="status"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" style="display:inline-block;vertical-align:middle;margin-right:4px"><circle cx="12" cy="12" r="10"/><line x1="15" y1="9" x2="9" y2="15"/><line x1="9" y1="9" x2="15" y2="15"/></svg>${esc(t('detail.heldTitle') || 'Session Ended')}</span>` : ''}
-            ${st === 'ready' ? `<a class="btn btn--bronze" href="${esc(f.join_url)}" data-join target="_blank" rel="noopener">${I.video}${esc(live ? (t('detail.joinNow') || 'Join Live Session Now') : (t('list.join') || 'Join Live Session'))}</a>` : ''}
-            ${st === 'soon' ? `<span class="btn btn--soon btn--soon-light" role="status">${I.clock}${esc(t('detail.linkSoon') || 'Link will be posted soon')}</span>` : ''}
-            ${f.registration_open && st !== 'held' ? `<a class="btn btn--bronze font-bold" href="${pageUrl(f)}#register" style="font-weight:700"><span>${esc(t('detail.registerNowBtn'))}</span><i class="fa-solid fa-arrow-right"></i></a>` : ''}
-            <a class="btn ${st === 'ready' || st === 'soon' || f.registration_open ? 'btn--ghost' : 'btn--bronze'}" href="${pageUrl(f)}">${esc(t('list.details'))}${I.arrow}</a>
-          </div>
+          ${isSeriesConcluded
+            ? `
+            <div class="btn-row" style="gap:8px;align-items:center">
+              <span class="eyebrow caps" style="color:var(--muted);"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" style="display:inline-block;vertical-align:middle;margin-right:4px"><circle cx="12" cy="12" r="10"/><path d="M12 6v6l4 2"/></svg>Series Completed · ${series.length} of ${series.length} Sessions Concluded</span>
+              <span class="badge" style="background:rgba(120,97,66,0.2);color:#C5A880;">All Sessions Finished</span>
+            </div>
+            <h2 class="display h-md on-light">${esc(fc.title || 'Webinar Series Concluded')}</h2>
+            <p>${esc(fc.excerpt || 'All scheduled sessions of this webinar series have ended. You can review session notes below or schedule a private consultation with our citizenship advisory team.')}</p>
+            <div class="chips">
+              <span class="chip">${I.checkCircle}Full Series Complete</span>
+              <span class="chip">${I.mic}${esc(t('common.lang'))}</span>
+              <span class="chip">${I.phone}Private Advisory Available</span>
+            </div>
+            <div class="btn-row">
+              <a class="btn btn--bronze font-bold" href="${SITE + prefix()}contact/"><i class="fa-solid fa-comments"></i> <span>Book Private Consultation</span></a>
+              <a class="btn btn--ghost" href="${pageUrl(f)}">${esc(t('list.details'))}${I.arrow}</a>
+            </div>
+            `
+            : `
+            <div class="btn-row" style="gap:8px;align-items:center">
+              <span class="eyebrow eyebrow--bronze caps">${I.spark}${esc(t('list.nextEyebrow'))} · ${esc(t('common.sessionN', { n: pad2(f.session_no) }))}</span>
+              ${statusBadge(f)}
+            </div>
+            <h2 class="display h-md on-light">${esc(fc.title)}</h2>
+            <p>${esc(fc.excerpt)}</p>
+            <div class="chips">
+              <span class="chip">${I.clock}${esc(t('common.min', { n: n(f.duration_min) }))}</span>
+              <span class="chip">${I.mic}${esc(t('common.lang'))}</span>
+              <span class="chip">${I.phone}${esc(t('list.noInstall'))}</span>
+              <span class="chip">${I.checkCircle}${esc(t('common.free'))}</span>
+              ${f.join_visibility === 'public' ? `<span class="chip">${I.link}${esc(t('status.publicLink'))}</span>` : ''}
+            </div>
+            <div class="btn-row">
+              ${st === 'held' ? `<span class="btn btn--soon btn--soon-light" style="border-color:rgba(239,68,68,0.3);color:#ef4444;background:rgba(239,68,68,0.08)" role="status"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" style="display:inline-block;vertical-align:middle;margin-right:4px"><circle cx="12" cy="12" r="10"/><line x1="15" y1="9" x2="9" y2="15"/><line x1="9" y1="9" x2="15" y2="15"/></svg>${esc(t('detail.heldTitle') || 'Session Ended')}</span>` : ''}
+              ${st === 'ready' ? `<a class="btn btn--bronze" href="${esc(f.join_url)}" data-join target="_blank" rel="noopener">${I.video}${esc(live ? (t('detail.joinNow') || 'Join Live Session Now') : (t('list.join') || 'Join Live Session'))}</a>` : ''}
+              ${st === 'soon' ? `<span class="btn btn--soon btn--soon-light" role="status">${I.clock}${esc(t('detail.linkSoon') || 'Link will be posted soon')}</span>` : ''}
+              ${f.registration_open && st !== 'held' ? `<a class="btn btn--bronze font-bold" href="${pageUrl(f)}#register" style="font-weight:700"><span>${esc(t('detail.registerNowBtn'))}</span><i class="fa-solid fa-arrow-right"></i></a>` : ''}
+              <a class="btn ${st === 'ready' || st === 'soon' || f.registration_open ? 'btn--ghost' : 'btn--bronze'}" href="${pageUrl(f)}">${esc(t('list.details'))}${I.arrow}</a>
+            </div>
+            `
+          }
         </div>
         <aside class="feature-side">
-          <div><div class="side-label caps">${esc(t('list.whenTitle'))}</div>${dateLine(f)}</div>
-          ${st === 'held'
-            ? `<div style="background:rgba(239,68,68,0.08);border:1px solid rgba(239,68,68,0.25);border-radius:10px;padding:12px 14px;margin:8px 0 14px"><div class="side-label caps" style="margin-bottom:4px;color:#ef4444;font-weight:700">${esc(t('detail.heldTitle') || 'Session Ended')}</div><p style="font-size:12px;opacity:0.85;margin:0;line-height:1.4">${esc(t('detail.heldText') || 'This session has concluded.')}</p></div>`
-            : (live
-                ? `<div><span class="badge badge--live"><span class="dot"></span>${esc(t('detail.liveBanner'))}</span></div>`
-                : `<div><div class="side-label caps" style="margin-bottom:10px">${esc(t('list.startsIn'))}</div>${countdownHTML(f)}</div>`
-              )
+          ${isSeriesConcluded
+            ? `
+            <div style="background:rgba(120,97,66,0.12);border:1px solid rgba(120,97,66,0.3);border-radius:10px;padding:16px;">
+              <div class="side-label caps" style="color:#C5A880;font-weight:700;margin-bottom:6px;">Series Concluded</div>
+              <p style="font-size:12.5px;color:var(--muted);margin:0;line-height:1.45;">All scheduled sessions of this series have concluded. Stay tuned for our next citizenship series or speak directly with our licensed advisors.</p>
+            </div>
+            `
+            : `
+            <div><div class="side-label caps">${esc(t('list.whenTitle'))}</div>${dateLine(f)}</div>
+            ${st === 'held'
+              ? `<div style="background:rgba(239,68,68,0.08);border:1px solid rgba(239,68,68,0.25);border-radius:10px;padding:12px 14px;margin:8px 0 14px"><div class="side-label caps" style="margin-bottom:4px;color:#ef4444;font-weight:700">${esc(t('detail.heldTitle') || 'Session Ended')}</div><p style="font-size:12px;opacity:0.85;margin:0;line-height:1.4">${esc(t('detail.heldText') || 'This session has concluded.')}</p></div>`
+              : (live
+                  ? `<div><span class="badge badge--live"><span class="dot"></span>${esc(t('detail.liveBanner'))}</span></div>`
+                  : `<div><div class="side-label caps" style="margin-bottom:10px">${esc(t('list.startsIn'))}</div>${countdownHTML(f)}</div>`
+                )
+            }
+            ${tzHTML(f)}
+            `
           }
-          ${tzHTML(f)}
         </aside>
       </article>
     </div></section>
@@ -2031,12 +2151,19 @@
       if (fd.get('company')) return; // honeypot
       const name = String(fd.get('fullName') || '').trim();
       const dial = String(fd.get('dialCode'));
-      const local = normPhone(fd.get('phone'));
+      const rawPhoneVal = fd.get('phone');
+      const parsedPhone = (typeof window.parsePhoneNumber === 'function')
+        ? window.parsePhoneNumber(rawPhoneVal, dial)
+        : { valid: /^\d{6,13}$/.test(normPhone(rawPhoneVal)), dialCode: dial, nationalNumber: normPhone(rawPhoneVal), e164: dial + normPhone(rawPhoneVal), formatted: `${dial} ${normPhone(rawPhoneVal)}` };
+
+      const local = parsedPhone.nationalNumber;
+      const finalDial = parsedPhone.dialCode;
+      const e164 = parsedPhone.e164;
+      const formattedPhone = parsedPhone.formatted;
       const email = toLatin(String(fd.get('email') || '').trim());
       const country = String(fd.get('residence_country') || '');
       const question = String(fd.get('question') || '').trim();
-      const rule = PHONE_RULES[dial] || /^\d{6,13}$/;
-      const checks = { name: name.length >= 2, phone: rule.test(local), email: !email || /^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/.test(email), country: !!country, q: question.length <= 500 };
+      const checks = { name: name.length >= 2, phone: parsedPhone.valid, email: !email || /^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/.test(email), country: !!country, q: question.length <= 500 };
       const map = { name: 'f-name', phone: 'f-phone', email: 'f-email', country: 'f-country', q: 'f-q' };
       let first = null;
       Object.entries(checks).forEach(([k, ok]) => {
@@ -2051,15 +2178,19 @@
         return;
       }
       const w = webinars().find(x => x.id === form.dataset.id);
-      const e164 = dial + local;
       const regs = store.get(K.regs, []);
       const dup = regs.find(r => r.webinar_id === w.id && r.whatsapp_e164 === e164);
       const params = new URLSearchParams(location.search);
       const allowedSrc = ['website', 'instagram', 'facebook', 'telegram', 'whatsapp', 'email', 'test'];
       const src = params.get('utm_source');
       const btn = $('button[type="submit"]', form);
-      btn.disabled = true; btn.textContent = t('form.sending');
+      const origBtnText = btn ? btn.innerHTML : '';
+      if (btn) {
+        btn.disabled = true;
+        btn.textContent = t('form.sending') || 'Sending...';
+      }
 
+      const siteLangNames = { en: 'English', ar: 'Arabic', fa: 'Persian', zh: 'Chinese' };
       const regId = (dup && dup.registration_id) ? dup.registration_id : ('REG-' + w.id + '-' + Date.now().toString(36).toUpperCase().slice(-6));
       const rec = {
         form_id: 'webinar-registration',
@@ -2069,62 +2200,118 @@
         webinar_title: (w.en && w.en.title) || w.title || '',
         webinar_start_utc: w.start_utc,
         fullName: name,
-        dialCode: dial,
-        phone: `${dial} ${local}`,
+        dialCode: finalDial,
+        phone: formattedPhone || `${finalDial} ${local}`,
         whatsapp_e164: e164,
         email: email,
         residence_country: country,
+        country: country,
         question: question,
         newsletter_optin: fd.get('newsletter_optin') === 'yes' ? 'yes' : 'no',
         utm_source: allowedSrc.includes(src) ? src : (src ? 'unknown' : 'website'),
         utm_campaign: params.get('utm_campaign') || w.utm_campaign,
         lang: lang,
+        site_language: siteLangNames[lang] || 'English',
         registered_at_utc: new Date().toISOString(),
         source: pageUrl(w),
-        page: `/${prefix()}events/${w.slug}/`
+        page: `/${prefix()}events/${w.slug}/`,
+        page_path: window.location.pathname
       };
 
-      if (dup) {
-        const idx = regs.findIndex(r => r.webinar_id === w.id && r.whatsapp_e164 === e164);
-        if (idx !== -1) regs[idx] = rec;
-      } else {
-        regs.push(rec);
-      }
-      store.set(K.regs, regs);
-      store.set(K.last, { id: rec.registration_id, dup: !!dup });
+      (async () => {
+        let confirmed = DEMO ? true : false;
 
-      // 1. Primary Direct Server Email Dispatcher (SPF/DKIM authenticated from @sharifgroup.ae)
-      if (window.location.protocol !== 'file:') {
-        fetch('/api/event-register.php', {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ ...rec, crm_synced: true })
-        }).catch(err => console.warn('Server registration notice:', err));
-      }
-
-      // 2. Central CRM Sheet Sync (Google Apps Script)
-      if (CRM_WEBHOOK_URL) {
-        fetch(CRM_WEBHOOK_URL, {
-          method: 'POST',
-          mode: 'no-cors',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ ...rec, crm_synced: true })
-        }).catch(err => console.warn('CRM sync error:', err));
-      }
-
-      setTimeout(() => {
-        const thanksUrl = `${SITE}${prefix()}events/${w.slug}/thanks/` + (DEMO ? '?demo=1' : '');
-        if (window.location.protocol === 'file:') {
-          location.hash = `#/events/${w.slug}/thanks`;
-        } else {
+        // 1. Primary Direct Server Email Dispatcher (SPF/DKIM authenticated from @sharifgroup.ae)
+        if (window.location.protocol !== 'file:') {
           try {
-            history.pushState({ page: 'thanks', slug: w.slug }, '', thanksUrl);
-            route();
-          } catch (_) {
-            window.location.href = thanksUrl;
+            const controller = new AbortController();
+            const timer = setTimeout(() => controller.abort(), 10000);
+            const sRes = await fetch('/api/event-register.php', {
+              method: 'POST',
+              headers: { 'Content-Type': 'application/json' },
+              body: JSON.stringify({ ...rec, crm_synced: true }),
+              signal: controller.signal
+            });
+            clearTimeout(timer);
+            if (sRes.ok) {
+              const resJson = await sRes.json().catch(() => null);
+              if (resJson && resJson.status === 'success') {
+                confirmed = true;
+              }
+            }
+          } catch (err) {
+            console.warn('Server registration notice:', err);
           }
         }
-      }, 550);
+
+        // 2. Central CRM Sheet Sync (Google Apps Script)
+        if (!confirmed && CRM_WEBHOOK_URL) {
+          try {
+            const controller = new AbortController();
+            const timer = setTimeout(() => controller.abort(), 10000);
+            const cRes = await fetch(CRM_WEBHOOK_URL, {
+              method: 'POST',
+              headers: { 'Content-Type': 'text/plain;charset=utf-8' },
+              body: JSON.stringify({ ...rec, crm_synced: true }),
+              signal: controller.signal
+            });
+            clearTimeout(timer);
+            if (cRes.ok) {
+              const resJson = await cRes.json().catch(() => null);
+              if (resJson && (resJson.status === 'success' || resJson.status === 'ignored_duplicate')) {
+                confirmed = true;
+              }
+            }
+          } catch (err) {
+            console.warn('CRM sync notice:', err);
+          }
+        }
+
+        if (confirmed || DEMO) {
+          // T32: Store sanitized reference without raw PII, with 48h TTL
+          const safeRegRecord = {
+            registration_id: rec.registration_id,
+            webinar_id: w.id,
+            whatsapp_e164: e164,
+            registered_at_utc: rec.registered_at_utc,
+            expires_at: Date.now() + (48 * 3600 * 1000)
+          };
+          if (dup) {
+            const idx = regs.findIndex(r => r.webinar_id === w.id && r.whatsapp_e164 === e164);
+            if (idx !== -1) regs[idx] = safeRegRecord;
+          } else {
+            regs.push(safeRegRecord);
+          }
+          store.set(K.regs, regs);
+          store.set(K.last, { id: rec.registration_id, dup: !!dup, expires_at: Date.now() + (48 * 3600 * 1000) });
+
+          const thanksUrl = `${SITE}${prefix()}events/${w.slug}/thanks/` + (DEMO ? '?demo=1' : '');
+          if (window.location.protocol === 'file:') {
+            location.hash = `#/events/${w.slug}/thanks`;
+          } else {
+            try {
+              history.pushState({ page: 'thanks', slug: w.slug }, '', thanksUrl);
+              route();
+            } catch (_) {
+              window.location.href = thanksUrl;
+            }
+          }
+        } else {
+          // B1 requirement: do not navigate to thanks if save fails, keep input fields, show error
+          if (btn) {
+            btn.disabled = false;
+            btn.innerHTML = origBtnText;
+          }
+          const formAlert = $('#formAlert');
+          if (formAlert) {
+            formAlert.textContent = t('form.saveError') || 'Registration could not be confirmed. Please check your connection and retry, or contact us directly on WhatsApp or contact@sharifgroup.ae. Your details have been preserved.';
+            formAlert.classList.add('show');
+            formAlert.scrollIntoView({ behavior: 'smooth', block: 'center' });
+          } else {
+            alert('Registration could not be confirmed. Please check your connection and retry, or contact us directly on WhatsApp or contact@sharifgroup.ae. Your details have been preserved.');
+          }
+        }
+      })();
     });
   }
 
@@ -2287,10 +2474,11 @@
     const f = d => d.toISOString().replace(/[-:]/g, '').replace(/\.\d{3}/, '');
     const escI = v => String(v).replace(/[\\;,]/g, m => '\\' + m).replace(/\n/g, '\\n');
     const pub = linkState(w) === 'ready';
-    const desc = `${c.excerpt}\n\n${pub ? w.join_url + '\n' : ''}${pageUrl(w)}`;
+    const fullUrl = canonicalUrl(w);
+    const desc = `${c.excerpt}\n\n${pub ? w.join_url + '\n' : ''}${fullUrl}`;
     const lines = ['BEGIN:VCALENDAR', 'VERSION:2.0', 'PRODID:-//Sharif Group//Webinars//EN', 'CALSCALE:GREGORIAN', 'METHOD:PUBLISH', 'BEGIN:VEVENT',
       `UID:${w.id}-${w.start_utc}@sharifgroup.ae`, `DTSTAMP:${f(new Date())}`, `DTSTART:${f(s)}`, `DTEND:${f(e)}`,
-      `SUMMARY:${escI(c.title)}`, `DESCRIPTION:${escI(desc)}`, `LOCATION:${escI(pub ? w.join_url : 'Online')}`, `URL:${pageUrl(w)}`,
+      `SUMMARY:${escI(c.title)}`, `DESCRIPTION:${escI(desc)}`, `LOCATION:${escI(pub ? w.join_url : 'Online')}`, `URL:${fullUrl}`,
       'BEGIN:VALARM', 'TRIGGER:-PT60M', 'ACTION:DISPLAY', 'DESCRIPTION:Reminder', 'END:VALARM', 'END:VEVENT', 'END:VCALENDAR'];
     download(lines.join('\r\n'), `sharif-webinar-${w.id}.ics`, 'text/calendar;charset=utf-8');
   }
@@ -2339,11 +2527,20 @@
   let cdTimer = null;
   function tickCountdowns() {
     const now = Date.now();
+    let hasExpired = false;
     $$('[data-cd]').forEach(el => {
       let ms = Math.max(0, Date.parse(el.dataset.cd) - now);
+      if (ms === 0 && !el.dataset.expiredHandled) {
+        el.dataset.expiredHandled = '1';
+        hasExpired = true;
+      }
       const v = { d: Math.floor(ms / 864e5), h: Math.floor(ms / 36e5) % 24, m: Math.floor(ms / 6e4) % 60, s: Math.floor(ms / 1e3) % 60 };
       Object.entries(v).forEach(([u, x]) => { const c = $(`[data-u="${u}"]`, el); if (c) c.textContent = pad2(x); });
     });
+    // Real-time lifecycle auto-advancement: If countdown expires, micro-advance view
+    if (hasExpired) {
+      setTimeout(() => { route(); }, 1800);
+    }
   }
 
   /* ---------- router ---------- */

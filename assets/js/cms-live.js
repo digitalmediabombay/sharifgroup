@@ -1179,11 +1179,14 @@
   function fetchAndApply() {
     var isFileProto = window.location && window.location.protocol === 'file:';
     var candidates = isFileProto ? [
+      'assets/data/published_content.json',
+      '../assets/data/published_content.json',
+      '../../assets/data/published_content.json',
+      '../../../assets/data/published_content.json',
       'admin/api/published_content.json',
-      '../admin/api/published_content.json',
-      '../../admin/api/published_content.json',
-      '../../../admin/api/published_content.json'
+      '../admin/api/published_content.json'
     ] : [
+      '/assets/data/published_content.json?v=' + Date.now(),
       '/admin/api/published_content.json?v=' + Date.now(),
       '/admin/api/content.php?mode=live&v=' + Date.now()
     ];

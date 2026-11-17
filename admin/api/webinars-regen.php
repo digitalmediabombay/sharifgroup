@@ -8,6 +8,11 @@
  * 3. Updates the featured webinar section and countdown target (data-cd) in index.html and all language versions (/fa/, /ar/, /zh/).
  */
 
+if (basename($_SERVER['PHP_SELF']) === 'webinars-regen.php') {
+    require_once __DIR__ . '/db.php';
+    requireAdminAuth();
+}
+
 if (!function_exists('formatWebinarSchedule')) {
     function formatWebinarSchedule($startUtc, $lang) {
         try {
@@ -78,7 +83,9 @@ if (!function_exists('regenerateWebinars')) {
         $updatedFiles = [];
 
         if (empty($publishedData['sgcms_webinars'])) {
-            $pubJsonFile = $rootDir . '/admin/api/published_content.json';
+            $pubJsonFile = file_exists($rootDir . '/assets/data/published_content.json')
+                ? ($rootDir . '/assets/data/published_content.json')
+                : ($rootDir . '/admin/api/published_content.json');
             if (file_exists($pubJsonFile)) {
                 $raw = @file_get_contents($pubJsonFile);
                 $d = json_decode($raw, true);
@@ -138,7 +145,9 @@ if (!function_exists('regenerateWebinars')) {
             }
         }
         if (!$schedule) {
-            $pubJsonFile = $rootDir . '/admin/api/published_content.json';
+            $pubJsonFile = file_exists($rootDir . '/assets/data/published_content.json')
+                ? ($rootDir . '/assets/data/published_content.json')
+                : ($rootDir . '/admin/api/published_content.json');
             if (file_exists($pubJsonFile)) {
                 $rawSchPub = @file_get_contents($pubJsonFile);
                 $decSchPub = json_decode($rawSchPub, true);
@@ -218,7 +227,13 @@ if (!function_exists('regenerateWebinars')) {
                 if (is_array($decSnap)) {
                     $decSnap['sgcms_webinars'] = $webinars;
                     if (!empty($schedule)) $decSnap['sgcms_webinar_schedule'] = $schedule;
-                    @file_put_contents($snapPath, json_encode($decSnap, JSON_PRETTY_PRINT | JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES), LOCK_EX);
+                    $encoded = json_encode($decSnap, JSON_PRETTY_PRINT | JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES);
+                    @file_put_contents($snapPath, $encoded, LOCK_EX);
+                    if ($fSnap === 'published_content.json') {
+                        $pubDataDir = $rootDir . '/assets/data';
+                        if (!is_dir($pubDataDir)) @mkdir($pubDataDir, 0755, true);
+                        @file_put_contents($pubDataDir . '/published_content.json', $encoded, LOCK_EX);
+                    }
                 }
             }
         }

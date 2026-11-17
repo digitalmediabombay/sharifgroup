@@ -4,31 +4,31 @@ const CRM_WEBHOOK_URL = "https://script.google.com/macros/s/AKfycby30xpRFvm-ZHoF
 
 // 1. Country Dial Code Dropdown Toggle & Filter
 const DEFAULT_COUNTRY_CODES = [
-	{ code: "+971", flag: "🇦🇪", name: "United Arab Emirates" },
-	{ code: "+93", flag: "🇦🇫", name: "Afghanistan" },
+	{ code: "+971", flag: "🇦🇪", name: "United Arab Emirates", aliases: ["امارات", "الامارات", "الإمارات", "دبی", "دبي", "ابوظبی", "أبوظبي", "uae", "emirates", "united arab emirates", "dubai", "阿联酋", "迪拜"] },
+	{ code: "+93", flag: "🇦🇫", name: "Afghanistan", aliases: ["افغانستان", "أفغانستان", "阿富汗", "afghanistan", "afghan"] },
 	{ code: "+355", flag: "🇦🇱", name: "Albania" },
-	{ code: "+213", flag: "🇩🇿", name: "Algeria" },
+	{ code: "+213", flag: "🇩🇿", name: "Algeria", aliases: ["الجزایر", "الجزائر", "algeria", "algiers", "阿尔及利亚"] },
 	{ code: "+376", flag: "🇦🇩", name: "Andorra" },
 	{ code: "+244", flag: "🇦🇴", name: "Angola" },
-	{ code: "+1-268", flag: "🇦🇬", name: "Antigua and Barbuda" },
-	{ code: "+54", flag: "🇦🇷", name: "Argentina" },
-	{ code: "+374", flag: "🇦🇲", name: "Armenia" },
-	{ code: "+61", flag: "🇦🇺", name: "Australia" },
-	{ code: "+43", flag: "🇦🇹", name: "Austria" },
-	{ code: "+994", flag: "🇦🇿", name: "Azerbaijan" },
+	{ code: "+1-268", flag: "🇦🇬", name: "Antigua and Barbuda", aliases: ["آنتیگوا", "أنتيغوا", "antigua", "barbuda", "安提瓜"] },
+	{ code: "+54", flag: "🇦🇷", name: "Argentina", aliases: ["آرژانتین", "الأرجنتين", "argentina", "buenos aires", "بوئنوس آیرس", "بوينس آيرس", "阿根廷"] },
+	{ code: "+374", flag: "🇦🇲", name: "Armenia", aliases: ["ارمنستان", "أرمينيا", "armenia", "yerevan", "ایروان", "يريفان", "亚美尼亚"] },
+	{ code: "+61", flag: "🇦🇺", name: "Australia", aliases: ["استرالیا", "استراليا", "أستراليا", "australia", "sydney", "melbourne", "澳大利亚", "澳洲"] },
+	{ code: "+43", flag: "🇦🇹", name: "Austria", aliases: ["اتریش", "النمسا", "austria", "austrian", "vienna", "وین", "فيينا", "奥地利"] },
+	{ code: "+994", flag: "🇦🇿", name: "Azerbaijan", aliases: ["آذربایجان", "أذربيجان", "azerbaijan", "baku", "باکو", "باكو", "阿塞拜疆"] },
 	{ code: "+1-242", flag: "🇧🇸", name: "Bahamas" },
-	{ code: "+973", flag: "🇧🇭", name: "Bahrain" },
+	{ code: "+973", flag: "🇧🇭", name: "Bahrain", aliases: ["بحرین", "البحرين", "bahrain", "manama", "المنامة", "巴林"] },
 	{ code: "+880", flag: "🇧🇩", name: "Bangladesh" },
 	{ code: "+1-246", flag: "🇧🇧", name: "Barbados" },
 	{ code: "+375", flag: "🇧🇾", name: "Belarus" },
-	{ code: "+32", flag: "🇧🇪", name: "Belgium" },
+	{ code: "+32", flag: "🇧🇪", name: "Belgium", aliases: ["بلژیک", "بلجيكا", "belgium", "belgian", "brussels", "بروکسل", "بروكسل", "比利时"] },
 	{ code: "+501", flag: "🇧🇿", name: "Belize" },
 	{ code: "+229", flag: "🇧🇯", name: "Benin" },
 	{ code: "+975", flag: "🇧🇹", name: "Bhutan" },
 	{ code: "+591", flag: "🇧🇴", name: "Bolivia" },
 	{ code: "+387", flag: "🇧🇦", name: "Bosnia and Herzegovina" },
 	{ code: "+267", flag: "🇧🇼", name: "Botswana" },
-	{ code: "+55", flag: "🇧🇷", name: "Brazil" },
+	{ code: "+55", flag: "🇧🇷", name: "Brazil", aliases: ["برزیل", "البرازيل", "brazil", "brazilian", "sao paulo", "rio", "巴西"] },
 	{ code: "+673", flag: "🇧🇳", name: "Brunei" },
 	{ code: "+359", flag: "🇧🇬", name: "Bulgaria" },
 	{ code: "+226", flag: "🇧🇫", name: "Burkina Faso" },
@@ -36,26 +36,26 @@ const DEFAULT_COUNTRY_CODES = [
 	{ code: "+238", flag: "🇨🇻", name: "Cabo Verde" },
 	{ code: "+855", flag: "🇰🇭", name: "Cambodia" },
 	{ code: "+237", flag: "🇨🇲", name: "Cameroon" },
-	{ code: "+1", flag: "🇨🇦", name: "Canada" },
+	{ code: "+1", flag: "🇨🇦", name: "Canada", aliases: ["کانادا", "كندا", "canada", "canadian", "toronto", "vancouver", "加拿大"] },
 	{ code: "+236", flag: "🇨🇫", name: "Central African Republic" },
 	{ code: "+235", flag: "🇹🇩", name: "Chad" },
 	{ code: "+56", flag: "🇨🇱", name: "Chile" },
-	{ code: "+86", flag: "🇨🇳", name: "China" },
+	{ code: "+86", flag: "🇨🇳", name: "China", aliases: ["چین", "الصين", "china", "chinese", "beijing", "shanghai", "中国", "中国人"] },
 	{ code: "+57", flag: "🇨🇴", name: "Colombia" },
 	{ code: "+269", flag: "🇰🇲", name: "Comoros" },
 	{ code: "+242", flag: "🇨🇬", name: "Congo (Congo-Brazzaville)" },
 	{ code: "+506", flag: "🇨🇷", name: "Costa Rica" },
 	{ code: "+385", flag: "🇭🇷", name: "Croatia" },
 	{ code: "+53", flag: "🇨🇺", name: "Cuba" },
-	{ code: "+357", flag: "🇨🇾", name: "Cyprus" },
+	{ code: "+357", flag: "🇨🇾", name: "Cyprus", aliases: ["قبرس", "قبرص", "cyprus", "cypriot", "塞浦路斯"] },
 	{ code: "+420", flag: "🇨🇿", name: "Czechia (Czech Republic)" },
 	{ code: "+243", flag: "🇨🇩", name: "Democratic Republic of the Congo" },
-	{ code: "+45", flag: "🇩🇰", name: "Denmark" },
+	{ code: "+45", flag: "🇩🇰", name: "Denmark", aliases: ["دانمارک", "الدانمارک", "الدنمارك", "denmark", "danish", "copenhagen", "کپنهاگ", "كوبنهاغن", "丹麦"] },
 	{ code: "+253", flag: "🇩🇯", name: "Djibouti" },
-	{ code: "+1-767", flag: "🇩🇲", name: "Dominica" },
+	{ code: "+1-767", flag: "🇩🇲", name: "Dominica", aliases: ["دومینیکا", "دومينيكا", "dominica", "commonwealth of dominica", "多米尼克"] },
 	{ code: "+1-809", flag: "🇩🇴", name: "Dominican Republic" },
 	{ code: "+593", flag: "🇪🇨", name: "Ecuador" },
-	{ code: "+20", flag: "🇪🇬", name: "Egypt" },
+	{ code: "+20", flag: "🇪🇬", name: "Egypt", aliases: ["مصر", "egypt", "egyptian", "cairo", "قاهره", "القاهرة", "埃及"] },
 	{ code: "+503", flag: "🇸🇻", name: "El Salvador" },
 	{ code: "+240", flag: "🇬🇶", name: "Equatorial Guinea" },
 	{ code: "+291", flag: "🇪🇷", name: "Eritrea" },
@@ -63,15 +63,15 @@ const DEFAULT_COUNTRY_CODES = [
 	{ code: "+268", flag: "🇸🇿", name: "Eswatini (formerly Swaziland)" },
 	{ code: "+251", flag: "🇪🇹", name: "Ethiopia" },
 	{ code: "+679", flag: "🇫🇯", name: "Fiji" },
-	{ code: "+358", flag: "🇫🇮", name: "Finland" },
-	{ code: "+33", flag: "🇫🇷", name: "France" },
+	{ code: "+358", flag: "🇫🇮", name: "Finland", aliases: ["فنلاند", "فنلندا", "finland", "finnish", "helsinki", "هلسینکی", "هلسنكي", "芬兰"] },
+	{ code: "+33", flag: "🇫🇷", name: "France", aliases: ["فرانسه", "فرنسا", "france", "french", "paris", "پاریس", "باريس", "法国"] },
 	{ code: "+241", flag: "🇬🇦", name: "Gabon" },
 	{ code: "+220", flag: "🇬🇲", name: "Gambia" },
-	{ code: "+995", flag: "🇬🇪", name: "Georgia" },
-	{ code: "+49", flag: "🇩🇪", name: "Germany" },
+	{ code: "+995", flag: "🇬🇪", name: "Georgia", aliases: ["گرجستان", "جورجيا", "georgia", "tbilisi", "تفلیس", "تبليسي", "格鲁吉亚"] },
+	{ code: "+49", flag: "🇩🇪", name: "Germany", aliases: ["آلمان", "المانيا", "ألمانيا", "germany", "deutschland", "berlin", "برلین", "برلين", "德国"] },
 	{ code: "+233", flag: "🇬🇭", name: "Ghana" },
-	{ code: "+30", flag: "🇬🇷", name: "Greece" },
-	{ code: "+1-473", flag: "🇬🇩", name: "Grenada" },
+	{ code: "+30", flag: "🇬🇷", name: "Greece", aliases: ["یونان", "اليونان", "greece", "greek", "athens", "آتن", "أثينا", "希腊"] },
+	{ code: "+1-473", flag: "🇬🇩", name: "Grenada", aliases: ["گرانادا", "غرينادا", "grenada", "格林纳达"] },
 	{ code: "+502", flag: "🇬🇹", name: "Guatemala" },
 	{ code: "+224", flag: "🇬🇳", name: "Guinea" },
 	{ code: "+245", flag: "🇬🇼", name: "Guinea-Bissau" },
@@ -80,136 +80,256 @@ const DEFAULT_COUNTRY_CODES = [
 	{ code: "+504", flag: "🇭🇳", name: "Honduras" },
 	{ code: "+36", flag: "🇭🇺", name: "Hungary" },
 	{ code: "+354", flag: "🇮🇸", name: "Iceland" },
-	{ code: "+91", flag: "🇮🇳", name: "India" },
-	{ code: "+62", flag: "🇮🇩", name: "Indonesia" },
-	{ code: "+98", flag: "🇮🇷", name: "Iran" },
-	{ code: "+964", flag: "🇮🇶", name: "Iraq" },
-	{ code: "+353", flag: "🇮🇪", name: "Ireland" },
+	{ code: "+91", flag: "🇮🇳", name: "India", aliases: ["هند", "هندوستان", "الهند", "india", "indian", "mumbai", "delhi", "印度"] },
+	{ code: "+62", flag: "🇮🇩", name: "Indonesia", aliases: ["اندونزی", "إندونيسيا", "indonesia", "jakarta", "جاکارتا", "جاكرتا", "印度尼西亚"] },
+	{ code: "+98", flag: "🇮🇷", name: "Iran", aliases: ["ایران", "إيران", "iran", "iranian", "persia", "tehran", "طهران", "تهران", "伊朗"] },
+	{ code: "+964", flag: "🇮🇶", name: "Iraq", aliases: ["عراق", "العراق", "iraq", "iraqi", "baghdad", "بغداد", "erbil", "اربیل", "أربيل", "伊拉克"] },
+	{ code: "+353", flag: "🇮🇪", name: "Ireland", aliases: ["ایرلند", "أيرلندا", "ireland", "irish", "dublin", "دوبلین", "دبلن", "爱尔兰"] },
 	{ code: "+972", flag: "🇮🇱", name: "Israel" },
-	{ code: "+39", flag: "🇮🇹", name: "Italy" },
+	{ code: "+39", flag: "🇮🇹", name: "Italy", aliases: ["ایتالیا", "إيطاليا", "italy", "italian", "rome", "رم", "روما", "milan", "میلان", "ميلانو", "意大利"] },
 	{ code: "+225", flag: "🇨🇮", name: "Ivory Coast" },
 	{ code: "+1-876", flag: "🇯🇲", name: "Jamaica" },
-	{ code: "+81", flag: "🇯🇵", name: "Japan" },
-	{ code: "+962", flag: "🇯🇴", name: "Jordan" },
-	{ code: "+7", flag: "🇰🇿", name: "Kazakhstan" },
+	{ code: "+81", flag: "🇯🇵", name: "Japan", aliases: ["ژاپن", "اليابان", "japan", "japanese", "tokyo", "توکیو", "طوكيو", "日本"] },
+	{ code: "+962", flag: "🇯🇴", name: "Jordan", aliases: ["اردن", "الأردن", "jordan", "jordanian", "amman", "امان", "عمان (الأردن)", "约旦"] },
+	{ code: "+7", flag: "🇰🇿", name: "Kazakhstan", aliases: ["قزاقستان", "كازاخستان", "kazakhstan", "almaty", "آلماتی", "ألماتي", "astana", "آستانه", "أستانا", "哈萨克斯坦"] },
 	{ code: "+254", flag: "🇰🇪", name: "Kenya" },
 	{ code: "+686", flag: "🇰🇮", name: "Kiribati" },
-	{ code: "+965", flag: "🇰🇼", name: "Kuwait" },
-	{ code: "+996", flag: "🇰🇬", name: "Kyrgyzstan" },
+	{ code: "+965", flag: "🇰🇼", name: "Kuwait", aliases: ["کویت", "الكويت", "kuwait", "科威特"] },
+	{ code: "+996", flag: "🇰🇬", name: "Kyrgyzstan", aliases: ["قرقیزستان", "قيرغيزستان", "kyrgyzstan", "bishkek", "بیشکک", "بيشكك", "吉尔吉斯斯坦"] },
 	{ code: "+856", flag: "🇱🇦", name: "Laos" },
 	{ code: "+371", flag: "🇱🇻", name: "Latvia" },
-	{ code: "+961", flag: "🇱🇧", name: "Lebanon" },
+	{ code: "+961", flag: "🇱🇧", name: "Lebanon", aliases: ["لبنان", "lebanon", "lebanese", "beirut", "بیروت", "بيروت", "黎巴嫩"] },
 	{ code: "+266", flag: "🇱🇸", name: "Lesotho" },
 	{ code: "+231", flag: "🇱🇷", name: "Liberia" },
-	{ code: "+218", flag: "🇱🇾", name: "Libya" },
+	{ code: "+218", flag: "🇱🇾", name: "Libya", aliases: ["لیبی", "ليبيا", "libya", "tripoli", "طرابلس", "利比亚"] },
 	{ code: "+423", flag: "🇱🇮", name: "Liechtenstein" },
 	{ code: "+370", flag: "🇱🇹", name: "Lithuania" },
 	{ code: "+352", flag: "🇱🇺", name: "Luxembourg" },
 	{ code: "+261", flag: "🇲🇬", name: "Madagascar" },
 	{ code: "+265", flag: "🇲🇼", name: "Malawi" },
-	{ code: "+60", flag: "🇲🇾", name: "Malaysia" },
+	{ code: "+60", flag: "🇲🇾", name: "Malaysia", aliases: ["مالزی", "ماليزيا", "malaysia", "kuala lumpur", "کوالالامپور", "كوالالمبور", "马来西亚"] },
 	{ code: "+960", flag: "🇲🇻", name: "Maldives" },
 	{ code: "+223", flag: "🇲🇱", name: "Mali" },
-	{ code: "+356", flag: "🇲🇹", name: "Malta" },
+	{ code: "+356", flag: "🇲🇹", name: "Malta", aliases: ["مالت", "مالطا", "malta", "maltese", "马耳他"] },
 	{ code: "+692", flag: "🇲🇭", name: "Marshall Islands" },
 	{ code: "+222", flag: "🇲🇷", name: "Mauritania" },
 	{ code: "+230", flag: "🇲🇺", name: "Mauritius" },
-	{ code: "+52", flag: "🇲🇽", name: "Mexico" },
+	{ code: "+52", flag: "🇲🇽", name: "Mexico", aliases: ["مکزیک", "المكسيك", "mexico", "mexican", "墨西哥"] },
 	{ code: "+691", flag: "🇫🇲", name: "Micronesia" },
 	{ code: "+373", flag: "🇲🇩", name: "Moldova" },
 	{ code: "+377", flag: "🇲🇨", name: "Monaco" },
 	{ code: "+976", flag: "🇲🇳", name: "Mongolia" },
 	{ code: "+382", flag: "🇲🇪", name: "Montenegro" },
-	{ code: "+212", flag: "🇲🇦", name: "Morocco" },
+	{ code: "+212", flag: "🇲🇦", name: "Morocco", aliases: ["مراکش", "المغرب", "morocco", "moroccan", "casablanca", "کازابلانکا", "الدار البيضاء", "rabat", "رباط", "الرباط", "摩洛哥"] },
 	{ code: "+258", flag: "🇲🇿", name: "Mozambique" },
 	{ code: "+95", flag: "🇲🇲", name: "Myanmar (formerly Burma)" },
 	{ code: "+264", flag: "🇳🇦", name: "Namibia" },
-	{ code: "+674", flag: "🇳🇷", name: "Nauru" },
+	{ code: "+674", flag: "🇳🇷", name: "Nauru", aliases: ["نائورو", "ناورو", "nauru", "瑙鲁"] },
 	{ code: "+977", flag: "🇳🇵", name: "Nepal" },
-	{ code: "+31", flag: "🇳🇱", name: "Netherlands" },
+	{ code: "+31", flag: "🇳🇱", name: "Netherlands", aliases: ["هلند", "هولندا", "netherlands", "holland", "dutch", "amsterdam", "آمستردام", "امستردام", "荷兰"] },
 	{ code: "+64", flag: "🇳🇿", name: "New Zealand" },
 	{ code: "+505", flag: "🇳🇮", name: "Nicaragua" },
 	{ code: "+227", flag: "🇳🇪", name: "Niger" },
 	{ code: "+234", flag: "🇳🇬", name: "Nigeria" },
 	{ code: "+850", flag: "🇰🇵", name: "North Korea" },
 	{ code: "+389", flag: "🇲🇰", name: "North Macedonia" },
-	{ code: "+47", flag: "🇳🇴", name: "Norway" },
-	{ code: "+968", flag: "🇴🇲", name: "Oman" },
-	{ code: "+92", flag: "🇵🇰", name: "Pakistan" },
+	{ code: "+47", flag: "🇳🇴", name: "Norway", aliases: ["نروژ", "النرويج", "norway", "norwegian", "oslo", "اسلو", "أوسلو", "挪威"] },
+	{ code: "+968", flag: "🇴🇲", name: "Oman", aliases: ["عمان", "عُمان", "سلطنة عمان", "oman", "muscat", "مسقط", "阿曼"] },
+	{ code: "+92", flag: "🇵🇰", name: "Pakistan", aliases: ["پاکستان", "باكستان", "pakistan", "pakistani", "巴基斯坦"] },
 	{ code: "+680", flag: "🇵🇼", name: "Palau" },
 	{ code: "+970", flag: "🇵🇸", name: "Palestine" },
-	{ code: "+507", flag: "🇵🇦", name: "Panama" },
+	{ code: "+507", flag: "🇵🇦", name: "Panama", aliases: ["پاناما", "بنما", "panama", "巴拿马"] },
 	{ code: "+675", flag: "🇵🇬", name: "Papua New Guinea" },
 	{ code: "+595", flag: "🇵🇾", name: "Paraguay" },
 	{ code: "+51", flag: "🇵🇪", name: "Peru" },
 	{ code: "+63", flag: "🇵🇭", name: "Philippines" },
-	{ code: "+48", flag: "🇵🇱", name: "Poland" },
-	{ code: "+351", flag: "🇵🇹", name: "Portugal" },
-	{ code: "+974", flag: "🇶🇦", name: "Qatar" },
+	{ code: "+48", flag: "🇵🇱", name: "Poland", aliases: ["لهستان", "بولندا", "poland", "polish", "warsaw", "ورشو", "وارسو", "波兰"] },
+	{ code: "+351", flag: "🇵🇹", name: "Portugal", aliases: ["پرتغال", "البرتغال", "portugal", "portuguese", "lisbon", "لیسبون", "لشبونة", "葡萄牙"] },
+	{ code: "+974", flag: "🇶🇦", name: "Qatar", aliases: ["قطر", "qatar", "doha", "الدوحة", "卡塔尔"] },
 	{ code: "+40", flag: "🇷🇴", name: "Romania" },
-	{ code: "+7", flag: "🇷🇺", name: "Russia" },
+	{ code: "+7", flag: "🇷🇺", name: "Russia", aliases: ["روسیه", "روسيا", "russia", "russian", "moscow", "مسکو", "موسكو", "俄罗斯"] },
 	{ code: "+250", flag: "🇷🇼", name: "Rwanda" },
-	{ code: "+1-869", flag: "🇰🇳", name: "Saint Kitts and Nevis" },
-	{ code: "+1-758", flag: "🇱🇨", name: "Saint Lucia" },
+	{ code: "+1-869", flag: "🇰🇳", name: "Saint Kitts and Nevis", aliases: ["سنت کیتس", "سانت كيتس", "saint kitts", "st kitts", "nevis", "圣基茨"] },
+	{ code: "+1-758", flag: "🇱🇨", name: "Saint Lucia", aliases: ["سنت لوسیا", "سانت لوسيا", "saint lucia", "st lucia", "圣卢西亚"] },
 	{ code: "+1-784", flag: "🇻🇨", name: "Saint Vincent and the Grenadines" },
 	{ code: "+685", flag: "🇼🇸", name: "Samoa" },
 	{ code: "+378", flag: "🇸🇲", name: "San Marino" },
-	{ code: "+239", flag: "🇸🇹", name: "Sao Tome and Principe" },
-	{ code: "+966", flag: "🇸🇦", name: "Saudi Arabia" },
+	{ code: "+239", flag: "🇸🇹", name: "Sao Tome and Principe", aliases: ["سائوتومه", "ساو تومي", "sao tome", "sao tome and principe", "圣多美"] },
+	{ code: "+966", flag: "🇸🇦", name: "Saudi Arabia", aliases: ["عربستان", "السعودية", "المملكة العربية السعودية", "saudi", "ksa", "saudi arabia", "riyadh", "الرياض", "沙特", "沙特阿拉伯"] },
 	{ code: "+221", flag: "🇸🇳", name: "Senegal" },
 	{ code: "+381", flag: "🇷🇸", name: "Serbia" },
 	{ code: "+248", flag: "🇸🇨", name: "Seychelles" },
 	{ code: "+232", flag: "🇸🇱", name: "Sierra Leone" },
-	{ code: "+65", flag: "🇸🇬", name: "Singapore" },
+	{ code: "+65", flag: "🇸🇬", name: "Singapore", aliases: ["سنگاپور", "سنغافورة", "singapore", "新加坡"] },
 	{ code: "+421", flag: "🇸🇰", name: "Slovakia" },
 	{ code: "+386", flag: "🇸🇮", name: "Slovenia" },
 	{ code: "+677", flag: "🇸🇧", name: "Solomon Islands" },
-	{ code: "+252", flag: "🇸🇴", name: "Somalia" },
-	{ code: "+27", flag: "🇿🇦", name: "South Africa" },
-	{ code: "+82", flag: "🇰🇷", name: "South Korea" },
+	{ code: "+252", flag: "🇸🇴", name: "Somalia", aliases: ["سومالی", "الصومال", "somalia", "mogadishu", "موگادیشو", "مقديشو", "索马里"] },
+	{ code: "+27", flag: "🇿🇦", name: "South Africa", aliases: ["آفریقای جنوبی", "جنوب أفريقيا", "south africa", "南非"] },
+	{ code: "+82", flag: "🇰🇷", name: "South Korea", aliases: ["کره جنوبی", "كوريا الجنوبية", "south korea", "korea", "seoul", "سئول", "سيول", "韩国"] },
 	{ code: "+211", flag: "🇸🇸", name: "South Sudan" },
-	{ code: "+34", flag: "🇪🇸", name: "Spain" },
+	{ code: "+34", flag: "🇪🇸", name: "Spain", aliases: ["اسپانیا", "إسبانيا", "spain", "spanish", "madrid", "مادرید", "مدريد", "barcelona", "بارسلونا", "برشلونة", "西班牙"] },
 	{ code: "+94", flag: "🇱🇰", name: "Sri Lanka" },
-	{ code: "+249", flag: "🇸🇩", name: "Sudan" },
+	{ code: "+249", flag: "🇸🇩", name: "Sudan", aliases: ["سودان", "السودان", "sudan", "khartoum", "خارطوم", "الخرطوم", "苏丹"] },
 	{ code: "+597", flag: "🇸🇷", name: "Suriname" },
-	{ code: "+46", flag: "🇸🇪", name: "Sweden" },
-	{ code: "+41", flag: "🇨🇭", name: "Switzerland" },
-	{ code: "+963", flag: "🇸🇾", name: "Syria" },
-	{ code: "+992", flag: "🇹🇯", name: "Tajikistan" },
+	{ code: "+46", flag: "🇸🇪", name: "Sweden", aliases: ["سوئد", "السويد", "sweden", "swedish", "stockholm", "استکهلم", "ستوكهولم", "瑞典"] },
+	{ code: "+41", flag: "🇨🇭", name: "Switzerland", aliases: ["سوئیس", "سويسرا", "switzerland", "swiss", "geneva", "ژنو", "جنيف", "zurich", "زوریخ", "زيورخ", "瑞士"] },
+	{ code: "+963", flag: "🇸🇾", name: "Syria", aliases: ["سوریه", "سوريا", "syria", "syrian", "damascus", "دمشق", "叙利亚"] },
+	{ code: "+992", flag: "🇹🇯", name: "Tajikistan", aliases: ["تاجیکستان", "طاجيكستان", "tajikistan", "dushanbe", "دوشنبه", "塔吉克斯坦"] },
 	{ code: "+255", flag: "🇹🇿", name: "Tanzania" },
-	{ code: "+66", flag: "🇹🇭", name: "Thailand" },
+	{ code: "+66", flag: "🇹🇭", name: "Thailand", aliases: ["تایلند", "تايلاند", "thailand", "bangkok", "بانکوک", "بانكوك", "泰国"] },
 	{ code: "+670", flag: "🇹🇱", name: "Timor-Leste" },
 	{ code: "+228", flag: "🇹🇬", name: "Togo" },
 	{ code: "+676", flag: "🇹🇴", name: "Tonga" },
 	{ code: "+1-868", flag: "🇹🇹", name: "Trinidad and Tobago" },
-	{ code: "+216", flag: "🇹🇳", name: "Tunisia" },
-	{ code: "+90", flag: "🇹🇷", name: "Turkey" },
-	{ code: "+993", flag: "🇹🇲", name: "Turkmenistan" },
+	{ code: "+216", flag: "🇹🇳", name: "Tunisia", aliases: ["تونس", "tunisia", "tunis", "突尼斯"] },
+	{ code: "+90", flag: "🇹🇷", name: "Turkey", aliases: ["ترکیه", "تركيا", "turkey", "turkiye", "türkiye", "istanbul", "استانبول", "اسطنبول", "土耳其"] },
+	{ code: "+993", flag: "🇹🇲", name: "Turkmenistan", aliases: ["ترکمنستان", "تركمانستان", "turkmenistan", "ashgabat", "عشق‌آباد", "عشق آباد", "土库曼斯坦"] },
 	{ code: "+688", flag: "🇹🇻", name: "Tuvalu" },
 	{ code: "+256", flag: "🇺🇬", name: "Uganda" },
 	{ code: "+380", flag: "🇺🇦", name: "Ukraine" },
-	{ code: "+44", flag: "🇬🇧", name: "United Kingdom" },
-	{ code: "+1", flag: "🇺🇸", name: "United States of America" },
+	{ code: "+44", flag: "🇬🇧", name: "United Kingdom", aliases: ["انگلستان", "انگلیس", "بریتانیا", "المملكة المتحدة", "بريطانيا", "انجلترا", "uk", "united kingdom", "britain", "great britain", "england", "london", "لندن", "英国"] },
+	{ code: "+1", flag: "🇺🇸", name: "United States of America", aliases: ["امریکا", "آمریکا", "ایالات متحده", "امريكا", "أمريكا", "الولايات المتحدة", "us", "usa", "united states", "america", "美国"] },
 	{ code: "+598", flag: "🇺🇾", name: "Uruguay" },
-	{ code: "+998", flag: "🇺🇿", name: "Uzbekistan" },
-	{ code: "+678", flag: "🇻🇺", name: "Vanuatu" },
+	{ code: "+998", flag: "🇺🇿", name: "Uzbekistan", aliases: ["ازبکستان", "أوزبكستان", "uzbekistan", "tashkent", "تاشکند", "طشقند", "乌兹别克斯坦"] },
+	{ code: "+678", flag: "🇻🇺", name: "Vanuatu", aliases: ["وانواتو", "فانواتو", "vanuatu", "瓦努阿图"] },
 	{ code: "+379", flag: "🇻🇦", name: "Vatican City" },
 	{ code: "+58", flag: "🇻🇪", name: "Venezuela" },
 	{ code: "+84", flag: "🇻🇳", name: "Vietnam" },
-	{ code: "+967", flag: "🇾🇪", name: "Yemen" },
+	{ code: "+967", flag: "🇾🇪", name: "Yemen", aliases: ["یمن", "اليمن", "yemen", "yemeni", "sanaa", "صنعاء", "也门"] },
 	{ code: "+260", flag: "🇿🇲", name: "Zambia" },
 	{ code: "+263", flag: "🇿🇼", name: "Zimbabwe" }
 ];
 
+// Normalizes Persian, Arabic and Latin digits, letters and harakat for accurate searching
+function normalizeSearchText(str) {
+  return String(str || '')
+    .replace(/[۰-۹]/g, c => '۰۱۲۳۴۵۶۷۸۹'.indexOf(c))
+    .replace(/[٠-٩]/g, c => '٠١٢٣٤٥٦٧٨٩'.indexOf(c))
+    .toLowerCase()
+    .replace(/[ي]/g, 'ی')
+    .replace(/[ك]/g, 'ک')
+    .replace(/[آأإ]/g, 'ا')
+    .replace(/[ة]/g, 'ه')
+    .replace(/[\u064B-\u065F]/g, '')
+    .trim();
+}
+
+// Known dial codes sorted by length descending for accurate greedy prefix extraction
+const KNOWN_DIAL_CODES = DEFAULT_COUNTRY_CODES
+  .map(c => c.code)
+  .sort((a, b) => b.length - a.length);
+
+/**
+ * Universal E.164 Phone Parser (T04, T19, T20)
+ * - Converts Persian (۰-۹) and Arabic (٠-٩) digits to standard 0-9
+ * - Strips double prefixes (+9393..., +971 +971...)
+ * - Detects explicit typed international prefix (+ or 00) overriding dropdown
+ * - Strips domestic leading trunk zeros (0783... -> 783..., 050... -> 50...)
+ * - Enforces ITU-T E.164 length constraints (min 7, max 15 digits)
+ */
+function parsePhoneNumber(rawInput, defaultDial) {
+  const rawStr = String(rawInput || '').trim();
+  let defaultCode = String(defaultDial || '+971').trim();
+  if (!defaultCode.startsWith('+')) defaultCode = '+' + defaultCode;
+
+  if (!rawStr) {
+    return {
+      valid: false,
+      dialCode: defaultCode,
+      nationalNumber: '',
+      e164: '',
+      formatted: '',
+      error: 'Phone number is required'
+    };
+  }
+
+  // 1. Convert Persian & Arabic digits to Latin
+  let converted = rawStr
+    .replace(/[۰-۹]/g, c => '۰۱۲۳۴۵۶۷۸۹'.indexOf(c))
+    .replace(/[٠-٩]/g, c => '٠١٢٣٤٥٦٧٨٩'.indexOf(c));
+
+  // 2. Clean punctuation but preserve leading '+'
+  let clean = converted.replace(/[^\d+]/g, '');
+
+  // Convert international '00' prefix to '+'
+  if (clean.startsWith('00')) {
+    clean = '+' + clean.slice(2);
+  }
+
+  let finalDial = defaultCode;
+
+  // 3. Detect international country prefix in typed input
+  if (clean.startsWith('+')) {
+    const matched = KNOWN_DIAL_CODES.find(dc => clean.startsWith(dc));
+    if (matched) {
+      finalDial = matched;
+      clean = clean.slice(matched.length);
+    } else {
+      const genericMatch = clean.match(/^(\+\d{1,4})(.*)$/);
+      if (genericMatch) {
+        finalDial = genericMatch[1];
+        clean = genericMatch[2];
+      }
+    }
+  } else {
+    // Check if user typed country code without '+' (e.g. 97150... or 9377...)
+    const dialDigits = finalDial.replace(/\D/g, '');
+    if (dialDigits && clean.startsWith(dialDigits) && clean.length > dialDigits.length + 5) {
+      clean = clean.slice(dialDigits.length);
+    }
+  }
+
+  // 4. Strip domestic trunk leading zeros (e.g. 050... -> 50..., 0783... -> 783...)
+  clean = clean.replace(/^0+/, '');
+
+  const localDigits = clean.replace(/\D/g, '');
+  const dialDigits = finalDial.replace(/\D/g, '');
+  const totalDigits = dialDigits.length + localDigits.length;
+
+  // E.164 validity check: national number >= 5 digits, total between 7 and 15 digits
+  const isValid = localDigits.length >= 5 && totalDigits >= 7 && totalDigits <= 15;
+
+  return {
+    valid: isValid,
+    dialCode: finalDial,
+    nationalNumber: localDigits,
+    e164: isValid ? `${finalDial}${localDigits}` : `${finalDial}${localDigits}`,
+    formatted: isValid ? `${finalDial} ${localDigits}` : (clean ? `${finalDial} ${clean}` : ''),
+    error: isValid ? null : 'Invalid phone number format or length'
+  };
+}
+
 function initCountryPickers() {
-  const list = (window.countryCodes && window.countryCodes.length) ? window.countryCodes : DEFAULT_COUNTRY_CODES;
+  const list = DEFAULT_COUNTRY_CODES;
+  const currentLang = (document.documentElement.lang || 'en').toLowerCase();
+
   document.querySelectorAll('.country-list-container').forEach(container => {
-    if (container.children.length > 0) return;
+    // Re-populate if empty or if previously populated with un-aliased list
+    if (container.children.length > 0 && container.getAttribute('data-multilingual') === 'true') return;
+    container.innerHTML = '';
+    container.setAttribute('data-multilingual', 'true');
+
     const fragment = document.createDocumentFragment();
     list.forEach(c => {
       const item = document.createElement('div');
       item.className = 'country-item flex items-center space-x-2 p-2 hover:bg-neutral-100 cursor-pointer text-xs whitespace-nowrap';
-      item.innerHTML = `<span>${c.flag}</span><span class="text-neutral-500 font-semibold">${c.code}</span><span class="text-neutral-900 truncate">${c.name}</span>`;
+
+      const aliases = c.aliases || [];
+      const keywords = [c.name, c.code, c.code.replace('+', ''), ...aliases].join(' ');
+      item.setAttribute('data-keywords', keywords);
+      item.setAttribute('data-search', normalizeSearchText(keywords));
+
+      let displayName = c.name;
+      if (currentLang === 'fa' && aliases[0]) {
+        displayName = `${c.name} (${aliases[0]})`;
+      } else if (currentLang === 'ar' && aliases[1]) {
+        displayName = `${c.name} (${aliases[1]})`;
+      } else if (currentLang === 'zh' && aliases[2]) {
+        displayName = `${c.name} (${aliases[2]})`;
+      }
+
+      item.innerHTML = `<span>${c.flag}</span><span class="text-neutral-500 font-semibold" dir="ltr">${c.code}</span><span class="text-neutral-900 truncate">${displayName}</span>`;
       item.addEventListener('click', function(e) {
         e.stopPropagation();
         selectCountryCode(this, c.code, c.flag);
@@ -227,7 +347,7 @@ function toggleCountryDropdown(button) {
   if (!dropdown) return;
   
   const container = dropdown.querySelector('.country-list-container');
-  if (container && container.children.length === 0) {
+  if (container && (container.children.length === 0 || container.getAttribute('data-multilingual') !== 'true')) {
     initCountryPickers();
   }
 
@@ -249,14 +369,15 @@ function toggleCountryDropdown(button) {
 }
 
 function filterCountryCode(input) {
-  const filter = input.value.toLowerCase().trim();
+  const query = normalizeSearchText(input.value);
   const listContainer = input.parentElement.querySelector('.country-list-container') || input.nextElementSibling;
   if (!listContainer) return;
   
   const items = listContainer.querySelectorAll('.country-item');
   items.forEach(item => {
-    const text = (item.textContent || item.innerText || '').toLowerCase();
-    item.style.display = text.includes(filter) ? 'flex' : 'none';
+    const searchTarget = item.getAttribute('data-search') || normalizeSearchText(item.textContent || '');
+    const isMatch = !query || searchTarget.includes(query);
+    item.style.display = isMatch ? 'flex' : 'none';
   });
 }
 
@@ -492,23 +613,23 @@ window.showFormNotification = showFormNotification;
 const TRANSMIT_MESSAGES = {
   en: {
     transmitting: 'Transmitting...',
-    success: 'Inquiry submitted successfully. Our advisory team will contact you shortly.',
-    error: 'Failed to send request. Please check your connection or contact us via WhatsApp.'
+    success: 'Inquiry confirmed and received. Our advisory team will contact you within 24 business hours.',
+    error: 'Submission could not be confirmed. Please check your connection and retry, or contact us directly on WhatsApp.'
   },
   ar: {
     transmitting: 'جارٍ الإرسال...',
-    success: 'تم إرسال استفسارك بنجاح. سيتواصل معك مستشارونا المتخصصون قريباً.',
-    error: 'تعذر إرسال الطلب. يرجى التحقق من اتصال الإنترنت أو التواصل معنا عبر واتساب.'
+    success: 'تم تأكيد واستلام استفسارك بنجاح. سيتواصل معك مستشارونا المتخصصون خلال 24 ساعة عمل.',
+    error: 'تعذر تأكيد الإرسال. يرجى التحقق من اتصال الإنترنت وإعادة المحاولة، أو التواصل معنا مباشرة عبر واتساب.'
   },
   fa: {
     transmitting: 'در حال ارسال...',
-    success: 'درخواست شما با موفقیت ثبت شد. مشاوران شریف گروپ به زودی با شما تماس خواهند گرفت.',
-    error: 'ارسال درخواست با خطا مواجه شد. لطفاً اتصال اینترنت خود را بررسی کنید یا از طریق واتس‌اپ پیام دهید.'
+    success: 'درخواست شما با موفقیت ثبت و تایید گردید. مشاوران شریف گروپ ظرف ۲۴ ساعت کاری با شما تماس خواهند گرفت.',
+    error: 'تایید ثبت درخواست انجام نشد. لطفاً اتصال اینترنت خود را بررسی کرده و مجدداً تلاش نمایید، یا از طریق واتس‌اپ پیام دهید.'
   },
   zh: {
     transmitting: '正在提交...',
-    success: '您的咨询已成功提交。我们的专属顾问将尽快与您联系。',
-    error: '提交失败，请检查网络连接或通过 WhatsApp 与我们联系。'
+    success: '您的咨询已成功提交并确认。我们的资深顾问将在24个工作小时内与您联系。',
+    error: '提交确认超时或失败。请检查网络后重试，或直接通过 WhatsApp 与我们联系。'
   }
 };
 
@@ -622,7 +743,78 @@ function autoInitStandaloneForms() {
       handleServiceSelectionChange(mainSel || subSel);
     }
   });
+
+  // T05: Enforce dynamic minimum date (today) on preferred-date controls
+  try {
+    const todayIso = new Date().toISOString().split('T')[0];
+    document.querySelectorAll('input[type="date"], input[name="preferredDate"], input[name="date"]').forEach(dateEl => {
+      dateEl.setAttribute('min', todayIso);
+    });
+  } catch (err) {}
+
+  // T39: Ensure safe POST method and action fallback on all forms (prevent accidental GET leaks)
+  try {
+    document.querySelectorAll('form').forEach(f => {
+      if (!f.getAttribute('method') || f.getAttribute('method').toUpperCase() !== 'POST') {
+        f.setAttribute('method', 'POST');
+      }
+      if (!f.getAttribute('action')) {
+        f.setAttribute('action', '/api/contact.php');
+      }
+    });
+  } catch (err) {}
+
+  // T35: Autocomplete optimization for mobile & desktop form completion
+  try {
+    document.querySelectorAll('input[name="firstName"]').forEach(el => { if (!el.getAttribute('autocomplete')) el.setAttribute('autocomplete', 'given-name'); });
+    document.querySelectorAll('input[name="lastName"]').forEach(el => { if (!el.getAttribute('autocomplete')) el.setAttribute('autocomplete', 'family-name'); });
+    document.querySelectorAll('input[name="email"]').forEach(el => { if (!el.getAttribute('autocomplete')) el.setAttribute('autocomplete', 'email'); });
+    document.querySelectorAll('input[name="phone"]').forEach(el => { if (!el.getAttribute('autocomplete')) el.setAttribute('autocomplete', 'tel'); });
+    document.querySelectorAll('input[name="address"]').forEach(el => { if (!el.getAttribute('autocomplete')) el.setAttribute('autocomplete', 'street-address'); });
+    document.querySelectorAll('input[name="fullName"]').forEach(el => { if (!el.getAttribute('autocomplete')) el.setAttribute('autocomplete', 'name'); });
+  } catch (err) {}
+
+  // T17 & T18: Programmatic label association and accessible controls
+  try {
+    document.querySelectorAll('form').forEach(f => {
+      f.querySelectorAll('label').forEach((lbl, idx) => {
+        if (!lbl.getAttribute('for')) {
+          const container = lbl.closest('div') || lbl.parentElement;
+          if (container) {
+            const ctrl = container.querySelector('input:not([type="hidden"]), select, textarea');
+            if (ctrl) {
+              if (!ctrl.id) {
+                const name = ctrl.name || ctrl.type || 'input';
+                ctrl.id = (f.id ? f.id + '-' : 'form-') + name + '-' + idx;
+              }
+              lbl.setAttribute('for', ctrl.id);
+            }
+          }
+        }
+      });
+    });
+  } catch (err) {}
 }
+
+// T36: Educational Advisory School Preselection Handler
+function preselectEduProgram(level, dest, budget) {
+  const form = document.getElementById('standalone-contact-form') || document.querySelector('#program-consult-form-section form') || document.querySelector('form');
+  if (form) {
+    if (level) {
+      const levelSel = form.querySelector('select[name="studyLevel"]');
+      if (levelSel) levelSel.value = level;
+    }
+    if (dest) {
+      const destSel = form.querySelector('select[name="targetDestination"]');
+      if (destSel) destSel.value = dest;
+    }
+    if (budget) {
+      const budgetSel = form.querySelector('select[name="budget"]');
+      if (budgetSel) budgetSel.value = budget;
+    }
+  }
+}
+window.preselectEduProgram = preselectEduProgram;
 
 if (document.readyState === 'loading') {
   document.addEventListener('DOMContentLoaded', autoInitStandaloneForms);
@@ -662,15 +854,82 @@ async function handleContactSubmit(event) {
   const payload = Object.fromEntries(formData.entries());
   payload.lang = pageLang;
 
-  // Phone number & Dial Code handling with digit normalization
-  const dialCode = toLatinDigits(form.querySelector('.dial-code-hidden-value')?.value || payload.dialCode || '+971').trim();
-  const rawPhone = toLatinDigits(form.querySelector('input[type="tel"]')?.value || payload.phone || '').trim();
-  payload.dialCode = dialCode;
-  payload.phone = `${dialCode} ${rawPhone}`.trim();
+  const SITE_LANG_MAP = {
+    'en': 'English',
+    'ar': 'Arabic',
+    'fa': 'Persian',
+    'zh': 'Chinese'
+  };
+  payload.site_language = SITE_LANG_MAP[pageLang] || 'English';
+  payload.page_path = window.location.pathname;
+
+  // Honeypot anti-spam check (B4)
+  if (payload.company_url || payload.website || payload.hp_check || payload.fax) {
+    if (submitBtn) { submitBtn.disabled = false; submitBtn.innerHTML = originalBtnText; }
+    if (successBox) { successBox.classList.remove('hidden'); successBox.style.display = 'block'; }
+    form.reset();
+    return;
+  }
+
+  // Phone number & Dial Code handling with country-aware E.164 parser (B3 / T04 / T19)
+  const dialInput = form.querySelector('.dial-code-hidden-value')?.value || payload.dialCode || '+971';
+  const rawPhoneInput = form.querySelector('input[type="tel"]')?.value || payload.phone || '';
+  const parsedPhone = parsePhoneNumber(rawPhoneInput, dialInput);
+
+  if (rawPhoneInput && !parsedPhone.valid) {
+    if (submitBtn) {
+      submitBtn.disabled = false;
+      submitBtn.innerHTML = originalBtnText;
+    }
+    const invalidPhoneMsg = {
+      en: 'Please enter a valid phone number (e.g. +971 50 123 4567).',
+      ar: 'يرجى إدخال رقم هاتف صحيح مع رمز الدولة (مثال: 4567 123 50 971+).',
+      fa: 'لطفاً یک شماره تماس معتبر همراه با پیش‌شماره وارد نمایید (مثال: ۴۵۶۷ ۱۲۳ ۵۰ ۹۷۱+).',
+      zh: '请输入有效的电话号码及国家代码（例如：+971 50 123 4567）。'
+    }[pageLang] || 'Please enter a valid phone number.';
+
+    showFormNotification(invalidPhoneMsg, 'error');
+    const phoneField = form.querySelector('input[type="tel"]');
+    if (phoneField) phoneField.focus();
+    return;
+  }
+
+  payload.dialCode = parsedPhone.dialCode;
+  payload.phone = parsedPhone.formatted || rawPhoneInput;
+  payload.whatsapp_e164 = parsedPhone.e164 || rawPhoneInput;
+  payload.rawPhone = parsedPhone.nationalNumber || rawPhoneInput;
 
   // Normalize email digits if present
   if (payload.email) {
     payload.email = toLatinDigits(payload.email).trim();
+  }
+
+  // T05: Validate preferred date is not in the past
+  if (payload.preferredDate) {
+    try {
+      const parts = payload.preferredDate.split('-');
+      if (parts.length === 3) {
+        const selDate = new Date(Number(parts[0]), Number(parts[1]) - 1, Number(parts[2]));
+        const today = new Date();
+        today.setHours(0, 0, 0, 0);
+        if (selDate < today) {
+          if (submitBtn) {
+            submitBtn.disabled = false;
+            submitBtn.innerHTML = originalBtnText;
+          }
+          const invalidDateMsg = {
+            en: 'Please select today or a future date for your consultation.',
+            ar: 'يرجى اختيار تاريخ اليوم أو تاريخ في المستقبل للاستشارة.',
+            fa: 'لطفاً تاریخ امروز یا تاریخی در آینده را برای مشاوره انتخاب فرمایید.',
+            zh: '请选择今天或未来的咨询日期。'
+          }[pageLang] || 'Please select a valid upcoming date.';
+          showFormNotification(invalidDateMsg, 'error');
+          const dateField = form.querySelector('input[name="preferredDate"], input[type="date"]');
+          if (dateField) dateField.focus();
+          return;
+        }
+      }
+    } catch (err) {}
   }
 
   // Full name handling (Salutation removed)
@@ -678,7 +937,7 @@ async function handleContactSubmit(event) {
     payload.fullName = `${payload.firstName || ''} ${payload.lastName || ''}`.trim();
   }
 
-  // Map country/residence for CRM (strictly country/residence/nationality, never timezone)
+  // Map country/residence for CRM (strictly country/residence/nationality, never timezone or street address)
   if (!payload.country) {
     payload.country = payload.residence || payload.nationality || '';
   }
@@ -693,8 +952,31 @@ async function handleContactSubmit(event) {
   payload.nationality = payload.nationality || payload.citizenship || '';
   payload.residence = payload.residence || payload.country || '';
 
-  // Detect program and target category tab from URL or context
+  // Education fields (B2 item 2)
+  payload.student_age = payload.studentAgeGrade || payload.student_age || payload.studentAge || '';
+  payload.study_level = payload.studyLevel || payload.study_level || '';
+  payload.destination = payload.targetDestination || payload.destination || '';
+  payload.intake = payload.intakeTimeline || payload.intake || '';
+
+  // Social Responsibility fields (B2 item 3)
   const curPath = (window.location.pathname || '').toLowerCase();
+  if (curPath.includes('/socialresponsibility') || form.id === 'social-resp-form') {
+    payload.targetTab = 'General Enquiries';
+    payload.organization = payload.organization || '';
+    payload.orgType = payload.orgType || '';
+    payload.preferredDate = payload.preferredDate || payload.timeline || '';
+    payload.preferredMethod = payload.preferredMethod || payload.objective || '';
+    // Avoid date being parsed by formatTimeline into "Immediately (0-3 months)"
+    delete payload.timeline;
+    delete payload.objective;
+  }
+
+  // Real Estate fields (B2 item 4)
+  if (curPath.includes('/realestate')) {
+    payload.targetTab = 'Real Estate';
+    if (!payload.program) payload.program = 'Dubai Real Estate Investment';
+    if (payload.propertyInterest) payload.investmentRoute = payload.propertyInterest;
+  }
   let detectedProgram = '';
   let detectedTab = '';
 
@@ -803,44 +1085,80 @@ async function handleContactSubmit(event) {
 
   payload.source = window.location.href;
   payload.page = window.location.pathname;
+  payload.page_path = window.location.pathname;
   payload.form_id = form.id || 'program-consult-form';
 
   try {
+    let confirmed = false;
+    let confirmMessage = '';
+
     // 1. Dispatch to direct server mailer API (authenticated email to contact@sharifgroup.ae + local data backup + background CRM sync)
     try {
-      fetch('/api/contact.php', {
+      const controller = new AbortController();
+      const timer = setTimeout(() => controller.abort(), 10000);
+      const res = await fetch('/api/contact.php', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(payload)
-      }).catch(function() {});
-    } catch (apiErr) {}
-
-    // 2. Dispatch directly to Google Apps Script CRM Webhook (Google Sheets sync)
-    // NOTE: Uses text/plain with no-cors to eliminate browser preflight (OPTIONS) blocking
-    if (CRM_WEBHOOK_URL) {
-      await fetch(CRM_WEBHOOK_URL, {
-        method: 'POST',
-        mode: 'no-cors',
-        headers: { 'Content-Type': 'text/plain;charset=utf-8' },
-        body: JSON.stringify(payload)
-      }).catch(function(e) {
-        console.warn('Direct CRM sync notice:', e);
+        body: JSON.stringify(payload),
+        signal: controller.signal
       });
+      clearTimeout(timer);
+
+      if (res.ok) {
+        const result = await res.json().catch(() => null);
+        if (result && result.status === 'success') {
+          confirmed = true;
+          confirmMessage = result.message || '';
+        }
+      }
+    } catch (apiErr) {
+      console.warn('Direct server mailer notice:', apiErr);
     }
 
-    form.reset();
+    // 2. Fallback / Direct CRM Sheets Sync via Google Apps Script (without no-cors, text/plain prevents preflight blocking)
+    if (!confirmed && CRM_WEBHOOK_URL) {
+      try {
+        const controller = new AbortController();
+        const timer = setTimeout(() => controller.abort(), 10000);
+        const res = await fetch(CRM_WEBHOOK_URL, {
+          method: 'POST',
+          headers: { 'Content-Type': 'text/plain;charset=utf-8' },
+          body: JSON.stringify(payload),
+          signal: controller.signal
+        });
+        clearTimeout(timer);
 
-    // Show inline success box if present
-    if (successBox) {
-      successBox.classList.remove('hidden');
-      successBox.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+        if (res.ok) {
+          const result = await res.json().catch(() => null);
+          if (result && (result.status === 'success' || result.status === 'ignored_duplicate')) {
+            confirmed = true;
+            confirmMessage = result.message || '';
+          }
+        }
+      } catch (crmErr) {
+        console.warn('Direct CRM sync notice:', crmErr);
+      }
     }
 
-    // Always show modern floating confirmation toast
-    showFormNotification(i18nMsg.success, 'success');
+    if (confirmed) {
+      form.reset();
+
+      // Show inline success box if present
+      if (successBox) {
+        successBox.classList.remove('hidden');
+        successBox.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+      }
+
+      // Always show modern floating confirmation toast
+      showFormNotification(i18nMsg.success, 'success');
+    } else {
+      // Save could not be confirmed within 10s: keep inputs intact, show retry message
+      throw new Error('Save confirmation timed out or failed. Inputs preserved.');
+    }
 
   } catch (error) {
     console.error("Transmission error:", error);
+    // Keep user input intact so lead is never lost on retry
     showFormNotification(i18nMsg.error, 'error');
   } finally {
     if (submitBtn) {
@@ -854,4 +1172,11 @@ async function handleContactSubmit(event) {
 window.handleServiceSelectionChange = handleServiceSelectionChange;
 window.handleContactSubmit = handleContactSubmit;
 window.toLatinDigits = toLatinDigits;
+window.normalizeSearchText = normalizeSearchText;
+window.parsePhoneNumber = parsePhoneNumber;
+window.DEFAULT_COUNTRY_CODES = DEFAULT_COUNTRY_CODES;
 window.autoInitStandaloneForms = autoInitStandaloneForms;
+window.filterCountryCode = filterCountryCode;
+window.toggleCountryDropdown = toggleCountryDropdown;
+window.selectCountryCode = selectCountryCode;
+window.initCountryPickers = initCountryPickers;

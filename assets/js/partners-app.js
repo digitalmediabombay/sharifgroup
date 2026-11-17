@@ -214,10 +214,21 @@
   const $$ = (s, el = document) => [...el.querySelectorAll(s)];
   const esc = s => String(s ?? '').replace(/[&<>"']/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]));
 
-  /* ---------- safe storage ---------- */
+  /* ---------- safe storage (T32: privacy hygiene & TTL) ---------- */
   const mem = {};
   const store = {
-    get(k, fb) { try { const v = localStorage.getItem(k); return v == null ? fb : JSON.parse(v); } catch (e) { return k in mem ? mem[k] : fb; } },
+    get(k, fb) {
+      try {
+        const v = localStorage.getItem(k);
+        if (v == null) return fb;
+        const parsed = JSON.parse(v);
+        if (Array.isArray(parsed)) {
+          const now = Date.now();
+          return parsed.filter(item => !item.expires_at || item.expires_at > now);
+        }
+        return parsed;
+      } catch (e) { return k in mem ? mem[k] : fb; }
+    },
     set(k, v) { try { localStorage.setItem(k, JSON.stringify(v)); } catch (e) { mem[k] = v; } },
     del(k) { try { localStorage.removeItem(k); } catch (e) { delete mem[k]; } }
   };
@@ -1200,6 +1211,67 @@
 
   function formHTML() {
     const F = k => esc(t('form.' + k));
+    const PH = {
+      en: {
+        name: 'John Doe',
+        email: 'name@domain.com',
+        phone: '50 123 4567',
+        searchCountry: 'Search Code Or Country...',
+        company: 'E.g. Legal Partners LLC',
+        jobTitle: 'E.g. Managing Partner, Director',
+        website: 'Website Or LinkedIn Profile URL',
+        country: 'E.g. UAE, Saudi Arabia, UK',
+        city: 'E.g. Dubai, Riyadh, London',
+        message: 'Detail Any Specific Partnership Parameters, Portfolio Size, Or Questions...'
+      },
+      fa: {
+        name: 'مثال: علی احمدی',
+        email: 'name@domain.com',
+        phone: '۵۰ ۱۲۳ ۴۵۶۷',
+        searchCountry: 'جستجوی کد یا نام کشور...',
+        company: 'مثال: شرکت حقوقی پارس',
+        jobTitle: 'مثال: مدیر عامل، مشاور ارشد',
+        website: 'نشانی وب‌سایت یا لینکدین',
+        country: 'مثال: امارات، ترکیه، افغانستان',
+        city: 'مثال: دبی، استانبول، کابل',
+        message: 'توضیحات درباره جزئیات همکاری، تعداد تقریبی مراجعین یا پرسش‌ها...'
+      },
+      ar: {
+        name: 'مثال: محمد أحمد',
+        email: 'name@domain.com',
+        phone: '50 123 4567',
+        searchCountry: 'البحث عن الدولة أو الرمز...',
+        company: 'مثال: شركة المحاماة والاستشارات',
+        jobTitle: 'مثال: الشريك الإداري، المدير التنفيذي',
+        website: 'رابط الموقع أو الملف الشخصي على لينكد إن',
+        country: 'مثال: الإمارات، السعودية، مصر',
+        city: 'مثال: دبي، الرياض، القاهرة',
+        message: 'يرجى توضيح تفاصيل الشراكة، حجم العملاء المتوقع أو أي استفسار...'
+      },
+      zh: {
+        name: '例如：张伟',
+        email: 'name@domain.com',
+        phone: '50 123 4567',
+        searchCountry: '搜索国家名称或区号...',
+        company: '例如：商务咨询有限公司',
+        jobTitle: '例如：管理合伙人、业务总监',
+        website: '网站或领英个人主页链接',
+        country: '例如：中国、阿联酋、新加坡',
+        city: '例如：迪拜、上海、北京',
+        message: '请详细说明具体合作意向、预计客户规模或咨询问题...'
+      }
+    }[lang] || {
+      name: 'John Doe',
+      email: 'name@domain.com',
+      phone: '50 123 4567',
+      searchCountry: 'Search Code Or Country...',
+      company: 'E.g. Legal Partners LLC',
+      jobTitle: 'E.g. Managing Partner, Director',
+      website: 'Website Or LinkedIn Profile URL',
+      country: 'E.g. UAE, Saudi Arabia, UK',
+      city: 'E.g. Dubai, Riyadh, London',
+      message: 'Detail Any Specific Partnership Parameters, Portfolio Size, Or Questions...'
+    };
     const types = Object.entries(t('form.types')).map(([k, v]) => `<label class="type-card"><input type="radio" name="partner_type" value="${k}"><span class="tc-ico">${typeIcon[k]}</span><span class="tc-l">${esc(v)}</span></label>`).join('');
     return `<form class="form" id="partnerForm" novalidate>
       <div class="form-alert" role="alert" id="formAlert">${F('alert')}</div>
@@ -1208,12 +1280,12 @@
       <div class="form-grid-3">
         <div class="field">
           <label class="field-label-caps" for="f-name">${F('name')}<span class="req">*</span></label>
-          <input class="input" id="f-name" name="fullName" autocomplete="name" placeholder="John Doe" maxlength="80">
+          <input class="input" id="f-name" name="fullName" autocomplete="name" placeholder="${esc(PH.name)}" maxlength="80">
           <span class="err">${F('errName')}</span>
         </div>
         <div class="field">
           <label class="field-label-caps" for="f-email">${F('email')}<span class="req">*</span></label>
-          <input class="input" id="f-email" name="email" type="email" inputmode="email" autocomplete="email" placeholder="name@domain.com" dir="ltr">
+          <input class="input" id="f-email" name="email" type="email" inputmode="email" autocomplete="email" placeholder="${esc(PH.email)}" dir="ltr">
           <span class="err">${F('errEmail')}</span>
         </div>
         <div class="field">
@@ -1225,12 +1297,12 @@
                 <i class="fa-solid fa-chevron-down" style="font-size:9px;margin-left:6px;opacity:0.6;"></i>
               </button>
               <div class="custom-select-dropdown" id="partner-dial-dropdown">
-                <input type="text" placeholder="Search Code Or Country..." id="partner-dial-search" autocomplete="off">
+                <input type="text" placeholder="${esc(PH.searchCountry)}" id="partner-dial-search" autocomplete="off">
                 <div class="country-list-container" id="partner-dial-list"></div>
               </div>
             </div>
             <input type="hidden" name="dialCode" id="f-dial" value="+971">
-            <input class="input" id="f-phone" name="phone" type="tel" inputmode="tel" autocomplete="tel-national" placeholder="50 123 4567" dir="ltr">
+            <input class="input" id="f-phone" name="phone" type="tel" inputmode="tel" autocomplete="tel-national" placeholder="${esc(PH.phone)}" dir="ltr">
           </div>
           <span class="err">${F('errPhone')}</span>
         </div>
@@ -1240,17 +1312,17 @@
       <div class="form-grid-3">
         <div class="field" id="company-field">
           <label class="field-label-caps" for="f-company">${F('company')}<span class="req">*</span></label>
-          <input class="input" id="f-company" name="company" autocomplete="organization" placeholder="E.g. Legal Partners LLC" maxlength="120">
+          <input class="input" id="f-company" name="company" autocomplete="organization" placeholder="${esc(PH.company)}" maxlength="120">
           <span class="hint" style="font-size:11px;color:#737373;margin-top:3px;display:block;">${F('companyHint')}</span>
           <span class="err">${F('errCompany')}</span>
         </div>
         <div class="field">
           <label class="field-label-caps" for="f-job">${F('jobTitle')}</label>
-          <input class="input" id="f-job" name="job_title" placeholder="E.g. Managing Partner, Director" maxlength="80">
+          <input class="input" id="f-job" name="job_title" placeholder="${esc(PH.jobTitle)}" maxlength="80">
         </div>
         <div class="field">
           <label class="field-label-caps" for="f-web">${F('website')}</label>
-          <input class="input" id="f-web" name="website" placeholder="Website Or LinkedIn Profile URL" maxlength="120" dir="ltr">
+          <input class="input" id="f-web" name="website" placeholder="${esc(PH.website)}" maxlength="120" dir="ltr">
         </div>
       </div>
 
@@ -1258,12 +1330,12 @@
       <div class="form-grid-3">
         <div class="field">
           <label class="field-label-caps" for="f-country">${F('country')}<span class="req">*</span></label>
-          <input class="input" id="f-country" name="country" autocomplete="country-name" placeholder="E.g. UAE, Saudi Arabia, UK" maxlength="60">
+          <input class="input" id="f-country" name="country" autocomplete="country-name" placeholder="${esc(PH.country)}" maxlength="60">
           <span class="err">${F('errCountry')}</span>
         </div>
         <div class="field">
           <label class="field-label-caps" for="f-city">${F('city')}</label>
-          <input class="input" id="f-city" name="city" placeholder="E.g. Dubai, Riyadh, London" maxlength="60">
+          <input class="input" id="f-city" name="city" placeholder="${esc(PH.city)}" maxlength="60">
         </div>
         <div class="field">
           <label class="field-label-caps" for="f-preflang">${F('prefLang')}</label>
@@ -1323,7 +1395,7 @@
       <!-- Row 6: Confidential Notes -->
       <div class="field" style="margin-bottom:22px;">
         <label class="field-label-caps" for="f-msg">${F('message')} <span class="opt" style="font-weight:normal;color:#737373;text-transform:none;">(${esc(t('common.optional'))})</span></label>
-        <textarea class="textarea" id="f-msg" name="message" maxlength="1000" rows="3" placeholder="Detail Any Specific Partnership Parameters, Portfolio Size, Or Questions..."></textarea>
+        <textarea class="textarea" id="f-msg" name="message" maxlength="1000" rows="3" placeholder="${esc(PH.message)}"></textarea>
       </div>
 
       <!-- Row 7: Consent Checkbox -->
@@ -1442,7 +1514,15 @@
       const company = String(fd.get('company') || '').trim();
       const country = String(fd.get('country') || '').trim();
       const dial = String(fd.get('dialCode'));
-      const local = toLatin(fd.get('phone')).replace(/[^\d]/g, '').replace(/^0+/, '');
+      const rawPhoneVal = fd.get('phone');
+      const parsedPhone = (typeof window.parsePhoneNumber === 'function')
+        ? window.parsePhoneNumber(rawPhoneVal, dial)
+        : { valid: /^\d{6,13}$/.test(toLatin(rawPhoneVal).replace(/[^\d]/g, '').replace(/^0+/, '')), dialCode: dial, nationalNumber: toLatin(rawPhoneVal).replace(/[^\d]/g, '').replace(/^0+/, ''), e164: dial + toLatin(rawPhoneVal).replace(/[^\d]/g, '').replace(/^0+/, ''), formatted: `${dial} ${toLatin(rawPhoneVal).replace(/[^\d]/g, '').replace(/^0+/, '')}` };
+
+      const finalDial = parsedPhone.dialCode;
+      const local = parsedPhone.nationalNumber;
+      const e164 = parsedPhone.e164;
+      const formattedPhone = parsedPhone.formatted;
       const email = toLatin(String(fd.get('email') || '').trim()).toLowerCase();
 
       const checks = [
@@ -1450,7 +1530,7 @@
         ['f-name', name.length >= 2],
         ['f-company', type === 'individual' || company.length >= 2],
         ['f-country', country.length >= 2],
-        ['f-phone', /^\d{6,13}$/.test(local)],
+        ['f-phone', parsedPhone.valid],
         ['f-email', /^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/.test(email)],
         ['consent-field', fd.get('consent') === 'yes']
       ];
@@ -1472,11 +1552,13 @@
       const apps = Array.isArray(store.get(K.apps, [])) ? store.get(K.apps, []) : [];
       const dup = apps.find(a => a && a.email === email);
       const btn = $('button[type="submit"]', form);
+      const origBtnHtml = btn ? btn.innerHTML : '';
       if (btn) {
         btn.disabled = true;
         btn.innerHTML = `<span style="display:inline-flex;align-items:center;gap:8px;">${I.spark || ''}<span>${t('form.sending') || 'Sending...'}</span></span>`;
       }
 
+      const siteLangNames = { en: 'English', ar: 'Arabic', fa: 'Persian', zh: 'Chinese' };
       // Always create a complete, fresh partner application record
       const rec = {
         form_id: 'partner-application',
@@ -1489,9 +1571,10 @@
         country: country,
         city: String(fd.get('city') || '').trim(),
         preferredLanguage: String(fd.get('preferredLanguage') || lang || 'en'),
-        dialCode: dial,
-        phone: `${dial} ${local}`,
-        whatsapp_e164: dial + local,
+        site_language: siteLangNames[lang] || 'English',
+        dialCode: finalDial,
+        phone: formattedPhone || `${finalDial} ${local}`,
+        whatsapp_e164: e164,
         email: email,
         website: String(fd.get('website') || '').trim(),
         programmes: fd.getAll('programmes').join(', '),
@@ -1501,13 +1584,11 @@
         consent: 'yes',
         lang: lang,
         source: `${SITE}${prefix()}partners/`,
-        page: `/${prefix()}partners/`
+        page: `/${prefix()}partners/`,
+        page_path: window.location.pathname
       };
-      apps.push(rec);
-      store.set(K.apps, apps);
-      store.set(K.last, { id: rec.application_id, dup: !!dup });
 
-      // Dispatch to Live Google Apps Script CRM Webhooks (Primary & Unified Fallback)
+      // Dispatch to Live Google Apps Script CRM Webhooks with verified confirmation (B1)
       const payloadString = JSON.stringify(rec);
       const postHeaders = { 'Content-Type': 'text/plain;charset=utf-8' };
       const webhooks = [
@@ -1516,41 +1597,74 @@
         typeof CRM_WEBHOOK_URL !== 'undefined' ? CRM_WEBHOOK_URL : null
       ].filter(Boolean);
 
-      // Deduplicate webhooks
-      [...new Set(webhooks)].forEach(url => {
-        try {
-          fetch(url, {
-            method: 'POST',
-            mode: 'no-cors',
-            headers: postHeaders,
-            body: payloadString
-          }).catch(err => console.warn('Partner CRM sync warning:', err));
-        } catch (e) {
-          console.warn('Partner CRM sync error:', e);
-        }
-      });
+      (async () => {
+        let confirmed = DEMO ? true : false;
+        const uniqueUrls = [...new Set(webhooks)];
 
-      // Smooth transition to Thank-you page with guaranteed fallback
-      setTimeout(() => {
-        const thanksUrl = `${SITE}${prefix()}partners/thanks/` + (DEMO ? '?demo=1' : '');
-        if (window.location.protocol === 'file:') {
-          location.hash = '#/partners/thanks';
-          route();
-        } else {
+        for (const url of uniqueUrls) {
           try {
-            history.pushState({ page: 'thanks' }, '', thanksUrl);
-            route();
-          } catch (_) {
-            window.location.href = thanksUrl;
+            const controller = new AbortController();
+            const timer = setTimeout(() => controller.abort(), 10000);
+            const res = await fetch(url, {
+              method: 'POST',
+              headers: postHeaders,
+              body: payloadString,
+              signal: controller.signal
+            });
+            clearTimeout(timer);
+
+            if (res.ok) {
+              const resJson = await res.json().catch(() => null);
+              if (resJson && (resJson.status === 'success' || resJson.status === 'ignored_duplicate')) {
+                confirmed = true;
+                break;
+              }
+            }
+          } catch (e) {
+            console.warn('Partner CRM sync attempt notice:', e);
           }
         }
-        // Safety guard: if form is still visible after 600ms, force direct navigation
-        setTimeout(() => {
-          if (document.getElementById('partnerForm')) {
-            window.location.href = thanksUrl;
+
+        if (confirmed || DEMO) {
+          // T32: Store sanitized reference without raw PII, with 48h TTL
+          const safeAppRecord = {
+            application_id: rec.application_id,
+            partner_type: rec.partner_type,
+            country: rec.country,
+            submitted_at_utc: rec.submitted_at_utc,
+            expires_at: Date.now() + (48 * 3600 * 1000)
+          };
+          apps.push(safeAppRecord);
+          store.set(K.apps, apps);
+          store.set(K.last, { id: rec.application_id, dup: !!dup, expires_at: Date.now() + (48 * 3600 * 1000) });
+
+          const thanksUrl = `${SITE}${prefix()}partners/thanks/` + (DEMO ? '?demo=1' : '');
+          if (window.location.protocol === 'file:') {
+            location.hash = '#/partners/thanks';
+            route();
+          } else {
+            try {
+              history.pushState({ page: 'thanks' }, '', thanksUrl);
+              route();
+            } catch (_) {
+              window.location.href = thanksUrl;
+            }
           }
-        }, 600);
-      }, 400);
+        } else {
+          // B1 requirement: do not navigate to thanks if unconfirmed, preserve inputs, show clear retry error
+          if (btn) {
+            btn.disabled = false;
+            btn.innerHTML = origBtnHtml;
+          }
+          if (alertEl) {
+            alertEl.textContent = t('form.saveError') || 'Submission could not be confirmed. Please check your connection and retry, or contact us directly on WhatsApp or contact@sharifgroup.ae. Your input has been preserved.';
+            alertEl.classList.add('show');
+            alertEl.scrollIntoView({ behavior: 'smooth', block: 'center' });
+          } else {
+            alert('Submission could not be confirmed. Please check your connection and retry, or contact us directly on WhatsApp or contact@sharifgroup.ae. Your input has been preserved.');
+          }
+        }
+      })();
     });
   }
 

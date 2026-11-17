@@ -35,10 +35,74 @@ if (!$data || !is_array($data)) {
     $data = $_POST;
 }
 
-// Honeypot check
-if (!empty($data['company'])) {
-    echo json_encode(['status' => 'success', 'message' => 'Spam detected']);
+// Honeypot check (hidden spam traps - B4)
+if (!empty($data['company']) || !empty($data['website']) || !empty($data['hp_url']) || !empty($data['hp_check'])) {
+    echo json_encode(['status' => 'success', 'message' => 'Registration received.']);
     exit;
+}
+
+// IP-based Rate Limiting (B4: max 12 submissions per minute per IP)
+$clientIp = $_SERVER['HTTP_CF_CONNECTING_IP'] ?? $_SERVER['HTTP_X_FORWARDED_FOR'] ?? $_SERVER['REMOTE_ADDR'] ?? '127.0.0.1';
+$clientIp = trim(explode(',', $clientIp)[0]);
+$rateFile = sys_get_temp_dir() . '/sharif_rate_' . md5($clientIp) . '.json';
+$rateNow = time();
+$rateData = ['count' => 0, 'first' => $rateNow];
+if (file_exists($rateFile)) {
+    $rawRate = @file_get_contents($rateFile);
+    if ($rawRate) {
+        $parsedRate = json_decode($rawRate, true);
+        if ($parsedRate && ($rateNow - ($parsedRate['first'] ?? 0)) < 60) {
+            $rateData = $parsedRate;
+        }
+    }
+}
+$rateData['count']++;
+@file_put_contents($rateFile, json_encode($rateData));
+if ($rateData['count'] > 12) {
+    http_response_code(429);
+    echo json_encode(['status' => 'error', 'message' => 'Rate limit reached. Please retry in 60 seconds.']);
+    exit;
+}
+
+// E.164 Phone Normalization Helper (B3)
+function normalizePhone($rawPhone, $dialCode = '') {
+    $eastern = ['۰','۱','۲','۳','۴','۵','۶','۷','۸','۹','٠','١','٢','٣','٤','٥','٦','٧','٨','٩'];
+    $latin   = ['0','1','2','3','4','5','6','7','8','9','0','1','2','3','4','5','6','7','8','9'];
+    $raw = str_replace($eastern, $latin, trim((string)$rawPhone));
+    $dial = str_replace($eastern, $latin, trim((string)$dialCode));
+    if (!empty($dial) && strpos($dial, '+') !== 0) $dial = '+' . $dial;
+
+    $clean = preg_replace('/[^\d+]/', '', $raw);
+    if (strpos($clean, '00') === 0) {
+        $clean = '+' . substr($clean, 2);
+    }
+    if (strpos($clean, '+') === 0) {
+        if (preg_match('/^(\+\d{1,4})(.*)$/', $clean, $m)) {
+            $dial = $m[1];
+            $clean = $m[2];
+        }
+    } else {
+        $dialDigits = preg_replace('/\D/', '', $dial);
+        if (!empty($dialDigits) && strpos($clean, $dialDigits) === 0 && strlen($clean) > strlen($dialDigits) + 5) {
+            $clean = substr($clean, strlen($dialDigits));
+        }
+    }
+    $clean = ltrim($clean, '0');
+    $localDigits = preg_replace('/\D/', '', $clean);
+    $dialDigits = preg_replace('/\D/', '', $dial);
+    $totalDigits = strlen($dialDigits . $localDigits);
+
+    $isValid = strlen($localDigits) >= 5 && $totalDigits >= 7 && $totalDigits <= 15;
+    $e164 = $isValid ? ($dial . $localDigits) : trim($dial . $localDigits);
+    $formatted = $isValid ? ($dial . ' ' . $localDigits) : trim($dial . ' ' . $raw);
+
+    return [
+        'valid' => $isValid,
+        'dialCode' => $dial ?: '+971',
+        'local' => $localDigits,
+        'e164' => $e164,
+        'formatted' => $formatted
+    ];
 }
 
 // Configuration
@@ -50,18 +114,31 @@ $CRM_WEBHOOK   = 'https://script.google.com/macros/s/AKfycby30xpRFvm-ZHoFTlMAY-J
 // Extract Form Fields
 $fullName    = trim($data['fullName'] ?? $data['name'] ?? 'Valued Client');
 $dialCode    = trim($data['dialCode'] ?? '');
-$phone       = trim($data['phone'] ?? $data['whatsapp_e164'] ?? '');
+$rawPhoneInput = trim($data['phone'] ?? $data['whatsapp_e164'] ?? '');
+$parsedPhone = normalizePhone($rawPhoneInput, $dialCode);
+$dialCode    = $parsedPhone['dialCode'];
+$phone       = $parsedPhone['formatted'];
+$whatsappE164= $parsedPhone['e164'];
 $email       = trim(strtolower($data['email'] ?? ''));
 $country     = trim($data['residence_country'] ?? $data['country'] ?? '');
 $question    = trim($data['question'] ?? '');
 $newsletter  = (!empty($data['newsletter_optin']) && $data['newsletter_optin'] === 'yes') ? 'Yes' : 'No';
 $lang        = strtolower(trim($data['lang'] ?? 'en'));
 $webinarId   = trim($data['webinar_id'] ?? 'WEB01');
-$webinarSlug = trim($data['webinar_slug'] ?? 'dominica-second-passport-for-afghans');
+$webinarSlug = trim($data['webinar_slug'] ?? $data['slug'] ?? 'dominica-second-passport-for-afghans');
 $webinarTitle= trim($data['webinar_title'] ?? '');
 $regId       = trim($data['registration_id'] ?? ('REG-' . $webinarId . '-' . strtoupper(substr(uniqid(), -6))));
 $source      = trim($data['source'] ?? '');
-$page        = trim($data['page'] ?? '/events/');
+$page        = trim($data['page'] ?? $data['page_path'] ?? '/events/');
+$siteLanguage= trim($data['site_language'] ?? '');
+if (empty($siteLanguage)) {
+    switch ($lang) {
+        case 'fa': $siteLanguage = 'Persian'; break;
+        case 'ar': $siteLanguage = 'Arabic'; break;
+        case 'zh': $siteLanguage = 'Chinese'; break;
+        default:   $siteLanguage = 'English'; break;
+    }
+}
 $nowUtc      = gmdate('Y-m-d H:i:s') . ' UTC';
 
 $emailDispatched = false;
@@ -153,6 +230,7 @@ try {
 
 // 4. Background Sync to Google Apps Script CRM (Google Sheets)
 // Skip if client-side already synced directly to avoid duplicate sheet entries
+$crmSynced = false;
 if (!empty($CRM_WEBHOOK) && empty($data['crm_synced'])) {
     try {
         $crmPayload = json_encode([
@@ -162,13 +240,15 @@ if (!empty($CRM_WEBHOOK) && empty($data['crm_synced'])) {
             'webinar_slug' => $webinarSlug,
             'fullName' => $fullName,
             'dialCode' => $dialCode,
-            'phone' => ($dialCode ? $dialCode . ' ' : '') . $phone,
-            'whatsapp_e164' => $phone,
+            'phone' => $phone,
+            'whatsapp_e164' => $whatsappE164,
             'email' => $email,
             'residence_country' => $country,
             'question' => $question,
             'newsletter_optin' => ($newsletter === 'Yes') ? 'yes' : 'no',
             'lang' => $lang,
+            'site_language' => $siteLanguage,
+            'page_path' => $page,
             'registered_at_utc' => gmdate('c'),
             'source' => $source,
             'page' => $page
@@ -180,11 +260,16 @@ if (!empty($CRM_WEBHOOK) && empty($data['crm_synced'])) {
         curl_setopt($ch, CURLOPT_HTTPHEADER, ['Content-Type: application/json']);
         curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
         curl_setopt($ch, CURLOPT_FOLLOWLOCATION, true);
-        curl_setopt($ch, CURLOPT_TIMEOUT, 3);
-        curl_setopt($ch, CURLOPT_CONNECTTIMEOUT, 2);
-        @curl_exec($ch);
+        curl_setopt($ch, CURLOPT_TIMEOUT, 8);
+        curl_setopt($ch, CURLOPT_CONNECTTIMEOUT, 4);
+        $res = curl_exec($ch);
+        $httpCode = curl_getinfo($ch, CURLINFO_HTTP_CODE);
+        if ($res !== false && $httpCode >= 200 && $httpCode < 400) {
+            $crmSynced = true;
+        }
+        curl_close($ch);
     } catch (\Throwable $t) {
-        // CRM sync runs opportunistically
+        // CRM sync error caught
     }
 }
 
@@ -192,6 +277,7 @@ if (!empty($CRM_WEBHOOK) && empty($data['crm_synced'])) {
 echo json_encode([
     'status' => 'success',
     'registration_id' => $regId,
+    'crm_synced' => $crmSynced,
     'email_sent' => $emailDispatched,
     'message' => 'Registration successfully recorded.' . ($emailDispatched ? ' Confirmation email dispatched.' : '')
 ]);

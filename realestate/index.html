@@ -282,7 +282,7 @@ j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
     
 
 </style>
-<link rel="stylesheet" href="/assets/css/navbar.css" />
+<link rel="stylesheet" href="/assets/css/navbar.css?v=20261117" />
 <link href="../assets/css/multilingual.css?v=20261017_v3" rel="stylesheet"/>
 </head>
 <body class="bg-luxury-light text-luxury-dark font-sans overflow-x-hidden">
@@ -2111,10 +2111,10 @@ You can easily book a free consultation by filling out our online inquiry form o
 <div class="absolute inset-0 z-0 overflow-hidden pointer-events-none">
 <canvas class="absolute inset-0 w-full h-full object-cover" id="footer-seamless-canvas"></canvas>
 <video class="hidden" id="footer-hidden-video" muted="" playsinline="" preload="none">
-<source src="/assets/videos/footer_bg_e58bba71.mp4" type="video/mp4"/>
+<source data-src="/assets/videos/footer_bg_e58bba71.mp4" type="video/mp4"/>
 </video>
 <video class="hidden" id="footer-hidden-video-2" muted="" playsinline="" preload="none">
-<source src="/assets/videos/footer_bg_e58bba71.mp4" type="video/mp4"/>
+<source data-src="/assets/videos/footer_bg_e58bba71.mp4" type="video/mp4"/>
 </video>
 <div class="absolute inset-0 bg-gradient-to-b from-black/30 via-black/45 to-black/75"></div>
 </div>
@@ -2268,7 +2268,26 @@ You can easily book a free consultation by filling out our online inquiry form o
             const v2 = document.getElementById("footer-hidden-video-2");
             const canvas = document.getElementById("footer-seamless-canvas");
             if (!v1 || !v2 || !canvas) return;
+
+            // T09: Prevent 13.5MB video decoding and 60fps canvas loop on mobile
+            if (window.innerWidth < 768 || window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
+                canvas.style.display = 'none';
+                return;
+            }
+
             const ctx = canvas.getContext("2d", { alpha: false });
+            let videoSourcesAttached = false;
+            function attachVideoSources() {
+                if (videoSourcesAttached) return;
+                videoSourcesAttached = true;
+                [v1, v2].forEach(v => {
+                    const s = v.querySelector('source[data-src]');
+                    if (s && !s.src) {
+                        s.src = s.getAttribute('data-src');
+                        v.load();
+                    }
+                });
+            }
 
             let activeVideo = v1;
             let standbyVideo = v2;
@@ -2320,6 +2339,7 @@ You can easily book a free consultation by filling out our online inquiry form o
                     entries.forEach((entry) => {
                         isFooterVisible = entry.isIntersecting;
                         if (isFooterVisible) {
+                            if (typeof attachVideoSources === "function") attachVideoSources();
                             activeVideo.play().catch(() => {});
                             if (!animationFrameId) renderFrame();
                         } else {
@@ -2835,8 +2855,8 @@ You can easily book a free consultation by filling out our online inquiry form o
     // Flag that the user is coming from an internal page of Sharif Group website
     sessionStorage.setItem('sharif_preloader_shown', 'true');
 </script>
-<script defer="" src="/assets/js/navbar.js"></script>
-<script src="/assets/js/language-switcher.js"></script>
-<script src="/assets/js/forms.js"></script>
+<script defer="" src="/assets/js/navbar.js?v=20261117"></script>
+<script src="/assets/js/language-switcher.js?v=20261117"></script>
+<script src="/assets/js/forms.js?v=20261117"></script>
 </body>
 </html>

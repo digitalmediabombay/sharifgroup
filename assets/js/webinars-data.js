@@ -398,7 +398,9 @@ window.SGCMS_WEBINARS = [
                 "资金来源证明与转账",
                 "面试准备与完整费用"
             ]
-        }
+        },
+        "reg_status": "open",
+        "updated_at": "2026-11-17 08:31:01"
     },
     {
         "id": "WEB03",
@@ -408,7 +410,7 @@ window.SGCMS_WEBINARS = [
         "category": "Citizenship",
         "subcategory": "dominica",
         "start_utc": "2026-11-26T15:30:00Z",
-        "date_confirmed": true,
+        "date_confirmed": false,
         "duration_min": 65,
         "room_opens_min_before": 10,
         "event_status": "upcoming",
@@ -486,3 +488,5 @@ window.SGCMS_WEBINARS = [
         }
     }
 ];
+window.SGCMS_ACTIVE_SERIES = "dominica-pilot";
+window.SGCMS_HERO_SESSION_NO = null;

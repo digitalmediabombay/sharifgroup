@@ -662,7 +662,7 @@
                 </button>
             </div>
 
-            <h3 class="sg-wa-modal-title">${title}</h3>
+            <h3 class="sg-wa-modal-title" id="sg-wa-modal-title">${title}</h3>
             <p class="sg-wa-modal-subtitle">${subtitle}</p>
 
             <div class="sg-wa-cards-list">
@@ -772,6 +772,7 @@
             modal.className = 'sg-wa-modal';
             modal.setAttribute('role', 'dialog');
             modal.setAttribute('aria-modal', 'true');
+            modal.setAttribute('aria-labelledby', 'sg-wa-modal-title');
             modal.innerHTML = buildModalHtml(lang);
             container.appendChild(modal);
 
@@ -818,11 +819,21 @@
     function openModal(container, button) {
         container.classList.add('sg-wa-open');
         button.setAttribute('aria-expanded', 'true');
+        // T18: Move focus inside dialog to close button for keyboard/screen-reader users
+        setTimeout(function () {
+            var closeBtn = container.querySelector('#sg-wa-close-btn');
+            if (closeBtn) closeBtn.focus();
+        }, 50);
     }
 
     function closeModal(container, button) {
+        if (!container.classList.contains('sg-wa-open')) return;
         container.classList.remove('sg-wa-open');
         button.setAttribute('aria-expanded', 'false');
+        // T18: Return focus to trigger button
+        if (button && typeof button.focus === 'function') {
+            button.focus();
+        }
     }
 
     function toggleModal(container, button) {
@@ -906,6 +917,8 @@
             existingLinks.forEach(function (a) {
                 if (a.closest('#sg-whatsapp-widget')) return;
                 var href = a.getAttribute('href') || '';
+                // T28: Do not rewrite share links with custom text or explicit share buttons
+                if (href.includes('text=') || a.classList.contains('wa-share-btn') || a.hasAttribute('data-share')) return;
                 if (!href.includes('97143578737') && !href.includes('971541243007')) {
                     a.setAttribute('href', 'https://wa.me/' + defaultPhone);
                     a.setAttribute('target', '_blank');

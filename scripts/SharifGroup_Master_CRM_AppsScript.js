@@ -60,6 +60,7 @@ const CATEGORY_HEADERS = [
   "Family Members",
   "Primary Objective",
   "Planning Timeline",
+  "Site Language",
   "Language",
   "Notes & Details",
   "Source URL",
@@ -86,6 +87,7 @@ const PARTNER_HEADERS = [
   "Est. Annual Referrals",
   "Heard From",
   "Confidential Message",
+  "Site Language",
   "Language",
   "Source URL",
   "Status",
@@ -104,6 +106,7 @@ const EVENT_HEADERS = [
   "Country of Residence",
   "Questions / Notes",
   "Newsletter Opt-In",
+  "Site Language",
   "Language",
   "Source URL",
   "Page Path",
@@ -174,6 +177,44 @@ function doPost(e) {
 
     var formId = String(data.form_id || (data.webinar_id ? "webinar-registration" : "consultation-lead")).toLowerCase();
 
+    // ── Anti-Abuse & Honeypot Traps (B4) ──────────────────────────────────────
+    var isBotTrap = Boolean(
+      (data.company_url && String(data.company_url).trim()) ||
+      (data.website && String(data.website).trim() && formId !== "partner-application") ||
+      (data.hp_check && String(data.hp_check).trim()) ||
+      (data.hp_url && String(data.hp_url).trim()) ||
+      (data.company && String(data.company).trim() && formId === "webinar-registration") ||
+      (data.fax && String(data.fax).trim())
+    );
+    if (isBotTrap) {
+      if (lock) lock.releaseLock();
+      return ContentService
+        .createTextOutput(JSON.stringify({ status: "success", message: "Inquiry processed successfully." }))
+        .setMimeType(ContentService.MimeType.JSON);
+    }
+
+    // ── Anti-Abuse Rate Limiting (B4: Max 5 submissions per 60s per email/identity) ──
+    var leadEmail = String(data.email || "").toLowerCase().trim();
+    var isTest = (
+      leadEmail.indexOf("test") !== -1 ||
+      leadEmail.indexOf("qa") !== -1 ||
+      String(data.fullName || "").toLowerCase().indexOf("test") !== -1 ||
+      Boolean(data.is_test)
+    );
+
+    if (leadEmail && !isTest) {
+      var cache = CacheService.getScriptCache();
+      var rateKey = "rate_limit_" + leadEmail.replace(/[^a-z0-9]/g, "").slice(0, 40);
+      var currentRate = Number(cache.get(rateKey) || 0);
+      if (currentRate >= 5) {
+        if (lock) lock.releaseLock();
+        return ContentService
+          .createTextOutput(JSON.stringify({ status: "ignored_rate_limit", message: "Submission accepted for processing." }))
+          .setMimeType(ContentService.MimeType.JSON);
+      }
+      cache.put(rateKey, String(currentRate + 1), 60);
+    }
+
     // 1. Partnership Applications (Partnership tab)
     if (formId === "partner-application" || formId.indexOf("partner") !== -1) {
       var partnerResult = handlePartnerApplication(data);
@@ -201,6 +242,48 @@ function doPost(e) {
   }
 }
 
+/**
+ * Universal E.164 Phone Normalizer for Google Sheets (B3 / B4)
+ * - Converts Persian & Arabic numerals
+ * - Prevents duplicate prefixes (+9393..., +971971...)
+ * - Strips leading trunk zeros (0783... -> 783..., 050... -> 50...)
+ * - Prepends leading apostrophe (') so Google Sheets never evaluates #ERROR!
+ */
+function normalizeCrmPhone(rawPhone, dialCode) {
+  var s = String(rawPhone || "").trim().replace(/^'+/, "");
+  var d = String(dialCode || "+971").trim().replace(/^'+/, "");
+  if (d && d.indexOf("+") !== 0) d = "+" + d;
+
+  var eastern = ["۰","۱","۲","۳","۴","۵","۶","۷","۸","۹","٠","١","٢","٣","٤","٥","٦","٧","٨","٩"];
+  var latin   = ["0","1","2","3","4","5","6","7","8","9","0","1","2","3","4","5","6","7","8","9"];
+  for (var i = 0; i < eastern.length; i++) {
+    while (s.indexOf(eastern[i]) !== -1) s = s.replace(eastern[i], latin[i]);
+    while (d.indexOf(eastern[i]) !== -1) d = d.replace(eastern[i], latin[i]);
+  }
+
+  var clean = s.replace(/[^\d+]/g, "");
+  if (clean.indexOf("00") === 0) clean = "+" + clean.slice(2);
+
+  if (clean.indexOf("+") === 0) {
+    var match = clean.match(/^(\+\d{1,4})(.*)$/);
+    if (match) {
+      d = match[1];
+      clean = match[2];
+    }
+  } else {
+    var dDigits = d.replace(/\D/g, "");
+    if (dDigits && clean.indexOf(dDigits) === 0 && clean.length > dDigits.length + 5) {
+      clean = clean.slice(dDigits.length);
+    }
+  }
+
+  clean = clean.replace(/^0+/, "");
+  var localDigits = clean.replace(/\D/g, "");
+
+  if (!localDigits) return s ? ("'" + s) : "";
+  return "'" + d + " " + localDigits;
+}
+
 // ==============================================================================
 // 1. CATEGORY ROUTER (Citizenship, Residency, Real Estate, Education, General)
 // ==============================================================================
@@ -211,10 +294,10 @@ function handleCategoryLead(data) {
   var leadName = (data.fullName || ((data.firstName || "") + " " + (data.lastName || "")).trim() || "Website Client");
   var leadEmail = (data.email || "").toLowerCase().trim();
 
-  // Safe phone escaping: Avoid #ERROR! formula evaluation in Google Sheets
-  var rawPhone = (data.phone || (data.dialCode ? (data.dialCode + " " + (data.rawPhone || "")) : "")).trim();
-  var cleanPhone = rawPhone.replace(/^'+/, "").trim();
-  var safePhone = cleanPhone ? ("'" + cleanPhone) : "";
+  // Safe phone escaping: Avoid #ERROR! formula evaluation in Google Sheets (B3)
+  var rawPhone = (data.whatsapp_e164 || data.phone || (data.dialCode ? (data.dialCode + " " + (data.rawPhone || "")) : "")).trim();
+  var safePhone = normalizeCrmPhone(rawPhone, data.dialCode);
+  var cleanPhone = safePhone.replace(/^'+/, "").trim();
 
   // Resolve target tab upfront so dedupe key is accurately scoped
   var targetTabName = resolveCategoryTabName(data);
@@ -261,6 +344,18 @@ function handleCategoryLead(data) {
     leadService += " (" + data.subProgram + ")";
   }
 
+  // Education Advisory fields (B2 item 2)
+  var studentAge = String(data.student_age || data.studentAgeGrade || data.studentAge || "").trim();
+  var studyLevel = String(data.study_level || data.studyLevel || "").trim();
+  var destination = String(data.destination || data.targetDestination || "").trim();
+  var intake = String(data.intake || data.intakeTimeline || "").trim();
+
+  // Social Responsibility fields (B2 item 3)
+  var organization = String(data.organization || "").trim();
+  var orgType = String(data.orgType || data.org_type || "").trim();
+  var preferredDate = String(data.preferredDate || data.preferred_date || "").trim();
+  var preferredMethod = String(data.preferredMethod || data.preferred_method || "").trim();
+
   // Dedicated citizenship & residency questionnaire parameters
   var investmentRoute = data.investmentRoute || data.route || "";
   var budget = data.budget || data.budgetTier || "";
@@ -268,21 +363,55 @@ function handleCategoryLead(data) {
   var objective = data.objective || data.primaryObjective || (Array.isArray(data.goals) ? data.goals.join(", ") : (data.goals || ""));
   var timeline = data.timeline || data.planningTimeline || "";
 
+  // Category tab resolved upfront for dedupe scoping and context mapping
+  targetTabName = targetTabName || resolveCategoryTabName(data);
+
+  if (targetTabName === CONFIG.TAB_EDUCATION || studentAge || studyLevel || destination || intake) {
+    if (studyLevel && !investmentRoute) investmentRoute = studyLevel;
+    if (destination && !objective) objective = destination;
+    if (studentAge && !familyMembers) familyMembers = formatEducationAge(studentAge);
+    if (intake && !timeline) timeline = formatEducationIntake(intake);
+  }
+
+  if (preferredDate && !timeline) {
+    timeline = preferredDate; // Keep date intact without converting via formatTimeline
+  }
+
   var friendlyRoute = formatRoute(investmentRoute);
   var friendlyBudget = formatBudget(budget);
   var friendlyFamily = formatFamily(familyMembers);
   var friendlyObjective = formatObjective(objective);
-  var friendlyTimeline = formatTimeline(timeline);
+  var friendlyTimeline = preferredDate ? preferredDate : formatTimeline(timeline);
 
+  // Site Language (B2 item 7) vs Client Preferred Contact Language
+  var rawSiteLang = data.site_language || data.siteLanguage || "";
+  var siteLang = rawSiteLang ? formatLanguage(rawSiteLang) : formatLanguage(data.lang || "en");
   var preferredLanguage = data.preferredLanguage || data.lang || "en";
   var friendlyLang = formatLanguage(preferredLanguage);
+
   var leadNotes = (data.notes || data.message || data.confidentialNotes || "").trim();
+  var extraLeadNotes = [];
+  if (organization) extraLeadNotes.push("Organization: " + organization + (orgType ? " (" + orgType + ")" : ""));
+  if (preferredMethod) extraLeadNotes.push("Preferred Discussion Method: " + formatContactMethod(preferredMethod));
+  if (studentAge || studyLevel || destination || intake) {
+    extraLeadNotes.push("Educational Advisory Profile: " + [
+      studentAge ? ("Age/Grade: " + formatEducationAge(studentAge)) : "",
+      studyLevel ? ("Level: " + formatRoute(studyLevel)) : "",
+      destination ? ("Target: " + formatObjective(destination)) : "",
+      intake ? ("Intake: " + formatEducationIntake(intake)) : ""
+    ].filter(Boolean).join(" | "));
+  }
+  if (data.address && leadNotes.indexOf(data.address) === -1) extraLeadNotes.push("Address: " + data.address);
+  if (data.timezone && leadNotes.indexOf(data.timezone) === -1) extraLeadNotes.push("Timezone: " + data.timezone);
+
+  if (extraLeadNotes.length > 0) {
+    leadNotes = (leadNotes ? (leadNotes + "\n---\n") : "") + extraLeadNotes.join("\n");
+  }
+
   var sourceUrl = data.source || "";
-  var pagePath = data.page || "";
+  var pagePath = data.page_path || data.page || "";
   var formId = data.form_id || "consultation-lead";
 
-  // Category tab resolved upfront for dedupe scoping
-  targetTabName = targetTabName || resolveCategoryTabName(data);
   var emailStatus = "Pending";
 
   // Dispatch instant admin email alert to contact@sharifgroup.ae
@@ -303,6 +432,7 @@ function handleCategoryLead(data) {
         "• Family Members:      " + (friendlyFamily || "Not specified") + "\n" +
         "• Primary Objective:   " + (friendlyObjective || "Not specified") + "\n" +
         "• Planning Timeline:   " + (friendlyTimeline || "Not specified") + "\n" +
+        "• Site Language:       " + siteLang + "\n" +
         "• Preferred Language:  " + friendlyLang + "\n" +
         "• Form ID:             " + formId + "\n" +
         "• Timestamp (UTC):     " + nowUtc + "\n" +
@@ -341,6 +471,7 @@ function handleCategoryLead(data) {
     friendlyFamily,
     friendlyObjective,
     friendlyTimeline,
+    siteLang,
     friendlyLang,
     leadNotes,
     sourceUrl,
@@ -566,9 +697,10 @@ function handlePartnerApplication(data) {
   var city = data.city || "";
 
   var dialCode = (data.dialCode || "").trim().replace(/^'+/, "");
-  var safeDialCode = dialCode ? ("'" + dialCode) : "";
   var rawPhone = (data.whatsapp_e164 || data.phone || "").trim().replace(/^'+/, "");
-  var safePhone = rawPhone ? ("'" + rawPhone) : "";
+  var safePhone = normalizeCrmPhone(rawPhone, dialCode);
+  var cleanPhone = safePhone.replace(/^'+/, "").trim();
+  var safeDialCode = dialCode ? ("'" + dialCode) : "";
 
   var email = (data.email || "").toLowerCase().trim();
 
@@ -601,6 +733,8 @@ function handlePartnerApplication(data) {
   var message = data.message || data.notes || "";
   var preferredLanguage = data.preferredLanguage || data.lang || "en";
   var friendlyLang = formatLanguage(preferredLanguage);
+  var rawSiteLang = data.site_language || data.siteLanguage || "";
+  var siteLang = rawSiteLang ? formatLanguage(rawSiteLang) : formatLanguage(data.lang || "en");
   var source = data.source || "";
 
   var friendlyProgrammes = formatProgrammes(programmes);
@@ -616,16 +750,7 @@ function handlePartnerApplication(data) {
     }
   }
 
-  // Dynamic Header Column Alignment: Ensure "Pending Review" lands under Status and emailStatus lands under Confirmation Email Status
-  var partnerHeaders = sheet.getRange(1, 1, 1, Math.max(sheet.getLastColumn(), 20)).getValues()[0];
-  var col19Head = String(partnerHeaders[18] || "").toLowerCase();
-  var valCol19 = "Pending Review";
-  var valCol20 = emailStatus;
-  if (col19Head.indexOf("email") !== -1 || col19Head.indexOf("mail") !== -1) {
-    valCol19 = emailStatus;
-    valCol20 = "Pending Review";
-  }
-
+  // Column Alignment: "Pending Review" lands under Status (for staff review), emailStatus lands under Confirmation Email Status
   sheet.appendRow([
     nowUtc,
     appId,
@@ -643,10 +768,11 @@ function handlePartnerApplication(data) {
     friendlyReferrals,
     friendlyHeard,
     message,
+    siteLang,
     friendlyLang,
     source,
-    valCol19,
-    valCol20
+    "Pending Review",
+    emailStatus
   ]);
 
   try {
@@ -688,14 +814,15 @@ function handleWebinarRegistration(data) {
   var sheet = getOrCreateTab(ss, CONFIG.TAB_EVENT, EVENT_HEADERS);
 
   var nowUtc = new Date().toISOString();
-  var webinarId = data.webinar_id || "WEB01";
-  var webinarSlug = data.slug || "";
+  var webinarId = data.webinar_id || data.webinarId || "WEB01";
+  var webinarSlug = data.webinar_slug || data.webinarSlug || data.slug || "";
   var fullName = data.fullName || data.name || "Attendee";
 
   var dialCode = (data.dialCode || "").trim().replace(/^'+/, "");
-  var safeDialCode = dialCode ? ("'" + dialCode) : "";
   var rawPhone = (data.whatsapp_e164 || data.phone || "").trim().replace(/^'+/, "");
-  var safePhone = rawPhone ? ("'" + rawPhone) : "";
+  var safePhone = normalizeCrmPhone(rawPhone, dialCode);
+  var cleanPhone = safePhone.replace(/^'+/, "").trim();
+  var safeDialCode = dialCode ? ("'" + dialCode) : "";
 
   var email = (data.email || "").toLowerCase().trim();
 
@@ -719,8 +846,10 @@ function handleWebinarRegistration(data) {
   var newsletter = data.newsletter_optin ? "Yes" : "No";
   var preferredLanguage = data.preferredLanguage || data.lang || "fa";
   var friendlyLang = formatLanguage(preferredLanguage);
+  var rawSiteLang = data.site_language || data.siteLanguage || "";
+  var siteLang = rawSiteLang ? formatLanguage(rawSiteLang) : formatLanguage(data.lang || "en");
   var source = data.source || "";
-  var page = data.page || "";
+  var page = data.page_path || data.page || "";
 
   var emailStatus = "Not Sent (No Email Provided)";
   if (email && email.indexOf("@") !== -1) {
@@ -732,9 +861,22 @@ function handleWebinarRegistration(data) {
   }
 
   sheet.appendRow([
-    nowUtc, webinarId, webinarSlug, fullName, safeDialCode, safePhone,
-    email, residence, question, newsletter, friendlyLang, source, page,
-    "Registered", emailStatus
+    nowUtc,
+    webinarId,
+    webinarSlug,
+    fullName,
+    safeDialCode,
+    safePhone,
+    email,
+    residence,
+    question,
+    newsletter,
+    siteLang,
+    friendlyLang,
+    source,
+    page,
+    "Registered",
+    emailStatus
   ]);
 
   try {
@@ -785,6 +927,24 @@ function formatObjective(val) {
       formatted.push("Include Dependent Children & Parents");
     } else if (s.indexOf("tax-planning") !== -1) {
       formatted.push("International Tax & Wealth Planning");
+    } else if (s === "rental-roi" || s.indexOf("yield") !== -1 || s.indexOf("roi") !== -1) {
+      formatted.push("High Rental Yields & ROI");
+    } else if (s === "capital-growth" || s.indexOf("capital") !== -1 || s.indexOf("appreciation") !== -1) {
+      formatted.push("Long-Term Capital Appreciation");
+    } else if (s === "golden-visa" || s.indexOf("golden visa") !== -1) {
+      formatted.push("UAE 10-Year Golden Visa via Property");
+    } else if (s === "holiday-home" || s.indexOf("holiday") !== -1 || s.indexOf("secondary") !== -1) {
+      formatted.push("Holiday Home / Secondary Residence");
+    } else if (s === "uk" || s.indexOf("united kingdom") !== -1) {
+      formatted.push("United Kingdom (UK)");
+    } else if (s === "switzerland" || s.indexOf("swiss") !== -1) {
+      formatted.push("Switzerland");
+    } else if (s === "eu-english" || s.indexOf("netherlands") !== -1 || s.indexOf("ireland") !== -1) {
+      formatted.push("EU English-Taught Universities");
+    } else if (s === "us-canada" || s.indexOf("us / canada") !== -1) {
+      formatted.push("USA & Canada");
+    } else if (s === "uae-branch" || s.indexOf("uae") !== -1) {
+      formatted.push("UAE International Branch Campuses");
     } else {
       formatted.push(rawList[i].trim());
     }
@@ -802,9 +962,41 @@ function formatObjective(val) {
 function formatTimeline(val) {
   if (!val) return "";
   var s = String(val).toLowerCase().trim();
-  if (s === "immediate" || s.indexOf("immediate") !== -1 || s.indexOf("0") !== -1) return "Immediately (0–3 months)";
+  // Safe exact check to avoid mistaking dates containing '0' (e.g. 2026-11-20) for 0-3 months
+  if (s === "immediate" || s.indexOf("immediate") !== -1 || s === "0-3" || s.indexOf("0-3") !== -1 || s.indexOf("0–3") !== -1) return "Immediately (0–3 months)";
   if (s === "short_term" || s.indexOf("short") !== -1 || s.indexOf("3-6") !== -1 || s.indexOf("3–6") !== -1) return "3–6 months";
   if (s === "planning" || s.indexOf("plan") !== -1 || s.indexOf("6-12") !== -1 || s.indexOf("6–12") !== -1) return "6–12 months";
+  return String(val);
+}
+
+function formatEducationAge(val) {
+  if (!val) return "";
+  var s = String(val).toLowerCase().trim();
+  if (s === "prep_school" || s.indexOf("prep") !== -1 || s.indexOf("7-11") !== -1 || s.indexOf("7–11") !== -1) return "Ages 7–11 (Prep / Primary)";
+  if (s === "senior_school" || s.indexOf("senior") !== -1 || s.indexOf("11-16") !== -1 || s.indexOf("11–16") !== -1) return "Ages 11–16 (Senior School / GCSE)";
+  if (s === "sixth_form" || s.indexOf("sixth") !== -1 || s.indexOf("16-18") !== -1 || s.indexOf("16–18") !== -1) return "Ages 16–18 (Sixth Form / A-Levels / IB)";
+  if (s === "university" || s.indexOf("18+") !== -1) return "Ages 18+ (University / Degree)";
+  if (s === "adult" || s.indexOf("adult") !== -1 || s.indexOf("postgraduate") !== -1) return "Postgraduate / Adult Executive";
+  return String(val);
+}
+
+function formatEducationIntake(val) {
+  if (!val) return "";
+  var s = String(val).toLowerCase().trim();
+  if (s === "sep-2026" || s.indexOf("sep-2026") !== -1 || s.indexOf("september 2026") !== -1) return "September 2026 Intake";
+  if (s === "jan-2027" || s.indexOf("jan-2027") !== -1 || s.indexOf("january 2027") !== -1 || s.indexOf("spring 2027") !== -1) return "January / Spring 2027 Intake";
+  if (s === "sep-2027" || s.indexOf("sep-2027") !== -1 || s.indexOf("september 2027") !== -1) return "September 2027 Intake";
+  if (s === "future" || s.indexOf("2028") !== -1) return "2028 or Later";
+  return String(val);
+}
+
+function formatContactMethod(val) {
+  if (!val) return "";
+  var s = String(val).toLowerCase().trim();
+  if (s === "phone" || s.indexOf("phone") !== -1 || s.indexOf("call") !== -1) return "Phone Call";
+  if (s === "whatsapp" || s.indexOf("whatsapp") !== -1) return "WhatsApp";
+  if (s === "zoom" || s.indexOf("zoom") !== -1 || s.indexOf("teams") !== -1 || s.indexOf("meeting") !== -1) return "Video Meeting (Zoom / Teams)";
+  if (s === "email" || s.indexOf("email") !== -1) return "Email Correspondence";
   return String(val);
 }
 
@@ -823,6 +1015,7 @@ function formatBudget(val) {
   var s = String(val).toLowerCase().trim().replace(/\s+/g, "");
 
   var exactMap = {
+    // Caribbean CBI (USD)
     "under_100k": "$100,000 or under",
     "under100k": "$100,000 or under",
     "100_200k": "$100,000 – $200,000",
@@ -837,13 +1030,24 @@ function formatBudget(val) {
     "200k-250k": "$200,000 – $250,000",
     "250k-350k": "$250,000 – $350,000",
     "350k+": "$350,000+",
+    "300k+": "$300,000+",
+    // Portugal / Greece / European RBI (EUR)
     "250k-500k": "€250,000 – €500,000",
     "500k-750k": "€500,000 – €750,000",
     "750k-1m": "€750,000 – €1,000,000",
     "1m+": "€1,000,000+",
+    // Dubai Real Estate (AED)
+    "1m-2m": "AED 1,000,000 – AED 2,000,000",
+    "2m-5m": "AED 2,000,000 – AED 5,000,000 (Golden Visa)",
+    "5m-10m": "AED 5,000,000 – AED 10,000,000",
+    "10m+": "AED 10,000,000+",
     "2m+": "AED 2,000,000+",
     "aed2m+": "AED 2,000,000+",
-    "300k+": "$300,000+"
+    // Educational Advisory (EUR / GBP)
+    "under-15k": "Under €15,000 / yr (European Public Unis)",
+    "15k-30k": "€15,000 – €30,000 / yr (Private / Direct Entry)",
+    "30k-50k": "£30,000 – £50,000 / yr (UK Boarding & Russell Group)",
+    "50k+": "£50,000+ / yr (Elite Swiss / UK Boarding Schools)"
   };
 
   if (exactMap[s]) {
@@ -861,6 +1065,10 @@ function formatBudget(val) {
   if (s.indexOf("200k-250") !== -1) return "$200,000 – $250,000";
   if (s.indexOf("250k-350") !== -1) return "$250,000 – $350,000";
   if (s.indexOf("350k") !== -1) return "$350,000+";
+  if (s.indexOf("1m-2m") !== -1) return "AED 1,000,000 – AED 2,000,000";
+  if (s.indexOf("2m-5m") !== -1) return "AED 2,000,000 – AED 5,000,000 (Golden Visa)";
+  if (s.indexOf("5m-10m") !== -1) return "AED 5,000,000 – AED 10,000,000";
+  if (s.indexOf("10m") !== -1) return "AED 10,000,000+";
 
   return String(val);
 }
@@ -869,7 +1077,7 @@ function formatRoute(val) {
   if (!val) return "";
   var s = String(val).toLowerCase().trim();
 
-  // Portugal RBI
+  // Portugal RBI (Programme-specific CMVM regulated fund & EUR)
   if (s === "regulated-fund" || s.indexOf("regulated-fund") !== -1 || s.indexOf("investment fund") !== -1 || s.indexOf("cmvm") !== -1) return "CMVM Regulated Investment Fund (€500k)";
   if (s === "cultural-heritage" || s.indexOf("cultural") !== -1) return "Cultural Heritage / Arts (€250k)";
   if (s === "scientific-research" || s.indexOf("scientific") !== -1) return "Scientific Research (€500k)";
@@ -887,10 +1095,19 @@ function formatRoute(val) {
   // UAE Golden Visa
   if (s === "property-2m" || s.indexOf("uae-property") !== -1 || (s.indexOf("2m") !== -1 && s.indexOf("uae") !== -1)) return "Real Estate Purchase (AED 2M+)";
 
-  // Real Estate (Property desk)
+  // Real Estate (Property Desk - Human readable labels with AED)
   if (s === "ready-villas" || s.indexOf("ready") !== -1 || s.indexOf("villa") !== -1) return "Ready Homes & Luxury Villas";
   if (s === "golden-visa" || s.indexOf("golden-visa") !== -1) return "Golden Visa Property (AED 2M+)";
   if (s === "off-plan" || s.indexOf("off-plan") !== -1 || s.indexOf("offplan") !== -1) return "Off-Plan & High ROI Projects";
+  if (s === "prime-penthouses" || s.indexOf("penthouse") !== -1) return "Prime Penthouses & Waterfront";
+  if (s === "commercial" || s.indexOf("commercial") !== -1) return "Commercial & Retail Property";
+
+  // Educational Advisory Study Levels
+  if (s === "boarding-school" || s.indexOf("boarding") !== -1) return "Boarding School (UK / Switzerland)";
+  if (s === "undergraduate" || s.indexOf("undergrad") !== -1) return "Undergraduate Degree (UK / EU)";
+  if (s === "postgraduate" || s.indexOf("postgrad") !== -1 || s.indexOf("master") !== -1) return "Postgraduate / Master's / MBA";
+  if (s === "foundation" || s.indexOf("foundation") !== -1) return "University Foundation / Pathway";
+  if (s === "language-prep" || s.indexOf("language") !== -1) return "Language Immersion & Exam Prep";
 
   // Caribbean & Pacific CBI routes
   if (s === "edf-donation" || s.indexOf("edf") !== -1) return "Economic Diversification Fund ($200k+)";
@@ -1079,6 +1296,15 @@ function sendPartnerConfirmationEmail(recipientEmail, recipientName, application
  */
 function sendSmartEmail(options) {
   var to = options.to;
+
+  // Anti-Spam Relay & RFC 5322 Email Validation (B4)
+  var emailRegex = /^[a-zA-Z0-9.!#$%&'*+/=?^_`{|}~-]+@[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?(?:\.[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?)+$/;
+  if (!to || !emailRegex.test(to)) return false;
+
+  var domain = (to.split("@")[1] || "").toLowerCase();
+  var blockedDomains = ["mailinator.com", "guerrillamail.com", "tempmail.com", "example.com", "test.com", "localhost", "127.0.0.1"];
+  if (blockedDomains.indexOf(domain) !== -1) return false;
+
   var subject = options.subject;
   var body = options.body || "";
   var name = options.name || CONFIG.SENDER_NAME;
@@ -1173,6 +1399,7 @@ function onOpen() {
     .createMenu("⭐ Sharif Group CRM")
     .addItem("🛠️ Setup All 7 Clean Tabs", "initializeAll7Tabs")
     .addItem("🔧 Fix Existing Phone Number #ERROR! (Clean All)", "fixExistingPhoneErrors")
+    .addItem("📥 Migrate Leads from Old CRM Sheet", "migrateOldSheetLeadsPrompt")
     .addItem("✉️ Send Test Admin Email Alert", "testEmailPermissions")
     .addToUi();
 }
@@ -1308,4 +1535,86 @@ function testEmailPermissions() {
     body: "Operational test.\nDaily Quota: " + quota + "\nSender: " + CONFIG.SENDER_EMAIL + "\nRecipient: " + CONFIG.ADMIN_EMAIL
   });
   SpreadsheetApp.getUi().alert("✅ Test email sent to " + CONFIG.ADMIN_EMAIL);
+}
+
+/**
+ * Migration Utility (B4): Moves leads from old "Sharif Group CRM 2026" sheet into Master Sheet
+ */
+function migrateOldSheetLeadsPrompt() {
+  var ui = SpreadsheetApp.getUi();
+  var prompt = ui.prompt(
+    "📥 Migrate Historical Leads (B4)",
+    "Enter the Google Sheet ID or URL of the old 'Sharif Group CRM 2026' sheet:",
+    ui.ButtonSet.OK_CANCEL
+  );
+
+  if (prompt.getSelectedButton() !== ui.Button.OK) return;
+  var input = prompt.getResponseText().trim();
+  if (!input) return;
+
+  var sheetId = input;
+  var m = input.match(/\/d\/([a-zA-Z0-9-_]+)/);
+  if (m) sheetId = m[1];
+
+  try {
+    var sourceSs = SpreadsheetApp.openById(sheetId);
+    var movedCount = migrateOldSheetLeads(sourceSs);
+    ui.alert("✅ Migration Complete!\n\nSuccessfully migrated " + movedCount + " lead(s) into the Master CRM Sheet.");
+  } catch (err) {
+    ui.alert("❌ Migration Error:\n\n" + err.toString());
+  }
+}
+
+function migrateOldSheetLeads(sourceSs) {
+  var sheets = sourceSs.getSheets();
+  var totalMigrated = 0;
+
+  for (var s = 0; s < sheets.length; s++) {
+    var srcSheet = sheets[s];
+    var data = srcSheet.getDataRange().getValues();
+    if (data.length <= 1) continue;
+
+    var srcHeaders = data[0].map(function(h) { return String(h || "").toLowerCase().trim(); });
+
+    var colMap = {};
+    for (var c = 0; c < srcHeaders.length; c++) {
+      var h = srcHeaders[c];
+      if (h.indexOf("time") !== -1 || h.indexOf("date") !== -1) colMap.timestamp = c;
+      if (h.indexOf("inquiry") !== -1 || h.indexOf("id") !== -1) colMap.inquiryId = c;
+      if (h.indexOf("name") !== -1) colMap.name = c;
+      if (h.indexOf("email") !== -1) colMap.email = c;
+      if (h.indexOf("phone") !== -1 || h.indexOf("dial") !== -1) colMap.phone = c;
+      if (h.indexOf("country") !== -1 || h.indexOf("residence") !== -1) colMap.country = c;
+      if (h.indexOf("program") !== -1 || h.indexOf("service") !== -1) colMap.service = c;
+      if (h.indexOf("lang") !== -1) colMap.lang = c;
+      if (h.indexOf("note") !== -1 || h.indexOf("message") !== -1) colMap.notes = c;
+    }
+
+    for (var r = 1; r < data.length; r++) {
+      var row = data[r];
+      var name = (colMap.name !== undefined ? row[colMap.name] : "") || "Lead";
+      var email = (colMap.email !== undefined ? row[colMap.email] : "") || "";
+      var phone = (colMap.phone !== undefined ? row[colMap.phone] : "") || "";
+      var service = (colMap.service !== undefined ? row[colMap.service] : "") || "";
+
+      if (!name && !email && !phone) continue;
+
+      var leadObj = {
+        fullName: name,
+        email: email,
+        phone: String(phone),
+        service: service,
+        country: (colMap.country !== undefined ? row[colMap.country] : ""),
+        lang: (colMap.lang !== undefined ? row[colMap.lang] : "en"),
+        notes: (colMap.notes !== undefined ? row[colMap.notes] : "Migrated from legacy sheet"),
+        inquiry_id: (colMap.inquiryId !== undefined ? row[colMap.inquiryId] : "") || ("INQ-MIG-" + r),
+        is_test: true // prevent external email dispatch during bulk migration
+      };
+
+      handleCategoryLead(leadObj);
+      totalMigrated++;
+    }
+  }
+
+  return totalMigrated;
 }

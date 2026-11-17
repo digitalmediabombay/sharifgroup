@@ -1,0 +1,1248 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Form Leads Inbox · Sharif Group CMS</title>
+  <link rel="icon" type="image/svg+xml" href="/favicon.svg?v=20261109">
+
+  <!-- Fonts & Icons -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700&family=Inter:wght@300;400;500;600;700&family=Playfair+Display:ital,wght@0,500;0,600;0,700;1,400&family=Vazirmatn:wght@400;500;600;700&display=swap">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+
+  <style>
+  :root {
+    --gold:        #786142;
+    --gold-light:  #A0845C;
+    --gold-bright: #C5A880;
+    --gold-dim:    rgba(120, 97, 66, 0.15);
+    --bg:          #0E0F12;
+    --surface:     #161820;
+    --card:        #1A1C22;
+    --card-hover:  #1F2229;
+    --border:      rgba(120, 97, 66, 0.18);
+    --border-h:    rgba(120, 97, 66, 0.55);
+    --cream:       #FAF6EE;
+    --text:        #ECEAE6;
+    --muted:       #9A9490;
+    --muted2:      #5C5A56;
+    --header-h:    64px;
+    --green:       #22c55e;
+    --green-dim:   rgba(34, 197, 94, 0.14);
+    --blue:        #3b82f6;
+    --blue-dim:    rgba(59, 130, 246, 0.14);
+    --amber:       #f59e0b;
+    --amber-dim:   rgba(245, 158, 11, 0.14);
+    --purple:      #a855f7;
+    --purple-dim:  rgba(168, 85, 247, 0.14);
+    --red:         #ef4444;
+    --red-dim:     rgba(239, 68, 68, 0.12);
+  }
+
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+
+  html, body {
+    min-height: 100vh;
+    font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+    background: var(--bg);
+    color: var(--text);
+  }
+
+  body::before {
+    content: '';
+    position: fixed;
+    inset: 0;
+    background:
+      radial-gradient(ellipse 55% 45% at 10% 20%, rgba(120,97,66,0.07) 0%, transparent 65%),
+      radial-gradient(ellipse 40% 50% at 90% 80%, rgba(120,97,66,0.05) 0%, transparent 55%);
+    pointer-events: none;
+    z-index: 0;
+  }
+
+  /* ═══════════════════ HEADER ═══════════════════ */
+  .site-header {
+    position: sticky;
+    top: 0;
+    z-index: 100;
+    height: var(--header-h);
+    background: rgba(14, 15, 18, 0.94);
+    backdrop-filter: blur(14px);
+    border-bottom: 1px solid var(--border);
+  }
+
+  .header-inner {
+    max-width: 1400px;
+    margin: 0 auto;
+    height: 100%;
+    padding: 0 24px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 16px;
+  }
+
+  .header-left {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+  }
+
+  .back-btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    padding: 8px 14px;
+    background: transparent;
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    color: var(--muted);
+    font-size: 0.84rem;
+    font-weight: 500;
+    text-decoration: none;
+    transition: all 0.2s ease;
+  }
+  .back-btn:hover {
+    border-color: rgba(120,97,66,0.5);
+    color: var(--gold-bright);
+    background: rgba(120,97,66,0.06);
+  }
+
+  .header-brand-box {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+  }
+  .brand-logo-mark {
+    width: 32px;
+    height: 32px;
+    border-radius: 6px;
+    border: 1px solid rgba(120, 97, 66, 0.4);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: linear-gradient(135deg, rgba(120,97,66,0.2), rgba(120,97,66,0.05));
+    color: var(--gold-bright);
+    font-size: 0.85rem;
+  }
+  .brand-title-group h1 {
+    font-family: 'Playfair Display', serif;
+    font-size: 1.05rem;
+    color: var(--cream);
+    font-weight: 600;
+  }
+  .brand-title-group p {
+    font-size: 0.72rem;
+    color: var(--muted);
+    letter-spacing: 0.05em;
+    text-transform: uppercase;
+  }
+
+  .header-actions {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+  }
+
+  .btn-refresh {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    padding: 8px 14px;
+    background: transparent;
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    color: var(--muted);
+    font-size: 0.82rem;
+    cursor: pointer;
+    transition: all 0.2s ease;
+  }
+  .btn-refresh:hover {
+    color: var(--gold-bright);
+    border-color: var(--gold);
+    background: rgba(120,97,66,0.06);
+  }
+
+  .btn-logout {
+    display: inline-flex;
+    align-items: center;
+    gap: 7px;
+    padding: 8px 14px;
+    background: transparent;
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    color: var(--muted);
+    font-size: 0.82rem;
+    cursor: pointer;
+    transition: all 0.2s ease;
+  }
+  .btn-logout:hover {
+    border-color: rgba(220,38,38,0.4);
+    color: #FCA5A5;
+  }
+
+  /* ═══════════════════ MAIN WRAPPER ═══════════════════ */
+  .main-wrapper {
+    position: relative;
+    z-index: 1;
+    max-width: 1400px;
+    margin: 0 auto;
+    padding: 32px 24px 80px;
+  }
+
+  /* KPI Stats Strip */
+  .kpi-grid {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 16px;
+    margin-bottom: 28px;
+  }
+
+  .kpi-card {
+    background: var(--card);
+    border: 1px solid var(--border);
+    border-radius: 14px;
+    padding: 20px 22px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    transition: all 0.2s ease;
+  }
+  .kpi-card:hover {
+    border-color: rgba(120,97,66,0.4);
+    transform: translateY(-2px);
+    box-shadow: 0 8px 24px rgba(0,0,0,0.3);
+  }
+  .kpi-info h4 {
+    font-size: 0.76rem;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    color: var(--muted);
+    margin-bottom: 6px;
+  }
+  .kpi-value {
+    font-family: 'Playfair Display', serif;
+    font-size: 1.8rem;
+    font-weight: 700;
+    color: var(--cream);
+  }
+  .kpi-icon {
+    width: 44px;
+    height: 44px;
+    border-radius: 12px;
+    background: var(--surface);
+    border: 1px solid var(--border);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.15rem;
+    color: var(--gold-bright);
+  }
+  .kpi-icon.new { color: var(--amber); background: var(--amber-dim); border-color: rgba(245,158,11,0.3); }
+  .kpi-icon.consult { color: var(--blue); background: var(--blue-dim); border-color: rgba(59,130,246,0.3); }
+  .kpi-icon.webinar { color: var(--green); background: var(--green-dim); border-color: rgba(34,197,94,0.3); }
+
+  /* Toolbar: Tabs & Search */
+  .toolbar-box {
+    background: var(--card);
+    border: 1px solid var(--border);
+    border-radius: 14px;
+    padding: 16px 20px;
+    margin-bottom: 24px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 16px;
+    flex-wrap: wrap;
+  }
+
+  .channel-tabs {
+    display: flex;
+    gap: 8px;
+    flex-wrap: wrap;
+  }
+  .channel-tab {
+    padding: 8px 16px;
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    font-size: 0.82rem;
+    font-weight: 600;
+    color: var(--muted);
+    cursor: pointer;
+    transition: all 0.2s ease;
+  }
+  .channel-tab:hover {
+    color: var(--cream);
+    border-color: rgba(120,97,66,0.4);
+  }
+  .channel-tab.active {
+    background: linear-gradient(135deg, rgba(120,97,66,0.25), rgba(120,97,66,0.1));
+    border-color: var(--gold-bright);
+    color: var(--gold-bright);
+  }
+
+  .filters-group {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    flex-wrap: wrap;
+  }
+
+  .search-wrap {
+    position: relative;
+    width: 240px;
+  }
+  .search-wrap i {
+    position: absolute;
+    left: 12px;
+    top: 50%;
+    transform: translateY(-50%);
+    color: var(--muted);
+    font-size: 0.8rem;
+  }
+  .search-input {
+    width: 100%;
+    padding: 8px 12px 8px 34px;
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    color: var(--cream);
+    font-size: 0.82rem;
+    font-family: inherit;
+    transition: all 0.2s ease;
+  }
+  .search-input:focus {
+    outline: none;
+    border-color: var(--gold-bright);
+    box-shadow: 0 0 0 2px rgba(120,97,66,0.15);
+  }
+
+  .filter-select {
+    padding: 8px 12px;
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    color: var(--cream);
+    font-size: 0.82rem;
+    font-family: inherit;
+    cursor: pointer;
+  }
+  .filter-select:focus {
+    outline: none;
+    border-color: var(--gold-bright);
+  }
+
+  .btn-export-csv {
+    display: inline-flex;
+    align-items: center;
+    gap: 7px;
+    padding: 8px 16px;
+    background: linear-gradient(135deg, #786142, #947854);
+    border: 1px solid var(--gold-bright);
+    border-radius: 8px;
+    color: var(--cream);
+    font-size: 0.82rem;
+    font-weight: 600;
+    cursor: pointer;
+    text-decoration: none;
+    transition: all 0.2s ease;
+    box-shadow: 0 2px 8px rgba(120,97,66,0.25);
+  }
+  .btn-export-csv:hover {
+    background: linear-gradient(135deg, #8A6F4C, #A6875E);
+    transform: translateY(-1px);
+    box-shadow: 0 4px 14px rgba(120,97,66,0.4);
+  }
+
+  /* ═══════════════════ LEADS TABLE ═══════════════════ */
+  .leads-table-card {
+    background: var(--card);
+    border: 1px solid var(--border);
+    border-radius: 14px;
+    overflow: hidden;
+    box-shadow: 0 12px 36px rgba(0,0,0,0.3);
+  }
+
+  .leads-table {
+    width: 100%;
+    border-collapse: collapse;
+    text-align: left;
+  }
+
+  .leads-table thead th {
+    background: rgba(22, 24, 32, 0.95);
+    padding: 14px 18px;
+    font-size: 0.72rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.06em;
+    color: var(--muted);
+    border-bottom: 1px solid var(--border);
+    white-space: nowrap;
+  }
+
+  .leads-table tbody tr {
+    border-bottom: 1px solid rgba(120, 97, 66, 0.09);
+    transition: background 0.15s ease;
+  }
+  .leads-table tbody tr:hover {
+    background: rgba(120, 97, 66, 0.04);
+  }
+  .leads-table tbody tr:last-child {
+    border-bottom: none;
+  }
+
+  .leads-table td {
+    padding: 16px 18px;
+    font-size: 0.85rem;
+    vertical-align: middle;
+  }
+
+  /* Client Column */
+  .client-cell {
+    display: flex;
+    align-items: center;
+    gap: 14px;
+  }
+  .client-avatar {
+    width: 38px;
+    height: 38px;
+    border-radius: 50%;
+    background: linear-gradient(135deg, var(--gold), var(--gold-light));
+    border: 1px solid rgba(197, 168, 128, 0.4);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 0.85rem;
+    font-weight: 700;
+    color: var(--cream);
+    flex-shrink: 0;
+  }
+  .client-details .client-name {
+    font-weight: 600;
+    color: var(--cream);
+    margin-bottom: 2px;
+  }
+  .client-details .client-contact {
+    font-size: 0.78rem;
+    color: var(--muted);
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+  .lang-tag {
+    display: inline-block;
+    padding: 1px 6px;
+    border-radius: 4px;
+    font-size: 0.68rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    background: rgba(120,97,66,0.18);
+    color: var(--gold-bright);
+  }
+
+  /* Channel Badge */
+  .channel-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 5px;
+    padding: 4px 10px;
+    border-radius: 6px;
+    font-size: 0.72rem;
+    font-weight: 600;
+    white-space: nowrap;
+  }
+  .channel-badge.consultation { background: var(--blue-dim); color: #93c5fd; border: 1px solid rgba(59,130,246,0.3); }
+  .channel-badge.contact { background: rgba(168,85,247,0.14); color: #d8b4fe; border: 1px solid rgba(168,85,247,0.3); }
+  .channel-badge.webinar { background: var(--green-dim); color: #86efac; border: 1px solid rgba(34,197,94,0.3); }
+  .channel-badge.education { background: var(--amber-dim); color: #fde047; border: 1px solid rgba(245,158,11,0.3); }
+  .channel-badge.realestate { background: rgba(20,184,166,0.14); color: #5eead4; border: 1px solid rgba(20,184,166,0.3); }
+
+  /* Service Badge */
+  .service-cell {
+    max-width: 260px;
+  }
+  .service-title {
+    font-weight: 500;
+    color: var(--cream);
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    margin-bottom: 2px;
+  }
+  .service-country {
+    font-size: 0.75rem;
+    color: var(--muted);
+  }
+
+  /* Status Dropdown */
+  .status-select {
+    padding: 4px 8px;
+    border-radius: 6px;
+    font-size: 0.74rem;
+    font-weight: 600;
+    font-family: inherit;
+    cursor: pointer;
+    border: 1px solid transparent;
+    transition: all 0.2s ease;
+  }
+  .status-select.new { background: var(--amber-dim); color: #fde047; border-color: rgba(245,158,11,0.4); }
+  .status-select.contacted { background: var(--blue-dim); color: #93c5fd; border-color: rgba(59,130,246,0.4); }
+  .status-select.qualified { background: var(--green-dim); color: #86efac; border-color: rgba(34,197,94,0.4); }
+  .status-select.archived { background: rgba(100,116,139,0.18); color: #cbd5e1; border-color: rgba(100,116,139,0.4); }
+
+  /* Action Buttons */
+  .actions-cell {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+  .btn-act {
+    width: 32px;
+    height: 32px;
+    border-radius: 8px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 0.85rem;
+    cursor: pointer;
+    text-decoration: none;
+    transition: all 0.2s ease;
+    border: 1px solid var(--border);
+    background: var(--surface);
+    color: var(--cream);
+  }
+  .btn-act.wa {
+    color: var(--green);
+    border-color: rgba(34,197,94,0.3);
+  }
+  .btn-act.wa:hover {
+    background: var(--green);
+    color: #0E0F12;
+    border-color: var(--green);
+    box-shadow: 0 0 10px rgba(34,197,94,0.4);
+  }
+  .btn-act.mail:hover {
+    border-color: var(--gold-bright);
+    color: var(--gold-bright);
+  }
+  .btn-act.view:hover {
+    border-color: var(--blue);
+    color: #93c5fd;
+  }
+
+  /* Empty State */
+  .empty-box {
+    text-align: center;
+    padding: 60px 20px;
+    color: var(--muted);
+  }
+  .empty-box i {
+    font-size: 2.2rem;
+    color: var(--gold-bright);
+    margin-bottom: 12px;
+    opacity: 0.6;
+  }
+  .empty-box h3 {
+    font-size: 1.1rem;
+    color: var(--cream);
+    margin-bottom: 4px;
+  }
+
+  /* ═══════════════════ DETAILS MODAL ═══════════════════ */
+  .modal-backdrop {
+    position: fixed;
+    inset: 0;
+    background: rgba(0,0,0,0.78);
+    backdrop-filter: blur(8px);
+    z-index: 500;
+    display: none;
+    align-items: center;
+    justify-content: center;
+    padding: 20px;
+  }
+  .modal-backdrop.open { display: flex; }
+  .modal-box {
+    background: var(--card);
+    border: 1px solid var(--border-h);
+    border-radius: 16px;
+    max-width: 680px;
+    width: 100%;
+    max-height: 90vh;
+    overflow-y: auto;
+    padding: 28px 32px;
+    box-shadow: 0 20px 50px rgba(0,0,0,0.6);
+  }
+  .modal-head {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding-bottom: 18px;
+    border-bottom: 1px solid rgba(120,97,66,0.15);
+    margin-bottom: 20px;
+  }
+  .modal-head h3 {
+    font-family: 'Playfair Display', serif;
+    font-size: 1.3rem;
+    color: var(--cream);
+  }
+  .btn-modal-close {
+    background: transparent;
+    border: none;
+    color: var(--muted);
+    font-size: 1.2rem;
+    cursor: pointer;
+  }
+  .btn-modal-close:hover { color: var(--cream); }
+
+  .lead-detail-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 16px;
+    margin-bottom: 20px;
+  }
+  .detail-item {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    padding: 12px 14px;
+  }
+  .detail-item.full {
+    grid-column: 1 / -1;
+  }
+  .detail-label {
+    font-size: 0.72rem;
+    text-transform: uppercase;
+    color: var(--muted);
+    letter-spacing: 0.05em;
+    margin-bottom: 4px;
+  }
+  .detail-val {
+    font-size: 0.88rem;
+    font-weight: 500;
+    color: var(--cream);
+    word-break: break-all;
+  }
+
+  .notes-box {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    padding: 16px;
+    margin-bottom: 20px;
+  }
+  .notes-box p {
+    font-size: 0.86rem;
+    color: var(--cream);
+    line-height: 1.6;
+    white-space: pre-line;
+  }
+
+  .admin-notes-section {
+    background: rgba(120,97,66,0.06);
+    border: 1px solid rgba(120,97,66,0.25);
+    border-radius: 12px;
+    padding: 16px;
+    margin-bottom: 20px;
+  }
+  .admin-notes-section label {
+    font-size: 0.78rem;
+    font-weight: 600;
+    color: var(--gold-bright);
+    margin-bottom: 8px;
+    display: block;
+  }
+  .admin-notes-textarea {
+    width: 100%;
+    min-height: 80px;
+    padding: 10px 12px;
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    color: var(--cream);
+    font-size: 0.84rem;
+    font-family: inherit;
+    resize: vertical;
+  }
+  .admin-notes-textarea:focus {
+    outline: none;
+    border-color: var(--gold-bright);
+  }
+
+  /* Toast */
+  .toast {
+    position: fixed;
+    bottom: 24px;
+    right: 24px;
+    padding: 12px 20px;
+    background: var(--card);
+    border: 1px solid var(--gold);
+    border-radius: 10px;
+    color: var(--cream);
+    font-size: 0.84rem;
+    box-shadow: 0 10px 30px rgba(0,0,0,0.5);
+    z-index: 1000;
+    display: none;
+    align-items: center;
+    gap: 10px;
+    animation: slideUp 0.3s ease;
+  }
+  .toast.show { display: flex; }
+  .toast.error { border-color: var(--red); color: #fca5a5; }
+
+  @keyframes slideUp {
+    from { opacity: 0; transform: translateY(12px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+
+  @media (max-width: 900px) {
+    .kpi-grid { grid-template-columns: 1fr 1fr; }
+    .toolbar-box { flex-direction: column; align-items: stretch; }
+    .filters-group { flex-direction: column; align-items: stretch; }
+    .search-wrap { width: 100%; }
+    .lead-detail-grid { grid-template-columns: 1fr; }
+  }
+  </style>
+</head>
+<body>
+
+  <!-- ═══════════════ HEADER ═══════════════ -->
+  <header class="site-header">
+    <div class="header-inner">
+      <div class="header-left">
+        <a href="dashboard.html" class="back-btn">
+          <i class="fa-solid fa-arrow-left"></i>
+          <span>Dashboard</span>
+        </a>
+        <div class="header-brand-box">
+          <div class="brand-logo-mark"><i class="fa-solid fa-inbox"></i></div>
+          <div class="brand-title-group">
+            <h1>Form Leads &amp; Inquiries</h1>
+            <p>Executive Unified Inbox · Phase 4</p>
+          </div>
+        </div>
+      </div>
+      <div class="header-actions">
+        <button class="btn-refresh" id="refreshBtn" onclick="loadLeads()">
+          <i class="fa-solid fa-arrows-rotate" id="refreshIcon"></i>
+          <span>Refresh</span>
+        </button>
+        <button class="btn-logout" id="logoutBtn">
+          <i class="fa-solid fa-right-from-bracket"></i>
+          <span>Sign Out</span>
+        </button>
+      </div>
+    </div>
+  </header>
+
+  <!-- ═══════════════ MAIN WRAPPER ═══════════════ -->
+  <main class="main-wrapper">
+
+    <!-- KPI Stats Strip -->
+    <section class="kpi-grid">
+      <div class="kpi-card">
+        <div class="kpi-info">
+          <h4>Total Inquiries</h4>
+          <div class="kpi-value" id="kpiTotal">0</div>
+        </div>
+        <div class="kpi-icon"><i class="fa-solid fa-envelopes-bulk"></i></div>
+      </div>
+
+      <div class="kpi-card">
+        <div class="kpi-info">
+          <h4>New / Action Req.</h4>
+          <div class="kpi-value" id="kpiNew" style="color:var(--amber);">0</div>
+        </div>
+        <div class="kpi-icon new"><i class="fa-solid fa-bolt"></i></div>
+      </div>
+
+      <div class="kpi-card">
+        <div class="kpi-info">
+          <h4>Consultations</h4>
+          <div class="kpi-value" id="kpiConsult">0</div>
+        </div>
+        <div class="kpi-icon consult"><i class="fa-solid fa-user-tie"></i></div>
+      </div>
+
+      <div class="kpi-card">
+        <div class="kpi-info">
+          <h4>Webinar Bookings</h4>
+          <div class="kpi-value" id="kpiWebinar">0</div>
+        </div>
+        <div class="kpi-icon webinar"><i class="fa-solid fa-video"></i></div>
+      </div>
+    </section>
+
+    <!-- Toolbar: Channels & Filters -->
+    <section class="toolbar-box">
+      <div class="channel-tabs" id="channelTabs">
+        <div class="channel-tab active" data-channel="all" onclick="setChannel('all')">All Inquiries</div>
+        <div class="channel-tab" data-channel="consultations" onclick="setChannel('consultations')">Consultations &amp; Contacts</div>
+        <div class="channel-tab" data-channel="webinars" onclick="setChannel('webinars')">Webinar Registrations</div>
+        <div class="channel-tab" data-channel="specialized" onclick="setChannel('specialized')">Specialized Advisory</div>
+      </div>
+
+      <div class="filters-group">
+        <div class="search-wrap">
+          <i class="fa-solid fa-magnifying-glass"></i>
+          <input type="text" class="search-input" id="searchInput" placeholder="Search name, phone, email...">
+        </div>
+
+        <select class="filter-select" id="statusFilter" onchange="applyFilters()">
+          <option value="all">All Statuses</option>
+          <option value="new">● New</option>
+          <option value="contacted">● Contacted</option>
+          <option value="qualified">● Qualified</option>
+          <option value="archived">● Archived</option>
+        </select>
+
+        <select class="filter-select" id="programFilter" onchange="applyFilters()">
+          <option value="all">All Programs</option>
+          <option value="dominica">Dominica</option>
+          <option value="grenada">Grenada</option>
+          <option value="st-kitts">St. Kitts</option>
+          <option value="uae">UAE Golden Visa</option>
+          <option value="greece">Greece</option>
+          <option value="vanuatu">Vanuatu</option>
+        </select>
+
+        <a href="api/leads-export.php" class="btn-export-csv" id="btnExportCsv" title="Download Excel CSV">
+          <i class="fa-solid fa-file-excel"></i>
+          <span>Export CSV</span>
+        </a>
+      </div>
+    </section>
+
+    <!-- Leads Table Card -->
+    <section class="leads-table-card">
+      <table class="leads-table">
+        <thead>
+          <tr>
+            <th>Client &amp; Contact</th>
+            <th>Channel</th>
+            <th>Service / Program</th>
+            <th>Status</th>
+            <th>Date</th>
+            <th style="text-align:right;">Actions</th>
+          </tr>
+        </thead>
+        <tbody id="leadsTableBody">
+          <!-- Filled dynamically -->
+        </tbody>
+      </table>
+
+      <div class="empty-box" id="emptyState" style="display:none;">
+        <i class="fa-solid fa-inbox"></i>
+        <h3>No Leads Found</h3>
+        <p>No inquiry or registration records match the selected criteria.</p>
+      </div>
+    </section>
+
+  </main>
+
+  <!-- ═══════════════ LEAD DETAILS MODAL ═══════════════ -->
+  <div class="modal-backdrop" id="leadModal">
+    <div class="modal-box">
+      <div class="modal-head">
+        <div>
+          <span style="font-size:0.75rem; text-transform:uppercase; color:var(--gold-bright); letter-spacing:0.06em;" id="mLeadId">INQ-000000</span>
+          <h3 id="mLeadName">Client Details</h3>
+        </div>
+        <button type="button" class="btn-modal-close" onclick="closeLeadModal()">&times;</button>
+      </div>
+
+      <div class="lead-detail-grid">
+        <div class="detail-item">
+          <div class="detail-label">Phone Number</div>
+          <div class="detail-val" id="mPhone">—</div>
+        </div>
+        <div class="detail-item">
+          <div class="detail-label">Email Address</div>
+          <div class="detail-val" id="mEmail">—</div>
+        </div>
+        <div class="detail-item">
+          <div class="detail-label">Country / Residence</div>
+          <div class="detail-val" id="mCountry">—</div>
+        </div>
+        <div class="detail-item">
+          <div class="detail-label">Channel &amp; Form</div>
+          <div class="detail-val" id="mChannel">—</div>
+        </div>
+        <div class="detail-item full">
+          <div class="detail-label">Target Program / Service</div>
+          <div class="detail-val" id="mService" style="color:var(--gold-bright); font-weight:600;">—</div>
+        </div>
+        <div class="detail-item full">
+          <div class="detail-label">Source URL &amp; Timestamp</div>
+          <div class="detail-val" id="mSource" style="font-size:0.8rem; color:var(--muted);">—</div>
+        </div>
+      </div>
+
+      <!-- Client Notes & Message -->
+      <div class="notes-box">
+        <div class="detail-label" style="margin-bottom:6px;">Client Message / Details</div>
+        <p id="mNotes">No message content.</p>
+      </div>
+
+      <!-- Admin Internal Follow-up Notes -->
+      <div class="admin-notes-section">
+        <label for="mAdminNotes"><i class="fa-solid fa-pen-to-square"></i> Internal Follow-Up Notes</label>
+        <textarea class="admin-notes-textarea" id="mAdminNotes" placeholder="Write internal notes on this lead (e.g. Called via WhatsApp, scheduled zoom consultation for Thursday)..."></textarea>
+        <div style="display:flex; justify-content:space-between; align-items:center; margin-top:10px;">
+          <div style="display:flex; align-items:center; gap:8px;">
+            <span style="font-size:0.78rem; color:var(--muted);">Status:</span>
+            <select class="filter-select" id="mStatusSelect" style="padding:4px 10px; font-size:0.78rem;">
+              <option value="new">New</option>
+              <option value="contacted">Contacted</option>
+              <option value="qualified">Qualified</option>
+              <option value="archived">Archived</option>
+            </select>
+          </div>
+          <button type="button" class="btn-export-csv" style="padding:6px 14px;" onclick="saveLeadModalAction()">
+            <i class="fa-solid fa-floppy-disk"></i> Save Notes
+          </button>
+        </div>
+      </div>
+
+      <div style="display:flex; justify-content:flex-end; gap:10px;">
+        <button type="button" class="back-btn" onclick="closeLeadModal()">Close</button>
+        <a href="#" target="_blank" class="btn-export-csv" id="mBtnWhatsApp" style="background:var(--green); border-color:var(--green); color:#0E0F12;">
+          <i class="fa-brands fa-whatsapp"></i> Chat on WhatsApp
+        </a>
+      </div>
+    </div>
+  </div>
+
+  <!-- Toast Notification -->
+  <div class="toast" id="toast">
+    <i class="fa-solid fa-circle-check"></i>
+    <span id="toastMsg">Action completed</span>
+  </div>
+
+  <!-- ═══════════════ SCRIPT LOGIC ═══════════════ -->
+  <script>
+  (() => {
+    'use strict';
+
+    // ── 1. AUTHENTICATION GUARD ──────────────────────────────────────────
+    const token = localStorage.getItem('sgcms_token') || sessionStorage.getItem('sgcms_token');
+    const userStr = localStorage.getItem('sgcms_user') || sessionStorage.getItem('sgcms_user');
+    if (!token || !userStr) {
+      window.location.replace('index.html');
+      return;
+    }
+
+    // Attach token to CSV export link
+    const exportBtn = document.getElementById('btnExportCsv');
+    if (exportBtn) {
+      exportBtn.href = `api/leads-export.php?token=${encodeURIComponent(token)}`;
+    }
+
+    // ── 2. STATE ────────────────────────────────────────────────────────
+    let allLeads = [];
+    let currentChannel = 'all';
+    let activeModalLead = null;
+
+    // ── 3. DOM HELPERS ──────────────────────────────────────────────────
+    const $ = id => document.getElementById(id);
+
+    // ── 4. LOAD LEADS FROM BACKEND API ──────────────────────────────────
+    window.loadLeads = async function() {
+      const ico = $('refreshIcon');
+      if (ico) ico.classList.add('fa-spin');
+
+      try {
+        const res = await fetch(`api/leads-get.php?t=${Date.now()}`, {
+          headers: { 'Authorization': `Bearer ${token}` }
+        });
+        if (res.status === 401) {
+          window.location.replace('index.html');
+          return;
+        }
+
+        const data = await res.json();
+        if (data.success) {
+          allLeads = data.leads || [];
+          updateKpis(data.stats || {});
+          applyFilters();
+        } else {
+          showToast(data.error || 'Failed to fetch leads.', true);
+        }
+      } catch (err) {
+        showToast('Network error while loading leads.', true);
+      } finally {
+        if (ico) ico.classList.remove('fa-spin');
+      }
+    };
+
+    function updateKpis(stats) {
+      $('kpiTotal').textContent = stats.total || 0;
+      $('kpiNew').textContent = stats.new || 0;
+      $('kpiConsult').textContent = stats.consultations || 0;
+      $('kpiWebinar').textContent = stats.webinars || 0;
+    }
+
+    // ── 5. FILTERING & RENDERING ────────────────────────────────────────
+    window.setChannel = function(ch) {
+      currentChannel = ch;
+      document.querySelectorAll('#channelTabs .channel-tab').forEach(tab => {
+        tab.classList.toggle('active', tab.dataset.channel === ch);
+      });
+      applyFilters();
+    };
+
+    window.applyFilters = function() {
+      const search = $('searchInput').value.trim().toLowerCase();
+      const status = $('statusFilter').value;
+      const program = $('programFilter').value;
+
+      const filtered = allLeads.filter(lead => {
+        // Channel filter
+        if (currentChannel === 'consultations' && !['consultation', 'contact'].includes(lead.channel)) return false;
+        if (currentChannel === 'webinars' && lead.channel !== 'webinar') return false;
+        if (currentChannel === 'specialized' && !['education', 'realestate'].includes(lead.channel)) return false;
+
+        // Status filter
+        if (status !== 'all' && lead.status !== status) return false;
+
+        // Program filter
+        if (program !== 'all' && !lead.service.toLowerCase().includes(program)) return false;
+
+        // Search text
+        if (search) {
+          const haystack = (lead.full_name + ' ' + lead.phone + ' ' + lead.email + ' ' + lead.country + ' ' + lead.service + ' ' + lead.notes).toLowerCase();
+          if (!haystack.includes(search)) return false;
+        }
+
+        return true;
+      });
+
+      renderTable(filtered);
+    };
+
+    $('searchInput').addEventListener('input', applyFilters);
+
+    function renderTable(leads) {
+      const tbody = $('leadsTableBody');
+      const empty = $('emptyState');
+      tbody.innerHTML = '';
+
+      if (!leads.length) {
+        empty.style.display = 'block';
+        return;
+      }
+      empty.style.display = 'none';
+
+      leads.forEach(l => {
+        const tr = document.createElement('tr');
+        const init = (l.full_name.charAt(0) || 'C').toUpperCase();
+        const waUrl = buildWhatsAppUrl(l);
+
+        tr.innerHTML = `
+          <td>
+            <div class="client-cell">
+              <div class="client-avatar">${escapeHtml(init)}</div>
+              <div class="client-details">
+                <div class="client-name">${escapeHtml(l.full_name)}</div>
+                <div class="client-contact">
+                  <span>${escapeHtml(l.phone || 'No phone')}</span>
+                  <span>·</span>
+                  <span>${escapeHtml(l.email || 'No email')}</span>
+                  <span class="lang-tag">${escapeHtml(l.lang)}</span>
+                </div>
+              </div>
+            </div>
+          </td>
+          <td>
+            <span class="channel-badge ${escapeHtml(l.channel)}">
+              <i class="${getChannelIcon(l.channel)}"></i>
+              ${escapeHtml(l.channel_label)}
+            </span>
+          </td>
+          <td>
+            <div class="service-cell">
+              <div class="service-title" title="${escapeHtml(l.service)}">${escapeHtml(l.service)}</div>
+              <div class="service-country"><i class="fa-solid fa-location-dot"></i> ${escapeHtml(l.country || 'International')}</div>
+            </div>
+          </td>
+          <td>
+            <select class="status-select ${escapeHtml(l.status)}" onchange="updateLeadStatus('${escapeHtml(l.id)}', this.value, this)">
+              <option value="new" ${l.status === 'new' ? 'selected' : ''}>● New</option>
+              <option value="contacted" ${l.status === 'contacted' ? 'selected' : ''}>● Contacted</option>
+              <option value="qualified" ${l.status === 'qualified' ? 'selected' : ''}>● Qualified</option>
+              <option value="archived" ${l.status === 'archived' ? 'selected' : ''}>● Archived</option>
+            </select>
+          </td>
+          <td>
+            <div style="font-weight:500; color:var(--cream);">${escapeHtml(l.relative_time)}</div>
+            <div style="font-size:0.72rem; color:var(--muted);">${escapeHtml(l.timestamp.slice(0, 10))}</div>
+          </td>
+          <td style="text-align:right;">
+            <div class="actions-cell" style="justify-content:flex-end;">
+              ${l.whatsapp_e164 ? `
+                <a href="${waUrl}" target="_blank" class="btn-act wa" title="Chat on WhatsApp">
+                  <i class="fa-brands fa-whatsapp"></i>
+                </a>
+              ` : ''}
+              ${l.email ? `
+                <a href="mailto:${encodeURIComponent(l.email)}?subject=${encodeURIComponent('Sharif Group Inquiry Follow-Up')}" class="btn-act mail" title="Send Email">
+                  <i class="fa-solid fa-envelope"></i>
+                </a>
+              ` : ''}
+              <button type="button" class="btn-act view" title="View Full Details" onclick="openLeadModal('${escapeHtml(l.id)}')">
+                <i class="fa-solid fa-eye"></i>
+              </button>
+            </div>
+          </td>
+        `;
+        tbody.appendChild(tr);
+      });
+    }
+
+    function getChannelIcon(ch) {
+      if (ch === 'consultation') return 'fa-solid fa-user-tie';
+      if (ch === 'contact') return 'fa-solid fa-comment-dots';
+      if (ch === 'webinar') return 'fa-solid fa-video';
+      if (ch === 'education') return 'fa-solid fa-graduation-cap';
+      return 'fa-solid fa-building';
+    }
+
+    function buildWhatsAppUrl(lead) {
+      if (!lead.whatsapp_e164) return '#';
+      const cleanDigits = lead.whatsapp_e164.replace(/\D/g, '');
+      let greeting = `Hello ${lead.full_name}, thank you for contacting Sharif Group Dubai regarding ${lead.service}. How may our private client advisory team assist you today?`;
+      if (lead.lang === 'fa') {
+        greeting = `سلام ${lead.full_name} گرامی، از تماس شما با شریف گروپ دبی در خصوص (${lead.service}) سپاسگزاریم. چطور می‌توانیم شما را در این مسیر همراهی کنیم؟`;
+      } else if (lead.lang === 'ar') {
+        greeting = `مرحباً ${lead.full_name}، شكراً لتواصلكم مع مجموعة شريف دبي بخصوص (${lead.service}). كيف يمكن لمستشارينا مساعدتكم اليوم؟`;
+      }
+      return `https://wa.me/${cleanDigits}?text=${encodeURIComponent(greeting)}`;
+    }
+
+    // ── 6. UPDATE STATUS INLINE ─────────────────────────────────────────
+    window.updateLeadStatus = async function(leadId, newStatus, selectEl) {
+      selectEl.className = `status-select ${newStatus}`;
+      try {
+        const res = await fetch('api/leads-action.php', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+            'Authorization': `Bearer ${token}`
+          },
+          body: JSON.stringify({ lead_id: leadId, status: newStatus })
+        });
+        const data = await res.json();
+        if (data.success) {
+          showToast(`Status updated to ${newStatus}.`);
+          // Update in-memory lead
+          const found = allLeads.find(x => x.id === leadId);
+          if (found) found.status = newStatus;
+          // Refresh stats
+          let n = 0;
+          allLeads.forEach(l => { if (l.status === 'new') n++; });
+          $('kpiNew').textContent = n;
+        } else {
+          showToast(data.error || 'Failed to update status.', true);
+        }
+      } catch (e) {
+        showToast('Network error while updating status.', true);
+      }
+    };
+
+    // ── 7. LEAD DETAILS MODAL & ADMIN NOTES ─────────────────────────────
+    window.openLeadModal = function(leadId) {
+      const lead = allLeads.find(x => x.id === leadId);
+      if (!lead) return;
+      activeModalLead = lead;
+
+      $('mLeadId').textContent = lead.id;
+      $('mLeadName').textContent = lead.full_name;
+      $('mPhone').textContent = lead.phone || 'Not provided';
+      $('mEmail').textContent = lead.email || 'Not provided';
+      $('mCountry').textContent = lead.country || 'International';
+      $('mChannel').textContent = `${lead.channel_label} (${lead.form_id || 'online-form'})`;
+      $('mService').textContent = lead.service;
+      $('mSource').textContent = `${lead.source_page} · Submitted: ${lead.timestamp}`;
+      $('mNotes').textContent = lead.notes || 'No message entered.';
+      $('mAdminNotes').value = lead.admin_note || '';
+      $('mStatusSelect').value = lead.status || 'new';
+
+      // WhatsApp Button in Modal
+      const waBtn = $('mBtnWhatsApp');
+      if (lead.whatsapp_e164) {
+        waBtn.style.display = 'inline-flex';
+        waBtn.href = buildWhatsAppUrl(lead);
+      } else {
+        waBtn.style.display = 'none';
+      }
+
+      $('leadModal').classList.add('open');
+    };
+
+    window.closeLeadModal = function() {
+      $('leadModal').classList.remove('open');
+      activeModalLead = null;
+    };
+
+    window.saveLeadModalAction = async function() {
+      if (!activeModalLead) return;
+      const note = $('mAdminNotes').value.trim();
+      const status = $('mStatusSelect').value;
+
+      try {
+        const res = await fetch('api/leads-action.php', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+            'Authorization': `Bearer ${token}`
+          },
+          body: JSON.stringify({
+            lead_id: activeModalLead.id,
+            status: status,
+            admin_note: note
+          })
+        });
+        const data = await res.json();
+        if (data.success) {
+          showToast('Lead notes and status saved!');
+          activeModalLead.status = status;
+          activeModalLead.admin_note = note;
+          applyFilters();
+          closeLeadModal();
+        } else {
+          showToast(data.error || 'Failed to save notes.', true);
+        }
+      } catch (e) {
+        showToast('Network error while saving notes.', true);
+      }
+    };
+
+    // ── 8. UTILITIES & LOGOUT ───────────────────────────────────────────
+    function showToast(msg, isErr = false) {
+      const t = $('toast');
+      $('toastMsg').textContent = msg;
+      t.className = isErr ? 'toast show error' : 'toast show';
+      setTimeout(() => { t.className = 'toast'; }, 3400);
+    }
+
+    function escapeHtml(s) {
+      return String(s || '').replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;');
+    }
+
+    $('logoutBtn').addEventListener('click', () => {
+      fetch('api/auth.php?action=logout', { method: 'POST' }).catch(() => {});
+      localStorage.removeItem('sgcms_token');
+      localStorage.removeItem('sgcms_user');
+      sessionStorage.removeItem('sgcms_token');
+      sessionStorage.removeItem('sgcms_user');
+      window.location.replace('index.html');
+    });
+
+    // Initial load
+    loadLeads();
+  })();
+  </script>
+</body>
+</html>

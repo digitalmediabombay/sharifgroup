@@ -1,4 +1,15 @@
-# Sharif Group API - Apache Configuration
+# ==============================================================================
+# Sharif Group Public API - Apache Configuration
+# ==============================================================================
+
+# Disable directory indexing
+Options -Indexes
+
+<FilesMatch "(^\.|\.(json|lock|log|env|sql|bak|dist|md|sh)$)">
+    Order Allow,Deny
+    Deny from all
+</FilesMatch>
+
 <IfModule mod_headers.c>
     Header set Access-Control-Allow-Origin "*"
     Header set Access-Control-Allow-Methods "POST, GET, OPTIONS"

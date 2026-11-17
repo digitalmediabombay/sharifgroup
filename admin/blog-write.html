@@ -1,0 +1,1792 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Blog Editor | Sharif Group Admin</title>
+<link rel="icon" href="/assets/images/shariftrip-logo-1.svg?v=20261117" type="image/svg+xml">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Playfair+Display:ital,wght@0,500;0,600;0,700;1,400&family=Amiri:wght@400;700&display=swap" rel="stylesheet">
+<link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+<style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+  :root {
+    --gold:        #786142;
+    --gold-light:  #9A7D58;
+    --gold-bright: #B8976A;
+    --gold-glow:   rgba(120, 97, 66, 0.28);
+    --bg:          #0E0F12;
+    --surface:     #161820;
+    --card:        #1A1C22;
+    --card-hover:  #1F2229;
+    --border:      rgba(120, 97, 66, 0.18);
+    --border-h:    rgba(120, 97, 66, 0.55);
+    --cream:       #FAF6EE;
+    --text:        #ECEAE6;
+    --muted:       #9A9490;
+    --muted2:      #5C5A56;
+    --header-h:    64px;
+    --footer-h:    64px;
+    --green:       #22c55e;
+    --green-dim:   rgba(34, 197, 94, 0.14);
+    --amber:       #f59e0b;
+    --amber-dim:   rgba(245, 158, 11, 0.14);
+    --red:         #ef4444;
+    --red-dim:     rgba(239, 68, 68, 0.12);
+  }
+
+  html, body {
+    min-height: 100vh;
+    font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+    background: var(--bg);
+    color: var(--text);
+    padding-bottom: 90px;
+  }
+
+  body::before {
+    content: '';
+    position: fixed;
+    inset: 0;
+    background:
+      radial-gradient(ellipse 55% 45% at 10% 20%, rgba(120,97,66,0.07) 0%, transparent 65%),
+      radial-gradient(ellipse 40% 50% at 90% 80%, rgba(120,97,66,0.05) 0%, transparent 55%);
+    pointer-events: none;
+    z-index: 0;
+  }
+
+  /* ═══════════════════ HEADER ═══════════════════ */
+  .site-header {
+    position: sticky;
+    top: 0;
+    z-index: 100;
+    height: var(--header-h);
+    background: rgba(14, 15, 18, 0.94);
+    backdrop-filter: blur(14px);
+    -webkit-backdrop-filter: blur(14px);
+    border-bottom: 1px solid var(--border);
+    display: flex;
+    align-items: center;
+    padding: 0 32px;
+    gap: 16px;
+  }
+
+  .back-btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    padding: 8px 14px;
+    background: transparent;
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    color: var(--muted);
+    font-size: 13px;
+    font-weight: 500;
+    cursor: pointer;
+    text-decoration: none;
+    transition: all 0.2s;
+  }
+  .back-btn:hover {
+    border-color: rgba(120,97,66,0.5);
+    color: var(--gold-bright);
+    background: rgba(120,97,66,0.06);
+  }
+
+  .header-title-box {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+  }
+  .header-brand-name {
+    font-family: 'Playfair Display', Georgia, serif;
+    font-size: 18px;
+    font-weight: 700;
+    color: var(--cream);
+  }
+  .header-brand-name span { color: var(--gold-bright); }
+
+  .header-badge {
+    font-size: 11px;
+    font-weight: 700;
+    padding: 2px 10px;
+    border-radius: 20px;
+    text-transform: uppercase;
+    letter-spacing: 0.06em;
+  }
+  .header-badge.draft {
+    background: var(--amber-dim);
+    border: 1px solid rgba(245,158,11,0.3);
+    color: #fde68a;
+  }
+  .header-badge.published {
+    background: var(--green-dim);
+    border: 1px solid rgba(34,197,94,0.3);
+    color: #86efac;
+  }
+
+  .header-spacer { flex: 1; }
+
+  .header-actions {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+  }
+
+  .btn-header {
+    display: inline-flex;
+    align-items: center;
+    gap: 7px;
+    padding: 8px 16px;
+    border-radius: 8px;
+    font-size: 13px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.2s;
+    border: 1px solid transparent;
+  }
+  .btn-save-draft {
+    background: rgba(120,97,66,0.15);
+    border-color: rgba(120,97,66,0.35);
+    color: var(--gold-bright);
+  }
+  .btn-save-draft:hover {
+    background: rgba(120,97,66,0.25);
+    border-color: var(--gold);
+    color: #fff;
+  }
+  .btn-publish-main {
+    background: var(--gold);
+    color: #fff;
+    box-shadow: 0 4px 16px rgba(120,97,66,0.28);
+  }
+  .btn-publish-main:hover {
+    background: var(--gold-light);
+    transform: translateY(-1px);
+    box-shadow: 0 6px 20px rgba(120,97,66,0.38);
+  }
+
+  /* ═══════════════════ MAIN WRAP ═══════════════════ */
+  .main-wrap {
+    position: relative;
+    z-index: 1;
+    max-width: 1050px;
+    margin: 0 auto;
+    padding: 32px 24px 64px;
+  }
+
+  /* ── UNSAVED BANNER ── */
+  .restore-banner {
+    display: none;
+    align-items: center;
+    justify-content: space-between;
+    background: rgba(245, 158, 11, 0.1);
+    border: 1px solid rgba(245, 158, 11, 0.35);
+    border-radius: 12px;
+    padding: 12px 18px;
+    margin-bottom: 24px;
+    font-size: 13.5px;
+    color: #fde68a;
+  }
+  .restore-banner.show { display: flex; }
+  .restore-banner-btns {
+    display: flex;
+    gap: 8px;
+  }
+  .btn-banner {
+    padding: 5px 12px;
+    border-radius: 6px;
+    font-size: 12px;
+    font-weight: 600;
+    cursor: pointer;
+    border: none;
+  }
+  .btn-banner.resume {
+    background: var(--amber);
+    color: #000;
+  }
+  .btn-banner.discard {
+    background: transparent;
+    border: 1px solid rgba(245,158,11,0.4);
+    color: #fde68a;
+  }
+
+  /* ── SECTION CARD ── */
+  .form-card {
+    background: var(--card);
+    border: 1px solid var(--border);
+    border-radius: 18px;
+    padding: 28px;
+    margin-bottom: 24px;
+    box-shadow: 0 12px 32px rgba(0,0,0,0.25);
+  }
+
+  .card-header-bar {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 22px;
+    padding-bottom: 14px;
+    border-bottom: 1px solid rgba(120,97,66,0.12);
+  }
+
+  .card-title-lg {
+    font-family: 'Playfair Display', Georgia, serif;
+    font-size: 19px;
+    font-weight: 700;
+    color: var(--cream);
+    display: flex;
+    align-items: center;
+    gap: 10px;
+  }
+  .card-title-lg i {
+    color: var(--gold-bright);
+    font-size: 16px;
+  }
+
+  .form-grid-2 {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 20px;
+  }
+  .form-grid-3 {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 20px;
+  }
+  @media (max-width: 768px) {
+    .form-grid-2, .form-grid-3 { grid-template-columns: 1fr; }
+    .site-header { padding: 0 16px; }
+    .main-wrap { padding: 20px 14px; }
+  }
+
+  .form-group {
+    margin-bottom: 20px;
+  }
+  .form-group:last-child { margin-bottom: 0; }
+
+  .form-label {
+    display: block;
+    font-size: 12px;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.06em;
+    color: var(--muted);
+    margin-bottom: 8px;
+  }
+  .form-label .req { color: var(--red); }
+
+  .form-control, .form-select {
+    width: 100%;
+    padding: 11px 14px;
+    font-size: 14px;
+    font-family: inherit;
+    color: var(--text);
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    outline: none;
+    transition: all 0.2s;
+  }
+  .form-control:focus, .form-select:focus {
+    border-color: var(--gold);
+    box-shadow: 0 0 0 3px var(--gold-glow);
+  }
+  .form-control::placeholder { color: var(--muted2); }
+
+  .form-select optgroup {
+    background: #1e2029;
+    color: var(--gold-bright);
+    font-weight: 700;
+  }
+  .form-select option {
+    background: #161820;
+    color: var(--text);
+    font-weight: normal;
+  }
+
+  /* ── FEATURED IMAGE UPLOADER ── */
+  .img-uploader-box {
+    border: 1.5px dashed var(--border);
+    border-radius: 12px;
+    padding: 22px;
+    text-align: center;
+    background: rgba(14, 15, 18, 0.4);
+    cursor: pointer;
+    transition: all 0.25s;
+    position: relative;
+  }
+  .img-uploader-box:hover {
+    border-color: var(--gold);
+    background: rgba(120,97,66,0.04);
+  }
+  .img-preview-box {
+    display: none;
+    align-items: center;
+    gap: 18px;
+    text-align: left;
+  }
+  .img-preview-thumb {
+    width: 140px;
+    height: 85px;
+    object-fit: cover;
+    border-radius: 8px;
+    border: 1px solid var(--border);
+  }
+  .img-preview-meta {
+    flex: 1;
+    min-width: 0;
+  }
+  .img-preview-url {
+    font-size: 12px;
+    color: var(--muted);
+    font-family: monospace;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    margin-bottom: 6px;
+  }
+  .btn-remove-img {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    padding: 5px 10px;
+    border-radius: 6px;
+    background: var(--red-dim);
+    border: 1px solid rgba(239,68,68,0.3);
+    color: #fca5a5;
+    font-size: 11.5px;
+    cursor: pointer;
+    transition: all 0.2s;
+  }
+  .btn-remove-img:hover {
+    background: var(--red);
+    color: #fff;
+  }
+
+  /* ── SLUG ROW ── */
+  .slug-row {
+    display: flex;
+    align-items: center;
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    overflow: hidden;
+  }
+  .slug-prefix {
+    padding: 11px 12px 11px 16px;
+    font-size: 13px;
+    color: var(--muted);
+    font-family: monospace;
+    background: rgba(120,97,66,0.06);
+    border-right: 1px solid var(--border);
+    white-space: nowrap;
+  }
+  .slug-input {
+    flex: 1;
+    padding: 11px 14px;
+    font-size: 13.5px;
+    font-family: monospace;
+    color: var(--gold-bright);
+    background: transparent;
+    border: none;
+    outline: none;
+  }
+  .slug-btn-auto {
+    padding: 9px 14px;
+    background: transparent;
+    border: none;
+    border-left: 1px solid var(--border);
+    color: var(--muted);
+    font-size: 12px;
+    cursor: pointer;
+    transition: all 0.2s;
+    white-space: nowrap;
+  }
+  .slug-btn-auto:hover {
+    color: var(--gold-bright);
+    background: rgba(120,97,66,0.08);
+  }
+
+  /* ── MULTILINGUAL TABS ── */
+  .lang-tabs-bar {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    margin-bottom: 24px;
+    border-bottom: 1px solid rgba(120,97,66,0.14);
+    padding-bottom: 12px;
+  }
+  .lang-tab {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    padding: 8px 18px;
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    color: var(--muted);
+    font-family: inherit;
+    font-size: 13.5px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.2s;
+  }
+  .lang-tab:hover {
+    color: var(--text);
+    border-color: rgba(120,97,66,0.4);
+  }
+  .lang-tab.active {
+    background: var(--card);
+    border-color: var(--gold);
+    color: var(--gold-bright);
+    box-shadow: 0 4px 12px rgba(0,0,0,0.3);
+  }
+  .lang-badge {
+    font-size: 10px;
+    font-weight: 700;
+    padding: 2px 6px;
+    border-radius: 6px;
+    background: rgba(120,97,66,0.16);
+    color: var(--gold-bright);
+  }
+
+  /* ── RICH TEXT TOOLBAR ── */
+  .editor-toolbar {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 4px;
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-bottom: none;
+    border-radius: 10px 10px 0 0;
+    padding: 8px 10px;
+  }
+  .tb-btn {
+    width: 32px;
+    height: 32px;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    background: transparent;
+    border: 1px solid transparent;
+    border-radius: 6px;
+    color: var(--muted);
+    font-size: 13px;
+    cursor: pointer;
+    transition: all 0.15s;
+  }
+  .tb-btn:hover {
+    background: rgba(120,97,66,0.12);
+    border-color: rgba(120,97,66,0.25);
+    color: var(--cream);
+  }
+  .tb-btn:active {
+    background: var(--gold);
+    color: #fff;
+  }
+  .tb-sep {
+    width: 1px;
+    height: 18px;
+    background: var(--border);
+    margin: 0 4px;
+  }
+
+  /* ── CONTENT EDITABLE AREA ── */
+  .content-editor-box {
+    min-height: 320px;
+    max-height: 600px;
+    overflow-y: auto;
+    padding: 18px;
+    background: #111317;
+    border: 1px solid var(--border);
+    border-radius: 0 0 10px 10px;
+    font-size: 14.5px;
+    line-height: 1.7;
+    color: var(--text);
+    outline: none;
+    transition: border-color 0.2s, box-shadow 0.2s;
+  }
+  .content-editor-box:focus {
+    border-color: var(--gold);
+    box-shadow: 0 0 0 3px var(--gold-glow);
+  }
+  .content-editor-box[dir="rtl"] {
+    font-family: 'Amiri', Tahoma, sans-serif;
+    text-align: right;
+    font-size: 16px;
+    line-height: 1.8;
+  }
+  .content-editor-box h2 {
+    font-family: 'Playfair Display', Georgia, serif;
+    font-size: 20px;
+    color: var(--cream);
+    margin: 18px 0 10px;
+  }
+  .content-editor-box h3 {
+    font-family: 'Playfair Display', Georgia, serif;
+    font-size: 17px;
+    color: var(--gold-bright);
+    margin: 14px 0 8px;
+  }
+  .content-editor-box p { margin-bottom: 14px; }
+  .content-editor-box ul, .content-editor-box ol {
+    margin: 0 0 14px 24px;
+  }
+  .content-editor-box a {
+    color: var(--gold-bright);
+    text-decoration: underline;
+  }
+
+  /* ── ACCORDION (FAQs & SEO) ── */
+  .accordion-card {
+    background: var(--card);
+    border: 1px solid var(--border);
+    border-radius: 18px;
+    margin-bottom: 24px;
+    overflow: hidden;
+  }
+  .accordion-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 22px 28px;
+    cursor: pointer;
+    user-select: none;
+    transition: background 0.2s;
+  }
+  .accordion-header:hover {
+    background: rgba(120,97,66,0.04);
+  }
+  .accordion-title {
+    font-family: 'Playfair Display', Georgia, serif;
+    font-size: 18px;
+    font-weight: 700;
+    color: var(--cream);
+    display: flex;
+    align-items: center;
+    gap: 10px;
+  }
+  .accordion-title i { color: var(--gold-bright); font-size: 16px; }
+  .accordion-chevron {
+    color: var(--muted);
+    font-size: 14px;
+    transition: transform 0.25s;
+  }
+  .accordion-card.open .accordion-chevron {
+    transform: rotate(180deg);
+  }
+  .accordion-content {
+    display: none;
+    padding: 0 28px 28px;
+    border-top: 1px solid rgba(120,97,66,0.1);
+  }
+  .accordion-card.open .accordion-content {
+    display: block;
+    padding-top: 22px;
+  }
+
+  /* ── FAQ BUILDER ── */
+  .faq-top-actions {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 12px;
+    margin-bottom: 18px;
+    flex-wrap: wrap;
+  }
+  .btn-faq-tool {
+    padding: 6px 14px;
+    border-radius: 6px;
+    font-size: 12.5px;
+    font-weight: 600;
+    cursor: pointer;
+    border: 1px solid var(--border);
+    background: rgba(120,97,66,0.08);
+    color: var(--gold-bright);
+    transition: all 0.2s;
+  }
+  .btn-faq-tool:hover {
+    background: var(--gold);
+    color: #fff;
+    border-color: var(--gold);
+  }
+  .faq-list {
+    display: flex;
+    flex-direction: column;
+    gap: 14px;
+  }
+  .faq-item {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    padding: 16px;
+    transition: border-color 0.2s;
+  }
+  .faq-item:focus-within {
+    border-color: var(--gold);
+  }
+  .faq-item-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 10px;
+  }
+  .faq-num-badge {
+    font-size: 11px;
+    font-weight: 700;
+    color: var(--gold-bright);
+    display: flex;
+    align-items: center;
+    gap: 6px;
+  }
+  .faq-del-btn {
+    background: transparent;
+    border: none;
+    color: var(--muted);
+    font-size: 12px;
+    cursor: pointer;
+    padding: 3px 6px;
+    border-radius: 4px;
+    transition: all 0.2s;
+  }
+  .faq-del-btn:hover {
+    background: var(--red-dim);
+    color: #fca5a5;
+  }
+
+  /* ── SEO PREVIEW ── */
+  .serp-preview {
+    background: #111317;
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    padding: 16px 20px;
+    margin-top: 18px;
+  }
+  .serp-url {
+    font-size: 12px;
+    color: #8ab4f8;
+    margin-bottom: 4px;
+  }
+  .serp-title {
+    font-size: 16px;
+    color: #99c3ff;
+    font-weight: 500;
+    margin-bottom: 6px;
+    cursor: pointer;
+  }
+  .serp-desc {
+    font-size: 13px;
+    color: #bdc1c6;
+    line-height: 1.5;
+  }
+
+  /* ═══════════════════ FIXED FOOTER ═══════════════════ */
+  .footer-bar {
+    position: fixed;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    height: var(--footer-h);
+    background: rgba(14, 15, 18, 0.95);
+    backdrop-filter: blur(14px);
+    -webkit-backdrop-filter: blur(14px);
+    border-top: 1px solid var(--border);
+    z-index: 100;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 0 32px;
+  }
+
+  .footer-status-box {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    font-size: 12.5px;
+    color: var(--muted);
+  }
+  .autosave-pill {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    font-size: 12px;
+  }
+  .autosave-dot {
+    width: 6px;
+    height: 6px;
+    border-radius: 50%;
+    background: var(--green);
+  }
+  .autosave-dot.dirty {
+    background: var(--amber);
+  }
+
+  .footer-actions {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+  }
+
+  /* ── MODALS ── */
+  .modal-backdrop {
+    position: fixed;
+    inset: 0;
+    background: rgba(0,0,0,0.75);
+    backdrop-filter: blur(8px);
+    -webkit-backdrop-filter: blur(8px);
+    z-index: 1000;
+    display: none;
+    align-items: center;
+    justify-content: center;
+    padding: 20px;
+  }
+  .modal-backdrop.show { display: flex; }
+
+  .modal-card {
+    background: var(--card);
+    border: 1px solid var(--border);
+    border-radius: 18px;
+    max-width: 440px;
+    width: 100%;
+    padding: 30px;
+    box-shadow: 0 24px 60px rgba(0,0,0,0.6);
+    animation: popIn 0.25s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+    text-align: center;
+  }
+  @keyframes popIn {
+    from { opacity: 0; transform: scale(0.94); }
+    to   { opacity: 1; transform: scale(1); }
+  }
+
+  /* ── TOAST ── */
+  .toast-container {
+    position: fixed;
+    bottom: 80px;
+    right: 24px;
+    z-index: 2000;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    pointer-events: none;
+  }
+  .toast {
+    background: var(--card);
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    padding: 12px 18px;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    font-size: 13px;
+    color: var(--cream);
+    box-shadow: 0 10px 30px rgba(0,0,0,0.5);
+    pointer-events: auto;
+    animation: toastIn 0.3s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+  }
+  .toast.success { border-color: rgba(34,197,94,0.4); }
+  .toast.success i { color: var(--green); }
+  .toast.error   { border-color: rgba(239,68,68,0.4); }
+  .toast.error i   { color: var(--red); }
+  .toast.warning { border-color: rgba(245,158,11,0.4); }
+  .toast.warning i { color: var(--amber); }
+  @keyframes toastIn {
+    from { opacity: 0; transform: translateY(16px); }
+    to   { opacity: 1; transform: translateY(0); }
+  }
+</style>
+</head>
+<body>
+
+<!-- ═══ HEADER ════════════════════════════════════════════════════════ -->
+<header class="site-header">
+  <a href="blogs.html" class="back-btn">
+    <i class="fa-solid fa-arrow-left"></i>
+    Blogs
+  </a>
+
+  <div class="header-title-box">
+    <span class="header-brand-name" id="pageTitleLabel">New <span>Article</span></span>
+    <span class="header-badge draft" id="headerStatusBadge">Draft</span>
+  </div>
+
+  <div class="header-spacer"></div>
+
+  <div class="header-actions">
+    <button class="btn-header btn-save-draft" onclick="triggerSaveDraft()">
+      <i class="fa-solid fa-floppy-disk"></i>
+      Save Draft
+    </button>
+    <button class="btn-header btn-publish-main" onclick="openPublishModal()">
+      <i class="fa-solid fa-cloud-arrow-up"></i>
+      Publish Live
+    </button>
+  </div>
+</header>
+
+<!-- ═══ MAIN WRAP ═════════════════════════════════════════════════════ -->
+<main class="main-wrap">
+
+  <!-- Unsaved local draft banner -->
+  <div class="restore-banner" id="restoreBanner">
+    <div>
+      <i class="fa-solid fa-circle-info" style="margin-right:8px"></i>
+      You have an unsaved draft from a previous session. Would you like to resume it?
+    </div>
+    <div class="restore-banner-btns">
+      <button class="btn-banner resume" onclick="resumeLocalDraft()">Resume</button>
+      <button class="btn-banner discard" onclick="discardLocalDraft()">Discard</button>
+    </div>
+  </div>
+
+  <!-- SECTION 1: ARTICLE METADATA -->
+  <div class="form-card">
+    <div class="card-header-bar">
+      <div class="card-title-lg">
+        <i class="fa-solid fa-sliders"></i>
+        Article Settings &amp; Classification
+      </div>
+      <div style="font-size:12px; color:var(--muted); font-family:monospace" id="articleIdDisplay">ID: new</div>
+    </div>
+
+    <div class="form-grid-3">
+      <!-- Program / Category -->
+      <div class="form-group">
+        <label class="form-label" for="programSelect">Program / Category <span class="req">*</span></label>
+        <select id="programSelect" class="form-select" onchange="handleProgramChange()">
+          <optgroup label="Citizenship by Investment">
+            <option value="citizenship" data-cat="Citizenship" data-sub="" selected>Citizenship — General</option>
+            <option value="dominica" data-cat="Citizenship" data-sub="dominica">Dominica — Citizenship</option>
+            <option value="st-kitts" data-cat="Citizenship" data-sub="st-kitts">St. Kitts &amp; Nevis — Citizenship</option>
+            <option value="antigua" data-cat="Citizenship" data-sub="antigua">Antigua &amp; Barbuda — Citizenship</option>
+            <option value="saint-lucia" data-cat="Citizenship" data-sub="saint-lucia">Saint Lucia — Citizenship</option>
+            <option value="grenada" data-cat="Citizenship" data-sub="grenada">Grenada — Citizenship</option>
+            <option value="vanuatu" data-cat="Citizenship" data-sub="vanuatu">Vanuatu — Citizenship</option>
+            <option value="sao-tome" data-cat="Citizenship" data-sub="sao-tome">São Tomé &amp; Príncipe — Citizenship</option>
+            <option value="nauru" data-cat="Citizenship" data-sub="nauru">Nauru — Citizenship</option>
+          </optgroup>
+          <optgroup label="Residency by Investment">
+            <option value="residency" data-cat="Residency" data-sub="">Residency — General</option>
+            <option value="portugal" data-cat="Residency" data-sub="portugal">Portugal — Golden Visa</option>
+            <option value="greece" data-cat="Residency" data-sub="greece">Greece — Golden Visa</option>
+            <option value="uae" data-cat="Residency" data-sub="uae">UAE — Golden Visa</option>
+            <option value="panama" data-cat="Residency" data-sub="panama">Panama — Qualified Investor</option>
+          </optgroup>
+          <optgroup label="Advisory &amp; Corporate">
+            <option value="realestate" data-cat="Real Estate" data-sub="dubai">Dubai Real Estate Advisory</option>
+            <option value="educational" data-cat="Education" data-sub="advisory">Educational Advisory</option>
+            <option value="sharif" data-cat="Sharif" data-sub="sharif">Sharif Group — Corporate &amp; News</option>
+          </optgroup>
+        </select>
+      </div>
+
+      <!-- Author -->
+      <div class="form-group">
+        <label class="form-label" for="authorInput">Author</label>
+        <input type="text" id="authorInput" class="form-control" value="Sharif Group Legal Desk" oninput="markDirty()">
+      </div>
+
+      <!-- Publish Date -->
+      <div class="form-group">
+        <label class="form-label" for="publishDateInput">Publish Date</label>
+        <input type="date" id="publishDateInput" class="form-control" onchange="markDirty()">
+      </div>
+    </div>
+
+    <!-- Featured Image -->
+    <div class="form-group" style="margin-top:16px;">
+      <label class="form-label">Featured Image</label>
+      <div class="img-uploader-box" id="imgDropBox" onclick="document.getElementById('imgFileInput').click()">
+        <input type="file" id="imgFileInput" accept="image/*" style="display:none;" onchange="handleFileSelect(event)">
+        <div id="uploadPrompt">
+          <i class="fa-solid fa-cloud-arrow-up" style="font-size:26px; color:var(--gold-bright); margin-bottom:8px;"></i>
+          <div style="font-size:13.5px; font-weight:600; color:var(--cream); margin-bottom:4px;">
+            Click to upload featured image
+          </div>
+          <div style="font-size:12px; color:var(--muted);">PNG, JPG, or WebP up to 15MB</div>
+        </div>
+        <div class="img-preview-box" id="imgPreviewBox">
+          <img src="" id="imgPreviewThumb" class="img-preview-thumb" alt="Preview">
+          <div class="img-preview-meta">
+            <div class="img-preview-url" id="imgPreviewUrl">—</div>
+            <button type="button" class="btn-remove-img" onclick="removeFeaturedImage(event)">
+              <i class="fa-solid fa-trash-can"></i> Remove
+            </button>
+          </div>
+        </div>
+      </div>
+      <!-- Direct Image URL Input (Fallback) -->
+      <div style="display:flex; align-items:center; gap:8px; margin-top:10px;">
+        <span style="font-size:11.5px; color:var(--muted); white-space:nowrap;">Or image URL:</span>
+        <input type="text" id="imgUrlInput" class="form-control" placeholder="/assets/images/... or https://..." style="padding:6px 12px; font-size:12.5px;" oninput="handleDirectImageUrl()">
+      </div>
+    </div>
+
+    <!-- Slug URL -->
+    <div class="form-group" style="margin-top:16px;">
+      <label class="form-label" for="slugInput">Permanent URL Slug <span class="req">*</span></label>
+      <div class="slug-row">
+        <span class="slug-prefix">https://sharifgroup.ae/blog/</span>
+        <input type="text" id="slugInput" class="slug-input" placeholder="my-article-slug" oninput="markDirty()">
+        <button type="button" class="slug-btn-auto" onclick="regenerateSlugFromTitle()">
+          <i class="fa-solid fa-arrows-rotate"></i> Auto-Generate
+        </button>
+      </div>
+    </div>
+
+  </div>
+
+  <!-- SECTION 2: MULTILINGUAL CONTENT -->
+  <div class="form-card">
+    <div class="card-header-bar">
+      <div class="card-title-lg">
+        <i class="fa-solid fa-pen-nib"></i>
+        Article Content &amp; Multilingual Translations
+      </div>
+    </div>
+
+    <!-- Tabs for EN, AR, FA, ZH -->
+    <div class="lang-tabs-bar">
+      <button type="button" class="lang-tab active" id="tabLang_en" onclick="switchContentLang('en')">
+        <i class="fa-solid fa-globe"></i> English
+        <span class="lang-badge">EN</span>
+      </button>
+      <button type="button" class="lang-tab" id="tabLang_ar" onclick="switchContentLang('ar')">
+        العربية
+        <span class="lang-badge">AR</span>
+      </button>
+      <button type="button" class="lang-tab" id="tabLang_fa" onclick="switchContentLang('fa')">
+        فارسی
+        <span class="lang-badge">FA</span>
+      </button>
+      <button type="button" class="lang-tab" id="tabLang_zh" onclick="switchContentLang('zh')">
+        中文
+        <span class="lang-badge">ZH</span>
+      </button>
+    </div>
+
+    <!-- Title input -->
+    <div class="form-group">
+      <label class="form-label" for="articleTitle">Article Headline / Title <span class="req">*</span></label>
+      <input type="text" id="articleTitle" class="form-control" placeholder="Enter article headline…" style="font-size:16px; font-weight:600;" oninput="handleTitleInput()">
+    </div>
+
+    <!-- Excerpt input -->
+    <div class="form-group">
+      <label class="form-label" for="articleExcerpt">Short Excerpt / Lead Paragraph</label>
+      <textarea id="articleExcerpt" class="form-control" rows="2" placeholder="Summary of this article shown on cards and previews…" oninput="handleExcerptInput()"></textarea>
+    </div>
+
+    <!-- Rich Text Editor -->
+    <div class="form-group">
+      <label class="form-label">Article Body</label>
+      <!-- Toolbar -->
+      <div class="editor-toolbar">
+        <button type="button" class="tb-btn" onclick="execCmd('bold')" title="Bold"><i class="fa-solid fa-bold"></i></button>
+        <button type="button" class="tb-btn" onclick="execCmd('italic')" title="Italic"><i class="fa-solid fa-italic"></i></button>
+        <button type="button" class="tb-btn" onclick="execCmd('underline')" title="Underline"><i class="fa-solid fa-underline"></i></button>
+        <div class="tb-sep"></div>
+        <button type="button" class="tb-btn" onclick="execCmd('formatBlock', '<h2>')" title="Heading 2"><strong style="font-size:11px;">H2</strong></button>
+        <button type="button" class="tb-btn" onclick="execCmd('formatBlock', '<h3>')" title="Heading 3"><strong style="font-size:11px;">H3</strong></button>
+        <button type="button" class="tb-btn" onclick="execCmd('formatBlock', '<p>')" title="Paragraph"><i class="fa-solid fa-paragraph"></i></button>
+        <div class="tb-sep"></div>
+        <button type="button" class="tb-btn" onclick="execCmd('insertUnorderedList')" title="Bulleted List"><i class="fa-solid fa-list-ul"></i></button>
+        <button type="button" class="tb-btn" onclick="execCmd('insertOrderedList')" title="Numbered List"><i class="fa-solid fa-list-ol"></i></button>
+        <div class="tb-sep"></div>
+        <button type="button" class="tb-btn" onclick="insertLinkPrompt()" title="Insert Link"><i class="fa-solid fa-link"></i></button>
+        <button type="button" class="tb-btn" onclick="execCmd('unlink')" title="Remove Link"><i class="fa-solid fa-link-slash"></i></button>
+        <button type="button" class="tb-btn" onclick="execCmd('removeFormat')" title="Clear Formatting"><i class="fa-solid fa-text-slash"></i></button>
+      </div>
+
+      <!-- Content editable area -->
+      <div id="contentEditor" class="content-editor-box" contenteditable="true" oninput="markDirty()">
+        <p>Start writing your article here…</p>
+      </div>
+    </div>
+
+  </div>
+
+  <!-- SECTION 3: FAQ ACCORDION -->
+  <div class="accordion-card" id="faqAccordion">
+    <div class="accordion-header" onclick="toggleAccordion('faqAccordion')">
+      <div class="accordion-title">
+        <i class="fa-solid fa-circle-question"></i>
+        Frequently Asked Questions (FAQs)
+        <span class="header-badge" style="background:rgba(120,97,66,0.18); color:var(--gold-bright);" id="faqCountBadge">0 FAQs</span>
+      </div>
+      <i class="fa-solid fa-chevron-down accordion-chevron"></i>
+    </div>
+    <div class="accordion-content">
+      <div class="faq-top-actions">
+        <span style="font-size:12.5px; color:var(--muted);">
+          Questions &amp; answers for: <strong id="faqActiveLangLabel" style="color:var(--gold-bright);">English (EN)</strong>
+        </span>
+        <div style="display:flex; gap:8px;">
+          <button type="button" class="btn-faq-tool" onclick="loadDefaultFaqs()">
+            <i class="fa-solid fa-wand-magic-sparkles"></i> Load Standard 12 FAQs
+          </button>
+          <button type="button" class="btn-faq-tool" onclick="addNewFaqRow()">
+            <i class="fa-solid fa-plus"></i> Add Question
+          </button>
+        </div>
+      </div>
+
+      <div class="faq-list" id="faqListContainer">
+        <!-- Rendered by JS -->
+      </div>
+    </div>
+  </div>
+
+  <!-- SECTION 4: SEO ACCORDION -->
+  <div class="accordion-card" id="seoAccordion">
+    <div class="accordion-header" onclick="toggleAccordion('seoAccordion')">
+      <div class="accordion-title">
+        <i class="fa-solid fa-magnifying-glass-chart"></i>
+        Search Engine Optimization (SEO)
+      </div>
+      <i class="fa-solid fa-chevron-down accordion-chevron"></i>
+    </div>
+    <div class="accordion-content">
+      <div class="form-group">
+        <label class="form-label" for="metaTitleInput">
+          Meta Title
+          <span style="float:right; font-weight:normal; color:var(--muted);" id="metaTitleCount">0 / 60</span>
+        </label>
+        <input type="text" id="metaTitleInput" class="form-control" placeholder="Meta title for Google search results…" oninput="handleSeoInput()">
+      </div>
+
+      <div class="form-group">
+        <label class="form-label" for="metaDescInput">
+          Meta Description
+          <span style="float:right; font-weight:normal; color:var(--muted);" id="metaDescCount">0 / 160</span>
+        </label>
+        <textarea id="metaDescInput" class="form-control" rows="2" placeholder="Brief summary displayed under the link in search results…" oninput="handleSeoInput()"></textarea>
+      </div>
+
+      <!-- Google SERP Snippet Preview -->
+      <div class="serp-preview">
+        <div class="serp-url" id="serpUrl">https://sharifgroup.ae/blog/article-slug/</div>
+        <div class="serp-title" id="serpTitle">Article Headline | Sharif Group Dubai</div>
+        <div class="serp-desc" id="serpDesc">Strategic advisory &amp; legal insights from Sharif Group Dubai.</div>
+      </div>
+    </div>
+  </div>
+
+</main>
+
+<!-- ═══ FIXED BOTTOM ACTION BAR ═══════════════════════════════════════ -->
+<footer class="footer-bar">
+  <div class="footer-status-box">
+    <span class="header-badge draft" id="footerStatusBadge">Draft</span>
+    <div class="autosave-pill">
+      <div class="autosave-dot" id="autosaveDot"></div>
+      <span id="autosaveText">All changes saved</span>
+    </div>
+  </div>
+
+  <div class="footer-actions">
+    <button class="btn-header btn-save-draft" onclick="triggerSaveDraft()">
+      <i class="fa-solid fa-floppy-disk"></i>
+      Save Draft
+    </button>
+    <button class="btn-header btn-publish-main" onclick="openPublishModal()">
+      <i class="fa-solid fa-cloud-arrow-up"></i>
+      Publish Live
+    </button>
+  </div>
+</footer>
+
+<!-- ═══ PUBLISH CONFIRMATION MODAL ═══════════════════════════════════ -->
+<div class="modal-backdrop" id="publishModal">
+  <div class="modal-card">
+    <div style="width:52px; height:52px; background:var(--green-dim); border:1px solid rgba(34,197,94,0.3); border-radius:50%; display:inline-flex; align-items:center; justify-content:center; color:#86efac; font-size:22px; margin-bottom:16px;">
+      <i class="fa-solid fa-cloud-arrow-up"></i>
+    </div>
+    <div style="font-family:'Playfair Display',serif; font-size:20px; font-weight:700; color:var(--cream); margin-bottom:10px;">
+      Publish Article to Live Website?
+    </div>
+    <div style="font-size:13.5px; color:var(--muted); line-height:1.5; margin-bottom:24px;">
+      This will generate static HTML pages for English, Arabic, Farsi, and Chinese, update the blog index, and refresh the sitemap immediately.
+    </div>
+    <div style="display:flex; gap:12px; justify-content:center;">
+      <button style="padding:10px 20px; background:transparent; border:1px solid var(--border); border-radius:8px; color:var(--text); font-size:13px; font-weight:600; cursor:pointer;" onclick="closePublishModal()">
+        Cancel
+      </button>
+      <button style="padding:10px 20px; background:var(--green); border:1px solid var(--green); border-radius:8px; color:#fff; font-size:13px; font-weight:600; cursor:pointer;" id="confirmPublishBtn" onclick="triggerPublish()">
+        Confirm &amp; Publish
+      </button>
+    </div>
+  </div>
+</div>
+
+<!-- ═══ TOAST CONTAINER ══════════════════════════════════════════════ -->
+<div class="toast-container" id="toastContainer"></div>
+
+<!-- Load standard FAQs -->
+<script src="blog-faq-defaults.js"></script>
+
+<script>
+(function() {
+  'use strict';
+
+  // ── 1. AUTH GUARD ───────────────────────────────────────────────────
+  function getSession() {
+    try {
+      return JSON.parse(sessionStorage.getItem('sgcms_auth')) ||
+             JSON.parse(localStorage.getItem('sgcms_auth'));
+    } catch (_) { return null; }
+  }
+
+  function getToken() {
+    return sessionStorage.getItem('sgcms_token') || localStorage.getItem('sgcms_token') || '';
+  }
+
+  const session = getSession();
+  const token   = getToken();
+
+  if (!session || !token) {
+    window.location.replace('index.html');
+  }
+
+  // ── 2. STATE MODEL ──────────────────────────────────────────────────
+  const blogState = {
+    id: null,
+    slug: '',
+    program: 'citizenship',
+    category: 'Citizenship',
+    subcategory: '',
+    author: 'Sharif Group Legal Desk',
+    publish_date: new Date().toISOString().split('T')[0],
+    featured_img: '',
+    status: 'draft',
+    currentLang: 'en',
+    en: { title: '', excerpt: '', body: '', meta_title: '', meta_desc: '' },
+    ar: { title: '', excerpt: '', body: '', meta_title: '', meta_desc: '' },
+    fa: { title: '', excerpt: '', body: '', meta_title: '', meta_desc: '' },
+    zh: { title: '', excerpt: '', body: '', meta_title: '', meta_desc: '' },
+    faqs: {
+      en: [],
+      ar: [],
+      fa: [],
+      zh: []
+    }
+  };
+
+  let isDirty = false;
+  let autoSlugEnabled = true;
+
+  // ── 3. TOAST HELPER ─────────────────────────────────────────────────
+  function showToast(msg, type = 'success') {
+    const box = document.getElementById('toastContainer');
+    const toast = document.createElement('div');
+    toast.className = 'toast ' + type;
+    const icon = type === 'success' ? 'fa-circle-check' : (type === 'warning' ? 'fa-triangle-exclamation' : 'fa-circle-exclamation');
+    toast.innerHTML = '<i class="fa-solid ' + icon + '"></i><span>' + msg + '</span>';
+    box.appendChild(toast);
+    setTimeout(function() {
+      toast.style.opacity = '0';
+      toast.style.transform = 'translateY(10px)';
+      toast.style.transition = 'all 0.3s ease';
+      setTimeout(function() { toast.remove(); }, 300);
+    }, 3500);
+  }
+
+  // ── 4. MARK DIRTY / AUTOSAVE ────────────────────────────────────────
+  window.markDirty = function() {
+    isDirty = true;
+    document.getElementById('autosaveDot').classList.add('dirty');
+    document.getElementById('autosaveText').textContent = 'Unsaved changes';
+  };
+
+  function markSaved() {
+    isDirty = false;
+    document.getElementById('autosaveDot').classList.remove('dirty');
+    document.getElementById('autosaveText').textContent = 'All changes saved';
+  }
+
+  // Debounced local draft backup
+  setInterval(function() {
+    if (!isDirty) return;
+    try {
+      syncCurrentFieldsToState();
+      localStorage.setItem('sgcms_blog_draft_state', JSON.stringify({
+        timestamp: Date.now(),
+        data: blogState
+      }));
+    } catch (_) {}
+  }, 2500);
+
+  // ── 5. SYNC FIELDS & STATE ──────────────────────────────────────────
+  function syncCurrentFieldsToState() {
+    const lng = blogState.currentLang;
+    blogState[lng].title = document.getElementById('articleTitle').value;
+    blogState[lng].excerpt = document.getElementById('articleExcerpt').value;
+    blogState[lng].body = document.getElementById('contentEditor').innerHTML;
+    blogState[lng].meta_title = document.getElementById('metaTitleInput').value;
+    blogState[lng].meta_desc = document.getElementById('metaDescInput').value;
+
+    blogState.author = document.getElementById('authorInput').value.trim();
+    blogState.publish_date = document.getElementById('publishDateInput').value;
+    blogState.slug = document.getElementById('slugInput').value.trim();
+
+    // Sync current FAQs
+    syncFaqInputsToState();
+  }
+
+  function syncStateToCurrentFields() {
+    const lng = blogState.currentLang;
+    const isRtl = (lng === 'ar' || lng === 'fa');
+
+    const titleEl = document.getElementById('articleTitle');
+    titleEl.value = blogState[lng].title || '';
+    titleEl.dir = isRtl ? 'rtl' : 'ltr';
+
+    const excerptEl = document.getElementById('articleExcerpt');
+    excerptEl.value = blogState[lng].excerpt || '';
+    excerptEl.dir = isRtl ? 'rtl' : 'ltr';
+
+    const editorEl = document.getElementById('contentEditor');
+    editorEl.innerHTML = blogState[lng].body || '<p>Start writing your article here…</p>';
+    editorEl.dir = isRtl ? 'rtl' : 'ltr';
+
+    const metaTitleEl = document.getElementById('metaTitleInput');
+    metaTitleEl.value = blogState[lng].meta_title || '';
+    metaTitleEl.dir = isRtl ? 'rtl' : 'ltr';
+
+    const metaDescEl = document.getElementById('metaDescInput');
+    metaDescEl.value = blogState[lng].meta_desc || '';
+    metaDescEl.dir = isRtl ? 'rtl' : 'ltr';
+
+    updateSeoCountsAndPreview();
+    renderFaqList();
+  }
+
+  // ── 6. INITIALIZATION & URL LOADING ─────────────────────────────────
+  async function init() {
+    // Set default publish date to today
+    document.getElementById('publishDateInput').value = blogState.publish_date;
+
+    const urlParams = new URLSearchParams(window.location.search);
+    const blogId = urlParams.get('id') || urlParams.get('slug');
+
+    if (blogId && blogId !== 'new') {
+      await loadBlogFromServer(blogId);
+    } else {
+      // New article: generate fresh ID
+      blogState.id = 'bid-' + Math.random().toString(36).substring(2, 9);
+      document.getElementById('articleIdDisplay').textContent = 'ID: ' + blogState.id;
+      checkUnsavedLocalDraft();
+    }
+  }
+
+  async function loadBlogFromServer(idOrSlug) {
+    try {
+      showToast('Loading article data…', 'warning');
+      const res = await fetch('api/blog-load.php?id=' + encodeURIComponent(idOrSlug), {
+        credentials: 'include',
+        headers: { 'X-Auth-Token': token }
+      });
+      const data = await res.json();
+
+      if (res.ok && data.success && data.blog) {
+        populateFormFromBlog(data.blog, data.faqs);
+        showToast('Article loaded.', 'success');
+      } else {
+        showToast((data && data.error) ? data.error : 'Failed to load article.', 'error');
+      }
+    } catch (err) {
+      showToast('Network error loading article.', 'error');
+    }
+  }
+
+  function populateFormFromBlog(b, faqsMap) {
+    blogState.id = b.id || ('bid-' + Math.random().toString(36).substring(2, 9));
+    blogState.slug = b.slug || '';
+    blogState.program = b.program || 'citizenship';
+    blogState.category = b.category || 'Citizenship';
+    blogState.subcategory = b.subcategory || '';
+    blogState.author = b.author || 'Sharif Group Legal Desk';
+    blogState.publish_date = (b.publish_date || new Date().toISOString().split('T')[0]).split('T')[0];
+    blogState.featured_img = b.featured_img || '';
+    blogState.status = b.status || 'draft';
+
+    // Status display
+    const isPub = (blogState.status === 'published');
+    const badgeCls = isPub ? 'header-badge published' : 'header-badge draft';
+    const badgeText = isPub ? 'Published' : 'Draft';
+    document.getElementById('headerStatusBadge').className = badgeCls;
+    document.getElementById('headerStatusBadge').textContent = badgeText;
+    document.getElementById('footerStatusBadge').className = badgeCls;
+    document.getElementById('footerStatusBadge').textContent = badgeText;
+    document.getElementById('pageTitleLabel').innerHTML = 'Edit <span>Article</span>';
+
+    // Populate metadata fields
+    document.getElementById('articleIdDisplay').textContent = 'ID: ' + blogState.id;
+    document.getElementById('authorInput').value = blogState.author;
+    document.getElementById('publishDateInput').value = blogState.publish_date;
+    document.getElementById('slugInput').value = blogState.slug;
+    autoSlugEnabled = false; // manual existing slug
+
+    // Select program dropdown
+    const select = document.getElementById('programSelect');
+    if (b.program) {
+      select.value = b.program;
+    }
+
+    // Featured image
+    if (blogState.featured_img) {
+      setFeaturedImagePreview(blogState.featured_img);
+    }
+
+    // Populate multilingual content
+    ['en', 'ar', 'fa', 'zh'].forEach(function(lng) {
+      const src = b[lng] || {};
+      blogState[lng] = {
+        title: src.title || (lng === 'en' ? (b.title || '') : ''),
+        excerpt: src.excerpt || '',
+        body: src.body || (lng === 'en' ? (b.body || '') : ''),
+        meta_title: src.meta_title || '',
+        meta_desc: src.meta_desc || ''
+      };
+      // FAQs
+      if (faqsMap && faqsMap[lng]) {
+        blogState.faqs[lng] = faqsMap[lng];
+      } else if (src.faqs && Array.isArray(src.faqs)) {
+        blogState.faqs[lng] = src.faqs;
+      } else if (lng === 'en' && Array.isArray(b.faqs)) {
+        blogState.faqs.en = b.faqs;
+      }
+    });
+
+    syncStateToCurrentFields();
+    markSaved();
+  }
+
+  // ── 7. UNSAVED DRAFT RECOVERY ───────────────────────────────────────
+  function checkUnsavedLocalDraft() {
+    try {
+      const raw = localStorage.getItem('sgcms_blog_draft_state');
+      if (!raw) return;
+      const parsed = JSON.parse(raw);
+      if (parsed && parsed.data && parsed.data.en && parsed.data.en.title) {
+        document.getElementById('restoreBanner').classList.add('show');
+      }
+    } catch (_) {}
+  }
+
+  window.resumeLocalDraft = function() {
+    try {
+      const parsed = JSON.parse(localStorage.getItem('sgcms_blog_draft_state'));
+      if (parsed && parsed.data) {
+        Object.assign(blogState, parsed.data);
+        populateFormFromBlog(blogState, blogState.faqs);
+        showToast('Local draft restored.', 'success');
+      }
+    } catch (_) {}
+    document.getElementById('restoreBanner').classList.remove('show');
+  };
+
+  window.discardLocalDraft = function() {
+    localStorage.removeItem('sgcms_blog_draft_state');
+    document.getElementById('restoreBanner').classList.remove('show');
+    showToast('Local draft discarded.', 'warning');
+  };
+
+  // ── 8. PROGRAM CHANGE HANDLER ───────────────────────────────────────
+  window.handleProgramChange = function() {
+    const sel = document.getElementById('programSelect');
+    const opt = sel.options[sel.selectedIndex];
+    blogState.program = sel.value;
+    blogState.category = opt.getAttribute('data-cat') || 'Citizenship';
+    const sub = opt.getAttribute('data-sub');
+    blogState.subcategory = (sub !== null && sub !== undefined) ? sub : sel.value;
+    markDirty();
+  };
+
+  // ── 9. TITLE & AUTO-SLUG ────────────────────────────────────────────
+  window.handleTitleInput = function() {
+    markDirty();
+    if (blogState.currentLang === 'en' && autoSlugEnabled) {
+      regenerateSlugFromTitle();
+    }
+    updateSeoCountsAndPreview();
+  };
+
+  window.handleExcerptInput = function() {
+    markDirty();
+    updateSeoCountsAndPreview();
+  };
+
+  window.regenerateSlugFromTitle = function() {
+    const enTitle = blogState.currentLang === 'en'
+      ? document.getElementById('articleTitle').value
+      : (blogState.en.title || '');
+
+    if (!enTitle.trim()) return;
+
+    const slug = enTitle
+      .toLowerCase()
+      .replace(/[^a-z0-9]+/g, '-')
+      .replace(/^-+|-+$/g, '');
+
+    document.getElementById('slugInput').value = slug;
+    blogState.slug = slug;
+    document.getElementById('serpUrl').textContent = 'https://sharifgroup.ae/blog/' + (slug || 'article-slug') + '/';
+    markDirty();
+  };
+
+  // ── 10. CONTENT LANGUAGE TABS ───────────────────────────────────────
+  window.switchContentLang = function(lng) {
+    if (lng === blogState.currentLang) return;
+
+    // 1. Save current inputs to state
+    syncCurrentFieldsToState();
+
+    // 2. Switch active tab UI
+    ['en', 'ar', 'fa', 'zh'].forEach(function(l) {
+      document.getElementById('tabLang_' + l).classList.toggle('active', l === lng);
+    });
+
+    blogState.currentLang = lng;
+
+    // 3. Update FAQ label
+    const labels = { en: 'English (EN)', ar: 'العربية (AR)', fa: 'فارسی (FA)', zh: '中文 (ZH)' };
+    document.getElementById('faqActiveLangLabel').textContent = labels[lng] || lng;
+
+    // 4. Restore new language values
+    syncStateToCurrentFields();
+  };
+
+  // ── 11. FEATURED IMAGE UPLOADER ─────────────────────────────────────
+  window.handleFileSelect = async function(e) {
+    const file = e.target.files && e.target.files[0];
+    if (!file) return;
+
+    showToast('Uploading & optimizing image…', 'warning');
+    const formData = new FormData();
+    formData.append('file', file);
+
+    try {
+      const res = await fetch('api/upload.php', {
+        method: 'POST',
+        credentials: 'include',
+        headers: { 'X-Auth-Token': token },
+        body: formData
+      });
+      const data = await res.json();
+
+      if (res.ok && data.success && data.url) {
+        setFeaturedImagePreview(data.url);
+        showToast('Image uploaded successfully.', 'success');
+        markDirty();
+      } else {
+        showToast((data && data.error) ? data.error : 'Image upload failed.', 'error');
+      }
+    } catch (err) {
+      showToast('Network error during upload.', 'error');
+    }
+  };
+
+  window.handleDirectImageUrl = function() {
+    const url = document.getElementById('imgUrlInput').value.trim();
+    if (url) {
+      setFeaturedImagePreview(url);
+      markDirty();
+    }
+  };
+
+  function setFeaturedImagePreview(url) {
+    blogState.featured_img = url;
+    document.getElementById('uploadPrompt').style.display = 'none';
+    document.getElementById('imgPreviewBox').style.display = 'flex';
+    document.getElementById('imgPreviewThumb').src = url;
+    document.getElementById('imgPreviewUrl').textContent = url;
+    document.getElementById('imgUrlInput').value = url;
+  }
+
+  window.removeFeaturedImage = function(e) {
+    if (e) e.stopPropagation();
+    blogState.featured_img = '';
+    document.getElementById('uploadPrompt').style.display = 'block';
+    document.getElementById('imgPreviewBox').style.display = 'none';
+    document.getElementById('imgPreviewThumb').src = '';
+    document.getElementById('imgPreviewUrl').textContent = '—';
+    document.getElementById('imgUrlInput').value = '';
+    document.getElementById('imgFileInput').value = '';
+    markDirty();
+  };
+
+  // ── 12. RICH TEXT EXEC ──────────────────────────────────────────────
+  window.execCmd = function(command, value = null) {
+    document.getElementById('contentEditor').focus();
+    document.execCommand(command, false, value);
+    markDirty();
+  };
+
+  window.insertLinkPrompt = function() {
+    const url = prompt('Enter the link destination URL (https://…):');
+    if (url) {
+      execCmd('createLink', url);
+    }
+  };
+
+  // ── 13. FAQ BUILDER ─────────────────────────────────────────────────
+  function syncFaqInputsToState() {
+    const lng = blogState.currentLang;
+    const container = document.getElementById('faqListContainer');
+    const items = container.querySelectorAll('.faq-item');
+    const faqs = [];
+    items.forEach(function(item) {
+      const q = (item.querySelector('.faq-q-input').value || '').trim();
+      const a = (item.querySelector('.faq-a-input').value || '').trim();
+      if (q || a) {
+        faqs.push({ q, a });
+      }
+    });
+    blogState.faqs[lng] = faqs;
+    document.getElementById('faqCountBadge').textContent = faqs.length + ' FAQs';
+  }
+
+  function renderFaqList() {
+    const lng = blogState.currentLang;
+    const faqs = blogState.faqs[lng] || [];
+    const container = document.getElementById('faqListContainer');
+    const isRtl = (lng === 'ar' || lng === 'fa');
+
+    document.getElementById('faqCountBadge').textContent = faqs.length + ' FAQs';
+
+    if (faqs.length === 0) {
+      container.innerHTML = '<div style="text-align:center; padding:20px; color:var(--muted); font-size:13px;">No FAQs added yet for this language. Click "Add Question" or "Load Standard 12 FAQs".</div>';
+      return;
+    }
+
+    container.innerHTML = faqs.map(function(f, idx) {
+      return '' +
+        '<div class="faq-item" dir="' + (isRtl ? 'rtl' : 'ltr') + '">' +
+          '<div class="faq-item-header">' +
+            '<div class="faq-num-badge"><i class="fa-solid fa-circle-question"></i> Question ' + (idx + 1) + '</div>' +
+            '<button type="button" class="faq-del-btn" onclick="removeFaqRow(' + idx + ')" title="Remove question"><i class="fa-solid fa-trash-can"></i></button>' +
+          '</div>' +
+          '<input type="text" class="form-control faq-q-input" placeholder="Question text…" value="' + escapeHtml(f.q) + '" oninput="markDirty()" style="margin-bottom:8px; font-weight:600;">' +
+          '<textarea class="form-control faq-a-input" rows="2" placeholder="Answer text…" oninput="markDirty()">' + escapeHtml(f.a) + '</textarea>' +
+        '</div>';
+    }).join('');
+  }
+
+  window.addNewFaqRow = function() {
+    syncFaqInputsToState();
+    const lng = blogState.currentLang;
+    if (!blogState.faqs[lng]) blogState.faqs[lng] = [];
+    blogState.faqs[lng].push({ q: '', a: '' });
+    renderFaqList();
+    markDirty();
+  };
+
+  window.removeFaqRow = function(idx) {
+    syncFaqInputsToState();
+    const lng = blogState.currentLang;
+    blogState.faqs[lng].splice(idx, 1);
+    renderFaqList();
+    markDirty();
+  };
+
+  window.loadDefaultFaqs = function() {
+    if (!window.SHARIF_CANONICAL_FAQS) {
+      showToast('Standard FAQs file not loaded.', 'error');
+      return;
+    }
+    const lng = blogState.currentLang;
+    const defaults = window.SHARIF_CANONICAL_FAQS[lng] || window.SHARIF_CANONICAL_FAQS.en || [];
+    if (defaults.length === 0) {
+      showToast('No defaults available for this language.', 'warning');
+      return;
+    }
+    blogState.faqs[lng] = JSON.parse(JSON.stringify(defaults));
+    renderFaqList();
+    showToast('Loaded ' + defaults.length + ' standard FAQs.', 'success');
+    markDirty();
+  };
+
+  // ── 14. SEO SETTINGS & PREVIEW ──────────────────────────────────────
+  window.handleSeoInput = function() {
+    markDirty();
+    updateSeoCountsAndPreview();
+  };
+
+  function updateSeoCountsAndPreview() {
+    const lng = blogState.currentLang;
+    const title = document.getElementById('metaTitleInput').value.trim() || document.getElementById('articleTitle').value.trim() || 'Article Headline';
+    const desc = document.getElementById('metaDescInput').value.trim() || document.getElementById('articleExcerpt').value.trim() || 'Strategic advisory & legal insights from Sharif Group Dubai.';
+    const slug = document.getElementById('slugInput').value.trim() || 'article-slug';
+
+    document.getElementById('metaTitleCount').textContent = title.length + ' / 60';
+    document.getElementById('metaDescCount').textContent = desc.length + ' / 160';
+
+    document.getElementById('serpTitle').textContent = title + (title.includes('Sharif') ? '' : ' | Sharif Group Dubai');
+    document.getElementById('serpDesc').textContent = desc;
+    document.getElementById('serpUrl').textContent = 'https://sharifgroup.ae/blog/' + slug + '/';
+  }
+
+  // ── 15. ACCORDION TOGGLE ────────────────────────────────────────────
+  window.toggleAccordion = function(id) {
+    document.getElementById(id).classList.toggle('open');
+  };
+
+  // ── 16. COLLECT FULL PAYLOAD ────────────────────────────────────────
+  function buildPayload(statusToSet = 'draft') {
+    syncCurrentFieldsToState();
+
+    if (!blogState.slug) {
+      regenerateSlugFromTitle();
+    }
+
+    const targetPrograms = [
+      blogState.subcategory ? blogState.program : null,
+      blogState.subcategory,
+      (blogState.category || '').toLowerCase()
+    ].filter(Boolean);
+
+    const payload = {
+      id: blogState.id,
+      slug: blogState.slug || ('blog-' + blogState.id),
+      program: blogState.program,
+      category: blogState.category,
+      subcategory: blogState.subcategory,
+      author: blogState.author || 'Sharif Group Legal Desk',
+      target_programs: targetPrograms,
+      featured_img: blogState.featured_img,
+      publish_date: blogState.publish_date,
+      updated_at: new Date().toISOString().replace('T', ' ').substring(0, 19),
+      status: statusToSet,
+      status_en: statusToSet,
+      status_ar: statusToSet,
+      status_fa: statusToSet,
+      status_zh: statusToSet,
+      en: blogState.en,
+      ar: blogState.ar,
+      fa: blogState.fa,
+      zh: blogState.zh,
+      faqs: blogState.faqs.en || [] // canonical
+    };
+
+    return payload;
+  }
+
+  // ── 17. SAVE DRAFT ──────────────────────────────────────────────────
+  window.triggerSaveDraft = async function() {
+    syncCurrentFieldsToState();
+    const enTitle = blogState.en.title.trim();
+    if (!enTitle) {
+      showToast('Please enter an English headline before saving.', 'error');
+      switchContentLang('en');
+      document.getElementById('articleTitle').focus();
+      return;
+    }
+
+    const payload = buildPayload('draft');
+    showToast('Saving draft…', 'warning');
+
+    try {
+      const res = await fetch('api/blog-save-draft.php', {
+        method: 'POST',
+        credentials: 'include',
+        headers: {
+          'Content-Type': 'application/json',
+          'X-Auth-Token': token
+        },
+        body: JSON.stringify(payload)
+      });
+      const data = await res.json();
+
+      if (res.ok && data.success) {
+        showToast('Draft saved successfully.', 'success');
+        localStorage.removeItem('sgcms_blog_draft_state');
+        markSaved();
+      } else {
+        showToast((data && data.error) ? data.error : 'Failed to save draft.', 'error');
+      }
+    } catch (err) {
+      showToast('Network error while saving draft.', 'error');
+    }
+  };
+
+  // ── 18. PUBLISH LIVE ────────────────────────────────────────────────
+  window.openPublishModal = function() {
+    syncCurrentFieldsToState();
+    const enTitle = blogState.en.title.trim();
+    if (!enTitle) {
+      showToast('Please enter an English headline before publishing.', 'error');
+      switchContentLang('en');
+      document.getElementById('articleTitle').focus();
+      return;
+    }
+    document.getElementById('publishModal').classList.add('show');
+  };
+
+  window.closePublishModal = function() {
+    document.getElementById('publishModal').classList.remove('show');
+  };
+
+  window.triggerPublish = async function() {
+    const btn = document.getElementById('confirmPublishBtn');
+    btn.disabled = true;
+    btn.textContent = 'Publishing…';
+
+    const payload = buildPayload('published');
+
+    try {
+      const res = await fetch('api/blog-publish.php', {
+        method: 'POST',
+        credentials: 'include',
+        headers: {
+          'Content-Type': 'application/json',
+          'X-Auth-Token': token
+        },
+        body: JSON.stringify(payload)
+      });
+      const data = await res.json();
+
+      if (res.ok && data.success) {
+        localStorage.removeItem('sgcms_blog_draft_state');
+        closePublishModal();
+        showToast('Article published live to the website!', 'success');
+        // Update local status badges
+        document.getElementById('headerStatusBadge').className = 'header-badge published';
+        document.getElementById('headerStatusBadge').textContent = 'Published';
+        document.getElementById('footerStatusBadge').className = 'header-badge published';
+        document.getElementById('footerStatusBadge').textContent = 'Published';
+        markSaved();
+        setTimeout(function() {
+          window.location.href = 'blogs.html';
+        }, 1200);
+      } else {
+        showToast((data && data.error) ? data.error : 'Failed to publish article.', 'error');
+      }
+    } catch (err) {
+      showToast('Network error during publishing.', 'error');
+    } finally {
+      btn.disabled = false;
+      btn.textContent = 'Confirm & Publish';
+    }
+  };
+
+  // ── 19. UTILITIES ───────────────────────────────────────────────────
+  function escapeHtml(str) {
+    if (!str) return '';
+    return String(str)
+      .replace(/&/g, '&amp;')
+      .replace(/</g, '&lt;')
+      .replace(/>/g, '&gt;')
+      .replace(/"/g, '&quot;')
+      .replace(/'/g, '&#39;');
+  }
+
+  // ── RUN INIT ────────────────────────────────────────────────────────
+  init();
+
+})();
+</script>
+
+</body>
+</html>

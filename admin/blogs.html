@@ -1,0 +1,1126 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Blogs Manager | Sharif Group Admin</title>
+<link rel="icon" href="/assets/images/shariftrip-logo-1.svg?v=20261117" type="image/svg+xml">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Playfair+Display:ital,wght@0,500;0,600;0,700;1,400&display=swap" rel="stylesheet">
+<link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+<style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+  :root {
+    --gold:        #786142;
+    --gold-light:  #9A7D58;
+    --gold-bright: #B8976A;
+    --gold-glow:   rgba(120, 97, 66, 0.28);
+    --bg:          #0E0F12;
+    --surface:     #161820;
+    --card:        #1A1C22;
+    --card-hover:  #1F2229;
+    --border:      rgba(120, 97, 66, 0.18);
+    --border-h:    rgba(120, 97, 66, 0.55);
+    --cream:       #FAF6EE;
+    --text:        #ECEAE6;
+    --muted:       #9A9490;
+    --muted2:      #5C5A56;
+    --header-h:    64px;
+    --green:       #22c55e;
+    --green-dim:   rgba(34, 197, 94, 0.14);
+    --amber:       #f59e0b;
+    --amber-dim:   rgba(245, 158, 11, 0.14);
+    --red:         #ef4444;
+    --red-dim:     rgba(239, 68, 68, 0.12);
+  }
+
+  html, body {
+    min-height: 100vh;
+    font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+    background: var(--bg);
+    color: var(--text);
+  }
+
+  /* Background Ambient Glow */
+  body::before {
+    content: '';
+    position: fixed;
+    inset: 0;
+    background:
+      radial-gradient(ellipse 55% 45% at 10% 20%, rgba(120,97,66,0.07) 0%, transparent 65%),
+      radial-gradient(ellipse 40% 50% at 90% 80%, rgba(120,97,66,0.05) 0%, transparent 55%);
+    pointer-events: none;
+    z-index: 0;
+  }
+
+  /* ═══════════════════ HEADER ═══════════════════ */
+  .site-header {
+    position: sticky;
+    top: 0;
+    z-index: 100;
+    height: var(--header-h);
+    background: rgba(14, 15, 18, 0.94);
+    backdrop-filter: blur(14px);
+    -webkit-backdrop-filter: blur(14px);
+    border-bottom: 1px solid var(--border);
+    display: flex;
+    align-items: center;
+    padding: 0 32px;
+    gap: 16px;
+  }
+
+  .back-btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    padding: 8px 14px;
+    background: transparent;
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    color: var(--muted);
+    font-size: 13px;
+    font-weight: 500;
+    cursor: pointer;
+    text-decoration: none;
+    transition: all 0.2s;
+  }
+  .back-btn:hover {
+    border-color: rgba(120,97,66,0.5);
+    color: var(--gold-bright);
+    background: rgba(120,97,66,0.06);
+  }
+
+  .header-title-box {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+  }
+
+  .header-brand-name {
+    font-family: 'Playfair Display', Georgia, serif;
+    font-size: 18px;
+    font-weight: 700;
+    color: var(--cream);
+    letter-spacing: 0.02em;
+  }
+  .header-brand-name span { color: var(--gold-bright); }
+
+  .header-badge {
+    font-size: 10px;
+    font-weight: 600;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: var(--gold-bright);
+    background: rgba(120,97,66,0.12);
+    border: 1px solid rgba(120,97,66,0.28);
+    border-radius: 20px;
+    padding: 2px 9px;
+  }
+
+  .header-spacer { flex: 1; }
+
+  .btn-new-blog {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    padding: 9px 18px;
+    background: var(--gold);
+    color: #fff;
+    border: none;
+    border-radius: 8px;
+    font-size: 13px;
+    font-weight: 600;
+    text-decoration: none;
+    cursor: pointer;
+    transition: all 0.2s;
+    box-shadow: 0 4px 16px rgba(120,97,66,0.25);
+  }
+  .btn-new-blog:hover {
+    background: var(--gold-light);
+    transform: translateY(-1px);
+    box-shadow: 0 6px 20px rgba(120,97,66,0.35);
+  }
+
+  .btn-logout {
+    display: inline-flex;
+    align-items: center;
+    gap: 7px;
+    padding: 8px 14px;
+    background: transparent;
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    color: var(--muted);
+    font-size: 12.5px;
+    cursor: pointer;
+    transition: all 0.2s;
+  }
+  .btn-logout:hover {
+    border-color: rgba(220,38,38,0.4);
+    color: #FCA5A5;
+    background: rgba(220,38,38,0.06);
+  }
+
+  /* ═══════════════════ MAIN WRAP ═══════════════════ */
+  .main-wrap {
+    position: relative;
+    z-index: 1;
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 36px 32px 64px;
+  }
+
+  /* ── TOOLBAR: TABS + SEARCH ── */
+  .toolbar {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 16px;
+    margin-bottom: 28px;
+    flex-wrap: wrap;
+  }
+
+  .tab-group {
+    display: inline-flex;
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    padding: 4px;
+    gap: 4px;
+  }
+
+  .tab-btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    padding: 8px 18px;
+    background: transparent;
+    border: none;
+    border-radius: 8px;
+    color: var(--muted);
+    font-family: inherit;
+    font-size: 13px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.2s;
+  }
+  .tab-btn:hover {
+    color: var(--text);
+  }
+  .tab-btn.active {
+    background: var(--card);
+    color: var(--cream);
+    box-shadow: 0 2px 8px rgba(0,0,0,0.3);
+    border: 1px solid rgba(120,97,66,0.3);
+  }
+
+  .tab-count {
+    font-size: 11px;
+    font-weight: 700;
+    padding: 2px 7px;
+    border-radius: 10px;
+    background: rgba(120,97,66,0.18);
+    color: var(--gold-bright);
+  }
+  .tab-btn.active .tab-count {
+    background: var(--gold);
+    color: #fff;
+  }
+
+  .search-wrap {
+    position: relative;
+    min-width: 280px;
+    max-width: 380px;
+    flex: 1;
+  }
+
+  .search-icon {
+    position: absolute;
+    left: 14px;
+    top: 50%;
+    transform: translateY(-50%);
+    color: var(--muted);
+    font-size: 13px;
+    pointer-events: none;
+  }
+
+  .search-input {
+    width: 100%;
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    padding: 10px 14px 10px 38px;
+    color: var(--text);
+    font-size: 13px;
+    font-family: inherit;
+    outline: none;
+    transition: border-color 0.2s, box-shadow 0.2s;
+  }
+  .search-input:focus {
+    border-color: var(--gold);
+    box-shadow: 0 0 0 3px var(--gold-glow);
+  }
+  .search-input::placeholder { color: var(--muted2); }
+
+  /* ── CARDS GRID ── */
+  .blogs-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(360px, 1fr));
+    gap: 22px;
+  }
+
+  @media (max-width: 600px) {
+    .blogs-grid { grid-template-columns: 1fr; }
+    .site-header { padding: 0 16px; }
+    .main-wrap { padding: 24px 16px 48px; }
+  }
+
+  /* ── BLOG CARD ── */
+  .blog-card {
+    background: var(--card);
+    border: 1px solid var(--border);
+    border-radius: 16px;
+    overflow: hidden;
+    display: flex;
+    flex-direction: column;
+    transition: border-color 0.25s, transform 0.25s, box-shadow 0.25s;
+    position: relative;
+  }
+  .blog-card:hover {
+    border-color: var(--border-h);
+    transform: translateY(-3px);
+    box-shadow: 0 16px 40px rgba(0,0,0,0.4), 0 0 0 1px rgba(120,97,66,0.15);
+  }
+
+  /* Image Banner */
+  .card-img-wrap {
+    height: 180px;
+    background: #121318;
+    position: relative;
+    overflow: hidden;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-bottom: 1px solid rgba(120,97,66,0.1);
+  }
+  .card-img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    transition: transform 0.4s ease;
+  }
+  .blog-card:hover .card-img {
+    transform: scale(1.04);
+  }
+  .img-placeholder {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 8px;
+    color: var(--muted2);
+    font-size: 28px;
+  }
+  .img-placeholder span {
+    font-size: 11px;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+  }
+
+  /* Floating Status Badge */
+  .status-pill {
+    position: absolute;
+    top: 12px;
+    right: 12px;
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    padding: 4px 10px;
+    border-radius: 20px;
+    font-size: 11px;
+    font-weight: 700;
+    backdrop-filter: blur(8px);
+    -webkit-backdrop-filter: blur(8px);
+  }
+  .status-pill.published {
+    background: rgba(14, 30, 20, 0.85);
+    border: 1px solid rgba(34, 197, 94, 0.35);
+    color: #86efac;
+  }
+  .status-pill.draft {
+    background: rgba(36, 26, 12, 0.85);
+    border: 1px solid rgba(245, 158, 11, 0.35);
+    color: #fde68a;
+  }
+  .status-dot {
+    width: 6px;
+    height: 6px;
+    border-radius: 50%;
+  }
+  .status-pill.published .status-dot { background: var(--green); }
+  .status-pill.draft .status-dot { background: var(--amber); }
+
+  /* Card Body */
+  .card-body {
+    padding: 20px 22px 16px;
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+  }
+
+  .card-meta-top {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    margin-bottom: 10px;
+    font-size: 11.5px;
+    color: var(--muted);
+  }
+  .card-category {
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.06em;
+    color: var(--gold-bright);
+  }
+  .card-dot {
+    width: 3px;
+    height: 3px;
+    background: var(--muted2);
+    border-radius: 50%;
+  }
+
+  .card-title {
+    font-family: 'Playfair Display', Georgia, serif;
+    font-size: 17px;
+    font-weight: 600;
+    color: var(--cream);
+    line-height: 1.35;
+    margin-bottom: 12px;
+    display: -webkit-box;
+    -webkit-line-clamp: 2;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+  }
+
+  .card-slug {
+    font-size: 11.5px;
+    color: var(--muted2);
+    font-family: monospace;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    margin-bottom: 16px;
+  }
+
+  .card-footer-info {
+    margin-top: auto;
+    padding-top: 14px;
+    border-top: 1px solid rgba(120,97,66,0.1);
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    font-size: 12px;
+    color: var(--muted);
+  }
+
+  /* Card Actions Bar */
+  .card-actions {
+    padding: 12px 22px;
+    background: rgba(14, 15, 18, 0.4);
+    border-top: 1px solid rgba(120,97,66,0.12);
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 8px;
+  }
+
+  .action-btn-group {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+
+  .btn-action {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    padding: 6px 12px;
+    border-radius: 6px;
+    font-size: 12px;
+    font-weight: 600;
+    text-decoration: none;
+    cursor: pointer;
+    border: 1px solid transparent;
+    transition: all 0.2s;
+  }
+
+  .btn-edit {
+    background: rgba(120,97,66,0.14);
+    border-color: rgba(120,97,66,0.3);
+    color: var(--gold-bright);
+  }
+  .btn-edit:hover {
+    background: var(--gold);
+    color: #fff;
+    border-color: var(--gold);
+  }
+
+  .btn-publish-quick {
+    background: var(--green-dim);
+    border-color: rgba(34,197,94,0.3);
+    color: #86efac;
+  }
+  .btn-publish-quick:hover {
+    background: var(--green);
+    color: #fff;
+    border-color: var(--green);
+  }
+
+  .btn-view-live {
+    background: rgba(255,255,255,0.05);
+    border-color: var(--border);
+    color: var(--muted);
+  }
+  .btn-view-live:hover {
+    color: var(--cream);
+    border-color: rgba(255,255,255,0.25);
+  }
+
+  .btn-delete {
+    background: transparent;
+    border-color: transparent;
+    color: var(--muted);
+    padding: 6px 9px;
+  }
+  .btn-delete:hover {
+    background: var(--red-dim);
+    border-color: rgba(239,68,68,0.3);
+    color: #fca5a5;
+  }
+
+  /* ── EMPTY STATE ── */
+  .empty-state {
+    grid-column: 1 / -1;
+    text-align: center;
+    padding: 64px 20px;
+    background: var(--surface);
+    border: 1px dashed var(--border);
+    border-radius: 16px;
+    color: var(--muted);
+  }
+  .empty-icon {
+    font-size: 38px;
+    color: var(--gold);
+    margin-bottom: 14px;
+    opacity: 0.7;
+  }
+  .empty-title {
+    font-family: 'Playfair Display', Georgia, serif;
+    font-size: 20px;
+    font-weight: 700;
+    color: var(--cream);
+    margin-bottom: 6px;
+  }
+  .empty-desc {
+    font-size: 13.5px;
+    max-width: 400px;
+    margin: 0 auto 20px;
+  }
+
+  /* ── SKELETON CARDS ── */
+  .skeleton-card {
+    background: var(--card);
+    border: 1px solid var(--border);
+    border-radius: 16px;
+    overflow: hidden;
+    height: 340px;
+    position: relative;
+  }
+  .shimmer {
+    background: linear-gradient(90deg, rgba(255,255,255,0.02) 25%, rgba(255,255,255,0.06) 50%, rgba(255,255,255,0.02) 75%);
+    background-size: 200% 100%;
+    animation: shimmer 1.5s infinite;
+  }
+  @keyframes shimmer { from { background-position: 200% 0; } to { background-position: -200% 0; } }
+
+  /* ── CONFIRMATION MODAL ── */
+  .modal-backdrop {
+    position: fixed;
+    inset: 0;
+    background: rgba(0,0,0,0.75);
+    backdrop-filter: blur(8px);
+    -webkit-backdrop-filter: blur(8px);
+    z-index: 1000;
+    display: none;
+    align-items: center;
+    justify-content: center;
+    padding: 20px;
+  }
+  .modal-backdrop.show { display: flex; }
+
+  .modal-card {
+    background: var(--card);
+    border: 1px solid var(--border);
+    border-radius: 18px;
+    max-width: 440px;
+    width: 100%;
+    padding: 30px;
+    box-shadow: 0 24px 60px rgba(0,0,0,0.6);
+    animation: popIn 0.25s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+    text-align: center;
+  }
+  @keyframes popIn {
+    from { opacity: 0; transform: scale(0.94); }
+    to   { opacity: 1; transform: scale(1); }
+  }
+
+  .modal-icon-danger {
+    width: 52px;
+    height: 52px;
+    background: var(--red-dim);
+    border: 1px solid rgba(239, 68, 68, 0.3);
+    border-radius: 50%;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    color: #f87171;
+    font-size: 22px;
+    margin-bottom: 16px;
+  }
+
+  .modal-icon-publish {
+    width: 52px;
+    height: 52px;
+    background: var(--green-dim);
+    border: 1px solid rgba(34, 197, 94, 0.3);
+    border-radius: 50%;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    color: #86efac;
+    font-size: 22px;
+    margin-bottom: 16px;
+  }
+
+  .modal-title {
+    font-family: 'Playfair Display', Georgia, serif;
+    font-size: 20px;
+    font-weight: 700;
+    color: var(--cream);
+    margin-bottom: 10px;
+  }
+  .modal-desc {
+    font-size: 13.5px;
+    color: var(--muted);
+    line-height: 1.5;
+    margin-bottom: 24px;
+    word-break: break-word;
+  }
+
+  .modal-btns {
+    display: flex;
+    gap: 12px;
+    justify-content: center;
+  }
+  .btn-modal-cancel {
+    padding: 10px 20px;
+    background: transparent;
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    color: var(--text);
+    font-size: 13px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.2s;
+  }
+  .btn-modal-cancel:hover { background: rgba(255,255,255,0.06); }
+
+  .btn-modal-danger {
+    padding: 10px 20px;
+    background: var(--red);
+    border: 1px solid var(--red);
+    border-radius: 8px;
+    color: #fff;
+    font-size: 13px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.2s;
+  }
+  .btn-modal-danger:hover { background: #dc2626; }
+
+  .btn-modal-confirm {
+    padding: 10px 20px;
+    background: var(--green);
+    border: 1px solid var(--green);
+    border-radius: 8px;
+    color: #fff;
+    font-size: 13px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.2s;
+  }
+  .btn-modal-confirm:hover { background: #16a34a; }
+
+  /* ── TOAST NOTIFICATIONS ── */
+  .toast-container {
+    position: fixed;
+    bottom: 24px;
+    right: 24px;
+    z-index: 2000;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    pointer-events: none;
+  }
+  .toast {
+    background: var(--card);
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    padding: 12px 18px;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    font-size: 13px;
+    color: var(--cream);
+    box-shadow: 0 10px 30px rgba(0,0,0,0.5);
+    pointer-events: auto;
+    animation: toastIn 0.3s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+  }
+  .toast.success { border-color: rgba(34,197,94,0.4); }
+  .toast.success i { color: var(--green); }
+  .toast.error   { border-color: rgba(239,68,68,0.4); }
+  .toast.error i   { color: var(--red); }
+  @keyframes toastIn {
+    from { opacity: 0; transform: translateY(16px); }
+    to   { opacity: 1; transform: translateY(0); }
+  }
+</style>
+</head>
+<body>
+
+<!-- ═══ HEADER ════════════════════════════════════════════════════════ -->
+<header class="site-header">
+  <a href="dashboard.html" class="back-btn">
+    <i class="fa-solid fa-arrow-left"></i>
+    Dashboard
+  </a>
+
+  <div class="header-title-box">
+    <span class="header-brand-name">Sharif <span>Blogs</span></span>
+    <span class="header-badge">CMS v2.0</span>
+  </div>
+
+  <div class="header-spacer"></div>
+
+  <a href="blog-write.html?mode=new" class="btn-new-blog">
+    <i class="fa-solid fa-plus"></i>
+    Create New Blog
+  </a>
+
+  <button class="btn-logout" id="logoutBtn">
+    <i class="fa-solid fa-right-from-bracket"></i>
+    Sign Out
+  </button>
+</header>
+
+<!-- ═══ MAIN CONTENT ═════════════════════════════════════════════════ -->
+<main class="main-wrap">
+
+  <!-- Toolbar: Tabs + Search -->
+  <div class="toolbar">
+    <div class="tab-group">
+      <button class="tab-btn active" id="tabPublished" onclick="switchTab('published')">
+        <i class="fa-solid fa-circle-check" style="font-size:12px; color: var(--green);"></i>
+        Published
+        <span class="tab-count" id="countPublished">0</span>
+      </button>
+      <button class="tab-btn" id="tabDrafts" onclick="switchTab('drafts')">
+        <i class="fa-solid fa-file-pen" style="font-size:12px; color: var(--amber);"></i>
+        Drafts
+        <span class="tab-count" id="countDrafts">0</span>
+      </button>
+    </div>
+
+    <div class="search-wrap">
+      <i class="fa-solid fa-magnifying-glass search-icon"></i>
+      <input type="text" id="searchInput" class="search-input" placeholder="Search by title, country, or category…" oninput="filterArticles()">
+    </div>
+  </div>
+
+  <!-- Cards Grid -->
+  <div class="blogs-grid" id="blogsGrid">
+    <!-- Skeletons shown initially -->
+    <div class="skeleton-card shimmer"></div>
+    <div class="skeleton-card shimmer"></div>
+    <div class="skeleton-card shimmer"></div>
+  </div>
+
+</main>
+
+<!-- ═══ DELETE MODAL ═════════════════════════════════════════════════ -->
+<div class="modal-backdrop" id="deleteModal">
+  <div class="modal-card">
+    <div class="modal-icon-danger">
+      <i class="fa-solid fa-triangle-exclamation"></i>
+    </div>
+    <div class="modal-title">Delete Article?</div>
+    <div class="modal-desc" id="deleteModalText">
+      Are you sure you want to permanently delete this article? This action cannot be undone.
+    </div>
+    <div class="modal-btns">
+      <button class="btn-modal-cancel" onclick="closeDeleteModal()">Cancel</button>
+      <button class="btn-modal-danger" id="confirmDeleteBtn">Delete</button>
+    </div>
+  </div>
+</div>
+
+<!-- ═══ QUICK PUBLISH MODAL ═══════════════════════════════════════════ -->
+<div class="modal-backdrop" id="publishModal">
+  <div class="modal-card">
+    <div class="modal-icon-publish">
+      <i class="fa-solid fa-cloud-arrow-up"></i>
+    </div>
+    <div class="modal-title">Publish to Live Website?</div>
+    <div class="modal-desc" id="publishModalText">
+      This will generate live pages and make this article accessible to all visitors and search engines.
+    </div>
+    <div class="modal-btns">
+      <button class="btn-modal-cancel" onclick="closePublishModal()">Cancel</button>
+      <button class="btn-modal-confirm" id="confirmPublishBtn">Publish Now</button>
+    </div>
+  </div>
+</div>
+
+<!-- ═══ TOAST CONTAINER ══════════════════════════════════════════════ -->
+<div class="toast-container" id="toastContainer"></div>
+
+<script>
+(function() {
+  'use strict';
+
+  // ── 1. AUTH GUARD ───────────────────────────────────────────────────
+  function getSession() {
+    try {
+      return JSON.parse(sessionStorage.getItem('sgcms_auth')) ||
+             JSON.parse(localStorage.getItem('sgcms_auth'));
+    } catch (_) { return null; }
+  }
+
+  function getToken() {
+    return sessionStorage.getItem('sgcms_token') || localStorage.getItem('sgcms_token') || '';
+  }
+
+  const session = getSession();
+  const token   = getToken();
+
+  if (!session || !token) {
+    window.location.replace('index.html');
+  }
+
+  // Logout Handler
+  document.getElementById('logoutBtn').addEventListener('click', function() {
+    fetch('api/auth.php?action=logout', { method: 'POST', credentials: 'include' }).catch(function(){});
+    ['sgcms_auth', 'sgcms_token'].forEach(function(k) {
+      sessionStorage.removeItem(k);
+      localStorage.removeItem(k);
+    });
+    window.location.replace('index.html');
+  });
+
+  // ── 2. STATE & CACHE ────────────────────────────────────────────────
+  let activeTab = 'published';
+  let publishedList = [];
+  let draftsList = [];
+
+  let pendingDelete = null;
+  let pendingPublish = null;
+
+  // ── 3. TOAST HELPER ─────────────────────────────────────────────────
+  function showToast(msg, type = 'success') {
+    const box = document.getElementById('toastContainer');
+    const toast = document.createElement('div');
+    toast.className = 'toast ' + type;
+    const icon = type === 'success' ? 'fa-circle-check' : 'fa-circle-exclamation';
+    toast.innerHTML = '<i class="fa-solid ' + icon + '"></i><span>' + msg + '</span>';
+    box.appendChild(toast);
+    setTimeout(function() {
+      toast.style.opacity = '0';
+      toast.style.transform = 'translateY(10px)';
+      toast.style.transition = 'all 0.3s ease';
+      setTimeout(function() { toast.remove(); }, 300);
+    }, 3500);
+  }
+
+  // ── 4. LOAD BLOG LISTS ──────────────────────────────────────────────
+  async function loadAllBlogs() {
+    try {
+      const [resPub, resDraft] = await Promise.all([
+        fetch('api/blog-list-published.php', {
+          credentials: 'include',
+          headers: { 'X-Auth-Token': token }
+        }),
+        fetch('api/blog-list-drafts.php', {
+          credentials: 'include',
+          headers: { 'X-Auth-Token': token }
+        })
+      ]);
+
+      if (resPub.ok) {
+        const dataPub = await resPub.json();
+        publishedList = dataPub.published || [];
+        document.getElementById('countPublished').textContent = publishedList.length;
+      }
+
+      if (resDraft.ok) {
+        const dataDraft = await resDraft.json();
+        draftsList = dataDraft.drafts || [];
+        document.getElementById('countDrafts').textContent = draftsList.length;
+      }
+
+      renderCurrentList();
+    } catch (err) {
+      document.getElementById('blogsGrid').innerHTML =
+        '<div class="empty-state"><div class="empty-icon"><i class="fa-solid fa-triangle-exclamation"></i></div>' +
+        '<div class="empty-title">Error Loading Articles</div>' +
+        '<div class="empty-desc">Could not connect to the backend server. Please check your network and refresh.</div></div>';
+    }
+  }
+
+  // ── 5. RENDER CURRENT TAB ───────────────────────────────────────────
+  function renderCurrentList() {
+    const grid = document.getElementById('blogsGrid');
+    const q = (document.getElementById('searchInput').value || '').trim().toLowerCase();
+
+    const rawList = activeTab === 'published' ? publishedList : draftsList;
+    const list = rawList.filter(function(item) {
+      if (!q) return true;
+      const t = (item.title || '').toLowerCase();
+      const s = (item.slug || '').toLowerCase();
+      const p = (item.program || item.subcategory || item.category || '').toLowerCase();
+      return t.includes(q) || s.includes(q) || p.includes(q);
+    });
+
+    if (list.length === 0) {
+      if (q) {
+        grid.innerHTML =
+          '<div class="empty-state"><div class="empty-icon"><i class="fa-solid fa-magnifying-glass"></i></div>' +
+          '<div class="empty-title">No matching articles</div>' +
+          '<div class="empty-desc">No articles match "' + escapeHtml(q) + '". Try searching for another keyword.</div></div>';
+      } else {
+        const isPub = activeTab === 'published';
+        grid.innerHTML =
+          '<div class="empty-state"><div class="empty-icon">' +
+          '<i class="fa-solid ' + (isPub ? 'fa-newspaper' : 'fa-file-lines') + '"></i></div>' +
+          '<div class="empty-title">' + (isPub ? 'No Published Articles Yet' : 'No Drafts Saved') + '</div>' +
+          '<div class="empty-desc">' +
+          (isPub ? 'You haven\'t published any blog posts yet. Create a new article to get started.' : 'You have no draft posts in progress.') +
+          '</div>' +
+          '<a href="blog-write.html?mode=new" class="btn-new-blog"><i class="fa-solid fa-plus"></i> Create New Blog</a>' +
+          '</div>';
+      }
+      return;
+    }
+
+    grid.innerHTML = list.map(function(item) {
+      const isPub = activeTab === 'published';
+      const title = item.title || 'Untitled Article';
+      const category = item.category || 'Citizenship';
+      const program = item.program || item.subcategory || '';
+      const catLabel = program ? (category + ' · ' + program.replace(/-/g, ' ')) : category;
+      const date = item.publish_date || item.updated_at || '';
+      const dateStr = date ? date.split('T')[0] : '—';
+      const img = item.featured_img || '';
+      const slug = item.slug || item.id;
+      const url = '/blog/' + encodeURIComponent(slug) + '/';
+
+      const imgHtml = img
+        ? '<img src="' + escapeHtml(img) + '" alt="" class="card-img" onerror="this.style.display=\'none\'; this.nextElementSibling.style.display=\'flex\';">' +
+          '<div class="img-placeholder" style="display:none;"><i class="fa-solid fa-feather"></i><span>Sharif Group</span></div>'
+        : '<div class="img-placeholder"><i class="fa-solid fa-feather"></i><span>Sharif Group</span></div>';
+
+      const statusBadge = isPub
+        ? '<div class="status-pill published"><div class="status-dot"></div>Published</div>'
+        : '<div class="status-pill draft"><div class="status-dot"></div>Draft</div>';
+
+      const actionButtons = isPub
+        ? '<div class="action-btn-group">' +
+            '<a href="blog-write.html?id=' + encodeURIComponent(item.id || item.slug) + '" class="btn-action btn-edit"><i class="fa-solid fa-pen"></i> Edit</a>' +
+            '<a href="' + url + '" target="_blank" class="btn-action btn-view-live" title="View live page"><i class="fa-solid fa-arrow-up-right-from-square"></i> Live</a>' +
+          '</div>' +
+          '<button class="btn-action btn-delete" onclick="openDeleteModal(\'' + escapeJs(item.id) + '\', \'' + escapeJs(item.slug) + '\', \'' + escapeJs(title) + '\', true)" title="Delete published article"><i class="fa-solid fa-trash-can"></i></button>'
+        : '<div class="action-btn-group">' +
+            '<a href="blog-write.html?id=' + encodeURIComponent(item.id || item.slug) + '" class="btn-action btn-edit"><i class="fa-solid fa-pen"></i> Edit</a>' +
+            '<button class="btn-action btn-publish-quick" onclick="openPublishModal(\'' + escapeJs(item.id) + '\', \'' + escapeJs(title) + '\')"><i class="fa-solid fa-cloud-arrow-up"></i> Publish</button>' +
+          '</div>' +
+          '<button class="btn-action btn-delete" onclick="openDeleteModal(\'' + escapeJs(item.id) + '\', \'' + escapeJs(item.slug) + '\', \'' + escapeJs(title) + '\', false)" title="Delete draft"><i class="fa-solid fa-trash-can"></i></button>';
+
+      return '' +
+        '<div class="blog-card">' +
+          '<div class="card-img-wrap">' +
+            imgHtml +
+            statusBadge +
+          '</div>' +
+          '<div class="card-body">' +
+            '<div class="card-meta-top">' +
+              '<span class="card-category">' + escapeHtml(catLabel) + '</span>' +
+              '<div class="card-dot"></div>' +
+              '<span><i class="fa-regular fa-calendar" style="font-size:11px"></i> ' + escapeHtml(dateStr) + '</span>' +
+            '</div>' +
+            '<div class="card-title" title="' + escapeHtml(title) + '">' + escapeHtml(title) + '</div>' +
+            '<div class="card-slug" title="/blog/' + escapeHtml(slug) + '/">/blog/' + escapeHtml(slug) + '/</div>' +
+            '<div class="card-footer-info">' +
+              '<span>ID: ' + escapeHtml(item.id || '—') + '</span>' +
+            '</div>' +
+          '</div>' +
+          '<div class="card-actions">' +
+            actionButtons +
+          '</div>' +
+        '</div>';
+    }).join('');
+  }
+
+  // ── 6. TAB SWITCHING ────────────────────────────────────────────────
+  window.switchTab = function(tab) {
+    activeTab = tab;
+    document.getElementById('tabPublished').classList.toggle('active', tab === 'published');
+    document.getElementById('tabDrafts').classList.toggle('active', tab === 'drafts');
+    renderCurrentList();
+  };
+
+  // ── 7. SEARCH FILTER ────────────────────────────────────────────────
+  window.filterArticles = function() {
+    renderCurrentList();
+  };
+
+  // ── 8. DELETE MODAL & ACTION ────────────────────────────────────────
+  window.openDeleteModal = function(id, slug, title, isPublished) {
+    pendingDelete = { id, slug, title, isPublished };
+    const modalText = document.getElementById('deleteModalText');
+    modalText.innerHTML = 'Are you sure you want to permanently delete:<br><strong style="color:var(--cream);">' +
+      escapeHtml(title) + '</strong>?<br><br>' +
+      (isPublished ? 'This will remove the article from the live website and sitemap.' : 'This will permanently discard this draft.');
+    document.getElementById('deleteModal').classList.add('show');
+  };
+
+  window.closeDeleteModal = function() {
+    document.getElementById('deleteModal').classList.remove('show');
+    pendingDelete = null;
+  };
+
+  document.getElementById('confirmDeleteBtn').addEventListener('click', async function() {
+    if (!pendingDelete) return;
+    const btn = document.getElementById('confirmDeleteBtn');
+    btn.disabled = true;
+    btn.textContent = 'Deleting…';
+
+    try {
+      const endpoint = pendingDelete.isPublished ? 'api/delete-blog.php' : 'api/blog-delete-draft.php';
+      const bodyPayload = pendingDelete.isPublished
+        ? { id: pendingDelete.id, slug: pendingDelete.slug }
+        : { id: pendingDelete.id };
+
+      const res = await fetch(endpoint, {
+        method: 'POST',
+        credentials: 'include',
+        headers: {
+          'Content-Type': 'application/json',
+          'X-Auth-Token': token
+        },
+        body: JSON.stringify(bodyPayload)
+      });
+
+      const data = await res.json();
+      if (res.ok && (data.success || data.deleted)) {
+        showToast('Article deleted successfully.', 'success');
+        closeDeleteModal();
+        await loadAllBlogs();
+      } else {
+        showToast((data && data.error) ? data.error : 'Failed to delete article.', 'error');
+      }
+    } catch (err) {
+      showToast('Network error while deleting.', 'error');
+    } finally {
+      btn.disabled = false;
+      btn.textContent = 'Delete';
+    }
+  });
+
+  // ── 9. QUICK PUBLISH ACTION ─────────────────────────────────────────
+  window.openPublishModal = function(id, title) {
+    pendingPublish = { id, title };
+    const modalText = document.getElementById('publishModalText');
+    modalText.innerHTML = 'Publish <strong style="color:var(--cream);">' + escapeHtml(title) +
+      '</strong> to the live website immediately?';
+    document.getElementById('publishModal').classList.add('show');
+  };
+
+  window.closePublishModal = function() {
+    document.getElementById('publishModal').classList.remove('show');
+    pendingPublish = null;
+  };
+
+  document.getElementById('confirmPublishBtn').addEventListener('click', async function() {
+    if (!pendingPublish) return;
+    const btn = document.getElementById('confirmPublishBtn');
+    btn.disabled = true;
+    btn.textContent = 'Publishing…';
+
+    try {
+      const res = await fetch('api/blog-publish.php', {
+        method: 'POST',
+        credentials: 'include',
+        headers: {
+          'Content-Type': 'application/json',
+          'X-Auth-Token': token
+        },
+        body: JSON.stringify({ id: pendingPublish.id })
+      });
+
+      const data = await res.json();
+      if (res.ok && data.success) {
+        showToast('Article successfully published live!', 'success');
+        closePublishModal();
+        // Switch to published tab to see it
+        activeTab = 'published';
+        document.getElementById('tabPublished').classList.add('active');
+        document.getElementById('tabDrafts').classList.remove('active');
+        await loadAllBlogs();
+      } else {
+        showToast((data && data.error) ? data.error : 'Failed to publish article.', 'error');
+      }
+    } catch (err) {
+      showToast('Network error while publishing.', 'error');
+    } finally {
+      btn.disabled = false;
+      btn.textContent = 'Publish Now';
+    }
+  });
+
+  // ── 10. UTILITIES ───────────────────────────────────────────────────
+  function escapeHtml(str) {
+    if (!str) return '';
+    return String(str)
+      .replace(/&/g, '&amp;')
+      .replace(/</g, '&lt;')
+      .replace(/>/g, '&gt;')
+      .replace(/"/g, '&quot;')
+      .replace(/'/g, '&#39;');
+  }
+
+  function escapeJs(str) {
+    if (!str) return '';
+    return String(str)
+      .replace(/\\/g, '\\\\')
+      .replace(/'/g, "\\'")
+      .replace(/"/g, '\\"')
+      .replace(/\n/g, '\\n')
+      .replace(/\r/g, '');
+  }
+
+  // ── INIT ────────────────────────────────────────────────────────────
+  loadAllBlogs();
+
+})();
+</script>
+</body>
+</html>

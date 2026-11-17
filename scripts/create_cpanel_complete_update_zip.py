@@ -68,6 +68,7 @@ def build_complete_zip():
         'admin/dashboard.html',
         'admin/api/published_content.json',
         'admin/api/draft_content.json',
+        'assets/data/published_content.json',
         'admin/api/webinars-regen.php',
         'admin/api/delete-blog.php',
         'assets/css/webinars.css',

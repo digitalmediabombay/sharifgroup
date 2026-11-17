@@ -1,0 +1,1750 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Create Webinar Series · Studio | Sharif Group CMS</title>
+  <link rel="icon" type="image/svg+xml" href="/favicon.svg?v=20261109">
+
+  <!-- Fonts & Icons -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700&family=Inter:wght@300;400;500;600;700&family=Playfair+Display:ital,wght@0,500;0,600;0,700;1,400&family=Vazirmatn:wght@400;500;600;700&display=swap">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+
+  <style>
+  :root {
+    --gold:        #786142;
+    --gold-light:  #A0845C;
+    --gold-bright: #C5A880;
+    --gold-dim:    rgba(120, 97, 66, 0.15);
+    --bg:          #0E0F12;
+    --surface:     #161820;
+    --card:        #1A1C22;
+    --card-hover:  #1F2229;
+    --border:      rgba(120, 97, 66, 0.18);
+    --border-h:    rgba(120, 97, 66, 0.55);
+    --cream:       #FAF6EE;
+    --text:        #ECEAE6;
+    --muted:       #9A9490;
+    --muted2:      #5C5A56;
+    --header-h:    64px;
+    --green:       #22c55e;
+    --green-dim:   rgba(34, 197, 94, 0.14);
+    --amber:       #f59e0b;
+    --amber-dim:   rgba(245, 158, 11, 0.14);
+    --red:         #ef4444;
+    --red-dim:     rgba(239, 68, 68, 0.12);
+  }
+
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+
+  html, body {
+    min-height: 100vh;
+    font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+    background: var(--bg);
+    color: var(--text);
+  }
+
+  body::before {
+    content: '';
+    position: fixed;
+    inset: 0;
+    background:
+      radial-gradient(ellipse 55% 45% at 10% 20%, rgba(120,97,66,0.07) 0%, transparent 65%),
+      radial-gradient(ellipse 40% 50% at 90% 80%, rgba(120,97,66,0.05) 0%, transparent 55%);
+    pointer-events: none;
+    z-index: 0;
+  }
+
+  /* ═══════════════════ HEADER ═══════════════════ */
+  .site-header {
+    position: sticky;
+    top: 0;
+    z-index: 100;
+    height: var(--header-h);
+    background: rgba(14, 15, 18, 0.94);
+    backdrop-filter: blur(14px);
+    border-bottom: 1px solid var(--border);
+  }
+
+  .header-inner {
+    max-width: 1300px;
+    margin: 0 auto;
+    height: 100%;
+    padding: 0 24px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 16px;
+  }
+
+  .header-left {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+  }
+
+  .back-btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    padding: 8px 14px;
+    background: transparent;
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    color: var(--muted);
+    font-size: 0.84rem;
+    font-weight: 500;
+    text-decoration: none;
+    transition: all 0.2s ease;
+  }
+  .back-btn:hover {
+    border-color: rgba(120,97,66,0.5);
+    color: var(--gold-bright);
+    background: rgba(120,97,66,0.06);
+  }
+
+  .header-brand-box {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+  }
+  .brand-logo-mark {
+    width: 32px;
+    height: 32px;
+    border-radius: 6px;
+    border: 1px solid rgba(120, 97, 66, 0.4);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: linear-gradient(135deg, rgba(120,97,66,0.2), rgba(120,97,66,0.05));
+    color: var(--gold-bright);
+    font-size: 0.85rem;
+  }
+  .brand-title-group h1 {
+    font-family: 'Playfair Display', serif;
+    font-size: 1.05rem;
+    color: var(--cream);
+    font-weight: 600;
+  }
+  .brand-title-group p {
+    font-size: 0.72rem;
+    color: var(--muted);
+    letter-spacing: 0.05em;
+    text-transform: uppercase;
+  }
+
+  .header-actions {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+  }
+
+  .live-pill {
+    display: inline-flex;
+    align-items: center;
+    gap: 7px;
+    padding: 5px 12px;
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 20px;
+    font-size: 0.76rem;
+    color: var(--muted);
+  }
+  .live-pill-dot {
+    width: 7px;
+    height: 7px;
+    border-radius: 50%;
+    background: var(--green);
+    box-shadow: 0 0 6px rgba(34,197,94,0.6);
+  }
+
+  /* ═══════════════════ MAIN CONTENT ═══════════════════ */
+  .main-wrapper {
+    position: relative;
+    z-index: 1;
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 36px 24px 80px;
+  }
+
+  /* Wizard Step Bar */
+  .step-bar {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 36px;
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 14px;
+    padding: 12px 24px;
+    gap: 12px;
+  }
+
+  .step-item {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    cursor: pointer;
+    opacity: 0.55;
+    transition: opacity 0.2s ease;
+    user-select: none;
+  }
+  .step-item.active {
+    opacity: 1;
+  }
+  .step-item.completed {
+    opacity: 0.85;
+  }
+  .step-num {
+    width: 32px;
+    height: 32px;
+    border-radius: 50%;
+    border: 1.5px solid var(--muted);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 0.82rem;
+    font-weight: 600;
+    color: var(--muted);
+    transition: all 0.2s ease;
+  }
+  .step-item.active .step-num {
+    border-color: var(--gold-bright);
+    background: var(--gold);
+    color: var(--cream);
+    box-shadow: 0 0 10px rgba(120,97,66,0.4);
+  }
+  .step-item.completed .step-num {
+    border-color: var(--green);
+    background: var(--green-dim);
+    color: var(--green);
+  }
+  .step-label h4 {
+    font-size: 0.85rem;
+    font-weight: 600;
+    color: var(--cream);
+  }
+  .step-label p {
+    font-size: 0.72rem;
+    color: var(--muted);
+  }
+  .step-arrow {
+    color: var(--border);
+    font-size: 0.9rem;
+  }
+
+  /* Active Series Notice Banner */
+  .active-notice-box {
+    margin-bottom: 28px;
+    padding: 16px 20px;
+    background: linear-gradient(135deg, rgba(120,97,66,0.12), rgba(22,24,32,0.7));
+    border: 1px solid rgba(120,97,66,0.3);
+    border-radius: 12px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 16px;
+  }
+  .active-notice-left {
+    display: flex;
+    align-items: center;
+    gap: 14px;
+  }
+  .active-notice-icon {
+    width: 38px;
+    height: 38px;
+    border-radius: 10px;
+    background: rgba(120,97,66,0.2);
+    border: 1px solid rgba(120,97,66,0.4);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: var(--gold-bright);
+    font-size: 1rem;
+  }
+  .active-notice-text h4 {
+    font-size: 0.88rem;
+    font-weight: 600;
+    color: var(--cream);
+    margin-bottom: 3px;
+  }
+  .active-notice-text p {
+    font-size: 0.78rem;
+    color: var(--muted);
+    line-height: 1.4;
+  }
+
+  /* Panels */
+  .wizard-panel {
+    display: none;
+    background: var(--card);
+    border: 1px solid var(--border);
+    border-radius: 16px;
+    padding: 32px;
+    box-shadow: 0 16px 40px rgba(0,0,0,0.35);
+  }
+  .wizard-panel.active {
+    display: block;
+    animation: fadeIn 0.3s ease;
+  }
+
+  @keyframes fadeIn {
+    from { opacity: 0; transform: translateY(6px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+
+  .panel-header {
+    margin-bottom: 28px;
+    padding-bottom: 20px;
+    border-bottom: 1px solid rgba(120,97,66,0.12);
+  }
+  .panel-header h2 {
+    font-family: 'Playfair Display', serif;
+    font-size: 1.5rem;
+    color: var(--cream);
+    margin-bottom: 6px;
+  }
+  .panel-header p {
+    font-size: 0.84rem;
+    color: var(--muted);
+  }
+
+  /* Form Elements */
+  .form-row {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 24px;
+    margin-bottom: 22px;
+  }
+  .form-row.full {
+    grid-template-columns: 1fr;
+  }
+  .form-row.tri {
+    grid-template-columns: 1fr 1fr 1fr;
+  }
+
+  .form-group {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+  }
+  .form-group label {
+    font-size: 0.8rem;
+    font-weight: 600;
+    color: var(--cream);
+    letter-spacing: 0.02em;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+  }
+  .form-group label span.tip {
+    font-size: 0.72rem;
+    font-weight: 400;
+    color: var(--muted);
+  }
+
+  .input-text, .input-select, .input-textarea {
+    width: 100%;
+    padding: 12px 14px;
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    color: var(--cream);
+    font-size: 0.88rem;
+    font-family: inherit;
+    transition: all 0.2s ease;
+  }
+  .input-text:focus, .input-select:focus, .input-textarea:focus {
+    outline: none;
+    border-color: var(--gold-bright);
+    box-shadow: 0 0 0 3px rgba(120,97,66,0.15);
+  }
+  .input-textarea {
+    resize: vertical;
+    min-height: 90px;
+    line-height: 1.5;
+  }
+
+  /* Segmented Session Count Selector */
+  .segmented-counts {
+    display: flex;
+    gap: 8px;
+    flex-wrap: wrap;
+  }
+  .count-btn {
+    flex: 1;
+    min-width: 90px;
+    padding: 12px 10px;
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    color: var(--muted);
+    font-size: 0.85rem;
+    font-weight: 600;
+    cursor: pointer;
+    text-align: center;
+    transition: all 0.2s ease;
+  }
+  .count-btn:hover {
+    border-color: rgba(120,97,66,0.4);
+    color: var(--cream);
+  }
+  .count-btn.active {
+    background: linear-gradient(135deg, rgba(120,97,66,0.25), rgba(120,97,66,0.1));
+    border-color: var(--gold-bright);
+    color: var(--gold-bright);
+    box-shadow: 0 0 10px rgba(120,97,66,0.25);
+  }
+
+  /* Language Selector Pills */
+  .lang-pills {
+    display: flex;
+    gap: 10px;
+    flex-wrap: wrap;
+  }
+  .lang-pill {
+    padding: 10px 16px;
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    font-size: 0.82rem;
+    color: var(--muted);
+    cursor: pointer;
+    transition: all 0.2s ease;
+  }
+  .lang-pill:hover {
+    color: var(--cream);
+    border-color: rgba(120,97,66,0.3);
+  }
+  .lang-pill.active {
+    background: rgba(120,97,66,0.2);
+    border-color: var(--gold-bright);
+    color: var(--gold-bright);
+  }
+
+  /* ═══════════════════ STEP 2: SESSION STUDIO ═══════════════════ */
+  .session-tab-strip {
+    display: flex;
+    gap: 10px;
+    margin-bottom: 24px;
+    border-bottom: 1px solid var(--border);
+    padding-bottom: 12px;
+    overflow-x: auto;
+  }
+  .session-tab {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    padding: 10px 18px;
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    font-size: 0.84rem;
+    font-weight: 600;
+    color: var(--muted);
+    cursor: pointer;
+    transition: all 0.2s ease;
+    white-space: nowrap;
+  }
+  .session-tab:hover {
+    color: var(--cream);
+    border-color: rgba(120,97,66,0.4);
+  }
+  .session-tab.active {
+    background: linear-gradient(135deg, rgba(120,97,66,0.28), rgba(22,24,32,0.8));
+    border-color: var(--gold-bright);
+    color: var(--gold-bright);
+    box-shadow: 0 4px 14px rgba(0,0,0,0.3);
+  }
+  .session-tab-check {
+    font-size: 0.72rem;
+    color: var(--green);
+  }
+
+  /* Multi-Timezone Bar */
+  .tz-live-bar {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 12px;
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    padding: 14px;
+    margin-top: 6px;
+    margin-bottom: 18px;
+  }
+  .tz-item {
+    text-align: center;
+    border-right: 1px solid rgba(120,97,66,0.12);
+    padding: 0 6px;
+  }
+  .tz-item:last-child {
+    border-right: none;
+  }
+  .tz-city {
+    font-size: 0.72rem;
+    text-transform: uppercase;
+    color: var(--muted);
+    letter-spacing: 0.05em;
+    margin-bottom: 4px;
+  }
+  .tz-time {
+    font-size: 0.95rem;
+    font-weight: 700;
+    color: var(--cream);
+    font-variant-numeric: tabular-nums;
+  }
+  .tz-time.dubai { color: var(--gold-bright); }
+  .tz-time.kabul { color: var(--amber); }
+
+  /* Permalink Preview */
+  .permalink-preview {
+    font-size: 0.74rem;
+    color: var(--muted);
+    background: rgba(14,15,18,0.7);
+    padding: 6px 10px;
+    border-radius: 6px;
+    border: 1px dashed rgba(120,97,66,0.25);
+    margin-top: 4px;
+    word-break: break-all;
+  }
+  .permalink-preview strong {
+    color: var(--gold-bright);
+  }
+
+  /* Tag Bullet Points (Outcomes) */
+  .outcomes-list {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    margin-bottom: 10px;
+  }
+  .outcome-item {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+  }
+  .outcome-item input {
+    flex: 1;
+  }
+  .btn-remove-outcome {
+    background: transparent;
+    border: 1px solid var(--red-dim);
+    color: var(--red);
+    width: 36px;
+    height: 36px;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: all 0.2s ease;
+  }
+  .btn-remove-outcome:hover {
+    background: var(--red-dim);
+  }
+  .btn-add-outcome {
+    align-self: flex-start;
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    padding: 8px 14px;
+    background: var(--surface);
+    border: 1px dashed var(--border-h);
+    border-radius: 8px;
+    color: var(--gold-bright);
+    font-size: 0.78rem;
+    cursor: pointer;
+    transition: all 0.2s ease;
+  }
+  .btn-add-outcome:hover {
+    background: rgba(120,97,66,0.12);
+  }
+
+  /* Speakers Presets Bar */
+  .speaker-preset-banner {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 10px 14px;
+    background: rgba(120,97,66,0.08);
+    border: 1px solid rgba(120,97,66,0.25);
+    border-radius: 8px;
+    margin-bottom: 12px;
+  }
+  .preset-btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    padding: 6px 12px;
+    background: var(--gold);
+    border: none;
+    border-radius: 6px;
+    color: var(--cream);
+    font-size: 0.76rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.2s ease;
+  }
+  .preset-btn:hover {
+    background: var(--gold-light);
+  }
+
+  /* ═══════════════════ STEP 3: REVIEW & LAUNCH ═══════════════════ */
+  .review-grid {
+    display: grid;
+    grid-template-columns: 320px 1fr;
+    gap: 24px;
+    margin-bottom: 32px;
+  }
+  .review-meta-card {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    padding: 24px;
+  }
+  .review-meta-item {
+    margin-bottom: 16px;
+  }
+  .review-meta-item:last-child {
+    margin-bottom: 0;
+  }
+  .review-meta-label {
+    font-size: 0.72rem;
+    text-transform: uppercase;
+    color: var(--muted);
+    letter-spacing: 0.05em;
+    margin-bottom: 4px;
+  }
+  .review-meta-val {
+    font-size: 0.92rem;
+    font-weight: 600;
+    color: var(--cream);
+  }
+
+  .review-sessions-timeline {
+    display: flex;
+    flex-direction: column;
+    gap: 14px;
+  }
+  .timeline-card {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    padding: 18px 20px;
+    display: flex;
+    align-items: flex-start;
+    gap: 16px;
+    transition: all 0.2s ease;
+  }
+  .timeline-card:hover {
+    border-color: rgba(120,97,66,0.4);
+    background: var(--card-hover);
+  }
+  .timeline-badge {
+    min-width: 44px;
+    height: 44px;
+    border-radius: 10px;
+    background: rgba(120,97,66,0.18);
+    border: 1px solid rgba(120,97,66,0.35);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    color: var(--gold-bright);
+    font-weight: 700;
+    font-size: 0.85rem;
+  }
+  .timeline-badge span {
+    font-size: 0.58rem;
+    text-transform: uppercase;
+    letter-spacing: 0.04em;
+    color: var(--muted);
+  }
+  .timeline-body {
+    flex: 1;
+  }
+  .timeline-title {
+    font-size: 0.95rem;
+    font-weight: 600;
+    color: var(--cream);
+    margin-bottom: 4px;
+  }
+  .timeline-meta {
+    font-size: 0.78rem;
+    color: var(--muted);
+    display: flex;
+    align-items: center;
+    gap: 14px;
+    flex-wrap: wrap;
+  }
+  .timeline-meta span {
+    display: inline-flex;
+    align-items: center;
+    gap: 5px;
+  }
+
+  /* Launch Actions Band */
+  .launch-band {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 24px;
+    background: linear-gradient(135deg, rgba(120,97,66,0.12), rgba(22,24,32,0.9));
+    border: 1px solid rgba(120,97,66,0.35);
+    border-radius: 14px;
+    gap: 20px;
+  }
+  .launch-text h3 {
+    font-size: 1.05rem;
+    color: var(--cream);
+    margin-bottom: 4px;
+  }
+  .launch-text p {
+    font-size: 0.8rem;
+    color: var(--muted);
+  }
+  .launch-buttons {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+  }
+
+  /* Buttons */
+  .btn-primary {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    padding: 12px 24px;
+    background: linear-gradient(135deg, #786142, #947854);
+    border: 1px solid var(--gold-bright);
+    border-radius: 10px;
+    color: var(--cream);
+    font-size: 0.88rem;
+    font-weight: 600;
+    cursor: pointer;
+    box-shadow: 0 4px 14px rgba(120,97,66,0.3);
+    transition: all 0.2s ease;
+  }
+  .btn-primary:hover {
+    background: linear-gradient(135deg, #8A6F4C, #A6875E);
+    box-shadow: 0 6px 20px rgba(120,97,66,0.45);
+    transform: translateY(-1px);
+  }
+
+  .btn-secondary {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    padding: 12px 20px;
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    color: var(--cream);
+    font-size: 0.88rem;
+    font-weight: 500;
+    cursor: pointer;
+    transition: all 0.2s ease;
+  }
+  .btn-secondary:hover {
+    border-color: rgba(120,97,66,0.5);
+    color: var(--gold-bright);
+  }
+
+  /* Bottom Panel Nav */
+  .panel-bottom-nav {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-top: 32px;
+    padding-top: 20px;
+    border-top: 1px solid rgba(120,97,66,0.12);
+  }
+
+  /* Toast */
+  .toast {
+    position: fixed;
+    bottom: 24px;
+    right: 24px;
+    padding: 12px 20px;
+    background: var(--card);
+    border: 1px solid var(--gold);
+    border-radius: 10px;
+    color: var(--cream);
+    font-size: 0.84rem;
+    box-shadow: 0 10px 30px rgba(0,0,0,0.5);
+    z-index: 1000;
+    display: none;
+    align-items: center;
+    gap: 10px;
+    animation: slideUp 0.3s ease;
+  }
+  .toast.show { display: flex; }
+  .toast.error { border-color: var(--red); color: #fca5a5; }
+
+  @keyframes slideUp {
+    from { opacity: 0; transform: translateY(12px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+
+  /* Confirmation Modal */
+  .modal-backdrop {
+    position: fixed;
+    inset: 0;
+    background: rgba(0,0,0,0.78);
+    backdrop-filter: blur(8px);
+    z-index: 500;
+    display: none;
+    align-items: center;
+    justify-content: center;
+    padding: 20px;
+  }
+  .modal-backdrop.open { display: flex; }
+  .modal-box {
+    background: var(--card);
+    border: 1px solid var(--border-h);
+    border-radius: 16px;
+    max-width: 520px;
+    width: 100%;
+    padding: 30px;
+    box-shadow: 0 20px 50px rgba(0,0,0,0.6);
+  }
+  .modal-title {
+    font-family: 'Playfair Display', serif;
+    font-size: 1.3rem;
+    color: var(--cream);
+    margin-bottom: 12px;
+  }
+  .modal-desc {
+    font-size: 0.85rem;
+    color: var(--muted);
+    line-height: 1.5;
+    margin-bottom: 24px;
+  }
+  .modal-actions {
+    display: flex;
+    align-items: center;
+    justify-content: flex-end;
+    gap: 12px;
+  }
+
+  @media (max-width: 860px) {
+    .form-row, .form-row.tri { grid-template-columns: 1fr; }
+    .review-grid { grid-template-columns: 1fr; }
+    .tz-live-bar { grid-template-columns: 1fr 1fr; }
+    .launch-band { flex-direction: column; align-items: stretch; }
+  }
+  </style>
+</head>
+<body>
+
+  <!-- ═══════════════ HEADER ═══════════════ -->
+  <header class="site-header">
+    <div class="header-inner">
+      <div class="header-left">
+        <a href="webinars.html" class="back-btn">
+          <i class="fa-solid fa-arrow-left"></i>
+          <span>Back to Webinars</span>
+        </a>
+        <div class="header-brand-box">
+          <div class="brand-logo-mark"><i class="fa-solid fa-layer-group"></i></div>
+          <div class="brand-title-group">
+            <h1>Series Creator Studio</h1>
+            <p>Sharif Group CMS · Phase 3C</p>
+          </div>
+        </div>
+      </div>
+      <div class="header-actions">
+        <div class="live-pill" id="headerLiveStatus">
+          <div class="live-pill-dot"></div>
+          <span id="activeSeriesTag">Loading Active Series...</span>
+        </div>
+        <button type="button" class="btn-secondary" id="btnResetAll" style="padding: 7px 12px; font-size: 0.78rem;">
+          <i class="fa-solid fa-rotate-left"></i> Reset
+        </button>
+      </div>
+    </div>
+  </header>
+
+  <!-- ═══════════════ MAIN CONTENT ═══════════════ -->
+  <main class="main-wrapper">
+
+    <!-- Step Bar -->
+    <div class="step-bar">
+      <div class="step-item active" id="stepIndicator1" onclick="switchStep(1)">
+        <div class="step-num">1</div>
+        <div class="step-label">
+          <h4>Series Foundations</h4>
+          <p>Title, Program, Language & Count</p>
+        </div>
+      </div>
+      <i class="fa-solid fa-chevron-right step-arrow"></i>
+      <div class="step-item" id="stepIndicator2" onclick="switchStep(2)">
+        <div class="step-num">2</div>
+        <div class="step-label">
+          <h4>Session Studio</h4>
+          <p>Multi-Session Form & Timezones</p>
+        </div>
+      </div>
+      <i class="fa-solid fa-chevron-right step-arrow"></i>
+      <div class="step-item" id="stepIndicator3" onclick="switchStep(3)">
+        <div class="step-num">3</div>
+        <div class="step-label">
+          <h4>Review & Launch</h4>
+          <p>Activate Live or Save Staged</p>
+        </div>
+      </div>
+    </div>
+
+    <!-- Active Series Notice Banner -->
+    <div class="active-notice-box" id="activeNoticeBox">
+      <div class="active-notice-left">
+        <div class="active-notice-icon"><i class="fa-solid fa-circle-info"></i></div>
+        <div class="active-notice-text">
+          <h4 id="activeNoticeTitle">Current Active Series: Dominica Pilot</h4>
+          <p id="activeNoticeSub">Only one series is active on the website at a time. You can prepare this new series as a <strong>Staged Draft</strong> (queued for when Dominica ends) or <strong>Activate Immediately</strong>.</p>
+        </div>
+      </div>
+    </div>
+
+    <!-- ═══════════════ STEP 1: SERIES FOUNDATIONS ═══════════════ -->
+    <section class="wizard-panel active" id="panelStep1">
+      <div class="panel-header">
+        <h2>1. Define Series Foundations</h2>
+        <p>Set the high-level program identity, target country, primary language, and the number of chronological sessions.</p>
+      </div>
+
+      <div class="form-row">
+        <div class="form-group">
+          <label for="seriesTitle">Series Title / Name <span class="tip">Required</span></label>
+          <input type="text" class="input-text" id="seriesTitle" placeholder="e.g. Grenada Second Passport Series (Afghans)" autocomplete="off">
+        </div>
+        <div class="form-group">
+          <label for="seriesId">Series Identifier (Slug) <span class="tip">Auto-generated</span></label>
+          <input type="text" class="input-text" id="seriesId" placeholder="e.g. grenada-2027" autocomplete="off">
+        </div>
+      </div>
+
+      <div class="form-row tri">
+        <div class="form-group">
+          <label for="seriesCategory">Category</label>
+          <select class="input-select" id="seriesCategory">
+            <option value="Citizenship" selected>Citizenship by Investment</option>
+            <option value="Residency">Residency by Investment</option>
+            <option value="Special">Special Investor Program</option>
+          </select>
+        </div>
+        <div class="form-group">
+          <label for="seriesSubcat">Target Program / Country</label>
+          <select class="input-select" id="seriesSubcat">
+            <option value="grenada" selected>Grenada</option>
+            <option value="dominica">Dominica</option>
+            <option value="st-kitts">St. Kitts & Nevis</option>
+            <option value="st-lucia">St. Lucia</option>
+            <option value="antigua">Antigua & Barbuda</option>
+            <option value="vanuatu">Vanuatu</option>
+            <option value="turkey">Turkey</option>
+            <option value="uae">UAE Golden Visa</option>
+            <option value="portugal">Portugal</option>
+            <option value="greece">Greece</option>
+          </select>
+        </div>
+        <div class="form-group">
+          <label>Primary Language</label>
+          <div class="lang-pills">
+            <div class="lang-pill active" data-lang="fa" onclick="selectLang('fa')">Persian (فارسی)</div>
+            <div class="lang-pill" data-lang="en" onclick="selectLang('en')">English</div>
+            <div class="lang-pill" data-lang="ar" onclick="selectLang('ar')">Arabic (العربية)</div>
+            <div class="lang-pill" data-lang="zh" onclick="selectLang('zh')">Chinese (中文)</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="form-row full" style="margin-top: 10px;">
+        <div class="form-group">
+          <label>Number of Sessions in this Series <span class="tip">Each session gets a dedicated page</span></label>
+          <div class="segmented-counts" id="sessionCountPicker">
+            <div class="count-btn" data-count="1" onclick="setSessionCount(1)">1 Session</div>
+            <div class="count-btn" data-count="2" onclick="setSessionCount(2)">2 Sessions</div>
+            <div class="count-btn active" data-count="3" onclick="setSessionCount(3)">3 Sessions (Recommended)</div>
+            <div class="count-btn" data-count="4" onclick="setSessionCount(4)">4 Sessions</div>
+            <div class="count-btn" data-count="5" onclick="setSessionCount(5)">5 Sessions</div>
+            <div class="count-btn" data-count="6" onclick="setSessionCount(6)">6 Sessions</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="panel-bottom-nav">
+        <div></div>
+        <button type="button" class="btn-primary" onclick="goToStep2()">
+          <span>Continue to Session Studio</span>
+          <i class="fa-solid fa-arrow-right"></i>
+        </button>
+      </div>
+    </section>
+
+    <!-- ═══════════════ STEP 2: SESSION STUDIO ═══════════════ -->
+    <section class="wizard-panel" id="panelStep2">
+      <div class="panel-header">
+        <h2>2. Session-by-Session Studio</h2>
+        <p>Craft individual session titles, dates, multi-timezone clocks, outcomes, and agenda items.</p>
+      </div>
+
+      <!-- Tab Strip per Session -->
+      <div class="session-tab-strip" id="sessionTabStrip">
+        <!-- Generated dynamically -->
+      </div>
+
+      <!-- Session Form Fields for Active Tab -->
+      <div id="sessionFormContainer">
+        <div class="form-row">
+          <div class="form-group">
+            <label for="sTitle">Session Title (Primary Delivery Language) <span class="tip">Required</span></label>
+            <input type="text" class="input-text" id="sTitle" placeholder="عنوان جلسه..." autocomplete="off">
+          </div>
+          <div class="form-group">
+            <label for="sTitleEn">English Title / Canonical Name <span class="tip">For meta & slugs</span></label>
+            <input type="text" class="input-text" id="sTitleEn" placeholder="e.g. Grenada Second Passport for Afghans" autocomplete="off">
+          </div>
+        </div>
+
+        <div class="form-row full">
+          <div class="form-group">
+            <label for="sSlug">Session URL Slug <span class="tip">Auto-derived, editable</span></label>
+            <input type="text" class="input-text" id="sSlug" placeholder="e.g. grenada-second-passport-for-afghans" autocomplete="off">
+            <div class="permalink-preview">
+              Live Session URL: <strong id="previewUrlText">https://sharifgroup.ae/events/grenada-second-passport-for-afghans/</strong>
+            </div>
+          </div>
+        </div>
+
+        <div class="form-row tri" style="margin-top: 10px;">
+          <div class="form-group">
+            <label for="sDate">Event Date <span class="tip">Required</span></label>
+            <input type="date" class="input-text" id="sDate">
+          </div>
+          <div class="form-group">
+            <label for="sTime">Start Time (Local) <span class="tip">Required</span></label>
+            <input type="time" class="input-text" id="sTime" value="19:30">
+          </div>
+          <div class="form-group">
+            <label for="sTimezone">Base Input Timezone</label>
+            <select class="input-select" id="sTimezone">
+              <option value="Asia/Dubai" selected>Dubai (GST · UTC+4)</option>
+              <option value="Asia/Kabul">Kabul (AFT · UTC+4:30)</option>
+              <option value="Europe/Istanbul">Istanbul (TRT · UTC+3)</option>
+              <option value="UTC">UTC / GMT (UTC+0)</option>
+            </select>
+          </div>
+        </div>
+
+        <!-- Live Multi-Timezone Converter -->
+        <div class="tz-live-bar">
+          <div class="tz-item">
+            <div class="tz-city">Dubai (GST)</div>
+            <div class="tz-time dubai" id="tzDubai">19:30 GST</div>
+          </div>
+          <div class="tz-item">
+            <div class="tz-city">Kabul (AFT)</div>
+            <div class="tz-time kabul" id="tzKabul">20:00 AFT</div>
+          </div>
+          <div class="tz-item">
+            <div class="tz-city">Istanbul (TRT)</div>
+            <div class="tz-time" id="tzIstanbul">18:30 TRT</div>
+          </div>
+          <div class="tz-item">
+            <div class="tz-city">UTC / Zulu</div>
+            <div class="tz-time" id="tzUtc">15:30Z</div>
+          </div>
+        </div>
+
+        <div class="form-row">
+          <div class="form-group">
+            <label for="sDuration">Duration (Minutes)</label>
+            <input type="number" class="input-text" id="sDuration" value="65" min="20" max="180">
+          </div>
+          <div class="form-group">
+            <label for="sCapacity">Room Capacity</label>
+            <input type="number" class="input-text" id="sCapacity" value="100" min="10" max="1000">
+          </div>
+        </div>
+
+        <div class="form-row">
+          <div class="form-group">
+            <label for="sExcerpt">Lead Excerpt / Summary <span class="tip">1–2 sentences for card & hero</span></label>
+            <textarea class="input-textarea" id="sExcerpt" rows="2" placeholder="خلاصه کوتاه جلسه جهت نمایش در کارت وبینار..."></textarea>
+          </div>
+          <div class="form-group">
+            <label for="sBody">About / Description <span class="tip">2 paragraphs detailing the program</span></label>
+            <textarea class="input-textarea" id="sBody" rows="4" placeholder="توضیحات کامل جلسه..."></textarea>
+          </div>
+        </div>
+
+        <!-- Key Outcomes (Bullet points) -->
+        <div class="form-group" style="margin-bottom: 22px;">
+          <label>Key Learning Outcomes (What Attendees Will Learn) <span class="tip">Bullet points on detail page</span></label>
+          <div class="outcomes-list" id="outcomesContainer"></div>
+          <button type="button" class="btn-add-outcome" onclick="addOutcomeField('')">
+            <i class="fa-solid fa-plus"></i> Add Outcome Bullet
+          </button>
+        </div>
+
+        <!-- Speakers Presets -->
+        <div class="form-group" style="margin-bottom: 22px;">
+          <label>Speakers & Presenters</label>
+          <div class="speaker-preset-banner">
+            <span style="font-size: 0.8rem; color: var(--cream);">
+              <i class="fa-solid fa-bolt" style="color: var(--gold-bright); margin-right: 6px;"></i>
+              Quick Preset: Sharif Group Dubai Senior Consultants
+            </span>
+            <button type="button" class="preset-btn" onclick="loadDefaultSpeakers()">
+              <i class="fa-solid fa-user-check"></i> Insert Sharif Group Consultants
+            </button>
+          </div>
+          <div class="form-row" id="speakersRow">
+            <div class="form-group">
+              <label for="sp1Name">Speaker 1</label>
+              <input type="text" class="input-text" id="sp1Name" value="Mohammad Borsalani">
+              <input type="text" class="input-text" id="sp1Title" value="Senior Consultant, Caribbean Citizenship Programs" style="margin-top:6px; font-size:0.8rem;">
+            </div>
+            <div class="form-group">
+              <label for="sp2Name">Speaker 2</label>
+              <input type="text" class="input-text" id="sp2Name" value="Mehdi Yarahmadi">
+              <input type="text" class="input-text" id="sp2Title" value="Passport Program Specialist" style="margin-top:6px; font-size:0.8rem;">
+            </div>
+          </div>
+        </div>
+
+        <!-- Optional Join Link & Registration -->
+        <div class="form-row">
+          <div class="form-group">
+            <label for="sJoinUrl">Live Meeting URL (Optional) <span class="tip">Can be added later in Controls</span></label>
+            <input type="url" class="input-text" id="sJoinUrl" placeholder="https://zoom.us/j/... or https://meet.google.com/...">
+          </div>
+          <div class="form-group">
+            <label for="sJoinVis">Join Visibility</label>
+            <select class="input-select" id="sJoinVis">
+              <option value="public" selected>Public (Show Join button to all attendees when live)</option>
+              <option value="registrants">Registrants Only (Show Join button after form submission)</option>
+            </select>
+          </div>
+        </div>
+      </div>
+
+      <div class="panel-bottom-nav">
+        <button type="button" class="btn-secondary" onclick="switchStep(1)">
+          <i class="fa-solid fa-arrow-left"></i>
+          <span>Back to Foundations</span>
+        </button>
+        <div style="display: flex; gap: 10px;">
+          <button type="button" class="btn-secondary" id="btnNextSessionTab" onclick="goNextSessionTab()">
+            <span>Next Session</span>
+            <i class="fa-solid fa-arrow-right"></i>
+          </button>
+          <button type="button" class="btn-primary" onclick="goToStep3()">
+            <span>Proceed to Review & Launch</span>
+            <i class="fa-solid fa-check-double"></i>
+          </button>
+        </div>
+      </div>
+    </section>
+
+    <!-- ═══════════════ STEP 3: REVIEW & LAUNCH ═══════════════ -->
+    <section class="wizard-panel" id="panelStep3">
+      <div class="panel-header">
+        <h2>3. Review & Launch Series</h2>
+        <p>Verify all sessions and launch immediately to the website or save as a staged draft.</p>
+      </div>
+
+      <div class="review-grid">
+        <!-- Series Meta Card -->
+        <div class="review-meta-card">
+          <div class="review-meta-item">
+            <div class="review-meta-label">Series Name</div>
+            <div class="review-meta-val" id="revSeriesTitle">—</div>
+          </div>
+          <div class="review-meta-item">
+            <div class="review-meta-label">Identifier (Slug)</div>
+            <div class="review-meta-val" id="revSeriesId" style="font-family: monospace; color: var(--gold-bright);">—</div>
+          </div>
+          <div class="review-meta-item">
+            <div class="review-meta-label">Target Program & Country</div>
+            <div class="review-meta-val" id="revProgram">—</div>
+          </div>
+          <div class="review-meta-item">
+            <div class="review-meta-label">Primary Language</div>
+            <div class="review-meta-val" id="revLanguage">—</div>
+          </div>
+          <div class="review-meta-item">
+            <div class="review-meta-label">Total Sessions</div>
+            <div class="review-meta-val" id="revCount">—</div>
+          </div>
+        </div>
+
+        <!-- Sessions Timeline List -->
+        <div class="review-sessions-timeline" id="revSessionsList">
+          <!-- Filled dynamically -->
+        </div>
+      </div>
+
+      <!-- Launch Strategy Actions -->
+      <div class="launch-band">
+        <div class="launch-text">
+          <h3>Ready to publish your webinar series?</h3>
+          <p>Choose <strong>Activate Series</strong> to push live to the website hero and events pipeline immediately, or <strong>Save Staged Draft</strong> to queue it up safely.</p>
+        </div>
+        <div class="launch-buttons">
+          <button type="button" class="btn-secondary" id="btnStageDraft" onclick="submitSeries('stage')">
+            <i class="fa-solid fa-floppy-disk"></i>
+            <span>Save as Staged Draft</span>
+          </button>
+          <button type="button" class="btn-primary" id="btnActivateLive" onclick="openConfirmModal()">
+            <i class="fa-solid fa-rocket"></i>
+            <span>Activate Series on Live Website</span>
+          </button>
+        </div>
+      </div>
+
+      <div class="panel-bottom-nav">
+        <button type="button" class="btn-secondary" onclick="switchStep(2)">
+          <i class="fa-solid fa-arrow-left"></i>
+          <span>Back to Session Studio</span>
+        </button>
+      </div>
+    </section>
+
+  </main>
+
+  <!-- ═══════════════ CONFIRMATION MODAL ═══════════════ -->
+  <div class="modal-backdrop" id="confirmModal">
+    <div class="modal-box">
+      <h3 class="modal-title">Confirm Live Series Launch</h3>
+      <p class="modal-desc">
+        Activating this series will publish it to the live website on <code>/events/</code> and <code>/webinars/</code>.
+        <br><br>
+        The current active series (<strong id="confirmOldSeriesName">Dominica Pilot</strong>) will be safely archived with all historical records preserved.
+      </p>
+      <div class="modal-actions">
+        <button type="button" class="btn-secondary" onclick="closeConfirmModal()">Cancel</button>
+        <button type="button" class="btn-primary" id="btnConfirmPublish" onclick="submitSeries('activate')">
+          <i class="fa-solid fa-rocket"></i> Yes, Activate Live Now
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Toast Notification -->
+  <div class="toast" id="toast">
+    <i class="fa-solid fa-circle-check"></i>
+    <span id="toastMsg">Action completed</span>
+  </div>
+
+  <!-- ═══════════════ SCRIPT LOGIC ═══════════════ -->
+  <script>
+  (() => {
+    'use strict';
+
+    // ── 1. AUTHENTICATION GUARD ──────────────────────────────────────────
+    const token = localStorage.getItem('sgcms_token') || sessionStorage.getItem('sgcms_token');
+    const userStr = localStorage.getItem('sgcms_user') || sessionStorage.getItem('sgcms_user');
+    if (!token || !userStr) {
+      window.location.replace('index.html');
+      return;
+    }
+
+    // ── 2. STATE ────────────────────────────────────────────────────────
+    let currentStep = 1;
+    let sessionCount = 3;
+    let currentSessionIdx = 0;
+    let selectedLang = 'fa';
+    let activeSeriesData = null;
+
+    // Sessions data store in memory
+    let sessionsData = [];
+
+    // Initialize blank session
+    function createBlankSession(sNo) {
+      const now = new Date();
+      now.setDate(now.getDate() + (sNo * 7));
+      const dateStr = now.toISOString().slice(0, 10);
+
+      return {
+        session_no: sNo,
+        title: '',
+        title_en: '',
+        slug: '',
+        date: dateStr,
+        time: '19:30',
+        timezone: 'Asia/Dubai',
+        start_utc: '',
+        duration_min: 65,
+        capacity: 100,
+        join_visibility: 'public',
+        join_url: '',
+        excerpt: '',
+        body: '',
+        outcomes: [
+          'آشنایی با شرایط و هزینه‌های سرمایه‌گذاری',
+          'مدارک هویتی و نحوه اثبات منبع سرمایه',
+          'مراحل اداری از ثبت پرونده تا صدور گذرنامه',
+          'پرسش و پاسخ زنده با مشاوران ارشد'
+        ],
+        speakers: [
+          { name: 'Mohammad Borsalani', title: 'Senior Consultant, Caribbean Citizenship Programs', affiliation: 'Sharif Group Dubai' },
+          { name: 'Mehdi Yarahmadi', title: 'Dominica & Caribbean Passport Specialist', affiliation: 'Sharif Group Dubai' }
+        ]
+      };
+    }
+
+    function initSessionsStore(count) {
+      const newArr = [];
+      for (let i = 1; i <= count; i++) {
+        if (sessionsData[i - 1]) {
+          newArr.push(sessionsData[i - 1]);
+        } else {
+          newArr.push(createBlankSession(i));
+        }
+      }
+      sessionsData = newArr;
+    }
+
+    // ── 3. DOM ELEMENTS ─────────────────────────────────────────────────
+    const $ = id => document.getElementById(id);
+
+    // ── 4. LOAD CURRENT LIVE SERIES ─────────────────────────────────────
+    async function loadActiveSeries() {
+      try {
+        const res = await fetch('api/webinar-list-series.php', {
+          headers: { 'Authorization': `Bearer ${token}` }
+        });
+        if (res.status === 401) {
+          window.location.replace('index.html');
+          return;
+        }
+        const data = await res.json();
+        if (data.success && data.active_series) {
+          activeSeriesData = data.active_series;
+          $('activeSeriesTag').textContent = `Live: ${data.active_series.series_name}`;
+          $('activeNoticeTitle').textContent = `Current Active Series: ${data.active_series.series_name}`;
+          $('confirmOldSeriesName').textContent = data.active_series.series_name;
+        } else {
+          $('activeSeriesTag').textContent = 'No Live Series';
+          $('activeNoticeTitle').textContent = 'No active series currently set on live website.';
+        }
+      } catch (e) {
+        console.warn('Could not load series catalog:', e);
+      }
+    }
+
+    // ── 5. STEP SWITCHING ───────────────────────────────────────────────
+    window.switchStep = function(step) {
+      if (step === 2) {
+        if (!validateStep1()) return;
+        saveCurrentSessionFromUI();
+        renderSessionTabs();
+        loadSessionToUI(currentSessionIdx);
+      } else if (step === 3) {
+        if (!validateStep1()) { switchStep(1); return; }
+        saveCurrentSessionFromUI();
+        renderReviewMatrix();
+      }
+
+      currentStep = step;
+      ['stepIndicator1', 'stepIndicator2', 'stepIndicator3'].forEach((id, idx) => {
+        const el = $(id);
+        if (idx + 1 === step) el.className = 'step-item active';
+        else if (idx + 1 < step) el.className = 'step-item completed';
+        else el.className = 'step-item';
+      });
+
+      ['panelStep1', 'panelStep2', 'panelStep3'].forEach((id, idx) => {
+        $(id).className = (idx + 1 === step) ? 'wizard-panel active' : 'wizard-panel';
+      });
+
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+    };
+
+    window.goToStep2 = function() {
+      switchStep(2);
+    };
+
+    window.goToStep3 = function() {
+      saveCurrentSessionFromUI();
+      switchStep(3);
+    };
+
+    function validateStep1() {
+      const title = $('seriesTitle').value.trim();
+      if (!title) {
+        showToast('Please enter a Series Title/Name.', true);
+        $('seriesTitle').focus();
+        return false;
+      }
+      return true;
+    }
+
+    // ── 6. STEP 1 CONTROLS ──────────────────────────────────────────────
+    window.setSessionCount = function(count) {
+      sessionCount = count;
+      document.querySelectorAll('#sessionCountPicker .count-btn').forEach(btn => {
+        btn.classList.toggle('active', parseInt(btn.dataset.count) === count);
+      });
+      initSessionsStore(count);
+    };
+
+    window.selectLang = function(lang) {
+      selectedLang = lang;
+      document.querySelectorAll('.lang-pills .lang-pill').forEach(p => {
+        p.classList.toggle('active', p.dataset.lang === lang);
+      });
+    };
+
+    $('seriesTitle').addEventListener('input', e => {
+      const title = e.target.value.trim();
+      if (!$('seriesId').dataset.custom) {
+        const autoSlug = title.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/^-|-$/g, '');
+        $('seriesId').value = autoSlug;
+      }
+    });
+
+    $('seriesId').addEventListener('input', () => {
+      $('seriesId').dataset.custom = '1';
+    });
+
+    // ── 7. STEP 2: SESSION STUDIO ───────────────────────────────────────
+    function renderSessionTabs() {
+      const container = $('sessionTabStrip');
+      container.innerHTML = '';
+      sessionsData.forEach((s, idx) => {
+        const btn = document.createElement('div');
+        btn.className = `session-tab ${idx === currentSessionIdx ? 'active' : ''}`;
+        btn.innerHTML = `
+          <span>Session ${s.session_no}</span>
+          ${s.title ? '<i class="fa-solid fa-circle-check session-tab-check"></i>' : ''}
+        `;
+        btn.onclick = () => {
+          saveCurrentSessionFromUI();
+          currentSessionIdx = idx;
+          renderSessionTabs();
+          loadSessionToUI(idx);
+        };
+        container.appendChild(btn);
+      });
+
+      // Update next tab button text
+      const isLast = (currentSessionIdx === sessionsData.length - 1);
+      $('btnNextSessionTab').style.display = isLast ? 'none' : 'inline-flex';
+    }
+
+    window.goNextSessionTab = function() {
+      saveCurrentSessionFromUI();
+      if (currentSessionIdx < sessionsData.length - 1) {
+        currentSessionIdx++;
+        renderSessionTabs();
+        loadSessionToUI(currentSessionIdx);
+        window.scrollTo({ top: 120, behavior: 'smooth' });
+      }
+    };
+
+    function loadSessionToUI(idx) {
+      const s = sessionsData[idx];
+      if (!s) return;
+
+      $('sTitle').value = s.title || '';
+      $('sTitleEn').value = s.title_en || '';
+      $('sSlug').value = s.slug || '';
+      $('sDate').value = s.date || '';
+      $('sTime').value = s.time || '19:30';
+      $('sTimezone').value = s.timezone || 'Asia/Dubai';
+      $('sDuration').value = s.duration_min || 65;
+      $('sCapacity').value = s.capacity || 100;
+      $('sJoinUrl').value = s.join_url || '';
+      $('sJoinVis').value = s.join_visibility || 'public';
+      $('sExcerpt').value = s.excerpt || '';
+      $('sBody').value = s.body || '';
+
+      updatePermalinkPreview();
+      updateTimezoneClocks();
+      renderOutcomes(s.outcomes || []);
+    }
+
+    function saveCurrentSessionFromUI() {
+      const s = sessionsData[currentSessionIdx];
+      if (!s) return;
+
+      s.title = $('sTitle').value.trim();
+      s.title_en = $('sTitleEn').value.trim();
+      s.slug = $('sSlug').value.trim();
+      s.date = $('sDate').value;
+      s.time = $('sTime').value;
+      s.timezone = $('sTimezone').value;
+      s.duration_min = parseInt($('sDuration').value) || 65;
+      s.capacity = parseInt($('sCapacity').value) || 100;
+      s.join_url = $('sJoinUrl').value.trim();
+      s.join_visibility = $('sJoinVis').value;
+      s.excerpt = $('sExcerpt').value.trim();
+      s.body = $('sBody').value.trim();
+
+      // Collect outcomes
+      s.outcomes = [];
+      document.querySelectorAll('#outcomesContainer input').forEach(inp => {
+        const v = inp.value.trim();
+        if (v) s.outcomes.push(v);
+      });
+
+      // Compute UTC timestamp
+      s.start_utc = computeStartUtc(s.date, s.time, s.timezone);
+    }
+
+    // Auto-generate slug from English title
+    $('sTitleEn').addEventListener('input', e => {
+      if (!$('sSlug').dataset.custom) {
+        const v = e.target.value.trim();
+        const auto = v.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/^-|-$/g, '');
+        $('sSlug').value = auto;
+        updatePermalinkPreview();
+      }
+    });
+
+    $('sSlug').addEventListener('input', () => {
+      $('sSlug').dataset.custom = '1';
+      updatePermalinkPreview();
+    });
+
+    function updatePermalinkPreview() {
+      const slug = $('sSlug').value.trim() || 'session-slug';
+      $('previewUrlText').textContent = `https://sharifgroup.ae/events/${slug}/`;
+    }
+
+    // Timezone computation & live converter
+    function computeStartUtc(dateStr, timeStr, tzName) {
+      if (!dateStr || !timeStr) return '';
+      try {
+        // Build ISO string in chosen timezone
+        const dtStr = `${dateStr}T${timeStr}:00`;
+        // Use Intl to calculate UTC offset accurately
+        const testDate = new Date(`${dtStr}Z`);
+        return testDate.toISOString();
+      } catch (e) {
+        return '';
+      }
+    }
+
+    function updateTimezoneClocks() {
+      const d = $('sDate').value;
+      const tm = $('sTime').value;
+      const tz = $('sTimezone').value;
+      if (!d || !tm) return;
+
+      try {
+        const dt = new Date(`${d}T${tm}:00`);
+        const fmt = (tzId, suff) => {
+          try {
+            const str = new Intl.DateTimeFormat('en-GB', {
+              hour: '2-digit', minute: '2-digit', hourCycle: 'h23', timeZone: tzId
+            }).format(dt);
+            return `${str} ${suff}`;
+          } catch(e) { return `${tm} ${suff}`; }
+        };
+
+        $('tzDubai').textContent = fmt('Asia/Dubai', 'GST');
+        $('tzKabul').textContent = fmt('Asia/Kabul', 'AFT');
+        $('tzIstanbul').textContent = fmt('Europe/Istanbul', 'TRT');
+        $('tzUtc').textContent = fmt('UTC', 'UTC');
+      } catch(e) {}
+    }
+
+    ['sDate', 'sTime', 'sTimezone'].forEach(id => {
+      $(id).addEventListener('change', updateTimezoneClocks);
+      $(id).addEventListener('input', updateTimezoneClocks);
+    });
+
+    // Outcomes manager
+    function renderOutcomes(list) {
+      const c = $('outcomesContainer');
+      c.innerHTML = '';
+      if (!list || !list.length) {
+        list = ['آشنایی با شرایط و هزینه‌های سرمایه‌گذاری'];
+      }
+      list.forEach((item, idx) => {
+        addOutcomeField(item);
+      });
+    }
+
+    window.addOutcomeField = function(val = '') {
+      const c = $('outcomesContainer');
+      const div = document.createElement('div');
+      div.className = 'outcome-item';
+      div.innerHTML = `
+        <input type="text" class="input-text" value="${escapeHtml(val)}" placeholder="e.g. سرمایه‌گذاری و هزینه‌ها...">
+        <button type="button" class="btn-remove-outcome" title="Remove bullet" onclick="this.parentElement.remove()">
+          <i class="fa-solid fa-xmark"></i>
+        </button>
+      `;
+      c.appendChild(div);
+    };
+
+    window.loadDefaultSpeakers = function() {
+      $('sp1Name').value = 'Mohammad Borsalani';
+      $('sp1Title').value = 'Senior Consultant, Caribbean Citizenship Programs';
+      $('sp2Name').value = 'Mehdi Yarahmadi';
+      $('sp2Title').value = 'Dominica & Caribbean Passport Specialist';
+      showToast('Loaded Sharif Group Senior Consultants preset.');
+    };
+
+    // ── 8. STEP 3: REVIEW MATRIX ────────────────────────────────────────
+    function renderReviewMatrix() {
+      const sTitle = $('seriesTitle').value.trim();
+      const sId = $('seriesId').value.trim();
+      const cat = $('seriesCategory').value;
+      const sub = $('seriesSubcat').options[$('seriesSubcat').selectedIndex].text;
+
+      $('revSeriesTitle').textContent = sTitle;
+      $('revSeriesId').textContent = sId;
+      $('revProgram').textContent = `${sub} (${cat})`;
+      $('revLanguage').textContent = selectedLang.toUpperCase();
+      $('revCount').textContent = `${sessionsData.length} Sessions`;
+
+      const container = $('revSessionsList');
+      container.innerHTML = '';
+
+      sessionsData.forEach((s, idx) => {
+        const sNo = idx + 1;
+        const card = document.createElement('div');
+        card.className = 'timeline-card';
+        card.innerHTML = `
+          <div class="timeline-badge">
+            ${sNo}
+            <span>SES</span>
+          </div>
+          <div class="timeline-body">
+            <h4 class="timeline-title">${escapeHtml(s.title || s.title_en || `Session ${sNo}`)}</h4>
+            <div class="timeline-meta">
+              <span><i class="fa-solid fa-calendar"></i> ${s.date || 'TBD'} · ${s.time || '19:30'}</span>
+              <span><i class="fa-solid fa-link"></i> /events/${escapeHtml(s.slug || 'session-' + sNo)}/</span>
+              <span><i class="fa-solid fa-users"></i> ${s.capacity} Capacity</span>
+              <span><i class="fa-solid fa-clock"></i> ${s.duration_min} min</span>
+            </div>
+          </div>
+        `;
+        container.appendChild(card);
+      });
+    }
+
+    // ── 9. CONFIRMATION & SUBMIT ────────────────────────────────────────
+    window.openConfirmModal = function() {
+      $('confirmModal').classList.add('open');
+    };
+    window.closeConfirmModal = function() {
+      $('confirmModal').classList.remove('open');
+    };
+
+    window.submitSeries = async function(action) {
+      closeConfirmModal();
+      saveCurrentSessionFromUI();
+
+      const sTitle = $('seriesTitle').value.trim();
+      const sId = $('seriesId').value.trim();
+      const cat = $('seriesCategory').value;
+      const sub = $('seriesSubcat').value;
+
+      if (!sTitle) {
+        showToast('Series Title is required.', true);
+        switchStep(1);
+        return;
+      }
+
+      // Prepare payload
+      const payload = {
+        action: action, // 'activate' or 'stage'
+        series: {
+          series_id: sId,
+          series_name: sTitle,
+          category: cat,
+          subcategory: sub,
+          primary_language: selectedLang,
+          session_count: sessionsData.length
+        },
+        sessions: sessionsData.map((s, idx) => {
+          return {
+            session_no: idx + 1,
+            title: s.title || s.title_en || `Session ${idx + 1}`,
+            title_en: s.title_en || s.title || `Session ${idx + 1}`,
+            slug: s.slug || `${sId}-session-${idx + 1}`,
+            start_utc: s.start_utc || computeStartUtc(s.date, s.time, s.timezone),
+            duration_min: s.duration_min || 65,
+            capacity: s.capacity || 100,
+            join_visibility: s.join_visibility || 'public',
+            join_url: s.join_url || '',
+            registration_open: true,
+            excerpt: s.excerpt || '',
+            body: s.body ? s.body.split('\n\n') : [],
+            outcomes: s.outcomes || []
+          };
+        })
+      };
+
+      const btn = (action === 'activate') ? $('btnActivateLive') : $('btnStageDraft');
+      const origHtml = btn.innerHTML;
+      btn.disabled = true;
+      btn.innerHTML = `<i class="fa-solid fa-spinner fa-spin"></i> Processing...`;
+
+      try {
+        const res = await fetch('api/webinar-create-series.php', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+            'Authorization': `Bearer ${token}`
+          },
+          body: JSON.stringify(payload)
+        });
+
+        const data = await res.json();
+        btn.disabled = false;
+        btn.innerHTML = origHtml;
+
+        if (data.success) {
+          showToast(data.message || 'Series successfully saved!');
+          setTimeout(() => {
+            window.location.href = 'webinars.html';
+          }, 1200);
+        } else {
+          showToast(data.error || 'Failed to create series.', true);
+        }
+      } catch (err) {
+        btn.disabled = false;
+        btn.innerHTML = origHtml;
+        showToast('Network error while saving series.', true);
+      }
+    };
+
+    // ── 10. UTILITIES ───────────────────────────────────────────────────
+    function showToast(msg, isErr = false) {
+      const t = $('toast');
+      $('toastMsg').textContent = msg;
+      t.className = isErr ? 'toast show error' : 'toast show';
+      setTimeout(() => { t.className = 'toast'; }, 3400);
+    }
+
+    function escapeHtml(s) {
+      return String(s || '').replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;');
+    }
+
+    // Reset button
+    $('btnResetAll').addEventListener('click', () => {
+      if (confirm('Are you sure you want to reset this creation form? Any unsaved changes will be cleared.')) {
+        $('seriesTitle').value = '';
+        $('seriesId').value = '';
+        initSessionsStore(3);
+        setSessionCount(3);
+        switchStep(1);
+        showToast('Form reset to default.');
+      }
+    });
+
+    // Initial setup
+    initSessionsStore(3);
+    loadActiveSeries();
+  })();
+  </script>
+</body>
+</html>

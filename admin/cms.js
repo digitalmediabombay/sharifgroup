@@ -1,9 +1,8 @@
 'use strict';
 
-// ─── CREDENTIALS (Demo) ───────────────────────────────────────
+// ─── CREDENTIALS CONFIGURATION ────────────────────────────────
 const CMS_CREDENTIALS = {
   email: 'admin@sharifgroup.ae',
-  password: 'SharifCMS@2026',
   name: 'Sharif Group Administrator',
   role: 'Admin'
 };
@@ -27,20 +26,41 @@ const KEYS = {
 
 // ─── AUTH ─────────────────────────────────────────────────────
 const Auth = {
-  login(email, password) {
-    const isEmail = !email || email.toLowerCase() === CMS_CREDENTIALS.email || email.includes('admin');
-    const isPwd = password === CMS_CREDENTIALS.password || password === 'admin123' || password === 'admin';
-    if (isEmail && isPwd) {
-      const authData = JSON.stringify({ email: CMS_CREDENTIALS.email, name: CMS_CREDENTIALS.name, role: CMS_CREDENTIALS.role, loginTime: new Date().toISOString() });
-      sessionStorage.setItem(KEYS.AUTH, authData);
-      localStorage.setItem(KEYS.AUTH, authData);
-      return { success: true };
+  async login(email, password) {
+    if (!email || !password) {
+      return { success: false, error: 'Email and password are required.' };
     }
-    return { success: false, error: 'Incorrect email or password.' };
+    try {
+      const res = await fetch('api/auth.php?action=login', {
+        method: 'POST',
+        credentials: 'include',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ email: email.trim().toLowerCase(), password: password.trim() })
+      });
+      const data = await res.json();
+      if (res.ok && data && data.success) {
+        const authData = JSON.stringify(data.user);
+        sessionStorage.setItem(KEYS.AUTH, authData);
+        localStorage.setItem(KEYS.AUTH, authData);
+        if (data.token) {
+          sessionStorage.setItem('sgcms_token', data.token);
+          localStorage.setItem('sgcms_token', data.token);
+        }
+        return { success: true, user: data.user, token: data.token };
+      }
+      return { success: false, error: (data && data.error) ? data.error : 'Incorrect email or password.' };
+    } catch (err) {
+      return { success: false, error: 'Authentication service temporarily unavailable.' };
+    }
   },
   logout() {
+    try {
+      fetch('api/auth.php?action=logout', { method: 'POST', credentials: 'include' }).catch(function(){});
+    } catch(e) {}
     sessionStorage.removeItem(KEYS.AUTH);
     localStorage.removeItem(KEYS.AUTH);
+    sessionStorage.removeItem('sgcms_token');
+    localStorage.removeItem('sgcms_token');
     window.location.href = 'index.html';
   },
   getSession() {
@@ -48,7 +68,10 @@ const Auth = {
       return JSON.parse(sessionStorage.getItem(KEYS.AUTH)) || JSON.parse(localStorage.getItem(KEYS.AUTH));
     } catch { return null; }
   },
-  isAuthenticated() { return !!this.getSession(); },
+  getToken() {
+    return sessionStorage.getItem('sgcms_token') || localStorage.getItem('sgcms_token') || '';
+  },
+  isAuthenticated() { return !!(this.getSession() && this.getToken()); },
   requireAuth() { if (!this.isAuthenticated()) window.location.href = 'index.html'; }
 };
 

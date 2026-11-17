@@ -545,18 +545,13 @@
         return 'en';
     }
 
-    // Preload articles dataset for active language immediately
+    // Preload articles dataset for active language only if non-English (T11)
     try {
         var initialLang = getStoredOrInitialLang();
         if (initialLang && initialLang !== 'en') {
             loadArticlesDataset(initialLang);
         }
-        // Also queue preloading for remaining languages in background
-        setTimeout(function() {
-            ['ar', 'zh', 'fa'].forEach(function(l) {
-                if (l !== initialLang) loadArticlesDataset(l);
-            });
-        }, 150);
+        // T11: Unrelated language prefetch removed to conserve mobile bandwidth and avoid 3MB payload
     } catch(e) {}
 
     // Listen to language changes

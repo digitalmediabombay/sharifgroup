@@ -38,6 +38,7 @@ def create_events_zip():
 
         # CMS & Data backend
         'data/sgcms_webinars.json',
+        'assets/data/published_content.json',
         'admin/api/published_content.json',
         'admin/api/draft_content.json',
         'admin/api/webinars-regen.php',

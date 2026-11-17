@@ -11,6 +11,7 @@ if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
 }
 
 startSecureSession();
+$adminUser = requireAdminAuth();
 $action = isset($_GET['action']) ? trim($_GET['action']) : 'translate';
 $body = getJsonBody();
 

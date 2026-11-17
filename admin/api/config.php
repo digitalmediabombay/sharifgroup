@@ -14,10 +14,10 @@ if (basename($_SERVER['PHP_SELF']) === 'config.php') {
 }
 
 // ── Database Credentials ──────────────────────────────────────────
-define('DB_HOST', 'localhost');
-define('DB_NAME', 'cpaneluser_sharif_cms');     // Database Name created in Step 1
-define('DB_USER', 'cpaneluser_sharif_admin');   // Database User created in Step 1
-define('DB_PASS', 'YourStrongPasswordHere');    // Password created in Step 1
+define('DB_HOST', getenv('SG_DB_HOST') ?: 'localhost');
+define('DB_NAME', getenv('SG_DB_NAME') ?: 'cpaneluser_sharif_cms');
+define('DB_USER', getenv('SG_DB_USER') ?: 'cpaneluser_sharif_admin');
+define('DB_PASS', getenv('SG_DB_PASS') ?: 'k8#Pz!9xQ$2026_SharifSecure');
 define('DB_CHARSET', 'utf8mb4');
 
 // ── Upload & Asset Settings ───────────────────────────────────────

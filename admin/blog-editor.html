@@ -1214,6 +1214,43 @@
 
   <!-- MAIN SCRIPT -->
   <script>
+    // Smart API routing for Vercel Static Hosting preview environments
+    (function() {
+      const origFetch = window.fetch;
+      window.fetch = function(url, options) {
+        if (typeof url === 'string') {
+          const hostname = window.location.hostname;
+          const isRemotePreview = hostname.includes('vercel.app') || hostname === 'localhost' || hostname === '127.0.0.1';
+          const customBackend = (typeof localStorage !== 'undefined' && localStorage.getItem('sgcms_backend_url')) ? localStorage.getItem('sgcms_backend_url').replace(/\/+$/, '') : '';
+          const prodBase = customBackend || 'https://sharifgroup.ae';
+
+          if (isRemotePreview) {
+            if (url.startsWith('api/')) {
+              url = prodBase + '/admin/' + url;
+            } else if (url.startsWith('/admin/api/')) {
+              url = prodBase + url;
+            } else if (url.startsWith('admin/api/')) {
+              url = prodBase + '/' + url;
+            } else if (url.includes('/admin/api/')) {
+              const idx = url.indexOf('/admin/api/');
+              url = prodBase + url.substring(idx);
+            }
+          }
+        }
+        return origFetch.call(this, url, options);
+      };
+    })();
+
+    // Strict Admin Authentication Verification
+    (function verifyBlogEditorAuth() {
+      const auth = sessionStorage.getItem('sgcms_auth') || localStorage.getItem('sgcms_auth');
+      const token = sessionStorage.getItem('sgcms_token') || localStorage.getItem('sgcms_token');
+      if (!auth || !token) {
+        window.location.replace('index.html');
+        return;
+      }
+    })();
+
     // In-memory unified state
     const blogState = {
       id: null,
@@ -1325,6 +1362,14 @@
     // API & AUTH HELPERS
     function getApiUrl(endpoint) {
       const clean = endpoint.replace(/^\/+/, '');
+      const hostname = window.location.hostname;
+      const isRemotePreview = hostname.includes('vercel.app') || hostname === 'localhost' || hostname === '127.0.0.1';
+      const customBackend = (typeof localStorage !== 'undefined' && localStorage.getItem('sgcms_backend_url')) ? localStorage.getItem('sgcms_backend_url').replace(/\/+$/, '') : '';
+      const prodBase = customBackend || 'https://sharifgroup.ae';
+
+      if (isRemotePreview) {
+        return prodBase + '/admin/api/' + clean;
+      }
       const path = window.location.pathname;
       const adminIdx = path.lastIndexOf('/admin/');
       if (adminIdx !== -1) {
@@ -1336,11 +1381,8 @@
     function getAuthToken() {
       let tok = sessionStorage.getItem('sgcms_token') || localStorage.getItem('sgcms_token') || '';
       if (!tok) {
-        tok = 'sgcms_' + Date.now() + '_' + Math.random().toString(36).substring(2);
-        try {
-          localStorage.setItem('sgcms_token', tok);
-          sessionStorage.setItem('sgcms_token', tok);
-        } catch (e) {}
+        window.location.replace('index.html');
+        return '';
       }
       return tok;
     }
@@ -1791,21 +1833,17 @@
           body: JSON.stringify(payload)
         });
 
-        if (res.status === 405 || !res.ok) {
-          // Vercel Static Hosting environment:
-          showToast('Draft saved successfully to browser storage! (Vercel Preview Mode)', 'success');
-          return;
-        }
+        let data = null;
+        try { data = await res.json(); } catch (e) {}
 
-        const data = await res.json();
-        if (data.success) {
+        if (res.ok && data && data.success) {
           showToast('Draft saved successfully to server database & JSON!', 'success');
         } else {
-          showToast(data.error || 'Server warning, saved in browser storage.', 'warning');
+          const errMsg = (data && data.error) ? data.error : ('HTTP ' + res.status);
+          showToast('Draft saved in browser storage (' + errMsg + ').', 'warning');
         }
       } catch (err) {
-        // Network or Vercel static error
-        showToast('Draft saved in browser storage! (When deployed on cPanel with PHP, this syncs to MySQL)', 'success');
+        showToast('Draft saved in browser storage (offline mode).', 'success');
       } finally {
         btn.disabled = false;
         btn.innerHTML = '<i class="fa-solid fa-floppy-disk"></i> Save as Draft';
@@ -1862,24 +1900,14 @@
           body: JSON.stringify(payload)
         });
 
-        if (res.status === 405 || !res.ok) {
-          // Vercel Static Mode: PHP SSG is disabled on static Vercel
-          markSaved();
-          fetchDraftCount();
-          alert(
-            'Draft Saved!\n\n' +
-            'NOTE (Vercel Hosting):\n' +
-            'You are currently viewing on Vercel static hosting (where PHP is not executed).\n\n' +
-            'To generate the live physical HTML article files (/blog/' + payload.slug + '/), ' +
-            'update blog listing cards, and regenerate sitemap.xml, deploy/upload to your cPanel hosting ' +
-            '(as detailed in step.md) where PHP & MySQL are active.'
-          );
-          showToast('Draft saved locally. Publish requires cPanel Apache PHP runtime.', 'warning');
-          return;
+        let data = null;
+        try {
+          data = await res.json();
+        } catch (e) {
+          data = null;
         }
 
-        const data = await res.json();
-        if (data.success) {
+        if (res.ok && data && data.success) {
           markSaved();
           showToast('Article published live across all 4 languages & sitemap regenerated!', 'success');
           fetchDraftCount();
@@ -1890,10 +1918,11 @@
             }
           }, 800);
         } else {
-          showToast(data.error || 'Publish failed.', 'error');
+          const errMsg = (data && data.error) ? data.error : ('Server returned HTTP ' + res.status);
+          showToast('Publish failed: ' + errMsg, 'error');
         }
       } catch (err) {
-        showToast('Publish requires cPanel PHP environment: ' + err.message, 'warning');
+        showToast('Publish error: ' + err.message, 'error');
       } finally {
         btn.disabled = false;
         btn.innerHTML = '<i class="fa-solid fa-rocket"></i> Publish Article';
@@ -2327,16 +2356,17 @@
           headers: getAuthHeaders({ 'Content-Type': 'application/json' }),
           body: JSON.stringify({ id, slug })
         });
-        if (res.ok) {
-          const data = await res.json();
-          if (data.success) {
-            showToast('Published article deleted from live site & sitemap.', 'success');
-          }
+        let data = null;
+        try { data = await res.json(); } catch (e) {}
+
+        if (res.ok && data && data.success) {
+          showToast('Published article deleted from live site, HTML files & sitemap.', 'success');
         } else {
-          showToast('Article deleted locally. (On cPanel server this deletes physical HTML files).', 'success');
+          const msg = (data && data.error) ? data.error : ('HTTP ' + res.status);
+          showToast('Article deleted (' + msg + ').', 'warning');
         }
       } catch (err) {
-        showToast('Article deleted.', 'success');
+        showToast('Article deleted locally.', 'info');
       }
 
       loadPublishedList();

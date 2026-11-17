@@ -234,10 +234,10 @@
     
 
 </style>
-<link rel="stylesheet" href="/assets/css/navbar.css" />
+<link rel="stylesheet" href="/assets/css/navbar.css?v=20261117" />
 <link href="../assets/css/multilingual.css?v=20261017_v3" rel="stylesheet">
-<script defer="" src="/assets/js/navbar.js"></script>
-<script defer="" src="/assets/js/language-switcher.js?v=20260912_v16"></script>
+<script defer="" src="/assets/js/navbar.js?v=20261117"></script>
+<script defer="" src="/assets/js/language-switcher.js?v=20261117"></script>
 </link></link></meta></meta></meta></meta></meta></meta></head>
 <body class="bg-luxury-light text-luxury-dark font-sans overflow-x-hidden">
 <!-- HEADER COMPONENT (UNIVERSAL NAVBAR) -->
@@ -690,7 +690,7 @@
 </form>
 </div>
 <!-- Results Output Panel (Embedded On-Page — No Popups) -->
-<div class="hidden space-y-8 pt-2 scroll-mt-24" id="cbi-results-output"></div>
+<div class="hidden space-y-8 pt-2 scroll-mt-24" id="cbi-results-output" role="region" aria-live="polite" aria-atomic="true"></div>
 </div>
 </section>
 <!-- ENGINE SCRIPT FOR ELIGIBILITY CHECKER -->
@@ -1117,6 +1117,7 @@
                     residence,
                     family,
                     budgetKey,
+                    maxBudget,
                     goals,
                     recommended: eligiblePool, // Shows all matching programs!
                     conditional: conditionalList,
@@ -1164,10 +1165,60 @@
                 else if (isFa) summaryBadge = 'خلاصه ارزیابی';
                 else if (isZh) summaryBadge = '评估摘要';
 
-                let resultsSubtitle = `Based on your nationality (${calc.citizenship}), residence (${calc.residence}), and budget.`;
+                let resultsSubtitle = `Based on your nationality (${citDisplay}), residence (${resDisplay}), and budget.`;
                 if (isAr) resultsSubtitle = `بناءً على جنسيتك (${citDisplay})، وبلد إقامتك (${resDisplay})، وميزانيتك.`;
                 else if (isFa) resultsSubtitle = `بر اساس تابعیت شما (${citDisplay})، محل اقامت (${resDisplay}) و بودجه شما.`;
                 else if (isZh) resultsSubtitle = `根据您的国籍（${citDisplay}）、居住地（${resDisplay}）和预算。`;
+
+                // T25: Explicit treatment & explanation for 'other' nationality
+                let otherNationalityNotice = '';
+                if (calc.citizenship === 'other') {
+                    let otherNoticeTitle = 'Nationality Coverage Note';
+                    let otherNoticeBody = 'You selected "Other Nationality". All countries subject to statutory restrictions, enhanced compliance, or special residence conditions (including Iran, Afghanistan, Syria, Yemen, Sudan, Russia, and Belarus) are explicitly listed in the selector. Selecting "Other" represents a passport from an unrestricted jurisdiction. Your file will be verified against the specific country during consultation.';
+                    if (isAr) {
+                        otherNoticeTitle = 'ملاحظة حول تغطية الجنسية';
+                        otherNoticeBody = 'لقد اخترت "جنسية أخرى". جميع الدول الخاضعة لقيود قانونية أو تدقيق إضافي أو شروط إقامة خاصة (بما في ذلك إيران وأفغانستان وسوريا واليمن والسودان وروسيا وبيلاروسيا) مدرجة بشكل منفصل في القائمة. اختيار "أخرى" يعني أنك تحمل جواز سفر من دولة غير خاضعة لقيود وسيجري التحقق من دولتك المحددة أثناء الاستشارة.';
+                    } else if (isFa) {
+                        otherNoticeTitle = 'یادداشت پوشش تابعیت';
+                        otherNoticeBody = 'شما گزینه «سایر تابعیت‌ها» را انتخاب کرده‌اید. تمامی کشورهایی که مشمول محدودیت‌های قانونی، بررسی‌های ویژه یا شرایط اقامتی خاص هستند (از جمله ایران، افغانستان، سوریه، یمن، سودان، روسیه و بلاروس) به‌طور مشخص در فهرست تابعیت‌ها درج شده‌اند. انتخاب «سایر» به منزله داشتن گذرنامه از یک حوزه قضایی بدون محدودیت است و کشور دقیق شما در زمان مشاوره ثبت و تطبیق داده خواهد شد.';
+                    } else if (isZh) {
+                        otherNoticeTitle = '国籍适用说明';
+                        otherNoticeBody = '您选择了“其他国籍”。所有受法定限制、强化尽职调查或特殊居住条件约束的国家（包括伊朗、阿富汗、叙利亚、也门、苏丹、俄罗斯和白俄罗斯）均已明确列在国籍列表中。选择“其他”表示申请人持有无限制司法管辖区的护照。在咨询过程中我们将正式核实并登记您的具体国籍与居留情况。';
+                    }
+                    otherNationalityNotice = `
+                        <div class="p-4 rounded-xl bg-blue-50/60 border border-blue-200/80 text-xs text-blue-900 space-y-1 text-start max-w-3xl mx-auto">
+                            <div class="font-bold flex items-center gap-1.5 text-blue-800">
+                                <i class="fa-solid fa-passport"></i> <span>${otherNoticeTitle}</span>
+                            </div>
+                            <p class="font-light leading-relaxed text-blue-700">${otherNoticeBody}</p>
+                        </div>
+                    `;
+                }
+
+                // T27: Family-specific cost clarification notice
+                let familyNotice = '';
+                if (calc.family && calc.family !== 'single') {
+                    let famTitle = 'Family Pricing Notice';
+                    let famDesc = 'Quoted investment amounts ("From USD") reflect the baseline qualifying threshold for a single main applicant. Government processing fees, due diligence charges, and dependent contribution increments apply based on the number and ages of family members. A precise itemized household breakdown will be provided during your private consultation.';
+                    if (isAr) {
+                        famTitle = 'ملاحظة حول تسعير العائلات';
+                        famDesc = 'تمثل المبالغ الاستثمارية المذكورة ("يبدأ من بالدولار") الحد الأدنى المؤهل لمقدم الطلب الرئيسي بمفرده. تطبق رسوم معالجة حكومية وتدقيق أمني ومساهمات إضافية لكل فرد من أفراد الأسرة وفقًا لأعمارهم وعددهم. سيتم تقديم عرض أسعار تفصيلي لأسرتك خلال الاستشارة المباشرة.';
+                    } else if (isFa) {
+                        famTitle = 'یادداشت هزینه‌های خانوادگی';
+                        famDesc = 'مبالغ سرمایه‌گذاری اعلام‌شده («از ... دلار») بیانگر حداقل آستانه صلاحیت برای متقاضی اصلی مجرد است. هزینه‌های دولتی بررسی پرونده، ارزیابی پیشینه (Due Diligence) و مبالغ سرمایه‌گذاری متناسب با تعداد و سن همراهان خانواده اضافه خواهد شد. برآورد دقیق و تفکیک‌شده متناسب با ساختار خانواده شما در جلسه مشاوره اختصاصی ارائه می‌گردد.';
+                    } else if (isZh) {
+                        famTitle = '家庭申请费用说明';
+                        famDesc = '所列投资金额（“起价 美元”）代表单身主申请人的最低门槛要求。政府行政审理费、背景尽职调查费及随行家属追加投资款将根据家庭成员数量及年龄另行计算。在您的专属私人咨询中，我们将为您提供量身定制的家庭详细费用清单。';
+                    }
+                    familyNotice = `
+                        <div class="p-4 rounded-xl bg-amber-50/70 border border-amber-200/80 text-xs text-amber-900 space-y-1 text-start max-w-3xl mx-auto">
+                            <div class="font-bold flex items-center gap-1.5 text-amber-800">
+                                <i class="fa-solid fa-users"></i> <span>${famTitle}</span>
+                            </div>
+                            <p class="font-light leading-relaxed text-amber-700">${famDesc}</p>
+                        </div>
+                    `;
+                }
 
                 let html = `
                     <div class="border-t border-neutral-200/80 pt-10 space-y-8">
@@ -1175,13 +1226,15 @@
                             <span class="text-xs font-bold uppercase tracking-[0.25em] text-[#786142]">
                                 ${summaryBadge}
                             </span>
-                            <h3 class="font-serif text-2xl md:text-3xl font-bold text-neutral-900">
+                            <h3 class="font-serif text-2xl md:text-3xl font-bold text-neutral-900" id="cbi-results-heading" tabindex="-1">
                                 ${resultsTitle}
                             </h3>
                             <p class="text-xs text-neutral-500 font-light">
                                 ${resultsSubtitle}
                             </p>
                         </div>
+                        ${otherNationalityNotice}
+                        ${familyNotice}
                 `;
 
                 if (calc.recommended.length === 0) {
@@ -1302,29 +1355,43 @@
 
                 if (calc.conditional.length > 0) {
                     const sep = (isAr || isFa) ? "، " : (isZh ? "、" : ", ");
-                    const condNames = calc.conditional.map(p => getProgramName(p.name, currentLang)).join(sep);
+                    const userMaxBudget = calc.maxBudget || BUDGET_LIMITS[calc.budgetKey] || 350000;
+                    const condNames = calc.conditional.map(p => {
+                        const pName = getProgramName(p.name, currentLang);
+                        if (p.fromUSD > userMaxBudget) {
+                            const formattedFrom = (typeof window.localizeNumbers === 'function' && (isAr || isFa))
+                                ? window.localizeNumbers(p.fromUSD.toLocaleString(), currentLang)
+                                : p.fromUSD.toLocaleString();
+                            const aboveLabel = isAr ? ` (${pName}: يبدأ من $${formattedFrom} - أعلى من الميزانية المحددة)`
+                                : (isFa ? ` (${pName}: شروع از ${formattedFrom} دلار - بالاتر از بودجه انتخابی)`
+                                : (isZh ? ` (${pName}: 起价 $${formattedFrom} - 超出所选预算)`
+                                : ` (${pName}: From $${formattedFrom} — Above chosen budget)`));
+                            return aboveLabel;
+                        }
+                        return pName;
+                    }).join(sep);
                     let condHeader = `Also Possible Under Conditions: ${condNames}`;
                     let condText = "";
 
                     if (isAr) {
                         condHeader = `متاح أيضاً وفق شروط محددة: ${condNames}`;
                         condText = calc.isTrustedResidence
-                            ? `قد تكون مؤهلاً لهذه البرامج عبر استثناءات الإقامة في الخارج، نظرًا لإقامتك في دولة معتمدة (${resDisplay}). وسيؤكد المستشار القانوني أهليتك بعد مراجعة ملفك.`
-                            : "تتطلب هذه البرامج إثبات إقامة مؤكدة لمدة تتراوح بين 5 إلى 10 سنوات خارج بلدك الأصلي دون أي روابط مالية داخلية.";
+                            ? `قد تكون مؤهلاً لهذه البرامج عبر استثناءات الإقامة في الخارج، نظرًا لإقامتك في دولة معتمدة (${resDisplay}). وسيؤكد المستشار القانوني أهليتك بعد مراجعة ملفك (يرجى ملاحظة مبالغ الاستثمار الموضحة لكل برنامج).`
+                            : "تتطلب هذه البرامج إثبات إقامة مؤكدة لمدة تتراوح بين 5 إلى 10 سنوات خارج بلدك الأصلي دون أي روابط مالية داخلية، مع الالتزام بالحد الأدنى للاستثمار المحدد لكل برنامج.";
                     } else if (isFa) {
                         condHeader = `تحت شرایط خاص نیز امکان‌پذیر است: ${condNames}`;
                         condText = calc.isTrustedResidence
-                            ? `با توجه به اینکه در یک حوزه قضایی مورد تأیید اقامت دارید (${resDisplay})، ممکن است از طریق معافیت‌های اقامت خارج از کشور واجد شرایط این برنامه‌ها باشید. بررسی پرونده، واجد شرایط بودن شما را تأیید خواهد کرد.`
-                            : "این برنامه‌ها به 5 تا 10 سال اقامت تأییدشده خارج از کشور مبدأ و بدون هیچ‌گونه ارتباط مالی داخلی نیاز دارند.";
+                            ? `با توجه به اینکه در یک حوزه قضایی مورد تأیید اقامت دارید (${resDisplay})، ممکن است از طریق معافیت‌های اقامت خارج از کشور واجد شرایط این برنامه‌ها باشید. بررسی پرونده، واجد شرایط بودن شما را تأیید خواهد کرد (لطفاً به حداقل مبالغ سرمایه‌گذاری برای هر برنامه دقت نمایید).`
+                            : "این برنامه‌ها به 5 تا 10 سال اقامت تأییدشده خارج از کشور مبدأ و بدون هیچ‌گونه ارتباط مالی داخلی و همچنین تأمین حداقل سرمایه مورد نیاز برنامه بستگی دارند.";
                     } else if (isZh) {
                         condHeader = `在特定条件下也可申请：${condNames}`;
                         condText = calc.isTrustedResidence
-                            ? `由于您居住在获批准的司法管辖区（${resDisplay}），您可能可以通过境外居住豁免符合这些项目的申请条件。个案审核将最终确认您的资格。`
-                            : "这些项目要求申请人在原籍国以外拥有5至10年的经核实居住记录，且在原籍国不存在财务联系。";
+                            ? `由于您居住在获批准的司法管辖区（${resDisplay}），您可能可以通过境外居住豁免符合这些项目的申请条件。个案审核将最终确认您的资格（请注意各项目所标注的最低起步投资额）。`
+                            : "这些项目要求申请人在原籍国以外拥有5至10年的经核实居住记录且不存在国内财务联系，并需满足各项目法定的最低投资门槛。";
                     } else {
                         condText = calc.isTrustedResidence
-                            ? `You may qualify for these via residence-abroad exemptions since you reside in an approved jurisdiction (${calc.residence}). A case review will confirm your eligibility.`
-                            : "These programs require 5 to 10 years verified residence outside your origin country with no domestic financial ties.";
+                            ? `You may qualify for these via residence-abroad exemptions since you reside in an approved jurisdiction (${calc.residence}). A case review will confirm your eligibility (note qualifying investment thresholds indicated).`
+                            : "These programs require 5 to 10 years verified residence outside your origin country with no domestic financial ties, alongside meeting the statutory investment minimum.";
                     }
 
                     html += `
@@ -1473,6 +1540,10 @@
 
                 container.innerHTML = html;
                 container.scrollIntoView({ behavior: "smooth", block: "start" });
+                const rHeading = container.querySelector('#cbi-results-heading');
+                if (rHeading) {
+                    setTimeout(() => rHeading.focus({ preventScroll: true }), 350);
+                }
             }
 
             function selectProgramForConsult(programName) {
@@ -1518,13 +1589,27 @@
 
                 const inqId = "INQ-ELG-" + Date.now().toString(36).toUpperCase() + "-" + Math.random().toString(36).substring(2, 6).toUpperCase();
 
+                const rawPhone = (document.getElementById("lead_phone") ? document.getElementById("lead_phone").value : "").trim();
+                const parsedPhone = (typeof window.parsePhoneNumber === 'function')
+                    ? window.parsePhoneNumber(rawPhone, '+971')
+                    : { valid: true, dialCode: '+971', nationalNumber: rawPhone, e164: rawPhone, formatted: rawPhone };
+
+                if (rawPhone && !parsedPhone.valid) {
+                    alert('يرجى إدخال رقم هاتف صحيح مع رمز الدولة (مثال: 4567 123 50 971+).');
+                    const phoneEl = document.getElementById("lead_phone");
+                    if (phoneEl) phoneEl.focus();
+                    return;
+                }
+
                 const leadData = {
                     inquiry_id: inqId,
                     form_id: "eligibility-checker-form",
                     targetTab: "Citizenship",
                     fullName: document.getElementById("lead_name").value.trim(),
                     email: document.getElementById("lead_email").value.trim(),
-                    phone: document.getElementById("lead_phone").value.trim(),
+                    phone: parsedPhone.formatted || rawPhone,
+                    whatsapp_e164: parsedPhone.e164 || rawPhone,
+                    dialCode: parsedPhone.dialCode || '+971',
                     notes: document.getElementById("lead_notes").value.trim(),
                     service: selectedTargetProgram || "General CBI Assessment",
                     targetProgram: selectedTargetProgram || "General CBI Assessment",
@@ -1540,40 +1625,82 @@
                     objective: selectedGoals.join(", "),
                     lang: currentLang,
                     preferredLanguage: currentLang,
+                    site_language: "Arabic",
                     source: window.location.href,
                     page: window.location.pathname,
+                    page_path: window.location.pathname,
                     submittedAt: new Date().toISOString()
                 };
 
-                // 1. Dispatch to direct server mailer API (cPanel authenticated mailer + local backup)
-                try {
-                    fetch('/api/contact.php', {
-                        method: 'POST',
-                        headers: { 'Content-Type': 'application/json' },
-                        body: JSON.stringify(leadData)
-                    }).catch(function() {});
-                } catch (apiErr) {}
-
-                // 2. Dispatch to Google Apps Script CRM Webhook (Google Sheets sync)
-                if (LEAD_WEBHOOK_URL) {
-                    fetch(LEAD_WEBHOOK_URL, {
-                        method: "POST",
-                        mode: "no-cors",
-                        headers: { "Content-Type": "text/plain;charset=utf-8" },
-                        body: JSON.stringify(leadData)
-                    }).catch(err => console.error("Webhook error:", err));
+                const submitBtn = e.target.querySelector('button[type="submit"]');
+                const origBtnText = submitBtn ? submitBtn.innerHTML : '';
+                if (submitBtn) {
+                    submitBtn.disabled = true;
+                    submitBtn.textContent = 'جارٍ الإرسال...';
                 }
 
-                console.log("LEAD CAPTURED FOR CRM:", leadData);
+                (async () => {
+                    let confirmed = false;
 
-                const successBox = document.getElementById("onpage-form-success");
-                if (successBox) {
-                    successBox.classList.remove("hidden");
-                }
-                e.target.reset();
-                setTimeout(() => {
-                    if (successBox) successBox.classList.add("hidden");
-                }, 5000);
+                    // 1. Dispatch to direct server mailer API
+                    try {
+                        const controller = new AbortController();
+                        const timer = setTimeout(() => controller.abort(), 10000);
+                        const res = await fetch('/api/contact.php', {
+                            method: 'POST',
+                            headers: { 'Content-Type': 'application/json' },
+                            body: JSON.stringify(leadData),
+                            signal: controller.signal
+                        });
+                        clearTimeout(timer);
+                        if (res.ok) {
+                            const result = await res.json().catch(() => null);
+                            if (result && result.status === 'success') {
+                                confirmed = true;
+                            }
+                        }
+                    } catch (apiErr) {}
+
+                    // 2. Fallback to Google Apps Script CRM Webhook
+                    if (!confirmed && LEAD_WEBHOOK_URL) {
+                        try {
+                            const controller = new AbortController();
+                            const timer = setTimeout(() => controller.abort(), 10000);
+                            const res = await fetch(LEAD_WEBHOOK_URL, {
+                                method: "POST",
+                                headers: { "Content-Type": "text/plain;charset=utf-8" },
+                                body: JSON.stringify(leadData),
+                                signal: controller.signal
+                            });
+                            clearTimeout(timer);
+                            if (res.ok) {
+                                const result = await res.json().catch(() => null);
+                                if (result && (result.status === 'success' || result.status === 'ignored_duplicate')) {
+                                    confirmed = true;
+                                }
+                            }
+                        } catch (crmErr) {}
+                    }
+
+                    if (confirmed) {
+                        const successBox = document.getElementById("onpage-form-success");
+                        if (successBox) {
+                            successBox.classList.remove("hidden");
+                            successBox.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+                        }
+                        e.target.reset();
+                        setTimeout(() => {
+                            if (successBox) successBox.classList.add("hidden");
+                        }, 8000);
+                    } else {
+                        alert("تعذر تأكيد الإرسال. يرجى التحقق من اتصال الإنترنت وإعادة المحاولة، أو التواصل معنا مباشرة عبر واتساب. تم حفظ بياناتك المدخلة.");
+                    }
+
+                    if (submitBtn) {
+                        submitBtn.disabled = false;
+                        submitBtn.innerHTML = origBtnText;
+                    }
+                })();
             }
 
             document.addEventListener("DOMContentLoaded", () => {
@@ -1595,10 +1722,10 @@
 <div class="absolute inset-0 z-0 overflow-hidden pointer-events-none">
 <canvas class="absolute inset-0 w-full h-full object-cover" id="footer-seamless-canvas"></canvas>
 <video class="hidden" id="footer-hidden-video" muted="" playsinline="" preload="none">
-<source src="/assets/videos/footer_bg_e58bba71.mp4" type="video/mp4"/>
+<source data-src="/assets/videos/footer_bg_e58bba71.mp4" type="video/mp4"/>
 </video>
 <video class="hidden" id="footer-hidden-video-2" muted="" playsinline="" preload="none">
-<source src="/assets/videos/footer_bg_e58bba71.mp4" type="video/mp4"/>
+<source data-src="/assets/videos/footer_bg_e58bba71.mp4" type="video/mp4"/>
 </video>
 <div class="absolute inset-0 bg-gradient-to-b from-black/30 via-black/45 to-black/75"></div>
 </div>
@@ -1774,7 +1901,26 @@
             const v2 = document.getElementById("footer-hidden-video-2");
             const canvas = document.getElementById("footer-seamless-canvas");
             if (!v1 || !v2 || !canvas) return;
+
+            // T09: Prevent 13.5MB video decoding and 60fps canvas loop on mobile
+            if (window.innerWidth < 768 || window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
+                canvas.style.display = 'none';
+                return;
+            }
+
             const ctx = canvas.getContext("2d", { alpha: false });
+            let videoSourcesAttached = false;
+            function attachVideoSources() {
+                if (videoSourcesAttached) return;
+                videoSourcesAttached = true;
+                [v1, v2].forEach(v => {
+                    const s = v.querySelector('source[data-src]');
+                    if (s && !s.src) {
+                        s.src = s.getAttribute('data-src');
+                        v.load();
+                    }
+                });
+            }
 
             let activeVideo = v1;
             let standbyVideo = v2;
@@ -1826,6 +1972,7 @@
                     entries.forEach((entry) => {
                         isFooterVisible = entry.isIntersecting;
                         if (isFooterVisible) {
+                            if (typeof attachVideoSources === "function") attachVideoSources();
                             activeVideo.play().catch(() => {});
                             if (!animationFrameId) renderFrame();
                         } else {
@@ -2219,6 +2366,6 @@
             // Bypass Preloader when returning from internal pages
             sessionStorage.setItem('sharif_preloader_shown', 'true');
         </script>
-<script src="/assets/js/forms.js"></script>
+<script src="/assets/js/forms.js?v=20261117"></script>
 </main></body>
 </html>

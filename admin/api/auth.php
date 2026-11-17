@@ -35,11 +35,10 @@ if ($method === 'POST' && ($action === 'login' || empty($action))) {
     $authenticated = false;
 
     if ($user) {
-        // Check BCrypt hash first
+        // Check BCrypt hash
         if (password_verify($password, $user['password_hash'])) {
             $authenticated = true;
-        } elseif ($password === 'SharifCMS@2026' && !str_starts_with($user['password_hash'], '$2y$')) {
-            // Auto-heal: only allow default password if the stored hash is NOT yet a bcrypt hash
+        } elseif ($password === 'Sharif_Admin@2026!Sec#x9' && !str_starts_with($user['password_hash'], '$2y$')) {
             $authenticated = true;
             if ($db !== null) {
                 try {
@@ -50,8 +49,8 @@ if ($method === 'POST' && ($action === 'login' || empty($action))) {
             }
         }
     } else {
-        // Fallback for initial default admin before SQL import or if user deleted / DB offline
-        if ($email === 'admin@sharifgroup.ae' && $password === 'SharifCMS@2026') {
+        // Fallback for initial default admin before SQL import or if DB offline
+        if ($email === 'admin@sharifgroup.ae' && $password === 'Sharif_Admin@2026!Sec#x9') {
             $authenticated = true;
             $user = [
                 'id'    => 1,
@@ -175,9 +174,7 @@ if ($method === 'POST' && $action === 'change_password') {
     if ($user) {
         if (password_verify($currentPass, $user['password_hash'])) {
             $validPass = true;
-        } elseif ($currentPass === 'SharifCMS@2026' && !str_starts_with($user['password_hash'], '$2y$')) {
-            $validPass = true;
-        } elseif ($user['password_hash'] === $currentPass) {
+        } elseif ($currentPass === 'Sharif_Admin@2026!Sec#x9' && !str_starts_with($user['password_hash'], '$2y$')) {
             $validPass = true;
         }
     }

@@ -1,0 +1,41 @@
+{
+  "catalog": [
+    {
+      "series_id": "dominica-pilot",
+      "series_name": "Dominica Second Passport for Afghan Families",
+      "category": "Citizenship",
+      "subcategory": "dominica",
+      "primary_language": "fa",
+      "session_count": 3,
+      "status": "active",
+      "created_at": "2026-10-29T17:00:00Z",
+      "updated_at": "2026-11-17T14:00:00Z",
+      "sessions": [
+        {
+          "session_no": 1,
+          "id": "WEB01",
+          "slug": "dominica-second-passport-for-afghans",
+          "title": "A Second Passport for Afghans: Introducing the Dominica Programme",
+          "start_utc": "2026-11-12T15:30:00Z",
+          "event_status": "upcoming"
+        },
+        {
+          "session_no": 2,
+          "id": "WEB02",
+          "slug": "dominica-from-decision-to-passport",
+          "title": "From Decision to Passport: Required Documents, Timelines and Costs",
+          "start_utc": "2026-11-19T15:30:00Z",
+          "event_status": "upcoming"
+        },
+        {
+          "session_no": 3,
+          "id": "WEB03",
+          "slug": "dominica-your-questions-answered",
+          "title": "Live Q&A: Your Questions on the Dominica Programme Answered",
+          "start_utc": "2026-11-26T15:30:00Z",
+          "event_status": "upcoming"
+        }
+      ]
+    }
+  ]
+}
