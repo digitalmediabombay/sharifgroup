@@ -1487,695 +1487,695 @@
   <div class="toast-container" id="toastContainer"></div>
 
   <script>
-(function() {
-  'use strict';
+    (function () {
+      'use strict';
 
-  // ── 1. AUTH GUARD ───────────────────────────────────────────────────
-  function getSession() {
-    try {
-      return JSON.parse(sessionStorage.getItem('sgcms_auth')) ||
-             JSON.parse(localStorage.getItem('sgcms_auth'));
-    } catch (_) { return null; }
-  }
-
-  function getToken() {
-    return sessionStorage.getItem('sgcms_token') || localStorage.getItem('sgcms_token') || '';
-  }
-
-  const session = getSession();
-  const token   = getToken();
-
-  if (!session || !token) {
-    window.location.replace('/admin/index.html');
-  }
-
-  // Logout Handler
-  document.getElementById('logoutBtn').addEventListener('click', function() {
-    fetch('/admin/api/auth.php?action=logout', { method: 'POST', credentials: 'include' }).catch(function(){});
-    ['sgcms_auth', 'sgcms_token', 'sgcms_user'].forEach(function(k) {
-      sessionStorage.removeItem(k);
-      localStorage.removeItem(k);
-    });
-    window.location.replace('/admin/index.html');
-  });
-
-  // ── 2. STATE ────────────────────────────────────────────────────────
-  let currentSeriesData = null;
-
-  // ── 3. TOAST HELPER ─────────────────────────────────────────────────
-  function showToast(msg, type) {
-    type = type || 'success';
-    const box = document.getElementById('toastContainer');
-    const toast = document.createElement('div');
-    toast.className = 'toast ' + type;
-    const icon = type === 'success' ? 'fa-circle-check' : 'fa-circle-exclamation';
-    toast.innerHTML = '<i class="fa-solid ' + icon + '"></i><span>' + msg + '</span>';
-    box.appendChild(toast);
-    setTimeout(function() {
-      toast.style.opacity = '0';
-      toast.style.transform = 'translateY(10px)';
-      toast.style.transition = 'all 0.3s ease';
-      setTimeout(function() { toast.remove(); }, 300);
-    }, 3500);
-  }
-
-  // ── 4. CLIENT-SIDE DATA BUILDER (FALLBACK FOR STATIC PREVIEWS) ──────
-  function buildDashboardFromWebinars(webinars) {
-    if (!Array.isArray(webinars) || webinars.length === 0) return null;
-
-    const first = webinars[0] || {};
-    const seriesSlug = first.series || (typeof window.SGCMS_ACTIVE_SERIES !== 'undefined' ? window.SGCMS_ACTIVE_SERIES : 'dominica-pilot');
-    const seriesCategory = first.category || 'Citizenship';
-    const seriesSubcat = first.subcategory || 'dominica';
-
-    const now = Date.now();
-    let completedCount = 0;
-    let upcomingCount = 0;
-
-    let sch = null;
-    try { sch = JSON.parse(localStorage.getItem('sgcms_webinar_schedule') || '{}'); } catch (_) {}
-
-    const sessions = webinars.map(function(w, idx) {
-      const sNo = parseInt(w.session_no || (idx + 1), 10);
-      const startUtc = w.start_utc || '2026-11-19T15:30:00Z';
-      const durationMin = parseInt(w.duration_min || 60, 10);
-
-      const startDate = new Date(startUtc);
-      const startMs = isNaN(startDate.getTime()) ? now : startDate.getTime();
-      const endMs = startMs + (durationMin * 60 * 1000);
-
-      let derivedStatus = (w.event_status || 'upcoming').toLowerCase();
-      if (derivedStatus !== 'cancelled' && derivedStatus !== 'postponed') {
-        if (now > endMs) {
-          derivedStatus = 'ended';
-          completedCount++;
-        } else if (now >= startMs && now <= endMs) {
-          derivedStatus = 'live';
-          upcomingCount++;
-        } else {
-          derivedStatus = 'upcoming';
-          upcomingCount++;
-        }
+      // ── 1. AUTH GUARD ───────────────────────────────────────────────────
+      function getSession() {
+        try {
+          return JSON.parse(sessionStorage.getItem('sgcms_auth')) ||
+            JSON.parse(localStorage.getItem('sgcms_auth'));
+        } catch (_) { return null; }
       }
 
-      let joinUrl = (w.join_url || '').trim();
-      let regOpen = Boolean(w.registration_open !== false && derivedStatus !== 'ended');
-      let joinVis = w.join_visibility || 'public';
-
-      // Apply local schedule overrides (Preview mode persistence)
-      if (sch && sch.sessions && sch.sessions[sNo]) {
-        const ovr = sch.sessions[sNo];
-        if (typeof ovr.join_url === 'string') joinUrl = ovr.join_url.trim();
-        if (ovr.join_visibility) joinVis = ovr.join_visibility;
-        if (typeof ovr.reg_status !== 'undefined') regOpen = (ovr.reg_status === 'open');
-        if (ovr.event_status) derivedStatus = ovr.event_status;
+      function getToken() {
+        return sessionStorage.getItem('sgcms_token') || localStorage.getItem('sgcms_token') || '';
       }
 
-      let dateFormatted = 'Scheduled';
-      let timeUtc = '15:30 UTC';
-      let timeDubai = '19:30 GST';
-      let timeKabul = '20:00 AFT';
-      let timeIstanbul = '18:30 TRT';
+      const session = getSession();
+      const token = getToken();
 
-      try {
-        dateFormatted = new Intl.DateTimeFormat('en-GB', {
-          weekday: 'long', day: 'numeric', month: 'short', year: 'numeric', timeZone: 'UTC'
-        }).format(startDate);
-
-        const fmtTime = function(tz, label) {
-          return new Intl.DateTimeFormat('en-GB', {
-            hour: '2-digit', minute: '2-digit', hour12: false, timeZone: tz
-          }).format(startDate) + ' ' + label;
-        };
-
-        timeUtc = fmtTime('UTC', 'UTC');
-        timeDubai = fmtTime('Asia/Dubai', 'GST');
-        timeKabul = fmtTime('Asia/Kabul', 'AFT');
-        timeIstanbul = fmtTime('Europe/Istanbul', 'TRT');
-      } catch (_) {}
-
-      const titleEn = (w.en && w.en.title) || w.title || ('Session ' + sNo);
-      const titleFa = (w.fa && w.fa.title) || '';
-      const titleAr = (w.ar && w.ar.title) || '';
-      const titleZh = (w.zh && w.zh.title) || '';
-
-      return {
-        session_no: sNo,
-        id: w.id || ('WEB0' + sNo),
-        slug: w.slug || '',
-        category: w.category || seriesCategory,
-        subcategory: w.subcategory || seriesSubcat,
-        title: titleEn,
-        title_en: titleEn,
-        title_fa: titleFa,
-        title_ar: titleAr,
-        title_zh: titleZh,
-        start_utc: startUtc,
-        date_formatted: dateFormatted,
-        time_utc: timeUtc,
-        time_dubai: timeDubai,
-        time_kabul: timeKabul,
-        time_istanbul: timeIstanbul,
-        duration_min: durationMin,
-        event_status: derivedStatus,
-        registration_open: regOpen,
-        join_visibility: joinVis,
-        join_url: joinUrl,
-        has_join_url: Boolean(joinUrl),
-        is_hero: false
-      };
-    });
-
-    sessions.sort(function(a, b) { return a.session_no - b.session_no; });
-
-    // Automatic Cascade: When previous session ends, next upcoming session opens registration
-    for (let i = 0; i < sessions.length; i++) {
-      const curr = sessions[i];
-      const prev = i > 0 ? sessions[i - 1] : null;
-      if (curr.event_status === 'upcoming') {
-        const isEarliestUpcoming = !sessions.slice(0, i).some(s => s.event_status === 'upcoming');
-        if (isEarliestUpcoming || (prev && prev.event_status === 'ended')) {
-          curr.registration_open = true;
-        }
-      } else if (curr.event_status === 'ended') {
-        curr.registration_open = false;
+      if (!session || !token) {
+        window.location.replace('/admin/index.html');
       }
-    }
 
-    let hero = null;
-    let heroSource = 'auto_upcoming';
-
-    const activeHeroNo = typeof window.SGCMS_HERO_SESSION_NO !== 'undefined' ? window.SGCMS_HERO_SESSION_NO : null;
-    if (activeHeroNo) {
-      hero = sessions.find(function(s) { return s.session_no === Number(activeHeroNo); });
-      if (hero) heroSource = 'manual_pin';
-    }
-
-    if (!hero) {
-      hero = sessions.find(function(s) { return s.event_status === 'live'; });
-      if (hero) heroSource = 'auto_live';
-    }
-
-    if (!hero) {
-      hero = sessions.find(function(s) { return s.event_status === 'upcoming'; });
-      if (hero) heroSource = 'auto_upcoming';
-    }
-
-    if (!hero && sessions.length > 0) {
-      hero = sessions[sessions.length - 1];
-      heroSource = 'series_concluded';
-    }
-
-    if (hero) {
-      hero.is_hero = true;
-      hero.hero_source = heroSource;
-      hero.is_manual_pin = (heroSource === 'manual_pin');
-    }
-
-    const totalSessions = sessions.length;
-    const progressPercent = totalSessions > 0 ? Math.round((completedCount / totalSessions) * 100) : 0;
-    const isComplete = (completedCount >= totalSessions && totalSessions > 0);
-
-    const countryName = seriesSubcat.replace(/-/g, ' ').replace(/\b\w/g, function(c){ return c.toUpperCase(); });
-    const seriesTitle = countryName + ' Citizenship & Residency Series';
-
-    return {
-      success: true,
-      series: {
-        id: seriesSlug,
-        slug: seriesSlug,
-        title: seriesTitle,
-        category: seriesCategory,
-        country: countryName,
-        total_sessions: totalSessions,
-        completed_sessions: completedCount,
-        upcoming_sessions: upcomingCount,
-        progress_percent: progressPercent,
-        is_active: true,
-        is_complete: isComplete
-      },
-      featured_hero_session: hero,
-      sessions: sessions,
-      transition: {
-        is_series_complete: isComplete,
-        notice: isComplete
-          ? 'All sessions in this series have concluded. You can now launch a new series for the website.'
-          : 'Current active series has ' + upcomingCount + ' upcoming session(s). It remains live on the website until all sessions conclude.'
-      }
-    };
-  }
-
-  function renderEmptyState() {
-    const container = document.getElementById('sessionsPipelineContainer');
-    if (container) {
-      container.innerHTML = 
-        '<div style="text-align:center; padding:50px 20px; background:var(--card); border:1px dashed var(--border); border-radius:16px;">' +
-          '<i class="fa-solid fa-calendar-xmark" style="font-size:42px; color:var(--gold-bright); margin-bottom:14px; display:block;"></i>' +
-          '<h3 style="color:var(--cream); margin-bottom:8px; font-size:18px;">No Active Webinar Series Found</h3>' +
-          '<p style="color:var(--muted); font-size:13px; max-width:440px; margin:0 auto 20px;">' +
-            'There is currently no active series data. Create a new series to publish it live to the website.' +
-          '</p>' +
-          '<a href="/admin/webinar-create.html" class="btn-create-series" style="display:inline-flex;">' +
-            '<i class="fa-solid fa-plus"></i>' +
-            '<span>Create New Series</span>' +
-          '</a>' +
-        '</div>';
-    }
-  }
-
-  // ── 5. LOAD ACTIVE SERIES DATA ──────────────────────────────────────
-  window.loadActiveSeries = async function() {
-    const refreshIco = document.getElementById('refreshIcon');
-    if (refreshIco) refreshIco.classList.add('fa-spin');
-
-    let loaded = false;
-
-    // Strategy 1: Fetch from backend PHP API
-    try {
-      const res = await fetch('/admin/api/webinar-get-active.php', {
-        credentials: 'include',
-        headers: {
-          'Authorization': 'Bearer ' + token,
-          'X-CMS-Token': token,
-          'X-Auth-Token': token
-        }
+      // Logout Handler
+      document.getElementById('logoutBtn').addEventListener('click', function () {
+        fetch('/admin/api/auth.php?action=logout', { method: 'POST', credentials: 'include' }).catch(function () { });
+        ['sgcms_auth', 'sgcms_token', 'sgcms_user'].forEach(function (k) {
+          sessionStorage.removeItem(k);
+          localStorage.removeItem(k);
+        });
+        window.location.replace('/admin/index.html');
       });
-      if (res.ok) {
-        const ct = res.headers.get('content-type') || '';
-        if (ct.includes('application/json')) {
-          const data = await res.json();
-          if (data && data.success && Array.isArray(data.sessions) && data.sessions.length > 0) {
-            currentSeriesData = data;
-            renderSeriesDashboard(data);
-            loaded = true;
+
+      // ── 2. STATE ────────────────────────────────────────────────────────
+      let currentSeriesData = null;
+
+      // ── 3. TOAST HELPER ─────────────────────────────────────────────────
+      function showToast(msg, type) {
+        type = type || 'success';
+        const box = document.getElementById('toastContainer');
+        const toast = document.createElement('div');
+        toast.className = 'toast ' + type;
+        const icon = type === 'success' ? 'fa-circle-check' : 'fa-circle-exclamation';
+        toast.innerHTML = '<i class="fa-solid ' + icon + '"></i><span>' + msg + '</span>';
+        box.appendChild(toast);
+        setTimeout(function () {
+          toast.style.opacity = '0';
+          toast.style.transform = 'translateY(10px)';
+          toast.style.transition = 'all 0.3s ease';
+          setTimeout(function () { toast.remove(); }, 300);
+        }, 3500);
+      }
+
+      // ── 4. CLIENT-SIDE DATA BUILDER (FALLBACK FOR STATIC PREVIEWS) ──────
+      function buildDashboardFromWebinars(webinars) {
+        if (!Array.isArray(webinars) || webinars.length === 0) return null;
+
+        const first = webinars[0] || {};
+        const seriesSlug = first.series || (typeof window.SGCMS_ACTIVE_SERIES !== 'undefined' ? window.SGCMS_ACTIVE_SERIES : 'dominica-pilot');
+        const seriesCategory = first.category || 'Citizenship';
+        const seriesSubcat = first.subcategory || 'dominica';
+
+        const now = Date.now();
+        let completedCount = 0;
+        let upcomingCount = 0;
+
+        let sch = null;
+        try { sch = JSON.parse(localStorage.getItem('sgcms_webinar_schedule') || '{}'); } catch (_) { }
+
+        const sessions = webinars.map(function (w, idx) {
+          const sNo = parseInt(w.session_no || (idx + 1), 10);
+          const startUtc = w.start_utc || '2026-11-19T15:30:00Z';
+          const durationMin = parseInt(w.duration_min || 60, 10);
+
+          const startDate = new Date(startUtc);
+          const startMs = isNaN(startDate.getTime()) ? now : startDate.getTime();
+          const endMs = startMs + (durationMin * 60 * 1000);
+
+          let derivedStatus = (w.event_status || 'upcoming').toLowerCase();
+          if (derivedStatus !== 'cancelled' && derivedStatus !== 'postponed') {
+            if (now > endMs) {
+              derivedStatus = 'ended';
+              completedCount++;
+            } else if (now >= startMs && now <= endMs) {
+              derivedStatus = 'live';
+              upcomingCount++;
+            } else {
+              derivedStatus = 'upcoming';
+              upcomingCount++;
+            }
+          }
+
+          let joinUrl = (w.join_url || '').trim();
+          let regOpen = Boolean(w.registration_open !== false && derivedStatus !== 'ended');
+          let joinVis = w.join_visibility || 'public';
+
+          // Apply local schedule overrides (Preview mode persistence)
+          if (sch && sch.sessions && sch.sessions[sNo]) {
+            const ovr = sch.sessions[sNo];
+            if (typeof ovr.join_url === 'string') joinUrl = ovr.join_url.trim();
+            if (ovr.join_visibility) joinVis = ovr.join_visibility;
+            if (typeof ovr.reg_status !== 'undefined') regOpen = (ovr.reg_status === 'open');
+            if (ovr.event_status) derivedStatus = ovr.event_status;
+          }
+
+          let dateFormatted = 'Scheduled';
+          let timeUtc = '15:30 UTC';
+          let timeDubai = '19:30 GST';
+          let timeKabul = '20:00 AFT';
+          let timeIstanbul = '18:30 TRT';
+
+          try {
+            dateFormatted = new Intl.DateTimeFormat('en-GB', {
+              weekday: 'long', day: 'numeric', month: 'short', year: 'numeric', timeZone: 'UTC'
+            }).format(startDate);
+
+            const fmtTime = function (tz, label) {
+              return new Intl.DateTimeFormat('en-GB', {
+                hour: '2-digit', minute: '2-digit', hour12: false, timeZone: tz
+              }).format(startDate) + ' ' + label;
+            };
+
+            timeUtc = fmtTime('UTC', 'UTC');
+            timeDubai = fmtTime('Asia/Dubai', 'GST');
+            timeKabul = fmtTime('Asia/Kabul', 'AFT');
+            timeIstanbul = fmtTime('Europe/Istanbul', 'TRT');
+          } catch (_) { }
+
+          const titleEn = (w.en && w.en.title) || w.title || ('Session ' + sNo);
+          const titleFa = (w.fa && w.fa.title) || '';
+          const titleAr = (w.ar && w.ar.title) || '';
+          const titleZh = (w.zh && w.zh.title) || '';
+
+          return {
+            session_no: sNo,
+            id: w.id || ('WEB0' + sNo),
+            slug: w.slug || '',
+            category: w.category || seriesCategory,
+            subcategory: w.subcategory || seriesSubcat,
+            title: titleEn,
+            title_en: titleEn,
+            title_fa: titleFa,
+            title_ar: titleAr,
+            title_zh: titleZh,
+            start_utc: startUtc,
+            date_formatted: dateFormatted,
+            time_utc: timeUtc,
+            time_dubai: timeDubai,
+            time_kabul: timeKabul,
+            time_istanbul: timeIstanbul,
+            duration_min: durationMin,
+            event_status: derivedStatus,
+            registration_open: regOpen,
+            join_visibility: joinVis,
+            join_url: joinUrl,
+            has_join_url: Boolean(joinUrl),
+            is_hero: false
+          };
+        });
+
+        sessions.sort(function (a, b) { return a.session_no - b.session_no; });
+
+        // Automatic Cascade: When previous session ends, next upcoming session opens registration
+        for (let i = 0; i < sessions.length; i++) {
+          const curr = sessions[i];
+          const prev = i > 0 ? sessions[i - 1] : null;
+          if (curr.event_status === 'upcoming') {
+            const isEarliestUpcoming = !sessions.slice(0, i).some(s => s.event_status === 'upcoming');
+            if (isEarliestUpcoming || (prev && prev.event_status === 'ended')) {
+              curr.registration_open = true;
+            }
+          } else if (curr.event_status === 'ended') {
+            curr.registration_open = false;
           }
         }
-      }
-    } catch (apiErr) {
-      console.warn('Backend API /admin/api/webinar-get-active.php not reachable, using fallback:', apiErr);
-    }
 
-    // Strategy 2: Pre-loaded window.SGCMS_WEBINARS
-    if (!loaded && typeof window.SGCMS_WEBINARS !== 'undefined' && Array.isArray(window.SGCMS_WEBINARS) && window.SGCMS_WEBINARS.length > 0) {
-      try {
-        const clientData = buildDashboardFromWebinars(window.SGCMS_WEBINARS);
-        if (clientData) {
-          currentSeriesData = clientData;
-          renderSeriesDashboard(clientData);
-          loaded = true;
+        let hero = null;
+        let heroSource = 'auto_upcoming';
+
+        const activeHeroNo = typeof window.SGCMS_HERO_SESSION_NO !== 'undefined' ? window.SGCMS_HERO_SESSION_NO : null;
+        if (activeHeroNo) {
+          hero = sessions.find(function (s) { return s.session_no === Number(activeHeroNo); });
+          if (hero) heroSource = 'manual_pin';
         }
-      } catch (err) {
-        console.error('Error constructing series dashboard from client data:', err);
-      }
-    }
 
-    // Strategy 3: Dynamic fetch from /assets/js/webinars-data.js
-    if (!loaded) {
-      try {
-        const resJs = await fetch('/assets/js/webinars-data.js?v=' + Date.now());
-        if (resJs.ok) {
-          const jsText = await resJs.text();
-          const match = jsText.match(/window\.SGCMS_WEBINARS\s*=\s*(\[[\s\S]*?\]);/);
-          if (match) {
-            const parsed = JSON.parse(match[1]);
-            const clientData = buildDashboardFromWebinars(parsed);
+        if (!hero) {
+          hero = sessions.find(function (s) { return s.event_status === 'live'; });
+          if (hero) heroSource = 'auto_live';
+        }
+
+        if (!hero) {
+          hero = sessions.find(function (s) { return s.event_status === 'upcoming'; });
+          if (hero) heroSource = 'auto_upcoming';
+        }
+
+        if (!hero && sessions.length > 0) {
+          hero = sessions[sessions.length - 1];
+          heroSource = 'series_concluded';
+        }
+
+        if (hero) {
+          hero.is_hero = true;
+          hero.hero_source = heroSource;
+          hero.is_manual_pin = (heroSource === 'manual_pin');
+        }
+
+        const totalSessions = sessions.length;
+        const progressPercent = totalSessions > 0 ? Math.round((completedCount / totalSessions) * 100) : 0;
+        const isComplete = (completedCount >= totalSessions && totalSessions > 0);
+
+        const countryName = seriesSubcat.replace(/-/g, ' ').replace(/\b\w/g, function (c) { return c.toUpperCase(); });
+        const seriesTitle = countryName + ' Citizenship & Residency Series';
+
+        return {
+          success: true,
+          series: {
+            id: seriesSlug,
+            slug: seriesSlug,
+            title: seriesTitle,
+            category: seriesCategory,
+            country: countryName,
+            total_sessions: totalSessions,
+            completed_sessions: completedCount,
+            upcoming_sessions: upcomingCount,
+            progress_percent: progressPercent,
+            is_active: true,
+            is_complete: isComplete
+          },
+          featured_hero_session: hero,
+          sessions: sessions,
+          transition: {
+            is_series_complete: isComplete,
+            notice: isComplete
+              ? 'All sessions in this series have concluded. You can now launch a new series for the website.'
+              : 'Current active series has ' + upcomingCount + ' upcoming session(s). It remains live on the website until all sessions conclude.'
+          }
+        };
+      }
+
+      function renderEmptyState() {
+        const container = document.getElementById('sessionsPipelineContainer');
+        if (container) {
+          container.innerHTML =
+            '<div style="text-align:center; padding:50px 20px; background:var(--card); border:1px dashed var(--border); border-radius:16px;">' +
+            '<i class="fa-solid fa-calendar-xmark" style="font-size:42px; color:var(--gold-bright); margin-bottom:14px; display:block;"></i>' +
+            '<h3 style="color:var(--cream); margin-bottom:8px; font-size:18px;">No Active Webinar Series Found</h3>' +
+            '<p style="color:var(--muted); font-size:13px; max-width:440px; margin:0 auto 20px;">' +
+            'There is currently no active series data. Create a new series to publish it live to the website.' +
+            '</p>' +
+            '<a href="/admin/webinar-create.html" class="btn-create-series" style="display:inline-flex;">' +
+            '<i class="fa-solid fa-plus"></i>' +
+            '<span>Create New Series</span>' +
+            '</a>' +
+            '</div>';
+        }
+      }
+
+      // ── 5. LOAD ACTIVE SERIES DATA ──────────────────────────────────────
+      window.loadActiveSeries = async function () {
+        const refreshIco = document.getElementById('refreshIcon');
+        if (refreshIco) refreshIco.classList.add('fa-spin');
+
+        let loaded = false;
+
+        // Strategy 1: Fetch from backend PHP API
+        try {
+          const res = await fetch('/admin/api/webinar-get-active.php', {
+            credentials: 'include',
+            headers: {
+              'Authorization': 'Bearer ' + token,
+              'X-CMS-Token': token,
+              'X-Auth-Token': token
+            }
+          });
+          if (res.ok) {
+            const ct = res.headers.get('content-type') || '';
+            if (ct.includes('application/json')) {
+              const data = await res.json();
+              if (data && data.success && Array.isArray(data.sessions) && data.sessions.length > 0) {
+                currentSeriesData = data;
+                renderSeriesDashboard(data);
+                loaded = true;
+              }
+            }
+          }
+        } catch (apiErr) {
+          console.warn('Backend API /admin/api/webinar-get-active.php not reachable, using fallback:', apiErr);
+        }
+
+        // Strategy 2: Pre-loaded window.SGCMS_WEBINARS
+        if (!loaded && typeof window.SGCMS_WEBINARS !== 'undefined' && Array.isArray(window.SGCMS_WEBINARS) && window.SGCMS_WEBINARS.length > 0) {
+          try {
+            const clientData = buildDashboardFromWebinars(window.SGCMS_WEBINARS);
             if (clientData) {
               currentSeriesData = clientData;
               renderSeriesDashboard(clientData);
               loaded = true;
             }
+          } catch (err) {
+            console.error('Error constructing series dashboard from client data:', err);
           }
         }
-      } catch (e) {
-        console.warn('Fallback script fetch failed:', e);
-      }
-    }
 
-    // Always reveal dashboard and hide skeletons
-    document.getElementById('loadingSkeletons').style.display = 'none';
-    document.getElementById('contentContainer').style.display = 'block';
-
-    if (!loaded) {
-      renderEmptyState();
-      showToast('No active series found. Click "+ Create New Series" to publish one.', 'error');
-    }
-
-    if (refreshIco) refreshIco.classList.remove('fa-spin');
-  };
-
-  // ── 6. RENDER DASHBOARD ─────────────────────────────────────────────
-  function renderSeriesDashboard(data) {
-    const ser = data.series || {};
-    const hero = data.featured_hero_session || {};
-    const sessions = data.sessions || [];
-    const transition = data.transition || {};
-
-    // 1. Series Card Top
-    document.getElementById('seriesTitle').textContent = ser.title || 'Live Webinar Series';
-    document.getElementById('chipCountry').innerHTML = '<i class="fa-solid fa-flag"></i> ' + escapeHtml(ser.country || 'Dominica');
-    document.getElementById('chipCategory').innerHTML = '<i class="fa-solid fa-passport"></i> ' + escapeHtml(ser.category || 'Citizenship');
-    document.getElementById('chipTotalSessions').innerHTML = '<i class="fa-solid fa-layer-group"></i> ' + (ser.total_sessions || sessions.length) + ' Sessions';
-    document.getElementById('chipSeriesId').innerHTML = '<i class="fa-solid fa-fingerprint"></i> ID: ' + escapeHtml(ser.id || ser.slug || 'dominica-pilot');
-
-    const progressPercent = ser.progress_percent || 0;
-    document.getElementById('progressText').textContent = (ser.completed_sessions || 0) + ' of ' + (ser.total_sessions || sessions.length) + ' (' + progressPercent + '%)';
-    document.getElementById('progressBarFill').style.width = progressPercent + '%';
-
-    // 2. Featured Hero Spotlight
-    if (hero && hero.session_no) {
-      document.getElementById('heroSessionEyebrow').textContent = 'SESSION ' + pad2(hero.session_no) + ' · CURRENTLY PROMOTED';
-      document.getElementById('heroSessionTitleEn').textContent = hero.title_en || hero.title || 'Upcoming Session';
-      document.getElementById('heroSessionTitleFa').textContent = hero.title_fa || '';
-
-      document.getElementById('heroTimeDubai').textContent = hero.time_dubai || '19:30 GST';
-      document.getElementById('heroTimeKabul').textContent = hero.time_kabul || '20:00 AFT';
-      document.getElementById('heroTimeIstanbul').textContent = hero.time_istanbul || '18:30 TRT';
-      document.getElementById('heroTimeUtc').textContent = hero.time_utc || '15:30 UTC';
-
-      document.getElementById('heroDateFormatted').innerHTML = '<i class="fa-regular fa-calendar" style="margin-right:6px"></i> ' + escapeHtml(hero.date_formatted || 'Scheduled');
-
-      const statusBadge = document.getElementById('heroStatusBadge');
-      statusBadge.className = 'status-pill-badge ' + (hero.event_status || 'upcoming');
-      statusBadge.textContent = '● Status: ' + (hero.event_status || 'Upcoming');
-
-      const regBadge = document.getElementById('heroRegStatusBadge');
-      if (hero.registration_open) {
-        regBadge.innerHTML = '<i class="fa-solid fa-circle-check" style="color:var(--green)"></i> Registration Open';
-      } else {
-        regBadge.innerHTML = '<i class="fa-solid fa-lock" style="color:var(--slate)"></i> Registration Closed';
-      }
-
-      const linkBadge = document.getElementById('heroLinkStatusBadge');
-      if (hero.has_join_url) {
-        linkBadge.innerHTML = '<i class="fa-solid fa-video" style="color:var(--green)"></i> Join Link Attached';
-      } else {
-        linkBadge.innerHTML = '<i class="fa-regular fa-clock" style="color:var(--amber)"></i> Link Pending Broadcast';
-      }
-
-      const srcBadge = document.getElementById('heroSourceBadge');
-      const relBtn = document.getElementById('btnReleasePin');
-      const hSrc = hero.hero_source || (hero.is_manual_pin ? 'manual_pin' : 'auto_upcoming');
-
-      if (srcBadge) {
-        if (hSrc === 'manual_pin') {
-          srcBadge.className = 'hero-source-tag manual_pin';
-          srcBadge.innerHTML = '<i class="fa-solid fa-thumbtack"></i> Pinned by Administrator';
-          if (relBtn) relBtn.style.display = 'inline-flex';
-        } else if (hSrc === 'auto_live') {
-          srcBadge.className = 'hero-source-tag auto_live';
-          srcBadge.innerHTML = '<i class="fa-solid fa-tower-broadcast"></i> Auto-Promoted: Live Now';
-          if (relBtn) relBtn.style.display = 'none';
-        } else if (hSrc === 'series_concluded') {
-          srcBadge.className = 'hero-source-tag series_concluded';
-          srcBadge.innerHTML = '<i class="fa-solid fa-flag-checkered"></i> Series Concluded';
-          if (relBtn) relBtn.style.display = 'none';
-        } else {
-          srcBadge.className = 'hero-source-tag auto_upcoming';
-          srcBadge.innerHTML = '<i class="fa-solid fa-wand-magic-sparkles"></i> Auto-Promoted: Earliest Upcoming';
-          if (relBtn) relBtn.style.display = 'none';
+        // Strategy 3: Dynamic fetch from /assets/js/webinars-data.js
+        if (!loaded) {
+          try {
+            const resJs = await fetch('/assets/js/webinars-data.js?v=' + Date.now());
+            if (resJs.ok) {
+              const jsText = await resJs.text();
+              const match = jsText.match(/window\.SGCMS_WEBINARS\s*=\s*(\[[\s\S]*?\]);/);
+              if (match) {
+                const parsed = JSON.parse(match[1]);
+                const clientData = buildDashboardFromWebinars(parsed);
+                if (clientData) {
+                  currentSeriesData = clientData;
+                  renderSeriesDashboard(clientData);
+                  loaded = true;
+                }
+              }
+            }
+          } catch (e) {
+            console.warn('Fallback script fetch failed:', e);
+          }
         }
-      }
 
-      document.getElementById('btnManageHero').onclick = function() {
-        openSessionControlModal(hero.session_no);
+        // Always reveal dashboard and hide skeletons
+        document.getElementById('loadingSkeletons').style.display = 'none';
+        document.getElementById('contentContainer').style.display = 'block';
+
+        if (!loaded) {
+          renderEmptyState();
+          showToast('No active series found. Click "+ Create New Series" to publish one.', 'error');
+        }
+
+        if (refreshIco) refreshIco.classList.remove('fa-spin');
       };
 
-      document.getElementById('heroSpotlightCard').style.display = 'block';
-    } else {
-      document.getElementById('heroSpotlightCard').style.display = 'none';
-    }
+      // ── 6. RENDER DASHBOARD ─────────────────────────────────────────────
+      function renderSeriesDashboard(data) {
+        const ser = data.series || {};
+        const hero = data.featured_hero_session || {};
+        const sessions = data.sessions || [];
+        const transition = data.transition || {};
 
-    // 3. Sessions Pipeline Cards
-    const container = document.getElementById('sessionsPipelineContainer');
-    container.innerHTML = sessions.map(function(s) {
-      const isHero = s.is_hero;
-      const statusCls = s.event_status || 'upcoming';
-      const statusLabel = statusCls === 'ended' ? 'Concluded' : (statusCls === 'live' ? 'Live Now' : (statusCls === 'postponed' ? 'Postponed' : (statusCls === 'cancelled' ? 'Cancelled' : 'Upcoming')));
-      const detailUrl = '/events/' + encodeURIComponent(s.slug) + '/';
+        // 1. Series Card Top
+        document.getElementById('seriesTitle').textContent = ser.title || 'Live Webinar Series';
+        document.getElementById('chipCountry').innerHTML = '<i class="fa-solid fa-flag"></i> ' + escapeHtml(ser.country || 'Dominica');
+        document.getElementById('chipCategory').innerHTML = '<i class="fa-solid fa-passport"></i> ' + escapeHtml(ser.category || 'Citizenship');
+        document.getElementById('chipTotalSessions').innerHTML = '<i class="fa-solid fa-layer-group"></i> ' + (ser.total_sessions || sessions.length) + ' Sessions';
+        document.getElementById('chipSeriesId').innerHTML = '<i class="fa-solid fa-fingerprint"></i> ID: ' + escapeHtml(ser.id || ser.slug || 'dominica-pilot');
 
-      const heroPill = isHero
-        ? '<span class="hero-tag-inline"><i class="fa-solid fa-star"></i> Featured Hero</span>'
-        : '';
+        const progressPercent = ser.progress_percent || 0;
+        document.getElementById('progressText').textContent = (ser.completed_sessions || 0) + ' of ' + (ser.total_sessions || sessions.length) + ' (' + progressPercent + '%)';
+        document.getElementById('progressBarFill').style.width = progressPercent + '%';
 
-      const regPill = s.registration_open
-        ? '<span style="color:var(--green);"><i class="fa-solid fa-circle-check" style="font-size:10px"></i> Reg Open</span>'
-        : '<span style="color:var(--slate);"><i class="fa-solid fa-lock" style="font-size:10px"></i> Reg Closed</span>';
+        // 2. Featured Hero Spotlight
+        if (hero && hero.session_no) {
+          document.getElementById('heroSessionEyebrow').textContent = 'SESSION ' + pad2(hero.session_no) + ' · CURRENTLY PROMOTED';
+          document.getElementById('heroSessionTitleEn').textContent = hero.title_en || hero.title || 'Upcoming Session';
+          document.getElementById('heroSessionTitleFa').textContent = hero.title_fa || '';
 
-      const linkPill = s.has_join_url
-        ? '<span style="color:var(--gold-bright);"><i class="fa-solid fa-link" style="font-size:10px"></i> Link Ready</span>'
-        : '<span style="color:var(--muted2);"><i class="fa-solid fa-link-slash" style="font-size:10px"></i> No Link</span>';
+          document.getElementById('heroTimeDubai').textContent = hero.time_dubai || '19:30 GST';
+          document.getElementById('heroTimeKabul').textContent = hero.time_kabul || '20:00 AFT';
+          document.getElementById('heroTimeIstanbul').textContent = hero.time_istanbul || '18:30 TRT';
+          document.getElementById('heroTimeUtc').textContent = hero.time_utc || '15:30 UTC';
 
-      return '' +
-        '<div class="session-card ' + (isHero ? 'is-hero-active' : '') + '">' +
-          '<div class="session-num-badge">' +
+          document.getElementById('heroDateFormatted').innerHTML = '<i class="fa-regular fa-calendar" style="margin-right:6px"></i> ' + escapeHtml(hero.date_formatted || 'Scheduled');
+
+          const statusBadge = document.getElementById('heroStatusBadge');
+          statusBadge.className = 'status-pill-badge ' + (hero.event_status || 'upcoming');
+          statusBadge.textContent = '● Status: ' + (hero.event_status || 'Upcoming');
+
+          const regBadge = document.getElementById('heroRegStatusBadge');
+          if (hero.registration_open) {
+            regBadge.innerHTML = '<i class="fa-solid fa-circle-check" style="color:var(--green)"></i> Registration Open';
+          } else {
+            regBadge.innerHTML = '<i class="fa-solid fa-lock" style="color:var(--slate)"></i> Registration Closed';
+          }
+
+          const linkBadge = document.getElementById('heroLinkStatusBadge');
+          if (hero.has_join_url) {
+            linkBadge.innerHTML = '<i class="fa-solid fa-video" style="color:var(--green)"></i> Join Link Attached';
+          } else {
+            linkBadge.innerHTML = '<i class="fa-regular fa-clock" style="color:var(--amber)"></i> Link Pending Broadcast';
+          }
+
+          const srcBadge = document.getElementById('heroSourceBadge');
+          const relBtn = document.getElementById('btnReleasePin');
+          const hSrc = hero.hero_source || (hero.is_manual_pin ? 'manual_pin' : 'auto_upcoming');
+
+          if (srcBadge) {
+            if (hSrc === 'manual_pin') {
+              srcBadge.className = 'hero-source-tag manual_pin';
+              srcBadge.innerHTML = '<i class="fa-solid fa-thumbtack"></i> Pinned by Administrator';
+              if (relBtn) relBtn.style.display = 'inline-flex';
+            } else if (hSrc === 'auto_live') {
+              srcBadge.className = 'hero-source-tag auto_live';
+              srcBadge.innerHTML = '<i class="fa-solid fa-tower-broadcast"></i> Auto-Promoted: Live Now';
+              if (relBtn) relBtn.style.display = 'none';
+            } else if (hSrc === 'series_concluded') {
+              srcBadge.className = 'hero-source-tag series_concluded';
+              srcBadge.innerHTML = '<i class="fa-solid fa-flag-checkered"></i> Series Concluded';
+              if (relBtn) relBtn.style.display = 'none';
+            } else {
+              srcBadge.className = 'hero-source-tag auto_upcoming';
+              srcBadge.innerHTML = '<i class="fa-solid fa-wand-magic-sparkles"></i> Auto-Promoted: Earliest Upcoming';
+              if (relBtn) relBtn.style.display = 'none';
+            }
+          }
+
+          document.getElementById('btnManageHero').onclick = function () {
+            openSessionControlModal(hero.session_no);
+          };
+
+          document.getElementById('heroSpotlightCard').style.display = 'block';
+        } else {
+          document.getElementById('heroSpotlightCard').style.display = 'none';
+        }
+
+        // 3. Sessions Pipeline Cards
+        const container = document.getElementById('sessionsPipelineContainer');
+        container.innerHTML = sessions.map(function (s) {
+          const isHero = s.is_hero;
+          const statusCls = s.event_status || 'upcoming';
+          const statusLabel = statusCls === 'ended' ? 'Concluded' : (statusCls === 'live' ? 'Live Now' : (statusCls === 'postponed' ? 'Postponed' : (statusCls === 'cancelled' ? 'Cancelled' : 'Upcoming')));
+          const detailUrl = '/events/' + encodeURIComponent(s.slug) + '/';
+
+          const heroPill = isHero
+            ? '<span class="hero-tag-inline"><i class="fa-solid fa-star"></i> Featured Hero</span>'
+            : '';
+
+          const regPill = s.registration_open
+            ? '<span style="color:var(--green);"><i class="fa-solid fa-circle-check" style="font-size:10px"></i> Reg Open</span>'
+            : '<span style="color:var(--slate);"><i class="fa-solid fa-lock" style="font-size:10px"></i> Reg Closed</span>';
+
+          const linkPill = s.has_join_url
+            ? '<span style="color:var(--gold-bright);"><i class="fa-solid fa-link" style="font-size:10px"></i> Link Ready</span>'
+            : '<span style="color:var(--muted2);"><i class="fa-solid fa-link-slash" style="font-size:10px"></i> No Link</span>';
+
+          return '' +
+            '<div class="session-card ' + (isHero ? 'is-hero-active' : '') + '">' +
+            '<div class="session-num-badge">' +
             '<div class="num-text">' + pad2(s.session_no) + '</div>' +
-          '</div>' +
-          '<div class="session-main-info">' +
+            '</div>' +
+            '<div class="session-main-info">' +
             '<div class="session-eyebrow-row">' +
-              heroPill +
-              '<span style="font-size:11px; font-weight:700; color:var(--gold-bright); text-transform:uppercase; letter-spacing:0.06em;">Session ' + pad2(s.session_no) + '</span>' +
+            heroPill +
+            '<span style="font-size:11px; font-weight:700; color:var(--gold-bright); text-transform:uppercase; letter-spacing:0.06em;">Session ' + pad2(s.session_no) + '</span>' +
             '</div>' +
             '<div class="session-title-en">' + escapeHtml(s.title_en || s.title) + '</div>' +
             (s.title_fa ? '<div class="session-title-fa">' + escapeHtml(s.title_fa) + '</div>' : '') +
             '<div class="session-timing-meta">' +
-              '<span><i class="fa-regular fa-calendar" style="font-size:11px"></i> ' + escapeHtml(s.date_formatted) + '</span>' +
-              '<div class="timing-dot"></div>' +
-              '<span><i class="fa-regular fa-clock" style="font-size:11px"></i> ' + escapeHtml(s.time_utc) + '</span>' +
-              '<div class="timing-dot"></div>' +
-              '<span>' + escapeHtml(s.time_dubai) + ' · ' + escapeHtml(s.time_kabul) + '</span>' +
-              '<div class="timing-dot"></div>' +
-              regPill +
-              '<div class="timing-dot"></div>' +
-              linkPill +
+            '<span><i class="fa-regular fa-calendar" style="font-size:11px"></i> ' + escapeHtml(s.date_formatted) + '</span>' +
+            '<div class="timing-dot"></div>' +
+            '<span><i class="fa-regular fa-clock" style="font-size:11px"></i> ' + escapeHtml(s.time_utc) + '</span>' +
+            '<div class="timing-dot"></div>' +
+            '<span>' + escapeHtml(s.time_dubai) + ' · ' + escapeHtml(s.time_kabul) + '</span>' +
+            '<div class="timing-dot"></div>' +
+            regPill +
+            '<div class="timing-dot"></div>' +
+            linkPill +
             '</div>' +
-          '</div>' +
-          '<div class="session-right-actions">' +
+            '</div>' +
+            '<div class="session-right-actions">' +
             '<span class="status-pill-badge ' + statusCls + '">' + statusLabel + '</span>' +
             '<div class="session-action-buttons-row">' +
-              '<a href="' + detailUrl + '" target="_blank" class="btn-session-link" title="Open public session page">' +
-                '<i class="fa-solid fa-arrow-up-right-from-square"></i> Live Page' +
-              '</a>' +
-              '<button type="button" class="btn-session-control" onclick="openSessionControlModal(' + s.session_no + ')">' +
-                '<i class="fa-solid fa-sliders"></i> Manage Controls' +
-              '</button>' +
+            '<a href="' + detailUrl + '" target="_blank" class="btn-session-link" title="Open public session page">' +
+            '<i class="fa-solid fa-arrow-up-right-from-square"></i> Live Page' +
+            '</a>' +
+            '<button type="button" class="btn-session-control" onclick="openSessionControlModal(' + s.session_no + ')">' +
+            '<i class="fa-solid fa-sliders"></i> Manage Controls' +
+            '</button>' +
             '</div>' +
-          '</div>' +
-        '</div>';
-    }).join('');
+            '</div>' +
+            '</div>';
+        }).join('');
 
-    // 4. Transition notice
-    if (transition.notice) {
-      document.getElementById('transitionNoticeText').textContent = transition.notice;
-    }
-  }
+        // 4. Transition notice
+        if (transition.notice) {
+          document.getElementById('transitionNoticeText').textContent = transition.notice;
+        }
+      }
 
-  // ── 7. MODAL CONTROLS ───────────────────────────────────────────────
-  window.openSessionControlModal = function(sessionNo) {
-    if (!currentSeriesData || !currentSeriesData.sessions) return;
-    const s = currentSeriesData.sessions.find(function(item) { return Number(item.session_no) === Number(sessionNo); });
-    if (!s) return;
+      // ── 7. MODAL CONTROLS ───────────────────────────────────────────────
+      window.openSessionControlModal = function (sessionNo) {
+        if (!currentSeriesData || !currentSeriesData.sessions) return;
+        const s = currentSeriesData.sessions.find(function (item) { return Number(item.session_no) === Number(sessionNo); });
+        if (!s) return;
 
-    document.getElementById('ctrlSessionNo').value = s.session_no;
-    document.getElementById('ctrlSessionId').value = s.id;
+        document.getElementById('ctrlSessionNo').value = s.session_no;
+        document.getElementById('ctrlSessionId').value = s.id;
 
-    document.getElementById('modalHeaderTitle').textContent = 'Manage Session ' + pad2(s.session_no) + ' Controls';
-    document.getElementById('modalSessionSubtitle').textContent = (s.title_en || s.title) + ' (' + s.date_formatted + ')';
+        document.getElementById('modalHeaderTitle').textContent = 'Manage Session ' + pad2(s.session_no) + ' Controls';
+        document.getElementById('modalSessionSubtitle').textContent = (s.title_en || s.title) + ' (' + s.date_formatted + ')';
 
-    document.getElementById('ctrlJoinUrl').value = s.join_url || '';
-    setJoinVisibility(s.join_visibility || 'public');
-    setRegistrationStatus(Boolean(s.registration_open));
+        document.getElementById('ctrlJoinUrl').value = s.join_url || '';
+        setJoinVisibility(s.join_visibility || 'public');
+        setRegistrationStatus(Boolean(s.registration_open));
 
-    document.getElementById('ctrlEventStatus').value = s.event_status || 'upcoming';
-    document.getElementById('ctrlSetAsHero').checked = Boolean(s.is_hero);
+        document.getElementById('ctrlEventStatus').value = s.event_status || 'upcoming';
+        document.getElementById('ctrlSetAsHero').checked = Boolean(s.is_hero);
 
-    document.getElementById('sessionControlModal').classList.add('show');
-  };
+        document.getElementById('sessionControlModal').classList.add('show');
+      };
 
-  window.closeSessionControlModal = function() {
-    document.getElementById('sessionControlModal').classList.remove('show');
-  };
+      window.closeSessionControlModal = function () {
+        document.getElementById('sessionControlModal').classList.remove('show');
+      };
 
-  window.setJoinVisibility = function(val) {
-    document.getElementById('ctrlJoinVisibility').value = val;
-    document.getElementById('segVisPublic').classList.toggle('active', val === 'public');
-    document.getElementById('segVisRegistrants').classList.toggle('active', val === 'registrants');
-  };
+      window.setJoinVisibility = function (val) {
+        document.getElementById('ctrlJoinVisibility').value = val;
+        document.getElementById('segVisPublic').classList.toggle('active', val === 'public');
+        document.getElementById('segVisRegistrants').classList.toggle('active', val === 'registrants');
+      };
 
-  window.setRegistrationStatus = function(val) {
-    document.getElementById('ctrlRegOpen').value = String(val);
-    document.getElementById('segRegOpen').classList.toggle('active', val === true);
-    document.getElementById('segRegClosed').classList.toggle('active', val === false);
-  };
+      window.setRegistrationStatus = function (val) {
+        document.getElementById('ctrlRegOpen').value = String(val);
+        document.getElementById('segRegOpen').classList.toggle('active', val === true);
+        document.getElementById('segRegClosed').classList.toggle('active', val === false);
+      };
 
-  window.saveSessionControls = async function(e) {
-    e.preventDefault();
-    const btn = document.getElementById('btnSaveControls');
-    btn.disabled = true;
-    btn.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i> <span>Saving & Syncing…</span>';
+      window.saveSessionControls = async function (e) {
+        e.preventDefault();
+        const btn = document.getElementById('btnSaveControls');
+        btn.disabled = true;
+        btn.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i> <span>Saving & Syncing…</span>';
 
-    const sessionNo = parseInt(document.getElementById('ctrlSessionNo').value, 10);
-    const sessionId = document.getElementById('ctrlSessionId').value;
-    const joinUrl = document.getElementById('ctrlJoinUrl').value.trim();
-    const joinVisibility = document.getElementById('ctrlJoinVisibility').value;
-    const regOpen = document.getElementById('ctrlRegOpen').value === 'true';
-    const eventStatus = document.getElementById('ctrlEventStatus').value;
-    const setAsHero = document.getElementById('ctrlSetAsHero').checked;
+        const sessionNo = parseInt(document.getElementById('ctrlSessionNo').value, 10);
+        const sessionId = document.getElementById('ctrlSessionId').value;
+        const joinUrl = document.getElementById('ctrlJoinUrl').value.trim();
+        const joinVisibility = document.getElementById('ctrlJoinVisibility').value;
+        const regOpen = document.getElementById('ctrlRegOpen').value === 'true';
+        const eventStatus = document.getElementById('ctrlEventStatus').value;
+        const setAsHero = document.getElementById('ctrlSetAsHero').checked;
 
-    const payload = {
-      session_no: sessionNo,
-      id: sessionId,
-      join_url: joinUrl,
-      join_visibility: joinVisibility,
-      registration_open: regOpen,
-      event_status: eventStatus,
-      set_as_hero: setAsHero
-    };
+        const payload = {
+          session_no: sessionNo,
+          id: sessionId,
+          join_url: joinUrl,
+          join_visibility: joinVisibility,
+          registration_open: regOpen,
+          event_status: eventStatus,
+          set_as_hero: setAsHero
+        };
 
-    try {
-      const res = await fetch('/admin/api/webinar-update-session.php', {
-        method: 'POST',
-        credentials: 'include',
-        headers: {
-          'Content-Type': 'application/json',
-          'Authorization': 'Bearer ' + token,
-          'X-CMS-Token': token,
-          'X-Auth-Token': token
-        },
-        body: JSON.stringify(payload)
-      });
-      let data = null;
-      try { data = await res.json(); } catch (_) {}
+        try {
+          const res = await fetch('/admin/api/webinar-update-session.php', {
+            method: 'POST',
+            credentials: 'include',
+            headers: {
+              'Content-Type': 'application/json',
+              'Authorization': 'Bearer ' + token,
+              'X-CMS-Token': token,
+              'X-Auth-Token': token
+            },
+            body: JSON.stringify(payload)
+          });
+          let data = null;
+          try { data = await res.json(); } catch (_) { }
 
-      if (res.ok && data && data.success) {
-        showToast('Session ' + pad2(sessionNo) + ' updated & live website synchronized!', 'success');
-        closeSessionControlModal();
-        await loadActiveSeries();
-      } else {
-        // Fallback for preview mode
-        if (currentSeriesData && currentSeriesData.sessions) {
-          const s = currentSeriesData.sessions.find(function(item) { return Number(item.session_no) === Number(sessionNo); });
-          if (s) {
-            s.join_url = joinUrl;
-            s.has_join_url = Boolean(joinUrl);
-            s.join_visibility = joinVisibility;
-            s.registration_open = regOpen;
-            s.event_status = eventStatus;
-            if (setAsHero) {
-              currentSeriesData.sessions.forEach(function(item) { item.is_hero = false; });
-              s.is_hero = true;
-              currentSeriesData.featured_hero_session = s;
+          if (res.ok && data && data.success) {
+            showToast('Session ' + pad2(sessionNo) + ' updated & live website synchronized!', 'success');
+            closeSessionControlModal();
+            await loadActiveSeries();
+          } else {
+            // Fallback for preview mode
+            if (currentSeriesData && currentSeriesData.sessions) {
+              const s = currentSeriesData.sessions.find(function (item) { return Number(item.session_no) === Number(sessionNo); });
+              if (s) {
+                s.join_url = joinUrl;
+                s.has_join_url = Boolean(joinUrl);
+                s.join_visibility = joinVisibility;
+                s.registration_open = regOpen;
+                s.event_status = eventStatus;
+                if (setAsHero) {
+                  currentSeriesData.sessions.forEach(function (item) { item.is_hero = false; });
+                  s.is_hero = true;
+                  currentSeriesData.featured_hero_session = s;
+                }
+                renderSeriesDashboard(currentSeriesData);
+                closeSessionControlModal();
+                showToast('Session updated locally (Preview Mode). Sync to live server requires PHP hosting.', 'success');
+                return;
+              }
+            }
+            showToast((data && data.error) ? data.error : 'Failed to update session controls.', 'error');
+          }
+        } catch (err) {
+          if (currentSeriesData && currentSeriesData.sessions) {
+            const s = currentSeriesData.sessions.find(function (item) { return Number(item.session_no) === Number(sessionNo); });
+            if (s) {
+              s.join_url = joinUrl;
+              s.has_join_url = Boolean(joinUrl);
+              s.join_visibility = joinVisibility;
+              s.registration_open = regOpen;
+              s.event_status = eventStatus;
+              if (setAsHero) {
+                currentSeriesData.sessions.forEach(function (item) { item.is_hero = false; });
+                s.is_hero = true;
+                currentSeriesData.featured_hero_session = s;
+              }
+              renderSeriesDashboard(currentSeriesData);
+              closeSessionControlModal();
+              showToast('Session updated locally (Preview Mode). Sync to live server requires PHP hosting.', 'success');
+              return;
+            }
+          }
+          showToast('Network error while saving session controls.', 'error');
+        } finally {
+          btn.disabled = false;
+          btn.innerHTML = '<i class="fa-solid fa-cloud-arrow-up"></i> <span>Save & Sync Live Website</span>';
+        }
+      };
+
+      // ── 8. RELEASE HERO PIN ─────────────────────────────────────────────
+      window.releaseHeroPin = async function () {
+        if (!currentSeriesData || !currentSeriesData.featured_hero_session) return;
+        const heroNo = currentSeriesData.featured_hero_session.session_no;
+        showToast('Releasing manual pin and restoring automatic promotion…');
+        try {
+          const res = await fetch('/admin/api/webinar-update-session.php', {
+            method: 'POST',
+            headers: {
+              'Content-Type': 'application/json',
+              'Authorization': 'Bearer ' + token,
+              'X-CMS-Token': token,
+              'X-Auth-Token': token
+            },
+            body: JSON.stringify({
+              session_no: heroNo,
+              set_as_hero: false
+            })
+          });
+          let data = null;
+          try { data = await res.json(); } catch (_) { }
+          if (data && data.success) {
+            showToast('Manual pin released. Automatic chronological promotion restored!', 'success');
+            await loadActiveSeries();
+          } else {
+            if (currentSeriesData && currentSeriesData.sessions) {
+              currentSeriesData.sessions.forEach(function (item) { item.is_hero = false; });
+              const upcoming = currentSeriesData.sessions.find(function (item) { return item.event_status === 'upcoming'; }) || currentSeriesData.sessions[0];
+              if (upcoming) {
+                upcoming.is_hero = true;
+                upcoming.hero_source = 'auto_upcoming';
+                currentSeriesData.featured_hero_session = upcoming;
+              }
+              renderSeriesDashboard(currentSeriesData);
+              showToast('Manual pin released locally (Preview Mode).', 'success');
+              return;
+            }
+            showToast((data && data.error) ? data.error : 'Failed to release pin.', 'error');
+          }
+        } catch (e) {
+          if (currentSeriesData && currentSeriesData.sessions) {
+            currentSeriesData.sessions.forEach(function (item) { item.is_hero = false; });
+            const upcoming = currentSeriesData.sessions.find(function (item) { return item.event_status === 'upcoming'; }) || currentSeriesData.sessions[0];
+            if (upcoming) {
+              upcoming.is_hero = true;
+              upcoming.hero_source = 'auto_upcoming';
+              currentSeriesData.featured_hero_session = upcoming;
             }
             renderSeriesDashboard(currentSeriesData);
-            closeSessionControlModal();
-            showToast('Session updated locally (Preview Mode). Sync to live server requires PHP hosting.', 'success');
+            showToast('Manual pin released locally (Preview Mode).', 'success');
             return;
           }
+          showToast('Network error while releasing pin.', 'error');
         }
-        showToast((data && data.error) ? data.error : 'Failed to update session controls.', 'error');
+      };
+
+      // ── 9. UTILITIES ───────────────────────────────────────────────────
+      function pad2(num) {
+        return String(num).padStart(2, '0');
       }
-    } catch (err) {
-      if (currentSeriesData && currentSeriesData.sessions) {
-        const s = currentSeriesData.sessions.find(function(item) { return Number(item.session_no) === Number(sessionNo); });
-        if (s) {
-          s.join_url = joinUrl;
-          s.has_join_url = Boolean(joinUrl);
-          s.join_visibility = joinVisibility;
-          s.registration_open = regOpen;
-          s.event_status = eventStatus;
-          if (setAsHero) {
-            currentSeriesData.sessions.forEach(function(item) { item.is_hero = false; });
-            s.is_hero = true;
-            currentSeriesData.featured_hero_session = s;
-          }
-          renderSeriesDashboard(currentSeriesData);
-          closeSessionControlModal();
-          showToast('Session updated locally (Preview Mode). Sync to live server requires PHP hosting.', 'success');
-          return;
-        }
+
+      function escapeHtml(str) {
+        if (!str) return '';
+        return String(str)
+          .replace(/&/g, '&amp;')
+          .replace(/</g, '&lt;')
+          .replace(/>/g, '&gt;')
+          .replace(/"/g, '&quot;')
+          .replace(/'/g, '&#39;');
       }
-      showToast('Network error while saving session controls.', 'error');
-    } finally {
-      btn.disabled = false;
-      btn.innerHTML = '<i class="fa-solid fa-cloud-arrow-up"></i> <span>Save & Sync Live Website</span>';
-    }
-  };
 
-  // ── 8. RELEASE HERO PIN ─────────────────────────────────────────────
-  window.releaseHeroPin = async function() {
-    if (!currentSeriesData || !currentSeriesData.featured_hero_session) return;
-    const heroNo = currentSeriesData.featured_hero_session.session_no;
-    showToast('Releasing manual pin and restoring automatic promotion…');
-    try {
-      const res = await fetch('/admin/api/webinar-update-session.php', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-          'Authorization': 'Bearer ' + token,
-          'X-CMS-Token': token,
-          'X-Auth-Token': token
-        },
-        body: JSON.stringify({
-          session_no: heroNo,
-          set_as_hero: false
-        })
-      });
-      let data = null;
-      try { data = await res.json(); } catch (_) {}
-      if (data && data.success) {
-        showToast('Manual pin released. Automatic chronological promotion restored!', 'success');
-        await loadActiveSeries();
-      } else {
-        if (currentSeriesData && currentSeriesData.sessions) {
-          currentSeriesData.sessions.forEach(function(item) { item.is_hero = false; });
-          const upcoming = currentSeriesData.sessions.find(function(item) { return item.event_status === 'upcoming'; }) || currentSeriesData.sessions[0];
-          if (upcoming) {
-            upcoming.is_hero = true;
-            upcoming.hero_source = 'auto_upcoming';
-            currentSeriesData.featured_hero_session = upcoming;
-          }
-          renderSeriesDashboard(currentSeriesData);
-          showToast('Manual pin released locally (Preview Mode).', 'success');
-          return;
-        }
-        showToast((data && data.error) ? data.error : 'Failed to release pin.', 'error');
-      }
-    } catch (e) {
-      if (currentSeriesData && currentSeriesData.sessions) {
-        currentSeriesData.sessions.forEach(function(item) { item.is_hero = false; });
-        const upcoming = currentSeriesData.sessions.find(function(item) { return item.event_status === 'upcoming'; }) || currentSeriesData.sessions[0];
-        if (upcoming) {
-          upcoming.is_hero = true;
-          upcoming.hero_source = 'auto_upcoming';
-          currentSeriesData.featured_hero_session = upcoming;
-        }
-        renderSeriesDashboard(currentSeriesData);
-        showToast('Manual pin released locally (Preview Mode).', 'success');
-        return;
-      }
-      showToast('Network error while releasing pin.', 'error');
-    }
-  };
+      // ── 10. INIT ────────────────────────────────────────────────────────
+      loadActiveSeries();
 
-  // ── 9. UTILITIES ───────────────────────────────────────────────────
-  function pad2(num) {
-    return String(num).padStart(2, '0');
-  }
-
-  function escapeHtml(str) {
-    if (!str) return '';
-    return String(str)
-      .replace(/&/g, '&amp;')
-      .replace(/</g, '&lt;')
-      .replace(/>/g, '&gt;')
-      .replace(/"/g, '&quot;')
-      .replace(/'/g, '&#39;');
-  }
-
-  // ── 10. INIT ────────────────────────────────────────────────────────
-  loadActiveSeries();
-
-})();
-</script>
+    })();
+  </script>
 
 </body>
 
