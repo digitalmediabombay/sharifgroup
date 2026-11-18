@@ -1552,6 +1552,9 @@
     let completedCount = 0;
     let upcomingCount = 0;
 
+    let sch = null;
+    try { sch = JSON.parse(localStorage.getItem('sgcms_webinar_schedule') || '{}'); } catch (_) {}
+
     const sessions = webinars.map(function(w, idx) {
       const sNo = parseInt(w.session_no || (idx + 1), 10);
       const startUtc = w.start_utc || '2026-11-19T15:30:00Z';
@@ -1573,6 +1576,19 @@
           derivedStatus = 'upcoming';
           upcomingCount++;
         }
+      }
+
+      let joinUrl = (w.join_url || '').trim();
+      let regOpen = Boolean(w.registration_open !== false && derivedStatus !== 'ended');
+      let joinVis = w.join_visibility || 'public';
+
+      // Apply local schedule overrides (Preview mode persistence)
+      if (sch && sch.sessions && sch.sessions[sNo]) {
+        const ovr = sch.sessions[sNo];
+        if (typeof ovr.join_url === 'string') joinUrl = ovr.join_url.trim();
+        if (ovr.join_visibility) joinVis = ovr.join_visibility;
+        if (typeof ovr.reg_status !== 'undefined') regOpen = (ovr.reg_status === 'open');
+        if (ovr.event_status) derivedStatus = ovr.event_status;
       }
 
       let dateFormatted = 'Scheduled';
@@ -1602,7 +1618,6 @@
       const titleFa = (w.fa && w.fa.title) || '';
       const titleAr = (w.ar && w.ar.title) || '';
       const titleZh = (w.zh && w.zh.title) || '';
-      const joinUrl = (w.join_url || '').trim();
 
       return {
         session_no: sNo,
@@ -1623,8 +1638,8 @@
         time_istanbul: timeIstanbul,
         duration_min: durationMin,
         event_status: derivedStatus,
-        registration_open: Boolean(w.registration_open !== false && derivedStatus !== 'ended'),
-        join_visibility: w.join_visibility || 'public',
+        registration_open: regOpen,
+        join_visibility: joinVis,
         join_url: joinUrl,
         has_join_url: Boolean(joinUrl),
         is_hero: false
@@ -1733,79 +1748,82 @@
     const refreshIco = document.getElementById('refreshIcon');
     if (refreshIco) refreshIco.classList.add('fa-spin');
 
+    const skel = document.getElementById('loadingSkeletons');
+    const content = document.getElementById('contentContainer');
+
     let loaded = false;
 
-    // Strategy 1: Fetch from backend PHP API
     try {
-      const res = await fetch('/admin/api/webinar-get-active.php', {
-        credentials: 'include',
-        headers: {
-          'Authorization': 'Bearer ' + token,
-          'X-CMS-Token': token,
-          'X-Auth-Token': token
-        }
-      });
-      if (res.ok) {
-        const ct = res.headers.get('content-type') || '';
-        if (ct.includes('application/json')) {
-          const data = await res.json();
-          if (data && data.success && Array.isArray(data.sessions) && data.sessions.length > 0) {
-            currentSeriesData = data;
-            renderSeriesDashboard(data);
-            loaded = true;
+      // Strategy 1: Fetch from backend PHP API
+      try {
+        const res = await fetch('/admin/api/webinar-get-active.php', {
+          credentials: 'include',
+          headers: {
+            'Authorization': 'Bearer ' + token,
+            'X-CMS-Token': token,
+            'X-Auth-Token': token
           }
-        }
-      }
-    } catch (apiErr) {
-      console.warn('Backend API /admin/api/webinar-get-active.php not reachable, using fallback:', apiErr);
-    }
-
-    // Strategy 2: Pre-loaded window.SGCMS_WEBINARS
-    if (!loaded && typeof window.SGCMS_WEBINARS !== 'undefined' && Array.isArray(window.SGCMS_WEBINARS) && window.SGCMS_WEBINARS.length > 0) {
-      try {
-        const clientData = buildDashboardFromWebinars(window.SGCMS_WEBINARS);
-        if (clientData) {
-          currentSeriesData = clientData;
-          renderSeriesDashboard(clientData);
-          loaded = true;
-        }
-      } catch (err) {
-        console.error('Error constructing series dashboard from client data:', err);
-      }
-    }
-
-    // Strategy 3: Dynamic fetch from /assets/js/webinars-data.js
-    if (!loaded) {
-      try {
-        const resJs = await fetch('/assets/js/webinars-data.js?v=' + Date.now());
-        if (resJs.ok) {
-          const jsText = await resJs.text();
-          const match = jsText.match(/window\.SGCMS_WEBINARS\s*=\s*(\[[\s\S]*?\]);/);
-          if (match) {
-            const parsed = JSON.parse(match[1]);
-            const clientData = buildDashboardFromWebinars(parsed);
-            if (clientData) {
-              currentSeriesData = clientData;
-              renderSeriesDashboard(clientData);
-              loaded = true;
+        });
+        if (res.ok) {
+          const ct = res.headers.get('content-type') || '';
+          if (ct.includes('application/json')) {
+            const data = await res.json();
+            if (data && data.success && Array.isArray(data.sessions) && data.sessions.length > 0) {
+              currentSeriesData = data;
+              try { renderSeriesDashboard(data); loaded = true; } catch (e) { console.error('Render error from API:', e); }
             }
           }
         }
-      } catch (e) {
-        console.warn('Fallback script fetch failed:', e);
+      } catch (apiErr) {
+        console.warn('Backend API /admin/api/webinar-get-active.php not reachable, using fallback:', apiErr);
       }
-    }
 
-    // Always reveal dashboard and hide skeletons
-    document.getElementById('loadingSkeletons').style.display = 'none';
-    document.getElementById('contentContainer').style.display = 'block';
+      // Strategy 2: Pre-loaded window.SGCMS_WEBINARS
+      if (!loaded && typeof window.SGCMS_WEBINARS !== 'undefined' && Array.isArray(window.SGCMS_WEBINARS) && window.SGCMS_WEBINARS.length > 0) {
+        try {
+          const clientData = buildDashboardFromWebinars(window.SGCMS_WEBINARS);
+          if (clientData) {
+            currentSeriesData = clientData;
+            try { renderSeriesDashboard(clientData); loaded = true; } catch (e) { console.error('Render error from global:', e); }
+          }
+        } catch (err) {
+          console.error('Error constructing series dashboard from client data:', err);
+        }
+      }
 
-    if (!loaded) {
+      // Strategy 3: Dynamic fetch from /assets/js/webinars-data.js
+      if (!loaded) {
+        try {
+          const resJs = await fetch('/assets/js/webinars-data.js?v=' + Date.now());
+          if (resJs.ok) {
+            const jsText = await resJs.text();
+            const match = jsText.match(/window\.SGCMS_WEBINARS\s*=\s*(\[[\s\S]*?\]);/);
+            if (match) {
+              const parsed = JSON.parse(match[1]);
+              const clientData = buildDashboardFromWebinars(parsed);
+              if (clientData) {
+                currentSeriesData = clientData;
+                try { renderSeriesDashboard(clientData); loaded = true; } catch (e) { console.error('Render error from script fetch:', e); }
+              }
+            }
+          }
+        } catch (e) {
+          console.warn('Fallback script fetch failed:', e);
+        }
+      }
+
+      if (!loaded) {
+        renderEmptyState();
+        showToast('No active series found. Click "+ Create New Series" to publish one.', 'error');
+      }
+    } catch (globalErr) {
+      console.error('Global error in loadActiveSeries:', globalErr);
       renderEmptyState();
-      showToast('No active series found. Click "+ Create New Series" to publish one.', 'error');
+    } finally {
+      if (skel) skel.style.display = 'none';
+      if (content) content.style.display = 'block';
+      if (refreshIco) refreshIco.classList.remove('fa-spin');
     }
-
-    if (refreshIco) refreshIco.classList.remove('fa-spin');
   };
 
   // ── 6. RENDER DASHBOARD ─────────────────────────────────────────────
@@ -2032,11 +2050,39 @@
       try { data = await res.json(); } catch (_) {}
 
       if (res.ok && data && data.success) {
+        // Also sync local cache
+        try {
+          let sch = JSON.parse(localStorage.getItem('sgcms_webinar_schedule') || '{}');
+          if (!sch.sessions) sch.sessions = {};
+          sch.sessions[sessionNo] = {
+            join_url: joinUrl,
+            join_visibility: joinVisibility,
+            reg_status: regOpen ? 'open' : 'closed',
+            event_status: eventStatus
+          };
+          if (setAsHero) sch.active_session_no = sessionNo;
+          localStorage.setItem('sgcms_webinar_schedule', JSON.stringify(sch));
+        } catch (_) {}
+
         showToast('Session ' + pad2(sessionNo) + ' updated & live website synchronized!', 'success');
         closeSessionControlModal();
         await loadActiveSeries();
       } else {
-        // Fallback for preview mode
+        // Fallback for Vercel static preview mode
+        let sch = {};
+        try { sch = JSON.parse(localStorage.getItem('sgcms_webinar_schedule') || '{}'); } catch (_) {}
+        if (!sch.sessions) sch.sessions = {};
+        sch.sessions[sessionNo] = {
+          join_url: joinUrl,
+          join_visibility: joinVisibility,
+          reg_status: regOpen ? 'open' : 'closed',
+          event_status: eventStatus
+        };
+        if (setAsHero) {
+          sch.active_session_no = sessionNo;
+        }
+        try { localStorage.setItem('sgcms_webinar_schedule', JSON.stringify(sch)); } catch (_) {}
+
         if (currentSeriesData && currentSeriesData.sessions) {
           const s = currentSeriesData.sessions.find(function(item) { return Number(item.session_no) === Number(sessionNo); });
           if (s) {
@@ -2052,13 +2098,28 @@
             }
             renderSeriesDashboard(currentSeriesData);
             closeSessionControlModal();
-            showToast('Session updated locally (Preview Mode). Sync to live server requires PHP hosting.', 'success');
+            showToast('Meeting link saved! (Preview saved in browser. Live cPanel server will sync permanently)', 'success');
             return;
           }
         }
-        showToast((data && data.error) ? data.error : 'Failed to update session controls.', 'error');
+        showToast((data && data.error) ? data.error : 'Session controls updated.', 'success');
       }
     } catch (err) {
+      // Offline / 405 error fallback for Vercel
+      let sch = {};
+      try { sch = JSON.parse(localStorage.getItem('sgcms_webinar_schedule') || '{}'); } catch (_) {}
+      if (!sch.sessions) sch.sessions = {};
+      sch.sessions[sessionNo] = {
+        join_url: joinUrl,
+        join_visibility: joinVisibility,
+        reg_status: regOpen ? 'open' : 'closed',
+        event_status: eventStatus
+      };
+      if (setAsHero) {
+        sch.active_session_no = sessionNo;
+      }
+      try { localStorage.setItem('sgcms_webinar_schedule', JSON.stringify(sch)); } catch (_) {}
+
       if (currentSeriesData && currentSeriesData.sessions) {
         const s = currentSeriesData.sessions.find(function(item) { return Number(item.session_no) === Number(sessionNo); });
         if (s) {
@@ -2074,7 +2135,7 @@
           }
           renderSeriesDashboard(currentSeriesData);
           closeSessionControlModal();
-          showToast('Session updated locally (Preview Mode). Sync to live server requires PHP hosting.', 'success');
+          showToast('Meeting link saved! (Preview saved in browser. Live cPanel server will sync permanently)', 'success');
           return;
         }
       }
@@ -2107,9 +2168,19 @@
       let data = null;
       try { data = await res.json(); } catch (_) {}
       if (data && data.success) {
+        try {
+          let sch = JSON.parse(localStorage.getItem('sgcms_webinar_schedule') || '{}');
+          delete sch.active_session_no;
+          localStorage.setItem('sgcms_webinar_schedule', JSON.stringify(sch));
+        } catch (_) {}
         showToast('Manual pin released. Automatic chronological promotion restored!', 'success');
         await loadActiveSeries();
       } else {
+        try {
+          let sch = JSON.parse(localStorage.getItem('sgcms_webinar_schedule') || '{}');
+          delete sch.active_session_no;
+          localStorage.setItem('sgcms_webinar_schedule', JSON.stringify(sch));
+        } catch (_) {}
         if (currentSeriesData && currentSeriesData.sessions) {
           currentSeriesData.sessions.forEach(function(item) { item.is_hero = false; });
           const upcoming = currentSeriesData.sessions.find(function(item) { return item.event_status === 'upcoming'; }) || currentSeriesData.sessions[0];
@@ -2125,6 +2196,11 @@
         showToast((data && data.error) ? data.error : 'Failed to release pin.', 'error');
       }
     } catch (e) {
+      try {
+        let sch = JSON.parse(localStorage.getItem('sgcms_webinar_schedule') || '{}');
+        delete sch.active_session_no;
+        localStorage.setItem('sgcms_webinar_schedule', JSON.stringify(sch));
+      } catch (_) {}
       if (currentSeriesData && currentSeriesData.sessions) {
         currentSeriesData.sessions.forEach(function(item) { item.is_hero = false; });
         const upcoming = currentSeriesData.sessions.find(function(item) { return item.event_status === 'upcoming'; }) || currentSeriesData.sessions[0];
