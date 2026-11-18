@@ -6,11 +6,10 @@
 Sharif-Webinars-Demo_1/
 sharif-partners-demo/
 
-# Sensitive data files
-data/inquiries.json
-data/event_registrations.json
-data/webinar_series.json
-data/blog_posts.json
+# Sensitive data files & internal storage
+data/
+data/*
+admin/api/*.json
 admin/api/.auth_tokens.json
 
 # Local scratch and scripts

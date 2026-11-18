@@ -141,6 +141,11 @@
       "source": "/zh/webinars/:path*",
       "destination": "/zh/events/:path*",
       "permanent": true
+    },
+    {
+      "source": "/data/:path*",
+      "destination": "/404.html",
+      "permanent": false
     }
   ],
   "rewrites": [
