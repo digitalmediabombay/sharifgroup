@@ -720,12 +720,12 @@ j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
 <section class="relative min-h-[60vh] flex flex-col justify-center items-center text-center px-4 sm:px-6 bg-neutral-950 border-b border-neutral-200 overflow-hidden pt-36 pb-20">
 <div class="absolute inset-0 z-0">
 <div class="dominica-hero-slide absolute inset-0 bg-cover bg-center transition-opacity duration-1000" style="opacity: 1; background-image: linear-gradient(rgba(11,15,20,0.55), rgba(11,15,20,0.65)), url('https://greeklist.co.uk/wp-content/uploads/Nafplio-2.jpg');"></div>
-<div class="dominica-hero-slide absolute inset-0 bg-cover bg-center transition-opacity duration-1000" style="opacity: 0;" data-bg="linear-gradient(rgba(11,15,20,0.55), rgba(11,15,20,0.65)), url('https://iso.500px.com/wp-content/uploads/2016/07/stock-photo-165374217.jpg');"></div>
-<div class="dominica-hero-slide absolute inset-0 bg-cover bg-center transition-opacity duration-1000" style="opacity: 0;" data-bg="linear-gradient(rgba(11,15,20,0.55), rgba(11,15,20,0.65)), url('https://idsb.tmgrup.com.tr/ly/uploads/images/2024/01/16/310379.jpg');"></div>
-<div class="dominica-hero-slide absolute inset-0 bg-cover bg-center transition-opacity duration-1000" style="opacity: 0;" data-bg="linear-gradient(rgba(11,15,20,0.55), rgba(11,15,20,0.65)), url('https://upload.wikimedia.org/wikipedia/commons/thumb/6/68/Athens_Acropolis_at_Daybreak.jpg/1280px-Athens_Acropolis_at_Daybreak.jpg?utm_source=en.wikipedia.org&amp;utm_campaign=index&amp;utm_content=thumbnail');"></div>
-<div class="dominica-hero-slide absolute inset-0 bg-cover bg-center transition-opacity duration-1000" style="opacity: 0;" data-bg="linear-gradient(rgba(11,15,20,0.55), rgba(11,15,20,0.65)), url('https://www.en-vols.com/wp-content/uploads/afmm/2026/05/shutterstock_-Sven-Hansche_Vue-Aerienne-de-la-ville-de-Galatas-et-de-lile-de-Poros-en-face-scaled.jpg');"></div>
-<div class="dominica-hero-slide absolute inset-0 bg-cover bg-center transition-opacity duration-1000" style="opacity: 0;" data-bg="linear-gradient(rgba(11,15,20,0.55), rgba(11,15,20,0.65)), url('https://greektraveltellers.com/images/Blog/Monastiraki%20guide/Monastiraki-square-things-to-do.jpg');"></div>
-<div class="dominica-hero-slide absolute inset-0 bg-cover bg-center transition-opacity duration-1000" style="opacity: 0;" data-bg="linear-gradient(rgba(11,15,20,0.55), rgba(11,15,20,0.65)), url('https://thirdeyetraveller.com/wp-content/uploads/Little-Kook-Athens-Greece-11-1400x1050.jpg');"></div>
+<div class="dominica-hero-slide absolute inset-0 bg-cover bg-center transition-opacity duration-1000" style="opacity: 0;" data-bg="linear-gradient(rgba(11,15,20,0.55), rgba(11,15,20,0.65)), url('https://iso.500px.com/wp-content/uploads/2016/07/stock-photo-165374217.jpg')"></div>
+<div class="dominica-hero-slide absolute inset-0 bg-cover bg-center transition-opacity duration-1000" style="opacity: 0;" data-bg="linear-gradient(rgba(11,15,20,0.55), rgba(11,15,20,0.65)), url('https://idsb.tmgrup.com.tr/ly/uploads/images/2024/01/16/310379.jpg')"></div>
+<div class="dominica-hero-slide absolute inset-0 bg-cover bg-center transition-opacity duration-1000" style="opacity: 0;" data-bg="linear-gradient(rgba(11,15,20,0.55), rgba(11,15,20,0.65)), url('https://upload.wikimedia.org/wikipedia/commons/thumb/6/68/Athens_Acropolis_at_Daybreak.jpg/1280px-Athens_Acropolis_at_Daybreak.jpg?utm_source=en.wikipedia.org&amp;utm_campaign=index&amp;utm_content=thumbnail')"></div>
+<div class="dominica-hero-slide absolute inset-0 bg-cover bg-center transition-opacity duration-1000" style="opacity: 0;" data-bg="linear-gradient(rgba(11,15,20,0.55), rgba(11,15,20,0.65)), url('https://www.en-vols.com/wp-content/uploads/afmm/2026/05/shutterstock_-Sven-Hansche_Vue-Aerienne-de-la-ville-de-Galatas-et-de-lile-de-Poros-en-face-scaled.jpg')"></div>
+<div class="dominica-hero-slide absolute inset-0 bg-cover bg-center transition-opacity duration-1000" style="opacity: 0;" data-bg="linear-gradient(rgba(11,15,20,0.55), rgba(11,15,20,0.65)), url('https://greektraveltellers.com/images/Blog/Monastiraki%20guide/Monastiraki-square-things-to-do.jpg')"></div>
+<div class="dominica-hero-slide absolute inset-0 bg-cover bg-center transition-opacity duration-1000" style="opacity: 0;" data-bg="linear-gradient(rgba(11,15,20,0.55), rgba(11,15,20,0.65)), url('https://thirdeyetraveller.com/wp-content/uploads/Little-Kook-Athens-Greece-11-1400x1050.jpg')"></div>
 </div>
 <div class="absolute inset-0 bg-gradient-to-t from-neutral-950/80 via-transparent to-neutral-950/40 z-0"></div>
 <div class="relative z-10 max-w-5xl mx-auto space-y-6">
@@ -2299,12 +2299,10 @@ j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
         if (slides.length > 0) {
             function loadSlideBg(el) {
                 if (el && el.dataset.bg && !el.style.backgroundImage) {
-                    el.style.backgroundImage = el.dataset.bg;
+                    el.style.backgroundImage = el.dataset.bg.replace(/;\s*$/, '');
                 }
             }
-            if (slides.length > 1) {
-                setTimeout(() => loadSlideBg(slides[1]), 1200);
-            }
+            slides.forEach(function(s) { loadSlideBg(s); });
             setInterval(() => {
                 slides[activeIndex].style.opacity = '0';
                 activeIndex = (activeIndex + 1) % slides.length;

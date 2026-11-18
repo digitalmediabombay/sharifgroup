@@ -741,10 +741,10 @@ j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
 <section class="relative min-h-[60vh] flex flex-col justify-center items-center text-center px-4 sm:px-6 bg-neutral-950 border-b border-neutral-200 overflow-hidden pt-36 pb-20">
 <div class="absolute inset-0 z-0">
 <div class="dominica-hero-slide absolute inset-0 bg-cover bg-center transition-opacity duration-1000" style="opacity: 1; background-image: linear-gradient(rgba(11,15,20,0.55), rgba(11,15,20,0.65)), url('/assets/images/dominica-citizenship_55d5ac.webp');"></div>
-<div class="dominica-hero-slide absolute inset-0 bg-cover bg-center transition-opacity duration-1000" style="opacity: 0;" data-bg="linear-gradient(rgba(11,15,20,0.55), rgba(11,15,20,0.65)), url('https://www.travelandtourworld.com/wp-content/uploads/2026/07/ChatGPT-Image-Jul-24-2026-02_5.jpg');"></div>
-<div class="dominica-hero-slide absolute inset-0 bg-cover bg-center transition-opacity duration-1000" style="opacity: 0;" data-bg="linear-gradient(rgba(11,15,20,0.55), rgba(11,15,20,0.65)), url('https://i.natgeofe.com/n/8c7007bb-177e-4a19-b7ff-e8977eed8468/01-dominica-climate-resilience.jpg');"></div>
-<div class="dominica-hero-slide absolute inset-0 bg-cover bg-center transition-opacity duration-1000" style="opacity: 0;" data-bg="linear-gradient(rgba(11,15,20,0.55), rgba(11,15,20,0.65)), url('https://secretbay.dm/wp-content/uploads/2022/06/unnamed-2-1024x683.jpg');"></div>
-<div class="dominica-hero-slide absolute inset-0 bg-cover bg-center transition-opacity duration-1000" style="opacity: 0;" data-bg="linear-gradient(rgba(11,15,20,0.55), rgba(11,15,20,0.65)), url('https://i.natgeofe.com/n/1231322d-da6f-4920-a3fe-6b9dde27f279/GettyImages-1225643406.jpg?w=2560&amp;h=1696');"></div>
+<div class="dominica-hero-slide absolute inset-0 bg-cover bg-center transition-opacity duration-1000" style="opacity: 0;" data-bg="linear-gradient(rgba(11,15,20,0.55), rgba(11,15,20,0.65)), url('https://www.travelandtourworld.com/wp-content/uploads/2026/07/ChatGPT-Image-Jul-24-2026-02_5.jpg')"></div>
+<div class="dominica-hero-slide absolute inset-0 bg-cover bg-center transition-opacity duration-1000" style="opacity: 0;" data-bg="linear-gradient(rgba(11,15,20,0.55), rgba(11,15,20,0.65)), url('https://i.natgeofe.com/n/8c7007bb-177e-4a19-b7ff-e8977eed8468/01-dominica-climate-resilience.jpg')"></div>
+<div class="dominica-hero-slide absolute inset-0 bg-cover bg-center transition-opacity duration-1000" style="opacity: 0;" data-bg="linear-gradient(rgba(11,15,20,0.55), rgba(11,15,20,0.65)), url('https://secretbay.dm/wp-content/uploads/2022/06/unnamed-2-1024x683.jpg')"></div>
+<div class="dominica-hero-slide absolute inset-0 bg-cover bg-center transition-opacity duration-1000" style="opacity: 0;" data-bg="linear-gradient(rgba(11,15,20,0.55), rgba(11,15,20,0.65)), url('https://i.natgeofe.com/n/1231322d-da6f-4920-a3fe-6b9dde27f279/GettyImages-1225643406.jpg?w=2560&amp;h=1696')"></div>
 </div>
 <div class="absolute inset-0 bg-gradient-to-t from-neutral-950/80 via-transparent to-neutral-950/40 z-0"></div>
 <div class="relative z-10 max-w-5xl mx-auto space-y-6">
@@ -2392,12 +2392,10 @@ function closeAllMegaMenus() {
         if (slides.length > 0) {
             function loadSlideBg(el) {
                 if (el && el.dataset.bg && !el.style.backgroundImage) {
-                    el.style.backgroundImage = el.dataset.bg;
+                    el.style.backgroundImage = el.dataset.bg.replace(/;\s*$/, '');
                 }
             }
-            if (slides.length > 1) {
-                setTimeout(() => loadSlideBg(slides[1]), 1200);
-            }
+            slides.forEach(function(s) { loadSlideBg(s); });
             setInterval(() => {
                 slides[activeIndex].style.opacity = '0';
                 activeIndex = (activeIndex + 1) % slides.length;

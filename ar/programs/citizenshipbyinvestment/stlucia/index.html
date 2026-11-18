@@ -787,9 +787,9 @@
 <div class="absolute inset-0 z-0">
 <div class="stlucia-hero-slide absolute inset-0 bg-cover bg-center transition-opacity duration-1000" style="opacity: 1; background-image: linear-gradient(rgba(11,15,20,0.55), rgba(11,15,20,0.65)), url('https://cdn.audleytravel.com/1600/1143/60/1002413-pitons-saint-lucia.webp');">
 </div>
-<div class="stlucia-hero-slide absolute inset-0 bg-cover bg-center transition-opacity duration-1000" style="opacity: 0;" data-bg="linear-gradient(rgba(11,15,20,0.55), rgba(11,15,20,0.65)), url('https://cdn.audleytravel.com/1600/1142/60/1002394-pigeon-island-saint-lucia.webp');">
+<div class="stlucia-hero-slide absolute inset-0 bg-cover bg-center transition-opacity duration-1000" style="opacity: 0;" data-bg="linear-gradient(rgba(11,15,20,0.55), rgba(11,15,20,0.65)), url('https://cdn.audleytravel.com/1600/1142/60/1002394-pigeon-island-saint-lucia.webp')">
 </div>
-<div class="stlucia-hero-slide absolute inset-0 bg-cover bg-center transition-opacity duration-1000" style="opacity: 0;" data-bg="linear-gradient(rgba(11,15,20,0.55), rgba(11,15,20,0.65)), url('https://d2exd72xrrp1s7.cloudfront.net/www/000/1k5/18/18d8765k4ztyvviyuld4n5zke3nh5pykp-uhi28269345/0?width=2880&amp;crop=false&amp;q=80');">
+<div class="stlucia-hero-slide absolute inset-0 bg-cover bg-center transition-opacity duration-1000" style="opacity: 0;" data-bg="linear-gradient(rgba(11,15,20,0.55), rgba(11,15,20,0.65)), url('https://d2exd72xrrp1s7.cloudfront.net/www/000/1k5/18/18d8765k4ztyvviyuld4n5zke3nh5pykp-uhi28269345/0?width=2880&amp;crop=false&amp;q=80')">
 </div>
 <div class="stlucia-hero-slide absolute inset-0 bg-cover bg-center transition-opacity duration-1000" style="opacity: 1; background-image: linear-gradient(rgba(11,15,20,0.55), rgba(11,15,20,0.65)), url('https://us.images.westend61.de/0000410418pw/caribbean-st-lucia-cap-estate-pigeon-island-national-park-and-fort-rodney-AMF002654.jpg');">
 </div>
@@ -2719,12 +2719,10 @@
         if (slides.length > 0) {
             function loadSlideBg(el) {
                 if (el && el.dataset.bg && !el.style.backgroundImage) {
-                    el.style.backgroundImage = el.dataset.bg;
+                    el.style.backgroundImage = el.dataset.bg.replace(/;\s*$/, '');
                 }
             }
-            if (slides.length > 1) {
-                setTimeout(() => loadSlideBg(slides[1]), 1200);
-            }
+            slides.forEach(function(s) { loadSlideBg(s); });
             setInterval(() => {
                 slides[activeIndex].style.opacity = '0';
                 activeIndex = (activeIndex + 1) % slides.length;

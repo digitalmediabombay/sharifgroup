@@ -769,25 +769,25 @@
 <div class="dominica-hero-slide absolute inset-0 bg-cover bg-center transition-opacity duration-1000" style="opacity: 1; background-image: linear-gradient(rgba(11,15,20,0.55), rgba(11,15,20,0.65)), url('/assets/images/sao-tome-hero-1.webp');">
 </div>
 <!-- Slide 2 -->
-<div class="dominica-hero-slide absolute inset-0 bg-cover bg-center transition-opacity duration-1000" style="opacity: 0;" data-bg="linear-gradient(rgba(11,15,20,0.55), rgba(11,15,20,0.65)), url('/assets/images/sao-tome-hero-2.webp');">
+<div class="dominica-hero-slide absolute inset-0 bg-cover bg-center transition-opacity duration-1000" style="opacity: 0;" data-bg="linear-gradient(rgba(11,15,20,0.55), rgba(11,15,20,0.65)), url('/assets/images/sao-tome-hero-2.webp')">
 </div>
 <!-- Slide 3 -->
-<div class="dominica-hero-slide absolute inset-0 bg-cover bg-center transition-opacity duration-1000" style="opacity: 0;" data-bg="linear-gradient(rgba(11,15,20,0.55), rgba(11,15,20,0.65)), url('/assets/images/sao-tome-sunset.webp');">
+<div class="dominica-hero-slide absolute inset-0 bg-cover bg-center transition-opacity duration-1000" style="opacity: 0;" data-bg="linear-gradient(rgba(11,15,20,0.55), rgba(11,15,20,0.65)), url('/assets/images/sao-tome-sunset.webp')">
 </div>
 <!-- Slide 4 -->
-<div class="dominica-hero-slide absolute inset-0 bg-cover bg-center transition-opacity duration-1000" style="opacity: 0;" data-bg="linear-gradient(rgba(11,15,20,0.55), rgba(11,15,20,0.65)), url('/assets/images/sao-tome-coast.webp');">
+<div class="dominica-hero-slide absolute inset-0 bg-cover bg-center transition-opacity duration-1000" style="opacity: 0;" data-bg="linear-gradient(rgba(11,15,20,0.55), rgba(11,15,20,0.65)), url('/assets/images/sao-tome-coast.webp')">
 </div>
 <!-- Slide 5 -->
-<div class="dominica-hero-slide absolute inset-0 bg-cover bg-center transition-opacity duration-1000" style="opacity: 0;" data-bg="linear-gradient(rgba(11,15,20,0.55), rgba(11,15,20,0.65)), url('/assets/images/sao-tome-beach.webp');">
+<div class="dominica-hero-slide absolute inset-0 bg-cover bg-center transition-opacity duration-1000" style="opacity: 0;" data-bg="linear-gradient(rgba(11,15,20,0.55), rgba(11,15,20,0.65)), url('/assets/images/sao-tome-beach.webp')">
 </div>
 <!-- Slide 6 -->
-<div class="dominica-hero-slide absolute inset-0 bg-cover bg-center transition-opacity duration-1000" style="opacity: 0;" data-bg="linear-gradient(rgba(11,15,20,0.55), rgba(11,15,20,0.65)), url('/assets/images/sao-tome-mountain.webp');">
+<div class="dominica-hero-slide absolute inset-0 bg-cover bg-center transition-opacity duration-1000" style="opacity: 0;" data-bg="linear-gradient(rgba(11,15,20,0.55), rgba(11,15,20,0.65)), url('/assets/images/sao-tome-mountain.webp')">
 </div>
 <!-- Slide 7 -->
-<div class="dominica-hero-slide absolute inset-0 bg-cover bg-center transition-opacity duration-1000" style="opacity: 0;" data-bg="linear-gradient(rgba(11,15,20,0.55), rgba(11,15,20,0.65)), url('/assets/images/sao-tome-town-center.webp');">
+<div class="dominica-hero-slide absolute inset-0 bg-cover bg-center transition-opacity duration-1000" style="opacity: 0;" data-bg="linear-gradient(rgba(11,15,20,0.55), rgba(11,15,20,0.65)), url('/assets/images/sao-tome-town-center.webp')">
 </div>
 <!-- Slide 8 -->
-<div class="dominica-hero-slide absolute inset-0 bg-cover bg-center transition-opacity duration-1000" style="opacity: 0;" data-bg="linear-gradient(rgba(11,15,20,0.55), rgba(11,15,20,0.65)), url('/assets/images/sao-tome-waterfall.webp');">
+<div class="dominica-hero-slide absolute inset-0 bg-cover bg-center transition-opacity duration-1000" style="opacity: 0;" data-bg="linear-gradient(rgba(11,15,20,0.55), rgba(11,15,20,0.65)), url('/assets/images/sao-tome-waterfall.webp')">
 </div>
 </div>
 <div class="absolute inset-0 bg-gradient-to-t from-neutral-950/80 via-transparent to-neutral-950/40 z-0">
@@ -2617,12 +2617,10 @@
         if (slides.length > 0) {
             function loadSlideBg(el) {
                 if (el && el.dataset.bg && !el.style.backgroundImage) {
-                    el.style.backgroundImage = el.dataset.bg;
+                    el.style.backgroundImage = el.dataset.bg.replace(/;\s*$/, '');
                 }
             }
-            if (slides.length > 1) {
-                setTimeout(() => loadSlideBg(slides[1]), 1200);
-            }
+            slides.forEach(function(s) { loadSlideBg(s); });
             setInterval(() => {
                 slides[activeIndex].style.opacity = '0';
                 activeIndex = (activeIndex + 1) % slides.length;

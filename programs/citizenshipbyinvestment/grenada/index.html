@@ -714,12 +714,12 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
 <section class="relative min-h-[60vh] flex flex-col justify-center items-center text-center px-4 sm:px-6 bg-neutral-950 border-b border-neutral-200 overflow-hidden pt-36 pb-20">
 <div class="absolute inset-0 z-0">
 <div class="dominica-hero-slide absolute inset-0 bg-cover bg-center transition-opacity duration-1000" style="opacity: 1; background-image: linear-gradient(rgba(11,15,20,0.55), rgba(11,15,20,0.65)), url('https://www.outlooktravelmag.com/media/MAIN-Grenada-Landmark-Attractions.webp');"></div>
-<div class="dominica-hero-slide absolute inset-0 bg-cover bg-center transition-opacity duration-1000" style="opacity: 0;" data-bg="linear-gradient(rgba(11,15,20,0.55), rgba(11,15,20,0.65)), url('https://doveautosolutions.com/wp-content/uploads/2026/03/Colorful_buildings_waterfront_202603261406_8_11zon.jpeg');"></div>
-<div class="dominica-hero-slide absolute inset-0 bg-cover bg-center transition-opacity duration-1000" style="opacity: 0;" data-bg="linear-gradient(rgba(11,15,20,0.55), rgba(11,15,20,0.65)), url('/assets/images/grenada-aerial.webp');"></div>
-<div class="dominica-hero-slide absolute inset-0 bg-cover bg-center transition-opacity duration-1000" style="opacity: 0;" data-bg="linear-gradient(rgba(11,15,20,0.55), rgba(11,15,20,0.65)), url('https://doveautosolutions.com/wp-content/uploads/2026/03/Fort_George_overlooking_202603261407_9_11zon.jpeg');"></div>
-<div class="dominica-hero-slide absolute inset-0 bg-cover bg-center transition-opacity duration-1000" style="opacity: 0;" data-bg="linear-gradient(rgba(11,15,20,0.55), rgba(11,15,20,0.65)), url('https://doveautosolutions.com/wp-content/uploads/2026/03/Tropical_waterfall_cascading_202603261425_12_11zon.jpeg');"></div>
-<div class="dominica-hero-slide absolute inset-0 bg-cover bg-center transition-opacity duration-1000" style="opacity: 0;" data-bg="linear-gradient(rgba(11,15,20,0.55), rgba(11,15,20,0.65)), url('https://cdn.prod.website-files.com/6731fbaf881386c295d429a9/674a04837b5d2b093769290c_BA-Header-Image-Grenada-07-(1).webp');"></div>
-<div class="dominica-hero-slide absolute inset-0 bg-cover bg-center transition-opacity duration-1000" style="opacity: 0;" data-bg="linear-gradient(rgba(11,15,20,0.55), rgba(11,15,20,0.65)), url('https://cdn.prod.website-files.com/6731fbaf881386c295d429a9/674465ed60db0fadf2ef38f8_BA-Header-Image-Grenada-02-(1).webp');"></div>
+<div class="dominica-hero-slide absolute inset-0 bg-cover bg-center transition-opacity duration-1000" style="opacity: 0;" data-bg="linear-gradient(rgba(11,15,20,0.55), rgba(11,15,20,0.65)), url('https://doveautosolutions.com/wp-content/uploads/2026/03/Colorful_buildings_waterfront_202603261406_8_11zon.jpeg')"></div>
+<div class="dominica-hero-slide absolute inset-0 bg-cover bg-center transition-opacity duration-1000" style="opacity: 0;" data-bg="linear-gradient(rgba(11,15,20,0.55), rgba(11,15,20,0.65)), url('/assets/images/grenada-aerial.webp')"></div>
+<div class="dominica-hero-slide absolute inset-0 bg-cover bg-center transition-opacity duration-1000" style="opacity: 0;" data-bg="linear-gradient(rgba(11,15,20,0.55), rgba(11,15,20,0.65)), url('https://doveautosolutions.com/wp-content/uploads/2026/03/Fort_George_overlooking_202603261407_9_11zon.jpeg')"></div>
+<div class="dominica-hero-slide absolute inset-0 bg-cover bg-center transition-opacity duration-1000" style="opacity: 0;" data-bg="linear-gradient(rgba(11,15,20,0.55), rgba(11,15,20,0.65)), url('https://doveautosolutions.com/wp-content/uploads/2026/03/Tropical_waterfall_cascading_202603261425_12_11zon.jpeg')"></div>
+<div class="dominica-hero-slide absolute inset-0 bg-cover bg-center transition-opacity duration-1000" style="opacity: 0;" data-bg="linear-gradient(rgba(11,15,20,0.55), rgba(11,15,20,0.65)), url('https://cdn.prod.website-files.com/6731fbaf881386c295d429a9/674a04837b5d2b093769290c_BA-Header-Image-Grenada-07-(1).webp')"></div>
+<div class="dominica-hero-slide absolute inset-0 bg-cover bg-center transition-opacity duration-1000" style="opacity: 0;" data-bg="linear-gradient(rgba(11,15,20,0.55), rgba(11,15,20,0.65)), url('https://cdn.prod.website-files.com/6731fbaf881386c295d429a9/674465ed60db0fadf2ef38f8_BA-Header-Image-Grenada-02-(1).webp')"></div>
 </div>
 <div class="absolute inset-0 bg-gradient-to-t from-neutral-950/80 via-transparent to-neutral-950/40 z-0"></div>
 <div class="relative z-10 max-w-5xl mx-auto space-y-6">
@@ -2595,12 +2595,10 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
         if (slides.length > 0) {
             function loadSlideBg(el) {
                 if (el && el.dataset.bg && !el.style.backgroundImage) {
-                    el.style.backgroundImage = el.dataset.bg;
+                    el.style.backgroundImage = el.dataset.bg.replace(/;\s*$/, '');
                 }
             }
-            if (slides.length > 1) {
-                setTimeout(() => loadSlideBg(slides[1]), 1200);
-            }
+            slides.forEach(function(s) { loadSlideBg(s); });
             setInterval(() => {
                 slides[activeIndex].style.opacity = '0';
                 activeIndex = (activeIndex + 1) % slides.length;
