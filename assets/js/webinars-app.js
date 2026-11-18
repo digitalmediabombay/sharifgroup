@@ -833,6 +833,27 @@
       return w;
     });
 
+    // Automatic Sequential Transition & Registration Opening Cascade:
+    // When Session N concludes (ended), Session N+1 automatically opens its registration form!
+    // The earliest upcoming session always has registration open automatically.
+    for (let i = 0; i < list.length; i++) {
+      const curr = list[i];
+      const prev = i > 0 ? list[i - 1] : null;
+
+      if (curr.event_status === 'upcoming') {
+        const isEarliestUpcoming = !list.slice(0, i).some(s => s.event_status === 'upcoming');
+        if (isEarliestUpcoming || (prev && prev.event_status === 'ended')) {
+          if (curr.reg_status !== 'closed') {
+            curr.registration_open = true;
+            curr.reg_status = 'open';
+          }
+        }
+      } else if (curr.event_status === 'ended') {
+        curr.registration_open = false;
+        curr.reg_status = 'closed';
+      }
+    }
+
     return list;
   }
   const byslug = s => webinars().find(w => w.slug === s || (w.id && w.id.toLowerCase() === String(s).toLowerCase()) || ('session-' + w.session_no) === s);

@@ -195,6 +195,29 @@ usort($processedSessions, function($a, $b) {
     return ($a['session_no'] <=> $b['session_no']);
 });
 
+// Automatic Cascade: When previous session ends, next upcoming session opens registration
+$totalProcessed = count($processedSessions);
+for ($i = 0; $i < $totalProcessed; $i++) {
+    $curr = &$processedSessions[$i];
+    $prev = ($i > 0) ? $processedSessions[$i - 1] : null;
+
+    if ($curr['event_status'] === 'upcoming') {
+        $hasPriorUpcoming = false;
+        for ($j = 0; $j < $i; $j++) {
+            if ($processedSessions[$j]['event_status'] === 'upcoming') {
+                $hasPriorUpcoming = true;
+                break;
+            }
+        }
+        if (!$hasPriorUpcoming || ($prev && $prev['event_status'] === 'ended')) {
+            $curr['registration_open'] = true;
+        }
+    } elseif ($curr['event_status'] === 'ended') {
+        $curr['registration_open'] = false;
+    }
+    unset($curr);
+}
+
 // ── 4. DERIVE THE ACTIVE FEATURED HERO SESSION ──────────────────────────
 $heroSession = null;
 $heroSource = 'auto_upcoming';

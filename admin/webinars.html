@@ -1633,6 +1633,20 @@
 
     sessions.sort(function(a, b) { return a.session_no - b.session_no; });
 
+    // Automatic Cascade: When previous session ends, next upcoming session opens registration
+    for (let i = 0; i < sessions.length; i++) {
+      const curr = sessions[i];
+      const prev = i > 0 ? sessions[i - 1] : null;
+      if (curr.event_status === 'upcoming') {
+        const isEarliestUpcoming = !sessions.slice(0, i).some(s => s.event_status === 'upcoming');
+        if (isEarliestUpcoming || (prev && prev.event_status === 'ended')) {
+          curr.registration_open = true;
+        }
+      } else if (curr.event_status === 'ended') {
+        curr.registration_open = false;
+      }
+    }
+
     let hero = null;
     let heroSource = 'auto_upcoming';
 
