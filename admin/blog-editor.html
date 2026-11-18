@@ -1522,7 +1522,7 @@
           // Vercel static hosting fallback
           if (previewDataUrl) {
             setFeaturedImage(previewDataUrl);
-            showToast('Image loaded for preview (Vercel Preview Mode)!', 'success');
+            showToast('Image loaded for preview (Preview Mode)!', 'success');
             markDirty();
             return;
           }
@@ -1540,26 +1540,29 @@
           }
         }
 
-        // Server returned an error
-        const errMsg = (data && data.error) ? data.error : ('Server upload error (HTTP ' + res.status + ')');
-        console.warn('[Server Image Upload Warning]', errMsg);
-
+        // Server returned an error or running on static preview host
         if (previewDataUrl) {
           setFeaturedImage(previewDataUrl);
-          showToast('Image preview loaded: ' + errMsg, 'warning');
+          showToast('Image loaded for preview (Preview Mode)!', 'success');
           markDirty();
         } else {
+          const errMsg = (data && data.error) ? data.error : ('Server upload error (HTTP ' + res.status + ')');
           showToast('Image upload failed: ' + errMsg, 'error');
         }
       } catch (err) {
-        console.error('[Upload Exception]', err);
-        const reader = new FileReader();
-        reader.onload = function(e) {
-          setFeaturedImage(e.target.result);
-          showToast('Image loaded locally (offline fallback)', 'warning');
+        if (previewDataUrl) {
+          setFeaturedImage(previewDataUrl);
+          showToast('Image loaded for preview (Preview Mode)!', 'success');
           markDirty();
-        };
-        reader.readAsDataURL(file);
+        } else {
+          const reader = new FileReader();
+          reader.onload = function(e) {
+            setFeaturedImage(e.target.result);
+            showToast('Image loaded for preview (Preview Mode)!', 'success');
+            markDirty();
+          };
+          reader.readAsDataURL(file);
+        }
       } finally {
         if (dropText) dropText.innerHTML = originalText;
       }

@@ -886,10 +886,22 @@
 
       renderCurrentList();
     } catch (err) {
-      document.getElementById('blogsGrid').innerHTML =
-        '<div class="empty-state"><div class="empty-icon"><i class="fa-solid fa-triangle-exclamation"></i></div>' +
-        '<div class="empty-title">Error Loading Articles</div>' +
-        '<div class="empty-desc">Could not connect to the backend server. Please check your network and refresh.</div></div>';
+      console.warn('Backend API not reachable on static preview host:', err);
+      try {
+        const localDraft = localStorage.getItem('sgcms_blog_draft_state');
+        if (localDraft) {
+          const parsed = JSON.parse(localDraft);
+          draftsList = [{
+            id: 'local-draft',
+            title: (parsed.en && parsed.en.title) || parsed.title || 'Untitled Local Draft',
+            featured_img: parsed.featured_img || '',
+            date: new Date().toLocaleDateString('en-GB'),
+            status: 'draft'
+          }];
+          document.getElementById('countDrafts').textContent = '1';
+        }
+      } catch (_) {}
+      renderCurrentList();
     }
   }
 
