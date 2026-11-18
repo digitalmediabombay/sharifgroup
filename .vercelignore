@@ -1,0 +1,43 @@
+# ============================================================
+# .vercelignore — Files excluded from Vercel static deployment
+# This is a pure static site. No build step, no PHP execution.
+# ============================================================
+
+# ── Large video files (served from cPanel/Apache separately) ─
+aboutus/SecondPassportGranted.mp4
+assets/videos/footer_bg_e58bba71.mp4
+
+# ── Demo/prototype directories (not production pages) ────────
+Sharif-Webinars-Demo_1/
+sharif-partners-demo/
+
+# ── PHP backend files (only run on cPanel/Apache, not Vercel) ─
+admin/api/
+api/*.php
+sitemap.php
+sitemap-sync.php
+tmp_test_6afc24fbab60d.php
+
+# ── Sensitive data files ──────────────────────────────────────
+data/inquiries.json
+data/event_registrations.json
+data/webinar_series.json
+data/blog_posts.json
+
+# ── Build artifacts & local dev files ────────────────────────
+*.zip
+node_modules/
+scratch/
+scripts/
+generate_blog_static.ps1
+generate_static_multilingual.py
+build_css.bat
+navbar_js_files.txt
+navbar_fixed_files.txt
+assets/css/tailwind-input.css
+
+# ── Markdown documentation (not for public serving) ──────────
+*.md
+
+# ── Apache-only config (irrelevant on Vercel) ────────────────
+.htaccess
