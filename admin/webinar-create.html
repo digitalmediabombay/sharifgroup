@@ -1095,10 +1095,21 @@
         <div class="form-group">
           <label>Primary Language</label>
           <div class="lang-pills">
-            <div class="lang-pill active" data-lang="fa" onclick="selectLang('fa')">Persian (فارسی)</div>
-            <div class="lang-pill" data-lang="en" onclick="selectLang('en')">English</div>
-            <div class="lang-pill" data-lang="ar" onclick="selectLang('ar')">Arabic (العربية)</div>
-            <div class="lang-pill" data-lang="zh" onclick="selectLang('zh')">Chinese (中文)</div>
+            <div class="lang-pill active" data-lang="en" onclick="selectLang('en')">
+              <i class="fa-solid fa-circle-check" style="color:var(--gold-bright); margin-right:4px;"></i> English
+            </div>
+            <div class="lang-pill disabled" data-lang="fa" onclick="selectLang('fa')" style="opacity:0.45; cursor:not-allowed;" title="Locked for Phase 1">
+              <i class="fa-solid fa-lock" style="font-size:10px; margin-right:4px;"></i> Persian (فارسی)
+            </div>
+            <div class="lang-pill disabled" data-lang="ar" onclick="selectLang('ar')" style="opacity:0.45; cursor:not-allowed;" title="Locked for Phase 1">
+              <i class="fa-solid fa-lock" style="font-size:10px; margin-right:4px;"></i> Arabic (العربية)
+            </div>
+            <div class="lang-pill disabled" data-lang="zh" onclick="selectLang('zh')" style="opacity:0.45; cursor:not-allowed;" title="Locked for Phase 1">
+              <i class="fa-solid fa-lock" style="font-size:10px; margin-right:4px;"></i> Chinese (中文)
+            </div>
+          </div>
+          <div style="font-size:11.5px; color:var(--muted); margin-top:6px;">
+            <i class="fa-solid fa-circle-info" style="color:var(--gold-bright)"></i> Other languages are temporarily locked while English webinars are live.
           </div>
         </div>
       </div>
@@ -1415,7 +1426,7 @@
       let currentStep = 1;
       let sessionCount = 3;
       let currentSessionIdx = 0;
-      let selectedLang = 'fa';
+      let selectedLang = 'en';
       let activeSeriesData = null;
 
       // Sessions data store in memory
@@ -1562,9 +1573,13 @@
       };
 
       window.selectLang = function (lang) {
-        selectedLang = lang;
+        if (lang !== 'en') {
+          showToast('Other languages are locked for now. English is active.', true);
+          return;
+        }
+        selectedLang = 'en';
         document.querySelectorAll('.lang-pills .lang-pill').forEach(p => {
-          p.classList.toggle('active', p.dataset.lang === lang);
+          p.classList.toggle('active', p.dataset.lang === 'en');
         });
       };
 

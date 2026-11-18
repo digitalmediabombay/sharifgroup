@@ -57,9 +57,9 @@ if (empty($seriesId)) {
 
 $category = trim($seriesInput['category'] ?? 'Citizenship');
 $subcategory = strtolower(trim($seriesInput['subcategory'] ?? 'grenada'));
-$primaryLang = strtolower(trim($seriesInput['primary_language'] ?? 'fa'));
+$primaryLang = strtolower(trim($seriesInput['primary_language'] ?? 'en'));
 if (!in_array($primaryLang, ['fa', 'en', 'ar', 'zh'], true)) {
-    $primaryLang = 'fa';
+    $primaryLang = 'en';
 }
 
 $sessionCount = max(1, min(6, (int)($seriesInput['session_count'] ?? count($sessionsInput))));

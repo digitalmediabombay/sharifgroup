@@ -113,34 +113,64 @@
       "permanent": true
     },
     {
+      "source": "/ar/events",
+      "destination": "/events/",
+      "permanent": false
+    },
+    {
+      "source": "/ar/events/:path*",
+      "destination": "/events/:path*",
+      "permanent": false
+    },
+    {
+      "source": "/fa/events",
+      "destination": "/events/",
+      "permanent": false
+    },
+    {
+      "source": "/fa/events/:path*",
+      "destination": "/events/:path*",
+      "permanent": false
+    },
+    {
+      "source": "/zh/events",
+      "destination": "/events/",
+      "permanent": false
+    },
+    {
+      "source": "/zh/events/:path*",
+      "destination": "/events/:path*",
+      "permanent": false
+    },
+    {
       "source": "/ar/webinars",
-      "destination": "/ar/events/",
-      "permanent": true
+      "destination": "/events/",
+      "permanent": false
     },
     {
       "source": "/ar/webinars/:path*",
-      "destination": "/ar/events/:path*",
-      "permanent": true
+      "destination": "/events/:path*",
+      "permanent": false
     },
     {
       "source": "/fa/webinars",
-      "destination": "/fa/events/",
-      "permanent": true
+      "destination": "/events/",
+      "permanent": false
     },
     {
       "source": "/fa/webinars/:path*",
-      "destination": "/fa/events/:path*",
-      "permanent": true
+      "destination": "/events/:path*",
+      "permanent": false
     },
     {
       "source": "/zh/webinars",
-      "destination": "/zh/events/",
-      "permanent": true
+      "destination": "/events/",
+      "permanent": false
     },
     {
       "source": "/zh/webinars/:path*",
-      "destination": "/zh/events/:path*",
-      "permanent": true
+      "destination": "/events/:path*",
+      "permanent": false
     }
   ],
   "rewrites": [
