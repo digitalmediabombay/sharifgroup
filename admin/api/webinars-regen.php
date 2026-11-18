@@ -344,16 +344,22 @@ if (!function_exists('regenerateWebinars')) {
                 $descText = $lObj['excerpt'] ?? '';
                 $sched = formatWebinarSchedule($startUtc, $lang);
 
-                // Replace countdown data-cd attribute
-                if (preg_match('#\bid="home-webinar-countdown"[^>]*\bdata-cd="[^"]*"#i', $html)) {
-                    $html = preg_replace('#(\bid="home-webinar-countdown"[^>]*\bdata-cd=")[^"]*(")#i', '${1}' . $startUtc . '${2}', $html, 1);
-                }
+                $featuredSlug = $featured['slug'] ?? 'dominica-from-decision-to-passport';
+                $localePrefix = ($lang === 'en' ? '' : '/' . $lang);
+                $eventTargetUrl = $localePrefix . '/events/' . rawurlencode($featuredSlug) . '/';
 
-                // Replace title
+                // Replace countdown data-cd attribute (whether data-cd is before or after id)
+                $html = preg_replace('#(\bid="home-webinar-countdown"[^>]*\bdata-cd=")[^"]*(")#i', '${1}' . $startUtc . '${2}', $html, 1);
+                $html = preg_replace('#(\bdata-cd=")[^"]*("\s+[^>]*\bid="home-webinar-countdown")#i', '${1}' . $startUtc . '${2}', $html, 1);
+
+                // Replace title & href
                 if ($titleText) {
                     $safeTitle = htmlspecialchars($titleText, ENT_QUOTES | ENT_SUBSTITUTE, 'UTF-8');
-                    $html = preg_replace('#(<a\b[^>]*\bdata-i18n="homeWebinar.title"[^>]*>)(.*?)(</a>)#us', '${1}' . $safeTitle . '${3}', $html, 1);
+                    $html = preg_replace('#(<a\b[^>]*\bdata-i18n="homeWebinar.title"[^>]*href=")[^"]*("[^>]*>)(.*?)(</a>)#us', '${1}' . $eventTargetUrl . '${2}' . $safeTitle . '${4}', $html, 1);
                 }
+
+                // Replace View & Register button href
+                $html = preg_replace('#(<a\b[^>]*href=")[^"]*(\b(?:dominica-second-passport-for-afghans|dominica-from-decision-to-passport)\/?"[^>]*>[\s\S]*?<span\b[^>]*data-i18n="homeWebinar\.joinBtn")#us', '${1}' . $eventTargetUrl . '${2}', $html, 1);
 
                 // Replace description
                 if ($descText) {

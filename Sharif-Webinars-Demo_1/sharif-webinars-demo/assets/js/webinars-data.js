@@ -11,8 +11,8 @@ window.SGCMS_WEBINARS = [
         "date_confirmed": true,
         "duration_min": 65,
         "room_opens_min_before": 10,
-        "event_status": "upcoming",
-        "registration_open": true,
+        "event_status": "ended",
+        "registration_open": false,
         "capacity": 100,
         "join_visibility": "public",
         "join_url": "",
@@ -322,7 +322,7 @@ window.SGCMS_WEBINARS = [
         "session_no": 2,
         "category": "Citizenship",
         "subcategory": "dominica",
-        "start_utc": "2026-11-19T15:30:00Z",
+        "start_utc": "2026-11-25T15:30:00Z",
         "date_confirmed": true,
         "duration_min": 65,
         "room_opens_min_before": 10,
@@ -409,7 +409,7 @@ window.SGCMS_WEBINARS = [
         "session_no": 3,
         "category": "Citizenship",
         "subcategory": "dominica",
-        "start_utc": "2026-11-26T15:30:00Z",
+        "start_utc": "2026-12-02T15:30:00Z",
         "date_confirmed": false,
         "duration_min": 65,
         "room_opens_min_before": 10,
@@ -488,3 +488,5 @@ window.SGCMS_WEBINARS = [
         }
     }
 ];
+window.SGCMS_ACTIVE_SERIES = "dominica-pilot";
+window.SGCMS_HERO_SESSION_NO = 2;

@@ -1382,15 +1382,15 @@ html[lang="ar"] .cd-lbl {
 <span class="inline-flex items-center px-2.5 py-1 rounded-full bg-[#786142] text-white text-[10px] font-bold uppercase tracking-wider" data-i18n="homeWebinar.freeBadge">آنلاین و رایگان</span>
 </div>
 <h3 class="font-serif text-2xl sm:text-3xl lg:text-4xl font-bold text-white leading-snug">
-<a class="hover:text-luxury-gold transition duration-200" data-i18n="homeWebinar.title" href="/fa/events/dominica-second-passport-for-afghans/">پاسپورت دوم برای افغان‌ها: آشنایی با برنامه دومینیکا</a>
+<a class="hover:text-luxury-gold transition duration-200" data-i18n="homeWebinar.title" href="/fa/events/dominica-from-decision-to-passport/">از تصمیم تا پاسپورت: مراحل، مدارک و منشأ پول</a>
 </h3>
-<p class="text-xs sm:text-sm text-neutral-300 font-light leading-relaxed max-w-2xl" data-i18n="homeWebinar.desc">جلسه آنلاین و رایگان به زبان فارسی: برنامه شهروندی دومینیکا چیست، چرا برای افغان‌ها مهم است و چه کسانی می‌توانند درخواست بدهند.</p>
+<p class="text-xs sm:text-sm text-neutral-300 font-light leading-relaxed max-w-2xl" data-i18n="homeWebinar.desc">مراحل پرونده، مدارک لازم (تذکره، پاسپورت، اسناد مالی)، اثبات و انتقال منشأ پول، آمادگی برای مصاحبه و ریز هزینه‌های کامل.</p>
 <div class="grid grid-cols-1 sm:grid-cols-2 gap-3.5 pt-2">
 <div class="flex items-center gap-2.5 text-xs text-neutral-300">
 <div class="w-7 h-7 rounded-lg bg-luxury-gold/15 text-luxury-gold flex items-center justify-center shrink-0">
 <i class="fa-regular fa-calendar-check text-xs"></i>
 </div>
-<span data-i18n="homeWebinar.dateTime">پنج‌شنبه 12 نوامبر · 20:00 کابل / 19:30 دبی</span>
+<span data-i18n="homeWebinar.dateTime">چهارشنبه 25 نوامبر · 20:00 کابل / 19:30 دبی</span>
 </div>
 <div class="flex items-center gap-2.5 text-xs text-neutral-300">
 <div class="w-7 h-7 rounded-lg bg-luxury-gold/15 text-luxury-gold flex items-center justify-center shrink-0">
@@ -1412,7 +1412,7 @@ html[lang="ar"] .cd-lbl {
 </div>
 </div>
 <div class="pt-3 flex flex-wrap items-center gap-3 sm:gap-4">
-<a class="inline-flex items-center justify-center gap-2 px-7 py-3.5 rounded-full bg-[#786142] hover:bg-luxury-gold text-white text-xs font-bold uppercase tracking-widest transition duration-300 shadow-xl group premium-btn-hover" href="/fa/events/dominica-second-passport-for-afghans/">
+<a class="inline-flex items-center justify-center gap-2 px-7 py-3.5 rounded-full bg-[#786142] hover:bg-luxury-gold text-white text-xs font-bold uppercase tracking-widest transition duration-300 shadow-xl group premium-btn-hover" href="/fa/events/dominica-from-decision-to-passport/">
 <span data-i18n="homeWebinar.joinBtn">مشاهده و ثبت‌نام</span>
 <i class="fa-solid fa-arrow-right text-[10px] group-hover:translate-x-1 rtl:group-hover:-translate-x-1 rtl:rotate-180 transition-transform"></i>
 </a>
@@ -1428,12 +1428,12 @@ html[lang="ar"] .cd-lbl {
 <!-- Date & Time Heading -->
 <div style="margin-bottom: 20px;">
 <div class="side-label" data-i18n="homeWebinar.dateLabel" style="margin-bottom: 6px;">تاریخ و زمان</div>
-<div class="date-line" data-i18n="homeWebinar.dateValue">پنج‌شنبه، 12 نوامبر 2026</div>
+<div class="date-line" data-i18n="homeWebinar.dateValue">چهارشنبه، 25 نوامبر 2026</div>
 </div>
 <!-- Starts In Heading -->
 <div class="side-label" data-i18n="homeWebinar.startsIn" style="margin-bottom: 10px;">زمان باقی‌مانده</div>
 <!-- 4-Box Countdown Timer -->
-<div class="countdown" data-cd="2026-11-12T15:30:00Z" id="home-webinar-countdown" style="margin-bottom: 20px;">
+<div class="countdown" data-cd="2026-11-25T15:30:00Z" id="home-webinar-countdown" style="margin-bottom: 20px;">
 <div class="cd-cell">
 <div class="cd-num" id="hw-cd-days">--</div>
 <div class="cd-lbl" data-i18n="homeWebinar.cdDays">روز</div>
@@ -2686,128 +2686,175 @@ html[lang="ar"] .cd-lbl {
     </script>
 <!-- Sharif Group CMS Live Preview Loader -->
 <script src="/assets/js/forms.js?v=20261117"></script>
+<script src="/assets/js/webinars-data.js?v=20261118b"></script>
 <script>
-    (function initHomeWebinarCountdown() {
-        var cdContainer = document.getElementById('home-webinar-countdown');
-        if (!cdContainer) return;
+(function initHomeWebinarCountdown() {
+    var cdContainer = document.getElementById('home-webinar-countdown');
+    if (!cdContainer) return;
 
-        // 1. Purge stale past schedules from localStorage so old cached dates never override live dates
-        try {
-            var rawSch = localStorage.getItem('sgcms_webinar_schedule');
-            if (rawSch) {
-                var sch = JSON.parse(rawSch);
-                var actNo = Number(sch.active_session_no) || 1;
-                if (sch.sessions && sch.sessions[actNo] && sch.sessions[actNo].start_utc) {
-                    var testTime = new Date(sch.sessions[actNo].start_utc).getTime();
-                    if (!isNaN(testTime) && testTime <= Date.now()) {
-                        localStorage.removeItem('sgcms_webinar_schedule');
-                        localStorage.removeItem('sgcms_webinars');
-                        localStorage.removeItem('sgcms_webinars_live');
-                    }
-                }
-            }
-        } catch(e) {}
+    var lang = (document.documentElement.lang || 'en').toLowerCase();
+    var isFa = lang === 'fa';
+    var isAr = lang === 'ar';
+    var isZh = lang === 'zh';
+    var localePrefix = (isFa ? '/fa' : (isAr ? '/ar' : (isZh ? '/zh' : '')));
 
-        // 2. Read official data-cd attribute from DOM (set to '2026-11-12T15:30:00Z')
-        var startUtc = cdContainer.getAttribute('data-cd') || '2026-11-12T15:30:00Z';
-        try {
-            var rawSch2 = localStorage.getItem('sgcms_webinar_schedule');
-            if (rawSch2) {
-                var sch2 = JSON.parse(rawSch2);
-                var actNo2 = Number(sch2.active_session_no) || 1;
-                if (sch2.sessions && sch2.sessions[actNo2] && sch2.sessions[actNo2].start_utc) {
-                    var futureTime = new Date(sch2.sessions[actNo2].start_utc).getTime();
-                    if (!isNaN(futureTime) && futureTime > Date.now()) {
-                        startUtc = sch2.sessions[actNo2].start_utc;
-                    }
-                }
-            }
-        } catch(e) {}
+    // 1. Resolve Active Session from window.SGCMS_WEBINARS & localStorage overrides
+    var webinars = window.SGCMS_WEBINARS || [];
+    var sch = null;
+    try { sch = JSON.parse(localStorage.getItem('sgcms_webinar_schedule') || '{}'); } catch(e) {}
 
-        // 3. Fallback: If for any reason startUtc is in the past, force official target date
-        if (new Date(startUtc).getTime() <= Date.now()) {
-            startUtc = '2026-11-12T15:30:00Z';
-            cdContainer.setAttribute('data-cd', startUtc);
+    // Find active hero session
+    var activeHeroNo = sch && sch.active_session_no ? Number(sch.active_session_no) : (window.SGCMS_HERO_SESSION_NO || null);
+    var targetSession = null;
+
+    if (activeHeroNo && webinars.length) {
+        targetSession = webinars.find(function(s) { return Number(s.session_no) === Number(activeHeroNo); });
+    }
+
+    var now = Date.now();
+    if (!targetSession && webinars.length) {
+        // Find earliest upcoming session
+        targetSession = webinars.find(function(s) {
+            var sTime = new Date(s.start_utc).getTime();
+            return !isNaN(sTime) && sTime + (2 * 3600 * 1000) > now && s.event_status !== 'ended';
+        });
+    }
+
+    if (!targetSession && webinars.length) {
+        targetSession = webinars[1] || webinars[0];
+    }
+
+    var startUtc = '2026-11-25T15:30:00Z';
+    if (targetSession) {
+        var sNum = targetSession.session_no;
+        if (sch && sch.sessions && sch.sessions[sNum] && sch.sessions[sNum].start_utc) {
+            startUtc = sch.sessions[sNum].start_utc;
+        } else if (targetSession.start_utc) {
+            startUtc = targetSession.start_utc;
         }
 
-        var targetDate = new Date(startUtc);
-        var targetTime = targetDate.getTime();
-        
-        var elD = document.getElementById('hw-cd-days');
-        var elH = document.getElementById('hw-cd-hours');
-        var elM = document.getElementById('hw-cd-mins');
-        var elS = document.getElementById('hw-cd-secs');
+        // Dynamically update DOM elements if present
+        try {
+            var locData = targetSession[lang] || targetSession.en || {};
+            var titleEl = document.querySelector('[data-i18n="homeWebinar.title"]');
+            if (titleEl) {
+                if (locData.title) titleEl.textContent = locData.title;
+                var eventSlug = targetSession.slug || 'dominica-from-decision-to-passport';
+                titleEl.setAttribute('href', localePrefix + '/events/' + encodeURIComponent(eventSlug) + '/');
+            }
 
-        var lang = (document.documentElement.lang || 'en').toLowerCase();
-        var isFa = lang === 'fa';
-        var isAr = lang === 'ar';
+            var joinBtn = document.querySelector('a[href*="/events/dominica-"]');
+            if (joinBtn && targetSession.slug) {
+                joinBtn.setAttribute('href', localePrefix + '/events/' + encodeURIComponent(targetSession.slug) + '/');
+            }
 
-        function formatNum(num) {
-            var str = num < 10 ? '0' + num : '' + num;
+            var descEl = document.querySelector('[data-i18n="homeWebinar.desc"]');
+            if (descEl && locData.excerpt) {
+                descEl.textContent = locData.excerpt;
+            }
+
+            var regBadge = document.querySelector('[data-i18n="homeWebinar.status"]');
+            if (regBadge) {
+                var isRegOpen = targetSession.registration_open !== false;
+                if (sch && sch.sessions && sch.sessions[sNum] && typeof sch.sessions[sNum].reg_status !== 'undefined') {
+                    isRegOpen = (sch.sessions[sNum].reg_status === 'open');
+                }
+                regBadge.textContent = isRegOpen ? (isFa ? 'ثبت‌نام باز است' : (isAr ? 'التسجيل متاح' : (isZh ? '报名开放中' : 'Registration Open'))) : (isFa ? 'به زودی' : (isAr ? 'قريباً' : (isZh ? '即将开放' : 'Coming Soon')));
+            }
+        } catch(domErr) {
+            console.warn('DOM update error in webinar countdown:', domErr);
+        }
+    }
+
+    cdContainer.setAttribute('data-cd', startUtc);
+    var targetDate = new Date(startUtc);
+    var targetTime = targetDate.getTime();
+
+    // 2. Format localized Date & Time display dynamically
+    try {
+        var dateValEl = document.querySelector('[data-i18n="homeWebinar.dateValue"]');
+        var dateTimeEl = document.querySelector('[data-i18n="homeWebinar.dateTime"]');
+        if (dateValEl && !isNaN(targetTime)) {
+            var optDate = { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric', timeZone: 'UTC' };
+            var locStr = targetDate.toLocaleDateString(isFa ? 'fa-IR' : (isAr ? 'ar-AE' : (isZh ? 'zh-CN' : 'en-US')), optDate);
+            if (locStr) dateValEl.textContent = locStr;
+        }
+        if (dateTimeEl && !isNaN(targetTime)) {
+            var dKabul = new Date(targetTime).toLocaleTimeString('en-GB', { timeZone: 'Asia/Kabul', hour: '2-digit', minute: '2-digit', hour12: false });
+            var dDubai = new Date(targetTime).toLocaleTimeString('en-GB', { timeZone: 'Asia/Dubai', hour: '2-digit', minute: '2-digit', hour12: false });
             if (isFa) {
-                var faDigits = ['۰','۱','۲','۳','۴','۵','۶','۷','۸','۹'];
-                return str.replace(/\d/g, function(d) { return faDigits[d]; });
+                var faDays = ['یک‌شنبه','دوشنبه','سه‌شنبه','چهارشنبه','پنج‌شنبه','جمعه','شنبه'];
+                var faMonths = ['ژانویه','فوریه','مارس','آوریل','مه','ژوئن','ژوئیه','اوت','سپتامبر','اکتبر','نوامبر','دسامبر'];
+                dateTimeEl.textContent = faDays[targetDate.getUTCDay()] + ' ' + targetDate.getUTCDate() + ' ' + faMonths[targetDate.getUTCMonth()] + ' · ' + dKabul + ' کابل / ' + dDubai + ' دبی';
+            } else if (isAr) {
+                var arDays = ['الأحد','الإثنين','الثلاثاء','الأربعاء','الخميس','الجمعة','السبت'];
+                var arMonths = ['يناير','فبراير','مارس','أبريل','مايو','يونيو','يوليو','أغسطس','سبتمبر','أكتوبر','نوفمبر','ديسمبر'];
+                dateTimeEl.textContent = arDays[targetDate.getUTCDay()] + ' ' + targetDate.getUTCDate() + ' ' + arMonths[targetDate.getUTCMonth()] + ' · ' + dKabul + ' كابل / ' + dDubai + ' دبي';
+            } else if (isZh) {
+                var zhDays = ['星期日','星期一','星期二','星期三','星期四','星期五','星期六'];
+                dateTimeEl.textContent = (targetDate.getUTCMonth() + 1) + '月' + targetDate.getUTCDate() + '日' + zhDays[targetDate.getUTCDay()] + ' · 喀布尔 ' + dKabul + ' / 迪拜 ' + dDubai;
+            } else {
+                var enDays = ['Sunday','Monday','Tuesday','Wednesday','Thursday','Friday','Saturday'];
+                var enMonths = ['January','February','March','April','May','June','July','August','September','October','November','December'];
+                dateTimeEl.textContent = enDays[targetDate.getUTCDay()] + ' ' + targetDate.getUTCDate() + ' ' + enMonths[targetDate.getUTCMonth()] + ' · ' + dKabul + ' Kabul / ' + dDubai + ' Dubai';
             }
-            if (isAr) {
-                var arDigits = ['٠','١','٢','٣','٤','٥','٦','٧','٨','٩'];
-                return str.replace(/\d/g, function(d) { return arDigits[d]; });
-            }
-            return str;
         }
+    } catch(errFmt) {}
 
-        function tick() {
-            var now = Date.now();
-            var diff = Math.max(0, targetTime - now);
-            var d = Math.floor(diff / (1000 * 60 * 60 * 24));
-            var h = Math.floor((diff / (1000 * 60 * 60)) % 24);
-            var m = Math.floor((diff / (1000 * 60)) % 60);
-            var s = Math.floor((diff / 1000) % 60);
+    // 3. Ticking Countdown
+    var elD = document.getElementById('hw-cd-days');
+    var elH = document.getElementById('hw-cd-hours');
+    var elM = document.getElementById('hw-cd-mins');
+    var elS = document.getElementById('hw-cd-secs');
 
-            if (elD) elD.textContent = formatNum(d);
-            if (elH) elH.textContent = formatNum(h);
-            if (elM) elM.textContent = formatNum(m);
-            if (elS) elS.textContent = formatNum(s);
+    function formatNum(num) {
+        var str = num < 10 ? '0' + num : '' + num;
+        if (isFa) {
+            var faDigits = ['۰','۱','۲','۳','۴','۵','۶','۷','۸','۹'];
+            return str.replace(/\d/g, function(d) { return faDigits[d]; });
         }
+        if (isAr) {
+            var arDigits = ['٠','١','٢','٣','٤','٥','٦','٧','٨','٩'];
+            return str.replace(/\d/g, function(d) { return arDigits[d]; });
+        }
+        return str;
+    }
 
-        tick();
-        setInterval(tick, 1000);
+    function tick() {
+        var currentNow = Date.now();
+        var diff = Math.max(0, targetTime - currentNow);
+        var d = Math.floor(diff / (1000 * 60 * 60 * 24));
+        var h = Math.floor((diff / (1000 * 60 * 60)) % 24);
+        var m = Math.floor((diff / (1000 * 60)) % 60);
+        var s = Math.floor((diff / 1000) % 60);
 
-        // Dynamic User Timezone detection & row display
-        try {
-            var userTZ = Intl.DateTimeFormat().resolvedOptions().timeZone || '';
-            var localRow = document.getElementById('hw-tz-local');
-            var localLabel = document.getElementById('hw-user-tz-label');
-            var localTime = document.getElementById('hw-user-tz-time');
+        if (elD) elD.textContent = formatNum(d);
+        if (elH) elH.textContent = formatNum(h);
+        if (elM) elM.textContent = formatNum(m);
+        if (elS) elS.textContent = formatNum(s);
+    }
 
-            var presetTZs = {
-                'Asia/Kabul': 'hw-tz-kabul',
-                'Asia/Dubai': 'hw-tz-dubai',
-                'Europe/Istanbul': 'hw-tz-istanbul'
-            };
+    tick();
+    setInterval(tick, 1000);
 
-            if (presetTZs[userTZ]) {
-                var matchEl = document.getElementById(presetTZs[userTZ]);
-                if (matchEl) {
-                    var citySpan = matchEl.querySelector('span:first-child');
-                    if (citySpan) {
-                        citySpan.className = 'text-[#C5A880] font-medium';
-                        var youSuffix = isFa ? ' (به وقت شما)' : (isAr ? ' (توقيتك)' : (lang === 'zh' ? ' (您的当地时间)' : ' · Your time'));
-                        citySpan.textContent += youSuffix;
-                    }
-                }
-                if (localRow) localRow.style.display = 'none';
-            } else if (userTZ && localRow && localLabel && localTime) {
-                var rawCity = userTZ.split('/').pop().replace(/_/g, ' ');
-                var yourTimePrefix = isFa ? 'به وقت شما' : (isAr ? 'توقيتك المحلي' : (lang === 'zh' ? '您的当地时间' : 'Your time'));
-                localLabel.textContent = yourTimePrefix + ' (' + rawCity + ')';
+    // 4. Local User Timezone Display
+    try {
+        var userTZ = Intl.DateTimeFormat().resolvedOptions().timeZone || '';
+        var localRow = document.getElementById('hw-tz-local');
+        var localLabel = document.getElementById('hw-user-tz-label');
+        var localTime = document.getElementById('hw-user-tz-time');
 
-                var loc = isFa ? 'fa-AF-u-ca-gregory' : (isAr ? 'ar-AE' : (lang === 'zh' ? 'zh-CN' : 'en-GB'));
-                var timePart = new Intl.DateTimeFormat(loc, { hour: '2-digit', minute: '2-digit', hourCycle: 'h23', timeZone: userTZ }).format(targetDate);
-                var datePart = new Intl.DateTimeFormat(loc, { weekday: 'short', day: 'numeric', month: 'short', timeZone: userTZ }).format(targetDate);
-                localTime.textContent = timePart + ' · ' + datePart;
-            }
-        } catch(e) {}
-    })();
+        if (localRow && localTime && userTZ && !isNaN(targetTime)) {
+            var cityClean = userTZ.split('/').pop().replace(/_/g, ' ');
+            if (localLabel) localLabel.textContent = (isFa ? 'به وقت شما' : (isAr ? 'توقيتك المحلي' : (isZh ? '您的当地时间' : 'Your time'))) + ' (' + cityClean + ')';
+            var userDate = new Date(targetTime);
+            var timeFormatted = userDate.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit', hour12: false, timeZone: userTZ });
+            var dateShort = userDate.toLocaleDateString(isFa ? 'fa-IR' : (isAr ? 'ar-AE' : (isZh ? 'zh-CN' : 'en-US')), { weekday: 'short', day: 'numeric', month: 'short', timeZone: userTZ });
+            localTime.textContent = timeFormatted + ' · ' + dateShort;
+            localRow.style.display = 'flex';
+        }
+    } catch(e) {}
+})();
 </script>
 </body>
 </html>
