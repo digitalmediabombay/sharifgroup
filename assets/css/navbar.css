@@ -4,7 +4,7 @@
    Fully supports EN, AR, FA, ZH and proper RTL layout without collisions
    ========================================================================== */
 
-@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Playfair+Display:ital,wght@0,600;0,700;1,400&display=swap');
+/* Font families loaded via <head> link tags for high-performance non-blocking discovery */
 
 :root {
   --sg-nav-h: 80px;
@@ -276,8 +276,10 @@ html[lang="zh"] .sg-nav-link {
 }
 
 .sg-nav-item:hover .sg-mega-menu,
+.sg-nav-item:focus-within .sg-mega-menu,
 .sg-nav-item.is-open .sg-mega-menu,
-.sg-mega-menu:hover {
+.sg-mega-menu:hover,
+.sg-mega-menu:focus-within {
   opacity: 1 !important;
   visibility: visible !important;
   pointer-events: auto !important;

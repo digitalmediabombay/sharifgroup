@@ -526,7 +526,7 @@
     }).join('');
 
     return `
-    <nav class="sg-drawer" id="sgDrawer" aria-label="Mobile Navigation">
+    <nav class="sg-drawer" id="sgDrawer" aria-label="Mobile Navigation" aria-hidden="true" inert>
       <div class="sg-drawer-langs">
         ${drawerLangsHTML}
       </div>
@@ -537,7 +537,7 @@
 
       <!-- Accordion: Citizenship -->
       <div class="sg-drawer-acc-item">
-        <button class="sg-drawer-acc-head" type="button">
+        <button class="sg-drawer-acc-head" type="button" aria-expanded="false">
           <span>${esc(n.citizenship)}</span>
           <i class="fa-solid fa-chevron-down"></i>
         </button>
@@ -556,7 +556,7 @@
 
       <!-- Accordion: Residency -->
       <div class="sg-drawer-acc-item">
-        <button class="sg-drawer-acc-head" type="button">
+        <button class="sg-drawer-acc-head" type="button" aria-expanded="false">
           <span>${esc(n.residency)}</span>
           <i class="fa-solid fa-chevron-down"></i>
         </button>
@@ -571,7 +571,7 @@
 
       <!-- Accordion: Other Services -->
       <div class="sg-drawer-acc-item">
-        <button class="sg-drawer-acc-head" type="button">
+        <button class="sg-drawer-acc-head" type="button" aria-expanded="false">
           <span>${esc(n.moreServices)}</span>
           <i class="fa-solid fa-chevron-down"></i>
         </button>
@@ -583,7 +583,7 @@
 
       <!-- Accordion: About Us -->
       <div class="sg-drawer-acc-item">
-        <button class="sg-drawer-acc-head" type="button">
+        <button class="sg-drawer-acc-head" type="button" aria-expanded="false">
           <span>${esc(n.aboutUs)}</span>
           <i class="fa-solid fa-chevron-down"></i>
         </button>
@@ -684,25 +684,76 @@
       }
     }
 
-    // 2. Mobile toggle
+    // 2. Mobile toggle & drawer accessibility
     const mobToggle = headerEl.querySelector('#sgMobToggle');
+    if (drawerEl) {
+      // Ensure initial inert and aria-hidden on closed drawer (T16)
+      drawerEl.setAttribute('aria-hidden', 'true');
+      drawerEl.setAttribute('inert', '');
+
+      // Focus trap within mobile drawer (T16)
+      drawerEl.addEventListener('keydown', function(e) {
+        if (e.key === 'Tab') {
+          const focusables = drawerEl.querySelectorAll('a[href], button:not([disabled]), [tabindex]:not([tabindex="-1"])');
+          if (focusables.length === 0) return;
+          const first = focusables[0];
+          const last = focusables[focusables.length - 1];
+          if (e.shiftKey) {
+            if (document.activeElement === first) {
+              last.focus();
+              e.preventDefault();
+            }
+          } else {
+            if (document.activeElement === last) {
+              first.focus();
+              e.preventDefault();
+            }
+          }
+        }
+      });
+    }
+
+    function closeDrawer() {
+      if (!drawerEl) return;
+      drawerEl.classList.remove('is-open');
+      headerEl.classList.remove('drawer-open');
+      drawerEl.setAttribute('aria-hidden', 'true');
+      drawerEl.setAttribute('inert', '');
+      if (mobToggle) mobToggle.setAttribute('aria-expanded', 'false');
+      document.body.style.overflow = '';
+    }
+
+    function openDrawer() {
+      if (!drawerEl) return;
+      drawerEl.classList.add('is-open');
+      headerEl.classList.add('drawer-open');
+      drawerEl.setAttribute('aria-hidden', 'false');
+      drawerEl.removeAttribute('inert');
+      if (mobToggle) mobToggle.setAttribute('aria-expanded', 'true');
+      document.body.style.overflow = 'hidden';
+      const firstLink = drawerEl.querySelector('a[href], button:not([disabled])');
+      if (firstLink) {
+        setTimeout(() => firstLink.focus(), 80);
+      }
+    }
+
     if (mobToggle && drawerEl) {
       mobToggle.setAttribute('aria-expanded', 'false');
       mobToggle.addEventListener('click', function(e) {
         e.stopPropagation();
-        const isOpen = drawerEl.classList.toggle('is-open');
-        headerEl.classList.toggle('drawer-open', isOpen);
-        mobToggle.setAttribute('aria-expanded', isOpen ? 'true' : 'false');
-        document.body.style.overflow = isOpen ? 'hidden' : '';
+        const isOpen = drawerEl.classList.contains('is-open');
+        if (isOpen) {
+          closeDrawer();
+          mobToggle.focus();
+        } else {
+          openDrawer();
+        }
       });
 
       // Close drawer when clicking any link inside
       drawerEl.addEventListener('click', function(e) {
         if (e.target.closest('a')) {
-          drawerEl.classList.remove('is-open');
-          headerEl.classList.remove('drawer-open');
-          mobToggle.setAttribute('aria-expanded', 'false');
-          document.body.style.overflow = '';
+          closeDrawer();
         }
       });
     }
@@ -720,11 +771,8 @@
           handled = true;
         }
         if (drawerEl && drawerEl.classList.contains('is-open')) {
-          drawerEl.classList.remove('is-open');
-          headerEl.classList.remove('drawer-open');
-          document.body.style.overflow = '';
+          closeDrawer();
           if (mobToggle) {
-            mobToggle.setAttribute('aria-expanded', 'false');
             mobToggle.focus();
           }
           handled = true;
@@ -742,10 +790,7 @@
         if (targetSection) {
           e.preventDefault();
           if (drawerEl && drawerEl.classList.contains('is-open')) {
-            drawerEl.classList.remove('is-open');
-            headerEl.classList.remove('drawer-open');
-            if (mobToggle) mobToggle.setAttribute('aria-expanded', 'false');
-            document.body.style.overflow = '';
+            closeDrawer();
           }
           const prefersReduced = window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
           targetSection.scrollIntoView({ behavior: prefersReduced ? 'auto' : 'smooth', block: 'start' });
@@ -761,9 +806,13 @@
     if (drawerEl) {
       const heads = drawerEl.querySelectorAll('.sg-drawer-acc-head');
       heads.forEach(h => {
+        h.setAttribute('aria-expanded', 'false');
         h.addEventListener('click', function() {
           const item = h.closest('.sg-drawer-acc-item');
-          if (item) item.classList.toggle('is-open');
+          if (item) {
+            const isItemOpen = item.classList.toggle('is-open');
+            h.setAttribute('aria-expanded', isItemOpen ? 'true' : 'false');
+          }
         });
       });
     }
@@ -869,6 +918,16 @@
   } else {
     mountUniversalNavbar();
   }
+
+  // T15: Global image error fallback for external CDN / host failures (403/429/404/520)
+  document.addEventListener('error', function(e) {
+    if (e.target && e.target.tagName === 'IMG' && !e.target.dataset.fallbackTried) {
+      e.target.dataset.fallbackTried = 'true';
+      if (e.target.src && !e.target.src.includes('dubai-office-2.webp') && !e.target.src.includes('vector_')) {
+        e.target.src = '/assets/images/dubai-office-2.webp';
+      }
+    }
+  }, true);
 
   window.mountUniversalNavbar = mountUniversalNavbar;
 })();

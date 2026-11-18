@@ -764,6 +764,41 @@ function autoInitStandaloneForms() {
     });
   } catch (err) {}
 
+  // T06: Auto-detect and pre-select user's timezone based on IANA zone
+  try {
+    const tzSel = document.getElementById('contact-timezone');
+    if (tzSel && !tzSel.value) {
+      const detectedTz = Intl.DateTimeFormat().resolvedOptions().timeZone;
+      if (detectedTz) {
+        // Try exact match first
+        let matched = false;
+        for (const opt of tzSel.options) {
+          if (opt.value === detectedTz) {
+            tzSel.value = detectedTz;
+            matched = true;
+            break;
+          }
+        }
+        // Fallback: match by UTC offset
+        if (!matched) {
+          const offsetMin = -new Date().getTimezoneOffset();
+          const sign = offsetMin >= 0 ? '+' : '-';
+          const absMin = Math.abs(offsetMin);
+          const hh = String(Math.floor(absMin / 60)).padStart(2, '0');
+          const mm = String(absMin % 60).padStart(2, '0');
+          const utcStr = 'UTC' + sign + hh + ':' + mm;
+          // Try partial text match in option text
+          for (const opt of tzSel.options) {
+            if (opt.textContent.includes(utcStr)) {
+              tzSel.value = opt.value;
+              break;
+            }
+          }
+        }
+      }
+    }
+  } catch (err) {}
+
   // T35: Autocomplete optimization for mobile & desktop form completion
   try {
     document.querySelectorAll('input[name="firstName"]').forEach(el => { if (!el.getAttribute('autocomplete')) el.setAttribute('autocomplete', 'given-name'); });

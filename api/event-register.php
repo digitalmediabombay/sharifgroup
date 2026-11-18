@@ -232,9 +232,12 @@ try {
 }
 
 // 4. Background Sync to Google Apps Script CRM (Google Sheets)
-// Skip if client-side already synced directly to avoid duplicate sheet entries
+// T40: Authoritative server-owned sync contract. Server performs sync to Google Apps Script
+// CRM unless an acknowledged completion is already attested by an upstream trusted gateway.
 $crmSynced = false;
-if (!empty($CRM_WEBHOOK) && empty($data['crm_synced'])) {
+$alreadySynced = !empty($data['crm_synced']) && ($data['crm_synced'] === true || $data['crm_synced'] === 'true');
+
+if (!empty($CRM_WEBHOOK) && !$alreadySynced) {
     try {
         $crmPayload = json_encode([
             'form_id' => 'webinar-registration',

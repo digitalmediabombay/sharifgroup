@@ -2243,8 +2243,10 @@
 
       (async () => {
         let confirmed = DEMO ? true : false;
+        let crmAcknowledged = false;
 
         // 1. Primary Direct Server Email Dispatcher (SPF/DKIM authenticated from @sharifgroup.ae)
+        // T40: Do not claim crm_synced before acknowledgement; let server own authoritative delivery
         if (window.location.protocol !== 'file:') {
           try {
             const controller = new AbortController();
@@ -2252,7 +2254,7 @@
             const sRes = await fetch('/api/event-register.php', {
               method: 'POST',
               headers: { 'Content-Type': 'application/json' },
-              body: JSON.stringify({ ...rec, crm_synced: true }),
+              body: JSON.stringify(rec),
               signal: controller.signal
             });
             clearTimeout(timer);
@@ -2260,6 +2262,9 @@
               const resJson = await sRes.json().catch(() => null);
               if (resJson && resJson.status === 'success') {
                 confirmed = true;
+                if (resJson.crm_synced) {
+                  crmAcknowledged = true;
+                }
               }
             }
           } catch (err) {
@@ -2267,15 +2272,16 @@
           }
         }
 
-        // 2. Central CRM Sheet Sync (Google Apps Script)
-        if (!confirmed && CRM_WEBHOOK_URL) {
+        // 2. Central CRM Sheet Sync (Google Apps Script) fallback
+        // T40: Decoupled fallback triggered only if server failed or server reported CRM unacknowledged
+        if ((!confirmed || !crmAcknowledged) && CRM_WEBHOOK_URL) {
           try {
             const controller = new AbortController();
             const timer = setTimeout(() => controller.abort(), 10000);
             const cRes = await fetch(CRM_WEBHOOK_URL, {
               method: 'POST',
               headers: { 'Content-Type': 'text/plain;charset=utf-8' },
-              body: JSON.stringify({ ...rec, crm_synced: true }),
+              body: JSON.stringify({ ...rec, delivery_mode: 'client_fallback' }),
               signal: controller.signal
             });
             clearTimeout(timer);
@@ -2283,6 +2289,7 @@
               const resJson = await cRes.json().catch(() => null);
               if (resJson && (resJson.status === 'success' || resJson.status === 'ignored_duplicate')) {
                 confirmed = true;
+                crmAcknowledged = true;
               }
             }
           } catch (err) {

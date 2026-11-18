@@ -2,7 +2,7 @@
 
 <html class="scroll-smooth" lang="en">
 <head>
-  <link rel="preload" as="image" href="/sharif.webp" fetchpriority="high">
+  <link rel="preload" as="image" href="/sharif.webp" imagesrcset="/sharif-mobile.webp 800w, /sharif.webp 1600w" imagesizes="100vw" fetchpriority="high">
   <link rel="icon" type="image/svg+xml" href="/favicon.svg">
   <link rel="alternate icon" href="/favicon.ico">
 
@@ -175,7 +175,7 @@ j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
 <!-- Google Fonts & Icon Libraries -->
 <link href="https://fonts.googleapis.com" rel="preconnect"/>
 <link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect"/>
-<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&amp;family=Playfair+Display:ital,wght@0,400;0,600;0,700;1,400&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Playfair+Display:ital,wght@0,400;0,600;0,700;1,400&display=swap" rel="stylesheet"/>
 <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet"/>
 <!-- GSAP (GreenSock Animation Platform) -->
 <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js"></script>
@@ -466,6 +466,42 @@ html[lang="ar"] .cd-lbl {
     color: #C5A880 !important;
     font-weight: 600 !important;
 }
+/* T37: Mobile sticky consultation bar */
+#sg-sticky-cta {
+    position: fixed;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    z-index: 50;
+    background: #786142;
+    color: #ffffff;
+    padding: 12px 20px;
+    padding-bottom: calc(12px + env(safe-area-inset-bottom, 0px));
+    display: none;
+    align-items: center;
+    justify-content: center;
+    gap: 10px;
+    box-shadow: 0 -2px 16px rgba(0,0,0,0.18);
+}
+#sg-sticky-cta a {
+    color: #ffffff;
+    font-size: 13px;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.12em;
+    text-decoration: none;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+#sg-sticky-cta.sg-sticky-visible {
+    display: flex;
+}
+@media (min-width: 768px) {
+    #sg-sticky-cta {
+        display: none !important;
+    }
+}
 </style>
     <!-- CMS Live Studio Integration (Active inside dashboard editor) -->
     <script>
@@ -501,7 +537,7 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
 <div></div>
 <div class="text-center flex flex-col items-center">
 <div class="w-32 h-32 md:w-44 md:h-44 mb-8 flex items-center justify-center" id="preloader-logo-wrapper">
-<img alt="Sharif Group Premium Logo" class="object-contain w-full h-full max-h-full opacity-0" id="preloader-logo" src="/assets/images/vector_b5a81734.svg"/>
+<img alt="Sharif Group Premium Logo" class="object-contain w-full h-full max-h-full opacity-0" id="preloader-logo" src="/assets/images/vector_b5a81734.svg" width="180" height="56" decoding="async" />
 </div>
 <div class="font-serif text-2xl md:text-4xl tracking-[0.2em] uppercase text-neutral-900 mb-2 opacity-0 transform translate-y-4 font-bold" id="preloader-title">SHARIF GROUP</div>
 </div>
@@ -517,7 +553,7 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
       <!-- Left: Logo & Menu -->
       <div class="sg-brand-group">
         <a class="sg-brand" href="/" aria-label="Sharif Group Home">
-          <img src="/assets/images/vector_b5a81734.svg" onerror="if(this.src.indexOf('vector_b5a81734')!==-1){this.src='/assets/images/logo.svg';}else if(this.src.indexOf('logo.svg')!==-1){this.src='/assets/images/vector_2d09c4bb.svg';}" alt="Sharif Group Logo" id="nav-logo" width="50" height="56">
+          <img src="/assets/images/vector_b5a81734.svg" onerror="if(this.src.indexOf('vector_b5a81734')!==-1){this.src='/assets/images/logo.svg';}else if(this.src.indexOf('logo.svg')!==-1){this.src='/assets/images/vector_2d09c4bb.svg';}" alt="Sharif Group Logo" id="nav-logo" width="50" height="56" loading="lazy" decoding="async">
         </a>
         <span class="sg-brand-sep" aria-hidden="true">|</span>
 
@@ -537,19 +573,19 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
                 <div>
                   <span class="sg-mm-col-head">Caribbean Portfolios</span>
                   <ul class="sg-mm-list">
-                    <li><a href="/programs/citizenshipbyinvestment/dominica/"><img src="https://flagcdn.com/dm.svg" alt="Dominica" class="sg-flag-icon"><span>Dominica | Passport</span></a></li>
-                    <li><a href="/programs/citizenshipbyinvestment/stkitts/"><img src="https://flagcdn.com/kn.svg" alt="St. Kitts & Nevis" class="sg-flag-icon"><span>St. Kitts &amp; Nevis | Passport</span></a></li>
-                    <li><a href="/programs/citizenshipbyinvestment/antiguaandbarbuda/"><img src="https://flagcdn.com/ag.svg" alt="Antigua & Barbuda" class="sg-flag-icon"><span>Antigua &amp; Barbuda | Passport</span></a></li>
-                    <li><a href="/programs/citizenshipbyinvestment/stlucia/"><img src="https://flagcdn.com/lc.svg" alt="Saint Lucia" class="sg-flag-icon"><span>Saint Lucia | Passport</span></a></li>
-                    <li><a href="/programs/citizenshipbyinvestment/grenada/"><img src="https://flagcdn.com/gd.svg" alt="Grenada" class="sg-flag-icon"><span>Grenada | Passport</span></a></li>
+                    <li><a href="/programs/citizenshipbyinvestment/dominica/"><img src="https://flagcdn.com/dm.svg" alt="Dominica" class="sg-flag-icon" width="24" height="18" loading="lazy" decoding="async"><span>Dominica | Passport</span></a></li>
+                    <li><a href="/programs/citizenshipbyinvestment/stkitts/"><img src="https://flagcdn.com/kn.svg" alt="St. Kitts & Nevis" class="sg-flag-icon" width="24" height="18" loading="lazy" decoding="async"><span>St. Kitts &amp; Nevis | Passport</span></a></li>
+                    <li><a href="/programs/citizenshipbyinvestment/antiguaandbarbuda/"><img src="https://flagcdn.com/ag.svg" alt="Antigua & Barbuda" class="sg-flag-icon" width="24" height="18" loading="lazy" decoding="async"><span>Antigua &amp; Barbuda | Passport</span></a></li>
+                    <li><a href="/programs/citizenshipbyinvestment/stlucia/"><img src="https://flagcdn.com/lc.svg" alt="Saint Lucia" class="sg-flag-icon" width="24" height="18" loading="lazy" decoding="async"><span>Saint Lucia | Passport</span></a></li>
+                    <li><a href="/programs/citizenshipbyinvestment/grenada/"><img src="https://flagcdn.com/gd.svg" alt="Grenada" class="sg-flag-icon" width="24" height="18" loading="lazy" decoding="async"><span>Grenada | Passport</span></a></li>
                   </ul>
                 </div>
                 <div>
                   <span class="sg-mm-col-head sg-mm-col-head--alt">Global Portfolios</span>
                   <ul class="sg-mm-list">
-                    <li><a href="/programs/citizenshipbyinvestment/vanuatu/"><img src="https://flagcdn.com/vu.svg" alt="Vanuatu" class="sg-flag-icon"><span>Vanuatu | Passport</span></a></li>
-                    <li><a href="/programs/citizenshipbyinvestment/sao-tome-and-principe/"><img src="https://flagcdn.com/st.svg" alt="São Tomé and Príncipe" class="sg-flag-icon"><span>São Tomé and Príncipe | Passport</span></a></li>
-                    <li><a href="/programs/citizenshipbyinvestment/nauru/"><img src="https://flagcdn.com/nr.svg" alt="Republic of Nauru" class="sg-flag-icon"><span>Republic of Nauru | Passport</span></a></li>
+                    <li><a href="/programs/citizenshipbyinvestment/vanuatu/"><img src="https://flagcdn.com/vu.svg" alt="Vanuatu" class="sg-flag-icon" width="24" height="18" loading="lazy" decoding="async"><span>Vanuatu | Passport</span></a></li>
+                    <li><a href="/programs/citizenshipbyinvestment/sao-tome-and-principe/"><img src="https://flagcdn.com/st.svg" alt="São Tomé and Príncipe" class="sg-flag-icon" width="24" height="18" loading="lazy" decoding="async"><span>São Tomé and Príncipe | Passport</span></a></li>
+                    <li><a href="/programs/citizenshipbyinvestment/nauru/"><img src="https://flagcdn.com/nr.svg" alt="Republic of Nauru" class="sg-flag-icon" width="24" height="18" loading="lazy" decoding="async"><span>Republic of Nauru | Passport</span></a></li>
                   </ul>
                 </div>
               </div>
@@ -572,15 +608,15 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
                 <div>
                   <span class="sg-mm-col-head">European Portfolios</span>
                   <ul class="sg-mm-list">
-                    <li><a href="/programs/residencybyinvestment/portugal/"><img src="https://flagcdn.com/pt.svg" alt="Portugal" class="sg-flag-icon"><span>Portugal | Golden Visa</span></a></li>
-                    <li><a href="/programs/residencybyinvestment/greece/"><img src="https://flagcdn.com/gr.svg" alt="Greece" class="sg-flag-icon"><span>Greece | Golden Visa</span></a></li>
+                    <li><a href="/programs/residencybyinvestment/portugal/"><img src="https://flagcdn.com/pt.svg" alt="Portugal" class="sg-flag-icon" width="24" height="18" loading="lazy" decoding="async"><span>Portugal | Golden Visa</span></a></li>
+                    <li><a href="/programs/residencybyinvestment/greece/"><img src="https://flagcdn.com/gr.svg" alt="Greece" class="sg-flag-icon" width="24" height="18" loading="lazy" decoding="async"><span>Greece | Golden Visa</span></a></li>
                   </ul>
                 </div>
                 <div>
                   <span class="sg-mm-col-head sg-mm-col-head--alt">Americas &amp; UAE</span>
                   <ul class="sg-mm-list">
-                    <li><a href="/programs/residencybyinvestment/panama/"><img src="https://flagcdn.com/pa.svg" alt="Panama" class="sg-flag-icon"><span>Panama | Golden Visa</span></a></li>
-                    <li><a href="/programs/residencybyinvestment/uae/"><img src="https://flagcdn.com/ae.svg" alt="UAE" class="sg-flag-icon"><span>United Arab Emirates | Golden Visa</span></a></li>
+                    <li><a href="/programs/residencybyinvestment/panama/"><img src="https://flagcdn.com/pa.svg" alt="Panama" class="sg-flag-icon" width="24" height="18" loading="lazy" decoding="async"><span>Panama | Golden Visa</span></a></li>
+                    <li><a href="/programs/residencybyinvestment/uae/"><img src="https://flagcdn.com/ae.svg" alt="UAE" class="sg-flag-icon" width="24" height="18" loading="lazy" decoding="async"><span>United Arab Emirates | Golden Visa</span></a></li>
                   </ul>
                 </div>
               </div>
@@ -602,12 +638,12 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
                 </div>
                 <div class="sg-mm-cards-grid">
                   <a class="sg-mm-card" href="/realestate/">
-                    <img src="/assets/images/isdubairealestateago_3194a5.webp" alt="Real Estate" loading="lazy">
+                    <img src="/assets/images/isdubairealestateago_3194a5.webp" alt="Real Estate" loading="lazy" width="300" height="200" decoding="async">
                     <div class="sg-mm-card-overlay"></div>
                     <span class="sg-mm-card-title">Real Estate Advisory</span>
                   </a>
                   <a class="sg-mm-card" href="/educationaladvisory/">
-                    <img src="/assets/images/photo-154133990719_46b647.webp" alt="Educational Advisory" loading="lazy">
+                    <img src="/assets/images/photo-154133990719_46b647.webp" alt="Educational Advisory" loading="lazy" width="300" height="200" decoding="async">
                     <div class="sg-mm-card-overlay"></div>
                     <span class="sg-mm-card-title">Educational Advisory</span>
                   </a>
@@ -631,22 +667,22 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
                 </div>
                 <div class="sg-mm-cards-grid">
                   <a class="sg-mm-card" href="/aboutus/">
-                    <img src="/assets/images/dubai-office-2.webp" alt="About Sharif Group" loading="lazy">
+                    <img src="/assets/images/dubai-office-2.webp" alt="About Sharif Group" loading="lazy" width="300" height="200" decoding="async">
                     <div class="sg-mm-card-overlay"></div>
                     <span class="sg-mm-card-title">About Sharif Group</span>
                   </a>
                   <a class="sg-mm-card" href="/about-founder/">
-                    <img src="/assets/images/alirezasharif.svg" alt="About Founder | Ali Sharif" loading="lazy">
+                    <img src="/assets/images/alirezasharif.svg" alt="About Founder | Ali Sharif" loading="lazy" width="160" height="160" decoding="async">
                     <div class="sg-mm-card-overlay"></div>
                     <span class="sg-mm-card-title">About Founder | Ali Sharif</span>
                   </a>
                   <a class="sg-mm-card" href="/socialresponsibility/">
-                    <img src="/assets/images/photo-148852178799_7302db.webp" alt="Social Responsibility" loading="lazy">
+                    <img src="/assets/images/photo-148852178799_7302db.webp" alt="Social Responsibility" loading="lazy" width="300" height="200" decoding="async">
                     <div class="sg-mm-card-overlay"></div>
                     <span class="sg-mm-card-title">Social Responsibility</span>
                   </a>
                   <a class="sg-mm-card sg-mm-card-partner" href="/partners/">
-                    <img src="/assets/images/card.webp" alt="Become a Partner" loading="lazy">
+                    <img src="/assets/images/card.webp" alt="Become a Partner" loading="lazy" width="300" height="200" decoding="async">
                     <div class="sg-mm-card-overlay sg-mm-card-partner-overlay"></div>
                     <div class="sg-mm-card-partner-content">
                       <div class="sg-mm-card-partner-text">
@@ -836,13 +872,19 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
 <!-- PURE HOMEPAGE CONTENT CONTAINER -->
 <main class="pt-24 min-h-[70vh]">
 <!-- ROTATING IMAGE HERO CONTAINER -->
-<section class="relative min-h-[90vh] flex items-center justify-center text-center px-4 sm:px-6 bg-neutral-950 border-b border-neutral-200 overflow-hidden pt-36 pb-20" id="hero-section">
+<section class="relative min-h-[65vh] md:min-h-[85vh] lg:min-h-[90vh] flex items-center justify-center text-center px-4 sm:px-6 bg-neutral-950 border-b border-neutral-200 overflow-hidden pt-28 pb-12 sm:pt-36 sm:pb-20" id="hero-section">
 <div class="absolute inset-0 z-0">
-<div class="hero-slide absolute inset-0 bg-cover bg-center transition-opacity duration-1000 opacity-100" style="background-image: linear-gradient(rgba(11,15,20,0.65), rgba(11,15,20,0.75)), url('/sharif.webp');"></div>
-<div class="hero-slide absolute inset-0 bg-cover bg-center transition-opacity duration-1000 opacity-0" style="background-image: linear-gradient(rgba(11,15,20,0.65), rgba(11,15,20,0.75)), url('/assets/images/UK-Student-Visa_419441.webp');" data-bg="linear-gradient(rgba(11,15,20,0.65), rgba(11,15,20,0.75)), url('/assets/images/UK-Student-Visa_419441.webp')"></div>
-<div class="hero-slide absolute inset-0 bg-cover bg-center transition-opacity duration-1000 opacity-0" style="background-image: linear-gradient(rgba(11,15,20,0.65), rgba(11,15,20,0.75)), url('/assets/images/Dubai_realestate_market_soars.jpg');" data-bg="linear-gradient(rgba(11,15,20,0.65), rgba(11,15,20,0.75)), url('/assets/images/Dubai_realestate_market_soars.jpg')"></div>
-<div class="hero-slide absolute inset-0 bg-cover bg-center transition-opacity duration-1000 opacity-0" style="background-image: linear-gradient(rgba(11,15,20,0.65), rgba(11,15,20,0.75)), url('/assets/images/dubai-palm-jumeirah-_f8d6df.webp');" data-bg="linear-gradient(rgba(11,15,20,0.65), rgba(11,15,20,0.75)), url('/assets/images/dubai-palm-jumeirah-_f8d6df.webp')"></div>
-<div class="hero-slide absolute inset-0 bg-cover bg-center transition-opacity duration-1000 opacity-0" style="background-image: linear-gradient(rgba(11,15,20,0.65), rgba(11,15,20,0.75)), url('/assets/images/edu-hero-1.webp');" data-bg="linear-gradient(rgba(11,15,20,0.65), rgba(11,15,20,0.75)), url('/assets/images/edu-hero-1.webp')"></div>
+<div class="hero-slide absolute inset-0 transition-opacity duration-1000 opacity-100 z-0">
+<picture>
+<source media="(max-width: 768px)" srcset="/sharif-mobile.webp" type="image/webp">
+<img src="/sharif.webp" srcset="/sharif-mobile.webp 800w, /sharif.webp 1600w" sizes="100vw" alt="Sharif Group Background" class="w-full h-full object-cover object-center" width="1600" height="800" fetchpriority="high" decoding="async">
+</picture>
+<div class="absolute inset-0" style="background: linear-gradient(rgba(11,15,20,0.65), rgba(11,15,20,0.75));"></div>
+</div>
+<div class="hero-slide absolute inset-0 bg-cover bg-center transition-opacity duration-1000 opacity-0" data-bg="linear-gradient(rgba(11,15,20,0.65), rgba(11,15,20,0.75)), url('/assets/images/UK-Student-Visa_419441.webp')"></div>
+<div class="hero-slide absolute inset-0 bg-cover bg-center transition-opacity duration-1000 opacity-0" data-bg="linear-gradient(rgba(11,15,20,0.65), rgba(11,15,20,0.75)), url('/assets/images/Dubai_realestate_market_soars.jpg')"></div>
+<div class="hero-slide absolute inset-0 bg-cover bg-center transition-opacity duration-1000 opacity-0" data-bg="linear-gradient(rgba(11,15,20,0.65), rgba(11,15,20,0.75)), url('/assets/images/dubai-palm-jumeirah-_f8d6df.webp')"></div>
+<div class="hero-slide absolute inset-0 bg-cover bg-center transition-opacity duration-1000 opacity-0" data-bg="linear-gradient(rgba(11,15,20,0.65), rgba(11,15,20,0.75)), url('/assets/images/edu-hero-1.webp')"></div>
 </div>
 <div class="absolute inset-0 bg-gradient-to-t from-neutral-950/90 via-transparent to-neutral-950/50 z-0"></div>
 <div class="relative z-10 w-full max-w-7xl mx-auto space-y-3 text-center flex flex-col items-center">
@@ -872,6 +914,16 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
 <a class="flex items-center gap-2 group hover:text-luxury-gold transition duration-300" href="/educationaladvisory/">
 <i class="fa-solid fa-graduation-cap text-luxury-gold text-sm transition-transform duration-300 group-hover:scale-125 group-hover:rotate-12"></i>
 <span class="dominica-hero-glow text-base sm:text-lg" data-i18n="hero.educationalAdvisory">Educational Advisory</span>
+</a>
+</div>
+<div class="pt-6 flex flex-wrap items-center justify-center gap-3 w-full max-w-md mx-auto">
+<a href="/contact/" class="w-full sm:w-auto px-7 py-3.5 bg-[#786142] hover:bg-luxury-gold text-white text-xs font-bold uppercase tracking-widest transition duration-300 rounded-xl shadow-lg flex items-center justify-center gap-2 group/btn" data-i18n="hero.bookConsultation">
+<i class="fa-solid fa-calendar-check text-xs"></i>
+<span>Book a Free Consultation</span>
+</a>
+<a href="/eligibilitychecker/" class="w-full sm:w-auto px-6 py-3.5 bg-white/10 hover:bg-white/20 text-white border border-white/30 text-xs font-bold uppercase tracking-widest transition duration-300 rounded-xl backdrop-blur-md flex items-center justify-center gap-2" data-i18n="hero.checkEligibility">
+<i class="fa-solid fa-user-check text-xs"></i>
+<span>Check Eligibility</span>
 </a>
 </div>
 </div>
@@ -1268,7 +1320,7 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
 <div class="bg-neutral-900 rounded-[2rem] border border-luxury-gold/30 overflow-hidden shadow-xl flex flex-col justify-between hover:shadow-[0_0_25px_rgba(197,168,128,0.4)] transition duration-500 min-w-[320px] max-w-[320px] shrink-0 group dynamic-home-blog" data-cms-blog-id="bid-izo738" data-cms-slug="dominica-passport-for-afghans-in-2026">
 <div>
 <div class="relative aspect-[16/10] overflow-hidden">
-<img alt="Dominica Passport for Afghans in 2026" class="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110" src="/assets/images/uploads/d1d65d8b-b67e-495f-b779-93a3ff8eb47a_1791006383.webp" onerror="this.onerror=null;this.src='/assets/images/dubai-office-2.webp'" loading="lazy" decoding="async"/>
+<img alt="Dominica Passport for Afghans in 2026" class="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110" src="/assets/images/uploads/d1d65d8b-b67e-495f-b779-93a3ff8eb47a_1791006383.webp" onerror="this.onerror=null;this.src='/assets/images/dubai-office-2.webp'" loading="lazy" decoding="async" width="1067" height="800" />
 <div class="absolute inset-0 bg-gradient-to-t from-neutral-950 via-transparent to-transparent opacity-60"></div>
 <span class="absolute top-3 left-3 px-3 py-1 bg-black/70 backdrop-blur-md text-[10px] uppercase font-bold tracking-wider text-luxury-gold border border-luxury-gold/30 rounded-full">DOMINICA</span>
 </div>
@@ -1286,7 +1338,7 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
 <div class="bg-neutral-900 rounded-[2rem] border border-luxury-gold/30 overflow-hidden shadow-xl flex flex-col justify-between hover:shadow-[0_0_25px_rgba(197,168,128,0.4)] transition duration-500 min-w-[320px] max-w-[320px] shrink-0 group dynamic-home-blog" data-cms-blog-id="static-dominica-cbi" data-cms-slug="what-is-dominica-citizenship-by-investment">
 <div>
 <div class="relative aspect-[16/10] overflow-hidden">
-<img alt="What is Dominica Citizenship by Investment: Complete Guide" class="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110" src="/assets/images/citizenship-by-inves_eb492f.webp" onerror="this.onerror=null;this.src='/assets/images/dubai-office-2.webp'" loading="lazy" decoding="async"/>
+<img alt="What is Dominica Citizenship by Investment: Complete Guide" class="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110" src="/assets/images/citizenship-by-inves_eb492f.webp" onerror="this.onerror=null;this.src='/assets/images/dubai-office-2.webp'" loading="lazy" decoding="async" width="1440" height="800" />
 <div class="absolute inset-0 bg-gradient-to-t from-neutral-950 via-transparent to-transparent opacity-60"></div>
 <span class="absolute top-3 left-3 px-3 py-1 bg-black/70 backdrop-blur-md text-[10px] uppercase font-bold tracking-wider text-luxury-gold border border-luxury-gold/30 rounded-full">DOMINICA</span>
 </div>
@@ -1304,7 +1356,7 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
 <div class="bg-neutral-900 rounded-[2rem] border border-luxury-gold/30 overflow-hidden shadow-xl flex flex-col justify-between hover:shadow-[0_0_25px_rgba(197,168,128,0.4)] transition duration-500 min-w-[320px] max-w-[320px] shrink-0 group dynamic-home-blog" data-cms-blog-id="static-portugal-gv" data-cms-slug="what-is-the-portugal-golden-visa-program">
 <div>
 <div class="relative aspect-[16/10] overflow-hidden">
-<img alt="What is the Portugal Golden Visa Program: Strategic Guide" class="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110" src="/assets/images/portugal-golden-visa-1.webp" onerror="this.onerror=null;this.src='/assets/images/dubai-office-2.webp'" loading="lazy" decoding="async"/>
+<img alt="What is the Portugal Golden Visa Program: Strategic Guide" class="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110" src="/assets/images/portugal-golden-visa-1.webp" onerror="this.onerror=null;this.src='/assets/images/dubai-office-2.webp'" loading="lazy" decoding="async" width="400" height="250" />
 <div class="absolute inset-0 bg-gradient-to-t from-neutral-950 via-transparent to-transparent opacity-60"></div>
 <span class="absolute top-3 left-3 px-3 py-1 bg-black/70 backdrop-blur-md text-[10px] uppercase font-bold tracking-wider text-luxury-gold border border-luxury-gold/30 rounded-full">PORTUGAL</span>
 </div>
@@ -1322,7 +1374,7 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
 <div class="bg-neutral-900 rounded-[2rem] border border-luxury-gold/30 overflow-hidden shadow-xl flex flex-col justify-between hover:shadow-[0_0_25px_rgba(197,168,128,0.4)] transition duration-500 min-w-[320px] max-w-[320px] shrink-0 group dynamic-home-blog" data-cms-blog-id="static-greece-gv" data-cms-slug="what-is-the-greece-golden-visa-by-investment">
 <div>
 <div class="relative aspect-[16/10] overflow-hidden">
-<img alt="What is the Greece Golden Visa by Investment: 2026 Rules" class="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110" src="/assets/images/greece-golden-visa-1.webp" onerror="this.onerror=null;this.src='/assets/images/dubai-office-2.webp'" loading="lazy" decoding="async"/>
+<img alt="What is the Greece Golden Visa by Investment: 2026 Rules" class="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110" src="/assets/images/greece-golden-visa-1.webp" onerror="this.onerror=null;this.src='/assets/images/dubai-office-2.webp'" loading="lazy" decoding="async" width="400" height="250" />
 <div class="absolute inset-0 bg-gradient-to-t from-neutral-950 via-transparent to-transparent opacity-60"></div>
 <span class="absolute top-3 left-3 px-3 py-1 bg-black/70 backdrop-blur-md text-[10px] uppercase font-bold tracking-wider text-luxury-gold border border-luxury-gold/30 rounded-full">GREECE</span>
 </div>
@@ -1340,7 +1392,7 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
 <div class="bg-neutral-900 rounded-[2rem] border border-luxury-gold/30 overflow-hidden shadow-xl flex flex-col justify-between hover:shadow-[0_0_25px_rgba(197,168,128,0.4)] transition duration-500 min-w-[320px] max-w-[320px] shrink-0 group dynamic-home-blog" data-cms-blog-id="static-dubai-re" data-cms-slug="buying-property-in-dubai-for-the-aed-2m-golden-visa">
 <div>
 <div class="relative aspect-[16/10] overflow-hidden">
-<img alt="Buying Property in Dubai for the AED 2M Golden Visa" class="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110" src="/assets/images/uae-golden-visa-1.webp" onerror="this.onerror=null;this.src='/assets/images/dubai-office-2.webp'" loading="lazy" decoding="async"/>
+<img alt="Buying Property in Dubai for the AED 2M Golden Visa" class="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110" src="/assets/images/uae-golden-visa-1.webp" onerror="this.onerror=null;this.src='/assets/images/dubai-office-2.webp'" loading="lazy" decoding="async" width="400" height="250" />
 <div class="absolute inset-0 bg-gradient-to-t from-neutral-950 via-transparent to-transparent opacity-60"></div>
 <span class="absolute top-3 left-3 px-3 py-1 bg-black/70 backdrop-blur-md text-[10px] uppercase font-bold tracking-wider text-luxury-gold border border-luxury-gold/30 rounded-full">UAE</span>
 </div>
@@ -1637,7 +1689,7 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
 <!-- ADVISORY REGISTRATION DESK (WITH MAP BACKDROP & UNBOXED FORM) -->
 <section class="py-24 px-6 bg-[#FAF6EE] relative overflow-hidden border-t border-neutral-200/80" id="home-contact-section">
 <!-- Faded World Map Watermark Backdrop -->
-<div class="absolute inset-0 z-0 pointer-events-none bg-no-repeat bg-center bg-contain opacity-6" style="background-image: url('https://upload.wikimedia.org/wikipedia/commons/8/80/World_map_-_low_resolution.svg'); filter: sepia(0.1) saturate(0.8) brightness(1.5) contrast(0.5);"></div>
+<div class="absolute inset-0 z-0 pointer-events-none bg-no-repeat bg-center bg-contain opacity-6" style="background-image: url('/assets/images/World_map_-_low_resolution.svg'); filter: sepia(0.1) saturate(0.8) brightness(1.5) contrast(0.5);"></div>
 <div class="absolute inset-0 z-0 pointer-events-none bg-gradient-to-b from-[#FAF6EE] via-[#FAF6EE]/90 to-[#FAF6EE]"></div>
 <div class="max-w-7xl mx-auto grid grid-cols-1 lg:grid-cols-12 gap-12 relative z-10">
 <!-- Left Split Contact Info + Google Maps Embed -->
@@ -1687,17 +1739,17 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
 <form class="space-y-4" id="contact-portal-form" onsubmit="handleContactSubmit(event)">
 <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
 <div>
-<label class="block text-[10px] uppercase tracking-wider text-neutral-700 font-bold mb-1"><span data-i18n="contact.fullName">Full Identity Name</span> <span class="text-red-500">*</span></label>
-<input name="fullName" class="w-full bg-white/95 border border-neutral-300 rounded-xl px-4 py-3 text-xs focus:outline-none focus:border-[#786142] transition shadow-sm" placeholder="John Doe" required="" type="text"/>
+<label for="portal-full-name" class="block text-[10px] uppercase tracking-wider text-neutral-700 font-bold mb-1"><span data-i18n="contact.fullName">Full Identity Name</span> <span class="text-red-500">*</span></label>
+<input id="portal-full-name" autocomplete="name" name="fullName" class="w-full bg-white/95 border border-neutral-300 rounded-xl px-4 py-3 text-xs focus:outline-none focus:border-[#786142] transition shadow-sm" placeholder="John Doe" required="" type="text"/ inputmode="text">
 </div>
 <div>
-<label class="block text-[10px] uppercase tracking-wider text-neutral-700 font-bold mb-1"><span data-i18n="contact.secureEmail">Secure Email Address</span> <span class="text-red-500">*</span></label>
-<input name="email" class="w-full bg-white/95 border border-neutral-300 rounded-xl px-4 py-3 text-xs focus:outline-none focus:border-[#786142] transition shadow-sm" placeholder="name@domain.com" required="" type="email"/>
+<label for="portal-email" class="block text-[10px] uppercase tracking-wider text-neutral-700 font-bold mb-1"><span data-i18n="contact.secureEmail">Secure Email Address</span> <span class="text-red-500">*</span></label>
+<input id="portal-email" autocomplete="email" name="email" class="w-full bg-white/95 border border-neutral-300 rounded-xl px-4 py-3 text-xs focus:outline-none focus:border-[#786142] transition shadow-sm" placeholder="name@domain.com" required="" type="email"/ inputmode="email">
 </div>
 </div>
 <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
 <div>
-<label class="block text-[10px] uppercase tracking-wider text-neutral-700 font-bold mb-1"><span data-i18n="contact.phone">Phone Number</span> <span class="text-red-500">*</span></label>
+<label for="portal-phone" class="block text-[10px] uppercase tracking-wider text-neutral-700 font-bold mb-1"><span data-i18n="contact.phone">Phone Number</span> <span class="text-red-500">*</span></label>
 <div class="flex" dir="ltr">
 <div class="custom-select-wrapper w-36 overflow-visible">
 <button class="w-full bg-white/95 border border-neutral-300 rounded-l-xl px-3 py-3 text-left text-xs focus:outline-none flex justify-between items-center whitespace-nowrap overflow-hidden shadow-sm" onclick="toggleCountryDropdown(this)" type="button">
@@ -1705,16 +1757,16 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
 <i class="fa-solid fa-chevron-down text-[8px] text-neutral-500 ml-1"></i>
 </button>
 <div class="custom-select-dropdown p-2 bg-white border border-neutral-300 shadow-xl">
-<input class="w-full p-2 mb-2 border border-neutral-200 rounded-lg text-xs focus:outline-none" oninput="filterCountryCode(this)" placeholder="Search code/country..." type="text"/>
+<input class="w-full p-2 mb-2 border border-neutral-200 rounded-lg text-xs focus:outline-none" oninput="filterCountryCode(this)" placeholder="Search code/country..." type="text" id="portal-country-search" aria-label="Search country code"/>
 <div class="country-list-container max-h-40 overflow-y-auto"></div>
 </div>
 </div>
 <input name="dialCode" class="dial-code-hidden-value" type="hidden" value="+971"/>
-<input name="phone" class="w-full bg-white/95 border-y border-r border-neutral-300 rounded-r-xl px-4 py-3 text-xs focus:outline-none focus:border-[#786142] transition shadow-sm" placeholder="50 123 4567" required="" type="tel" dir="ltr"/>
+<input id="portal-phone" autocomplete="tel" name="phone" class="w-full bg-white/95 border-y border-r border-neutral-300 rounded-r-xl px-4 py-3 text-xs focus:outline-none focus:border-[#786142] transition shadow-sm" placeholder="50 123 4567" required="" type="tel" dir="ltr"/ inputmode="tel">
 </div>
 </div>
 <div>
-<label class="block text-[10px] uppercase tracking-wider text-neutral-700 font-bold mb-1"><span data-i18n="contact.programChoice">Program of Choice</span> <span class="text-red-500">*</span></label>
+<label for="primary-service-choice" class="block text-[10px] uppercase tracking-wider text-neutral-700 font-bold mb-1"><span data-i18n="contact.programChoice">Program of Choice</span> <span class="text-red-500">*</span></label>
 <select name="programChoice" class="w-full bg-white/95 border border-neutral-300 rounded-xl px-4 py-3 text-xs focus:outline-none focus:border-[#786142] transition shadow-sm" id="primary-service-choice" onchange="handleServiceSelectionChange(this)" required="">
 <option data-i18n="contact.selectOption" value="">Select Option</option>
 <option data-i18n="contact.citizenshipCBI" value="citizenship">Citizenship By Investment</option>
@@ -1726,7 +1778,7 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
 </div>
 <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
 <div>
-<label class="block text-[10px] uppercase tracking-wider text-neutral-700 font-bold mb-1"><span data-i18n="contact.subProgram">Sub-Program Pathway</span> <span class="text-red-500">*</span></label>
+<label for="sub-service-choice" class="block text-[10px] uppercase tracking-wider text-neutral-700 font-bold mb-1"><span data-i18n="contact.subProgram">Sub-Program Pathway</span> <span class="text-red-500">*</span></label>
 <select name="subProgram" class="w-full bg-white/95 border border-neutral-300 rounded-xl px-4 py-3 text-xs focus:outline-none focus:border-[#786142] transition shadow-sm" id="sub-service-choice">
                                 <option value="" data-i18n="contact.selectSubProgram">Select Sub-Program Pathway</option>
                                 <optgroup label="Citizenship By Investment (Passports)">
@@ -1758,8 +1810,8 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
 </select>
 </div>
 <div>
-<label class="block text-[10px] uppercase tracking-wider text-neutral-700 font-bold mb-1"><span data-i18n="contact.preferredLanguage">Your Preferred Language</span> <span class="text-red-500">*</span></label>
-<select name="preferredLanguage" class="w-full bg-white/95 border border-neutral-300 rounded-xl px-4 py-3 text-xs focus:outline-none focus:border-[#786142] transition shadow-sm" required="">
+<label for="portal-pref-lang" class="block text-[10px] uppercase tracking-wider text-neutral-700 font-bold mb-1"><span data-i18n="contact.preferredLanguage">Your Preferred Language</span> </label>
+<select id="portal-pref-lang" name="preferredLanguage" class="w-full bg-white/95 border border-neutral-300 rounded-xl px-4 py-3 text-xs focus:outline-none focus:border-[#786142] transition shadow-sm">
 <option data-i18n="contact.selectLanguage" value="">Select Language</option>
 <option value="english">English</option>
 <option value="arabic">Arabic</option>
@@ -1774,8 +1826,8 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
 </div>
 <div class="grid grid-cols-1 sm:grid-cols-3 gap-4">
 <div>
-<label class="block text-[10px] uppercase tracking-wider text-neutral-700 font-bold mb-1"><span data-i18n="contact.countryTimezone">Country / Time Zone</span> <span class="text-red-500">*</span></label>
-<select name="timezone" class="w-full bg-white/95 border border-neutral-300 rounded-xl px-4 py-3 text-xs focus:outline-none focus:border-[#786142] transition shadow-sm" required="">
+<label for="portal-timezone" class="block text-[10px] uppercase tracking-wider text-neutral-700 font-bold mb-1"><span data-i18n="contact.countryTimezone">Country / Time Zone</span> </label>
+<select id="portal-timezone" name="timezone" class="w-full bg-white/95 border border-neutral-300 rounded-xl px-4 py-3 text-xs focus:outline-none focus:border-[#786142] transition shadow-sm">
 <option data-i18n="contact.selectTimezone" value="">Select Time Zone</option>
 <option value="UTC-12:00">UTC-12:00 (Baker Island)</option>
 <option value="UTC-11:00">UTC-11:00 (American Samoa, Niue)</option>
@@ -1818,12 +1870,12 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
 </select>
 </div>
 <div>
-<label class="block text-[10px] uppercase tracking-wider text-neutral-700 font-bold mb-1"><span data-i18n="contact.preferredDate">Preferred Date</span> <span class="text-red-500">*</span></label>
-<input name="preferredDate" class="w-full bg-white/95 border border-neutral-300 rounded-xl px-4 py-3 text-xs focus:outline-none focus:border-[#786142] transition shadow-sm" required="" type="date"/>
+<label for="portal-pref-date" class="block text-[10px] uppercase tracking-wider text-neutral-700 font-bold mb-1"><span data-i18n="contact.preferredDate">Preferred Date</span> </label>
+<input id="portal-pref-date" name="preferredDate" class="w-full bg-white/95 border border-neutral-300 rounded-xl px-4 py-3 text-xs focus:outline-none focus:border-[#786142] transition shadow-sm" type="date"/>
 </div>
 <div>
-<label class="block text-[10px] uppercase tracking-wider text-neutral-700 font-bold mb-1"><span data-i18n="contact.preferredContact">Preferred Contact Method</span> <span class="text-red-500">*</span></label>
-<select name="contactMethod" class="w-full bg-white/95 border border-neutral-300 rounded-xl px-4 py-3 text-xs focus:outline-none focus:border-[#786142] transition shadow-sm" required="">
+<label for="portal-contact-method" class="block text-[10px] uppercase tracking-wider text-neutral-700 font-bold mb-1"><span data-i18n="contact.preferredContact">Preferred Contact Method</span> </label>
+<select id="portal-contact-method" name="contactMethod" class="w-full bg-white/95 border border-neutral-300 rounded-xl px-4 py-3 text-xs focus:outline-none focus:border-[#786142] transition shadow-sm">
 <option data-i18n="contact.phoneCall" value="call">Phone Call</option>
 <option data-i18n="contact.whatsApp" value="whatsapp">WhatsApp</option>
 <option data-i18n="contact.videoMeeting" value="zoom">Video Meeting</option>
@@ -1832,12 +1884,12 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
 </div>
 </div>
 <div>
-<label class="block text-[10px] uppercase tracking-wider text-neutral-700 font-bold mb-1" data-i18n="contact.corporateAddress">Corporate Physical Address (Optional)</label>
-<input name="address" class="w-full bg-white/95 border border-neutral-300 rounded-xl px-4 py-3 text-xs focus:outline-none focus:border-[#786142] transition shadow-sm" placeholder="Suite, Tower, Landmark, City, Country" type="text"/>
+<label for="portal-address" class="block text-[10px] uppercase tracking-wider text-neutral-700 font-bold mb-1" data-i18n="contact.corporateAddress">Corporate Physical Address (Optional)</label>
+<input id="portal-address" autocomplete="street-address" name="address" class="w-full bg-white/95 border border-neutral-300 rounded-xl px-4 py-3 text-xs focus:outline-none focus:border-[#786142] transition shadow-sm" placeholder="Suite, Tower, Landmark, City, Country" type="text"/>
 </div>
 <div>
-<label class="block text-[10px] uppercase tracking-wider text-neutral-700 font-bold mb-1" data-i18n="contact.confidentialNotes">Confidential Notes (Optional)</label>
-<textarea name="notes" class="w-full bg-white/95 border border-neutral-300 rounded-xl p-4 text-xs focus:outline-none focus:border-[#786142] transition shadow-sm" placeholder="Please outline your objectives, family composition, timeline, or specific questions..." rows="3"></textarea>
+<label for="portal-notes" class="block text-[10px] uppercase tracking-wider text-neutral-700 font-bold mb-1" data-i18n="contact.confidentialNotes">Confidential Notes (Optional)</label>
+<textarea id="portal-notes" name="notes" class="w-full bg-white/95 border border-neutral-300 rounded-xl p-4 text-xs focus:outline-none focus:border-[#786142] transition shadow-sm" placeholder="Please outline your objectives, family composition, timeline, or specific questions..." rows="3"></textarea>
 </div>
 <button class="w-full py-4 bg-[#786142] text-white text-xs uppercase tracking-widest font-bold hover:bg-neutral-900 transition duration-300 rounded-xl shadow-lg" data-i18n="contact.submitBtn" type="submit">
     Submit Confidential Request
@@ -1865,6 +1917,61 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
   </div>
 </section>
 </main>
+<!-- T37: Mobile sticky consultation bar — shown after user scrolls past hero on small screens -->
+<div id="sg-sticky-cta" role="complementary" aria-label="Book a free consultation">
+  <a href="/contact/">
+    <i class="fa-solid fa-calendar-check" aria-hidden="true"></i>
+    <span>Book Free Consultation</span>
+  </a>
+</div>
+<script>
+(function() {
+  var stickyBar = document.getElementById('sg-sticky-cta');
+  var hero = document.getElementById('hero-section');
+  if (!stickyBar || !hero) return;
+  // Show bar only after hero scrolls out of view, hide on form focus
+  var isFormFocused = false;
+  if ('IntersectionObserver' in window) {
+    var io = new IntersectionObserver(function(entries) {
+      var entry = entries[0];
+      if (!entry.isIntersecting && !isFormFocused) {
+        stickyBar.classList.add('sg-sticky-visible');
+      } else {
+        stickyBar.classList.remove('sg-sticky-visible');
+      }
+    }, { threshold: 0.1 });
+    io.observe(hero);
+  } else {
+    // Fallback: simple scroll listener
+    window.addEventListener('scroll', function() {
+      var rect = hero.getBoundingClientRect();
+      if (rect.bottom < 0 && !isFormFocused) {
+        stickyBar.classList.add('sg-sticky-visible');
+      } else {
+        stickyBar.classList.remove('sg-sticky-visible');
+      }
+    }, { passive: true });
+  }
+  // Hide bar when user focuses a form field (avoid covering input)
+  document.addEventListener('focusin', function(e) {
+    if (e.target && (e.target.tagName === 'INPUT' || e.target.tagName === 'TEXTAREA' || e.target.tagName === 'SELECT')) {
+      isFormFocused = true;
+      stickyBar.classList.remove('sg-sticky-visible');
+    }
+  });
+  document.addEventListener('focusout', function(e) {
+    if (e.target && (e.target.tagName === 'INPUT' || e.target.tagName === 'TEXTAREA' || e.target.tagName === 'SELECT')) {
+      isFormFocused = false;
+      // Re-check if hero is still out of view
+      if ('IntersectionObserver' in window) return; // IO handles it
+      var rect = hero.getBoundingClientRect();
+      if (rect.bottom < 0) {
+        stickyBar.classList.add('sg-sticky-visible');
+      }
+    }
+  });
+})();
+</script>
 <!-- FOOTER WITH SEAMLESS CANVAS BACKGROUND VIDEO -->
 <footer class="relative text-neutral-200 pt-32 pb-8 overflow-hidden z-10">
 <div class="absolute top-0 left-0 w-full h-32 bg-gradient-to-b from-[#FAF6EE] via-[#FAF6EE]/60 to-transparent z-20 pointer-events-none"></div>
@@ -1882,7 +1989,7 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
 <!-- Col 1: Brand Info -->
 <div class="flex flex-col space-y-6 lg:col-span-1">
 <a class="flex items-center space-x-2 group cursor-pointer" href="#hero-section">
-<img alt="Sharif Group Logo" class="h-14 w-auto group-hover:scale-105 transition-transform duration-300" src="/assets/images/vector_2d09c4bb.svg" loading="lazy" decoding="async"/>
+<img alt="Sharif Group Logo" class="h-14 w-auto group-hover:scale-105 transition-transform duration-300" src="/assets/images/vector_2d09c4bb.svg" loading="lazy" decoding="async" width="180" height="56" />
 <div class="flex items-center space-x-2 translate-y-1.5">
 <div class="h-10 w-[1px] bg-neutral-500/50"></div>
 <div class="flex flex-col justify-center font-serif text-white tracking-[0.2em] font-bold leading-tight group-hover:text-luxury-gold transition">
@@ -1892,7 +1999,7 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
 </div>
 </a>
 <div class="pt-2">
-<img alt="Investment Migration Council" class="h-10 w-auto brightness-0 invert object-contain" src="imclogo.webp" loading="lazy" decoding="async"/>
+<img alt="Investment Migration Council" class="h-10 w-auto brightness-0 invert object-contain" src="imclogo.webp" loading="lazy" decoding="async" width="107" height="40" />
 </div>
 <div class="text-xs text-neutral-300 space-y-3 pt-2">
 <p class="flex items-start"><i class="fa-solid fa-location-dot mt-1 mr-3 text-luxury-gold text-sm"></i> <a class="hover:text-white transition" href="https://www.google.com/maps/dir/?api=1&destination=SHARIF+GROUP%2C+Office+116%2C+The+Binary+Tower%2C+Dubai&destination_place_id=ChIJA0KG8UtpXz4RZOLt_xMkAH8" target="_blank" rel="noopener noreferrer"><span data-i18n="footer.address">116, The Binary Tower, Business Bay, Dubai, United Arab Emirates</span></a></p>
@@ -2437,23 +2544,24 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
         function initHeroSlideshow() {
             const slides = document.querySelectorAll('.hero-slide');
             if (!slides.length) return;
-            slides.forEach((slide) => {
+            let current = 0;
+            function loadSlideBg(slide) {
+                if (!slide) return;
                 const bg = slide.getAttribute('data-bg');
                 if (bg && !slide.style.backgroundImage) {
                     slide.style.backgroundImage = bg;
                 }
-            });
-            let current = 0;
+            }
+            // T10: Load subsequent slides on demand when rotating, not all at startup
             setInterval(() => {
+                const next = (current + 1) % slides.length;
+                loadSlideBg(slides[next]);
                 slides[current].classList.remove('opacity-100');
                 slides[current].classList.add('opacity-0');
-                current = (current + 1) % slides.length;
-                if (slides[current].hasAttribute('data-bg') && !slides[current].style.backgroundImage) {
-                    slides[current].style.backgroundImage = slides[current].getAttribute('data-bg');
-                }
+                current = next;
                 slides[current].classList.remove('opacity-0');
                 slides[current].classList.add('opacity-100');
-            }, 4500);
+            }, 5000);
         }
 
         function initCounters() {

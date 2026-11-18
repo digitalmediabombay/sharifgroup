@@ -12,6 +12,9 @@
 (function () {
     'use strict';
 
+    // T18: Store the element that had focus before the modal opened so we can restore it on close
+    var _waTriggerEl = null;
+
     var I18N = {
         brand: {
             'en': 'SHARIF GROUP',
@@ -817,6 +820,8 @@
     }
 
     function openModal(container, button) {
+        // T18: Capture the currently focused element so we can restore focus on close
+        _waTriggerEl = document.activeElement || button;
         container.classList.add('sg-wa-open');
         button.setAttribute('aria-expanded', 'true');
         // T18: Move focus inside dialog to close button for keyboard/screen-reader users
@@ -830,9 +835,11 @@
         if (!container.classList.contains('sg-wa-open')) return;
         container.classList.remove('sg-wa-open');
         button.setAttribute('aria-expanded', 'false');
-        // T18: Return focus to trigger button
-        if (button && typeof button.focus === 'function') {
-            button.focus();
+        // T18: Return focus to the element that triggered the modal (or fallback to trigger button)
+        var restoreTo = _waTriggerEl || button;
+        _waTriggerEl = null;
+        if (restoreTo && typeof restoreTo.focus === 'function') {
+            restoreTo.focus();
         }
     }
 
@@ -861,6 +868,26 @@
                 closeModal(container, button);
             });
         }
+
+        // T18: Keyboard focus trap inside modal to prevent escape to background
+        modal.addEventListener('keydown', function (e) {
+            if (e.key !== 'Tab') return;
+            var focusables = modal.querySelectorAll('a[href], button:not([disabled]), [tabindex]:not([tabindex="-1"])');
+            if (!focusables || focusables.length === 0) return;
+            var first = focusables[0];
+            var last = focusables[focusables.length - 1];
+            if (e.shiftKey) {
+                if (document.activeElement === first) {
+                    e.preventDefault();
+                    last.focus();
+                }
+            } else {
+                if (document.activeElement === last) {
+                    e.preventDefault();
+                    first.focus();
+                }
+            }
+        });
 
         // Delegated clicks inside modal
         modal.addEventListener('click', function (e) {

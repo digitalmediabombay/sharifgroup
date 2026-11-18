@@ -7,6 +7,9 @@
 (function () {
     'use strict';
 
+    // T24: Idempotency guard — prevents double-translation when applyTranslations is called multiple times for the same language
+    var _lastAppliedLang = null;
+
     // Immediate early execution: ensure document lang and dir strictly align with URL path
     (function syncDocEarly() {
         try {
@@ -1113,6 +1116,12 @@
 
     function applyTranslations(data, lang) {
         if (!data) return;
+        // T24: Idempotency guard — skip if the same language was already applied and the DOM reflects it
+        if (_lastAppliedLang === lang && document.documentElement.getAttribute('data-i18n-lang') === lang) {
+            return; // already applied for this language — prevents "Stories Stories" duplication
+        }
+        _lastAppliedLang = lang;
+        document.documentElement.setAttribute('data-i18n-lang', lang);
         var cfg = LANG_CONFIG[lang] || LANG_CONFIG['en'];
 
         // 1. Set HTML attributes

@@ -15,6 +15,16 @@ ErrorDocument 404 /404.html
     Deny from all
 </FilesMatch>
 
+# T31: Deny direct public access to draft_content.json
+<FilesMatch "draft_content\.json$">
+    Require all denied
+</FilesMatch>
+
+# T31: Deny access to /clients/ directory (also handled by clients/.htaccess)
+<IfModule mod_rewrite.c>
+    RewriteRule ^clients(/.*)?$ - [F,L,NC]
+</IfModule>
+
 <IfModule mod_rewrite.c>
     RewriteEngine On
     RewriteBase /
@@ -245,6 +255,9 @@ ErrorDocument 404 /404.html
 
     # Permissions Policy
     Header always set Permissions-Policy "camera=(), microphone=(), geolocation=()"
+
+    # Content Security Policy (CSP) - Defense in Depth (T38)
+    Header always set Content-Security-Policy "default-src 'self'; script-src 'self' 'unsafe-inline' 'unsafe-eval' https://www.googletagmanager.com https://www.google-analytics.com https://cdnjs.cloudflare.com https://cdn.amcharts.com https://www.amcharts.com https://translate.googleapis.com; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com https://cdnjs.cloudflare.com; font-src 'self' https://fonts.gstatic.com https://cdnjs.cloudflare.com data:; img-src 'self' data: blob: https:; connect-src 'self' https://script.google.com https://script.googleusercontent.com https://www.google-analytics.com https://*.google-analytics.com https://analytics.google.com https://*.googletagmanager.com https://generativelanguage.googleapis.com https://openrouter.ai https://api.whatsapp.com https://wa.me; frame-src 'self' https://www.googletagmanager.com https://www.google.com https://maps.google.com https://www.youtube.com https://player.vimeo.com https://meet.google.com https://zoom.us https://us02web.zoom.us; object-src 'none'; base-uri 'self'; form-action 'self' https://sharifgroup.ae https://www.sharifgroup.ae https://script.google.com https://wa.me https://api.whatsapp.com; frame-ancestors 'self';"
 
     # --------------------------------------------------------------------------
     # Caching Controls
