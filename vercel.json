@@ -1,8 +1,4 @@
 {
-  "buildCommand": "",
-  "outputDirectory": ".",
-  "installCommand": "",
-  "framework": null,
   "cleanUrls": true,
   "trailingSlash": true,
   "redirects": [
@@ -149,31 +145,7 @@
   ],
   "rewrites": [
     {
-      "source": "/:lang(ar|fa|zh)?/?blog/(?:sample|sample-dominicaartcile|sample-dominicaarticle)/:path*",
-      "destination": "/404.html"
-    },
-    {
-      "source": "/:lang(ar|fa|zh)?/?blog/(?:sample|sample-dominicaartcile|sample-dominicaarticle)",
-      "destination": "/404.html"
-    },
-    {
       "source": "/data/:path*",
-      "destination": "/404.html"
-    },
-    {
-      "source": "/admin/api/:path*\\.json",
-      "destination": "/404.html"
-    },
-    {
-      "source": "/package.json",
-      "destination": "/404.html"
-    },
-    {
-      "source": "/package-lock.json",
-      "destination": "/404.html"
-    },
-    {
-      "source": "/:path*\\.md",
       "destination": "/404.html"
     },
     {
