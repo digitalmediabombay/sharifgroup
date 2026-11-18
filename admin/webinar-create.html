@@ -4,6 +4,7 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Create Webinar Series · Studio | Sharif Group CMS</title>
+  <base href="/admin/">
   <link rel="icon" type="image/svg+xml" href="/favicon.svg?v=20261109">
 
   <!-- Fonts & Icons -->
@@ -841,7 +842,7 @@
   <header class="site-header">
     <div class="header-inner">
       <div class="header-left">
-        <a href="webinars.html" class="back-btn">
+        <a href="/admin/webinars.html" class="back-btn">
           <i class="fa-solid fa-arrow-left"></i>
           <span>Back to Webinars</span>
         </a>
@@ -1245,9 +1246,9 @@
 
     // ── 1. AUTHENTICATION GUARD ──────────────────────────────────────────
     const token = localStorage.getItem('sgcms_token') || sessionStorage.getItem('sgcms_token');
-    const userStr = localStorage.getItem('sgcms_user') || sessionStorage.getItem('sgcms_user');
+    const userStr = localStorage.getItem('sgcms_user') || sessionStorage.getItem('sgcms_user') || localStorage.getItem('sgcms_auth') || sessionStorage.getItem('sgcms_auth');
     if (!token || !userStr) {
-      window.location.replace('index.html');
+      window.location.replace('/admin/index.html');
       return;
     }
 
@@ -1313,11 +1314,11 @@
     // ── 4. LOAD CURRENT LIVE SERIES ─────────────────────────────────────
     async function loadActiveSeries() {
       try {
-        const res = await fetch('api/webinar-list-series.php', {
+        const res = await fetch('/admin/api/webinar-list-series.php', {
           headers: { 'Authorization': `Bearer ${token}` }
         });
         if (res.status === 401) {
-          window.location.replace('index.html');
+          window.location.replace('/admin/index.html');
           return;
         }
         const data = await res.json();
@@ -1689,7 +1690,7 @@
       btn.innerHTML = `<i class="fa-solid fa-spinner fa-spin"></i> Processing...`;
 
       try {
-        const res = await fetch('api/webinar-create-series.php', {
+        const res = await fetch('/admin/api/webinar-create-series.php', {
           method: 'POST',
           headers: {
             'Content-Type': 'application/json',
@@ -1705,7 +1706,7 @@
         if (data.success) {
           showToast(data.message || 'Series successfully saved!');
           setTimeout(() => {
-            window.location.href = 'webinars.html';
+            window.location.href = '/admin/webinars.html';
           }, 1200);
         } else {
           showToast(data.error || 'Failed to create series.', true);

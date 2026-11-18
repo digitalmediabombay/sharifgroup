@@ -4,6 +4,7 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Blogs Manager | Sharif Group Admin</title>
+<base href="/admin/">
 <link rel="icon" href="/assets/images/shariftrip-logo-1.svg?v=20261117" type="image/svg+xml">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -700,7 +701,7 @@
 
 <!-- ═══ HEADER ════════════════════════════════════════════════════════ -->
 <header class="site-header">
-  <a href="dashboard.html" class="back-btn">
+  <a href="/admin/dashboard.html" class="back-btn">
     <i class="fa-solid fa-arrow-left"></i>
     Dashboard
   </a>
@@ -712,7 +713,7 @@
 
   <div class="header-spacer"></div>
 
-  <a href="blog-write.html?mode=new" class="btn-new-blog">
+  <a href="/admin/blog-write.html?mode=new" class="btn-new-blog">
     <i class="fa-solid fa-plus"></i>
     Create New Blog
   </a>
@@ -814,17 +815,17 @@
   const token   = getToken();
 
   if (!session || !token) {
-    window.location.replace('index.html');
+    window.location.replace('/admin/index.html');
   }
 
   // Logout Handler
   document.getElementById('logoutBtn').addEventListener('click', function() {
-    fetch('api/auth.php?action=logout', { method: 'POST', credentials: 'include' }).catch(function(){});
+    fetch('/admin/api/auth.php?action=logout', { method: 'POST', credentials: 'include' }).catch(function(){});
     ['sgcms_auth', 'sgcms_token'].forEach(function(k) {
       sessionStorage.removeItem(k);
       localStorage.removeItem(k);
     });
-    window.location.replace('index.html');
+    window.location.replace('/admin/index.html');
   });
 
   // ── 2. STATE & CACHE ────────────────────────────────────────────────
@@ -855,26 +856,32 @@
   async function loadAllBlogs() {
     try {
       const [resPub, resDraft] = await Promise.all([
-        fetch('api/blog-list-published.php', {
+        fetch('/admin/api/blog-list-published.php', {
           credentials: 'include',
           headers: { 'X-Auth-Token': token }
         }),
-        fetch('api/blog-list-drafts.php', {
+        fetch('/admin/api/blog-list-drafts.php', {
           credentials: 'include',
           headers: { 'X-Auth-Token': token }
         })
       ]);
 
       if (resPub.ok) {
-        const dataPub = await resPub.json();
-        publishedList = dataPub.published || [];
-        document.getElementById('countPublished').textContent = publishedList.length;
+        const ct = resPub.headers.get('content-type') || '';
+        if (ct.includes('application/json')) {
+          const dataPub = await resPub.json();
+          publishedList = dataPub.published || [];
+          document.getElementById('countPublished').textContent = publishedList.length;
+        }
       }
 
       if (resDraft.ok) {
-        const dataDraft = await resDraft.json();
-        draftsList = dataDraft.drafts || [];
-        document.getElementById('countDrafts').textContent = draftsList.length;
+        const ct = resDraft.headers.get('content-type') || '';
+        if (ct.includes('application/json')) {
+          const dataDraft = await resDraft.json();
+          draftsList = dataDraft.drafts || [];
+          document.getElementById('countDrafts').textContent = draftsList.length;
+        }
       }
 
       renderCurrentList();
@@ -915,7 +922,7 @@
           '<div class="empty-desc">' +
           (isPub ? 'You haven\'t published any blog posts yet. Create a new article to get started.' : 'You have no draft posts in progress.') +
           '</div>' +
-          '<a href="blog-write.html?mode=new" class="btn-new-blog"><i class="fa-solid fa-plus"></i> Create New Blog</a>' +
+          '<a href="/admin/blog-write.html?mode=new" class="btn-new-blog"><i class="fa-solid fa-plus"></i> Create New Blog</a>' +
           '</div>';
       }
       return;
@@ -944,12 +951,12 @@
 
       const actionButtons = isPub
         ? '<div class="action-btn-group">' +
-            '<a href="blog-write.html?id=' + encodeURIComponent(item.id || item.slug) + '" class="btn-action btn-edit"><i class="fa-solid fa-pen"></i> Edit</a>' +
+            '<a href="/admin/blog-write.html?id=' + encodeURIComponent(item.id || item.slug) + '" class="btn-action btn-edit"><i class="fa-solid fa-pen"></i> Edit</a>' +
             '<a href="' + url + '" target="_blank" class="btn-action btn-view-live" title="View live page"><i class="fa-solid fa-arrow-up-right-from-square"></i> Live</a>' +
           '</div>' +
           '<button class="btn-action btn-delete" onclick="openDeleteModal(\'' + escapeJs(item.id) + '\', \'' + escapeJs(item.slug) + '\', \'' + escapeJs(title) + '\', true)" title="Delete published article"><i class="fa-solid fa-trash-can"></i></button>'
         : '<div class="action-btn-group">' +
-            '<a href="blog-write.html?id=' + encodeURIComponent(item.id || item.slug) + '" class="btn-action btn-edit"><i class="fa-solid fa-pen"></i> Edit</a>' +
+            '<a href="/admin/blog-write.html?id=' + encodeURIComponent(item.id || item.slug) + '" class="btn-action btn-edit"><i class="fa-solid fa-pen"></i> Edit</a>' +
             '<button class="btn-action btn-publish-quick" onclick="openPublishModal(\'' + escapeJs(item.id) + '\', \'' + escapeJs(title) + '\')"><i class="fa-solid fa-cloud-arrow-up"></i> Publish</button>' +
           '</div>' +
           '<button class="btn-action btn-delete" onclick="openDeleteModal(\'' + escapeJs(item.id) + '\', \'' + escapeJs(item.slug) + '\', \'' + escapeJs(title) + '\', false)" title="Delete draft"><i class="fa-solid fa-trash-can"></i></button>';
@@ -1014,7 +1021,7 @@
     btn.textContent = 'Deleting…';
 
     try {
-      const endpoint = pendingDelete.isPublished ? 'api/delete-blog.php' : 'api/blog-delete-draft.php';
+      const endpoint = pendingDelete.isPublished ? '/admin/api/delete-blog.php' : '/admin/api/blog-delete-draft.php';
       const bodyPayload = pendingDelete.isPublished
         ? { id: pendingDelete.id, slug: pendingDelete.slug }
         : { id: pendingDelete.id };
@@ -1066,7 +1073,7 @@
     btn.textContent = 'Publishing…';
 
     try {
-      const res = await fetch('api/blog-publish.php', {
+      const res = await fetch('/admin/api/blog-publish.php', {
         method: 'POST',
         credentials: 'include',
         headers: {

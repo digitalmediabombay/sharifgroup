@@ -4,6 +4,7 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Blog Editor | Sharif Group Admin</title>
+<base href="/admin/">
 <link rel="icon" href="/assets/images/shariftrip-logo-1.svg?v=20261117" type="image/svg+xml">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -801,7 +802,7 @@
 
 <!-- ═══ HEADER ════════════════════════════════════════════════════════ -->
 <header class="site-header">
-  <a href="blogs.html" class="back-btn">
+  <a href="/admin/blogs.html" class="back-btn">
     <i class="fa-solid fa-arrow-left"></i>
     Blogs
   </a>
@@ -1146,7 +1147,7 @@
   const token   = getToken();
 
   if (!session || !token) {
-    window.location.replace('index.html');
+    window.location.replace('/admin/index.html');
   }
 
   // ── 2. STATE MODEL ──────────────────────────────────────────────────
@@ -1283,7 +1284,7 @@
   async function loadBlogFromServer(idOrSlug) {
     try {
       showToast('Loading article data…', 'warning');
-      const res = await fetch('api/blog-load.php?id=' + encodeURIComponent(idOrSlug), {
+      const res = await fetch('/admin/api/blog-load.php?id=' + encodeURIComponent(idOrSlug), {
         credentials: 'include',
         headers: { 'X-Auth-Token': token }
       });
@@ -1468,7 +1469,7 @@
     formData.append('file', file);
 
     try {
-      const res = await fetch('api/upload.php', {
+      const res = await fetch('/admin/api/upload.php', {
         method: 'POST',
         credentials: 'include',
         headers: { 'X-Auth-Token': token },
@@ -1688,7 +1689,7 @@
     showToast('Saving draft…', 'warning');
 
     try {
-      const res = await fetch('api/blog-save-draft.php', {
+      const res = await fetch('/admin/api/blog-save-draft.php', {
         method: 'POST',
         credentials: 'include',
         headers: {
@@ -1736,7 +1737,7 @@
     const payload = buildPayload('published');
 
     try {
-      const res = await fetch('api/blog-publish.php', {
+      const res = await fetch('/admin/api/blog-publish.php', {
         method: 'POST',
         credentials: 'include',
         headers: {
@@ -1758,7 +1759,7 @@
         document.getElementById('footerStatusBadge').textContent = 'Published';
         markSaved();
         setTimeout(function() {
-          window.location.href = 'blogs.html';
+          window.location.href = '/admin/blogs.html';
         }, 1200);
       } else {
         showToast((data && data.error) ? data.error : 'Failed to publish article.', 'error');

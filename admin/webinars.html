@@ -4,6 +4,7 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Webinars Manager | Sharif Group Admin</title>
+<base href="/admin/">
 <link rel="icon" href="/assets/images/shariftrip-logo-1.svg?v=20261117" type="image/svg+xml">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -1019,7 +1020,7 @@
 
 <!-- ═══ HEADER ════════════════════════════════════════════════════════ -->
 <header class="site-header">
-  <a href="dashboard.html" class="back-btn">
+  <a href="/admin/dashboard.html" class="back-btn">
     <i class="fa-solid fa-arrow-left"></i>
     Dashboard
   </a>
@@ -1034,7 +1035,7 @@
 
   <div class="header-spacer"></div>
 
-  <a href="webinar-create.html" class="btn-create-series">
+  <a href="/admin/webinar-create.html" class="btn-create-series">
     <i class="fa-solid fa-plus"></i>
     <span>Create New Series</span>
   </a>
@@ -1216,7 +1217,7 @@
         </span>
       </div>
       <div style="margin-left: 16px; flex-shrink: 0;">
-        <a href="webinar-create.html" class="btn-create-series">
+        <a href="/admin/webinar-create.html" class="btn-create-series">
           <i class="fa-solid fa-plus"></i>
           <span>Create Next Series</span>
         </a>
@@ -1346,17 +1347,17 @@
   const token   = getToken();
 
   if (!session || !token) {
-    window.location.replace('index.html');
+    window.location.replace('/admin/index.html');
   }
 
   // Logout Handler
   document.getElementById('logoutBtn').addEventListener('click', function() {
-    fetch('api/auth.php?action=logout', { method: 'POST', credentials: 'include' }).catch(function(){});
+    fetch('/admin/api/auth.php?action=logout', { method: 'POST', credentials: 'include' }).catch(function(){});
     ['sgcms_auth', 'sgcms_token'].forEach(function(k) {
       sessionStorage.removeItem(k);
       localStorage.removeItem(k);
     });
-    window.location.replace('index.html');
+    window.location.replace('/admin/index.html');
   });
 
   // ── 2. STATE ────────────────────────────────────────────────────────
@@ -1384,7 +1385,7 @@
     if (refreshIco) refreshIco.classList.add('fa-spin');
 
     try {
-      const res = await fetch('api/webinar-get-active.php', {
+      const res = await fetch('/admin/api/webinar-get-active.php', {
         credentials: 'include',
         headers: { 'X-Auth-Token': token }
       });
@@ -1619,7 +1620,7 @@
     };
 
     try {
-      const res = await fetch('api/webinar-update-session.php', {
+      const res = await fetch('/admin/api/webinar-update-session.php', {
         method: 'POST',
         credentials: 'include',
         headers: {
@@ -1651,7 +1652,7 @@
     const heroNo = currentSeriesData.featured_hero_session.session_no;
     showToast('Releasing manual pin and restoring automatic promotion…');
     try {
-      const res = await fetch('api/webinar-update-session.php', {
+      const res = await fetch('/admin/api/webinar-update-session.php', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',

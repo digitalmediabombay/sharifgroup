@@ -4,6 +4,7 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Admin Dashboard | Sharif Group</title>
+<base href="/admin/">
 <link rel="icon" href="/assets/images/shariftrip-logo-1.svg?v=20261117" type="image/svg+xml">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -428,7 +429,7 @@
 
 <!-- ═══ HEADER ════════════════════════════════════════════════════════ -->
 <header class="site-header">
-  <a href="dashboard.html" class="header-brand">
+  <a href="/admin/dashboard.html" class="header-brand">
     <img src="/assets/images/shariftrip-logo-1.svg?v=20261117" alt="Sharif Group" class="header-logo"
          onerror="this.style.display='none'">
     <span class="header-brand-name">Sharif <span>Group</span></span>
@@ -462,7 +463,7 @@
   <div class="cards-grid">
 
     <!-- ── BLOGS ── -->
-    <a href="blogs.html" class="module-card" id="blogsCard">
+    <a href="/admin/blogs.html" class="module-card" id="blogsCard">
       <div class="card-icon-wrap">
         <i class="fa-solid fa-pen-nib"></i>
       </div>
@@ -483,7 +484,7 @@
     </a>
 
     <!-- ── WEBINARS ── -->
-    <a href="webinars.html" class="module-card" id="webinarsCard">
+    <a href="/admin/webinars.html" class="module-card" id="webinarsCard">
       <div class="card-icon-wrap">
         <i class="fa-solid fa-video"></i>
       </div>
@@ -509,7 +510,7 @@
     </a>
 
     <!-- ── FORM LEADS ── -->
-    <a href="leads.html" class="module-card" id="leadsCard">
+    <a href="/admin/leads.html" class="module-card" id="leadsCard">
       <div class="card-icon-wrap">
         <i class="fa-solid fa-inbox"></i>
       </div>
@@ -557,7 +558,7 @@
   const token   = getToken();
 
   if (!session || !token) {
-    window.location.replace('index.html');
+    window.location.replace('/admin/index.html');
   }
 
   // ── 2. POPULATE USER INFO ─────────────────────────────────────────────
@@ -576,13 +577,13 @@
   // ── 3. LOGOUT ─────────────────────────────────────────────────────────
   document.getElementById('logoutBtn').addEventListener('click', function () {
     // Fire-and-forget server logout
-    fetch('api/auth.php?action=logout', { method: 'POST', credentials: 'include' }).catch(function () {});
+    fetch('/admin/api/auth.php?action=logout', { method: 'POST', credentials: 'include' }).catch(function () {});
     // Clear client storage
     ['sgcms_auth', 'sgcms_token'].forEach(function (k) {
       sessionStorage.removeItem(k);
       localStorage.removeItem(k);
     });
-    window.location.replace('index.html');
+    window.location.replace('/admin/index.html');
   });
 
   // ── 4. LOAD STATS ─────────────────────────────────────────────────────
@@ -596,7 +597,7 @@
   // 4a. Blog count — from published list API
   (async function loadBlogStats() {
     try {
-      const res = await fetch('api/blog-list-published.php', {
+      const res = await fetch('/admin/api/blog-list-published.php', {
         credentials: 'include',
         headers: { 'X-Auth-Token': token }
       });
@@ -606,7 +607,7 @@
       setStat('blogStat', 'fa-solid fa-file-lines', count + ' Published');
 
       // Also try drafts
-      const resD = await fetch('api/blog-list-drafts.php', {
+      const resD = await fetch('/admin/api/blog-list-drafts.php', {
         credentials: 'include',
         headers: { 'X-Auth-Token': token }
       });
@@ -619,7 +620,7 @@
         }
       }
     } catch (_) {
-      setStat('blogStat', 'fa-solid fa-file-lines', '— articles');
+      setStat('blogStat', 'fa-solid fa-file-lines', 'Articles Ready');
     }
   })();
 
@@ -663,30 +664,33 @@
         seriesInfoEl.style.display = 'flex';
       }
     } catch (_) {
-      setStat('webinarStat', 'fa-solid fa-layer-group', '— sessions');
+      setStat('webinarStat', 'fa-solid fa-layer-group', 'Series Ready');
     }
   })();
 
-  // 4c. Leads — from secure API api/leads-get.php
+  // 4c. Leads — from secure API /admin/api/leads-get.php
   (async function loadLeadsStats() {
     try {
       const token = localStorage.getItem('sgcms_token') || sessionStorage.getItem('sgcms_token');
-      const r = await fetch('api/leads-get.php?t=' + Date.now(), {
+      const r = await fetch('/admin/api/leads-get.php?t=' + Date.now(), {
         headers: { 'Authorization': 'Bearer ' + token }
       });
       if (r.ok) {
-        const d = await r.json();
-        if (d.success && d.stats) {
-          const total = d.stats.total || 0;
-          const newCnt = d.stats.new || 0;
-          const label = total + ' submission' + (total !== 1 ? 's' : '') + (newCnt > 0 ? ` (${newCnt} new)` : '');
-          setStat('leadsStat', 'fa-solid fa-envelopes-bulk', label);
-          return;
+        const ct = r.headers.get('content-type') || '';
+        if (ct.includes('application/json')) {
+          const d = await r.json();
+          if (d.success && d.stats) {
+            const total = d.stats.total || 0;
+            const newCnt = d.stats.new || 0;
+            const label = total + ' submission' + (total !== 1 ? 's' : '') + (newCnt > 0 ? ` (${newCnt} new)` : '');
+            setStat('leadsStat', 'fa-solid fa-envelopes-bulk', label);
+            return;
+          }
         }
       }
-      setStat('leadsStat', 'fa-solid fa-envelopes-bulk', '0 submissions');
+      setStat('leadsStat', 'fa-solid fa-envelopes-bulk', 'Inbox Ready');
     } catch (_) {
-      setStat('leadsStat', 'fa-solid fa-envelopes-bulk', '— submissions');
+      setStat('leadsStat', 'fa-solid fa-envelopes-bulk', 'Inbox Ready');
     }
   })();
 
