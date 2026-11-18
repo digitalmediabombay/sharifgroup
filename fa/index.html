@@ -827,7 +827,7 @@ html[lang="ar"] .cd-lbl {
 <!-- PURE HOMEPAGE CONTENT CONTAINER -->
 <main class="pt-24 min-h-[70vh]">
 <!-- ROTATING IMAGE HERO CONTAINER -->
-<section class="relative min-h-[75vh] md:min-h-[85vh] lg:min-h-[90vh] flex items-center justify-center text-center px-4 sm:px-6 bg-neutral-950 border-b border-neutral-200 overflow-hidden pt-28 pb-12 sm:pt-36 sm:pb-20" id="hero-section">
+<section class="relative min-h-[90vh] flex items-center justify-center text-center px-4 sm:px-6 bg-neutral-950 border-b border-neutral-200 overflow-hidden pt-36 pb-20" id="hero-section">
 <div class="absolute inset-0 z-0">
 <div class="hero-slide absolute inset-0 transition-opacity duration-1000 opacity-100 z-0">
 <picture>
@@ -869,16 +869,6 @@ html[lang="ar"] .cd-lbl {
 <a class="flex items-center gap-2 group hover:text-luxury-gold transition duration-300" href="/fa/educationaladvisory/">
 <i class="fa-solid fa-graduation-cap text-luxury-gold text-sm transition-transform duration-300 group-hover:scale-125 group-hover:rotate-12"></i>
 <span class="dominica-hero-glow text-base sm:text-lg" data-i18n="hero.educationalAdvisory">مشاوره تحصیلی</span>
-</a>
-</div>
-<div class="pt-6 flex flex-wrap items-center justify-center gap-3 w-full max-w-md mx-auto">
-<a href="/fa/contact/" class="w-full sm:w-auto px-7 py-3.5 bg-[#786142] hover:bg-luxury-gold text-white text-xs font-bold uppercase tracking-widest transition duration-300 rounded-xl shadow-lg flex items-center justify-center gap-2 group/btn" data-i18n="hero.bookConsultation">
-<i class="fa-solid fa-calendar-check text-xs"></i>
-<span>رزرو مشاوره رایگان</span>
-</a>
-<a href="/fa/eligibilitychecker/" class="w-full sm:w-auto px-6 py-3.5 bg-white/10 hover:bg-white/20 text-white border border-white/30 text-xs font-bold uppercase tracking-widest transition duration-300 rounded-xl backdrop-blur-md flex items-center justify-center gap-2" data-i18n="hero.checkEligibility">
-<i class="fa-solid fa-user-check text-xs"></i>
-<span>بررسی شرایط واجد شرایط بودن</span>
 </a>
 </div>
 </div>
@@ -1844,6 +1834,57 @@ html[lang="ar"] .cd-lbl {
   </div>
 </section>
 </main>
+<!-- T37: Mobile sticky consultation bar — shown after user scrolls past hero on small screens -->
+<div id="sg-sticky-cta" role="complementary" aria-label="رزرو مشاوره رایگان">
+  <a href="/fa/contact/">
+    <i class="fa-solid fa-calendar-check" aria-hidden="true"></i>
+    <span data-i18n="hero.bookConsultation">رزرو مشاوره رایگان</span>
+  </a>
+</div>
+<script>
+(function() {
+  var stickyBar = document.getElementById('sg-sticky-cta');
+  var hero = document.getElementById('hero-section');
+  if (!stickyBar || !hero) return;
+  var isFormFocused = false;
+  if ('IntersectionObserver' in window) {
+    var io = new IntersectionObserver(function(entries) {
+      var entry = entries[0];
+      if (!entry.isIntersecting && !isFormFocused) {
+        stickyBar.classList.add('sg-sticky-visible');
+      } else {
+        stickyBar.classList.remove('sg-sticky-visible');
+      }
+    }, { threshold: 0.1 });
+    io.observe(hero);
+  } else {
+    window.addEventListener('scroll', function() {
+      var rect = hero.getBoundingClientRect();
+      if (rect.bottom < 0 && !isFormFocused) {
+        stickyBar.classList.add('sg-sticky-visible');
+      } else {
+        stickyBar.classList.remove('sg-sticky-visible');
+      }
+    }, { passive: true });
+  }
+  document.addEventListener('focusin', function(e) {
+    if (e.target && (e.target.tagName === 'INPUT' || e.target.tagName === 'TEXTAREA' || e.target.tagName === 'SELECT')) {
+      isFormFocused = true;
+      stickyBar.classList.remove('sg-sticky-visible');
+    }
+  });
+  document.addEventListener('focusout', function(e) {
+    if (e.target && (e.target.tagName === 'INPUT' || e.target.tagName === 'TEXTAREA' || e.target.tagName === 'SELECT')) {
+      isFormFocused = false;
+      if ('IntersectionObserver' in window) return;
+      var rect = hero.getBoundingClientRect();
+      if (rect.bottom < 0) {
+        stickyBar.classList.add('sg-sticky-visible');
+      }
+    }
+  });
+})();
+</script>
 <!-- FOOTER WITH SEAMLESS CANVAS BACKGROUND VIDEO -->
 <footer class="relative text-neutral-200 pt-32 pb-8 overflow-hidden z-10">
 <div class="absolute top-0 left-0 w-full h-32 bg-gradient-to-b from-[#FAF6EE] via-[#FAF6EE]/60 to-transparent z-20 pointer-events-none"></div>

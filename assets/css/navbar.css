@@ -1064,3 +1064,41 @@ html[lang="ar"] .sg-drawer-link-direct {
 
 /* Global suppression of 'New' badges */
 .sg-badge-new, .nav-new-badge, .nav-new, [data-i18n="nav.newBadge"], .foot-new-row .nav-new-badge { display: none !important; }
+
+/* T37: Mobile sticky consultation bar */
+#sg-sticky-cta {
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  z-index: 50;
+  background: #786142;
+  color: #ffffff;
+  padding: 12px 20px;
+  padding-bottom: calc(12px + env(safe-area-inset-bottom, 0px));
+  display: none;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  box-shadow: 0 -2px 16px rgba(0,0,0,0.22);
+}
+#sg-sticky-cta a {
+  color: #ffffff;
+  font-size: 13px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.12em;
+  text-decoration: none;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+#sg-sticky-cta.sg-sticky-visible {
+  display: flex;
+}
+@media (min-width: 768px) {
+  #sg-sticky-cta {
+    display: none !important;
+  }
+}
+
