@@ -26,7 +26,7 @@ if ($isAllowedOrigin) {
     header('Access-Control-Allow-Credentials: true');
 }
 header('Access-Control-Allow-Methods: GET, POST, PUT, DELETE, OPTIONS');
-header('Access-Control-Allow-Headers: Content-Type, Authorization, X-Requested-With, X-CMS-Token');
+header('Access-Control-Allow-Headers: Content-Type, Authorization, X-Requested-With, X-CMS-Token, X-Auth-Token');
 
 // Respond to preflight OPTIONS requests immediately
 if (isset($_SERVER['REQUEST_METHOD']) && $_SERVER['REQUEST_METHOD'] === 'OPTIONS') {
@@ -261,6 +261,9 @@ function requireAdminAuth() {
         if (!$authHeader && isset($headers['X-CMS-Token'])) {
             $token = trim($headers['X-CMS-Token']);
         }
+        if (!$authHeader && !$token && isset($headers['X-Auth-Token'])) {
+            $token = trim($headers['X-Auth-Token']);
+        }
     }
     if (!$authHeader && isset($_SERVER['HTTP_AUTHORIZATION'])) {
         $authHeader = $_SERVER['HTTP_AUTHORIZATION'];
@@ -273,9 +276,12 @@ function requireAdminAuth() {
         $token = trim($matches[1]);
     }
 
-    // B. Header X-CMS-Token from $_SERVER
+    // B. Header X-CMS-Token / X-Auth-Token from $_SERVER
     if (!$token && isset($_SERVER['HTTP_X_CMS_TOKEN'])) {
         $token = trim($_SERVER['HTTP_X_CMS_TOKEN']);
+    }
+    if (!$token && isset($_SERVER['HTTP_X_AUTH_TOKEN'])) {
+        $token = trim($_SERVER['HTTP_X_AUTH_TOKEN']);
     }
 
     // C. JSON Body token fallback

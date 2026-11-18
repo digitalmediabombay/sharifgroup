@@ -2199,6 +2199,8 @@
         webinar_slug: w.slug,
         webinar_title: (w.en && w.en.title) || w.title || '',
         webinar_start_utc: w.start_utc,
+        start_utc: w.start_utc,
+        duration_min: w.duration_min || 65,
         fullName: name,
         dialCode: finalDial,
         phone: formattedPhone || `${finalDial} ${local}`,

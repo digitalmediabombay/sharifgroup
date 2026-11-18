@@ -1,1531 +1,1937 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Webinars Manager | Sharif Group Admin</title>
-<base href="/admin/">
-<link rel="icon" href="/assets/images/shariftrip-logo-1.svg?v=20261117" type="image/svg+xml">
-<link rel="preconnect" href="https://fonts.googleapis.com">
-<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Playfair+Display:ital,wght@0,500;0,600;0,700;1,400&family=Amiri:wght@400;700&display=swap" rel="stylesheet">
-<link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
-<style>
-  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
-
-  :root {
-    --gold:        #786142;
-    --gold-light:  #9A7D58;
-    --gold-bright: #B8976A;
-    --gold-glow:   rgba(120, 97, 66, 0.28);
-    --bg:          #0E0F12;
-    --surface:     #161820;
-    --card:        #1A1C22;
-    --card-hover:  #1F2229;
-    --border:      rgba(120, 97, 66, 0.18);
-    --border-h:    rgba(120, 97, 66, 0.55);
-    --cream:       #FAF6EE;
-    --text:        #ECEAE6;
-    --muted:       #9A9490;
-    --muted2:      #5C5A56;
-    --header-h:    64px;
-    --green:       #22c55e;
-    --green-dim:   rgba(34, 197, 94, 0.14);
-    --amber:       #f59e0b;
-    --amber-dim:   rgba(245, 158, 11, 0.14);
-    --red:         #ef4444;
-    --red-dim:     rgba(239, 68, 68, 0.12);
-    --slate:       #64748b;
-    --slate-dim:   rgba(100, 116, 139, 0.14);
-  }
-
-  html, body {
-    min-height: 100vh;
-    font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
-    background: var(--bg);
-    color: var(--text);
-  }
-
-  /* Ambient Glow */
-  body::before {
-    content: '';
-    position: fixed;
-    inset: 0;
-    background:
-      radial-gradient(ellipse 55% 45% at 10% 20%, rgba(120,97,66,0.07) 0%, transparent 65%),
-      radial-gradient(ellipse 40% 50% at 90% 80%, rgba(120,97,66,0.05) 0%, transparent 55%);
-    pointer-events: none;
-    z-index: 0;
-  }
-
-  /* ═══════════════════ HEADER ═══════════════════ */
-  .site-header {
-    position: sticky;
-    top: 0;
-    z-index: 100;
-    height: var(--header-h);
-    background: rgba(14, 15, 18, 0.94);
-    backdrop-filter: blur(14px);
-    -webkit-backdrop-filter: blur(14px);
-    border-bottom: 1px solid var(--border);
-    display: flex;
-    align-items: center;
-    padding: 0 32px;
-    gap: 16px;
-  }
-
-  .back-btn {
-    display: inline-flex;
-    align-items: center;
-    gap: 8px;
-    padding: 8px 14px;
-    background: transparent;
-    border: 1px solid var(--border);
-    border-radius: 8px;
-    color: var(--muted);
-    font-size: 13px;
-    font-weight: 500;
-    cursor: pointer;
-    text-decoration: none;
-    transition: all 0.2s;
-  }
-  .back-btn:hover {
-    border-color: rgba(120,97,66,0.5);
-    color: var(--gold-bright);
-    background: rgba(120,97,66,0.06);
-  }
-
-  .header-brand-box {
-    display: flex;
-    align-items: center;
-    gap: 10px;
-  }
-  .header-brand-name {
-    font-family: 'Playfair Display', Georgia, serif;
-    font-size: 18px;
-    font-weight: 700;
-    color: var(--cream);
-  }
-  .header-brand-name span { color: var(--gold-bright); }
-
-  .header-live-pill {
-    display: inline-flex;
-    align-items: center;
-    gap: 6px;
-    padding: 4px 12px;
-    background: var(--green-dim);
-    border: 1px solid rgba(34, 197, 94, 0.35);
-    border-radius: 20px;
-    font-size: 11px;
-    font-weight: 700;
-    color: #86efac;
-  }
-  .live-dot {
-    width: 6px;
-    height: 6px;
-    border-radius: 50%;
-    background: var(--green);
-    animation: livePulse 2s infinite ease-in-out;
-  }
-  @keyframes livePulse {
-    0%, 100% { opacity: 1; transform: scale(1); }
-    50% { opacity: 0.4; transform: scale(0.8); }
-  }
-
-  .header-spacer { flex: 1; }
-
-  .btn-refresh {
-    display: inline-flex;
-    align-items: center;
-    gap: 6px;
-    padding: 8px 14px;
-    background: transparent;
-    border: 1px solid var(--border);
-    border-radius: 8px;
-    color: var(--muted);
-    font-size: 12.5px;
-    cursor: pointer;
-    transition: all 0.2s;
-  }
-  .btn-refresh:hover {
-    color: var(--gold-bright);
-    border-color: var(--gold);
-    background: rgba(120,97,66,0.06);
-  }
-
-  .btn-create-series {
-    display: inline-flex;
-    align-items: center;
-    gap: 7px;
-    padding: 8px 16px;
-    background: linear-gradient(135deg, #786142, #947854);
-    border: 1px solid var(--gold-bright);
-    border-radius: 8px;
-    color: var(--cream);
-    font-size: 12.5px;
-    font-weight: 600;
-    text-decoration: none;
-    box-shadow: 0 2px 10px rgba(120,97,66,0.25);
-    transition: all 0.2s ease;
-  }
-  .btn-create-series:hover {
-    background: linear-gradient(135deg, #8A6F4C, #A6875E);
-    box-shadow: 0 4px 14px rgba(120,97,66,0.45);
-    transform: translateY(-1px);
-    color: var(--cream);
-  }
-
-  .hero-source-tag {
-    display: inline-flex;
-    align-items: center;
-    gap: 6px;
-    padding: 4px 10px;
-    border-radius: 6px;
-    font-size: 11px;
-    font-weight: 600;
-  }
-  .hero-source-tag.manual_pin {
-    background: rgba(59, 130, 246, 0.16);
-    border: 1px solid rgba(59, 130, 246, 0.4);
-    color: #93c5fd;
-  }
-  .hero-source-tag.auto_live {
-    background: rgba(34, 197, 94, 0.18);
-    border: 1px solid rgba(34, 197, 94, 0.45);
-    color: #86efac;
-  }
-  .hero-source-tag.auto_upcoming {
-    background: rgba(120, 97, 66, 0.22);
-    border: 1px solid rgba(120, 97, 66, 0.5);
-    color: var(--gold-bright);
-  }
-  .hero-source-tag.series_concluded {
-    background: rgba(100, 116, 139, 0.18);
-    border: 1px solid rgba(100, 116, 139, 0.35);
-    color: #cbd5e1;
-  }
-
-  .btn-release-pin {
-    display: inline-flex;
-    align-items: center;
-    gap: 6px;
-    padding: 7px 14px;
-    background: rgba(59, 130, 246, 0.12);
-    border: 1px solid rgba(59, 130, 246, 0.4);
-    border-radius: 8px;
-    color: #93c5fd;
-    font-size: 12px;
-    font-weight: 600;
-    cursor: pointer;
-    transition: all 0.2s ease;
-  }
-  .btn-release-pin:hover {
-    background: rgba(59, 130, 246, 0.25);
-    border-color: #60a5fa;
-    color: #dbeafe;
-  }
-
-  .btn-logout {
-    display: inline-flex;
-    align-items: center;
-    gap: 7px;
-    padding: 8px 14px;
-    background: transparent;
-    border: 1px solid var(--border);
-    border-radius: 8px;
-    color: var(--muted);
-    font-size: 12.5px;
-    cursor: pointer;
-    transition: all 0.2s;
-  }
-  .btn-logout:hover {
-    border-color: rgba(220,38,38,0.4);
-    color: #FCA5A5;
-    background: rgba(220,38,38,0.06);
-  }
-
-  /* ═══════════════════ MAIN WRAP ═══════════════════ */
-  .main-wrap {
-    position: relative;
-    z-index: 1;
-    max-width: 1150px;
-    margin: 0 auto;
-    padding: 36px 32px 80px;
-  }
-
-  @media (max-width: 768px) {
-    .site-header { padding: 0 16px; }
-    .main-wrap { padding: 20px 16px 60px; }
-  }
-
-  /* ── 1. ACTIVE SERIES SPOTLIGHT CARD ── */
-  .series-hero-card {
-    background: var(--card);
-    border: 1px solid var(--border);
-    border-radius: 20px;
-    padding: 32px 36px;
-    margin-bottom: 28px;
-    box-shadow: 0 16px 48px rgba(0,0,0,0.35);
-    position: relative;
-    overflow: hidden;
-  }
-  .series-hero-card::before {
-    content: '';
-    position: absolute;
-    top: 0; left: 0; right: 0;
-    height: 3px;
-    background: linear-gradient(90deg, transparent, var(--gold-bright), transparent);
-  }
-
-  .series-top-row {
-    display: flex;
-    align-items: flex-start;
-    justify-content: space-between;
-    gap: 20px;
-    flex-wrap: wrap;
-    margin-bottom: 20px;
-  }
-
-  .series-eyebrow {
-    display: inline-flex;
-    align-items: center;
-    gap: 8px;
-    font-size: 11.5px;
-    font-weight: 700;
-    text-transform: uppercase;
-    letter-spacing: 0.12em;
-    color: var(--gold-bright);
-    margin-bottom: 8px;
-  }
-
-  .series-title {
-    font-family: 'Playfair Display', Georgia, serif;
-    font-size: clamp(22px, 3vw, 30px);
-    font-weight: 700;
-    color: var(--cream);
-    line-height: 1.25;
-    margin-bottom: 12px;
-  }
-
-  .series-chips-row {
-    display: flex;
-    align-items: center;
-    gap: 10px;
-    flex-wrap: wrap;
-  }
-  .series-chip {
-    display: inline-flex;
-    align-items: center;
-    gap: 6px;
-    padding: 4px 12px;
-    background: rgba(120,97,66,0.1);
-    border: 1px solid rgba(120,97,66,0.22);
-    border-radius: 20px;
-    font-size: 12px;
-    color: var(--gold-bright);
-    font-weight: 500;
-  }
-
-  .series-progress-box {
-    background: var(--surface);
-    border: 1px solid var(--border);
-    border-radius: 14px;
-    padding: 16px 20px;
-    min-width: 260px;
-  }
-  .progress-header {
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    font-size: 12px;
-    color: var(--muted);
-    margin-bottom: 8px;
-  }
-  .progress-bar-bg {
-    height: 8px;
-    background: rgba(255,255,255,0.06);
-    border-radius: 10px;
-    overflow: hidden;
-  }
-  .progress-bar-fill {
-    height: 100%;
-    background: linear-gradient(90deg, var(--gold), var(--gold-bright));
-    border-radius: 10px;
-    transition: width 0.6s ease;
-  }
-
-  .series-links-bar {
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    padding-top: 18px;
-    border-top: 1px solid rgba(120,97,66,0.12);
-    gap: 14px;
-    flex-wrap: wrap;
-  }
-  .series-public-links {
-    display: flex;
-    align-items: center;
-    gap: 12px;
-  }
-  .link-pill {
-    display: inline-flex;
-    align-items: center;
-    gap: 6px;
-    font-size: 12.5px;
-    color: var(--muted);
-    text-decoration: none;
-    transition: color 0.2s;
-  }
-  .link-pill:hover {
-    color: var(--gold-bright);
-  }
-
-  /* ── 2. FEATURED HERO SPOTLIGHT CARD ── */
-  .hero-spotlight-card {
-    background: linear-gradient(135deg, rgba(26,28,34,0.95) 0%, rgba(22,24,32,0.95) 100%);
-    border: 1.5px solid rgba(184, 151, 106, 0.45);
-    border-radius: 18px;
-    padding: 26px 30px;
-    margin-bottom: 36px;
-    box-shadow: 0 12px 36px rgba(0,0,0,0.3), 0 0 0 1px rgba(184,151,106,0.15);
-    position: relative;
-  }
-
-  .hero-spotlight-top {
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    gap: 14px;
-    margin-bottom: 12px;
-    flex-wrap: wrap;
-  }
-
-  .hero-spotlight-badge {
-    display: inline-flex;
-    align-items: center;
-    gap: 7px;
-    padding: 4px 12px;
-    background: rgba(184, 151, 106, 0.16);
-    border: 1px solid var(--gold-bright);
-    border-radius: 20px;
-    font-size: 11px;
-    font-weight: 700;
-    text-transform: uppercase;
-    letter-spacing: 0.08em;
-    color: var(--gold-bright);
-  }
-
-  .btn-hero-manage {
-    display: inline-flex;
-    align-items: center;
-    gap: 6px;
-    padding: 6px 14px;
-    background: rgba(184,151,106,0.18);
-    border: 1px solid var(--gold-bright);
-    border-radius: 8px;
-    color: var(--gold-bright);
-    font-size: 12px;
-    font-weight: 600;
-    cursor: pointer;
-    transition: all 0.2s;
-  }
-  .btn-hero-manage:hover {
-    background: var(--gold-bright);
-    color: #000;
-  }
-
-  .hero-session-header {
-    display: flex;
-    align-items: flex-start;
-    justify-content: space-between;
-    gap: 18px;
-    flex-wrap: wrap;
-    margin-bottom: 14px;
-  }
-
-  .hero-session-title {
-    font-family: 'Playfair Display', Georgia, serif;
-    font-size: 21px;
-    font-weight: 700;
-    color: var(--cream);
-    line-height: 1.3;
-    max-width: 720px;
-  }
-  .hero-session-subtitle-fa {
-    font-family: 'Amiri', Tahoma, sans-serif;
-    font-size: 17px;
-    color: var(--gold-bright);
-    margin-top: 4px;
-    direction: rtl;
-    text-align: left;
-  }
-
-  /* Multi-timezone Grid */
-  .tz-clocks-grid {
-    display: grid;
-    grid-template-columns: repeat(4, 1fr);
-    gap: 12px;
-    background: rgba(14, 15, 18, 0.5);
-    border: 1px solid rgba(120,97,66,0.16);
-    border-radius: 12px;
-    padding: 14px 18px;
-    margin: 18px 0;
-  }
-  @media (max-width: 680px) {
-    .tz-clocks-grid { grid-template-columns: repeat(2, 1fr); }
-  }
-
-  .tz-clock-item { text-align: center; }
-  .tz-label {
-    font-size: 11px;
-    font-weight: 600;
-    text-transform: uppercase;
-    letter-spacing: 0.06em;
-    color: var(--muted);
-    margin-bottom: 4px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    gap: 5px;
-  }
-  .tz-time {
-    font-size: 15px;
-    font-weight: 700;
-    color: var(--cream);
-  }
-
-  .hero-meta-bottom {
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    gap: 14px;
-    flex-wrap: wrap;
-    font-size: 12.5px;
-    padding-top: 10px;
-  }
-  .hero-status-tags {
-    display: flex;
-    align-items: center;
-    gap: 8px;
-    flex-wrap: wrap;
-  }
-
-  /* ── 3. SESSIONS PIPELINE LIST ── */
-  .section-title-row {
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    margin-bottom: 20px;
-  }
-  .section-title-lg {
-    font-family: 'Playfair Display', Georgia, serif;
-    font-size: 22px;
-    font-weight: 700;
-    color: var(--cream);
-    display: flex;
-    align-items: center;
-    gap: 10px;
-  }
-  .section-title-lg i {
-    color: var(--gold-bright);
-    font-size: 18px;
-  }
-
-  .sessions-pipeline {
-    display: flex;
-    flex-direction: column;
-    gap: 18px;
-    margin-bottom: 36px;
-  }
-
-  .session-card {
-    background: var(--card);
-    border: 1px solid var(--border);
-    border-radius: 16px;
-    padding: 22px 26px;
-    display: flex;
-    align-items: center;
-    gap: 22px;
-    transition: all 0.25s;
-    position: relative;
-  }
-  .session-card:hover {
-    border-color: var(--border-h);
-    background: var(--card-hover);
-    transform: translateY(-2px);
-    box-shadow: 0 10px 30px rgba(0,0,0,0.3);
-  }
-  .session-card.is-hero-active {
-    border-color: rgba(184, 151, 106, 0.45);
-    background: linear-gradient(135deg, rgba(26,28,34,1) 0%, rgba(28,24,20,1) 100%);
-  }
-
-  .session-num-badge {
-    width: 52px;
-    height: 52px;
-    background: rgba(120,97,66,0.12);
-    border: 1px solid rgba(120,97,66,0.25);
-    border-radius: 14px;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: center;
-    flex-shrink: 0;
-  }
-  .num-text {
-    font-family: 'Playfair Display', Georgia, serif;
-    font-size: 19px;
-    font-weight: 700;
-    color: var(--gold-bright);
-    line-height: 1;
-  }
-  .session-card.is-hero-active .session-num-badge {
-    background: var(--gold);
-    border-color: var(--gold);
-  }
-  .session-card.is-hero-active .session-num-badge .num-text {
-    color: #fff;
-  }
-
-  .session-main-info {
-    flex: 1;
-    min-width: 0;
-  }
-  .session-eyebrow-row {
-    display: flex;
-    align-items: center;
-    gap: 8px;
-    margin-bottom: 6px;
-  }
-  .hero-tag-inline {
-    font-size: 10px;
-    font-weight: 700;
-    text-transform: uppercase;
-    letter-spacing: 0.08em;
-    padding: 2px 8px;
-    border-radius: 12px;
-    background: var(--gold);
-    color: #000;
-  }
-  .session-title-en {
-    font-family: 'Playfair Display', Georgia, serif;
-    font-size: 17px;
-    font-weight: 600;
-    color: var(--cream);
-    line-height: 1.35;
-    margin-bottom: 4px;
-  }
-  .session-title-fa {
-    font-family: 'Amiri', Tahoma, sans-serif;
-    font-size: 14.5px;
-    color: var(--muted);
-    margin-bottom: 8px;
-    direction: rtl;
-    text-align: left;
-  }
-  .session-timing-meta {
-    display: flex;
-    align-items: center;
-    gap: 12px;
-    font-size: 12px;
-    color: var(--muted);
-    flex-wrap: wrap;
-  }
-  .timing-dot {
-    width: 3px;
-    height: 3px;
-    background: var(--muted2);
-    border-radius: 50%;
-  }
-
-  .session-right-actions {
-    display: flex;
-    flex-direction: column;
-    align-items: flex-end;
-    gap: 10px;
-    flex-shrink: 0;
-  }
-  .session-action-buttons-row {
-    display: flex;
-    align-items: center;
-    gap: 8px;
-  }
-
-  /* Status Pills */
-  .status-pill-badge {
-    display: inline-flex;
-    align-items: center;
-    gap: 6px;
-    padding: 4px 12px;
-    border-radius: 20px;
-    font-size: 11px;
-    font-weight: 700;
-    text-transform: uppercase;
-    letter-spacing: 0.04em;
-  }
-  .status-pill-badge.upcoming {
-    background: var(--green-dim);
-    border: 1px solid rgba(34,197,94,0.3);
-    color: #86efac;
-  }
-  .status-pill-badge.live {
-    background: rgba(239, 68, 68, 0.2);
-    border: 1px solid rgba(239, 68, 68, 0.4);
-    color: #fca5a5;
-  }
-  .status-pill-badge.ended {
-    background: var(--slate-dim);
-    border: 1px solid rgba(100, 116, 139, 0.25);
-    color: #94a3b8;
-  }
-  .status-pill-badge.postponed {
-    background: var(--amber-dim);
-    border: 1px solid rgba(245, 158, 11, 0.3);
-    color: #fde68a;
-  }
-  .status-pill-badge.cancelled {
-    background: var(--red-dim);
-    border: 1px solid rgba(239, 68, 68, 0.3);
-    color: #fca5a5;
-  }
-
-  .btn-session-link {
-    display: inline-flex;
-    align-items: center;
-    gap: 6px;
-    font-size: 12px;
-    color: var(--muted);
-    text-decoration: none;
-    padding: 6px 10px;
-    border-radius: 6px;
-    background: rgba(255,255,255,0.04);
-    border: 1px solid var(--border);
-    transition: all 0.2s;
-  }
-  .btn-session-link:hover {
-    background: rgba(255,255,255,0.09);
-    color: var(--cream);
-  }
-
-  .btn-session-control {
-    display: inline-flex;
-    align-items: center;
-    gap: 6px;
-    font-size: 12px;
-    font-weight: 600;
-    color: var(--gold-bright);
-    padding: 6px 12px;
-    border-radius: 6px;
-    background: rgba(120,97,66,0.14);
-    border: 1px solid rgba(120,97,66,0.32);
-    cursor: pointer;
-    transition: all 0.2s;
-  }
-  .btn-session-control:hover {
-    background: var(--gold);
-    color: #fff;
-    border-color: var(--gold);
-  }
-
-  @media (max-width: 680px) {
-    .session-card {
-      flex-direction: column;
-      align-items: flex-start;
-      gap: 14px;
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Webinars Manager | Sharif Group Admin</title>
+  <base href="/admin/">
+  <link rel="icon" href="/assets/images/shariftrip-logo-1.svg?v=20261117" type="image/svg+xml">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link
+    href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Playfair+Display:ital,wght@0,500;0,600;0,700;1,400&family=Amiri:wght@400;700&display=swap"
+    rel="stylesheet">
+  <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+  <script src="/assets/js/webinars-data.js?v=20261118"></script>
+  <style>
+    *,
+    *::before,
+    *::after {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
     }
-    .session-right-actions {
+
+    :root {
+      --gold: #786142;
+      --gold-light: #9A7D58;
+      --gold-bright: #B8976A;
+      --gold-glow: rgba(120, 97, 66, 0.28);
+      --bg: #0E0F12;
+      --surface: #161820;
+      --card: #1A1C22;
+      --card-hover: #1F2229;
+      --border: rgba(120, 97, 66, 0.18);
+      --border-h: rgba(120, 97, 66, 0.55);
+      --cream: #FAF6EE;
+      --text: #ECEAE6;
+      --muted: #9A9490;
+      --muted2: #5C5A56;
+      --header-h: 64px;
+      --green: #22c55e;
+      --green-dim: rgba(34, 197, 94, 0.14);
+      --amber: #f59e0b;
+      --amber-dim: rgba(245, 158, 11, 0.14);
+      --red: #ef4444;
+      --red-dim: rgba(239, 68, 68, 0.12);
+      --slate: #64748b;
+      --slate-dim: rgba(100, 116, 139, 0.14);
+    }
+
+    html,
+    body {
+      min-height: 100vh;
+      font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+      background: var(--bg);
+      color: var(--text);
+    }
+
+    /* Ambient Glow */
+    body::before {
+      content: '';
+      position: fixed;
+      inset: 0;
+      background:
+        radial-gradient(ellipse 55% 45% at 10% 20%, rgba(120, 97, 66, 0.07) 0%, transparent 65%),
+        radial-gradient(ellipse 40% 50% at 90% 80%, rgba(120, 97, 66, 0.05) 0%, transparent 55%);
+      pointer-events: none;
+      z-index: 0;
+    }
+
+    /* ═══════════════════ HEADER ═══════════════════ */
+    .site-header {
+      position: sticky;
+      top: 0;
+      z-index: 100;
+      height: var(--header-h);
+      background: rgba(14, 15, 18, 0.94);
+      backdrop-filter: blur(14px);
+      -webkit-backdrop-filter: blur(14px);
+      border-bottom: 1px solid var(--border);
+      display: flex;
+      align-items: center;
+      padding: 0 32px;
+      gap: 16px;
+    }
+
+    .back-btn {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      padding: 8px 14px;
+      background: transparent;
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      color: var(--muted);
+      font-size: 13px;
+      font-weight: 500;
+      cursor: pointer;
+      text-decoration: none;
+      transition: all 0.2s;
+    }
+
+    .back-btn:hover {
+      border-color: rgba(120, 97, 66, 0.5);
+      color: var(--gold-bright);
+      background: rgba(120, 97, 66, 0.06);
+    }
+
+    .header-brand-box {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .header-brand-name {
+      font-family: 'Playfair Display', Georgia, serif;
+      font-size: 18px;
+      font-weight: 700;
+      color: var(--cream);
+    }
+
+    .header-brand-name span {
+      color: var(--gold-bright);
+    }
+
+    .header-live-pill {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      padding: 4px 12px;
+      background: var(--green-dim);
+      border: 1px solid rgba(34, 197, 94, 0.35);
+      border-radius: 20px;
+      font-size: 11px;
+      font-weight: 700;
+      color: #86efac;
+    }
+
+    .live-dot {
+      width: 6px;
+      height: 6px;
+      border-radius: 50%;
+      background: var(--green);
+      animation: livePulse 2s infinite ease-in-out;
+    }
+
+    @keyframes livePulse {
+
+      0%,
+      100% {
+        opacity: 1;
+        transform: scale(1);
+      }
+
+      50% {
+        opacity: 0.4;
+        transform: scale(0.8);
+      }
+    }
+
+    .header-spacer {
+      flex: 1;
+    }
+
+    .btn-refresh {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      padding: 8px 14px;
+      background: transparent;
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      color: var(--muted);
+      font-size: 12.5px;
+      cursor: pointer;
+      transition: all 0.2s;
+    }
+
+    .btn-refresh:hover {
+      color: var(--gold-bright);
+      border-color: var(--gold);
+      background: rgba(120, 97, 66, 0.06);
+    }
+
+    .btn-create-series {
+      display: inline-flex;
+      align-items: center;
+      gap: 7px;
+      padding: 8px 16px;
+      background: linear-gradient(135deg, #786142, #947854);
+      border: 1px solid var(--gold-bright);
+      border-radius: 8px;
+      color: var(--cream);
+      font-size: 12.5px;
+      font-weight: 600;
+      text-decoration: none;
+      box-shadow: 0 2px 10px rgba(120, 97, 66, 0.25);
+      transition: all 0.2s ease;
+    }
+
+    .btn-create-series:hover {
+      background: linear-gradient(135deg, #8A6F4C, #A6875E);
+      box-shadow: 0 4px 14px rgba(120, 97, 66, 0.45);
+      transform: translateY(-1px);
+      color: var(--cream);
+    }
+
+    .hero-source-tag {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      padding: 4px 10px;
+      border-radius: 6px;
+      font-size: 11px;
+      font-weight: 600;
+    }
+
+    .hero-source-tag.manual_pin {
+      background: rgba(59, 130, 246, 0.16);
+      border: 1px solid rgba(59, 130, 246, 0.4);
+      color: #93c5fd;
+    }
+
+    .hero-source-tag.auto_live {
+      background: rgba(34, 197, 94, 0.18);
+      border: 1px solid rgba(34, 197, 94, 0.45);
+      color: #86efac;
+    }
+
+    .hero-source-tag.auto_upcoming {
+      background: rgba(120, 97, 66, 0.22);
+      border: 1px solid rgba(120, 97, 66, 0.5);
+      color: var(--gold-bright);
+    }
+
+    .hero-source-tag.series_concluded {
+      background: rgba(100, 116, 139, 0.18);
+      border: 1px solid rgba(100, 116, 139, 0.35);
+      color: #cbd5e1;
+    }
+
+    .btn-release-pin {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      padding: 7px 14px;
+      background: rgba(59, 130, 246, 0.12);
+      border: 1px solid rgba(59, 130, 246, 0.4);
+      border-radius: 8px;
+      color: #93c5fd;
+      font-size: 12px;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all 0.2s ease;
+    }
+
+    .btn-release-pin:hover {
+      background: rgba(59, 130, 246, 0.25);
+      border-color: #60a5fa;
+      color: #dbeafe;
+    }
+
+    .btn-logout {
+      display: inline-flex;
+      align-items: center;
+      gap: 7px;
+      padding: 8px 14px;
+      background: transparent;
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      color: var(--muted);
+      font-size: 12.5px;
+      cursor: pointer;
+      transition: all 0.2s;
+    }
+
+    .btn-logout:hover {
+      border-color: rgba(220, 38, 38, 0.4);
+      color: #FCA5A5;
+      background: rgba(220, 38, 38, 0.06);
+    }
+
+    /* ═══════════════════ MAIN WRAP ═══════════════════ */
+    .main-wrap {
+      position: relative;
+      z-index: 1;
+      max-width: 1150px;
+      margin: 0 auto;
+      padding: 36px 32px 80px;
+    }
+
+    @media (max-width: 768px) {
+      .site-header {
+        padding: 0 16px;
+      }
+
+      .main-wrap {
+        padding: 20px 16px 60px;
+      }
+    }
+
+    /* ── 1. ACTIVE SERIES SPOTLIGHT CARD ── */
+    .series-hero-card {
+      background: var(--card);
+      border: 1px solid var(--border);
+      border-radius: 20px;
+      padding: 32px 36px;
+      margin-bottom: 28px;
+      box-shadow: 0 16px 48px rgba(0, 0, 0, 0.35);
+      position: relative;
+      overflow: hidden;
+    }
+
+    .series-hero-card::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      height: 3px;
+      background: linear-gradient(90deg, transparent, var(--gold-bright), transparent);
+    }
+
+    .series-top-row {
+      display: flex;
       align-items: flex-start;
-      width: 100%;
-      flex-direction: row;
       justify-content: space-between;
+      gap: 20px;
+      flex-wrap: wrap;
+      margin-bottom: 20px;
     }
-  }
 
-  /* ── 4. TRANSITION NOTICE CARD ── */
-  .transition-card {
-    background: rgba(120,97,66,0.06);
-    border: 1px dashed rgba(120,97,66,0.3);
-    border-radius: 16px;
-    padding: 22px 26px;
-    display: flex;
-    align-items: center;
-    gap: 18px;
-    color: var(--muted);
-    font-size: 13.5px;
-    line-height: 1.5;
-  }
-  .transition-icon {
-    width: 44px;
-    height: 44px;
-    background: rgba(120,97,66,0.12);
-    border-radius: 12px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    font-size: 20px;
-    color: var(--gold-bright);
-    flex-shrink: 0;
-  }
+    .series-eyebrow {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      font-size: 11.5px;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.12em;
+      color: var(--gold-bright);
+      margin-bottom: 8px;
+    }
 
-  /* ── MODAL DIALOG (PHASE 3B SESSION CONTROLS) ── */
-  .modal-backdrop {
-    position: fixed;
-    inset: 0;
-    background: rgba(0,0,0,0.78);
-    backdrop-filter: blur(10px);
-    -webkit-backdrop-filter: blur(10px);
-    z-index: 1000;
-    display: none;
-    align-items: center;
-    justify-content: center;
-    padding: 20px;
-  }
-  .modal-backdrop.show { display: flex; }
+    .series-title {
+      font-family: 'Playfair Display', Georgia, serif;
+      font-size: clamp(22px, 3vw, 30px);
+      font-weight: 700;
+      color: var(--cream);
+      line-height: 1.25;
+      margin-bottom: 12px;
+    }
 
-  .control-modal-card {
-    background: var(--card);
-    border: 1px solid rgba(184, 151, 106, 0.35);
-    border-radius: 20px;
-    max-width: 580px;
-    width: 100%;
-    padding: 32px 36px;
-    box-shadow: 0 24px 70px rgba(0,0,0,0.65), 0 0 0 1px rgba(184,151,106,0.12);
-    animation: popIn 0.25s cubic-bezier(0.16, 1, 0.3, 1) forwards;
-    position: relative;
-    max-height: 90vh;
-    overflow-y: auto;
-  }
-  @keyframes popIn {
-    from { opacity: 0; transform: scale(0.95) translateY(12px); }
-    to   { opacity: 1; transform: scale(1) translateY(0); }
-  }
+    .series-chips-row {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      flex-wrap: wrap;
+    }
 
-  .modal-close-btn {
-    position: absolute;
-    top: 20px;
-    right: 20px;
-    background: transparent;
-    border: none;
-    color: var(--muted);
-    font-size: 18px;
-    cursor: pointer;
-    padding: 6px;
-    transition: color 0.2s;
-  }
-  .modal-close-btn:hover { color: var(--cream); }
+    .series-chip {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      padding: 4px 12px;
+      background: rgba(120, 97, 66, 0.1);
+      border: 1px solid rgba(120, 97, 66, 0.22);
+      border-radius: 20px;
+      font-size: 12px;
+      color: var(--gold-bright);
+      font-weight: 500;
+    }
 
-  .modal-header-box {
-    margin-bottom: 22px;
-    padding-bottom: 14px;
-    border-bottom: 1px solid rgba(120,97,66,0.14);
-  }
-  .modal-title-main {
-    font-family: 'Playfair Display', Georgia, serif;
-    font-size: 21px;
-    font-weight: 700;
-    color: var(--cream);
-    display: flex;
-    align-items: center;
-    gap: 10px;
-    margin-bottom: 4px;
-  }
-  .modal-title-main i { color: var(--gold-bright); font-size: 18px; }
-  .modal-session-subtitle {
-    font-size: 13px;
-    color: var(--muted);
-  }
+    .series-progress-box {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 14px;
+      padding: 16px 20px;
+      min-width: 260px;
+    }
 
-  .modal-form-group {
-    margin-bottom: 18px;
-  }
-  .modal-label {
-    display: block;
-    font-size: 11.5px;
-    font-weight: 700;
-    text-transform: uppercase;
-    letter-spacing: 0.06em;
-    color: var(--muted);
-    margin-bottom: 7px;
-  }
-  .modal-input, .modal-select {
-    width: 100%;
-    padding: 11px 14px;
-    font-size: 13.5px;
-    font-family: inherit;
-    color: var(--text);
-    background: var(--surface);
-    border: 1px solid var(--border);
-    border-radius: 10px;
-    outline: none;
-    transition: all 0.2s;
-  }
-  .modal-input:focus, .modal-select:focus {
-    border-color: var(--gold);
-    box-shadow: 0 0 0 3px var(--gold-glow);
-  }
+    .progress-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      font-size: 12px;
+      color: var(--muted);
+      margin-bottom: 8px;
+    }
 
-  /* Segmented Controls */
-  .segmented-control {
-    display: grid;
-    grid-template-columns: 1fr 1fr;
-    gap: 8px;
-    background: rgba(14, 15, 18, 0.4);
-    padding: 4px;
-    border: 1px solid var(--border);
-    border-radius: 10px;
-  }
-  .seg-btn {
-    padding: 9px 12px;
-    background: transparent;
-    border: 1px solid transparent;
-    border-radius: 8px;
-    color: var(--muted);
-    font-size: 12.5px;
-    font-weight: 600;
-    cursor: pointer;
-    transition: all 0.2s;
-    text-align: center;
-  }
-  .seg-btn:hover { color: var(--text); }
-  .seg-btn.active {
-    background: var(--card);
-    border-color: rgba(184, 151, 106, 0.4);
-    color: var(--gold-bright);
-    box-shadow: 0 2px 8px rgba(0,0,0,0.3);
-  }
+    .progress-bar-bg {
+      height: 8px;
+      background: rgba(255, 255, 255, 0.06);
+      border-radius: 10px;
+      overflow: hidden;
+    }
 
-  .hero-toggle-box {
-    background: rgba(120,97,66,0.08);
-    border: 1px solid rgba(120,97,66,0.22);
-    border-radius: 12px;
-    padding: 14px 18px;
-    display: flex;
-    align-items: center;
-    gap: 12px;
-    cursor: pointer;
-    user-select: none;
-    margin-top: 22px;
-    margin-bottom: 24px;
-  }
-  .hero-toggle-box input[type="checkbox"] {
-    width: 18px;
-    height: 18px;
-    accent-color: var(--gold);
-    cursor: pointer;
-  }
-  .hero-toggle-text {
-    flex: 1;
-    font-size: 13px;
-    color: var(--cream);
-  }
-  .hero-toggle-sub {
-    font-size: 11.5px;
-    color: var(--muted);
-    margin-top: 2px;
-  }
+    .progress-bar-fill {
+      height: 100%;
+      background: linear-gradient(90deg, var(--gold), var(--gold-bright));
+      border-radius: 10px;
+      transition: width 0.6s ease;
+    }
 
-  .modal-footer-btns {
-    display: flex;
-    align-items: center;
-    justify-content: flex-end;
-    gap: 12px;
-    padding-top: 18px;
-    border-top: 1px solid rgba(120,97,66,0.12);
-  }
-  .btn-modal-cancel {
-    padding: 10px 18px;
-    background: transparent;
-    border: 1px solid var(--border);
-    border-radius: 8px;
-    color: var(--text);
-    font-size: 13px;
-    font-weight: 600;
-    cursor: pointer;
-    transition: all 0.2s;
-  }
-  .btn-modal-cancel:hover { background: rgba(255,255,255,0.06); }
+    .series-links-bar {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding-top: 18px;
+      border-top: 1px solid rgba(120, 97, 66, 0.12);
+      gap: 14px;
+      flex-wrap: wrap;
+    }
 
-  .btn-modal-save {
-    padding: 10px 22px;
-    background: var(--gold);
-    border: 1px solid var(--gold);
-    border-radius: 8px;
-    color: #fff;
-    font-size: 13px;
-    font-weight: 600;
-    cursor: pointer;
-    transition: all 0.2s;
-    display: inline-flex;
-    align-items: center;
-    gap: 8px;
-    box-shadow: 0 4px 16px rgba(120,97,66,0.3);
-  }
-  .btn-modal-save:hover {
-    background: var(--gold-light);
-    transform: translateY(-1px);
-  }
-  .btn-modal-save:disabled {
-    opacity: 0.6;
-    cursor: not-allowed;
-    transform: none;
-  }
+    .series-public-links {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
 
-  /* ── SHIMMER SKELETON ── */
-  .skeleton-box {
-    background: linear-gradient(90deg, rgba(255,255,255,0.02) 25%, rgba(255,255,255,0.06) 50%, rgba(255,255,255,0.02) 75%);
-    background-size: 200% 100%;
-    animation: shimmer 1.5s infinite;
-    border-radius: 16px;
-    height: 140px;
-  }
-  @keyframes shimmer { from { background-position: 200% 0; } to { background-position: -200% 0; } }
+    .link-pill {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      font-size: 12.5px;
+      color: var(--muted);
+      text-decoration: none;
+      transition: color 0.2s;
+    }
 
-  /* ── TOAST NOTIFICATION ── */
-  .toast-container {
-    position: fixed;
-    bottom: 24px;
-    right: 24px;
-    z-index: 2000;
-    display: flex;
-    flex-direction: column;
-    gap: 10px;
-    pointer-events: none;
-  }
-  .toast {
-    background: var(--card);
-    border: 1px solid var(--border);
-    border-radius: 10px;
-    padding: 12px 18px;
-    display: flex;
-    align-items: center;
-    gap: 10px;
-    font-size: 13px;
-    color: var(--cream);
-    box-shadow: 0 10px 30px rgba(0,0,0,0.5);
-    pointer-events: auto;
-    animation: toastIn 0.3s cubic-bezier(0.16, 1, 0.3, 1) forwards;
-  }
-  .toast.success { border-color: rgba(34,197,94,0.4); }
-  .toast.success i { color: var(--green); }
-  .toast.error   { border-color: rgba(239,68,68,0.4); }
-  .toast.error i   { color: var(--red); }
-  @keyframes toastIn {
-    from { opacity: 0; transform: translateY(16px); }
-    to   { opacity: 1; transform: translateY(0); }
-  }
-</style>
+    .link-pill:hover {
+      color: var(--gold-bright);
+    }
+
+    /* ── 2. FEATURED HERO SPOTLIGHT CARD ── */
+    .hero-spotlight-card {
+      background: linear-gradient(135deg, rgba(26, 28, 34, 0.95) 0%, rgba(22, 24, 32, 0.95) 100%);
+      border: 1.5px solid rgba(184, 151, 106, 0.45);
+      border-radius: 18px;
+      padding: 26px 30px;
+      margin-bottom: 36px;
+      box-shadow: 0 12px 36px rgba(0, 0, 0, 0.3), 0 0 0 1px rgba(184, 151, 106, 0.15);
+      position: relative;
+    }
+
+    .hero-spotlight-top {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 14px;
+      margin-bottom: 12px;
+      flex-wrap: wrap;
+    }
+
+    .hero-spotlight-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 7px;
+      padding: 4px 12px;
+      background: rgba(184, 151, 106, 0.16);
+      border: 1px solid var(--gold-bright);
+      border-radius: 20px;
+      font-size: 11px;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+      color: var(--gold-bright);
+    }
+
+    .btn-hero-manage {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      padding: 6px 14px;
+      background: rgba(184, 151, 106, 0.18);
+      border: 1px solid var(--gold-bright);
+      border-radius: 8px;
+      color: var(--gold-bright);
+      font-size: 12px;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all 0.2s;
+    }
+
+    .btn-hero-manage:hover {
+      background: var(--gold-bright);
+      color: #000;
+    }
+
+    .hero-session-header {
+      display: flex;
+      align-items: flex-start;
+      justify-content: space-between;
+      gap: 18px;
+      flex-wrap: wrap;
+      margin-bottom: 14px;
+    }
+
+    .hero-session-title {
+      font-family: 'Playfair Display', Georgia, serif;
+      font-size: 21px;
+      font-weight: 700;
+      color: var(--cream);
+      line-height: 1.3;
+      max-width: 720px;
+    }
+
+    .hero-session-subtitle-fa {
+      font-family: 'Amiri', Tahoma, sans-serif;
+      font-size: 17px;
+      color: var(--gold-bright);
+      margin-top: 4px;
+      direction: rtl;
+      text-align: left;
+    }
+
+    /* Multi-timezone Grid */
+    .tz-clocks-grid {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 12px;
+      background: rgba(14, 15, 18, 0.5);
+      border: 1px solid rgba(120, 97, 66, 0.16);
+      border-radius: 12px;
+      padding: 14px 18px;
+      margin: 18px 0;
+    }
+
+    @media (max-width: 680px) {
+      .tz-clocks-grid {
+        grid-template-columns: repeat(2, 1fr);
+      }
+    }
+
+    .tz-clock-item {
+      text-align: center;
+    }
+
+    .tz-label {
+      font-size: 11px;
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 0.06em;
+      color: var(--muted);
+      margin-bottom: 4px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 5px;
+    }
+
+    .tz-time {
+      font-size: 15px;
+      font-weight: 700;
+      color: var(--cream);
+    }
+
+    .hero-meta-bottom {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 14px;
+      flex-wrap: wrap;
+      font-size: 12.5px;
+      padding-top: 10px;
+    }
+
+    .hero-status-tags {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      flex-wrap: wrap;
+    }
+
+    /* ── 3. SESSIONS PIPELINE LIST ── */
+    .section-title-row {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-bottom: 20px;
+    }
+
+    .section-title-lg {
+      font-family: 'Playfair Display', Georgia, serif;
+      font-size: 22px;
+      font-weight: 700;
+      color: var(--cream);
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .section-title-lg i {
+      color: var(--gold-bright);
+      font-size: 18px;
+    }
+
+    .sessions-pipeline {
+      display: flex;
+      flex-direction: column;
+      gap: 18px;
+      margin-bottom: 36px;
+    }
+
+    .session-card {
+      background: var(--card);
+      border: 1px solid var(--border);
+      border-radius: 16px;
+      padding: 22px 26px;
+      display: flex;
+      align-items: center;
+      gap: 22px;
+      transition: all 0.25s;
+      position: relative;
+    }
+
+    .session-card:hover {
+      border-color: var(--border-h);
+      background: var(--card-hover);
+      transform: translateY(-2px);
+      box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+    }
+
+    .session-card.is-hero-active {
+      border-color: rgba(184, 151, 106, 0.45);
+      background: linear-gradient(135deg, rgba(26, 28, 34, 1) 0%, rgba(28, 24, 20, 1) 100%);
+    }
+
+    .session-num-badge {
+      width: 52px;
+      height: 52px;
+      background: rgba(120, 97, 66, 0.12);
+      border: 1px solid rgba(120, 97, 66, 0.25);
+      border-radius: 14px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      flex-shrink: 0;
+    }
+
+    .num-text {
+      font-family: 'Playfair Display', Georgia, serif;
+      font-size: 19px;
+      font-weight: 700;
+      color: var(--gold-bright);
+      line-height: 1;
+    }
+
+    .session-card.is-hero-active .session-num-badge {
+      background: var(--gold);
+      border-color: var(--gold);
+    }
+
+    .session-card.is-hero-active .session-num-badge .num-text {
+      color: #fff;
+    }
+
+    .session-main-info {
+      flex: 1;
+      min-width: 0;
+    }
+
+    .session-eyebrow-row {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      margin-bottom: 6px;
+    }
+
+    .hero-tag-inline {
+      font-size: 10px;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+      padding: 2px 8px;
+      border-radius: 12px;
+      background: var(--gold);
+      color: #000;
+    }
+
+    .session-title-en {
+      font-family: 'Playfair Display', Georgia, serif;
+      font-size: 17px;
+      font-weight: 600;
+      color: var(--cream);
+      line-height: 1.35;
+      margin-bottom: 4px;
+    }
+
+    .session-title-fa {
+      font-family: 'Amiri', Tahoma, sans-serif;
+      font-size: 14.5px;
+      color: var(--muted);
+      margin-bottom: 8px;
+      direction: rtl;
+      text-align: left;
+    }
+
+    .session-timing-meta {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      font-size: 12px;
+      color: var(--muted);
+      flex-wrap: wrap;
+    }
+
+    .timing-dot {
+      width: 3px;
+      height: 3px;
+      background: var(--muted2);
+      border-radius: 50%;
+    }
+
+    .session-right-actions {
+      display: flex;
+      flex-direction: column;
+      align-items: flex-end;
+      gap: 10px;
+      flex-shrink: 0;
+    }
+
+    .session-action-buttons-row {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    /* Status Pills */
+    .status-pill-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      padding: 4px 12px;
+      border-radius: 20px;
+      font-size: 11px;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.04em;
+    }
+
+    .status-pill-badge.upcoming {
+      background: var(--green-dim);
+      border: 1px solid rgba(34, 197, 94, 0.3);
+      color: #86efac;
+    }
+
+    .status-pill-badge.live {
+      background: rgba(239, 68, 68, 0.2);
+      border: 1px solid rgba(239, 68, 68, 0.4);
+      color: #fca5a5;
+    }
+
+    .status-pill-badge.ended {
+      background: var(--slate-dim);
+      border: 1px solid rgba(100, 116, 139, 0.25);
+      color: #94a3b8;
+    }
+
+    .status-pill-badge.postponed {
+      background: var(--amber-dim);
+      border: 1px solid rgba(245, 158, 11, 0.3);
+      color: #fde68a;
+    }
+
+    .status-pill-badge.cancelled {
+      background: var(--red-dim);
+      border: 1px solid rgba(239, 68, 68, 0.3);
+      color: #fca5a5;
+    }
+
+    .btn-session-link {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      font-size: 12px;
+      color: var(--muted);
+      text-decoration: none;
+      padding: 6px 10px;
+      border-radius: 6px;
+      background: rgba(255, 255, 255, 0.04);
+      border: 1px solid var(--border);
+      transition: all 0.2s;
+    }
+
+    .btn-session-link:hover {
+      background: rgba(255, 255, 255, 0.09);
+      color: var(--cream);
+    }
+
+    .btn-session-control {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      font-size: 12px;
+      font-weight: 600;
+      color: var(--gold-bright);
+      padding: 6px 12px;
+      border-radius: 6px;
+      background: rgba(120, 97, 66, 0.14);
+      border: 1px solid rgba(120, 97, 66, 0.32);
+      cursor: pointer;
+      transition: all 0.2s;
+    }
+
+    .btn-session-control:hover {
+      background: var(--gold);
+      color: #fff;
+      border-color: var(--gold);
+    }
+
+    @media (max-width: 680px) {
+      .session-card {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 14px;
+      }
+
+      .session-right-actions {
+        align-items: flex-start;
+        width: 100%;
+        flex-direction: row;
+        justify-content: space-between;
+      }
+    }
+
+    /* ── 4. TRANSITION NOTICE CARD ── */
+    .transition-card {
+      background: rgba(120, 97, 66, 0.06);
+      border: 1px dashed rgba(120, 97, 66, 0.3);
+      border-radius: 16px;
+      padding: 22px 26px;
+      display: flex;
+      align-items: center;
+      gap: 18px;
+      color: var(--muted);
+      font-size: 13.5px;
+      line-height: 1.5;
+    }
+
+    .transition-icon {
+      width: 44px;
+      height: 44px;
+      background: rgba(120, 97, 66, 0.12);
+      border-radius: 12px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 20px;
+      color: var(--gold-bright);
+      flex-shrink: 0;
+    }
+
+    /* ── MODAL DIALOG (PHASE 3B SESSION CONTROLS) ── */
+    .modal-backdrop {
+      position: fixed;
+      inset: 0;
+      background: rgba(0, 0, 0, 0.78);
+      backdrop-filter: blur(10px);
+      -webkit-backdrop-filter: blur(10px);
+      z-index: 1000;
+      display: none;
+      align-items: center;
+      justify-content: center;
+      padding: 20px;
+    }
+
+    .modal-backdrop.show {
+      display: flex;
+    }
+
+    .control-modal-card {
+      background: var(--card);
+      border: 1px solid rgba(184, 151, 106, 0.35);
+      border-radius: 20px;
+      max-width: 580px;
+      width: 100%;
+      padding: 32px 36px;
+      box-shadow: 0 24px 70px rgba(0, 0, 0, 0.65), 0 0 0 1px rgba(184, 151, 106, 0.12);
+      animation: popIn 0.25s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+      position: relative;
+      max-height: 90vh;
+      overflow-y: auto;
+    }
+
+    @keyframes popIn {
+      from {
+        opacity: 0;
+        transform: scale(0.95) translateY(12px);
+      }
+
+      to {
+        opacity: 1;
+        transform: scale(1) translateY(0);
+      }
+    }
+
+    .modal-close-btn {
+      position: absolute;
+      top: 20px;
+      right: 20px;
+      background: transparent;
+      border: none;
+      color: var(--muted);
+      font-size: 18px;
+      cursor: pointer;
+      padding: 6px;
+      transition: color 0.2s;
+    }
+
+    .modal-close-btn:hover {
+      color: var(--cream);
+    }
+
+    .modal-header-box {
+      margin-bottom: 22px;
+      padding-bottom: 14px;
+      border-bottom: 1px solid rgba(120, 97, 66, 0.14);
+    }
+
+    .modal-title-main {
+      font-family: 'Playfair Display', Georgia, serif;
+      font-size: 21px;
+      font-weight: 700;
+      color: var(--cream);
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      margin-bottom: 4px;
+    }
+
+    .modal-title-main i {
+      color: var(--gold-bright);
+      font-size: 18px;
+    }
+
+    .modal-session-subtitle {
+      font-size: 13px;
+      color: var(--muted);
+    }
+
+    .modal-form-group {
+      margin-bottom: 18px;
+    }
+
+    .modal-label {
+      display: block;
+      font-size: 11.5px;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.06em;
+      color: var(--muted);
+      margin-bottom: 7px;
+    }
+
+    .modal-input,
+    .modal-select {
+      width: 100%;
+      padding: 11px 14px;
+      font-size: 13.5px;
+      font-family: inherit;
+      color: var(--text);
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      outline: none;
+      transition: all 0.2s;
+    }
+
+    .modal-input:focus,
+    .modal-select:focus {
+      border-color: var(--gold);
+      box-shadow: 0 0 0 3px var(--gold-glow);
+    }
+
+    /* Segmented Controls */
+    .segmented-control {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 8px;
+      background: rgba(14, 15, 18, 0.4);
+      padding: 4px;
+      border: 1px solid var(--border);
+      border-radius: 10px;
+    }
+
+    .seg-btn {
+      padding: 9px 12px;
+      background: transparent;
+      border: 1px solid transparent;
+      border-radius: 8px;
+      color: var(--muted);
+      font-size: 12.5px;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all 0.2s;
+      text-align: center;
+    }
+
+    .seg-btn:hover {
+      color: var(--text);
+    }
+
+    .seg-btn.active {
+      background: var(--card);
+      border-color: rgba(184, 151, 106, 0.4);
+      color: var(--gold-bright);
+      box-shadow: 0 2px 8px rgba(0, 0, 0, 0.3);
+    }
+
+    .hero-toggle-box {
+      background: rgba(120, 97, 66, 0.08);
+      border: 1px solid rgba(120, 97, 66, 0.22);
+      border-radius: 12px;
+      padding: 14px 18px;
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      cursor: pointer;
+      user-select: none;
+      margin-top: 22px;
+      margin-bottom: 24px;
+    }
+
+    .hero-toggle-box input[type="checkbox"] {
+      width: 18px;
+      height: 18px;
+      accent-color: var(--gold);
+      cursor: pointer;
+    }
+
+    .hero-toggle-text {
+      flex: 1;
+      font-size: 13px;
+      color: var(--cream);
+    }
+
+    .hero-toggle-sub {
+      font-size: 11.5px;
+      color: var(--muted);
+      margin-top: 2px;
+    }
+
+    .modal-footer-btns {
+      display: flex;
+      align-items: center;
+      justify-content: flex-end;
+      gap: 12px;
+      padding-top: 18px;
+      border-top: 1px solid rgba(120, 97, 66, 0.12);
+    }
+
+    .btn-modal-cancel {
+      padding: 10px 18px;
+      background: transparent;
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      color: var(--text);
+      font-size: 13px;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all 0.2s;
+    }
+
+    .btn-modal-cancel:hover {
+      background: rgba(255, 255, 255, 0.06);
+    }
+
+    .btn-modal-save {
+      padding: 10px 22px;
+      background: var(--gold);
+      border: 1px solid var(--gold);
+      border-radius: 8px;
+      color: #fff;
+      font-size: 13px;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all 0.2s;
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      box-shadow: 0 4px 16px rgba(120, 97, 66, 0.3);
+    }
+
+    .btn-modal-save:hover {
+      background: var(--gold-light);
+      transform: translateY(-1px);
+    }
+
+    .btn-modal-save:disabled {
+      opacity: 0.6;
+      cursor: not-allowed;
+      transform: none;
+    }
+
+    /* ── SHIMMER SKELETON ── */
+    .skeleton-box {
+      background: linear-gradient(90deg, rgba(255, 255, 255, 0.02) 25%, rgba(255, 255, 255, 0.06) 50%, rgba(255, 255, 255, 0.02) 75%);
+      background-size: 200% 100%;
+      animation: shimmer 1.5s infinite;
+      border-radius: 16px;
+      height: 140px;
+    }
+
+    @keyframes shimmer {
+      from {
+        background-position: 200% 0;
+      }
+
+      to {
+        background-position: -200% 0;
+      }
+    }
+
+    /* ── TOAST NOTIFICATION ── */
+    .toast-container {
+      position: fixed;
+      bottom: 24px;
+      right: 24px;
+      z-index: 2000;
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+      pointer-events: none;
+    }
+
+    .toast {
+      background: var(--card);
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      padding: 12px 18px;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      font-size: 13px;
+      color: var(--cream);
+      box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
+      pointer-events: auto;
+      animation: toastIn 0.3s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+    }
+
+    .toast.success {
+      border-color: rgba(34, 197, 94, 0.4);
+    }
+
+    .toast.success i {
+      color: var(--green);
+    }
+
+    .toast.error {
+      border-color: rgba(239, 68, 68, 0.4);
+    }
+
+    .toast.error i {
+      color: var(--red);
+    }
+
+    @keyframes toastIn {
+      from {
+        opacity: 0;
+        transform: translateY(16px);
+      }
+
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+  </style>
 </head>
+
 <body>
 
-<!-- ═══ HEADER ════════════════════════════════════════════════════════ -->
-<header class="site-header">
-  <a href="/admin/dashboard.html" class="back-btn">
-    <i class="fa-solid fa-arrow-left"></i>
-    Dashboard
-  </a>
+  <!-- ═══ HEADER ════════════════════════════════════════════════════════ -->
+  <header class="site-header">
+    <a href="/admin/dashboard.html" class="back-btn">
+      <i class="fa-solid fa-arrow-left"></i>
+      Dashboard
+    </a>
 
-  <div class="header-brand-box">
-    <span class="header-brand-name">Sharif <span>Webinars</span></span>
-    <span class="header-live-pill">
-      <span class="live-dot"></span>
-      Active on Live Website
-    </span>
-  </div>
-
-  <div class="header-spacer"></div>
-
-  <a href="/admin/webinar-create.html" class="btn-create-series">
-    <i class="fa-solid fa-plus"></i>
-    <span>Create New Series</span>
-  </a>
-
-  <button class="btn-refresh" id="refreshBtn" onclick="loadActiveSeries()">
-    <i class="fa-solid fa-arrows-rotate" id="refreshIcon"></i>
-    Refresh
-  </button>
-
-  <button class="btn-logout" id="logoutBtn">
-    <i class="fa-solid fa-right-from-bracket"></i>
-    Sign Out
-  </button>
-</header>
-
-<!-- ═══ MAIN WRAP ═════════════════════════════════════════════════════ -->
-<main class="main-wrap">
-
-  <!-- Loading Skeletons Container -->
-  <div id="loadingSkeletons">
-    <div class="skeleton-box" style="margin-bottom:24px; height:200px;"></div>
-    <div class="skeleton-box" style="margin-bottom:24px; height:180px;"></div>
-    <div class="skeleton-box" style="height:260px;"></div>
-  </div>
-
-  <!-- Real Content Container -->
-  <div id="contentContainer" style="display:none;">
-
-    <!-- 1. ACTIVE SERIES HERO CARD -->
-    <div class="series-hero-card">
-      <div class="series-top-row">
-        <div>
-          <div class="series-eyebrow">
-            <i class="fa-solid fa-sparkles"></i>
-            Active Public Series
-          </div>
-          <h1 class="series-title" id="seriesTitle">Dominica Pilot Series — Second Passport for Afghans</h1>
-          <div class="series-chips-row">
-            <span class="series-chip" id="chipCountry">
-              <i class="fa-solid fa-flag"></i> Dominica
-            </span>
-            <span class="series-chip" id="chipCategory">
-              <i class="fa-solid fa-passport"></i> Citizenship by Investment
-            </span>
-            <span class="series-chip" id="chipTotalSessions">
-              <i class="fa-solid fa-layer-group"></i> 3 Sessions
-            </span>
-            <span class="series-chip" id="chipSeriesId">
-              <i class="fa-solid fa-fingerprint"></i> ID: dominica-pilot
-            </span>
-          </div>
-        </div>
-
-        <div class="series-progress-box">
-          <div class="progress-header">
-            <span>Series Completion</span>
-            <strong style="color:var(--cream);" id="progressText">1 of 3 (33%)</strong>
-          </div>
-          <div class="progress-bar-bg">
-            <div class="progress-bar-fill" id="progressBarFill" style="width: 33%;"></div>
-          </div>
-        </div>
-      </div>
-
-      <div class="series-links-bar">
-        <div class="series-public-links">
-          <span style="font-size:12px; color:var(--muted); font-weight:600;">LIVE PUBLIC PAGES:</span>
-          <a href="/events/" target="_blank" class="link-pill">
-            <i class="fa-solid fa-arrow-up-right-from-square"></i> /events/
-          </a>
-          <a href="/webinars/" target="_blank" class="link-pill">
-            <i class="fa-solid fa-arrow-up-right-from-square"></i> /webinars/
-          </a>
-        </div>
-        <div style="font-size:12px; color:var(--gold-bright);">
-          <i class="fa-solid fa-circle-check"></i> Connected to Single Source of Truth
-        </div>
-      </div>
+    <div class="header-brand-box">
+      <span class="header-brand-name">Sharif <span>Webinars</span></span>
+      <span class="header-live-pill">
+        <span class="live-dot"></span>
+        Active on Live Website
+      </span>
     </div>
 
-    <!-- 2. PROMOTED WEBSITE HERO SPOTLIGHT -->
-    <div class="hero-spotlight-card" id="heroSpotlightCard">
-      <div class="hero-spotlight-top">
-        <div style="display: flex; align-items: center; gap: 10px; flex-wrap: wrap;">
-          <div class="hero-spotlight-badge">
-            <i class="fa-solid fa-bullhorn"></i>
-            Promoted on Website Hero &amp; Homepage
-          </div>
-          <span id="heroSourceBadge" class="hero-source-tag auto_upcoming">
-            <i class="fa-solid fa-wand-magic-sparkles"></i> Auto-Promoted
-          </span>
-        </div>
-        <div style="display: flex; align-items: center; gap: 10px;">
-          <button class="btn-release-pin" id="btnReleasePin" style="display:none;" onclick="releaseHeroPin()">
-            <i class="fa-solid fa-wand-magic-sparkles"></i>
-            <span>Release Pin (Auto-Promote)</span>
-          </button>
-          <button class="btn-hero-manage" id="btnManageHero">
-            <i class="fa-solid fa-sliders"></i>
-            Manage Hero Controls
-          </button>
-        </div>
-      </div>
+    <div class="header-spacer"></div>
 
-      <div class="hero-session-header">
-        <div>
-          <div style="font-size:12px; font-weight:700; color:var(--gold-bright); text-transform:uppercase; letter-spacing:0.06em; margin-bottom:4px;" id="heroSessionEyebrow">
-            SESSION 02 · FEATURED
-          </div>
-          <div class="hero-session-title" id="heroSessionTitleEn">
-            From Decision to Passport: Steps, Documents and Source of Funds
-          </div>
-          <div class="hero-session-subtitle-fa" id="heroSessionTitleFa">
-            از تصمیم تا پاسپورت: مراحل، مدارک و منبع سرمایه
-          </div>
-        </div>
-      </div>
+    <a href="/admin/webinar-create.html" class="btn-create-series">
+      <i class="fa-solid fa-plus"></i>
+      <span>Create New Series</span>
+    </a>
 
-      <!-- Multi-timezone Clock Grid -->
-      <div class="tz-clocks-grid">
-        <div class="tz-clock-item">
-          <div class="tz-label">🇦🇪 Dubai (GST)</div>
-          <div class="tz-time" id="heroTimeDubai">19:30 GST</div>
-        </div>
-        <div class="tz-clock-item">
-          <div class="tz-label">🇦🇫 Kabul (AFT)</div>
-          <div class="tz-time" id="heroTimeKabul">20:00 AFT</div>
-        </div>
-        <div class="tz-clock-item">
-          <div class="tz-label">🇹🇷 Istanbul (TRT)</div>
-          <div class="tz-time" id="heroTimeIstanbul">18:30 TRT</div>
-        </div>
-        <div class="tz-clock-item">
-          <div class="tz-label">🌐 Universal (UTC)</div>
-          <div class="tz-time" id="heroTimeUtc">15:30 UTC</div>
-        </div>
-      </div>
-
-      <div class="hero-meta-bottom">
-        <div class="hero-status-tags">
-          <span class="status-pill-badge upcoming" id="heroStatusBadge">● Upcoming Session</span>
-          <span class="series-chip" id="heroRegStatusBadge">
-            <i class="fa-solid fa-pen-to-square"></i> Registration Open
-          </span>
-          <span class="series-chip" id="heroLinkStatusBadge">
-            <i class="fa-solid fa-video"></i> Link Broadcast Ready
-          </span>
-        </div>
-        <div style="color:var(--muted); font-size:12px;" id="heroDateFormatted">
-          Thursday, 19 Nov 2026
-        </div>
-      </div>
-    </div>
-
-    <!-- 3. SESSIONS PIPELINE LIST -->
-    <div class="section-title-row">
-      <div class="section-title-lg">
-        <i class="fa-solid fa-timeline"></i>
-        Series Sessions Pipeline
-      </div>
-      <div style="font-size:12.5px; color:var(--muted);">Chronological Order</div>
-    </div>
-
-    <div class="sessions-pipeline" id="sessionsPipelineContainer">
-      <!-- Session cards rendered by JS -->
-    </div>
-
-    <!-- 4. SERIES TRANSITION NOTICE -->
-    <div class="transition-card">
-      <div class="transition-icon">
-        <i class="fa-solid fa-circle-info"></i>
-      </div>
-      <div style="flex: 1;">
-        <strong style="color:var(--cream); display:block; margin-bottom:3px;">
-          Series Lifecycle &amp; Transition Policy
-        </strong>
-        <span id="transitionNoticeText">
-          Only one webinar series is displayed live on the public website at any given time. Once all sessions of the current series conclude, you can launch the next country or citizenship series without conflicting data.
-        </span>
-      </div>
-      <div style="margin-left: 16px; flex-shrink: 0;">
-        <a href="/admin/webinar-create.html" class="btn-create-series">
-          <i class="fa-solid fa-plus"></i>
-          <span>Create Next Series</span>
-        </a>
-      </div>
-    </div>
-
-  </div>
-
-</main>
-
-<!-- ═══ SESSION CONTROLS MODAL (PHASE 3B) ═════════════════════════════ -->
-<div class="modal-backdrop" id="sessionControlModal">
-  <div class="control-modal-card">
-    <button class="modal-close-btn" onclick="closeSessionControlModal()">
-      <i class="fa-solid fa-xmark"></i>
+    <button class="btn-refresh" id="refreshBtn" onclick="loadActiveSeries()">
+      <i class="fa-solid fa-arrows-rotate" id="refreshIcon"></i>
+      Refresh
     </button>
 
-    <div class="modal-header-box">
-      <div class="modal-title-main">
-        <i class="fa-solid fa-sliders"></i>
-        <span id="modalHeaderTitle">Manage Session Controls</span>
-      </div>
-      <div class="modal-session-subtitle" id="modalSessionSubtitle">
-        Configure live links, registration status, and event lifecycle.
-      </div>
+    <button class="btn-logout" id="logoutBtn">
+      <i class="fa-solid fa-right-from-bracket"></i>
+      Sign Out
+    </button>
+  </header>
+
+  <!-- ═══ MAIN WRAP ═════════════════════════════════════════════════════ -->
+  <main class="main-wrap">
+
+    <!-- Loading Skeletons Container -->
+    <div id="loadingSkeletons">
+      <div class="skeleton-box" style="margin-bottom:24px; height:200px;"></div>
+      <div class="skeleton-box" style="margin-bottom:24px; height:180px;"></div>
+      <div class="skeleton-box" style="height:260px;"></div>
     </div>
 
-    <form id="sessionControlForm" onsubmit="saveSessionControls(event)">
-      <input type="hidden" id="ctrlSessionNo" value="">
-      <input type="hidden" id="ctrlSessionId" value="">
+    <!-- Real Content Container -->
+    <div id="contentContainer" style="display:none;">
 
-      <!-- 1. BROADCAST MEETING LINK -->
-      <div class="modal-form-group">
-        <label class="modal-label" for="ctrlJoinUrl">
-          <i class="fa-solid fa-video" style="color:var(--gold-bright); margin-right:4px"></i>
-          Broadcast Meeting Link (Zoom / Meet / Teams)
-        </label>
-        <input type="url" id="ctrlJoinUrl" class="modal-input" placeholder="https://us02web.zoom.us/j/... or https://meet.google.com/...">
-        <div style="font-size:11.5px; color:var(--muted); margin-top:5px;">
-          Paste the direct room link. Leave empty if link will be broadcast later.
-        </div>
-      </div>
+      <!-- 1. ACTIVE SERIES HERO CARD -->
+      <div class="series-hero-card">
+        <div class="series-top-row">
+          <div>
+            <div class="series-eyebrow">
+              <i class="fa-solid fa-sparkles"></i>
+              Active Public Series
+            </div>
+            <h1 class="series-title" id="seriesTitle">Dominica Pilot Series — Second Passport for Afghans</h1>
+            <div class="series-chips-row">
+              <span class="series-chip" id="chipCountry">
+                <i class="fa-solid fa-flag"></i> Dominica
+              </span>
+              <span class="series-chip" id="chipCategory">
+                <i class="fa-solid fa-passport"></i> Citizenship by Investment
+              </span>
+              <span class="series-chip" id="chipTotalSessions">
+                <i class="fa-solid fa-layer-group"></i> 3 Sessions
+              </span>
+              <span class="series-chip" id="chipSeriesId">
+                <i class="fa-solid fa-fingerprint"></i> ID: dominica-pilot
+              </span>
+            </div>
+          </div>
 
-      <!-- 2. LINK VISIBILITY -->
-      <div class="modal-form-group">
-        <label class="modal-label">Meeting Link Visibility</label>
-        <div class="segmented-control">
-          <button type="button" class="seg-btn active" id="segVisPublic" onclick="setJoinVisibility('public')">
-            <i class="fa-solid fa-globe"></i> Public Access
-          </button>
-          <button type="button" class="seg-btn" id="segVisRegistrants" onclick="setJoinVisibility('registrants')">
-            <i class="fa-solid fa-lock"></i> Registrants Only
-          </button>
-        </div>
-        <input type="hidden" id="ctrlJoinVisibility" value="public">
-      </div>
-
-      <!-- 3. REGISTRATION STATUS -->
-      <div class="modal-form-group">
-        <label class="modal-label">Attendee Registration Form</label>
-        <div class="segmented-control">
-          <button type="button" class="seg-btn active" id="segRegOpen" onclick="setRegistrationStatus(true)">
-            <i class="fa-solid fa-circle-check" style="color:var(--green)"></i> Registration Open
-          </button>
-          <button type="button" class="seg-btn" id="segRegClosed" onclick="setRegistrationStatus(false)">
-            <i class="fa-solid fa-circle-xmark" style="color:var(--red)"></i> Registration Closed
-          </button>
-        </div>
-        <input type="hidden" id="ctrlRegOpen" value="true">
-      </div>
-
-      <!-- 4. EVENT STATUS -->
-      <div class="modal-form-group">
-        <label class="modal-label" for="ctrlEventStatus">Event Lifecycle Status</label>
-        <select id="ctrlEventStatus" class="modal-select">
-          <option value="upcoming">● Upcoming (Scheduled countdown)</option>
-          <option value="live">🔴 Live Now (Active broadcast mode)</option>
-          <option value="ended">⏹ Concluded / Ended (Session held)</option>
-          <option value="postponed">⏸ Postponed (Displays postponement notice)</option>
-          <option value="cancelled">❌ Cancelled (Displays cancellation notice)</option>
-        </select>
-      </div>
-
-      <!-- 5. HERO OVERRIDE TOGGLE -->
-      <label class="hero-toggle-box" for="ctrlSetAsHero">
-        <input type="checkbox" id="ctrlSetAsHero">
-        <div class="hero-toggle-text">
-          <strong>Feature as Website Hero Banner</strong>
-          <div class="hero-toggle-sub">
-            Spotlight this session immediately in the homepage countdown and the /webinars/ top hero banner.
+          <div class="series-progress-box">
+            <div class="progress-header">
+              <span>Series Completion</span>
+              <strong style="color:var(--cream);" id="progressText">1 of 3 (33%)</strong>
+            </div>
+            <div class="progress-bar-bg">
+              <div class="progress-bar-fill" id="progressBarFill" style="width: 33%;"></div>
+            </div>
           </div>
         </div>
-      </label>
 
-      <!-- MODAL BUTTONS -->
-      <div class="modal-footer-btns">
-        <button type="button" class="btn-modal-cancel" onclick="closeSessionControlModal()">Cancel</button>
-        <button type="submit" class="btn-modal-save" id="btnSaveControls">
-          <i class="fa-solid fa-cloud-arrow-up"></i>
-          <span>Save &amp; Sync Live Website</span>
-        </button>
+        <div class="series-links-bar">
+          <div class="series-public-links">
+            <span style="font-size:12px; color:var(--muted); font-weight:600;">LIVE PUBLIC PAGES:</span>
+            <a href="/events/" target="_blank" class="link-pill">
+              <i class="fa-solid fa-arrow-up-right-from-square"></i> /events/
+            </a>
+            <a href="/webinars/" target="_blank" class="link-pill">
+              <i class="fa-solid fa-arrow-up-right-from-square"></i> /webinars/
+            </a>
+          </div>
+          <div style="font-size:12px; color:var(--gold-bright);">
+            <i class="fa-solid fa-circle-check"></i> Connected to Single Source of Truth
+          </div>
+        </div>
       </div>
-    </form>
+
+      <!-- 2. PROMOTED WEBSITE HERO SPOTLIGHT -->
+      <div class="hero-spotlight-card" id="heroSpotlightCard">
+        <div class="hero-spotlight-top">
+          <div style="display: flex; align-items: center; gap: 10px; flex-wrap: wrap;">
+            <div class="hero-spotlight-badge">
+              <i class="fa-solid fa-bullhorn"></i>
+              Promoted on Website Hero &amp; Homepage
+            </div>
+            <span id="heroSourceBadge" class="hero-source-tag auto_upcoming">
+              <i class="fa-solid fa-wand-magic-sparkles"></i> Auto-Promoted
+            </span>
+          </div>
+          <div style="display: flex; align-items: center; gap: 10px;">
+            <button class="btn-release-pin" id="btnReleasePin" style="display:none;" onclick="releaseHeroPin()">
+              <i class="fa-solid fa-wand-magic-sparkles"></i>
+              <span>Release Pin (Auto-Promote)</span>
+            </button>
+            <button class="btn-hero-manage" id="btnManageHero">
+              <i class="fa-solid fa-sliders"></i>
+              Manage Hero Controls
+            </button>
+          </div>
+        </div>
+
+        <div class="hero-session-header">
+          <div>
+            <div
+              style="font-size:12px; font-weight:700; color:var(--gold-bright); text-transform:uppercase; letter-spacing:0.06em; margin-bottom:4px;"
+              id="heroSessionEyebrow">
+              SESSION 02 · FEATURED
+            </div>
+            <div class="hero-session-title" id="heroSessionTitleEn">
+              From Decision to Passport: Steps, Documents and Source of Funds
+            </div>
+            <div class="hero-session-subtitle-fa" id="heroSessionTitleFa">
+              از تصمیم تا پاسپورت: مراحل، مدارک و منبع سرمایه
+            </div>
+          </div>
+        </div>
+
+        <!-- Multi-timezone Clock Grid -->
+        <div class="tz-clocks-grid">
+          <div class="tz-clock-item">
+            <div class="tz-label">🇦🇪 Dubai (GST)</div>
+            <div class="tz-time" id="heroTimeDubai">19:30 GST</div>
+          </div>
+          <div class="tz-clock-item">
+            <div class="tz-label">🇦🇫 Kabul (AFT)</div>
+            <div class="tz-time" id="heroTimeKabul">20:00 AFT</div>
+          </div>
+          <div class="tz-clock-item">
+            <div class="tz-label">🇹🇷 Istanbul (TRT)</div>
+            <div class="tz-time" id="heroTimeIstanbul">18:30 TRT</div>
+          </div>
+          <div class="tz-clock-item">
+            <div class="tz-label">🌐 Universal (UTC)</div>
+            <div class="tz-time" id="heroTimeUtc">15:30 UTC</div>
+          </div>
+        </div>
+
+        <div class="hero-meta-bottom">
+          <div class="hero-status-tags">
+            <span class="status-pill-badge upcoming" id="heroStatusBadge">● Upcoming Session</span>
+            <span class="series-chip" id="heroRegStatusBadge">
+              <i class="fa-solid fa-pen-to-square"></i> Registration Open
+            </span>
+            <span class="series-chip" id="heroLinkStatusBadge">
+              <i class="fa-solid fa-video"></i> Link Broadcast Ready
+            </span>
+          </div>
+          <div style="color:var(--muted); font-size:12px;" id="heroDateFormatted">
+            Thursday, 19 Nov 2026
+          </div>
+        </div>
+      </div>
+
+      <!-- 3. SESSIONS PIPELINE LIST -->
+      <div class="section-title-row">
+        <div class="section-title-lg">
+          <i class="fa-solid fa-timeline"></i>
+          Series Sessions Pipeline
+        </div>
+        <div style="font-size:12.5px; color:var(--muted);">Chronological Order</div>
+      </div>
+
+      <div class="sessions-pipeline" id="sessionsPipelineContainer">
+        <!-- Session cards rendered by JS -->
+      </div>
+
+      <!-- 4. SERIES TRANSITION NOTICE -->
+      <div class="transition-card">
+        <div class="transition-icon">
+          <i class="fa-solid fa-circle-info"></i>
+        </div>
+        <div style="flex: 1;">
+          <strong style="color:var(--cream); display:block; margin-bottom:3px;">
+            Series Lifecycle &amp; Transition Policy
+          </strong>
+          <span id="transitionNoticeText">
+            Only one webinar series is displayed live on the public website at any given time. Once all sessions of the
+            current series conclude, you can launch the next country or citizenship series without conflicting data.
+          </span>
+        </div>
+        <div style="margin-left: 16px; flex-shrink: 0;">
+          <a href="/admin/webinar-create.html" class="btn-create-series">
+            <i class="fa-solid fa-plus"></i>
+            <span>Create Next Series</span>
+          </a>
+        </div>
+      </div>
+
+    </div>
+
+  </main>
+
+  <!-- ═══ SESSION CONTROLS MODAL (PHASE 3B) ═════════════════════════════ -->
+  <div class="modal-backdrop" id="sessionControlModal">
+    <div class="control-modal-card">
+      <button class="modal-close-btn" onclick="closeSessionControlModal()">
+        <i class="fa-solid fa-xmark"></i>
+      </button>
+
+      <div class="modal-header-box">
+        <div class="modal-title-main">
+          <i class="fa-solid fa-sliders"></i>
+          <span id="modalHeaderTitle">Manage Session Controls</span>
+        </div>
+        <div class="modal-session-subtitle" id="modalSessionSubtitle">
+          Configure live links, registration status, and event lifecycle.
+        </div>
+      </div>
+
+      <form id="sessionControlForm" onsubmit="saveSessionControls(event)">
+        <input type="hidden" id="ctrlSessionNo" value="">
+        <input type="hidden" id="ctrlSessionId" value="">
+
+        <!-- 1. BROADCAST MEETING LINK -->
+        <div class="modal-form-group">
+          <label class="modal-label" for="ctrlJoinUrl">
+            <i class="fa-solid fa-video" style="color:var(--gold-bright); margin-right:4px"></i>
+            Broadcast Meeting Link (Zoom / Meet / Teams)
+          </label>
+          <input type="url" id="ctrlJoinUrl" class="modal-input"
+            placeholder="https://us02web.zoom.us/j/... or https://meet.google.com/...">
+          <div style="font-size:11.5px; color:var(--muted); margin-top:5px;">
+            Paste the direct room link. Leave empty if link will be broadcast later.
+          </div>
+        </div>
+
+        <!-- 2. LINK VISIBILITY -->
+        <div class="modal-form-group">
+          <label class="modal-label">Meeting Link Visibility</label>
+          <div class="segmented-control">
+            <button type="button" class="seg-btn active" id="segVisPublic" onclick="setJoinVisibility('public')">
+              <i class="fa-solid fa-globe"></i> Public Access
+            </button>
+            <button type="button" class="seg-btn" id="segVisRegistrants" onclick="setJoinVisibility('registrants')">
+              <i class="fa-solid fa-lock"></i> Registrants Only
+            </button>
+          </div>
+          <input type="hidden" id="ctrlJoinVisibility" value="public">
+        </div>
+
+        <!-- 3. REGISTRATION STATUS -->
+        <div class="modal-form-group">
+          <label class="modal-label">Attendee Registration Form</label>
+          <div class="segmented-control">
+            <button type="button" class="seg-btn active" id="segRegOpen" onclick="setRegistrationStatus(true)">
+              <i class="fa-solid fa-circle-check" style="color:var(--green)"></i> Registration Open
+            </button>
+            <button type="button" class="seg-btn" id="segRegClosed" onclick="setRegistrationStatus(false)">
+              <i class="fa-solid fa-circle-xmark" style="color:var(--red)"></i> Registration Closed
+            </button>
+          </div>
+          <input type="hidden" id="ctrlRegOpen" value="true">
+        </div>
+
+        <!-- 4. EVENT STATUS -->
+        <div class="modal-form-group">
+          <label class="modal-label" for="ctrlEventStatus">Event Lifecycle Status</label>
+          <select id="ctrlEventStatus" class="modal-select">
+            <option value="upcoming">● Upcoming (Scheduled countdown)</option>
+            <option value="live">🔴 Live Now (Active broadcast mode)</option>
+            <option value="ended">⏹ Concluded / Ended (Session held)</option>
+            <option value="postponed">⏸ Postponed (Displays postponement notice)</option>
+            <option value="cancelled">❌ Cancelled (Displays cancellation notice)</option>
+          </select>
+        </div>
+
+        <!-- 5. HERO OVERRIDE TOGGLE -->
+        <label class="hero-toggle-box" for="ctrlSetAsHero">
+          <input type="checkbox" id="ctrlSetAsHero">
+          <div class="hero-toggle-text">
+            <strong>Feature as Website Hero Banner</strong>
+            <div class="hero-toggle-sub">
+              Spotlight this session immediately in the homepage countdown and the /webinars/ top hero banner.
+            </div>
+          </div>
+        </label>
+
+        <!-- MODAL BUTTONS -->
+        <div class="modal-footer-btns">
+          <button type="button" class="btn-modal-cancel" onclick="closeSessionControlModal()">Cancel</button>
+          <button type="submit" class="btn-modal-save" id="btnSaveControls">
+            <i class="fa-solid fa-cloud-arrow-up"></i>
+            <span>Save &amp; Sync Live Website</span>
+          </button>
+        </div>
+      </form>
+    </div>
   </div>
-</div>
 
-<!-- ═══ TOAST CONTAINER ══════════════════════════════════════════════ -->
-<div class="toast-container" id="toastContainer"></div>
+  <!-- ═══ TOAST CONTAINER ══════════════════════════════════════════════ -->
+  <div class="toast-container" id="toastContainer"></div>
 
-<script>
-(function() {
-  'use strict';
+  <script>
+    (function () {
+      'use strict';
 
-  // ── 1. AUTH GUARD ───────────────────────────────────────────────────
-  function getSession() {
-    try {
-      return JSON.parse(sessionStorage.getItem('sgcms_auth')) ||
-             JSON.parse(localStorage.getItem('sgcms_auth'));
-    } catch (_) { return null; }
-  }
+      // ── 1. AUTH GUARD ───────────────────────────────────────────────────
+      function getSession() {
+        try {
+          return JSON.parse(sessionStorage.getItem('sgcms_auth')) ||
+            JSON.parse(localStorage.getItem('sgcms_auth'));
+        } catch (_) { return null; }
+      }
 
-  function getToken() {
-    return sessionStorage.getItem('sgcms_token') || localStorage.getItem('sgcms_token') || '';
-  }
+      function getToken() {
+        return sessionStorage.getItem('sgcms_token') || localStorage.getItem('sgcms_token') || '';
+      }
 
-  const session = getSession();
-  const token   = getToken();
+      const session = getSession();
+      const token = getToken();
 
-  if (!session || !token) {
-    window.location.replace('/admin/index.html');
-  }
+      if (!session || !token) {
+        window.location.replace('/admin/index.html');
+      }
 
-  // Logout Handler
-  document.getElementById('logoutBtn').addEventListener('click', function() {
-    fetch('/admin/api/auth.php?action=logout', { method: 'POST', credentials: 'include' }).catch(function(){});
-    ['sgcms_auth', 'sgcms_token'].forEach(function(k) {
-      sessionStorage.removeItem(k);
-      localStorage.removeItem(k);
-    });
-    window.location.replace('/admin/index.html');
-  });
-
-  // ── 2. STATE ────────────────────────────────────────────────────────
-  let currentSeriesData = null;
-
-  // ── 3. TOAST HELPER ─────────────────────────────────────────────────
-  function showToast(msg, type = 'success') {
-    const box = document.getElementById('toastContainer');
-    const toast = document.createElement('div');
-    toast.className = 'toast ' + type;
-    const icon = type === 'success' ? 'fa-circle-check' : 'fa-circle-exclamation';
-    toast.innerHTML = '<i class="fa-solid ' + icon + '"></i><span>' + msg + '</span>';
-    box.appendChild(toast);
-    setTimeout(function() {
-      toast.style.opacity = '0';
-      toast.style.transform = 'translateY(10px)';
-      toast.style.transition = 'all 0.3s ease';
-      setTimeout(function() { toast.remove(); }, 300);
-    }, 3500);
-  }
-
-  // ── 4. LOAD ACTIVE SERIES DATA ──────────────────────────────────────
-  window.loadActiveSeries = async function() {
-    const refreshIco = document.getElementById('refreshIcon');
-    if (refreshIco) refreshIco.classList.add('fa-spin');
-
-    try {
-      const res = await fetch('/admin/api/webinar-get-active.php', {
-        credentials: 'include',
-        headers: { 'X-Auth-Token': token }
+      // Logout Handler
+      document.getElementById('logoutBtn').addEventListener('click', function () {
+        fetch('/admin/api/auth.php?action=logout', { method: 'POST', credentials: 'include' }).catch(function () { });
+        ['sgcms_auth', 'sgcms_token'].forEach(function (k) {
+          sessionStorage.removeItem(k);
+          localStorage.removeItem(k);
+        });
+        window.location.replace('/admin/index.html');
       });
-      const data = await res.json();
 
-      if (res.ok && data.success) {
-        currentSeriesData = data;
-        renderSeriesDashboard(data);
-        document.getElementById('loadingSkeletons').style.display = 'none';
-        document.getElementById('contentContainer').style.display = 'block';
-      } else {
-        showToast((data && data.error) ? data.error : 'Failed to load active series.', 'error');
-      }
-    } catch (err) {
-      showToast('Network error loading webinar series data.', 'error');
-    } finally {
-      if (refreshIco) refreshIco.classList.remove('fa-spin');
-    }
-  };
+      // ── 2. STATE ────────────────────────────────────────────────────────
+      let currentSeriesData = null;
 
-  // ── 5. RENDER DASHBOARD ─────────────────────────────────────────────
-  function renderSeriesDashboard(data) {
-    const ser = data.series || {};
-    const hero = data.featured_hero_session || {};
-    const sessions = data.sessions || [];
-    const transition = data.transition || {};
-
-    // 1. Series Card Top
-    document.getElementById('seriesTitle').textContent = ser.title || 'Live Webinar Series';
-    document.getElementById('chipCountry').innerHTML = '<i class="fa-solid fa-flag"></i> ' + escapeHtml(ser.country || 'Dominica');
-    document.getElementById('chipCategory').innerHTML = '<i class="fa-solid fa-passport"></i> ' + escapeHtml(ser.category || 'Citizenship');
-    document.getElementById('chipTotalSessions').innerHTML = '<i class="fa-solid fa-layer-group"></i> ' + (ser.total_sessions || sessions.length) + ' Sessions';
-    document.getElementById('chipSeriesId').innerHTML = '<i class="fa-solid fa-fingerprint"></i> ID: ' + escapeHtml(ser.id || ser.slug || 'dominica-pilot');
-
-    const progressPercent = ser.progress_percent || 0;
-    document.getElementById('progressText').textContent = (ser.completed_sessions || 0) + ' of ' + (ser.total_sessions || sessions.length) + ' (' + progressPercent + '%)';
-    document.getElementById('progressBarFill').style.width = progressPercent + '%';
-
-    // 2. Featured Hero Spotlight
-    if (hero && hero.session_no) {
-      document.getElementById('heroSessionEyebrow').textContent = 'SESSION ' + pad2(hero.session_no) + ' · CURRENTLY PROMOTED';
-      document.getElementById('heroSessionTitleEn').textContent = hero.title_en || hero.title || 'Upcoming Session';
-      document.getElementById('heroSessionTitleFa').textContent = hero.title_fa || '';
-
-      document.getElementById('heroTimeDubai').textContent = hero.time_dubai || '19:30 GST';
-      document.getElementById('heroTimeKabul').textContent = hero.time_kabul || '20:00 AFT';
-      document.getElementById('heroTimeIstanbul').textContent = hero.time_istanbul || '18:30 TRT';
-      document.getElementById('heroTimeUtc').textContent = hero.time_utc || '15:30 UTC';
-
-      document.getElementById('heroDateFormatted').innerHTML = '<i class="fa-regular fa-calendar" style="margin-right:6px"></i> ' + escapeHtml(hero.date_formatted || 'Scheduled');
-
-      // Status Badge
-      const statusBadge = document.getElementById('heroStatusBadge');
-      statusBadge.className = 'status-pill-badge ' + (hero.event_status || 'upcoming');
-      statusBadge.textContent = '● Status: ' + (hero.event_status || 'Upcoming');
-
-      // Reg badge
-      const regBadge = document.getElementById('heroRegStatusBadge');
-      if (hero.registration_open) {
-        regBadge.innerHTML = '<i class="fa-solid fa-circle-check" style="color:var(--green)"></i> Registration Open';
-      } else {
-        regBadge.innerHTML = '<i class="fa-solid fa-lock" style="color:var(--slate)"></i> Registration Closed';
+      // ── 3. TOAST HELPER ─────────────────────────────────────────────────
+      function showToast(msg, type = 'success') {
+        const box = document.getElementById('toastContainer');
+        const toast = document.createElement('div');
+        toast.className = 'toast ' + type;
+        const icon = type === 'success' ? 'fa-circle-check' : 'fa-circle-exclamation';
+        toast.innerHTML = '<i class="fa-solid ' + icon + '"></i><span>' + msg + '</span>';
+        box.appendChild(toast);
+        setTimeout(function () {
+          toast.style.opacity = '0';
+          toast.style.transform = 'translateY(10px)';
+          toast.style.transition = 'all 0.3s ease';
+          setTimeout(function () { toast.remove(); }, 300);
+        }, 3500);
       }
 
-      // Link badge
-      const linkBadge = document.getElementById('heroLinkStatusBadge');
-      if (hero.has_join_url) {
-        linkBadge.innerHTML = '<i class="fa-solid fa-video" style="color:var(--green)"></i> Join Link Attached';
-      } else {
-        linkBadge.innerHTML = '<i class="fa-regular fa-clock" style="color:var(--amber)"></i> Link Pending Broadcast';
+      // ── 3B. BUILD DASHBOARD DATA FROM CLIENT DATA (FALLBACK / PREVIEW) ──
+      function buildDashboardFromWebinars(webinars) {
+        if (!Array.isArray(webinars) || webinars.length === 0) return null;
+
+        const first = webinars[0] || {};
+        const seriesSlug = first.series || (typeof window.SGCMS_ACTIVE_SERIES !== 'undefined' ? window.SGCMS_ACTIVE_SERIES : 'dominica-pilot');
+        const seriesCategory = first.category || 'Citizenship';
+        const seriesSubcat = first.subcategory || 'dominica';
+
+        const now = Date.now();
+        let completedCount = 0;
+        let upcomingCount = 0;
+
+        const sessions = webinars.map(function (w, idx) {
+          const sNo = parseInt(w.session_no || (idx + 1), 10);
+          const startUtc = w.start_utc || '2026-11-19T15:30:00Z';
+          const durationMin = parseInt(w.duration_min || 60, 10);
+
+          const startDate = new Date(startUtc);
+          const startMs = isNaN(startDate.getTime()) ? now : startDate.getTime();
+          const endMs = startMs + (durationMin * 60 * 1000);
+
+          let derivedStatus = (w.event_status || 'upcoming').toLowerCase();
+          if (derivedStatus !== 'cancelled' && derivedStatus !== 'postponed') {
+            if (now > endMs) {
+              derivedStatus = 'ended';
+              completedCount++;
+            } else if (now >= startMs && now <= endMs) {
+              derivedStatus = 'live';
+              upcomingCount++;
+            } else {
+              derivedStatus = 'upcoming';
+              upcomingCount++;
+            }
+          }
+
+          // Time formatters
+          let dateFormatted = 'Scheduled';
+          let timeUtc = '15:30 UTC';
+          let timeDubai = '19:30 GST';
+          let timeKabul = '20:00 AFT';
+          let timeIstanbul = '18:30 TRT';
+
+          try {
+            dateFormatted = new Intl.DateTimeFormat('en-GB', {
+              weekday: 'long', day: 'numeric', month: 'short', year: 'numeric', timeZone: 'UTC'
+            }).format(startDate);
+
+            const fmtTime = function (tz, label) {
+              return new Intl.DateTimeFormat('en-GB', {
+                hour: '2-digit', minute: '2-digit', hour12: false, timeZone: tz
+              }).format(startDate) + ' ' + label;
+            };
+
+            timeUtc = fmtTime('UTC', 'UTC');
+            timeDubai = fmtTime('Asia/Dubai', 'GST');
+            timeKabul = fmtTime('Asia/Kabul', 'AFT');
+            timeIstanbul = fmtTime('Europe/Istanbul', 'TRT');
+          } catch (_) { }
+
+          const titleEn = (w.en && w.en.title) || w.title || ('Session ' + sNo);
+          const titleFa = (w.fa && w.fa.title) || '';
+          const titleAr = (w.ar && w.ar.title) || '';
+          const titleZh = (w.zh && w.zh.title) || '';
+          const joinUrl = (w.join_url || '').trim();
+
+          return {
+            session_no: sNo,
+            id: w.id || ('WEB0' + sNo),
+            slug: w.slug || '',
+            category: w.category || seriesCategory,
+            subcategory: w.subcategory || seriesSubcat,
+            title: titleEn,
+            title_en: titleEn,
+            title_fa: titleFa,
+            title_ar: titleAr,
+            title_zh: titleZh,
+            start_utc: startUtc,
+            date_formatted: dateFormatted,
+            time_utc: timeUtc,
+            time_dubai: timeDubai,
+            time_kabul: timeKabul,
+            time_istanbul: timeIstanbul,
+            duration_min: durationMin,
+            event_status: derivedStatus,
+            registration_open: Boolean(w.registration_open !== false && derivedStatus !== 'ended'),
+            join_visibility: w.join_visibility || 'public',
+            join_url: joinUrl,
+            has_join_url: Boolean(joinUrl),
+            is_hero: false
+          };
+        });
+
+        sessions.sort(function (a, b) { return a.session_no - b.session_no; });
+
+        // Derive Hero Session
+        let hero = null;
+        let heroSource = 'auto_upcoming';
+
+        // A. Explicit hero session number
+        const activeHeroNo = typeof window.SGCMS_HERO_SESSION_NO !== 'undefined' ? window.SGCMS_HERO_SESSION_NO : null;
+        if (activeHeroNo) {
+          hero = sessions.find(function (s) { return s.session_no === Number(activeHeroNo); });
+          if (hero) heroSource = 'manual_pin';
+        }
+
+        // B. Live session
+        if (!hero) {
+          hero = sessions.find(function (s) { return s.event_status === 'live'; });
+          if (hero) heroSource = 'auto_live';
+        }
+
+        // C. First upcoming session
+        if (!hero) {
+          hero = sessions.find(function (s) { return s.event_status === 'upcoming'; });
+          if (hero) heroSource = 'auto_upcoming';
+        }
+
+        // D. Final session if all ended
+        if (!hero && sessions.length > 0) {
+          hero = sessions[sessions.length - 1];
+          heroSource = 'series_concluded';
+        }
+
+        if (hero) {
+          hero.is_hero = true;
+          hero.hero_source = heroSource;
+          hero.is_manual_pin = (heroSource === 'manual_pin');
+        }
+
+        const totalSessions = sessions.length;
+        const progressPercent = totalSessions > 0 ? Math.round((completedCount / totalSessions) * 100) : 0;
+        const isComplete = (completedCount >= totalSessions && totalSessions > 0);
+
+        const countryName = seriesSubcat.replace(/-/g, ' ').replace(/\b\w/g, function (c) { return c.toUpperCase(); });
+        const seriesTitle = countryName + ' Citizenship & Residency Series';
+
+        return {
+          success: true,
+          series: {
+            id: seriesSlug,
+            slug: seriesSlug,
+            title: seriesTitle,
+            category: seriesCategory,
+            country: countryName,
+            total_sessions: totalSessions,
+            completed_sessions: completedCount,
+            upcoming_sessions: upcomingCount,
+            progress_percent: progressPercent,
+            is_active: true,
+            is_complete: isComplete
+          },
+          featured_hero_session: hero,
+          sessions: sessions,
+          transition: {
+            is_series_complete: isComplete,
+            notice: isComplete
+              ? 'All sessions in this series have concluded. You can now launch a new series for the website.'
+              : 'Current active series has ' + upcomingCount + ' upcoming session(s). It remains live on the website until all sessions conclude.'
+          }
+        };
       }
 
-      // Hero Source Badge & Release Pin button (Phase 3D)
-      const srcBadge = document.getElementById('heroSourceBadge');
-      const relBtn = document.getElementById('btnReleasePin');
-      const hSrc = hero.hero_source || (hero.is_manual_pin ? 'manual_pin' : 'auto_upcoming');
-
-      if (srcBadge) {
-        if (hSrc === 'manual_pin') {
-          srcBadge.className = 'hero-source-tag manual_pin';
-          srcBadge.innerHTML = '<i class="fa-solid fa-thumbtack"></i> Pinned by Administrator';
-          if (relBtn) relBtn.style.display = 'inline-flex';
-        } else if (hSrc === 'auto_live') {
-          srcBadge.className = 'hero-source-tag auto_live';
-          srcBadge.innerHTML = '<i class="fa-solid fa-tower-broadcast"></i> Auto-Promoted: Live Now';
-          if (relBtn) relBtn.style.display = 'none';
-        } else if (hSrc === 'series_concluded') {
-          srcBadge.className = 'hero-source-tag series_concluded';
-          srcBadge.innerHTML = '<i class="fa-solid fa-flag-checkered"></i> Series Concluded';
-          if (relBtn) relBtn.style.display = 'none';
-        } else {
-          srcBadge.className = 'hero-source-tag auto_upcoming';
-          srcBadge.innerHTML = '<i class="fa-solid fa-wand-magic-sparkles"></i> Auto-Promoted: Earliest Upcoming';
-          if (relBtn) relBtn.style.display = 'none';
+      function renderEmptyState() {
+        const container = document.getElementById('sessionsPipelineContainer');
+        if (container) {
+          container.innerHTML =
+            '<div style="text-align:center; padding:50px 20px; background:var(--card); border:1px dashed var(--border); border-radius:16px;">' +
+            '<i class="fa-solid fa-calendar-xmark" style="font-size:42px; color:var(--gold-bright); margin-bottom:14px; display:block;"></i>' +
+            '<h3 style="color:var(--cream); margin-bottom:8px; font-size:18px;">No Active Webinar Series Found</h3>' +
+            '<p style="color:var(--muted); font-size:13px; max-width:440px; margin:0 auto 20px;">' +
+            'There is currently no active series data. Create a new series to publish it live to the website.' +
+            '</p>' +
+            '<a href="/admin/webinar-create.html" class="btn-create-series" style="display:inline-flex;">' +
+            '<i class="fa-solid fa-plus"></i>' +
+            '<span>Create New Series</span>' +
+            '</a>' +
+            '</div>';
         }
       }
 
-      // Quick Hero Manage button
-      document.getElementById('btnManageHero').onclick = function() {
-        openSessionControlModal(hero.session_no);
-      };
+      // ── 4. LOAD ACTIVE SERIES DATA ──────────────────────────────────────
+      window.loadActiveSeries = async function () {
+        const refreshIco = document.getElementById('refreshIcon');
+        if (refreshIco) refreshIco.classList.add('fa-spin');
 
-      document.getElementById('heroSpotlightCard').style.display = 'block';
-    } else {
-      document.getElementById('heroSpotlightCard').style.display = 'none';
-    }
+        let loaded = false;
 
-    // 3. Sessions Pipeline Cards
-    const container = document.getElementById('sessionsPipelineContainer');
-    container.innerHTML = sessions.map(function(s) {
-      const isHero = s.is_hero;
-      const statusCls = s.event_status || 'upcoming';
-      const statusLabel = statusCls === 'ended' ? 'Concluded' : (statusCls === 'live' ? 'Live Now' : (statusCls === 'postponed' ? 'Postponed' : (statusCls === 'cancelled' ? 'Cancelled' : 'Upcoming')));
-      const detailUrl = '/events/' + encodeURIComponent(s.slug) + '/';
+        // Strategy 1: Fetch from backend PHP API
+        try {
+          const res = await fetch('/admin/api/webinar-get-active.php', {
+            credentials: 'include',
+            headers: { 'X-Auth-Token': token }
+        headers: {
+              'Authorization': 'Bearer ' + token,
+              'X-CMS-Token': token,
+              'X-Auth-Token': token
+            }
+          });
+          const data = await res.json();
+          if (res.ok) {
+            const ct = res.headers.get('content-type') || '';
+            if (ct.includes('application/json')) {
+              const data = await res.json();
+              if (data && data.success && Array.isArray(data.sessions) && data.sessions.length > 0) {
+                currentSeriesData = data;
+                renderSeriesDashboard(data);
+                loaded = true;
+              }
+            }
+          }
+        } catch (apiErr) {
+          console.warn('Backend API /admin/api/webinar-get-active.php not reachable, using client data fallback:', apiErr);
+        }
 
-      const heroPill = isHero
-        ? '<span class="hero-tag-inline"><i class="fa-solid fa-star"></i> Featured Hero</span>'
-        : '';
+        if (res.ok && data.success) {
+          currentSeriesData = data;
+          renderSeriesDashboard(data);
+          document.getElementById('loadingSkeletons').style.display = 'none';
+          document.getElementById('contentContainer').style.display = 'block';
+        } else {
+          showToast((data && data.error) ? data.error : 'Failed to load active series.', 'error');
+          // Strategy 2: Pre-loaded window.SGCMS_WEBINARS
+          if (!loaded && typeof window.SGCMS_WEBINARS !== 'undefined' && Array.isArray(window.SGCMS_WEBINARS) && window.SGCMS_WEBINARS.length > 0) {
+            try {
+              const clientData = buildDashboardFromWebinars(window.SGCMS_WEBINARS);
+              if (clientData) {
+                currentSeriesData = clientData;
+                renderSeriesDashboard(clientData);
+                loaded = true;
+              }
+            } catch (err) {
+              console.error('Error constructing series dashboard from client data:', err);
+            }
+          } catch (err) {
+            showToast('Network error loading webinar series data.', 'error');
+          } finally {
+            if (refreshIco) refreshIco.classList.remove('fa-spin');
+          }
 
-      const regPill = s.registration_open
-        ? '<span style="color:var(--green);"><i class="fa-solid fa-circle-check" style="font-size:10px"></i> Reg Open</span>'
-        : '<span style="color:var(--slate);"><i class="fa-solid fa-lock" style="font-size:10px"></i> Reg Closed</span>';
+          // Strategy 3: Dynamic fetch from /assets/js/webinars-data.js
+          if (!loaded) {
+            try {
+              const resJs = await fetch('/assets/js/webinars-data.js?v=' + Date.now());
+              if (resJs.ok) {
+                const jsText = await resJs.text();
+                const match = jsText.match(/window\.SGCMS_WEBINARS\s*=\s*(\[[\s\S]*?\]);/);
+                if (match) {
+                  const parsed = JSON.parse(match[1]);
+                  const clientData = buildDashboardFromWebinars(parsed);
+                  if (clientData) {
+                    currentSeriesData = clientData;
+                    renderSeriesDashboard(clientData);
+                    loaded = true;
+                  }
+                }
+              }
+            } catch (e) {
+              console.warn('Fallback script fetch failed:', e);
+            }
+          }
 
-      const linkPill = s.has_join_url
-        ? '<span style="color:var(--gold-bright);"><i class="fa-solid fa-link" style="font-size:10px"></i> Link Ready</span>'
-        : '<span style="color:var(--muted2);"><i class="fa-solid fa-link-slash" style="font-size:10px"></i> No Link</span>';
+          // Always reveal dashboard and hide skeletons
+          document.getElementById('loadingSkeletons').style.display = 'none';
+          document.getElementById('contentContainer').style.display = 'block';
 
-      return '' +
-        '<div class="session-card ' + (isHero ? 'is-hero-active' : '') + '">' +
-          '<div class="session-num-badge">' +
-            '<div class="num-text">' + pad2(s.session_no) + '</div>' +
-          '</div>' +
-          '<div class="session-main-info">' +
-            '<div class="session-eyebrow-row">' +
+          if (!loaded) {
+            renderEmptyState();
+            showToast('No active series found. Click "+ Create New Series" to publish one.', 'error');
+          }
+
+          if (refreshIco) refreshIco.classList.remove('fa-spin');
+        };
+
+        // ── 5. RENDER DASHBOARD ─────────────────────────────────────────────
+        function renderSeriesDashboard(data) {
+          const ser = data.series || {};
+          const hero = data.featured_hero_session || {};
+          const sessions = data.sessions || [];
+          const transition = data.transition || {};
+
+          // 1. Series Card Top
+          document.getElementById('seriesTitle').textContent = ser.title || 'Live Webinar Series';
+          document.getElementById('chipCountry').innerHTML = '<i class="fa-solid fa-flag"></i> ' + escapeHtml(ser.country || 'Dominica');
+          document.getElementById('chipCategory').innerHTML = '<i class="fa-solid fa-passport"></i> ' + escapeHtml(ser.category || 'Citizenship');
+          document.getElementById('chipTotalSessions').innerHTML = '<i class="fa-solid fa-layer-group"></i> ' + (ser.total_sessions || sessions.length) + ' Sessions';
+          document.getElementById('chipSeriesId').innerHTML = '<i class="fa-solid fa-fingerprint"></i> ID: ' + escapeHtml(ser.id || ser.slug || 'dominica-pilot');
+
+          const progressPercent = ser.progress_percent || 0;
+          document.getElementById('progressText').textContent = (ser.completed_sessions || 0) + ' of ' + (ser.total_sessions || sessions.length) + ' (' + progressPercent + '%)';
+          document.getElementById('progressBarFill').style.width = progressPercent + '%';
+
+          // 2. Featured Hero Spotlight
+          if (hero && hero.session_no) {
+            document.getElementById('heroSessionEyebrow').textContent = 'SESSION ' + pad2(hero.session_no) + ' · CURRENTLY PROMOTED';
+            document.getElementById('heroSessionTitleEn').textContent = hero.title_en || hero.title || 'Upcoming Session';
+            document.getElementById('heroSessionTitleFa').textContent = hero.title_fa || '';
+
+            document.getElementById('heroTimeDubai').textContent = hero.time_dubai || '19:30 GST';
+            document.getElementById('heroTimeKabul').textContent = hero.time_kabul || '20:00 AFT';
+            document.getElementById('heroTimeIstanbul').textContent = hero.time_istanbul || '18:30 TRT';
+            document.getElementById('heroTimeUtc').textContent = hero.time_utc || '15:30 UTC';
+
+            document.getElementById('heroDateFormatted').innerHTML = '<i class="fa-regular fa-calendar" style="margin-right:6px"></i> ' + escapeHtml(hero.date_formatted || 'Scheduled');
+
+            // Status Badge
+            const statusBadge = document.getElementById('heroStatusBadge');
+            statusBadge.className = 'status-pill-badge ' + (hero.event_status || 'upcoming');
+            statusBadge.textContent = '● Status: ' + (hero.event_status || 'Upcoming');
+
+            // Reg badge
+            const regBadge = document.getElementById('heroRegStatusBadge');
+            if (hero.registration_open) {
+              regBadge.innerHTML = '<i class="fa-solid fa-circle-check" style="color:var(--green)"></i> Registration Open';
+            } else {
+              regBadge.innerHTML = '<i class="fa-solid fa-lock" style="color:var(--slate)"></i> Registration Closed';
+            }
+
+            // Link badge
+            const linkBadge = document.getElementById('heroLinkStatusBadge');
+            if (hero.has_join_url) {
+              linkBadge.innerHTML = '<i class="fa-solid fa-video" style="color:var(--green)"></i> Join Link Attached';
+            } else {
+              linkBadge.innerHTML = '<i class="fa-regular fa-clock" style="color:var(--amber)"></i> Link Pending Broadcast';
+            }
+
+            // Hero Source Badge & Release Pin button (Phase 3D)
+            const srcBadge = document.getElementById('heroSourceBadge');
+            const relBtn = document.getElementById('btnReleasePin');
+            const hSrc = hero.hero_source || (hero.is_manual_pin ? 'manual_pin' : 'auto_upcoming');
+
+            if (srcBadge) {
+              if (hSrc === 'manual_pin') {
+                srcBadge.className = 'hero-source-tag manual_pin';
+                srcBadge.innerHTML = '<i class="fa-solid fa-thumbtack"></i> Pinned by Administrator';
+                if (relBtn) relBtn.style.display = 'inline-flex';
+              } else if (hSrc === 'auto_live') {
+                srcBadge.className = 'hero-source-tag auto_live';
+                srcBadge.innerHTML = '<i class="fa-solid fa-tower-broadcast"></i> Auto-Promoted: Live Now';
+                if (relBtn) relBtn.style.display = 'none';
+              } else if (hSrc === 'series_concluded') {
+                srcBadge.className = 'hero-source-tag series_concluded';
+                srcBadge.innerHTML = '<i class="fa-solid fa-flag-checkered"></i> Series Concluded';
+                if (relBtn) relBtn.style.display = 'none';
+              } else {
+                srcBadge.className = 'hero-source-tag auto_upcoming';
+                srcBadge.innerHTML = '<i class="fa-solid fa-wand-magic-sparkles"></i> Auto-Promoted: Earliest Upcoming';
+                if (relBtn) relBtn.style.display = 'none';
+              }
+            }
+
+            // Quick Hero Manage button
+            document.getElementById('btnManageHero').onclick = function () {
+              openSessionControlModal(hero.session_no);
+            };
+
+            document.getElementById('heroSpotlightCard').style.display = 'block';
+          } else {
+            document.getElementById('heroSpotlightCard').style.display = 'none';
+          }
+
+          // 3. Sessions Pipeline Cards
+          const container = document.getElementById('sessionsPipelineContainer');
+          container.innerHTML = sessions.map(function (s) {
+            const isHero = s.is_hero;
+            const statusCls = s.event_status || 'upcoming';
+            const statusLabel = statusCls === 'ended' ? 'Concluded' : (statusCls === 'live' ? 'Live Now' : (statusCls === 'postponed' ? 'Postponed' : (statusCls === 'cancelled' ? 'Cancelled' : 'Upcoming')));
+            const detailUrl = '/events/' + encodeURIComponent(s.slug) + '/';
+
+            const heroPill = isHero
+              ? '<span class="hero-tag-inline"><i class="fa-solid fa-star"></i> Featured Hero</span>'
+              : '';
+
+            const regPill = s.registration_open
+              ? '<span style="color:var(--green);"><i class="fa-solid fa-circle-check" style="font-size:10px"></i> Reg Open</span>'
+              : '<span style="color:var(--slate);"><i class="fa-solid fa-lock" style="font-size:10px"></i> Reg Closed</span>';
+
+            const linkPill = s.has_join_url
+              ? '<span style="color:var(--gold-bright);"><i class="fa-solid fa-link" style="font-size:10px"></i> Link Ready</span>'
+              : '<span style="color:var(--muted2);"><i class="fa-solid fa-link-slash" style="font-size:10px"></i> No Link</span>';
+
+            return '' +
+              '<div class="session-card ' + (isHero ? 'is-hero-active' : '') + '">' +
+              '<div class="session-num-badge">' +
+              '<div class="num-text">' + pad2(s.session_no) + '</div>' +
+              '</div>' +
+              '<div class="session-main-info">' +
+              '<div class="session-eyebrow-row">' +
               heroPill +
               '<span style="font-size:11px; font-weight:700; color:var(--gold-bright); text-transform:uppercase; letter-spacing:0.06em;">Session ' + pad2(s.session_no) + '</span>' +
-            '</div>' +
-            '<div class="session-title-en">' + escapeHtml(s.title_en || s.title) + '</div>' +
-            (s.title_fa ? '<div class="session-title-fa">' + escapeHtml(s.title_fa) + '</div>' : '') +
-            '<div class="session-timing-meta">' +
+              '</div>' +
+              '<div class="session-title-en">' + escapeHtml(s.title_en || s.title) + '</div>' +
+              (s.title_fa ? '<div class="session-title-fa">' + escapeHtml(s.title_fa) + '</div>' : '') +
+              '<div class="session-timing-meta">' +
               '<span><i class="fa-regular fa-calendar" style="font-size:11px"></i> ' + escapeHtml(s.date_formatted) + '</span>' +
               '<div class="timing-dot"></div>' +
               '<span><i class="fa-regular fa-clock" style="font-size:11px"></i> ' + escapeHtml(s.time_utc) + '</span>' +
@@ -1535,166 +1941,242 @@
               regPill +
               '<div class="timing-dot"></div>' +
               linkPill +
-            '</div>' +
-          '</div>' +
-          '<div class="session-right-actions">' +
-            '<span class="status-pill-badge ' + statusCls + '">' + statusLabel + '</span>' +
-            '<div class="session-action-buttons-row">' +
+              '</div>' +
+              '</div>' +
+              '<div class="session-right-actions">' +
+              '<span class="status-pill-badge ' + statusCls + '">' + statusLabel + '</span>' +
+              '<div class="session-action-buttons-row">' +
               '<a href="' + detailUrl + '" target="_blank" class="btn-session-link" title="Open public session page">' +
-                '<i class="fa-solid fa-arrow-up-right-from-square"></i> Live Page' +
+              '<i class="fa-solid fa-arrow-up-right-from-square"></i> Live Page' +
               '</a>' +
               '<button type="button" class="btn-session-control" onclick="openSessionControlModal(' + s.session_no + ')">' +
-                '<i class="fa-solid fa-sliders"></i> Manage Controls' +
+              '<i class="fa-solid fa-sliders"></i> Manage Controls' +
               '</button>' +
-            '</div>' +
-          '</div>' +
-        '</div>';
-    }).join('');
+              '</div>' +
+              '</div>' +
+              '</div>';
+          }).join('');
 
-    // 4. Transition notice
-    if (transition.notice) {
-      document.getElementById('transitionNoticeText').textContent = transition.notice;
-    }
-  }
+          // 4. Transition notice
+          if (transition.notice) {
+            document.getElementById('transitionNoticeText').textContent = transition.notice;
+          }
+        }
 
-  // ── 6. PHASE 3B: MODAL CONTROLS ─────────────────────────────────────
-  window.openSessionControlModal = function(sessionNo) {
-    if (!currentSeriesData || !currentSeriesData.sessions) return;
-    const s = currentSeriesData.sessions.find(function(item) { return Number(item.session_no) === Number(sessionNo); });
-    if (!s) return;
+        // ── 6. PHASE 3B: MODAL CONTROLS ─────────────────────────────────────
+        window.openSessionControlModal = function (sessionNo) {
+          if (!currentSeriesData || !currentSeriesData.sessions) return;
+          const s = currentSeriesData.sessions.find(function (item) { return Number(item.session_no) === Number(sessionNo); });
+          if (!s) return;
 
-    document.getElementById('ctrlSessionNo').value = s.session_no;
-    document.getElementById('ctrlSessionId').value = s.id;
+          document.getElementById('ctrlSessionNo').value = s.session_no;
+          document.getElementById('ctrlSessionId').value = s.id;
 
-    document.getElementById('modalHeaderTitle').textContent = 'Manage Session ' + pad2(s.session_no) + ' Controls';
-    document.getElementById('modalSessionSubtitle').textContent = (s.title_en || s.title) + ' (' + s.date_formatted + ')';
+          document.getElementById('modalHeaderTitle').textContent = 'Manage Session ' + pad2(s.session_no) + ' Controls';
+          document.getElementById('modalSessionSubtitle').textContent = (s.title_en || s.title) + ' (' + s.date_formatted + ')';
 
-    document.getElementById('ctrlJoinUrl').value = s.join_url || '';
-    setJoinVisibility(s.join_visibility || 'public');
-    setRegistrationStatus(Boolean(s.registration_open));
+          document.getElementById('ctrlJoinUrl').value = s.join_url || '';
+          setJoinVisibility(s.join_visibility || 'public');
+          setRegistrationStatus(Boolean(s.registration_open));
 
-    document.getElementById('ctrlEventStatus').value = s.event_status || 'upcoming';
-    document.getElementById('ctrlSetAsHero').checked = Boolean(s.is_hero);
+          document.getElementById('ctrlEventStatus').value = s.event_status || 'upcoming';
+          document.getElementById('ctrlSetAsHero').checked = Boolean(s.is_hero);
 
-    document.getElementById('sessionControlModal').classList.add('show');
-  };
+          document.getElementById('sessionControlModal').classList.add('show');
+        };
 
-  window.closeSessionControlModal = function() {
-    document.getElementById('sessionControlModal').classList.remove('show');
-  };
+        window.closeSessionControlModal = function () {
+          document.getElementById('sessionControlModal').classList.remove('show');
+        };
 
-  window.setJoinVisibility = function(val) {
-    document.getElementById('ctrlJoinVisibility').value = val;
-    document.getElementById('segVisPublic').classList.toggle('active', val === 'public');
-    document.getElementById('segVisRegistrants').classList.toggle('active', val === 'registrants');
-  };
+        window.setJoinVisibility = function (val) {
+          document.getElementById('ctrlJoinVisibility').value = val;
+          document.getElementById('segVisPublic').classList.toggle('active', val === 'public');
+          document.getElementById('segVisRegistrants').classList.toggle('active', val === 'registrants');
+        };
 
-  window.setRegistrationStatus = function(val) {
-    document.getElementById('ctrlRegOpen').value = String(val);
-    document.getElementById('segRegOpen').classList.toggle('active', val === true);
-    document.getElementById('segRegClosed').classList.toggle('active', val === false);
-  };
+        window.setRegistrationStatus = function (val) {
+          document.getElementById('ctrlRegOpen').value = String(val);
+          document.getElementById('segRegOpen').classList.toggle('active', val === true);
+          document.getElementById('segRegClosed').classList.toggle('active', val === false);
+        };
 
-  window.saveSessionControls = async function(e) {
-    e.preventDefault();
-    const btn = document.getElementById('btnSaveControls');
-    btn.disabled = true;
-    btn.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i> <span>Saving &amp; Syncing…</span>';
+        window.saveSessionControls = async function (e) {
+          e.preventDefault();
+          const btn = document.getElementById('btnSaveControls');
+          btn.disabled = true;
+          btn.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i> <span>Saving &amp; Syncing…</span>';
 
-    const sessionNo = parseInt(document.getElementById('ctrlSessionNo').value, 10);
-    const sessionId = document.getElementById('ctrlSessionId').value;
-    const joinUrl = document.getElementById('ctrlJoinUrl').value.trim();
-    const joinVisibility = document.getElementById('ctrlJoinVisibility').value;
-    const regOpen = document.getElementById('ctrlRegOpen').value === 'true';
-    const eventStatus = document.getElementById('ctrlEventStatus').value;
-    const setAsHero = document.getElementById('ctrlSetAsHero').checked;
+          const sessionNo = parseInt(document.getElementById('ctrlSessionNo').value, 10);
+          const sessionId = document.getElementById('ctrlSessionId').value;
+          const joinUrl = document.getElementById('ctrlJoinUrl').value.trim();
+          const joinVisibility = document.getElementById('ctrlJoinVisibility').value;
+          const regOpen = document.getElementById('ctrlRegOpen').value === 'true';
+          const eventStatus = document.getElementById('ctrlEventStatus').value;
+          const setAsHero = document.getElementById('ctrlSetAsHero').checked;
 
-    const payload = {
-      session_no: sessionNo,
-      id: sessionId,
-      join_url: joinUrl,
-      join_visibility: joinVisibility,
-      registration_open: regOpen,
-      event_status: eventStatus,
-      set_as_hero: setAsHero
-    };
+          const payload = {
+            session_no: sessionNo,
+            id: sessionId,
+            join_url: joinUrl,
+            join_visibility: joinVisibility,
+            registration_open: regOpen,
+            event_status: eventStatus,
+            set_as_hero: setAsHero
+          };
 
-    try {
-      const res = await fetch('/admin/api/webinar-update-session.php', {
-        method: 'POST',
-        credentials: 'include',
-        headers: {
-          'Content-Type': 'application/json',
-          'X-Auth-Token': token
-        },
-        body: JSON.stringify(payload)
-      });
-      const data = await res.json();
+          try {
+            const res = await fetch('/admin/api/webinar-update-session.php', {
+              method: 'POST',
+              credentials: 'include',
+              headers: {
+                'Content-Type': 'application/json',
+                'Authorization': 'Bearer ' + token,
+                'X-CMS-Token': token,
+                'X-Auth-Token': token
+              },
+              body: JSON.stringify(payload)
+            });
+            const data = await res.json();
+            let data = null;
+            try { data = await res.json(); } catch (_) { }
 
-      if (res.ok && data.success) {
-        showToast('Session ' + pad2(sessionNo) + ' updated & live website synchronized!', 'success');
-        closeSessionControlModal();
-        await loadActiveSeries();
-      } else {
-        showToast((data && data.error) ? data.error : 'Failed to update session controls.', 'error');
-      }
-    } catch (err) {
-      showToast('Network error while saving session controls.', 'error');
-    } finally {
-      btn.disabled = false;
-      btn.innerHTML = '<i class="fa-solid fa-cloud-arrow-up"></i> <span>Save &amp; Sync Live Website</span>';
-    }
-  };
+            if (res.ok && data.success) {
+              if (res.ok && data && data.success) {
+                showToast('Session ' + pad2(sessionNo) + ' updated & live website synchronized!', 'success');
+                closeSessionControlModal();
+                await loadActiveSeries();
+              } else {
+                // Fallback for preview mode: update in-memory currentSeriesData
+                if (currentSeriesData && currentSeriesData.sessions) {
+                  const s = currentSeriesData.sessions.find(function (item) { return Number(item.session_no) === Number(sessionNo); });
+                  if (s) {
+                    s.join_url = joinUrl;
+                    s.has_join_url = Boolean(joinUrl);
+                    s.join_visibility = joinVisibility;
+                    s.registration_open = regOpen;
+                    s.event_status = eventStatus;
+                    if (setAsHero) {
+                      currentSeriesData.sessions.forEach(function (item) { item.is_hero = false; });
+                      s.is_hero = true;
+                      currentSeriesData.featured_hero_session = s;
+                    }
+                    renderSeriesDashboard(currentSeriesData);
+                    closeSessionControlModal();
+                    showToast('Session updated locally (Preview Mode). Sync to live server requires PHP hosting.', 'success');
+                    return;
+                  }
+                }
+                showToast((data && data.error) ? data.error : 'Failed to update session controls.', 'error');
+              }
+            } catch (err) {
+              // Fallback for preview mode network error
+              if (currentSeriesData && currentSeriesData.sessions) {
+                const s = currentSeriesData.sessions.find(function (item) { return Number(item.session_no) === Number(sessionNo); });
+                if (s) {
+                  s.join_url = joinUrl;
+                  s.has_join_url = Boolean(joinUrl);
+                  s.join_visibility = joinVisibility;
+                  s.registration_open = regOpen;
+                  s.event_status = eventStatus;
+                  if (setAsHero) {
+                    currentSeriesData.sessions.forEach(function (item) { item.is_hero = false; });
+                    s.is_hero = true;
+                    currentSeriesData.featured_hero_session = s;
+                  }
+                  renderSeriesDashboard(currentSeriesData);
+                  closeSessionControlModal();
+                  showToast('Session updated locally (Preview Mode). Sync to live server requires PHP hosting.', 'success');
+                  return;
+                }
+              }
+              showToast('Network error while saving session controls.', 'error');
+            } finally {
+              btn.disabled = false;
+              btn.innerHTML = '<i class="fa-solid fa-cloud-arrow-up"></i> <span>Save &amp; Sync Live Website</span>';
+            }
+          };
 
-  // ── 6B. PHASE 3D: RELEASE HERO PIN ────────────────────────────────
-  window.releaseHeroPin = async function() {
-    if (!currentSeriesData || !currentSeriesData.featured_hero_session) return;
-    const heroNo = currentSeriesData.featured_hero_session.session_no;
-    showToast('Releasing manual pin and restoring automatic promotion…');
-    try {
-      const res = await fetch('/admin/api/webinar-update-session.php', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-          'Authorization': 'Bearer ' + token
-        },
-        body: JSON.stringify({
-          session_no: heroNo,
-          set_as_hero: false
-        })
-      });
-      const data = await res.json();
-      if (data.success) {
-        showToast('Manual pin released. Automatic chronological promotion restored!', 'success');
-        await loadActiveSeries();
-      } else {
-        showToast((data && data.error) ? data.error : 'Failed to release pin.', 'error');
-      }
-    } catch (e) {
-      showToast('Network error while releasing pin.', 'error');
-    }
-  };
+          // ── 6B. PHASE 3D: RELEASE HERO PIN ────────────────────────────────
+          window.releaseHeroPin = async function () {
+            if (!currentSeriesData || !currentSeriesData.featured_hero_session) return;
+            const heroNo = currentSeriesData.featured_hero_session.session_no;
+            showToast('Releasing manual pin and restoring automatic promotion…');
+            try {
+              const res = await fetch('/admin/api/webinar-update-session.php', {
+                method: 'POST',
+                headers: {
+                  'Content-Type': 'application/json',
+                  'Authorization': 'Bearer ' + token
+          'Authorization': 'Bearer ' + token,
+                  'X-CMS-Token': token,
+                  'X-Auth-Token': token
+                },
+                body: JSON.stringify({
+                  session_no: heroNo,
+                  set_as_hero: false
+                })
+              });
+              const data = await res.json();
+              if (data.success) {
+                let data = null;
+                try { data = await res.json(); } catch (_) { }
+                if (data && data.success) {
+                  showToast('Manual pin released. Automatic chronological promotion restored!', 'success');
+                  await loadActiveSeries();
+                } else {
+                  if (currentSeriesData && currentSeriesData.sessions) {
+                    currentSeriesData.sessions.forEach(function (item) { item.is_hero = false; });
+                    const upcoming = currentSeriesData.sessions.find(function (item) { return item.event_status === 'upcoming'; }) || currentSeriesData.sessions[0];
+                    if (upcoming) {
+                      upcoming.is_hero = true;
+                      upcoming.hero_source = 'auto_upcoming';
+                      currentSeriesData.featured_hero_session = upcoming;
+                    }
+                    renderSeriesDashboard(currentSeriesData);
+                    showToast('Manual pin released locally (Preview Mode).', 'success');
+                    return;
+                  }
+                  showToast((data && data.error) ? data.error : 'Failed to release pin.', 'error');
+                }
+              } catch (e) {
+                if (currentSeriesData && currentSeriesData.sessions) {
+                  currentSeriesData.sessions.forEach(function (item) { item.is_hero = false; });
+                  const upcoming = currentSeriesData.sessions.find(function (item) { return item.event_status === 'upcoming'; }) || currentSeriesData.sessions[0];
+                  if (upcoming) {
+                    upcoming.is_hero = true;
+                    upcoming.hero_source = 'auto_upcoming';
+                    currentSeriesData.featured_hero_session = upcoming;
+                  }
+                  renderSeriesDashboard(currentSeriesData);
+                  showToast('Manual pin released locally (Preview Mode).', 'success');
+                  return;
+                }
+                showToast('Network error while releasing pin.', 'error');
+              }
+            };
 
-  // ── 7. UTILITIES ───────────────────────────────────────────────────
-  function pad2(num) {
-    return String(num).padStart(2, '0');
-  }
+            // ── 7. UTILITIES ───────────────────────────────────────────────────
+            function pad2(num) {
+              return String(num).padStart(2, '0');
+            }
 
-  function escapeHtml(str) {
-    if (!str) return '';
-    return String(str)
-      .replace(/&/g, '&amp;')
-      .replace(/</g, '&lt;')
-      .replace(/>/g, '&gt;')
-      .replace(/"/g, '&quot;')
-      .replace(/'/g, '&#39;');
-  }
+            function escapeHtml(str) {
+              if (!str) return '';
+              return String(str)
+                .replace(/&/g, '&amp;')
+                .replace(/</g, '&lt;')
+                .replace(/>/g, '&gt;')
+                .replace(/"/g, '&quot;')
+                .replace(/'/g, '&#39;');
+            }
 
-  // ── INIT ────────────────────────────────────────────────────────────
-  loadActiveSeries();
+            // ── INIT ────────────────────────────────────────────────────────────
+            loadActiveSeries();
 
-})();
-</script>
+          }) ();
+  </script>
 
 </body>
+
 </html>

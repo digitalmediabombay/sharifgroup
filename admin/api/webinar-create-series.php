@@ -274,6 +274,7 @@ foreach ($sessionsInput as $idx => $sInput) {
         'join_url'              => $joinUrl,
         'language_code'         => $primaryLang,
         'utm_campaign'          => $seriesId,
+        'series_tag'            => trim($seriesInput['series_tag'] ?? ('Series ' . str_pad((string)$sNo, 2, '0', STR_PAD_LEFT) . ' · ' . ucfirst($subcategory))),
         'status_en'             => 'published',
         'status_fa'             => 'published',
         'status_ar'             => 'published',
@@ -285,7 +286,8 @@ foreach ($sessionsInput as $idx => $sInput) {
             'body'              => $bodyParas,
             'outcomes'          => $outcomes,
             'speakers'          => $defaultSpeakersFa,
-            'agenda'            => $defaultAgendaFa
+            'agenda'            => $defaultAgendaFa,
+            'series_tag'        => trim($seriesInput['series_tag'] ?? ('Series ' . str_pad((string)$sNo, 2, '0', STR_PAD_LEFT) . ' · ' . ucfirst($subcategory))),
         ],
         'en' => [
             'title'             => $titleEn,
@@ -293,7 +295,8 @@ foreach ($sessionsInput as $idx => $sInput) {
             'body'              => $bodyEnParas,
             'outcomes'          => $outcomesEn,
             'speakers'          => $defaultSpeakers,
-            'agenda'            => $defaultAgenda
+            'agenda'            => $defaultAgenda,
+            'series_tag'        => trim($seriesInput['series_tag'] ?? ('Series ' . str_pad((string)$sNo, 2, '0', STR_PAD_LEFT) . ' · ' . ucfirst($subcategory))),
         ],
         'ar' => [
             'title'             => $titleEn,
@@ -301,7 +304,8 @@ foreach ($sessionsInput as $idx => $sInput) {
             'body'              => $bodyEnParas,
             'outcomes'          => $outcomesEn,
             'speakers'          => $defaultSpeakers,
-            'agenda'            => $defaultAgenda
+            'agenda'            => $defaultAgenda,
+            'series_tag'        => trim($seriesInput['series_tag'] ?? ('Series ' . str_pad((string)$sNo, 2, '0', STR_PAD_LEFT) . ' · ' . ucfirst($subcategory))),
         ],
         'zh' => [
             'title'             => $titleEn,
@@ -309,7 +313,8 @@ foreach ($sessionsInput as $idx => $sInput) {
             'body'              => $bodyEnParas,
             'outcomes'          => $outcomesEn,
             'speakers'          => $defaultSpeakers,
-            'agenda'            => $defaultAgenda
+            'agenda'            => $defaultAgenda,
+            'series_tag'        => trim($seriesInput['series_tag'] ?? ('Series ' . str_pad((string)$sNo, 2, '0', STR_PAD_LEFT) . ' · ' . ucfirst($subcategory))),
         ]
     ];
 
@@ -400,6 +405,33 @@ if ($action === 'activate') {
         }
         $archivePath = $archiveDir . '/series_' . $oldSeriesSlug . '_' . date('Ymd_His') . '.json';
         @file_put_contents($archivePath, $rawCurrent, LOCK_EX);
+
+        // A2. Delete old session slug directories so orphaned URLs don't persist
+        $oldSessions = [];
+        if (isset($decCurrent['sgcms_webinars']) && is_array($decCurrent['sgcms_webinars'])) {
+            $oldSessions = $decCurrent['sgcms_webinars'];
+        } elseif (is_array($decCurrent)) {
+            $oldSessions = $decCurrent;
+        }
+        // Build a lookup of new slugs so we don't delete a reused slug
+        $newSlugs = array_column($processedSessions, 'slug');
+        foreach ($oldSessions as $oldS) {
+            $oldSlug = preg_replace('/[^a-z0-9_-]/i', '', $oldS['slug'] ?? '');
+            if (empty($oldSlug) || in_array($oldSlug, $newSlugs, true)) continue;
+            // Delete across all language prefixes for both /events/ and /webinars/ paths
+            foreach (['events', 'fa/events', 'ar/events', 'zh/events', 'webinars', 'fa/webinars', 'ar/webinars', 'zh/webinars'] as $base) {
+                $oldDir = $rootDir . '/' . $base . '/' . $oldSlug;
+                if (is_dir($oldDir)) {
+                    $oldIndex = $oldDir . '/index.html';
+                    if (file_exists($oldIndex)) @unlink($oldIndex);
+                    // Remove any other stray files
+                    foreach ((array)glob($oldDir . '/*') as $f) {
+                        if (is_file($f)) @unlink($f);
+                    }
+                    @rmdir($oldDir);
+                }
+            }
+        }
     }
 
     // B. Write new series to data/sgcms_webinars.json

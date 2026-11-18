@@ -139,6 +139,8 @@ if (empty($siteLanguage)) {
         default:   $siteLanguage = 'English'; break;
     }
 }
+$startUtc    = trim($data['start_utc'] ?? '');
+$durationMin = max(15, (int)($data['duration_min'] ?? 65));
 $nowUtc      = gmdate('Y-m-d H:i:s') . ' UTC';
 
 $emailDispatched = false;
@@ -147,7 +149,8 @@ $emailError = null;
 // 1. Dispatch Automated Confirmation Email to Attendee (if email provided)
 if (!empty($email) && filter_var($email, FILTER_VALIDATE_EMAIL)) {
     $subject = getEmailSubject($lang);
-    $htmlBody = getEmailTemplate($fullName, $lang, $webinarTitle);
+    $emailSchedule = formatEmailSchedule($startUtc, $durationMin, $lang);
+    $htmlBody = getEmailTemplate($fullName, $lang, $webinarTitle, $emailSchedule['info']);
     
     // Headers for maximum deliverability and anti-spam compliance
     $headers = [];
@@ -251,7 +254,9 @@ if (!empty($CRM_WEBHOOK) && empty($data['crm_synced'])) {
             'page_path' => $page,
             'registered_at_utc' => gmdate('c'),
             'source' => $source,
-            'page' => $page
+            'page' => $page,
+            'start_utc'   => $startUtc,
+            'duration_min' => $durationMin,
         ]);
 
         $ch = curl_init($CRM_WEBHOOK);
@@ -283,6 +288,42 @@ echo json_encode([
 ]);
 exit;
 
+// ── Dynamic Schedule Formatter ────────────────────────────────────────────────
+function formatEmailSchedule($startUtc, $durationMin, $lang) {
+    $durationMin = max(15, (int)$durationMin);
+    if (empty($startUtc)) {
+        return ['info' => ''];
+    }
+    try {
+        $dt = new DateTime($startUtc, new DateTimeZone('UTC'));
+    } catch (Exception $e) {
+        return ['info' => ''];
+    }
+    $dtKabul = clone $dt; $dtKabul->modify('+270 minutes'); // UTC+4:30
+    $dtDubai = clone $dt; $dtDubai->modify('+240 minutes'); // UTC+4:00
+    $dayEn    = $dt->format('l');
+    $kabulTime = $dtKabul->format('H:i');
+    $dubaiTime = $dtDubai->format('H:i');
+    $kabulDate = $dtKabul->format('j F Y');
+    $dubaiDate = $dtDubai->format('j F Y');
+    $dayNames = [
+        'fa' => ['Sunday'=>'یک‌شنبه','Monday'=>'دوشنبه','Tuesday'=>'سه‌شنبه','Wednesday'=>'چهارشنبه','Thursday'=>'پنج‌شنبه','Friday'=>'جمعه','Saturday'=>'شنبه'],
+        'ar' => ['Sunday'=>'الأحد','Monday'=>'الإثنين','Tuesday'=>'الثلاثاء','Wednesday'=>'الأربعاء','Thursday'=>'الخميس','Friday'=>'الجمعة','Saturday'=>'السبت'],
+    ];
+    switch ($lang) {
+        case 'fa':
+            $dayLabel = $dayNames['fa'][$dayEn] ?? $dayEn;
+            return ['info' => "• به وقت کابل: {$dayLabel} {$kabulDate} / ساعت {$kabulTime}<br/>• به وقت دبی: {$dayLabel} {$dubaiDate} / ساعت {$dubaiTime}<br/>• مدت زمان: {$durationMin} دقیقه (همراه با پرسش و پاسخ زنده)"];
+        case 'ar':
+            $dayLabel = $dayNames['ar'][$dayEn] ?? $dayEn;
+            return ['info' => "• بتوقيت كابول: {$dayLabel} {$kabulDate} / {$kabulTime}<br/>• بتوقيت دبي: {$dayLabel} {$dubaiDate} / {$dubaiTime}<br/>• المدة: {$durationMin} دقيقة (تشمل الأسئلة والأجوبة)"];
+        case 'zh':
+            return ['info' => "• 喀布尔时间：{$kabulDate} {$kabulTime}<br/>• 迪拜时间：{$dubaiDate} {$dubaiTime}<br/>• 时长：{$durationMin}分钟（含现场问答环节）"];
+        default:
+            return ['info' => "• Kabul Time: {$kabulDate} {$kabulTime}<br/>• Dubai Time: {$dubaiDate} {$dubaiTime}<br/>• Duration: {$durationMin} minutes (including live Q&amp;A)"];
+    }
+}
+
 // ── Email Subject Helper ──────────────────────────────────────────────────────
 function getEmailSubject($lang) {
     switch ($lang) {
@@ -298,7 +339,7 @@ function getEmailSubject($lang) {
 }
 
 // ── Multilingual Email HTML Template Helper ───────────────────────────────────
-function getEmailTemplate($name, $lang, $webinarTitle = '') {
+function getEmailTemplate($name, $lang, $webinarTitle = '', $scheduleInfoDynamic = '') {
     $isRtl = in_array($lang, ['fa', 'ar']);
     $dir = $isRtl ? 'rtl' : 'ltr';
     $align = $isRtl ? 'right' : 'left';
@@ -307,7 +348,8 @@ function getEmailTemplate($name, $lang, $webinarTitle = '') {
     $greeting = 'Dear ' . htmlspecialchars($name) . ',';
     $bodyText = 'Thank you for registering for our exclusive online session. The direct link to join the session will be active on the event page and sent to your email / WhatsApp before the event begins.';
     $scheduleTitle = 'Session Details:';
-    $scheduleInfo = '• Kabul Time: Thursday 29 October, 20:00<br/>• Dubai Time: Thursday 29 October, 19:30<br/>• Duration: 65 minutes (including live Q&A)';
+    $scheduleInfo = !empty($scheduleInfoDynamic) ? $scheduleInfoDynamic
+        : '• Kabul Time: Thursday 29 October, 20:00<br/>• Dubai Time: Thursday 29 October, 19:30<br/>• Duration: 65 minutes (including live Q&amp;A)';
     $noteText = 'Note: You can access the live session directly via any modern browser on mobile or desktop without installing additional software.';
     $btnText = 'Visit Event Page';
     $btnUrl = 'https://sharifgroup.ae/events/';
@@ -315,9 +357,10 @@ function getEmailTemplate($name, $lang, $webinarTitle = '') {
     if ($lang === 'fa') {
         $heading = 'ثبت‌نام شما با موفقیت تأیید شد';
         $greeting = 'سلام ' . htmlspecialchars($name) . ' گرامی،';
-        $bodyText = 'از ثبت‌نام شما در وبینار تخصصی «پاسپورت دوم برای افغان‌ها: آشنایی با برنامه دومینیکا» سپاسگزاریم. لینک ورود به اتاق وبینار و یادآوری‌ها قبل از شروع جلسه برای شما ارسال خواهد شد.';
+        $bodyText = 'از ثبت‌نام شما در این وبینار تخصصی سپاسگزاریم. لینک ورود به اتاق وبینار و یادآوری‌ها قبل از شروع جلسه برای شما ارسال خواهد شد.';
         $scheduleTitle = 'زمان برگزاری جلسه:';
-        $scheduleInfo = '• به وقت کابل: پنجشنبه ۸ عقرب / ساعت ۲۰:۰۰<br/>• به وقت دبی: پنجشنبه ۲۹ اکتبر / ساعت ۱۹:۳۰<br/>• مدت زمان: ۶۵ دقیقه (همراه با پرسش و پاسخ زنده)';
+        $scheduleInfo = !empty($scheduleInfoDynamic) ? $scheduleInfoDynamic
+            : '• به وقت کابل: پنجشنبه ۸ عقرب / ساعت ۲۰:۰۰<br/>• به وقت دبی: پنجشنبه ۲۹ اکتبر / ساعت ۱۹:۳۰<br/>• مدت زمان: ۶۵ دقیقه (همراه با پرسش و پاسخ زنده)';
         $noteText = 'نکته: ورود به وبینار مستقیماً از طریق مرورگر تلفن همراه یا کامپیوتر امکان‌پذیر است و نیاز به نصب هیچ‌گونه نرم‌افزاری ندارد.';
         $btnText = 'مشاهده صفحه رویداد';
         $btnUrl = 'https://sharifgroup.ae/fa/events/';
@@ -326,7 +369,8 @@ function getEmailTemplate($name, $lang, $webinarTitle = '') {
         $greeting = 'عزيزنا ' . htmlspecialchars($name) . '،';
         $bodyText = 'نشكركم على التسجيل في فعاليتنا المباشرة. سيتم إرسال رابط الدخول المباشر والتذكيرات عبر البريد الإلكتروني والواتساب قبل موعد الجلسة.';
         $scheduleTitle = 'تفاصيل الجلسة:';
-        $scheduleInfo = '• بتوقيت دبي: الخميس ۲۹ أكتوبر / الساعة ۱۹:۳۰<br/>• بتوقيت كابول: الخميس ۲۹ أكتوبر / الساعة ۲۰:۰۰<br/>• المدة: ۶۵ دقيقة (تشمل فقرة الأسئلة والأجوبة)';
+        $scheduleInfo = !empty($scheduleInfoDynamic) ? $scheduleInfoDynamic
+            : '• بتوقيت دبي: الخميس ۲۹ أكتوبر / الساعة ۱۹:۳۰<br/>• بتوقيت كابول: الخميس ۲۹ أكتوبر / الساعة ۲۰:۰۰<br/>• المدة: ۶۵ دقيقة (تشمل فقرة الأسئلة والأجوبة)';
         $noteText = 'ملاحظة: يمكنك الانضمام مباشرة من خلال متصفح هاتفك المحمول أو الكمبيوتر دون الحاجة إلى تثبيت أي برامج إضافية.';
         $btnText = 'عرض صفحة الفعاليات';
         $btnUrl = 'https://sharifgroup.ae/ar/events/';
@@ -335,7 +379,8 @@ function getEmailTemplate($name, $lang, $webinarTitle = '') {
         $greeting = '尊敬的 ' . htmlspecialchars($name) . '，';
         $bodyText = '感谢您报名参加盛睿集团（Sharif Group）的专题线上讲座。直播间直达链接将在讲座开始前通过邮件与短信/WhatsApp发送至您的联系方式。';
         $scheduleTitle = '讲座安排：';
-        $scheduleInfo = '• 迪拜时间：10月29日 星期四 19:30<br/>• 喀布尔时间：10月29日 星期四 20:00<br/>• 时长：65分钟（含现场问答环节）';
+        $scheduleInfo = !empty($scheduleInfoDynamic) ? $scheduleInfoDynamic
+            : '• 迪拜时间：10月29日 星期四 19:30<br/>• 喀布尔时间：10月29日 星期四 20:00<br/>• 时长：65分钟（含现场问答环节）';
         $noteText = '提示：您可直接使用手机或电脑浏览器进入直播，无需额外下载安装任何第三方软件。';
         $btnText = '访问讲座页面';
         $btnUrl = 'https://sharifgroup.ae/zh/events/';
