@@ -1206,15 +1206,36 @@
     document.getElementById('autosaveText').textContent = 'All changes saved';
   }
 
+  // ── SAFE LOCAL STORAGE DRAFT HELPER ────────────────────────────────
+  function safeSaveDraft(payload) {
+    try {
+      localStorage.setItem('sgcms_blog_draft_state', JSON.stringify(payload));
+    } catch (e) {
+      // If quota exceeded (usually due to huge base64 images), strip heavy media
+      try {
+        const lean = JSON.parse(JSON.stringify(payload));
+        if (lean.cover_image && lean.cover_image.startsWith('data:')) {
+          lean.cover_image = '';
+        }
+        if (lean.data && lean.data.cover_image && lean.data.cover_image.startsWith('data:')) {
+          lean.data.cover_image = '';
+        }
+        localStorage.setItem('sgcms_blog_draft_state', JSON.stringify(lean));
+      } catch (err2) {
+        console.warn('Browser storage quota reached; article kept in live memory only.', err2);
+      }
+    }
+  }
+
   // Debounced local draft backup
   setInterval(function() {
     if (!isDirty) return;
     try {
       syncCurrentFieldsToState();
-      localStorage.setItem('sgcms_blog_draft_state', JSON.stringify({
+      safeSaveDraft({
         timestamp: Date.now(),
         data: blogState
-      }));
+      });
     } catch (_) {}
   }, 2500);
 
@@ -1727,7 +1748,7 @@
       });
 
       if (res.status === 405) {
-        localStorage.setItem('sgcms_blog_draft_state', JSON.stringify(payload));
+        safeSaveDraft(payload);
         showToast('Draft saved in browser (Preview Mode)!', 'success');
         markSaved();
         return;
@@ -1741,12 +1762,12 @@
         localStorage.removeItem('sgcms_blog_draft_state');
         markSaved();
       } else {
-        localStorage.setItem('sgcms_blog_draft_state', JSON.stringify(payload));
+        safeSaveDraft(payload);
         showToast('Draft saved locally in browser.', 'success');
         markSaved();
       }
     } catch (err) {
-      localStorage.setItem('sgcms_blog_draft_state', JSON.stringify(payload));
+      safeSaveDraft(payload);
       showToast('Draft saved locally in browser (Preview Mode)!', 'success');
       markSaved();
     }
@@ -1790,13 +1811,13 @@
       });
 
       if (res.status === 405) {
-        localStorage.setItem('sgcms_blog_draft_state', JSON.stringify(payload));
+        safeSaveDraft(payload);
         closePublishModal();
-        showToast('Article saved in preview mode (Publish requires PHP server)!', 'success');
+        showToast('Article drafted! (Full static generation & publishing requires cPanel PHP hosting)', 'success');
         document.getElementById('headerStatusBadge').className = 'header-badge published';
-        document.getElementById('headerStatusBadge').textContent = 'Published (Local)';
+        document.getElementById('headerStatusBadge').textContent = 'Draft (Preview)';
         document.getElementById('footerStatusBadge').className = 'header-badge published';
-        document.getElementById('footerStatusBadge').textContent = 'Published (Local)';
+        document.getElementById('footerStatusBadge').textContent = 'Draft (Preview)';
         markSaved();
         return;
       }
@@ -1818,10 +1839,12 @@
           window.location.href = '/admin/blogs.html';
         }, 1200);
       } else {
-        showToast((data && data.error) ? data.error : 'Failed to publish article.', 'error');
+        safeSaveDraft(payload);
+        showToast((data && data.error) ? data.error : 'Saved locally. Full publish requires cPanel PHP.', 'warning');
+        closePublishModal();
       }
     } catch (err) {
-      localStorage.setItem('sgcms_blog_draft_state', JSON.stringify(payload));
+      safeSaveDraft(payload);
       closePublishModal();
       showToast('Article saved locally in preview mode!', 'success');
       markSaved();
