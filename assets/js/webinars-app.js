@@ -64,8 +64,11 @@
   };
   const K = { lang: 'sgw.lang', demo: 'sgw.demo', edits: 'sgw.edits', regs: 'sgw.registrations', last: 'sgw.last' };
 
-  /* ---------- language (Locked to English for initial phase) ---------- */
-  let lang = 'en';
+  /* ---------- language ---------- */
+  const pathParts = window.location.pathname.replace(/^\/+/, '').split('/');
+  const pathLang = LANGS.includes(pathParts[0]) ? pathParts[0] : null;
+  const urlLang = urlParams.get('lang');
+  let lang = pathLang || (LANGS.includes(urlLang) ? urlLang : 'en');
   const L = () => I18N[lang];
   const W = () => I18N[lang].webinars;
   function t(path, vars) {
@@ -1573,12 +1576,20 @@
     });
   }
   function setLang(c) {
-    if (c !== 'en') {
-      alert('Webinar series is currently hosted in English. Other languages will be unlocked soon!');
-      return;
+    if (!LANGS.includes(c)) return;
+    lang = c; store.set(K.lang, c);
+    if (window.location.protocol === 'file:') {
+      const u = new URL(location.href); u.searchParams.set('lang', c); history.replaceState(null, '', u);
+      renderShell(); route();
+    } else {
+      const r = parseRoute();
+      let targetPath = (c === 'en' ? '' : '/' + c) + '/events/';
+      if (r.slug) {
+        targetPath += r.slug + '/';
+        if (r.page === 'thanks') targetPath += 'thanks/';
+      }
+      window.location.href = targetPath + (DEMO ? '?demo=1' : '');
     }
-    lang = 'en';
-    window.location.href = '/events/';
   }
 
   /* ---------- shared components ---------- */
