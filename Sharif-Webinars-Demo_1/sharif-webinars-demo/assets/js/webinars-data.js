@@ -339,12 +339,14 @@ window.SGCMS_WEBINARS = [
         "status_zh": "published",
         "speakers": [
             {
-                "key": "expert",
-                "photo": ""
+                "name": "Mohammad Borsalani",
+                "title": "Senior Consultant, Caribbean Citizenship Programs",
+                "affiliation": "Sharif Group Dubai"
             },
             {
-                "key": "host",
-                "photo": ""
+                "name": "Mehdi Yarahmadi",
+                "title": "Dominica Passport Program Specialist",
+                "affiliation": "Sharif Group Dubai"
             }
         ],
         "fa": {
@@ -358,6 +360,18 @@ window.SGCMS_WEBINARS = [
                 "مدارک لازم: تذکره، پاسپورت و اسناد مالی",
                 "اثبات و انتقال منشأ پول",
                 "آمادگی برای مصاحبه و ریز هزینه‌ها"
+            ],
+            "speakers": [
+                {
+                    "name": "محمد برسلانی",
+                    "title": "مشاور ارشد برنامه‌های شهروندی کارائیبی",
+                    "affiliation": "شریف گروپ دبی"
+                },
+                {
+                    "name": "مهدی یاراحمدی",
+                    "title": "کارشناس برنامه پاسپورت دومینیکا",
+                    "affiliation": "شریف گروپ دبی"
+                }
             ]
         },
         "en": {
@@ -371,6 +385,18 @@ window.SGCMS_WEBINARS = [
                 "Documents: Tazkira, passport and financial records",
                 "Proving and transferring source of funds",
                 "Interview preparation and full costs"
+            ],
+            "speakers": [
+                {
+                    "name": "Mohammad Borsalani",
+                    "title": "Senior Consultant, Caribbean Citizenship Programs",
+                    "affiliation": "Sharif Group Dubai"
+                },
+                {
+                    "name": "Mehdi Yarahmadi",
+                    "title": "Dominica Passport Program Specialist",
+                    "affiliation": "Sharif Group Dubai"
+                }
             ]
         },
         "ar": {
@@ -384,6 +410,18 @@ window.SGCMS_WEBINARS = [
                 "المستندات: التذكرة والجواز والسجلات المالية",
                 "إثبات مصدر الأموال وتحويلها",
                 "الاستعداد للمقابلة وتفصيل التكاليف"
+            ],
+            "speakers": [
+                {
+                    "name": "محمد برسلاني",
+                    "title": "مستشار أول لبرامج الجنسية في دول الكاريبي",
+                    "affiliation": "شريف جروب دبي"
+                },
+                {
+                    "name": "مهدي يار أحمدي",
+                    "title": "خبير برنامج جواز سفر دومينيكا",
+                    "affiliation": "شريف جروب دبي"
+                }
             ]
         },
         "zh": {
@@ -397,6 +435,18 @@ window.SGCMS_WEBINARS = [
                 "材料：身份证、护照及财务文件",
                 "资金来源证明与转账",
                 "面试准备与完整费用"
+            ],
+            "speakers": [
+                {
+                    "name": "穆罕默德·巴尔塞拉尼 (Mohammad Borsalani)",
+                    "title": "加勒比公民身份项目高级顾问",
+                    "affiliation": "Sharif Group 迪拜"
+                },
+                {
+                    "name": "迈赫迪·亚拉赫马迪 (Mehdi Yarahmadi)",
+                    "title": "多米尼克护照项目专家",
+                    "affiliation": "Sharif Group 迪拜"
+                }
             ]
         },
         "reg_status": "open",
@@ -426,12 +476,14 @@ window.SGCMS_WEBINARS = [
         "status_zh": "published",
         "speakers": [
             {
-                "key": "expert",
-                "photo": ""
+                "name": "Mohammad Borsalani",
+                "title": "Senior Consultant, Caribbean Citizenship Programs",
+                "affiliation": "Sharif Group Dubai"
             },
             {
-                "key": "host",
-                "photo": ""
+                "name": "Mehdi Yarahmadi",
+                "title": "Dominica Passport Program Specialist",
+                "affiliation": "Sharif Group Dubai"
             }
         ],
         "fa": {
@@ -445,6 +497,18 @@ window.SGCMS_WEBINARS = [
                 "سفر و ویزا",
                 "حساب بانکی",
                 "خانواده و فرزندان"
+            ],
+            "speakers": [
+                {
+                    "name": "محمد برسلانی",
+                    "title": "مشاور ارشد برنامه‌های شهروندی کارائیبی",
+                    "affiliation": "شریف گروپ دبی"
+                },
+                {
+                    "name": "مهدی یاراحمدی",
+                    "title": "کارشناس برنامه پاسپورت دومینیکا",
+                    "affiliation": "شریف گروپ دبی"
+                }
             ]
         },
         "en": {
@@ -458,6 +522,18 @@ window.SGCMS_WEBINARS = [
                 "Travel and visas",
                 "Banking",
                 "Family and children"
+            ],
+            "speakers": [
+                {
+                    "name": "Mohammad Borsalani",
+                    "title": "Senior Consultant, Caribbean Citizenship Programs",
+                    "affiliation": "Sharif Group Dubai"
+                },
+                {
+                    "name": "Mehdi Yarahmadi",
+                    "title": "Dominica Passport Program Specialist",
+                    "affiliation": "Sharif Group Dubai"
+                }
             ]
         },
         "ar": {
@@ -471,6 +547,18 @@ window.SGCMS_WEBINARS = [
                 "السفر والتأشيرات",
                 "الحسابات المصرفية",
                 "العائلة والأبناء"
+            ],
+            "speakers": [
+                {
+                    "name": "محمد برسلاني",
+                    "title": "مستشار أول لبرامج الجنسية في دول الكاريبي",
+                    "affiliation": "شريف جروب دبي"
+                },
+                {
+                    "name": "مهدي يار أحمدي",
+                    "title": "خبير برنامج جواز سفر دومينيكا",
+                    "affiliation": "شريف جروب دبي"
+                }
             ]
         },
         "zh": {
@@ -484,9 +572,21 @@ window.SGCMS_WEBINARS = [
                 "出行与签证",
                 "银行开户",
                 "家庭与子女"
+            ],
+            "speakers": [
+                {
+                    "name": "穆罕默德·巴尔塞拉尼 (Mohammad Borsalani)",
+                    "title": "加勒比公民身份项目高级顾问",
+                    "affiliation": "Sharif Group 迪拜"
+                },
+                {
+                    "name": "迈赫迪·亚拉赫马迪 (Mehdi Yarahmadi)",
+                    "title": "多米尼克护照项目专家",
+                    "affiliation": "Sharif Group 迪拜"
+                }
             ]
         }
     }
 ];
 window.SGCMS_ACTIVE_SERIES = "dominica-pilot";
-window.SGCMS_HERO_SESSION_NO = 2;
+window.SGCMS_HERO_SESSION_NO = null;

@@ -186,7 +186,8 @@ foreach ($webinars as $w) {
         'join_visibility'   => $w['join_visibility'] ?? 'public',
         'join_url'          => $joinUrl,
         'has_join_url'      => !empty($joinUrl),
-        'is_hero'           => false // will be marked below
+        'is_hero'           => false, // will be marked below
+        'speakers'          => $w['speakers'] ?? []
     ];
 }
 

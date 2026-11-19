@@ -30,9 +30,9 @@
  * 
  * 6. Copy the resulting "Web app URL":
  *    Active Deployment URL:
- *    https://script.google.com/macros/s/AKfycby30xpRFvm-ZHoFTlMAY-JkVKNfwP1ccA4pKJS5kr_KJvYEljYgh2u129peMGl8ut5s/exec
+ *    https://script.google.com/macros/s/AKfycbzNChoriTzyurl89bGCiTsJW1BX9SB1gaIWLF7cxhJw-LvCoGj55idtWEoSQe_yG32d/exec
  *    Deployment ID:
- *    AKfycby30xpRFvm-ZHoFTlMAY-JkVKNfwP1ccA4pKJS5kr_KJvYEljYgh2u129peMGl8ut5s
+ *    AKfycbzNChoriTzyurl89bGCiTsJW1BX9SB1gaIWLF7cxhJw-LvCoGj55idtWEoSQe_yG32d
  * 
  * 7. Configured in:
  *    - assets/js/partners-app.js  (const CRM_WEBHOOK_URL = "...")

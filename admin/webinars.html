@@ -1460,7 +1460,60 @@
           </select>
         </div>
 
-        <!-- 5. HERO OVERRIDE TOGGLE -->
+        <!-- 5. SPEAKERS -->
+        <div class="modal-form-group">
+          <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:8px;">
+            <label class="modal-label" style="margin-bottom:0;">
+              <i class="fa-solid fa-users" style="color:var(--gold-bright); margin-right:4px"></i>
+              Session Speakers
+            </label>
+            <button type="button" onclick="insertDefaultSpeakers()" style="font-size:11.5px; color:var(--gold-bright); background:rgba(184,151,106,0.12); border:1px solid rgba(184,151,106,0.3); border-radius:6px; padding:4px 10px; cursor:pointer;">
+              <i class="fa-solid fa-user-check"></i> Fill Sharif Group Consultants
+            </button>
+          </div>
+
+          <div style="background:rgba(255,255,255,0.03); border:1px solid var(--border); border-radius:12px; padding:14px; margin-bottom:12px;">
+            <div style="font-size:11.5px; font-weight:700; color:var(--gold-bright); margin-bottom:8px; display:flex; align-items:center; gap:6px;">
+              <i class="fa-solid fa-user-tie"></i> Speaker 1
+            </div>
+            <div style="display:grid; grid-template-columns:1fr 1fr; gap:10px; margin-bottom:8px;">
+              <div>
+                <label style="font-size:11px; color:var(--muted); display:block; margin-bottom:4px;">Full Name</label>
+                <input type="text" id="ctrlSp1Name" class="modal-input" placeholder="e.g. Mohammad Borsalani">
+              </div>
+              <div>
+                <label style="font-size:11px; color:var(--muted); display:block; margin-bottom:4px;">Title / Role</label>
+                <input type="text" id="ctrlSp1Role" class="modal-input" placeholder="e.g. Senior Consultant, Caribbean Programs">
+              </div>
+            </div>
+            <div>
+              <label style="font-size:11px; color:var(--muted); display:block; margin-bottom:4px;">Affiliation / Department</label>
+              <input type="text" id="ctrlSp1Affil" class="modal-input" placeholder="e.g. Sharif Group Dubai">
+            </div>
+          </div>
+
+          <div style="background:rgba(255,255,255,0.03); border:1px solid var(--border); border-radius:12px; padding:14px;">
+            <div style="font-size:11.5px; font-weight:700; color:var(--gold-bright); margin-bottom:8px; display:flex; align-items:center; gap:6px;">
+              <i class="fa-solid fa-user-tie"></i> Speaker 2 (Optional)
+            </div>
+            <div style="display:grid; grid-template-columns:1fr 1fr; gap:10px; margin-bottom:8px;">
+              <div>
+                <label style="font-size:11px; color:var(--muted); display:block; margin-bottom:4px;">Full Name</label>
+                <input type="text" id="ctrlSp2Name" class="modal-input" placeholder="e.g. Mehdi Yarahmadi">
+              </div>
+              <div>
+                <label style="font-size:11px; color:var(--muted); display:block; margin-bottom:4px;">Title / Role</label>
+                <input type="text" id="ctrlSp2Role" class="modal-input" placeholder="e.g. Dominica Passport Specialist">
+              </div>
+            </div>
+            <div>
+              <label style="font-size:11px; color:var(--muted); display:block; margin-bottom:4px;">Affiliation / Department</label>
+              <input type="text" id="ctrlSp2Affil" class="modal-input" placeholder="e.g. Sharif Group Dubai">
+            </div>
+          </div>
+        </div>
+
+        <!-- 6. HERO OVERRIDE TOGGLE -->
         <label class="hero-toggle-box" for="ctrlSetAsHero">
           <input type="checkbox" id="ctrlSetAsHero">
           <div class="hero-toggle-text">
@@ -1642,7 +1695,8 @@
             join_visibility: joinVis,
             join_url: joinUrl,
             has_join_url: Boolean(joinUrl),
-            is_hero: false
+            is_hero: false,
+            speakers: (w.speakers && Array.isArray(w.speakers)) ? w.speakers : []
           };
         });
 
@@ -1988,7 +2042,26 @@
         document.getElementById('ctrlEventStatus').value = s.event_status || 'upcoming';
         document.getElementById('ctrlSetAsHero').checked = Boolean(s.is_hero);
 
+        // Populate speakers
+        const sp1 = (s.speakers && s.speakers[0]) || {};
+        const sp2 = (s.speakers && s.speakers[1]) || {};
+        document.getElementById('ctrlSp1Name').value = sp1.name || '';
+        document.getElementById('ctrlSp1Role').value = sp1.title || sp1.role || '';
+        document.getElementById('ctrlSp1Affil').value = sp1.affiliation || '';
+        document.getElementById('ctrlSp2Name').value = sp2.name || '';
+        document.getElementById('ctrlSp2Role').value = sp2.title || sp2.role || '';
+        document.getElementById('ctrlSp2Affil').value = sp2.affiliation || '';
+
         document.getElementById('sessionControlModal').classList.add('show');
+      };
+
+      window.insertDefaultSpeakers = function () {
+        document.getElementById('ctrlSp1Name').value = 'Mohammad Borsalani';
+        document.getElementById('ctrlSp1Role').value = 'Senior Consultant, Caribbean Citizenship Programs';
+        document.getElementById('ctrlSp1Affil').value = 'Sharif Group Dubai';
+        document.getElementById('ctrlSp2Name').value = 'Mehdi Yarahmadi';
+        document.getElementById('ctrlSp2Role').value = 'Dominica Passport Program Specialist';
+        document.getElementById('ctrlSp2Affil').value = 'Sharif Group Dubai';
       };
 
       window.closeSessionControlModal = function () {
@@ -2021,6 +2094,30 @@
         const eventStatus = document.getElementById('ctrlEventStatus').value;
         const setAsHero = document.getElementById('ctrlSetAsHero').checked;
 
+        // Build speakers payload
+        const sp1Name = document.getElementById('ctrlSp1Name').value.trim();
+        const sp1Role = document.getElementById('ctrlSp1Role').value.trim();
+        const sp1Affil = document.getElementById('ctrlSp1Affil').value.trim();
+        const sp2Name = document.getElementById('ctrlSp2Name').value.trim();
+        const sp2Role = document.getElementById('ctrlSp2Role').value.trim();
+        const sp2Affil = document.getElementById('ctrlSp2Affil').value.trim();
+
+        const speakers = [];
+        if (sp1Name) {
+          speakers.push({
+            name: sp1Name,
+            title: sp1Role || 'Senior Consultant, Caribbean Citizenship Programs',
+            affiliation: sp1Affil || 'Sharif Group Dubai'
+          });
+        }
+        if (sp2Name) {
+          speakers.push({
+            name: sp2Name,
+            title: sp2Role || 'Dominica Passport Program Specialist',
+            affiliation: sp2Affil || 'Sharif Group Dubai'
+          });
+        }
+
         const payload = {
           session_no: sessionNo,
           id: sessionId,
@@ -2028,7 +2125,8 @@
           join_visibility: joinVisibility,
           registration_open: regOpen,
           event_status: eventStatus,
-          set_as_hero: setAsHero
+          set_as_hero: setAsHero,
+          speakers: speakers
         };
 
         try {
@@ -2060,6 +2158,7 @@
                 s.join_visibility = joinVisibility;
                 s.registration_open = regOpen;
                 s.event_status = eventStatus;
+                s.speakers = speakers;
                 if (setAsHero) {
                   currentSeriesData.sessions.forEach(function (item) { item.is_hero = false; });
                   s.is_hero = true;

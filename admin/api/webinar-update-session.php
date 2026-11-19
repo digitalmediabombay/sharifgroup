@@ -52,6 +52,7 @@ $registrationOpen = isset($body['registration_open']) ? (bool)$body['registratio
 $setAsHero = isset($body['set_as_hero']) ? (bool)$body['set_as_hero'] : null;
 $startUtc = isset($body['start_utc']) ? trim($body['start_utc']) : null;
 $durationMin = isset($body['duration_min']) ? max(10, (int)$body['duration_min']) : null;
+$speakers = isset($body['speakers']) && is_array($body['speakers']) ? $body['speakers'] : null;
 
 // ── 2. READ WEBINARS (Single Source of Truth) ───────────────────────────
 $rootDir = realpath(dirname(__DIR__, 2));
@@ -125,6 +126,15 @@ if ($durationMin !== null) {
     $targetSession['duration_min'] = $durationMin;
 }
 
+if ($speakers !== null) {
+    $targetSession['speakers'] = $speakers;
+    foreach (['en', 'fa', 'ar', 'zh'] as $lgCode) {
+        if (isset($targetSession[$lgCode]) && is_array($targetSession[$lgCode])) {
+            $targetSession[$lgCode]['speakers'] = $speakers;
+        }
+    }
+}
+
 $targetSession['updated_at'] = date('Y-m-d H:i:s');
 
 // ── 4. HANDLE HERO OVERRIDE IN SCHEDULE ─────────────────────────────────
@@ -146,6 +156,7 @@ if ($eventStatus !== null) $schedule['sessions'][$actualSessionNo]['event_status
 if ($registrationOpen !== null) $schedule['sessions'][$actualSessionNo]['reg_status'] = $registrationOpen ? 'open' : 'closed';
 if (!empty($startUtc)) $schedule['sessions'][$actualSessionNo]['start_utc'] = $startUtc;
 if ($durationMin !== null) $schedule['sessions'][$actualSessionNo]['duration_min'] = $durationMin;
+if ($speakers !== null) $schedule['sessions'][$actualSessionNo]['speakers'] = $speakers;
 
 // Handle explicit hero flag
 if ($setAsHero === true) {
