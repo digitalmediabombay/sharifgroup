@@ -153,11 +153,8 @@ function buildSitemapXml($rootDir, $writeToDisk = false) {
 
     // Build hash map of deleted slugs / IDs for fast exclusion
     $permanentBlacklist = [
-        'sample',
         'sample-dominicaartcile',
         'sample-dominicaarticle',
-        'sample-article',
-        'sample-post',
         'sampledominicaartcile',
         'sampledominicaarticle'
     ];

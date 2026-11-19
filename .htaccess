@@ -6,8 +6,9 @@
 # Disable directory indexing across the entire website
 Options -Indexes
 
-# Custom 404 Error Document
+# Custom 404 & 410 Error Documents
 ErrorDocument 404 /404.html
+ErrorDocument 410 /404.html
 
 # Block direct HTTP access to sensitive files, manifests, logs, and documentation
 <FilesMatch "(^package\.json$|^package-lock\.json$|^composer\.(json|lock)$|^\.git|\.md$|\.env$|\.sql$|\.log$|\.bak$)">
@@ -112,8 +113,10 @@ ErrorDocument 404 /404.html
     # 8b. Automated Multilingual XML Sitemap Engine
     RewriteRule ^sitemap\.xml$ sitemap.php [L]
 
-    # 8c. Explicit 410 Gone for unpublished sample / test articles
-    RewriteRule ^(?:(ar|fa|zh)/)?blog/(?:sample|sample-dominicaartcile|sample-dominicaarticle)(?:/.*)?$ - [G,L,NC]
+    # 8c. Explicit 410 Gone for legacy deleted test articles (only if not physically present)
+    RewriteCond %{REQUEST_FILENAME} !-f
+    RewriteCond %{REQUEST_FILENAME} !-d
+    RewriteRule ^(?:(ar|fa|zh)/)?blog/(?:sample-dominicaartcile|sample-dominicaarticle)(?:/.*)?$ - [G,L,NC]
 
     # 8d. Explicit 404 for deleted or non-existent blog articles (never fallback to blog index)
     RewriteCond %{REQUEST_FILENAME} !-f
