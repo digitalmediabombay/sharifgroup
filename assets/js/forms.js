@@ -232,6 +232,8 @@ function parsePhoneNumber(rawInput, defaultDial) {
   const rawStr = String(rawInput || '').trim();
   let defaultCode = String(defaultDial || '+971').trim();
   if (!defaultCode.startsWith('+')) defaultCode = '+' + defaultCode;
+  const matchedDefault = KNOWN_DIAL_CODES.find(dc => defaultCode.startsWith(dc));
+  if (matchedDefault) defaultCode = matchedDefault;
 
   if (!rawStr) {
     return {
@@ -266,7 +268,7 @@ function parsePhoneNumber(rawInput, defaultDial) {
       finalDial = matched;
       clean = clean.slice(matched.length);
     } else {
-      const genericMatch = clean.match(/^(\+\d{1,4})(.*)$/);
+      const genericMatch = clean.match(/^(\+\d{1,3})(.*)$/);
       if (genericMatch) {
         finalDial = genericMatch[1];
         clean = genericMatch[2];
@@ -279,6 +281,10 @@ function parsePhoneNumber(rawInput, defaultDial) {
       clean = clean.slice(dialDigits.length);
     }
   }
+
+  // Auto-repair finalDial if any extraneous digits were attached
+  const repairedDial = KNOWN_DIAL_CODES.find(dc => finalDial.startsWith(dc));
+  if (repairedDial) finalDial = repairedDial;
 
   // 4. Strip domestic trunk leading zeros (e.g. 050... -> 50..., 0783... -> 783...)
   clean = clean.replace(/^0+/, '');

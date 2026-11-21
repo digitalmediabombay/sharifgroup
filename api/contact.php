@@ -66,41 +66,94 @@ if ($rateData['count'] > 12) {
     exit;
 }
 
-// E.164 Phone Normalization Helper (B3)
+// E.164 Phone Normalization Helper (B3 / ITU-T E.164 max 3 digits)
 function normalizePhone($rawPhone, $dialCode = '') {
+    static $knownCodes = null;
+    if ($knownCodes === null) {
+        $knownCodes = [
+            '+1-268', '+1-242', '+1-246', '+1-767', '+1-473', '+1-869', '+1-758', '+1-784', '+1-868',
+            '+1268', '+1242', '+1246', '+1767', '+1473', '+1869', '+1758', '+1784', '+1868',
+            '+971', '+972', '+973', '+974', '+975', '+976', '+977', '+961', '+962', '+963',
+            '+964', '+965', '+966', '+967', '+968', '+992', '+993', '+994', '+995', '+996',
+            '+998', '+852', '+853', '+855', '+856', '+880', '+886', '+351', '+352', '+353',
+            '+354', '+355', '+356', '+357', '+358', '+359', '+370', '+371', '+372', '+373',
+            '+374', '+375', '+376', '+377', '+378', '+379', '+380', '+381', '+382', '+385',
+            '+386', '+387', '+389', '+420', '+421', '+423', '+501', '+502', '+503', '+504',
+            '+505', '+506', '+507', '+509', '+591', '+592', '+593', '+595', '+597', '+598',
+            '+670', '+673', '+674', '+675', '+676', '+677', '+678', '+679', '+680', '+685',
+            '+686', '+688', '+691', '+692', '+211', '+212', '+213', '+216', '+218', '+220',
+            '+221', '+222', '+223', '+224', '+225', '+226', '+227', '+228', '+229', '+230',
+            '+231', '+232', '+233', '+234', '+235', '+236', '+237', '+238', '+239', '+240',
+            '+241', '+242', '+243', '+244', '+245', '+248', '+249', '+250', '+251', '+252',
+            '+253', '+254', '+255', '+256', '+257', '+258', '+260', '+261', '+262', '+263',
+            '+264', '+265', '+266', '+267', '+268', '+269',
+            '+90', '+91', '+92', '+93', '+94', '+95', '+98', '+81', '+82', '+84', '+86',
+            '+60', '+61', '+62', '+63', '+64', '+65', '+66', '+51', '+52', '+53', '+54',
+            '+55', '+56', '+57', '+58', '+40', '+41', '+43', '+44', '+45', '+46', '+47',
+            '+48', '+49', '+30', '+31', '+32', '+33', '+34', '+36', '+39', '+20', '+27',
+            '+1', '+7'
+        ];
+    }
     $eastern = ['۰','۱','۲','۳','۴','۵','۶','۷','۸','۹','٠','١','٢','٣','٤','٥','٦','٧','٨','٩'];
     $latin   = ['0','1','2','3','4','5','6','7','8','9','0','1','2','3','4','5','6','7','8','9'];
     $raw = str_replace($eastern, $latin, trim((string)$rawPhone));
     $dial = str_replace($eastern, $latin, trim((string)$dialCode));
     if (!empty($dial) && strpos($dial, '+') !== 0) $dial = '+' . $dial;
 
+    // Auto-repair corrupt dial code (e.g. +9715 -> +971, +9198 -> +91)
+    if (!empty($dial)) {
+        foreach ($knownCodes as $k) {
+            if (strpos($dial, $k) === 0) {
+                $dial = $k;
+                break;
+            }
+        }
+    }
+
     $clean = preg_replace('/[^\d+]/', '', $raw);
     if (strpos($clean, '00') === 0) {
         $clean = '+' . substr($clean, 2);
     }
+
+    $matchedDial = '';
     if (strpos($clean, '+') === 0) {
-        if (preg_match('/^(\+\d{1,4})(.*)$/', $clean, $m)) {
-            $dial = $m[1];
-            $clean = $m[2];
+        foreach ($knownCodes as $k) {
+            if (strpos($clean, $k) === 0) {
+                $matchedDial = $k;
+                $clean = substr($clean, strlen($k));
+                break;
+            }
         }
-    } else {
+        if (empty($matchedDial)) {
+            if (preg_match('/^(\+\d{1,3})(.*)$/', $clean, $m)) {
+                $matchedDial = $m[1];
+                $clean = $m[2];
+            }
+        }
+    }
+
+    if (!empty($matchedDial)) {
+        $dial = $matchedDial;
+    } elseif (!empty($dial)) {
         $dialDigits = preg_replace('/\D/', '', $dial);
         if (!empty($dialDigits) && strpos($clean, $dialDigits) === 0 && strlen($clean) > strlen($dialDigits) + 5) {
             $clean = substr($clean, strlen($dialDigits));
         }
     }
+
     $clean = ltrim($clean, '0');
     $localDigits = preg_replace('/\D/', '', $clean);
-    $dialDigits = preg_replace('/\D/', '', $dial);
+    $finalDial = $dial ?: '+971';
+    $dialDigits = preg_replace('/\D/', '', $finalDial);
     $totalDigits = strlen($dialDigits . $localDigits);
 
     $isValid = strlen($localDigits) >= 5 && $totalDigits >= 7 && $totalDigits <= 15;
-    $e164 = $isValid ? ($dial . $localDigits) : trim($dial . $localDigits);
-    $formatted = $isValid ? ($dial . ' ' . $localDigits) : trim($dial . ' ' . $raw);
+    $e164 = $isValid ? ($finalDial . $localDigits) : trim($finalDial . $localDigits);
+    $formatted = $isValid ? ($finalDial . ' ' . $localDigits) : trim($finalDial . ' ' . ($localDigits ?: $raw));
 
     return [
         'valid' => $isValid,
-        'dialCode' => $dial ?: '+971',
+        'dialCode' => $finalDial,
         'local' => $localDigits,
         'e164' => $e164,
         'formatted' => $formatted
