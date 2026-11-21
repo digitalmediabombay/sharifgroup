@@ -584,26 +584,43 @@ function showFormNotification(message, type) {
   if (!toast) {
     toast = document.createElement('div');
     toast.id = 'sg-form-toast';
-    toast.className = 'fixed bottom-6 right-6 z-[9999] max-w-md p-4 rounded-xl shadow-2xl text-xs font-medium transition-all duration-300 transform translate-y-12 opacity-0 flex items-center space-x-3 pointer-events-none';
+    // Positioned safely on the bottom-left with max-width constraint to NEVER overlap WhatsApp or Live Webinar widgets on bottom-right
+    toast.className = 'fixed bottom-6 left-6 md:bottom-8 md:left-8 z-[99999] max-w-[calc(100vw-110px)] md:max-w-md p-4 rounded-2xl shadow-2xl text-xs font-medium transition-all duration-300 transform translate-y-12 opacity-0 flex items-center justify-between gap-3 pointer-events-auto backdrop-blur-md';
     document.body.appendChild(toast);
   }
   
+  const icon = type === 'success' 
+    ? '<span style="font-size:1.2rem;color:#C5A880;flex-shrink:0;">✓</span>' 
+    : '<span style="font-size:1.2rem;color:#FCA5A5;flex-shrink:0;">⚠</span>';
+  
   if (type === 'success') {
-    toast.style.backgroundColor = '#1C1917';
+    toast.style.backgroundColor = 'rgba(28, 25, 23, 0.96)';
     toast.style.color = '#F5F5F4';
-    toast.style.border = '1px solid #786142';
-    toast.innerHTML = `<span style="font-size:1.2rem;color:#C5A880;margin-right:8px;">✓</span><span>${message}</span>`;
+    toast.style.border = '1px solid rgba(197, 168, 128, 0.45)';
+    toast.style.boxShadow = '0 14px 40px rgba(0, 0, 0, 0.65), 0 0 15px rgba(197, 168, 128, 0.2)';
   } else {
-    toast.style.backgroundColor = '#7F1D1D';
+    toast.style.backgroundColor = 'rgba(127, 29, 29, 0.96)';
     toast.style.color = '#FEE2E2';
     toast.style.border = '1px solid #EF4444';
-    toast.innerHTML = `<span style="font-size:1.2rem;color:#FCA5A5;margin-right:8px;">⚠</span><span>${message}</span>`;
+    toast.style.boxShadow = '0 14px 40px rgba(0, 0, 0, 0.65), 0 0 15px rgba(239, 68, 68, 0.25)';
   }
 
-  toast.classList.remove('translate-y-12', 'opacity-0');
-  toast.classList.add('translate-y-0', 'opacity-100');
+  toast.innerHTML = `
+    <div style="display:flex;align-items:center;gap:10px;flex:1;">
+      ${icon}
+      <span style="line-height:1.45;">${message}</span>
+    </div>
+    <button type="button" aria-label="Close notification" onclick="this.closest('#sg-form-toast').classList.remove('translate-y-0','opacity-100');this.closest('#sg-form-toast').classList.add('translate-y-12','opacity-0');" style="background:none;border:none;color:inherit;opacity:0.6;cursor:pointer;padding:2px 6px;font-size:16px;line-height:1;margin-left:6px;transition:opacity 0.2s;" onmouseover="this.style.opacity='1'" onmouseout="this.style.opacity='0.6'">×</button>
+  `;
+
+  if (toast.__hideTimeout) clearTimeout(toast.__hideTimeout);
+
+  requestAnimationFrame(() => {
+    toast.classList.remove('translate-y-12', 'opacity-0');
+    toast.classList.add('translate-y-0', 'opacity-100');
+  });
   
-  setTimeout(() => {
+  toast.__hideTimeout = setTimeout(() => {
     toast.classList.remove('translate-y-0', 'opacity-100');
     toast.classList.add('translate-y-12', 'opacity-0');
   }, 6000);

@@ -598,7 +598,7 @@
     "corporateAddress": "Corporate Physical Address (Optional)",
     "confidentialNotes": "Confidential Notes (Optional)",
     "submitBtn": "Submit Confidential Request",
-    "successMsg": "Thank you. Your inquiry has been sent successfully. An advisory partner will reach out within 2 hours.",
+    "successMsg": "Thank you. Your inquiry has been sent successfully. An advisory partner will reach out within 24 business hours.",
     "deskTitle": "EXECUTIVE ADVISORY DESK",
     "consultationHeading": "Apply for a Personalized <span class=\"italic text-[#786142] font-serif font-normal\">Consultation — It's Free!</span>",
     "consultationDesc": "Complete our quick inquiry form below. Our Dubai advisory team will evaluate your profile and prepare a confidential proposal.",
@@ -1392,7 +1392,7 @@
       "form_opt_time_plan": "6–12 months",
       "form_consent_pre": "I consent to Sharif Group storing and processing my personal details for consultation and property advisory purposes in accordance with the",
       "form_submit_btn": "Submit Confidential Request →",
-      "form_success_msg": "Thank you. Your inquiry has been sent successfully. An advisory partner will reach out within 2 hours.",
+      "form_success_msg": "Thank you. Your inquiry has been sent successfully. An advisory partner will reach out within 24 business hours.",
       "faqBadge": "COMMON QUESTIONS",
       "license_note": "Certificate details shown as issued by the Dubai Land Department. Regulatory information can be verified against current official government records anytime.",
       "form_consent": "I consent to Sharif Group storing and processing my personal details for consultation and property advisory purposes in accordance with the <a class=\"text-[#786142] underline font-bold\" data-i18n=\"footer.privacyPolicy\" href=\"../privacypolicy/index.html\">Privacy Policy</a>. <span class=\"text-red-500\">*</span>",
@@ -1883,7 +1883,7 @@
       "elig_fin_bullet7": "Parent visa options available for families accompanying young boarding students.",
       "elig_note": "Sharif Group assists families from our Business Bay, Dubai office with complete profile assessments, exam scheduling, personal statement writing, and end-to-end student visa filing.",
       "formBadge": "EDUCATION ADVISORY DESK",
-      "formDesc": "Fill out the form below. Our Dubai education advisors will evaluate your child's profile and contact you within 2 hours to discuss school matching, university entry, and student visas.",
+      "formDesc": "Fill out the form below. Our Dubai education advisors will evaluate your child's profile and contact you within 24 business hours to discuss school matching, university entry, and student visas.",
       "form_label_parent_name": "Parent / Student Full Name",
       "form_label_whatsapp": "WhatsApp / Phone Number",
       "form_label_age": "Student Current Age / Grade",
@@ -1917,7 +1917,7 @@
       "form_label_field": "Target Field of Study / Any Specific Schools in Mind",
       "form_consent": "I agree to let Sharif Group save and process my information for academic assessment and consultation in line with the <a class=\"text-luxury-gold underline font-bold\" data-i18n=\"footer.privacyPolicy\" href=\"../privacypolicy/index.html\">Privacy Policy</a>. <span class=\"text-red-500\">*</span>",
       "form_submit_btn": "Request Academic Assessment →",
-      "form_success_msg": "Thank you. Your request has been received. One of our education advisors in Dubai will contact you within 2 hours.",
+      "form_success_msg": "Thank you. Your request has been received. One of our education advisors in Dubai will contact you within 24 business hours.",
       "destinations_filter_all": "All Destinations",
       "destinations_filter_boarding": "Boarding Schools",
       "destinations_filter_unis": "Universities",
@@ -2556,7 +2556,7 @@
       "formMessage": "Optional Message / Special Considerations",
       "formConsent": "I consent to Sharif Group storing and processing my personal details for consultation and pre-screening purposes in accordance with the <a class=\"text-[#786142] underline font-bold\" href=\"../../../privacypolicy/index.html\">Privacy Policy</a>. <span class=\"text-red-500\">*</span>",
       "formSubmit": "Submit Confidential Request →",
-      "formSuccess": "Thank you. Your inquiry has been sent successfully. An advisory partner will reach out within 2 hours.",
+      "formSuccess": "Thank you. Your inquiry has been sent successfully. An advisory partner will reach out within 24 business hours.",
       "form_label1": "Full Name <span class=\"text-red-500\">*</span>",
       "form_label2": "Email Address <span class=\"text-red-500\">*</span>",
       "form_label3": "Mobile / WhatsApp Number <span class=\"text-red-500\">*</span>",
@@ -2990,7 +2990,7 @@
       "placeholderNationality": "e.g. Indian, Nigerian, Russian",
       "placeholderResidence": "e.g. UAE, Saudi Arabia, UK",
       "form_option10b": "Large Family of 6+ (UWI Route)",
-      "formSuccess": "Thank you. Your request has been sent successfully. One of our senior legal advisors will contact you within the next 2 hours."
+      "formSuccess": "Thank you. Your request has been sent successfully. One of our senior legal advisors will contact you within 24 business hours."
     },
     "stkitts": {
       "heroTitle": "St. Kitts & Nevis",
@@ -3365,7 +3365,7 @@
       "timeline_p1": "[Blank]",
       "whoNote1": "* Every applicant undergoes strict official background screening by government due diligence teams.",
       "whoNote2": "* Applications must be processed via authorized agents like Sharif Group. Direct government submissions are not accepted.",
-      "formSuccess": "Thank you. Your request has been sent successfully. One of our senior legal advisors will contact you within the next 2 hours."
+      "formSuccess": "Thank you. Your request has been sent successfully. One of our senior legal advisors will contact you within 24 business hours."
     },
     "stlucia": {
       "heroTitle": "Saint Lucia",
@@ -3761,7 +3761,7 @@
       "documents_cat1": "1. Mandatory Government Forms (For Everyone)",
       "documents_cat2": "2. Core Documents for the Main Applicant",
       "documents_cat3": "3. Extra Documents for Family Dependants",
-      "formSuccess": "Thank you. Your request has been sent successfully. One of our senior legal advisors will contact you within the next 2 hours."
+      "formSuccess": "Thank you. Your request has been sent successfully. One of our senior legal advisors will contact you within 24 business hours."
     },
     "grenada": {
       "heroTitle": "Grenada",
@@ -4134,7 +4134,7 @@
       "mobility_tier2": "VOA (37)",
       "mobility_tier3": "eTA (7)",
       "mobility_tier4": "Visa Required (59)",
-      "formSuccess": "Thank you. Your request has been sent successfully. One of our senior legal advisors will contact you within the next 2 hours."
+      "formSuccess": "Thank you. Your request has been sent successfully. One of our senior legal advisors will contact you within 24 business hours."
     },
     "vanuatu": {
       "heroTitle": "Vanuatu",
@@ -4902,7 +4902,7 @@
       "documents_cat3": "3. Background Vetting & Health Cleanliness (Adults Only)",
       "documents_cat4": "4. Financial & Source of Income Proofs (Main Investor Only)",
       "documents_cat5": "5. Extra Relationship Records for Family (Dependants)",
-      "formSuccess": "Thank you. Your request has been sent successfully. One of our senior legal advisors will contact you within the next 2 hours."
+      "formSuccess": "Thank you. Your request has been sent successfully. One of our senior legal advisors will contact you within 24 business hours."
     },
     "saotome": {
       "heroTitle": "São Tomé & Príncipe",
@@ -5605,7 +5605,7 @@
       "formBadge": "EXECUTIVE ADVISORY DESK",
       "formDesc": "Complete our quick inquiry form below. Our Dubai advisory team will evaluate your profile and prepare a confidential proposal for the Greece Golden Visa.",
       "formConsent": "I consent to Sharif Group storing and processing my personal details for consultation and pre-screening purposes in accordance with the <a class=\"text-[#786142] underline font-bold\" href=\"../../../privacypolicy/index.html\">Privacy Policy</a>. <span class=\"text-red-500\">*</span>",
-      "formSuccess": "Thank you. Your inquiry has been sent successfully. An advisory partner will reach out within 2 hours.",
+      "formSuccess": "Thank you. Your inquiry has been sent successfully. An advisory partner will reach out within 24 business hours.",
       "form_option26": "6–12 months",
       "form_option24": "Immediately (0–3 months)",
       "form_option25": "3–6 months"
@@ -6015,7 +6015,7 @@
       "form_option26": "6–12 months",
       "formConsent": "I consent to Sharif Group storing and processing my personal details for consultation purposes.",
       "formDesc": "Complete our quick inquiry form below. Our Dubai advisory team will evaluate your profile and prepare a confidential proposal for the Portugal Golden Visa.",
-      "formSuccess": "Thank you. Your inquiry has been sent successfully. An advisory partner will reach out within 2 hours."
+      "formSuccess": "Thank you. Your inquiry has been sent successfully. An advisory partner will reach out within 24 business hours."
     },
     "uae": {
       "heroTitle": "United Arab Emirates",
@@ -6357,7 +6357,7 @@
       "formBadge": "EXECUTIVE ADVISORY DESK",
       "formDesc": "Complete our quick inquiry form below. Our Dubai advisory team will evaluate your profile and prepare a confidential proposal for the UAE Golden Visa.",
       "formConsent": "I consent to Sharif Group storing and processing my personal details for consultation and pre-screening purposes in accordance with the <a class=\"text-[#786142] underline font-bold\" href=\"../../../privacypolicy/index.html\">Privacy Policy</a>. <span class=\"text-red-500\">*</span>",
-      "formSuccess": "Thank you. Your inquiry has been sent successfully. An advisory partner will reach out within 2 hours."
+      "formSuccess": "Thank you. Your inquiry has been sent successfully. An advisory partner will reach out within 24 business hours."
     },
     "panama": {
       "heroTitle": "Panama",
@@ -6777,7 +6777,7 @@
       "formBadge": "EXECUTIVE ADVISORY DESK",
       "formDesc": "Complete our quick inquiry form below. Our Dubai advisory team will evaluate your profile and prepare a confidential proposal for the Panama Golden Visa.",
       "formConsent": "I consent to Sharif Group storing and processing my personal details for consultation and pre-screening purposes in accordance with the <a class=\"text-[#786142] underline font-bold\" href=\"../../../privacypolicy/index.html\">Privacy Policy</a>. <span class=\"text-red-500\">*</span>",
-      "formSuccess": "Thank you. Your inquiry has been sent successfully. An advisory partner will reach out within 2 hours.",
+      "formSuccess": "Thank you. Your inquiry has been sent successfully. An advisory partner will reach out within 24 business hours.",
       "whoNote": "All applications for the Panama Qualified Investor Program are filed through authorized legal representatives. Biometrics appointments in Panama City are mandatory for all applicants over 18 years of age.",
       "partnership_years": "Years",
       "partnership_projects": "Projects"
