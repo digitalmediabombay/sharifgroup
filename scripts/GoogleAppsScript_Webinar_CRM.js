@@ -198,6 +198,109 @@ function doPost(e) {
   }
 }
 
+/**
+ * Universal E.164 Phone Normalizer for Google Sheets (B3 / B4 / ITU-T max 3 digits)
+ * - Converts Persian & Arabic numerals
+ * - Prevents duplicate prefixes (+9393..., +971971...)
+ * - Auto-repairs corrupt 4-digit prefixes (+9715 -> +971, +9198 -> +91)
+ * - Strips leading trunk zeros (0783... -> 783..., 050... -> 50...)
+ * - Prepends leading apostrophe (') so Google Sheets never evaluates #ERROR!
+ */
+const CRM_KNOWN_DIAL_CODES = [
+  "+1-268", "+1-242", "+1-246", "+1-767", "+1-473", "+1-869", "+1-758", "+1-784", "+1-868",
+  "+1268", "+1242", "+1246", "+1767", "+1473", "+1869", "+1758", "+1784", "+1868",
+  "+971", "+972", "+973", "+974", "+975", "+976", "+977", "+961", "+962", "+963",
+  "+964", "+965", "+966", "+967", "+968", "+992", "+993", "+994", "+995", "+996",
+  "+998", "+852", "+853", "+855", "+856", "+880", "+886", "+351", "+352", "+353",
+  "+354", "+355", "+356", "+357", "+358", "+359", "+370", "+371", "+372", "+373",
+  "+374", "+375", "+376", "+377", "+378", "+379", "+380", "+381", "+382", "+385",
+  "+386", "+387", "+389", "+420", "+421", "+423", "+501", "+502", "+503", "+504",
+  "+505", "+506", "+507", "+509", "+591", "+592", "+593", "+595", "+597", "+598",
+  "+670", "+673", "+674", "+675", "+676", "+677", "+678", "+679", "+680", "+685",
+  "+686", "+688", "+691", "+692", "+211", "+212", "+213", "+216", "+218", "+220",
+  "+221", "+222", "+223", "+224", "+225", "+226", "+227", "+228", "+229", "+230",
+  "+231", "+232", "+233", "+234", "+235", "+236", "+237", "+238", "+239", "+240",
+  "+241", "+242", "+243", "+244", "+245", "+248", "+249", "+250", "+251", "+252",
+  "+253", "+254", "+255", "+256", "+257", "+258", "+260", "+261", "+262", "+263",
+  "+264", "+265", "+266", "+267", "+268", "+269",
+  "+90", "+91", "+92", "+93", "+94", "+95", "+98", "+81", "+82", "+84", "+86",
+  "+60", "+61", "+62", "+63", "+64", "+65", "+66", "+51", "+52", "+53", "+54",
+  "+55", "+56", "+57", "+58", "+40", "+41", "+43", "+44", "+45", "+46", "+47",
+  "+48", "+49", "+30", "+31", "+32", "+33", "+34", "+36", "+39", "+20", "+27",
+  "+1", "+7"
+];
+
+function normalizeCrmPhone(rawPhone, dialCode) {
+  var s = String(rawPhone || "").trim().replace(/^'+/, "");
+  var d = String(dialCode || "").trim().replace(/^'+/, "");
+  if (d && d.indexOf("+") !== 0) d = "+" + d;
+
+  var eastern = ["۰","۱","۲","۳","۴","۵","۶","۷","۸","۹","٠","١","٢","٣","٤","٥","٦","٧","٨","٩"];
+  var latin   = ["0","1","2","3","4","5","6","7","8","9","0","1","2","3","4","5","6","7","8","9"];
+  for (var i = 0; i < eastern.length; i++) {
+    while (s.indexOf(eastern[i]) !== -1) s = s.replace(eastern[i], latin[i]);
+    while (d.indexOf(eastern[i]) !== -1) d = d.replace(eastern[i], latin[i]);
+  }
+
+  // Canonicalize default dial code (e.g. +9715 -> +971, +9198 -> +91)
+  if (d) {
+    for (var k = 0; k < CRM_KNOWN_DIAL_CODES.length; k++) {
+      if (d.indexOf(CRM_KNOWN_DIAL_CODES[k]) === 0) {
+        d = CRM_KNOWN_DIAL_CODES[k];
+        break;
+      }
+    }
+  }
+
+  var clean = s.replace(/[^\d+]/g, "");
+  if (clean.indexOf("00") === 0) clean = "+" + clean.slice(2);
+
+  var matchedDial = "";
+  if (clean.indexOf("+") === 0) {
+    for (var j = 0; j < CRM_KNOWN_DIAL_CODES.length; j++) {
+      if (clean.indexOf(CRM_KNOWN_DIAL_CODES[j]) === 0) {
+        matchedDial = CRM_KNOWN_DIAL_CODES[j];
+        clean = clean.slice(CRM_KNOWN_DIAL_CODES[j].length);
+        break;
+      }
+    }
+    if (!matchedDial) {
+      var match = clean.match(/^(\+\d{1,3})(.*)$/);
+      if (match) {
+        matchedDial = match[1];
+        clean = match[2];
+      }
+    }
+  } else {
+    // Digits only without '+' - check if digits start with any known dial code digits
+    var allDigits = clean.replace(/\D/g, "");
+    for (var j = 0; j < CRM_KNOWN_DIAL_CODES.length; j++) {
+      var dDigits = CRM_KNOWN_DIAL_CODES[j].replace(/\D/g, "");
+      if (allDigits.indexOf(dDigits) === 0 && allDigits.length > dDigits.length + 5) {
+        matchedDial = CRM_KNOWN_DIAL_CODES[j];
+        clean = allDigits.slice(dDigits.length);
+        break;
+      }
+    }
+  }
+
+  if (matchedDial) {
+    d = matchedDial;
+  } else if (d) {
+    var dDigits = d.replace(/\D/g, "");
+    if (dDigits && clean.indexOf(dDigits) === 0 && clean.length > dDigits.length + 5) {
+      clean = clean.slice(dDigits.length);
+    }
+  }
+
+  clean = clean.replace(/^0+/, "");
+  var localDigits = clean.replace(/\D/g, "");
+  var finalDial = d || "+971";
+
+  if (!localDigits) return s ? ("'" + s) : "";
+  return "'" + finalDial + " " + localDigits;
+}
+
 // ==============================================================================
 // 1. CATEGORY ROUTER (Citizenship, Residency, Real Estate, Education, General)
 // ==============================================================================
@@ -208,10 +311,10 @@ function handleCategoryLead(data) {
   var leadName = (data.fullName || ((data.firstName || "") + " " + (data.lastName || "")).trim() || "Website Client");
   var leadEmail = (data.email || "").toLowerCase().trim();
 
-  // Safe phone escaping: Avoid #ERROR! formula evaluation in Google Sheets
-  var rawPhone = (data.phone || (data.dialCode ? (data.dialCode + " " + (data.rawPhone || "")) : "")).trim();
-  var cleanPhone = rawPhone.replace(/^'+/, "").trim();
-  var safePhone = cleanPhone ? ("'" + cleanPhone) : "";
+  // Safe phone escaping: Avoid #ERROR! formula evaluation in Google Sheets (B3)
+  var rawPhone = (data.whatsapp_e164 || data.phone || (data.dialCode ? (data.dialCode + " " + (data.rawPhone || "")) : "")).trim();
+  var safePhone = normalizeCrmPhone(rawPhone, data.dialCode);
+  var cleanPhone = safePhone.replace(/^'+/, "").trim();
 
   // Deduplication guard: Prevent duplicate submissions within 20 seconds
   var cache = CacheService.getScriptCache();
@@ -526,9 +629,19 @@ function handlePartnerApplication(data) {
   var city = data.city || "";
 
   var dialCode = (data.dialCode || "").trim().replace(/^'+/, "");
-  var safeDialCode = dialCode ? ("'" + dialCode) : "";
   var rawPhone = (data.whatsapp_e164 || data.phone || "").trim().replace(/^'+/, "");
-  var safePhone = rawPhone ? ("'" + rawPhone) : "";
+  var safePhone = normalizeCrmPhone(rawPhone, dialCode);
+  var cleanPhone = safePhone.replace(/^'+/, "").trim();
+
+  // Extract canonical dial code (max 3 digits) from normalized phone
+  var resolvedDial = cleanPhone.indexOf(" ") !== -1 ? cleanPhone.split(" ")[0] : (dialCode ? (dialCode.indexOf("+") === 0 ? dialCode : "+" + dialCode) : "+971");
+  for (var k = 0; k < CRM_KNOWN_DIAL_CODES.length; k++) {
+    if (resolvedDial.indexOf(CRM_KNOWN_DIAL_CODES[k]) === 0) {
+      resolvedDial = CRM_KNOWN_DIAL_CODES[k];
+      break;
+    }
+  }
+  var safeDialCode = resolvedDial ? ("'" + resolvedDial) : "'+971";
 
   var email = (data.email || "").toLowerCase().trim();
 
@@ -636,9 +749,19 @@ function handleWebinarRegistration(data) {
   var fullName = data.fullName || data.name || "Attendee";
 
   var dialCode = (data.dialCode || "").trim().replace(/^'+/, "");
-  var safeDialCode = dialCode ? ("'" + dialCode) : "";
   var rawPhone = (data.whatsapp_e164 || data.phone || "").trim().replace(/^'+/, "");
-  var safePhone = rawPhone ? ("'" + rawPhone) : "";
+  var safePhone = normalizeCrmPhone(rawPhone, dialCode);
+  var cleanPhone = safePhone.replace(/^'+/, "").trim();
+
+  // Extract canonical dial code (max 3 digits) from normalized phone
+  var resolvedDial = cleanPhone.indexOf(" ") !== -1 ? cleanPhone.split(" ")[0] : (dialCode ? (dialCode.indexOf("+") === 0 ? dialCode : "+" + dialCode) : "+971");
+  for (var k = 0; k < CRM_KNOWN_DIAL_CODES.length; k++) {
+    if (resolvedDial.indexOf(CRM_KNOWN_DIAL_CODES[k]) === 0) {
+      resolvedDial = CRM_KNOWN_DIAL_CODES[k];
+      break;
+    }
+  }
+  var safeDialCode = resolvedDial ? ("'" + resolvedDial) : "'+971";
 
   var email = (data.email || "").toLowerCase().trim();
 
@@ -1112,7 +1235,7 @@ function fixExistingPhoneErrors() {
     var phoneCols = [];
     for (var c = 0; c < headers.length; c++) {
       var h = String(headers[c] || "").toLowerCase();
-      if (h.indexOf("phone") !== -1 || h.indexOf("dial") !== -1 || h.indexOf("whatsapp") !== -1) {
+      if (h.indexOf("phone") !== -1 || h.indexOf("dial") !== -1 || h.indexOf("whatsapp") !== -1 || h.indexOf("mobile") !== -1 || h.indexOf("tel") !== -1) {
         phoneCols.push(c + 1);
       }
     }
@@ -1130,23 +1253,32 @@ function fixExistingPhoneErrors() {
         var val = values[r][0];
         var cell = sheet.getRange(2 + r, col);
 
+        var rawStr = String(formula || val || "").trim();
+        if (!rawStr) continue;
+
+        // Clean formula / equal / plus / apostrophe prefixes
+        var cleanInput = rawStr.replace(/^[+=]+/, "+").replace(/^'+/, "").trim();
+        if (!cleanInput) continue;
+
+        var normalized = normalizeCrmPhone(cleanInput, "");
+        var currentFormatted = String(val || "").trim().replace(/^'+/, "");
+        var targetClean = normalized.replace(/^'+/, "").trim();
+
         if (formula && (formula.charAt(0) === "+" || formula.charAt(0) === "=")) {
-          var cleanVal = formula.replace(/^[+=]+/, "+").trim();
-          cell.setValue("'" + cleanVal);
+          cell.setValue(normalized || ("'" + cleanInput));
           fixedCount++;
         } else if (String(val) === "#ERROR!" || String(val).indexOf("ERROR") !== -1) {
-          var txt = formula || String(cell.getFormula() || "");
-          if (txt) {
-            var cleanVal = txt.replace(/^[+=]+/, "+").trim();
-            cell.setValue("'" + cleanVal);
-            fixedCount++;
-          }
+          cell.setValue(normalized || ("'" + cleanInput));
+          fixedCount++;
+        } else if (targetClean && currentFormatted !== targetClean) {
+          cell.setValue(normalized);
+          fixedCount++;
         }
       }
     }
   }
 
-  SpreadsheetApp.getUi().alert("✅ Phone number formatting fixed across all sheets!\nFixed " + fixedCount + " formula errors.");
+  SpreadsheetApp.getUi().alert("✅ Phone number formatting fixed across all sheets!\nCleaned and normalized " + fixedCount + " phone entries (fixed #ERROR! formulas and corrected 4-digit prefixes).");
 }
 
 function testEmailPermissions() {

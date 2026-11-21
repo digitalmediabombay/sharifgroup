@@ -315,14 +315,16 @@ function normalizeCrmPhone(rawPhone, dialCode) {
         clean = match[2];
       }
     }
-  }
-
-  if (matchedDial) {
-    d = matchedDial;
-  } else if (d) {
-    var dDigits = d.replace(/\D/g, "");
-    if (dDigits && clean.indexOf(dDigits) === 0 && clean.length > dDigits.length + 5) {
-      clean = clean.slice(dDigits.length);
+  } else {
+    // Digits only without '+' - check if digits start with any known dial code digits
+    var allDigits = clean.replace(/\D/g, "");
+    for (var j = 0; j < CRM_KNOWN_DIAL_CODES.length; j++) {
+      var dDigits = CRM_KNOWN_DIAL_CODES[j].replace(/\D/g, "");
+      if (allDigits.indexOf(dDigits) === 0 && allDigits.length > dDigits.length + 5) {
+        matchedDial = CRM_KNOWN_DIAL_CODES[j];
+        clean = allDigits.slice(dDigits.length);
+        break;
+      }
     }
   }
 
@@ -1558,7 +1560,7 @@ function fixExistingPhoneErrors() {
     var phoneCols = [];
     for (var c = 0; c < headers.length; c++) {
       var h = String(headers[c] || "").toLowerCase();
-      if (h.indexOf("phone") !== -1 || h.indexOf("dial") !== -1 || h.indexOf("whatsapp") !== -1) {
+      if (h.indexOf("phone") !== -1 || h.indexOf("dial") !== -1 || h.indexOf("whatsapp") !== -1 || h.indexOf("mobile") !== -1 || h.indexOf("tel") !== -1) {
         phoneCols.push(c + 1);
       }
     }
@@ -1576,23 +1578,32 @@ function fixExistingPhoneErrors() {
         var val = values[r][0];
         var cell = sheet.getRange(2 + r, col);
 
+        var rawStr = String(formula || val || "").trim();
+        if (!rawStr) continue;
+
+        // Clean formula / equal / plus / apostrophe prefixes
+        var cleanInput = rawStr.replace(/^[+=]+/, "+").replace(/^'+/, "").trim();
+        if (!cleanInput) continue;
+
+        var normalized = normalizeCrmPhone(cleanInput, "");
+        var currentFormatted = String(val || "").trim().replace(/^'+/, "");
+        var targetClean = normalized.replace(/^'+/, "").trim();
+
         if (formula && (formula.charAt(0) === "+" || formula.charAt(0) === "=")) {
-          var cleanVal = formula.replace(/^[+=]+/, "+").trim();
-          cell.setValue("'" + cleanVal);
+          cell.setValue(normalized || ("'" + cleanInput));
           fixedCount++;
         } else if (String(val) === "#ERROR!" || String(val).indexOf("ERROR") !== -1) {
-          var txt = formula || String(cell.getFormula() || "");
-          if (txt) {
-            var cleanVal = txt.replace(/^[+=]+/, "+").trim();
-            cell.setValue("'" + cleanVal);
-            fixedCount++;
-          }
+          cell.setValue(normalized || ("'" + cleanInput));
+          fixedCount++;
+        } else if (targetClean && currentFormatted !== targetClean) {
+          cell.setValue(normalized);
+          fixedCount++;
         }
       }
     }
   }
 
-  SpreadsheetApp.getUi().alert("✅ Phone number formatting fixed across all sheets!\nFixed " + fixedCount + " formula errors.");
+  SpreadsheetApp.getUi().alert("✅ Phone number formatting fixed across all sheets!\nCleaned and normalized " + fixedCount + " phone entries (fixed #ERROR! formulas and corrected 4-digit prefixes).");
 }
 
 function testEmailPermissions() {

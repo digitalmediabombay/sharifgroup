@@ -30,6 +30,8 @@ def create_changed_only_zip():
         'assets/js/webinars-data.js',
         'assets/js/cms-live.js',
         'data/sgcms_webinars.json',
+        'scripts/SharifGroup_Master_CRM_AppsScript.js',
+        'scripts/GoogleAppsScript_Webinar_CRM.js',
         'sitemap.xml',
         'sitemap.php',
         'sitemap.xsl',
