@@ -1934,6 +1934,7 @@
 
         // Ensure video elements are active in browser rendering pipeline (not display: none)
         // while remaining invisible to the user
+        const defaultVideoSrc = '/assets/videos/footer_bg_e58bba71.mp4';
         [v1, v2].forEach(function(v) {
             if (!v) return;
             v.classList.remove('hidden');
@@ -1945,15 +1946,31 @@
             v.setAttribute('webkit-playsinline', '');
             v.preload = 'auto';
 
-            // Verify source
+            // Resolve and attach source correctly from data-src or src
             var srcEl = v.querySelector('source');
-            if (srcEl && srcEl.getAttribute('src')) {
-                var rawSrc = srcEl.getAttribute('src');
-                if (!rawSrc.startsWith('/') && !rawSrc.startsWith('http') && window.location.pathname.startsWith('/blog/')) {
-                    srcEl.src = '/assets/videos/footer_bg_e58bba71.mp4';
-                    v.src = '/assets/videos/footer_bg_e58bba71.mp4';
-                }
+            var rawSrc = '';
+            if (srcEl) {
+                rawSrc = srcEl.getAttribute('src') || srcEl.getAttribute('data-src') || '';
             }
+            if (!rawSrc) {
+                rawSrc = v.getAttribute('src') || v.getAttribute('data-src') || '';
+            }
+            if (!rawSrc || rawSrc === 'none') {
+                rawSrc = defaultVideoSrc;
+            } else if (!rawSrc.startsWith('/') && !rawSrc.startsWith('http')) {
+                rawSrc = '/' + rawSrc.replace(/^(\.\.\/)+/, '').replace(/^\.?\//, '');
+            }
+
+            if (srcEl) {
+                srcEl.src = rawSrc;
+                srcEl.setAttribute('src', rawSrc);
+            }
+            if (!v.src || !v.src.endsWith(rawSrc.replace(/^\//, ''))) {
+                v.src = rawSrc;
+            }
+            try {
+                v.load();
+            } catch(e) {}
         });
 
         const ctx = canvas.getContext("2d", { alpha: false });
@@ -1966,7 +1983,7 @@
 
         function resizeCanvas() {
             const dpr = Math.min(window.devicePixelRatio || 1, 1.5);
-            const parent = canvas.parentElement || canvas;
+            const parent = canvas.parentElement || canvas.closest('footer') || canvas;
             const w = Math.floor((parent.clientWidth || canvas.offsetWidth || window.innerWidth) * dpr);
             const h = Math.floor((parent.clientHeight || canvas.offsetHeight || 500) * dpr);
             if (w > 0 && h > 0 && (canvas.width !== w || canvas.height !== h)) {
@@ -2006,6 +2023,8 @@
             ctx.globalAlpha = 1;
             if (activeVideo && activeVideo.readyState >= 2) {
                 ctx.drawImage(activeVideo, 0, 0, canvas.width, canvas.height);
+            } else if (activeVideo && activeVideo.paused) {
+                activeVideo.play().catch(function() {});
             }
             if (isFading && standbyVideo && standbyVideo.readyState >= 2) {
                 ctx.globalAlpha = crossfadeAlpha;
@@ -2015,8 +2034,12 @@
         }
 
         function startPlayback() {
+            resizeCanvas();
             if (activeVideo && activeVideo.paused) {
-                activeVideo.play().catch(function() {});
+                var playPromise = activeVideo.play();
+                if (playPromise !== undefined) {
+                    playPromise.catch(function() {});
+                }
             }
             if (!animationFrameId) {
                 renderFrame();

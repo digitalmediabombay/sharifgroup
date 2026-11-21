@@ -2953,7 +2953,7 @@ window.__PRE_RENDERED_CMS_BLOGS = [{"id":"bid-izo738","slug":"dominica-passport-
             const v1 = document.getElementById("footer-hidden-video");
             const v2 = document.getElementById("footer-hidden-video-2");
             const canvas = document.getElementById("footer-seamless-canvas");
-            if (!v1 || !v2 || !canvas) return;
+            if (!v1 || !v2 || !canvas || canvas._hasCanvasEngine) return;
 
             // T09: Prevent 13.5MB video decoding and 60fps canvas loop on mobile
             if (window.innerWidth < 768 || window.matchMedia('(prefers-reduced-motion: reduce)').matches) {

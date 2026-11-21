@@ -286,13 +286,6 @@
                 </style>
                 <script type="text/javascript">
                 <xsl:text disable-output-escaping="yes"><![CDATA[
-                    // If user navigated directly to the .xsl template, redirect to the actual XML sitemap
-                    try {
-                        if (window.location && window.location.pathname && window.location.pathname.indexOf('sitemap.xsl') !== -1) {
-                            window.location.replace(window.location.pathname.replace('sitemap.xsl', 'sitemap.xml') + (window.location.search || ''));
-                        }
-                    } catch (e) {}
-
                     var currentLang = 'all';
                     var currentQuery = '';
 
