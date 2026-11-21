@@ -31,6 +31,8 @@ def create_changed_only_zip():
         'assets/js/cms-live.js',
         'data/sgcms_webinars.json',
         'sitemap.xml',
+        'sitemap.php',
+        'sitemap.xsl',
         'blog/index.html',
         'ar/blog/index.html',
         'fa/blog/index.html',
