@@ -137,8 +137,9 @@ def build_complete_zip():
                 continue
 
             # Strict security check: NEVER bundle config.php or server credentials
-            if 'config.php' in rel_path.lower():
-                raise RuntimeError("Security error: config.php matched!")
+            if 'config.php' in rel_path.lower() or 'db_config' in rel_path.lower():
+                print(f"  ! Skipping sensitive file: {rel_path}")
+                continue
 
             arcname = rel_path.replace('\\', '/')
             zipf.write(full_path, arcname=arcname)
