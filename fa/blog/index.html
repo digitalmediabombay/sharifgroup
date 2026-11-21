@@ -2104,19 +2104,19 @@ window.__PRE_RENDERED_CMS_BLOGS = [{"id":"bid-izo738","slug":"dominica-passport-
 <div class="hidden pt-6 pb-2" id="detail-webinar-card">
 <div class="grid grid-cols-1 sm:grid-cols-[140px_1fr] gap-5 items-center p-6 rounded-2xl bg-[#070E1A] text-white border border-white/10 shadow-xl">
 <div class="bg-[#050B14] border border-white/10 rounded-xl p-4 text-center">
-<b class="block font-serif text-3xl sm:text-4xl text-[#C5A880] leading-none mb-1" id="dwc-day">29</b>
-<span class="text-[11px] text-neutral-300 uppercase tracking-wider block" id="dwc-month">Oct · 20:00</span>
+<b class="block font-serif text-3xl sm:text-4xl text-[#C5A880] leading-none mb-1" id="dwc-day">۲۵</b>
+<span class="text-[11px] text-neutral-300 uppercase tracking-wider block" id="dwc-month">نومبر · ۲۰:۰۰</span>
 </div>
 <div class="space-y-2 text-start">
 <span class="text-[10px] font-bold uppercase tracking-[0.2em] text-[#C5A880] flex items-center gap-1.5">
-<i class="fa-solid fa-video text-[10px]"></i> <span id="dwc-eyebrow">UPCOMING LIVE WEBINAR · FREE</span>
+<i class="fa-solid fa-video text-[10px]"></i> <span id="dwc-eyebrow">وبینار زنده بعدی · رایگان</span>
 </span>
-<h4 class="font-serif text-lg sm:text-xl font-bold text-white leading-snug" id="dwc-title">A Second Passport for Afghans: Introducing the Dominica Programme</h4>
-<p class="text-xs text-neutral-300 font-light leading-relaxed line-clamp-2" id="dwc-excerpt">جلسه آنلاین و رایگان به زبان فارسی: برنامه شهروندی دومینیکا چیست، چرا برای افغان‌ها مهم است و چه کسانی می‌توانند درخواست بدهند.</p>
+<h4 class="font-serif text-lg sm:text-xl font-bold text-white leading-snug" id="dwc-title">از تصمیم تا پاسپورت: مراحل، مدارک و منشأ پول</h4>
+<p class="text-xs text-neutral-300 font-light leading-relaxed line-clamp-2" id="dwc-excerpt">مراحل پرونده، مدارک لازم (تذکره، پاسپورت، اسناد مالی)، اثبات و انتقال منشأ پول، آمادگی برای مصاحبه و ریز هزینه‌های کامل.</p>
 <div class="pt-2">
-<a class="inline-flex items-center gap-2 px-5 py-2.5 rounded-xl bg-[#786142] hover:bg-[#C5A880] text-white text-xs font-bold uppercase tracking-wider transition shadow-md" href="/fa/webinars/dominica-second-passport-for-afghans/" id="dwc-link">
-<span id="dwc-btn">Webinar Details &amp; Registration</span>
-<i class="fa-solid fa-arrow-right text-[10px]"></i>
+<a class="inline-flex items-center gap-2 px-5 py-2.5 rounded-xl bg-[#786142] hover:bg-[#C5A880] text-white text-xs font-bold uppercase tracking-wider transition shadow-md" href="/fa/events/dominica-from-decision-to-passport/#register" id="dwc-link">
+<span id="dwc-btn">جزئیات وبینار و ثبت نام</span>
+<i class="fa-solid fa-arrow-left text-[10px]"></i>
 </a>
 </div>
 </div>
@@ -2762,6 +2762,145 @@ window.__PRE_RENDERED_CMS_BLOGS = [{"id":"bid-izo738","slug":"dominica-passport-
                 });
             }
 
+            // Dynamic Webinar Callout Card Updater (Auto-syncs with active upcoming webinar)
+            function updateDetailWebinarCard(article, activeSlug, currentLang) {
+                try {
+                    var cardEl = document.getElementById("detail-webinar-card");
+                    if (!cardEl) return;
+
+                    var checkText = ((article.category || "") + " " + (article.subcategory || "") + " " + (activeSlug || "") + " " + (article.title || "")).toLowerCase();
+                    var isRelevant = (checkText.indexOf("dominica") !== -1 || checkText.indexOf("citizenship") !== -1 || checkText.indexOf("passport") !== -1 || checkText.indexOf("afghan") !== -1);
+                    if (!isRelevant) {
+                        cardEl.classList.add("hidden");
+                        return;
+                    }
+
+                    cardEl.classList.remove("hidden");
+
+                    // 1. Resolve upcoming session dynamically
+                    var webinars = window.SGCMS_WEBINARS || null;
+                    if (!webinars) {
+                        try {
+                            var cached = localStorage.getItem('sgcms_webinars_live') || localStorage.getItem('sgcms_webinars');
+                            if (cached) webinars = JSON.parse(cached);
+                        } catch(e) {}
+                    }
+
+                    var session = null;
+                    var nowMs = Date.now();
+                    if (Array.isArray(webinars) && webinars.length) {
+                        var upcoming = webinars.filter(function(w) {
+                            if (!w || w.event_status === 'ended' || w.event_status === 'cancelled') return false;
+                            if (w.start_utc) {
+                                var sMs = new Date(w.start_utc).getTime();
+                                var dur = ((w.duration_min || 120) * 60 * 1000);
+                                if (nowMs >= (sMs + dur)) return false;
+                            }
+                            return true;
+                        }).sort(function(a, b) {
+                            return (new Date(a.start_utc || 0).getTime()) - (new Date(b.start_utc || 0).getTime());
+                        });
+                        if (upcoming.length) session = upcoming[0];
+                    }
+
+                    // 2. Default active session: Session 2 (WEB02)
+                    var defSession = {
+                        id: "WEB02",
+                        slug: "dominica-from-decision-to-passport",
+                        start_utc: "2026-11-25T15:30:00Z",
+                        en: {
+                            title: "From Decision to Passport: Steps, Documents and Source of Funds",
+                            excerpt: "The application steps, required documents (Tazkira, passport, financial records), proving and transferring source of funds, interview preparation and a full cost breakdown."
+                        },
+                        fa: {
+                            title: "از تصمیم تا پاسپورت: مراحل، مدارک و منشأ پول",
+                            excerpt: "مراحل پرونده، مدارک لازم (تذکره، پاسپورت، اسناد مالی)، اثبات و انتقال منشأ پول، آمادگی برای مصاحبه و ریز هزینه‌های کامل."
+                        },
+                        ar: {
+                            title: "من القرار إلى الجواز: الخطوات والمستندات ومصدر الأموال",
+                            excerpt: "مراحل الملف، والمستندات المطلوبة (التذكرة والجواز والسجلات المالية)، وإثبات مصدر الأموال وتحويلها، والاستعداد للمقابلة، وتفصيل كامل للتكاليف."
+                        },
+                        zh: {
+                            title: "从决定到护照：流程、材料与资金来源",
+                            excerpt: "申请流程、所需材料（身份证Tazkira、护照、财务文件）、资金来源证明与转账、面试准备及完整费用明细。"
+                        }
+                    };
+
+                    var curSession = session || defSession;
+                    var sUtc = curSession.start_utc || "2026-11-25T15:30:00Z";
+                    var sDate = new Date(sUtc);
+                    var sSlug = curSession.slug || "dominica-from-decision-to-passport";
+
+                    var prefix = (currentLang && currentLang !== "en") ? "/" + currentLang : "";
+                    var eventLink = prefix + "/events/" + sSlug + "/#register";
+
+                    // Localized copy
+                    var locData = curSession[currentLang] || curSession.en || {};
+                    var title = locData.title || (defSession[currentLang] && defSession[currentLang].title) || defSession.en.title;
+                    var excerpt = locData.excerpt || (defSession[currentLang] && defSession[currentLang].excerpt) || defSession.en.excerpt;
+
+                    // Day and Month/Time formatting
+                    var dayText = "25";
+                    var monthText = "Nov · 19:30";
+                    var eyebrowText = "UPCOMING LIVE WEBINAR · FREE";
+                    var btnText = "Webinar Details & Registration";
+
+                    if (currentLang === "fa") {
+                        dayText = "۲۵";
+                        monthText = "نومبر · ۲۰:۰۰";
+                        eyebrowText = "وبینار زنده بعدی · رایگان";
+                        btnText = "جزئیات وبینار و ثبت نام";
+                        try {
+                            dayText = new Intl.DateTimeFormat('fa-AF-u-ca-gregory', { day: 'numeric', timeZone: 'Asia/Kabul' }).format(sDate);
+                            var mStr = new Intl.DateTimeFormat('fa-AF-u-ca-gregory', { month: 'short', timeZone: 'Asia/Kabul' }).format(sDate);
+                            monthText = mStr + " · ۲۰:۰۰";
+                        } catch(e) {}
+                    } else if (currentLang === "ar") {
+                        dayText = "25";
+                        monthText = "نوفمبر · 19:30";
+                        eyebrowText = "الندوة المباشرة القادمة · مجاناً";
+                        btnText = "تفاصيل الندوة والتسجيل";
+                        try {
+                            dayText = new Intl.DateTimeFormat('ar-AE', { day: 'numeric', timeZone: 'Asia/Dubai' }).format(sDate);
+                            var mStrAr = new Intl.DateTimeFormat('ar-AE', { month: 'short', timeZone: 'Asia/Dubai' }).format(sDate);
+                            monthText = mStrAr + " · 19:30";
+                        } catch(e) {}
+                    } else if (currentLang === "zh") {
+                        dayText = "25";
+                        monthText = "11月 · 19:30";
+                        eyebrowText = "即将开播的网络研讨会 · 免费";
+                        btnText = "研讨会详情与报名";
+                        try {
+                            dayText = new Intl.DateTimeFormat('zh-CN', { day: 'numeric', timeZone: 'Asia/Dubai' }).format(sDate).replace(/\D/g, '');
+                            var mStrZh = new Intl.DateTimeFormat('zh-CN', { month: 'short', timeZone: 'Asia/Dubai' }).format(sDate);
+                            monthText = mStrZh + " · 19:30";
+                        } catch(e) {}
+                    } else {
+                        // English default
+                        try {
+                            dayText = new Intl.DateTimeFormat('en-GB', { day: 'numeric', timeZone: 'Asia/Dubai' }).format(sDate);
+                            var mStrEn = new Intl.DateTimeFormat('en-GB', { month: 'short', timeZone: 'Asia/Dubai' }).format(sDate);
+                            monthText = mStrEn + " · 19:30";
+                        } catch(e) {}
+                    }
+
+                    var dayEl = document.getElementById("dwc-day");
+                    if (dayEl) dayEl.textContent = dayText;
+                    var monthEl = document.getElementById("dwc-month");
+                    if (monthEl) monthEl.textContent = monthText;
+                    var eyebrowEl = document.getElementById("dwc-eyebrow");
+                    if (eyebrowEl) eyebrowEl.textContent = eyebrowText;
+                    var titleEl = document.getElementById("dwc-title");
+                    if (titleEl) titleEl.textContent = title;
+                    var excerptEl = document.getElementById("dwc-excerpt");
+                    if (excerptEl) excerptEl.textContent = excerpt;
+                    var btnEl = document.getElementById("dwc-btn");
+                    if (btnEl) btnEl.textContent = btnText;
+                    var linkEl = document.getElementById("dwc-link");
+                    if (linkEl) linkEl.href = eventLink;
+                } catch(err) {}
+            }
+
             // Single-Page Dynamic Article View Function
             function openBlogDetailBySlug(slug, event) {
                 if (event && event.preventDefault) { event.preventDefault(); }
@@ -3205,40 +3344,7 @@ window.__PRE_RENDERED_CMS_BLOGS = [{"id":"bid-izo738","slug":"dominica-passport-
                 updateBlogArticleSeo(article, activeSlug, currentLang);
                 // Check if related to Dominica or Citizenship to show Webinar Promo Card
                 try {
-                    var cardEl = document.getElementById("detail-webinar-card");
-                    if (cardEl) {
-                        var checkText = ((article.category || "") + " " + (article.subcategory || "") + " " + (activeSlug || "") + " " + (article.title || "")).toLowerCase();
-                        if (checkText.indexOf("dominica") !== -1 || checkText.indexOf("citizenship") !== -1 || checkText.indexOf("passport") !== -1 || checkText.indexOf("afghan") !== -1) {
-                            cardEl.classList.remove("hidden");
-                            var prefix = (currentLang && currentLang !== "en") ? "/" + currentLang : "";
-                            var linkEl = document.getElementById("dwc-link");
-                            if (linkEl) linkEl.href = prefix + "/webinars/dominica-second-passport-for-afghans/";
-                            if (currentLang === "fa") {
-                                document.getElementById("dwc-day").textContent = "۸";
-                                document.getElementById("dwc-month").textContent = "عقرب · ۲۰:۰۰";
-                                document.getElementById("dwc-eyebrow").textContent = "وبینار زنده بعدی · رایگان";
-                                document.getElementById("dwc-title").textContent = "پاسپورت دوم برای افغان‌ها: آشنایی با برنامه دومینیکا";
-                                document.getElementById("dwc-excerpt").textContent = "جلسه آنلاین و رایگان به فارسی (دری): برنامه شهروندی دومینیکا چیست، چرا برای افغان‌ها مهم است و چه کسانی می‌توانند درخواست بدهند.";
-                                document.getElementById("dwc-btn").textContent = "جزئیات وبینار و ثبت نام";
-                            } else if (currentLang === "ar") {
-                                document.getElementById("dwc-day").textContent = "29";
-                                document.getElementById("dwc-month").textContent = "أكتوبر · 20:00";
-                                document.getElementById("dwc-eyebrow").textContent = "الندوة المباشرة القادمة · مجاناً";
-                                document.getElementById("dwc-title").textContent = "جواز سفر ثانٍ للأفغان: التعريف ببرنامج دومينيكا";
-                                document.getElementById("dwc-excerpt").textContent = "جلسة مجانية عبر الإنترنت باللغة الفارسية (الدرية): ما هو برنامج جنسية دومينیکا ولماذا يهم الأفغان.";
-                                document.getElementById("dwc-btn").textContent = "تفاصيل الندوة والتسجيل";
-                            } else if (currentLang === "zh") {
-                                document.getElementById("dwc-day").textContent = "29";
-                                document.getElementById("dwc-month").textContent = "10月 · 20:00";
-                                document.getElementById("dwc-eyebrow").textContent = "即将开播的网络研讨会 · 免费";
-                                document.getElementById("dwc-title").textContent = "阿富汗人的第二本护照：多米尼克入籍项目介绍";
-                                document.getElementById("dwc-excerpt").textContent = "免费在线讲座（波斯语/达利语）：多米尼克投资入籍项目是什么、为何对阿富汗人重要。";
-                                document.getElementById("dwc-btn").textContent = "研讨会详情与报名";
-                            }
-                        } else {
-                            cardEl.classList.add("hidden");
-                        }
-                    }
+                    updateDetailWebinarCard(article, activeSlug, currentLang);
                 } catch(e) {}
 
                 // Switch Views
@@ -4010,6 +4116,7 @@ window.__PRE_RENDERED_CMS_BLOGS = [{"id":"bid-izo738","slug":"dominica-passport-
     // Flag that the user is coming from an internal page of Sharif Group website
     sessionStorage.setItem('sharif_preloader_shown', 'true');
 </script>
+<script src="/assets/js/webinars-data.js?v=20261121"></script>
 <script src="/assets/js/navbar.js?v=20261117"></script>
 <script src="/assets/js/language-switcher.js?v=20261117"></script>
 <script src="/assets/js/blog-translator.js?v=20261117"></script>

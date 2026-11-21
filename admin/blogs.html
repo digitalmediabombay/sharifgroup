@@ -1051,6 +1051,46 @@
       const data = await res.json();
       if (res.ok && (data.success || data.deleted)) {
         showToast('Article deleted successfully.', 'success');
+
+        // Multi-tab & localStorage live sync on delete
+        try {
+          const delId = String(pendingDelete.id || '').toLowerCase();
+          const delSlug = String(pendingDelete.slug || '').toLowerCase();
+
+          // 1. Maintain sgcms_deleted_slugs blacklist in localStorage
+          let delList = [];
+          const rawDel = localStorage.getItem('sgcms_deleted_slugs');
+          if (rawDel) {
+            try { delList = JSON.parse(rawDel); } catch (e) {}
+          }
+          if (!Array.isArray(delList)) delList = [];
+          if (delId && delList.indexOf(delId) === -1) delList.push(delId);
+          if (delSlug && delList.indexOf(delSlug) === -1) delList.push(delSlug);
+          localStorage.setItem('sgcms_deleted_slugs', JSON.stringify(delList));
+
+          // 2. Sanitize sgcms_blog_live in localStorage
+          const rawLive = localStorage.getItem('sgcms_blog_live');
+          if (rawLive) {
+            const parsedLive = JSON.parse(rawLive);
+            if (Array.isArray(parsedLive)) {
+              const cleanLive = parsedLive.filter(b => {
+                if (!b) return false;
+                const bId = String(b.id || '').toLowerCase();
+                const bSlug = String(b.slug || (b.en && b.en.slug) || '').toLowerCase();
+                return bId !== delId && bSlug !== delSlug;
+              });
+              localStorage.setItem('sgcms_blog_live', JSON.stringify(cleanLive));
+            }
+          }
+
+          // 3. Broadcast to all open tabs and windows
+          if (typeof BroadcastChannel !== 'undefined') {
+            const bc = new BroadcastChannel('sgcms_blog_channel');
+            bc.postMessage({ type: 'BLOG_DELETED', id: delId, slug: delSlug });
+          }
+          localStorage.setItem('sgcms_blog_deleted_event', JSON.stringify({ id: delId, slug: delSlug, time: Date.now() }));
+        } catch (syncErr) {}
+
         closeDeleteModal();
         await loadAllBlogs();
       } else {
