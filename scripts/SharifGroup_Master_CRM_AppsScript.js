@@ -316,16 +316,17 @@ function normalizeCrmPhone(rawPhone, dialCode) {
       }
     }
   } else {
-    // Digits only without '+' - check if digits start with any known dial code digits
-    var allDigits = clean.replace(/\D/g, "");
-    for (var j = 0; j < CRM_KNOWN_DIAL_CODES.length; j++) {
-      var dDigits = CRM_KNOWN_DIAL_CODES[j].replace(/\D/g, "");
-      if (allDigits.indexOf(dDigits) === 0 && allDigits.length > dDigits.length + 5) {
-        matchedDial = CRM_KNOWN_DIAL_CODES[j];
-        clean = allDigits.slice(dDigits.length);
-        break;
+    // PRESERVE SELECTED CODE: Only strip if user retyped the selected country's own dial digits!
+    if (d) {
+      var dDigits = d.replace(/\D/g, "");
+      if (dDigits && clean.indexOf(dDigits) === 0 && clean.length > dDigits.length + 5) {
+        clean = clean.slice(dDigits.length);
       }
     }
+  }
+
+  if (matchedDial) {
+    d = matchedDial;
   }
 
   clean = clean.replace(/^0+/, "");
@@ -1572,11 +1573,13 @@ function fixExistingPhoneErrors() {
 
       var formulas = range.getFormulas();
       var values = range.getValues();
+      var allRowValues = sheet.getRange(2, 1, lastRow - 1, lastCol).getValues();
 
       for (var r = 0; r < values.length; r++) {
         var formula = formulas[r][0];
         var val = values[r][0];
         var cell = sheet.getRange(2 + r, col);
+        var rowVals = allRowValues[r] || [];
 
         var rawStr = String(formula || val || "").trim();
         if (!rawStr) continue;
@@ -1585,7 +1588,35 @@ function fixExistingPhoneErrors() {
         var cleanInput = rawStr.replace(/^[+=]+/, "+").replace(/^'+/, "").trim();
         if (!cleanInput) continue;
 
-        var normalized = normalizeCrmPhone(cleanInput, "");
+        // Check dial hint from row (e.g. dial column, country/residence/nationality column)
+        var dialHint = "";
+        for (var c = 0; c < headers.length; c++) {
+          var h = String(headers[c] || "").toLowerCase();
+          if (h.indexOf("dial") !== -1) {
+            var dVal = String(rowVals[c] || "").trim().replace(/^'+/, "");
+            if (dVal) { dialHint = dVal.indexOf("+") === 0 ? dVal : "+" + dVal; break; }
+          }
+          if (h.indexOf("country") !== -1 || h.indexOf("residence") !== -1 || h.indexOf("nationality") !== -1) {
+            var cVal = String(rowVals[c] || "").toLowerCase();
+            if (cVal.indexOf("united kingdom") !== -1 || cVal === "uk" || cVal === "gb" || cVal.indexOf("britain") !== -1) dialHint = "+44";
+            else if (cVal.indexOf("united states") !== -1 || cVal === "usa" || cVal === "us" || cVal.indexOf("america") !== -1) dialHint = "+1";
+            else if (cVal.indexOf("emirates") !== -1 || cVal === "uae" || cVal.indexOf("dubai") !== -1) dialHint = "+971";
+            else if (cVal.indexOf("afghanistan") !== -1) dialHint = "+93";
+          }
+        }
+
+        // Auto-recover misassigned +7 / +20 from testing
+        if (dialHint === "+44" && cleanInput.indexOf("+7") === 0) {
+          var dgt = cleanInput.replace(/\D/g, "").replace(/^7/, "");
+          if (dgt.indexOf("7") !== 0) dgt = "7" + dgt;
+          cleanInput = "+44 " + dgt;
+        } else if (dialHint === "+1" && cleanInput.indexOf("+20") === 0) {
+          var dgt = cleanInput.replace(/\D/g, "").replace(/^20/, "");
+          if (dgt.indexOf("20") !== 0) dgt = "20" + dgt;
+          cleanInput = "+1 " + dgt;
+        }
+
+        var normalized = normalizeCrmPhone(cleanInput, dialHint);
         var currentFormatted = String(val || "").trim().replace(/^'+/, "");
         var targetClean = normalized.replace(/^'+/, "").trim();
 

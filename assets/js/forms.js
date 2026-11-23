@@ -275,20 +275,10 @@ function parsePhoneNumber(rawInput, defaultDial) {
       }
     }
   } else {
-    // Check if user typed country code without '+' (e.g. 97150... or 9377...)
-    const matchedNoPlus = KNOWN_DIAL_CODES.find(dc => {
-      const dDigits = dc.replace(/\D/g, '');
-      return clean.startsWith(dDigits) && clean.length > dDigits.length + 5;
-    });
-    if (matchedNoPlus) {
-      finalDial = matchedNoPlus;
-      const dDigits = matchedNoPlus.replace(/\D/g, '');
-      clean = clean.slice(dDigits.length);
-    } else {
-      const dialDigits = finalDial.replace(/\D/g, '');
-      if (dialDigits && clean.startsWith(dialDigits) && clean.length > dialDigits.length + 5) {
-        clean = clean.slice(dialDigits.length);
-      }
+    // PRESERVE SELECTED CODE: Only strip if user re-typed the selected country's own dial code digits!
+    const dialDigits = finalDial.replace(/\D/g, '');
+    if (dialDigits && clean.startsWith(dialDigits) && clean.length > dialDigits.length + 5) {
+      clean = clean.slice(dialDigits.length);
     }
   }
 

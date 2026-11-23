@@ -135,18 +135,8 @@ function normalizePhone($rawPhone, $dialCode = '') {
     if (!empty($matchedDial)) {
         $dial = $matchedDial;
     } else {
-        $matchedNoPlus = '';
-        foreach ($knownCodes as $k) {
-            $kDigits = preg_replace('/\D/', '', $k);
-            if (!empty($kDigits) && strpos($clean, $kDigits) === 0 && strlen($clean) > strlen($kDigits) + 5) {
-                $matchedNoPlus = $k;
-                $clean = substr($clean, strlen($kDigits));
-                break;
-            }
-        }
-        if (!empty($matchedNoPlus)) {
-            $dial = $matchedNoPlus;
-        } elseif (!empty($dial)) {
+        // PRESERVE SELECTED CODE: Only strip if user retyped the selected country's own dial digits!
+        if (!empty($dial)) {
             $dialDigits = preg_replace('/\D/', '', $dial);
             if (!empty($dialDigits) && strpos($clean, $dialDigits) === 0 && strlen($clean) > strlen($dialDigits) + 5) {
                 $clean = substr($clean, strlen($dialDigits));
