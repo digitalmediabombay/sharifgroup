@@ -420,21 +420,21 @@ function handleCategoryLead(data) {
   targetTabName = targetTabName || resolveCategoryTabName(data);
 
   if (targetTabName === CONFIG.TAB_EDUCATION || studentAge || studyLevel || destination || intake) {
-    if (studyLevel && !investmentRoute) investmentRoute = studyLevel;
-    if (destination && !objective) objective = destination;
-    if (studentAge && !familyMembers) familyMembers = formatEducationAge(studentAge);
-    if (intake && !timeline) timeline = formatEducationIntake(intake);
+    if (studyLevel && (!investmentRoute || investmentRoute === "General")) investmentRoute = studyLevel;
+    if (destination && (!objective || objective === "General")) objective = destination;
+    if (studentAge && (!familyMembers || familyMembers === "General")) familyMembers = formatEducationAge(studentAge);
+    if (intake && (!timeline || timeline === "General")) timeline = formatEducationIntake(intake);
   }
 
   if (preferredDate && !timeline) {
     timeline = preferredDate; // Keep date intact without converting via formatTimeline
   }
 
-  var friendlyRoute = formatRoute(investmentRoute);
+  var friendlyRoute = studyLevel ? (formatRoute(studyLevel) || formatRoute(investmentRoute)) : formatRoute(investmentRoute);
   var friendlyBudget = formatBudget(budget);
-  var friendlyFamily = formatFamily(familyMembers);
-  var friendlyObjective = formatObjective(objective);
-  var friendlyTimeline = preferredDate ? preferredDate : formatTimeline(timeline);
+  var friendlyFamily = studentAge ? formatEducationAge(studentAge) : formatFamily(familyMembers);
+  var friendlyObjective = destination ? formatObjective(destination) : formatObjective(objective);
+  var friendlyTimeline = intake ? formatEducationIntake(intake) : (preferredDate ? preferredDate : formatTimeline(timeline));
 
   // Site Language (B2 item 7) vs Client Preferred Contact Language
   var rawSiteLang = data.site_language || data.siteLanguage || "";
@@ -1010,7 +1010,17 @@ function formatObjective(val) {
       formatted.push("United Kingdom (UK)");
     } else if (s === "switzerland" || s.indexOf("swiss") !== -1) {
       formatted.push("Switzerland");
-    } else if (s === "eu-english" || s.indexOf("netherlands") !== -1 || s.indexOf("ireland") !== -1) {
+    } else if (s === "germany" || s.indexOf("germany") !== -1) {
+      formatted.push("Germany (English Track)");
+    } else if (s === "netherlands" || s.indexOf("netherlands") !== -1) {
+      formatted.push("Netherlands (English Track)");
+    } else if (s === "france" || s.indexOf("france") !== -1) {
+      formatted.push("France (Business & Arts)");
+    } else if (s === "italy-spain" || s.indexOf("italy") !== -1 || s.indexOf("spain") !== -1) {
+      formatted.push("Italy / Spain / Portugal");
+    } else if (s === "undecided" || s.indexOf("undecided") !== -1 || s.indexOf("open") !== -1) {
+      formatted.push("Open / Flexible (Guidance Required)");
+    } else if (s === "eu-english" || s.indexOf("ireland") !== -1) {
       formatted.push("EU English-Taught Universities");
     } else if (s === "us-canada" || s.indexOf("us / canada") !== -1) {
       formatted.push("USA & Canada");
@@ -1044,9 +1054,9 @@ function formatEducationAge(val) {
   if (!val) return "";
   var s = String(val).toLowerCase().trim();
   if (s === "prep_school" || s.indexOf("prep") !== -1 || s.indexOf("7-11") !== -1 || s.indexOf("7–11") !== -1) return "Ages 7–11 (Prep / Primary)";
-  if (s === "senior_school" || s.indexOf("senior") !== -1 || s.indexOf("11-16") !== -1 || s.indexOf("11–16") !== -1) return "Ages 11–16 (Senior School / GCSE)";
-  if (s === "sixth_form" || s.indexOf("sixth") !== -1 || s.indexOf("16-18") !== -1 || s.indexOf("16–18") !== -1) return "Ages 16–18 (Sixth Form / A-Levels / IB)";
-  if (s === "university" || s.indexOf("18+") !== -1) return "Ages 18+ (University / Degree)";
+  if (s === "middle_school" || s === "senior_school" || s.indexOf("middle") !== -1 || s.indexOf("senior") !== -1 || s.indexOf("12-15") !== -1 || s.indexOf("12–15") !== -1 || s.indexOf("١٢–١٥") !== -1) return "Ages 12–15 (Middle / Senior School)";
+  if (s === "high_school" || s === "sixth_form" || s.indexOf("high") !== -1 || s.indexOf("sixth") !== -1 || s.indexOf("16-18") !== -1 || s.indexOf("16–18") !== -1 || s.indexOf("١٦–١٨") !== -1) return "Ages 16–18 (High School / A-Levels / IB)";
+  if (s === "undergraduate_grad" || s === "university" || s.indexOf("undergrad") !== -1 || s.indexOf("degree") !== -1 || s.indexOf("18+") !== -1) return "Undergraduate / Degree Level";
   if (s === "adult" || s.indexOf("adult") !== -1 || s.indexOf("postgraduate") !== -1) return "Postgraduate / Adult Executive";
   return String(val);
 }
@@ -1057,7 +1067,7 @@ function formatEducationIntake(val) {
   if (s === "sep-2026" || s.indexOf("sep-2026") !== -1 || s.indexOf("september 2026") !== -1) return "September 2026 Intake";
   if (s === "jan-2027" || s.indexOf("jan-2027") !== -1 || s.indexOf("january 2027") !== -1 || s.indexOf("spring 2027") !== -1) return "January / Spring 2027 Intake";
   if (s === "sep-2027" || s.indexOf("sep-2027") !== -1 || s.indexOf("september 2027") !== -1) return "September 2027 Intake";
-  if (s === "future" || s.indexOf("2028") !== -1) return "2028 or Later";
+  if (s === "2028-beyond" || s === "future" || s.indexOf("2028") !== -1) return "2028 or Later";
   return String(val);
 }
 
@@ -1143,14 +1153,20 @@ function formatBudget(val) {
     "10m+": "AED 10,000,000+",
     "2m+": "AED 2,000,000+",
     "aed2m+": "AED 2,000,000+",
-    // Educational Advisory
+    // Educational Advisory (EUR / GBP / CHF)
     "under-15k": "Under €15,000 / yr (European Public Unis)",
+    "under15k": "Under €15,000 / yr (European Public Unis)",
     "15k-30k": "€15,000 – €30,000 / yr (Private / Direct Entry)",
     "18k-30k": "£18,000 – £30,000 / yr (UK Universities)",
+    "18k30k": "£18,000 – £30,000 / yr (UK Universities)",
     "30k-50k": "£30,000 – £50,000 / yr (UK Boarding & Russell Group)",
     "35k-50k": "£35,000 – £50,000 / yr (UK Boarding Schools)",
+    "35k50k": "£35,000 – £50,000 / yr (UK Boarding Schools)",
     "50k+": "£50,000+ / yr (Elite Swiss / UK Boarding Schools)",
-    "80k-plus": "CHF 80,000+ / yr (Swiss Elite Boarding)"
+    "80k-plus": "CHF 80,000+ / yr (Swiss Elite Boarding)",
+    "80kplus": "CHF 80,000+ / yr (Swiss Elite Boarding)",
+    "80k+": "CHF 80,000+ / yr (Swiss Elite Boarding)",
+    "80k": "CHF 80,000+ / yr (Swiss Elite Boarding)"
   };
 
   if (exactMap[s]) {
@@ -1161,6 +1177,12 @@ function formatBudget(val) {
   if (s.indexOf("$") !== -1 || s.indexOf("€") !== -1 || s.indexOf("£") !== -1 || s.indexOf("aed") !== -1 || s.indexOf("chf") !== -1) {
     return String(val).trim();
   }
+
+  // Educational Advisory Fallbacks (Preserve GBP / CHF / EUR)
+  if (s.indexOf("18k") !== -1 || s.indexOf("18k-30") !== -1) return "£18,000 – £30,000 / yr (UK Universities)";
+  if (s.indexOf("35k") !== -1 || s.indexOf("35k-50") !== -1) return "£35,000 – £50,000 / yr (UK Boarding Schools)";
+  if (s.indexOf("80k") !== -1 || s.indexOf("swiss") !== -1) return "CHF 80,000+ / yr (Swiss Elite Boarding)";
+  if (s.indexOf("under-15") !== -1 || s.indexOf("15k") !== -1) return "Under €15,000 / yr (European Public Unis)";
 
   // Exact bounds fallback without collision
   if (s.indexOf("100_200") !== -1 || s.indexOf("100k-200") !== -1) return "$100,000 – $200,000";
@@ -1213,9 +1235,9 @@ function formatRoute(val) {
 
   // Educational Advisory Study Levels
   if (s === "boarding-school" || s.indexOf("boarding") !== -1) return "Boarding School (UK / Switzerland)";
-  if (s === "undergraduate" || s.indexOf("undergrad") !== -1) return "Undergraduate Degree (UK / EU)";
-  if (s === "postgraduate" || s.indexOf("postgrad") !== -1 || s.indexOf("master") !== -1) return "Postgraduate / Master's / MBA";
-  if (s === "foundation" || s.indexOf("foundation") !== -1) return "University Foundation / Pathway";
+  if (s === "bachelor-degree" || s === "undergraduate" || s.indexOf("bachelor") !== -1 || s.indexOf("undergrad") !== -1) return "Undergraduate Degree (UK / EU)";
+  if (s === "master-degree" || s === "postgraduate" || s.indexOf("master") !== -1 || s.indexOf("postgrad") !== -1 || s.indexOf("mba") !== -1) return "Postgraduate / Master's / MBA";
+  if (s === "foundation-program" || s === "foundation" || s.indexOf("foundation") !== -1) return "University Foundation / Pathway";
   if (s === "language-prep" || s.indexOf("language") !== -1) return "Language Immersion & Exam Prep";
 
   // Caribbean & Pacific CBI routes
@@ -1793,15 +1815,21 @@ function fixExistingBudgetAndNationality() {
     var countryCol = -1;
     var notesCol = -1;
     var phoneCol = -1;
+    var familyCol = -1;
+    var objectiveCol = -1;
+    var timelineCol = -1;
 
     for (var c = 0; c < headers.length; c++) {
       var h = String(headers[c] || "").toLowerCase().trim();
       if (h.indexOf("budget") !== -1) budgetCol = c + 1;
-      else if (h.indexOf("route") !== -1 || h.indexOf("programme") !== -1 || h.indexOf("investment") !== -1) routeCol = c + 1;
+      else if (h.indexOf("route") !== -1 || h.indexOf("programme") !== -1 || h.indexOf("investment") !== -1 || h.indexOf("study level") !== -1) routeCol = c + 1;
       else if (h.indexOf("nationality") !== -1) natCol = c + 1;
       else if (h.indexOf("country") !== -1 || h.indexOf("residence") !== -1) countryCol = c + 1;
       else if (h.indexOf("note") !== -1 || h.indexOf("message") !== -1) notesCol = c + 1;
       else if (h.indexOf("phone") !== -1 || h.indexOf("whatsapp") !== -1) phoneCol = c + 1;
+      else if (h.indexOf("family") !== -1 || h.indexOf("age") !== -1 || h.indexOf("grade") !== -1) familyCol = c + 1;
+      else if (h.indexOf("objective") !== -1 || h.indexOf("destination") !== -1) objectiveCol = c + 1;
+      else if (h.indexOf("timeline") !== -1 || h.indexOf("intake") !== -1) timelineCol = c + 1;
     }
 
     if (budgetCol === -1 && natCol === -1 && routeCol === -1) continue;
@@ -1816,7 +1844,7 @@ function fixExistingBudgetAndNationality() {
       if (routeCol !== -1) {
         var currentRoute = String(row[routeCol - 1] || "").trim();
         var trueRouteCode = "";
-        var rMatch = notesVal.match(/Route:\s*([^\s|]+)/i);
+        var rMatch = notesVal.match(/(?:Route|Study Level|Level):\s*([^\s|]+)/i);
         if (rMatch && rMatch[1]) {
           trueRouteCode = rMatch[1].trim();
         }
@@ -1836,7 +1864,7 @@ function fixExistingBudgetAndNationality() {
         }
       }
 
-      // 2. Recover Budget from surviving Notes code or format existing budget
+      // 2. Recover Budget from surviving Notes code or format existing budget (preserves GBP, CHF, EUR)
       if (budgetCol !== -1) {
         var currentBudget = String(row[budgetCol - 1] || "").trim();
         var trueBudgetCode = "";
@@ -1860,13 +1888,54 @@ function fixExistingBudgetAndNationality() {
         }
       }
 
-      // 3. Fix Nationality cell if blank
+      // 3. Recover Age / Grade (Family Members column) from Notes
+      if (familyCol !== -1) {
+        var currentFam = String(row[familyCol - 1] || "").trim();
+        var aMatch = notesVal.match(/(?:Age\/Grade|Age|Family):\s*([^\s|]+)/i);
+        if (aMatch && aMatch[1]) {
+          var expectedAge = formatEducationAge(aMatch[1].trim()) || formatFamily(aMatch[1].trim());
+          if (expectedAge && expectedAge !== currentFam) {
+            sheet.getRange(2 + r, familyCol).setValue(expectedAge);
+          }
+        }
+      }
+
+      // 4. Recover Target Destination (Primary Objective column) from Notes
+      if (objectiveCol !== -1) {
+        var currentObj = String(row[objectiveCol - 1] || "").trim();
+        var dMatch = notesVal.match(/(?:Destination|Objective):\s*([^\s|]+)/i);
+        if (dMatch && dMatch[1]) {
+          var expectedDest = formatObjective(dMatch[1].trim());
+          if (expectedDest && expectedDest !== currentObj) {
+            sheet.getRange(2 + r, objectiveCol).setValue(expectedDest);
+          }
+        }
+      }
+
+      // 5. Recover Intake Timeline (Planning Timeline column) from Notes
+      if (timelineCol !== -1) {
+        var currentTime = String(row[timelineCol - 1] || "").trim();
+        var iMatch = notesVal.match(/(?:Intake|Timeline):\s*([^\s|]+)/i);
+        if (iMatch && iMatch[1]) {
+          var expectedIntake = formatEducationIntake(iMatch[1].trim()) || formatTimeline(iMatch[1].trim());
+          if (expectedIntake && expectedIntake !== currentTime) {
+            sheet.getRange(2 + r, timelineCol).setValue(expectedIntake);
+          }
+        }
+      }
+
+      // 6. Fix Nationality cell if blank
       if (natCol !== -1) {
         var rawNat = String(row[natCol - 1] || "").trim();
         if (!rawNat) {
           var derivedNat = "";
+          // Check notes for Nationality: tag
+          var nMatch = notesVal.match(/Nationality:\s*([^|\n]+)/i);
+          if (nMatch && nMatch[1] && nMatch[1].trim()) {
+            derivedNat = nMatch[1].trim();
+          }
           // Check Country / Residence column
-          if (countryCol !== -1) {
+          if (!derivedNat && countryCol !== -1) {
             var cVal = String(row[countryCol - 1] || "").trim();
             if (cVal) derivedNat = cVal;
           }

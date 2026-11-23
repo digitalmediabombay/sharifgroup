@@ -1016,6 +1016,11 @@ async function handleContactSubmit(event) {
   payload.destination = payload.targetDestination || payload.destination || '';
   payload.intake = payload.intakeTimeline || payload.intake || '';
 
+  if (payload.study_level && !payload.investmentRoute) payload.investmentRoute = payload.study_level;
+  if (payload.student_age && !payload.familyMembers) payload.familyMembers = payload.student_age;
+  if (payload.destination && !payload.objective) payload.objective = payload.destination;
+  if (payload.intake && !payload.timeline) payload.timeline = payload.intake;
+
   // Social Responsibility fields (B2 item 3)
   const curPath = (window.location.pathname || '').toLowerCase();
   if (curPath.includes('/socialresponsibility') || form.id === 'social-resp-form') {
@@ -1119,6 +1124,12 @@ async function handleContactSubmit(event) {
   else if (payload.programChoice) extraDetails.push(`Program: ${payload.programChoice}`);
   if (payload.subProgram) extraDetails.push(`Sub-Program: ${payload.subProgram}`);
   if (payload.propertyInterest) extraDetails.push(`Property Interest: ${payload.propertyInterest}`);
+  if (payload.nationality) extraDetails.push(`Nationality: ${payload.nationality}`);
+  if (payload.residence) extraDetails.push(`Residence: ${payload.residence}`);
+  if (payload.study_level) extraDetails.push(`Study Level: ${payload.study_level}`);
+  if (payload.student_age) extraDetails.push(`Age/Grade: ${payload.student_age}`);
+  if (payload.destination) extraDetails.push(`Destination: ${payload.destination}`);
+  if (payload.intake) extraDetails.push(`Intake: ${payload.intake}`);
   if (payload.investmentRoute) extraDetails.push(`Route: ${payload.investmentRoute}`);
   if (payload.budget) extraDetails.push(`Budget: ${payload.budget}`);
   if (payload.familyMembers) extraDetails.push(`Family: ${payload.familyMembers}`);

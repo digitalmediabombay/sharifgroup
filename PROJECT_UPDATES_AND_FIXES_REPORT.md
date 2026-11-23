@@ -194,3 +194,37 @@ The client's active Google Sheets was executing code from an earlier legacy file
    Enhanced `fixExistingBudgetAndNationality()` under the `⭐ Sharif Group CRM` menu to parse surviving `Route: <code>` and `Budget: <code>` tags from Client Notes. Clicking this option in Google Sheets automatically restores Row 9 to:
    - **Route:** `CMVM Regulated Investment Fund (€500k)`
    - **Budget:** `€250,000 – €500,000`
+
+---
+
+## 9. Educational Advisory Field Forwarding & Budget Currency Fix (AR & ZH Rows 7–8)
+
+### Issues Reported
+In **Educational Advisory Tab Rows 7–8** (AR and ZH leads):
+1. **Missing Data in Sheet Row:** `Nationality`, `age/grade`, `study level`, `destination`, and `intake` did not reach the row.
+2. **Missing Currency Symbols:** Budgets lost `£` (GBP) for AR (`18k-30k` / `35k-50k`) and `CHF` for ZH (`80k-plus`).
+3. **Arabic Success Message Conflict:** AR on-page text promised both "within 2 hours" (خلال ساعتين) and "within 24 business hours" (خلال 24 ساعة عمل).
+
+### Root Causes
+1. **Form Field Normalization Gap:**
+   In `assets/js/forms.js` and `api/contact.php`, educational advisory inputs (`studyLevel`, `studentAgeGrade`, `targetDestination`, `intakeTimeline`) were extracted under education-specific keys but were not mirrored into the category standard questionnaire fields (`investmentRoute`, `familyMembers`, `objective`, `timeline`). Consequently, Google Sheets received empty values for those standard category columns.
+2. **Budget Map Omission for Education Currencies:**
+   `formatBudget()` did not have explicit fallbacks for `18k-30k` (GBP), `35k-50k` (GBP), and `80k-plus` (CHF), causing them to fall back to raw key strings without currency symbols.
+3. **Locale Inconsistency:**
+   `ar/educationaladvisory/index.html` lines 2493 & 2613 hardcoded "خلال ساعتين" (within 2 hours), while `forms.js` returned the standardized "خلال 24 ساعة عمل" (within 24 business hours).
+
+### Fixes Applied
+1. **Frontend (`assets/js/forms.js`):**
+   - Automatically aliases `student_age` ➔ `familyMembers`, `study_level` ➔ `investmentRoute`, `destination` ➔ `objective`, and `intake` ➔ `timeline`.
+   - Added educational metadata (`Age/Grade:`, `Study Level:`, `Destination:`, `Intake:`, `Nationality:`) to `[Details]` in Client Notes.
+2. **Backend API (`api/contact.php`):**
+   - Ensures `$investmentRoute`, `$familyMembers`, `$objective`, and `$timeline` fallback to education fields so all Google Apps Script consumers receive fully populated data.
+3. **Master CRM Script (`scripts/SharifGroup_Master_CRM_AppsScript.js` & `scripts/GoogleAppsScript_Webinar_CRM.js`):**
+   - Mapped study levels (`bachelor-degree`, `master-degree`, `boarding-school`, `foundation-program`) in `formatRoute()`.
+   - Mapped age brackets (`prep_school`, `middle_school`, `high_school`, `undergraduate_grad`) in `formatEducationAge()`.
+   - Mapped destinations (`uk`, `switzerland`, `germany`, `netherlands`, `france`, `italy-spain`, `undecided`) in `formatObjective()`.
+   - Mapped intakes (`sep-2026`, `jan-2027`, `sep-2027`, `2028-beyond`) in `formatEducationIntake()`.
+   - Added explicit mappings for GBP (`£18,000 – £30,000 / yr`, `£35,000 – £50,000 / yr`) and CHF (`CHF 80,000+ / yr`) in `formatBudget()`.
+   - Upgraded `fixExistingBudgetAndNationality()` to auto-recover missing age, level, destination, intake, nationality, and currencies on historical Educational Advisory rows (Rows 7–8).
+4. **On-Page Arabic / Multilingual Timing Resolution:**
+   - Unified `ar/educationaladvisory/index.html` (lines 2493, 2613), `zh/educationaladvisory/index.html` (line 2614), and `fa/educationaladvisory/index.html` (line 2613) to **24 business hours** across the board.
