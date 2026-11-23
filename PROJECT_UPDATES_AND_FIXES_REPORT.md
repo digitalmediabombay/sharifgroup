@@ -127,10 +127,43 @@ All 44 technical audit tickets/tokens from the Developer Handoff (`SharifGroup-T
 ## 6. Action Checklist for Google Sheets Maintenance
 
 1. **Deploy New Apps Script:**
-   - Copy code from `scripts/SharifGroup_Master_CRM_AppsScript.js`.
+   - Copy code from `scripts/GoogleAppsScript_Webinar_CRM.js` (or `scripts/SharifGroup_Master_CRM_AppsScript.js`).
    - In Google Sheets: **Extensions > Apps Script > Paste & Save (Ctrl+S)**.
    - Click **Deploy > Manage deployments > Edit > New version > Deploy**.
 2. **Clean Historical Sheet Rows:**
    - Refresh the Google Sheet.
-   - Click **⭐ Sharif Group CRM > 🔧 Fix Existing Phone Number #ERROR! (Clean All)**.
-   - All past numbers with 4-digit prefixes (`+9715`, `+9391`) and formula errors are instantly converted to valid standard format (`+971 51234567`, `+93 9152923084`).
+   - Click **⭐ Sharif Group CRM > 🔧 Fix Existing Phone Number #ERROR! (Clean All)** to normalize all past numbers with 4-digit prefixes (`+9715`, `+9391`) and formula errors.
+   - Click **⭐ Sharif Group CRM > 📊 Format Existing Budget & Nationality Cells** to automatically format raw budget codes (`350_600k` ➔ `$350,000 – $600,000`, `over_600k` ➔ `$600,000 or more`, etc.) and recover missing nationality cells.
+
+---
+
+## 7. Eligibility Checker Budget & Nationality Bug Fix (Rows 23–27)
+
+### Issues Reported
+1. **EN:** `USD 100k–200k` became `USD 200k–250k`.
+2. **AR:** `USD 200k–350k` became `USD 350k+`.
+3. **FA & ZH:** Stored raw internal codes (`350_600k` and `over_600k`).
+4. **All 4 Languages:** `Nationality` column was completely blank.
+
+### Root Cause Analysis
+1. **Budget Range Corruption:**
+   In Google Apps Script (`scripts/GoogleAppsScript_Webinar_CRM.js`), `formatBudget()` previously used greedy substring matching:
+   ```javascript
+   if (s === "200k-250k" || s.indexOf("200k") !== -1) return "$200,000 – $250,000";
+   if (s === "250k-350k" || s.indexOf("250k") !== -1) return "$250,000 – $350,000";
+   if (s === "350k+" || s.indexOf("350k") !== -1) return "$350,000+";
+   ```
+   - Range `100_200k` contained substring `"200k"` ➔ matched and falsely returned `"$200,000 – $250,000"`.
+   - Range `200_350k` contained substring `"350k"` ➔ matched and falsely returned `"$350,000+"`.
+   - Ranges `350_600k` and `over_600k` had no matching rule and returned raw strings.
+
+2. **Blank Nationality Column:**
+   - In `api/contact.php`, `$nationality` and `$residence` were not extracted or included in `$crmPayload` sent to Google Sheets webhook.
+   - In `eligibilitychecker/index.html` (EN, AR, FA, ZH), fallback values directly from DOM element `#cbi_citizenship` were added to guarantee capture even if modal opened before state calculation.
+
+### Fixes Applied
+1. **Google Apps Script `formatBudget()`:** Replaced with an exhaustive exact key dictionary mapping `under_100k`, `100_200k`, `200_350k`, `350_600k`, `over_600k`, plus all Caribbean, European RBI, and Dubai Real Estate tiers with zero substring collision risk.
+2. **API Payload Forwarding:** Added `$nationality`, `$citizenship`, and `$residence` to `$crmPayload` in `api/contact.php`.
+3. **Frontend Fallback:** Added explicit DOM selector fallbacks in all 4 language versions of `eligibilitychecker/index.html`.
+4. **CRM Cleanup Tool:** Added `fixExistingBudgetAndNationality()` under `⭐ Sharif Group CRM` menu to repair historical rows with 1 click.
+5. **Rebuilt Deployment Archives:** Updated `cpanel_update_only_changed_files.zip` (4.02 MB) and `cpanel_complete_update.zip` (16.12 MB).

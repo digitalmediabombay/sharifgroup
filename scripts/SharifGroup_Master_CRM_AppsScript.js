@@ -1091,45 +1091,83 @@ function formatBudget(val) {
     "under100k": "$100,000 or under",
     "100_200k": "$100,000 – $200,000",
     "100k-200k": "$100,000 – $200,000",
+    "100k200k": "$100,000 – $200,000",
+    "100200k": "$100,000 – $200,000",
     "200_350k": "$200,000 – $350,000",
     "200k-350k": "$200,000 – $350,000",
+    "200k350k": "$200,000 – $350,000",
+    "200350k": "$200,000 – $350,000",
     "350_600k": "$350,000 – $600,000",
     "350k-600k": "$350,000 – $600,000",
+    "350k600k": "$350,000 – $600,000",
+    "350600k": "$350,000 – $600,000",
     "over_600k": "$600,000 or more",
     "over600k": "$600,000 or more",
     "600k+": "$600,000 or more",
+    "600kplus": "$600,000 or more",
+    "90k-100k": "$90,000 – $100,000",
+    "100k-150k": "$100,000 – $150,000",
+    "115k-150k": "$115,000 – $150,000",
+    "130k-180k": "$130,000 – $180,000",
+    "150k-200k": "$150,000 – $200,000",
+    "180k-260k": "$180,000 – $260,000",
     "200k-250k": "$200,000 – $250,000",
+    "230k-300k": "$230,000 – $300,000",
+    "235k-300k": "$235,000 – $300,000",
+    "240k-300k": "$240,000 – $300,000",
     "250k-350k": "$250,000 – $350,000",
+    "260k-400k": "$260,000 – $400,000",
+    "300k-400k": "$300,000 – $400,000",
+    "300k-450k": "$300,000 – $450,000",
+    "350k-500k": "$350,000 – $500,000",
+    "300k-500k": "$300,000 – $500,000",
     "350k+": "$350,000+",
-    "300k+": "$300,000+",
-    // Portugal / Greece / European RBI (EUR)
+    "400k+": "$400,000+",
+    "450k+": "$450,000+",
+    "500k+": "$500,000+",
+    // European RBI / Golden Visas (EUR)
+    "250k-400k": "€250,000 – €400,000",
     "250k-500k": "€250,000 – €500,000",
+    "400k-800k": "€400,000 – €800,000",
     "500k-750k": "€500,000 – €750,000",
     "750k-1m": "€750,000 – €1,000,000",
+    "800k-1.5m": "€800,000 – €1,500,000",
     "1m+": "€1,000,000+",
+    "1.5m+": "€1,500,000+",
     // Dubai Real Estate (AED)
     "1m-2m": "AED 1,000,000 – AED 2,000,000",
+    "2m-3m": "AED 2,000,000 – AED 3,000,000",
     "2m-5m": "AED 2,000,000 – AED 5,000,000 (Golden Visa)",
+    "3m-5m": "AED 3,000,000 – AED 5,000,000",
     "5m-10m": "AED 5,000,000 – AED 10,000,000",
     "10m+": "AED 10,000,000+",
     "2m+": "AED 2,000,000+",
     "aed2m+": "AED 2,000,000+",
-    // Educational Advisory (EUR / GBP)
+    // Educational Advisory
     "under-15k": "Under €15,000 / yr (European Public Unis)",
     "15k-30k": "€15,000 – €30,000 / yr (Private / Direct Entry)",
+    "18k-30k": "£18,000 – £30,000 / yr (UK Universities)",
     "30k-50k": "£30,000 – £50,000 / yr (UK Boarding & Russell Group)",
-    "50k+": "£50,000+ / yr (Elite Swiss / UK Boarding Schools)"
+    "35k-50k": "£35,000 – £50,000 / yr (UK Boarding Schools)",
+    "50k+": "£50,000+ / yr (Elite Swiss / UK Boarding Schools)",
+    "80k-plus": "CHF 80,000+ / yr (Swiss Elite Boarding)"
   };
 
   if (exactMap[s]) {
     return exactMap[s];
   }
 
+  // Already formatted string with currency symbols
+  if (s.indexOf("$") !== -1 || s.indexOf("€") !== -1 || s.indexOf("£") !== -1 || s.indexOf("aed") !== -1 || s.indexOf("chf") !== -1) {
+    return String(val).trim();
+  }
+
   // Exact bounds fallback without collision
   if (s.indexOf("100_200") !== -1 || s.indexOf("100k-200") !== -1) return "$100,000 – $200,000";
   if (s.indexOf("200_350") !== -1 || s.indexOf("200k-350") !== -1) return "$200,000 – $350,000";
   if (s.indexOf("350_600") !== -1 || s.indexOf("350k-600") !== -1) return "$350,000 – $600,000";
-  if (s.indexOf("over_600") !== -1 || s.indexOf("600k") !== -1) return "$600,000 or more";
+  if (s.indexOf("over_600") !== -1 || s.indexOf("over600") !== -1 || s.indexOf("600k") !== -1) return "$600,000 or more";
+  if (s.indexOf("under_100") !== -1 || s.indexOf("under100") !== -1) return "$100,000 or under";
   if (s.indexOf("500k-750") !== -1) return "€500,000 – €750,000";
   if (s.indexOf("750k-1m") !== -1) return "€750,000 – €1,000,000";
   if (s.indexOf("250k-500") !== -1) return "€250,000 – €500,000";
@@ -1470,6 +1508,7 @@ function onOpen() {
     .createMenu("⭐ Sharif Group CRM")
     .addItem("🛠️ Setup All 7 Clean Tabs", "initializeAll7Tabs")
     .addItem("🔧 Fix Existing Phone Number #ERROR! (Clean All)", "fixExistingPhoneErrors")
+    .addItem("📊 Format Existing Budget & Nationality Cells", "fixExistingBudgetAndNationality")
     .addItem("📥 Migrate Leads from Old CRM Sheet", "migrateOldSheetLeadsPrompt")
     .addItem("✉️ Send Test Admin Email Alert", "testEmailPermissions")
     .addToUi();
@@ -1727,4 +1766,102 @@ function migrateOldSheetLeads(sourceSs) {
   }
 
   return totalMigrated;
+}
+
+/**
+ * Traverses category sheets and cleans/formats raw budget codes and blank nationality cells
+ */
+function fixExistingBudgetAndNationality() {
+  var ss = SpreadsheetApp.getActiveSpreadsheet();
+  var sheets = ss.getSheets();
+  var budgetFixed = 0;
+  var natFixed = 0;
+
+  for (var s = 0; s < sheets.length; s++) {
+    var sheet = sheets[s];
+    var lastRow = sheet.getLastRow();
+    if (lastRow < 2) continue;
+
+    var lastCol = sheet.getLastColumn();
+    var headers = sheet.getRange(1, 1, 1, lastCol).getValues()[0];
+
+    var budgetCol = -1;
+    var natCol = -1;
+    var countryCol = -1;
+    var notesCol = -1;
+    var phoneCol = -1;
+
+    for (var c = 0; c < headers.length; c++) {
+      var h = String(headers[c] || "").toLowerCase().trim();
+      if (h.indexOf("budget") !== -1) budgetCol = c + 1;
+      else if (h.indexOf("nationality") !== -1) natCol = c + 1;
+      else if (h.indexOf("country") !== -1 || h.indexOf("residence") !== -1) countryCol = c + 1;
+      else if (h.indexOf("note") !== -1 || h.indexOf("message") !== -1) notesCol = c + 1;
+      else if (h.indexOf("phone") !== -1 || h.indexOf("whatsapp") !== -1) phoneCol = c + 1;
+    }
+
+    if (budgetCol === -1 && natCol === -1) continue;
+
+    var rows = sheet.getRange(2, 1, lastRow - 1, lastCol).getValues();
+
+    for (var r = 0; r < rows.length; r++) {
+      var row = rows[r];
+
+      // 1. Fix Budget cell if raw code or unformatted
+      if (budgetCol !== -1) {
+        var rawBudget = String(row[budgetCol - 1] || "").trim();
+        if (rawBudget) {
+          var formattedBudget = formatBudget(rawBudget);
+          if (formattedBudget && formattedBudget !== rawBudget) {
+            sheet.getRange(2 + r, budgetCol).setValue(formattedBudget);
+            budgetFixed++;
+          }
+        }
+      }
+
+      // 2. Fix Nationality cell if blank
+      if (natCol !== -1) {
+        var rawNat = String(row[natCol - 1] || "").trim();
+        if (!rawNat) {
+          var derivedNat = "";
+          // Check Country / Residence column
+          if (countryCol !== -1) {
+            var cVal = String(row[countryCol - 1] || "").trim();
+            if (cVal) derivedNat = cVal;
+          }
+          // Check notes for nationality mentions
+          if (!derivedNat && notesCol !== -1) {
+            var nVal = String(row[notesCol - 1] || "").toLowerCase();
+            if (nVal.indexOf("afghan") !== -1) derivedNat = "Afghanistan";
+            else if (nVal.indexOf("iran") !== -1) derivedNat = "Iran";
+            else if (nVal.indexOf("chin") !== -1) derivedNat = "China";
+            else if (nVal.indexOf("arab") !== -1 || nVal.indexOf("uae") !== -1) derivedNat = "United Arab Emirates";
+            else if (nVal.indexOf("syria") !== -1) derivedNat = "Syria";
+            else if (nVal.indexOf("leban") !== -1) derivedNat = "Lebanon";
+            else if (nVal.indexOf("egypt") !== -1) derivedNat = "Egypt";
+            else if (nVal.indexOf("uk") !== -1 || nVal.indexOf("british") !== -1) derivedNat = "United Kingdom";
+            else if (nVal.indexOf("usa") !== -1 || nVal.indexOf("american") !== -1) derivedNat = "United States";
+          }
+          // Check phone code
+          if (!derivedNat && phoneCol !== -1) {
+            var pVal = String(row[phoneCol - 1] || "").trim();
+            if (pVal.indexOf("+93") === 0) derivedNat = "Afghanistan";
+            else if (pVal.indexOf("+98") === 0) derivedNat = "Iran";
+            else if (pVal.indexOf("+86") === 0) derivedNat = "China";
+            else if (pVal.indexOf("+971") === 0) derivedNat = "United Arab Emirates";
+            else if (pVal.indexOf("+44") === 0) derivedNat = "United Kingdom";
+            else if (pVal.indexOf("+1") === 0) derivedNat = "United States";
+            else if (pVal.indexOf("+20") === 0) derivedNat = "Egypt";
+          }
+
+          if (derivedNat) {
+            sheet.getRange(2 + r, natCol).setValue(derivedNat);
+            natFixed++;
+          }
+        }
+      }
+    }
+  }
+
+  SpreadsheetApp.getUi().alert("✅ Budget & Nationality format scan complete!\nFormatted " + budgetFixed + " budget cell(s) and recovered " + natFixed + " nationality cell(s).");
 }

@@ -185,6 +185,8 @@ $parsedPhone = normalizePhone($rawPhoneInput, $dialCode);
 $dialCode    = $parsedPhone['dialCode'];
 $phone       = $parsedPhone['formatted'];
 $whatsappE164= $parsedPhone['e164'];
+$nationality = trim($data['nationality'] ?? $data['citizenship'] ?? '');
+$residence   = trim($data['residence'] ?? $data['country'] ?? '');
 $country     = trim($data['country'] ?? $data['residence'] ?? $data['nationality'] ?? '');
 $address     = trim($data['address'] ?? '');
 $timezone    = trim($data['timezone'] ?? '');
@@ -289,7 +291,8 @@ if (!empty($ADMIN_EMAIL)) {
         . "• Full Name:     " . $fullName . "\n"
         . "• Email Address: " . ($email ?: 'Not provided') . "\n"
         . "• Phone Number:  " . ($phone ?: 'Not provided') . "\n"
-        . "• Country:       " . ($country ?: 'Not specified') . "\n"
+        . (!empty($nationality) ? ("• Nationality:   " . $nationality . "\n") : '')
+        . "• Country:       " . ($residence ?: ($country ?: 'Not specified')) . "\n"
         . "• Service/Route: " . ($service ?: 'General Inquiry') . "\n"
         . "• Language:      " . strtoupper($lang) . "\n"
         . "• Form ID:       " . $formId . "\n"
@@ -382,13 +385,18 @@ if (!empty($CRM_WEBHOOK)) {
             'phone' => $phone,
             'whatsapp_e164' => $whatsappE164,
             'country' => $country,
+            'residence' => $residence,
+            'nationality' => $nationality,
+            'citizenship' => $nationality,
             'address' => $address,
             'timezone' => $timezone,
             'service' => $service,
             'notes' => $notes,
             'investmentRoute' => trim($data['investmentRoute'] ?? $propertyInterest ?? ''),
             'budget' => trim($data['budget'] ?? $data['budgetTier'] ?? ''),
-            'familyMembers' => trim($data['familyMembers'] ?? ''),
+            'budgetTier' => trim($data['budgetTier'] ?? $data['budget'] ?? ''),
+            'familyMembers' => trim($data['familyMembers'] ?? $data['familySize'] ?? $data['family'] ?? ''),
+            'familySize' => trim($data['familySize'] ?? $data['familyMembers'] ?? $data['family'] ?? ''),
             'objective' => trim($data['objective'] ?? ''),
             'timeline' => trim($data['timeline'] ?? ''),
             'lang' => $lang,
