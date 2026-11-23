@@ -986,7 +986,9 @@ function formatObjective(val) {
       formatted.push("Security & Second Passport (Plan B)");
     } else if (s === "tax" || s === "tax-optimization" || s.indexOf("tax") !== -1 || s.indexOf("wealth") !== -1) {
       formatted.push("Wealth Preservation & Tax Structuring");
-    } else if (s === "family" || s === "family-future" || s.indexOf("family") !== -1 || s.indexOf("children") !== -1) {
+    } else if (s === "family-home" || s.indexOf("family-home") !== -1 || s.indexOf("family home") !== -1 || s.indexOf("primary-residence") !== -1 || s.indexOf("family residence") !== -1 || s.indexOf("سکونت") !== -1) {
+      formatted.push("Primary Family Residence / Home");
+    } else if (s === "family" || s === "family-future" || s === "children" || s.indexOf("future") !== -1 || s.indexOf("children") !== -1) {
       formatted.push("Security & Future for Children");
     } else if (s === "lifestyle" || s === "minimal-stay" || s.indexOf("presence") !== -1) {
       formatted.push("European Residence & Minimal Physical Presence");
@@ -1909,6 +1911,8 @@ function fixExistingBudgetAndNationality() {
           if (expectedDest && expectedDest !== currentObj) {
             sheet.getRange(2 + r, objectiveCol).setValue(expectedDest);
           }
+        } else if (sheet.getName() === "Real Estate" && (currentObj === "Security & Future for Children" || currentObj === "family-home")) {
+          sheet.getRange(2 + r, objectiveCol).setValue("Primary Family Residence / Home");
         }
       }
 

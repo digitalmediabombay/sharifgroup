@@ -228,3 +228,36 @@ In **Educational Advisory Tab Rows 7–8** (AR and ZH leads):
    - Upgraded `fixExistingBudgetAndNationality()` to auto-recover missing age, level, destination, intake, nationality, and currencies on historical Educational Advisory rows (Rows 7–8).
 4. **On-Page Arabic / Multilingual Timing Resolution:**
    - Unified `ar/educationaladvisory/index.html` (lines 2493, 2613), `zh/educationaladvisory/index.html` (line 2614), and `fa/educationaladvisory/index.html` (line 2613) to **24 business hours** across the board.
+
+---
+
+## 10. Real Estate Objective Collision, Currency, and Timing Resolution (EN & FA Rows 6–7)
+
+### Issues Reported
+In **Real Estate Tab Rows 6–7** (EN & FA leads):
+1. **Missing Data in Sheet Row:** `Nationality` and `AED` currency prefix were missing.
+2. **Objective Semantic Collision:** In FA, "محل سکونت اصلی برای خانواده" (Primary family residence, code `family-home`) was recorded as **"Security & Future for Children"**.
+3. **Persian & Multilingual Timing Conflict:** The on-page success message in `fa/realestate/index.html` promised "within 2 hours" (ظرف ۲ ساعت آینده) while `forms.js` returned "within 24 business hours" (ظرف ۲۴ ساعت کاری).
+
+### Root Causes
+1. **Objective Substring Collision:**
+   In `formatObjective()`, `s.indexOf("family") !== -1` was evaluated greedily before checking `family-home`. Because `family-home` contains "family", it erroneously returned the CBI objective `"Security & Future for Children"`.
+2. **Missing Currency & Nationality:**
+   - `formatBudget()` was previously missing fallback matches for `1m-2m`, `2m-5m`, `5m-10m`, and `10m+` in the script deployed on the client's sheet, causing them to be saved as raw keys without "AED".
+   - `api/contact.php` previously omitted `nationality` in `$crmPayload` before our earlier fix.
+3. **Hardcoded On-Page Text:**
+   `fa/realestate/index.html` line 2054, `ar/realestate/index.html` line 2054, and `zh/realestate/index.html` line 2055 had legacy 2-hour messages in their hidden success divs.
+
+### Fixes Applied
+1. **Objective Formatter Disambiguation:**
+   Updated `formatObjective()` in both `scripts/SharifGroup_Master_CRM_AppsScript.js` and `scripts/GoogleAppsScript_Webinar_CRM.js`:
+   `s === "family-home"` and `s.indexOf("family-home") !== -1` are explicitly evaluated first and return **`"Primary Family Residence / Home"`**, preventing any collision with `"Security & Future for Children"`.
+2. **AED Currency Guarantee:**
+   Confirmed exact keys and fallbacks for `1m-2m`, `2m-5m`, `5m-10m`, and `10m+` in `formatBudget()` strictly outputting AED formatting (`AED 1,000,000 – AED 2,000,000`, `AED 2,000,000 – AED 5,000,000 (Golden Visa)`, etc.).
+3. **Auto-Repair Upgrade for Historical Rows 6–7:**
+   Updated `fixExistingBudgetAndNationality()`:
+   - On the "Real Estate" tab, detects any objective previously mistranslated as "Security & Future for Children" or raw "family-home" and restores it to **`"Primary Family Residence / Home"`**.
+   - Formats raw budget keys (`2m-5m`, etc.) with the correct AED prefix.
+   - Recovers blank Nationality from Client Notes or dial code/country.
+4. **Unified Timing to 24 Business Hours:**
+   Updated `fa/realestate/index.html`, `ar/realestate/index.html`, and `zh/realestate/index.html` success text to **24 business hours**.
