@@ -1769,12 +1769,14 @@ function migrateOldSheetLeads(sourceSs) {
 }
 
 /**
- * Traverses category sheets and cleans/formats raw budget codes and blank nationality cells
+ * Traverses category sheets and cleans/formats raw budget codes, corrupted routes, and blank nationality cells.
+ * Reads surviving 'Route: ...' and 'Budget: ...' codes from Notes to accurately recover mistranslated rows (e.g. Portugal Row 9).
  */
 function fixExistingBudgetAndNationality() {
   var ss = SpreadsheetApp.getActiveSpreadsheet();
   var sheets = ss.getSheets();
   var budgetFixed = 0;
+  var routeFixed = 0;
   var natFixed = 0;
 
   for (var s = 0; s < sheets.length; s++) {
@@ -1786,6 +1788,7 @@ function fixExistingBudgetAndNationality() {
     var headers = sheet.getRange(1, 1, 1, lastCol).getValues()[0];
 
     var budgetCol = -1;
+    var routeCol = -1;
     var natCol = -1;
     var countryCol = -1;
     var notesCol = -1;
@@ -1794,32 +1797,70 @@ function fixExistingBudgetAndNationality() {
     for (var c = 0; c < headers.length; c++) {
       var h = String(headers[c] || "").toLowerCase().trim();
       if (h.indexOf("budget") !== -1) budgetCol = c + 1;
+      else if (h.indexOf("route") !== -1 || h.indexOf("programme") !== -1 || h.indexOf("investment") !== -1) routeCol = c + 1;
       else if (h.indexOf("nationality") !== -1) natCol = c + 1;
       else if (h.indexOf("country") !== -1 || h.indexOf("residence") !== -1) countryCol = c + 1;
       else if (h.indexOf("note") !== -1 || h.indexOf("message") !== -1) notesCol = c + 1;
       else if (h.indexOf("phone") !== -1 || h.indexOf("whatsapp") !== -1) phoneCol = c + 1;
     }
 
-    if (budgetCol === -1 && natCol === -1) continue;
+    if (budgetCol === -1 && natCol === -1 && routeCol === -1) continue;
 
     var rows = sheet.getRange(2, 1, lastRow - 1, lastCol).getValues();
 
     for (var r = 0; r < rows.length; r++) {
       var row = rows[r];
+      var notesVal = (notesCol !== -1) ? String(row[notesCol - 1] || "") : "";
 
-      // 1. Fix Budget cell if raw code or unformatted
+      // 1. Recover Route from surviving Notes code or format existing route
+      if (routeCol !== -1) {
+        var currentRoute = String(row[routeCol - 1] || "").trim();
+        var trueRouteCode = "";
+        var rMatch = notesVal.match(/Route:\s*([^\s|]+)/i);
+        if (rMatch && rMatch[1]) {
+          trueRouteCode = rMatch[1].trim();
+        }
+
+        if (trueRouteCode) {
+          var expectedRoute = formatRoute(trueRouteCode);
+          if (expectedRoute && expectedRoute !== currentRoute) {
+            sheet.getRange(2 + r, routeCol).setValue(expectedRoute);
+            routeFixed++;
+          }
+        } else if (currentRoute) {
+          var formattedRoute = formatRoute(currentRoute);
+          if (formattedRoute && formattedRoute !== currentRoute) {
+            sheet.getRange(2 + r, routeCol).setValue(formattedRoute);
+            routeFixed++;
+          }
+        }
+      }
+
+      // 2. Recover Budget from surviving Notes code or format existing budget
       if (budgetCol !== -1) {
-        var rawBudget = String(row[budgetCol - 1] || "").trim();
-        if (rawBudget) {
-          var formattedBudget = formatBudget(rawBudget);
-          if (formattedBudget && formattedBudget !== rawBudget) {
+        var currentBudget = String(row[budgetCol - 1] || "").trim();
+        var trueBudgetCode = "";
+        var bMatch = notesVal.match(/Budget:\s*([^\s|]+)/i);
+        if (bMatch && bMatch[1]) {
+          trueBudgetCode = bMatch[1].trim();
+        }
+
+        if (trueBudgetCode) {
+          var expectedBudget = formatBudget(trueBudgetCode);
+          if (expectedBudget && expectedBudget !== currentBudget) {
+            sheet.getRange(2 + r, budgetCol).setValue(expectedBudget);
+            budgetFixed++;
+          }
+        } else if (currentBudget) {
+          var formattedBudget = formatBudget(currentBudget);
+          if (formattedBudget && formattedBudget !== currentBudget) {
             sheet.getRange(2 + r, budgetCol).setValue(formattedBudget);
             budgetFixed++;
           }
         }
       }
 
-      // 2. Fix Nationality cell if blank
+      // 3. Fix Nationality cell if blank
       if (natCol !== -1) {
         var rawNat = String(row[natCol - 1] || "").trim();
         if (!rawNat) {
@@ -1830,8 +1871,8 @@ function fixExistingBudgetAndNationality() {
             if (cVal) derivedNat = cVal;
           }
           // Check notes for nationality mentions
-          if (!derivedNat && notesCol !== -1) {
-            var nVal = String(row[notesCol - 1] || "").toLowerCase();
+          if (!derivedNat && notesVal) {
+            var nVal = notesVal.toLowerCase();
             if (nVal.indexOf("afghan") !== -1) derivedNat = "Afghanistan";
             else if (nVal.indexOf("iran") !== -1) derivedNat = "Iran";
             else if (nVal.indexOf("chin") !== -1) derivedNat = "China";
@@ -1863,5 +1904,5 @@ function fixExistingBudgetAndNationality() {
     }
   }
 
-  SpreadsheetApp.getUi().alert("✅ Budget & Nationality format scan complete!\nFormatted " + budgetFixed + " budget cell(s) and recovered " + natFixed + " nationality cell(s).");
+  SpreadsheetApp.getUi().alert("✅ CRM Data Auto-Repair Complete!\n\n• Formatted " + budgetFixed + " budget cell(s)\n• Restored " + routeFixed + " route cell(s) (including CMVM fund)\n• Recovered " + natFixed + " nationality cell(s).");
 }

@@ -60,6 +60,7 @@ const CATEGORY_HEADERS = [
   "Family Members",
   "Primary Objective",
   "Planning Timeline",
+  "Site Language",
   "Language",
   "Notes & Details",
   "Source URL",
@@ -86,6 +87,7 @@ const PARTNER_HEADERS = [
   "Est. Annual Referrals",
   "Heard From",
   "Confidential Message",
+  "Site Language",
   "Language",
   "Source URL",
   "Status",
@@ -104,6 +106,7 @@ const EVENT_HEADERS = [
   "Country of Residence",
   "Questions / Notes",
   "Newsletter Opt-In",
+  "Site Language",
   "Language",
   "Source URL",
   "Page Path",
@@ -124,6 +127,7 @@ function doGet(e) {
 
   return ContentService.createTextOutput(JSON.stringify({
     status: "online",
+    version: "2.2-qa-fixes",
     service: "Sharif Group 7-Category Master CRM",
     timestamp: new Date().toISOString(),
     dailyEmailQuotaRemaining: quota,
@@ -138,8 +142,10 @@ function doGet(e) {
       CONFIG.TAB_EVENT
     ],
     features: [
-      "Dedicated Citizenship Questionnaire Columns (Route, Budget, Family, Objective, Timeline)",
-      "Dedicated Partner Onboarding Columns (Job Title, City, Programmes, Referrals, Heard From)",
+      "Exact Budget Range Mapping without substring collision",
+      "Explicit Portugal CMVM Regulated Fund and Property Desk Route Mapping",
+      "Non-blocking QA/TEST Lead Processing and 5s Rapid Submission Debounce",
+      "Dynamic Partner Status vs Confirmation Email Column Alignment",
       "Automatic Phone #ERROR! Prevention (Plain text + leading apostrophe escape)",
       "Instant Admin Email Alerts with full dossier"
     ]
@@ -170,6 +176,44 @@ function doPost(e) {
     }
 
     var formId = String(data.form_id || (data.webinar_id ? "webinar-registration" : "consultation-lead")).toLowerCase();
+
+    // ── Anti-Abuse & Honeypot Traps (B4) ──────────────────────────────────────
+    var isBotTrap = Boolean(
+      (data.company_url && String(data.company_url).trim()) ||
+      (data.website && String(data.website).trim() && formId !== "partner-application") ||
+      (data.hp_check && String(data.hp_check).trim()) ||
+      (data.hp_url && String(data.hp_url).trim()) ||
+      (data.company && String(data.company).trim() && formId === "webinar-registration") ||
+      (data.fax && String(data.fax).trim())
+    );
+    if (isBotTrap) {
+      if (lock) lock.releaseLock();
+      return ContentService
+        .createTextOutput(JSON.stringify({ status: "success", message: "Inquiry processed successfully." }))
+        .setMimeType(ContentService.MimeType.JSON);
+    }
+
+    // ── Anti-Abuse Rate Limiting (B4: Max 5 submissions per 60s per email/identity) ──
+    var leadEmail = String(data.email || "").toLowerCase().trim();
+    var isTest = (
+      leadEmail.indexOf("test") !== -1 ||
+      leadEmail.indexOf("qa") !== -1 ||
+      String(data.fullName || "").toLowerCase().indexOf("test") !== -1 ||
+      Boolean(data.is_test)
+    );
+
+    if (leadEmail && !isTest) {
+      var cache = CacheService.getScriptCache();
+      var rateKey = "rate_limit_" + leadEmail.replace(/[^a-z0-9]/g, "").slice(0, 40);
+      var currentRate = Number(cache.get(rateKey) || 0);
+      if (currentRate >= 5) {
+        if (lock) lock.releaseLock();
+        return ContentService
+          .createTextOutput(JSON.stringify({ status: "ignored_rate_limit", message: "Submission accepted for processing." }))
+          .setMimeType(ContentService.MimeType.JSON);
+      }
+      cache.put(rateKey, String(currentRate + 1), 60);
+    }
 
     // 1. Partnership Applications (Partnership tab)
     if (formId === "partner-application" || formId.indexOf("partner") !== -1) {
@@ -232,7 +276,7 @@ const CRM_KNOWN_DIAL_CODES = [
 
 function normalizeCrmPhone(rawPhone, dialCode) {
   var s = String(rawPhone || "").trim().replace(/^'+/, "");
-  var d = String(dialCode || "").trim().replace(/^'+/, "");
+  var d = String(dialCode || "+971").trim().replace(/^'+/, "");
   if (d && d.indexOf("+") !== 0) d = "+" + d;
 
   var eastern = ["۰","۱","۲","۳","۴","۵","۶","۷","۸","۹","٠","١","٢","٣","٤","٥","٦","٧","٨","٩"];
@@ -242,7 +286,7 @@ function normalizeCrmPhone(rawPhone, dialCode) {
     while (d.indexOf(eastern[i]) !== -1) d = d.replace(eastern[i], latin[i]);
   }
 
-  // Canonicalize default dial code (e.g. +9715 -> +971, +9198 -> +91)
+  // Auto-repair corrupt dial code (e.g. +9715 -> +971, +9198 -> +91)
   if (d) {
     for (var k = 0; k < CRM_KNOWN_DIAL_CODES.length; k++) {
       if (d.indexOf(CRM_KNOWN_DIAL_CODES[k]) === 0) {
@@ -287,8 +331,8 @@ function normalizeCrmPhone(rawPhone, dialCode) {
 
   clean = clean.replace(/^0+/, "");
   var localDigits = clean.replace(/\D/g, "");
-  var finalDial = d || "+971";
 
+  var finalDial = d || "+971";
   if (!localDigits) return s ? ("'" + s) : "";
   return "'" + finalDial + " " + localDigits;
 }
@@ -308,27 +352,62 @@ function handleCategoryLead(data) {
   var safePhone = normalizeCrmPhone(rawPhone, data.dialCode);
   var cleanPhone = safePhone.replace(/^'+/, "").trim();
 
-  // Deduplication guard: Prevent duplicate submissions within 20 seconds
+  // Resolve target tab upfront so dedupe key is accurately scoped
+  var targetTabName = resolveCategoryTabName(data);
+
+  // Deduplication guard: Prevent accidental double-clicks within 5 seconds for same form
+  // NOTE: Test submissions (QA / TEST in name or email) and unique inquiry IDs are NEVER blocked!
+  var isTestSubmission = (
+    leadName.toLowerCase().indexOf("test") !== -1 ||
+    leadName.toLowerCase().indexOf("qa") !== -1 ||
+    leadEmail.indexOf("test") !== -1 ||
+    Boolean(data.is_test)
+  );
+
   var cache = CacheService.getScriptCache();
-  var dedupeIdentity = (data.inquiry_id || leadEmail || cleanPhone.replace(/[^0-9]/g, "") || leadName).toLowerCase().replace(/[^a-z0-9]/g, "");
-  if (dedupeIdentity.length >= 3) {
+  var dedupeIdentity = (data.inquiry_id || (leadEmail + "_" + (data.form_id || targetTabName)) || cleanPhone || leadName).toLowerCase().replace(/[^a-z0-9_]/g, "");
+
+  if (!isTestSubmission && dedupeIdentity.length >= 3) {
     var dedupeKey = "lead_" + dedupeIdentity.slice(0, 45);
     if (cache.get(dedupeKey)) {
       return {
         status: "ignored_duplicate",
-        targetTab: resolveCategoryTabName(data),
-        message: "Duplicate lead submission ignored (debounced within 20s)."
+        targetTab: targetTabName,
+        message: "Duplicate lead submission ignored (debounced within 5s)."
       };
     }
-    cache.put(dedupeKey, "1", 20); // 20-second debounce lock
+    cache.put(dedupeKey, "1", 5); // 5-second debounce lock
   }
 
   var leadNationality = (data.nationality || data.citizenship || "").trim();
   var leadResidence = (data.residence || data.country || "").trim();
+
+  // Prevent UTC / GMT timezone strings from contaminating Country / Residence column
+  if (leadResidence && (/^UTC[+-]/i.test(leadResidence) || /^GMT[+-]/i.test(leadResidence))) {
+    if (!data.notes || data.notes.indexOf(leadResidence) === -1) {
+      data.notes = (data.notes ? data.notes + " | " : "") + "Timezone: " + leadResidence;
+    }
+    leadResidence = "";
+  }
+  if (leadNationality && (/^UTC[+-]/i.test(leadNationality) || /^GMT[+-]/i.test(leadNationality))) {
+    leadNationality = "";
+  }
   var leadService = data.service || data.programChoice || data.targetProgram || data.program || "General Consultation";
   if (data.subProgram && leadService.indexOf(data.subProgram) === -1) {
     leadService += " (" + data.subProgram + ")";
   }
+
+  // Education Advisory fields (B2 item 2)
+  var studentAge = String(data.student_age || data.studentAgeGrade || data.studentAge || "").trim();
+  var studyLevel = String(data.study_level || data.studyLevel || "").trim();
+  var destination = String(data.destination || data.targetDestination || "").trim();
+  var intake = String(data.intake || data.intakeTimeline || "").trim();
+
+  // Social Responsibility fields (B2 item 3)
+  var organization = String(data.organization || "").trim();
+  var orgType = String(data.orgType || data.org_type || "").trim();
+  var preferredDate = String(data.preferredDate || data.preferred_date || "").trim();
+  var preferredMethod = String(data.preferredMethod || data.preferred_method || "").trim();
 
   // Dedicated citizenship & residency questionnaire parameters
   var investmentRoute = data.investmentRoute || data.route || "";
@@ -337,21 +416,55 @@ function handleCategoryLead(data) {
   var objective = data.objective || data.primaryObjective || (Array.isArray(data.goals) ? data.goals.join(", ") : (data.goals || ""));
   var timeline = data.timeline || data.planningTimeline || "";
 
+  // Category tab resolved upfront for dedupe scoping and context mapping
+  targetTabName = targetTabName || resolveCategoryTabName(data);
+
+  if (targetTabName === CONFIG.TAB_EDUCATION || studentAge || studyLevel || destination || intake) {
+    if (studyLevel && !investmentRoute) investmentRoute = studyLevel;
+    if (destination && !objective) objective = destination;
+    if (studentAge && !familyMembers) familyMembers = formatEducationAge(studentAge);
+    if (intake && !timeline) timeline = formatEducationIntake(intake);
+  }
+
+  if (preferredDate && !timeline) {
+    timeline = preferredDate; // Keep date intact without converting via formatTimeline
+  }
+
   var friendlyRoute = formatRoute(investmentRoute);
   var friendlyBudget = formatBudget(budget);
   var friendlyFamily = formatFamily(familyMembers);
   var friendlyObjective = formatObjective(objective);
-  var friendlyTimeline = formatTimeline(timeline);
+  var friendlyTimeline = preferredDate ? preferredDate : formatTimeline(timeline);
 
+  // Site Language (B2 item 7) vs Client Preferred Contact Language
+  var rawSiteLang = data.site_language || data.siteLanguage || "";
+  var siteLang = rawSiteLang ? formatLanguage(rawSiteLang) : formatLanguage(data.lang || "en");
   var preferredLanguage = data.preferredLanguage || data.lang || "en";
   var friendlyLang = formatLanguage(preferredLanguage);
+
   var leadNotes = (data.notes || data.message || data.confidentialNotes || "").trim();
+  var extraLeadNotes = [];
+  if (organization) extraLeadNotes.push("Organization: " + organization + (orgType ? " (" + orgType + ")" : ""));
+  if (preferredMethod) extraLeadNotes.push("Preferred Discussion Method: " + formatContactMethod(preferredMethod));
+  if (studentAge || studyLevel || destination || intake) {
+    extraLeadNotes.push("Educational Advisory Profile: " + [
+      studentAge ? ("Age/Grade: " + formatEducationAge(studentAge)) : "",
+      studyLevel ? ("Level: " + formatRoute(studyLevel)) : "",
+      destination ? ("Target: " + formatObjective(destination)) : "",
+      intake ? ("Intake: " + formatEducationIntake(intake)) : ""
+    ].filter(Boolean).join(" | "));
+  }
+  if (data.address && leadNotes.indexOf(data.address) === -1) extraLeadNotes.push("Address: " + data.address);
+  if (data.timezone && leadNotes.indexOf(data.timezone) === -1) extraLeadNotes.push("Timezone: " + data.timezone);
+
+  if (extraLeadNotes.length > 0) {
+    leadNotes = (leadNotes ? (leadNotes + "\n---\n") : "") + extraLeadNotes.join("\n");
+  }
+
   var sourceUrl = data.source || "";
-  var pagePath = data.page || "";
+  var pagePath = data.page_path || data.page || "";
   var formId = data.form_id || "consultation-lead";
 
-  // Resolve to one of the 5 category tabs
-  var targetTabName = resolveCategoryTabName(data);
   var emailStatus = "Pending";
 
   // Dispatch instant admin email alert to contact@sharifgroup.ae
@@ -372,6 +485,7 @@ function handleCategoryLead(data) {
         "• Family Members:      " + (friendlyFamily || "Not specified") + "\n" +
         "• Primary Objective:   " + (friendlyObjective || "Not specified") + "\n" +
         "• Planning Timeline:   " + (friendlyTimeline || "Not specified") + "\n" +
+        "• Site Language:       " + siteLang + "\n" +
         "• Preferred Language:  " + friendlyLang + "\n" +
         "• Form ID:             " + formId + "\n" +
         "• Timestamp (UTC):     " + nowUtc + "\n" +
@@ -410,6 +524,7 @@ function handleCategoryLead(data) {
     friendlyFamily,
     friendlyObjective,
     friendlyTimeline,
+    siteLang,
     friendlyLang,
     leadNotes,
     sourceUrl,
@@ -487,7 +602,21 @@ function resolveCategoryTabName(data) {
     return CONFIG.TAB_GENERAL;
   }
 
-  // 4. Dedicated Page URL Path checks (Page URL defines the exact program domain!)
+  // 4. Eligibility Checker Forms -> ALWAYS route to Citizenship (or Residency if user assessed for residency)
+  if (
+    page.indexOf("eligibility") !== -1 ||
+    source.indexOf("eligibility") !== -1 ||
+    formId.indexOf("eligibility") !== -1 ||
+    formId === "onpage-lead-form"
+  ) {
+    var checkProgram = String(data.targetProgram || data.program || "").toLowerCase();
+    if (checkProgram.indexOf("residency") !== -1 || checkProgram.indexOf("golden") !== -1) {
+      return CONFIG.TAB_RESIDENCY;
+    }
+    return CONFIG.TAB_CITIZENSHIP;
+  }
+
+  // 5. Dedicated Page URL Path checks (Page URL defines the exact program domain!)
   if (page.indexOf("/residency") !== -1 || source.indexOf("/residency") !== -1) {
     return CONFIG.TAB_RESIDENCY;
   }
@@ -637,19 +766,26 @@ function handlePartnerApplication(data) {
 
   var email = (data.email || "").toLowerCase().trim();
 
-  // Deduplication guard: Prevent duplicate partner submissions within 20 seconds
+  // Deduplication guard: Prevent duplicate partner submissions within 5 seconds
+  var isTestSubmission = (
+    fullName.toLowerCase().indexOf("test") !== -1 ||
+    fullName.toLowerCase().indexOf("qa") !== -1 ||
+    email.indexOf("test") !== -1 ||
+    Boolean(data.is_test)
+  );
+
   var cache = CacheService.getScriptCache();
   var dedupeIdentity = (data.application_id || email || rawPhone.replace(/[^0-9]/g, "") || fullName).toLowerCase().replace(/[^a-z0-9]/g, "");
-  if (dedupeIdentity.length >= 3) {
+  if (!isTestSubmission && dedupeIdentity.length >= 3) {
     var dedupeKey = "partner_" + dedupeIdentity.slice(0, 45);
     if (cache.get(dedupeKey)) {
       return {
         status: "ignored_duplicate",
         tab: CONFIG.TAB_PARTNERSHIP,
-        message: "Duplicate partner application ignored (debounced within 20s)."
+        message: "Duplicate partner application ignored (debounced within 5s)."
       };
     }
-    cache.put(dedupeKey, "1", 20);
+    cache.put(dedupeKey, "1", 5);
   }
 
   var website = data.website || data.linkedin || "";
@@ -659,6 +795,8 @@ function handlePartnerApplication(data) {
   var message = data.message || data.notes || "";
   var preferredLanguage = data.preferredLanguage || data.lang || "en";
   var friendlyLang = formatLanguage(preferredLanguage);
+  var rawSiteLang = data.site_language || data.siteLanguage || "";
+  var siteLang = rawSiteLang ? formatLanguage(rawSiteLang) : formatLanguage(data.lang || "en");
   var source = data.source || "";
 
   var friendlyProgrammes = formatProgrammes(programmes);
@@ -674,6 +812,7 @@ function handlePartnerApplication(data) {
     }
   }
 
+  // Column Alignment: "Pending Review" lands under Status (for staff review), emailStatus lands under Confirmation Email Status
   sheet.appendRow([
     nowUtc,
     appId,
@@ -691,6 +830,7 @@ function handlePartnerApplication(data) {
     friendlyReferrals,
     friendlyHeard,
     message,
+    siteLang,
     friendlyLang,
     source,
     "Pending Review",
@@ -736,8 +876,8 @@ function handleWebinarRegistration(data) {
   var sheet = getOrCreateTab(ss, CONFIG.TAB_EVENT, EVENT_HEADERS);
 
   var nowUtc = new Date().toISOString();
-  var webinarId = data.webinar_id || "WEB01";
-  var webinarSlug = data.slug || "";
+  var webinarId = data.webinar_id || data.webinarId || "WEB01";
+  var webinarSlug = data.webinar_slug || data.webinarSlug || data.slug || "";
   var fullName = data.fullName || data.name || "Attendee";
 
   var dialCode = (data.dialCode || "").trim().replace(/^'+/, "");
@@ -777,8 +917,10 @@ function handleWebinarRegistration(data) {
   var newsletter = data.newsletter_optin ? "Yes" : "No";
   var preferredLanguage = data.preferredLanguage || data.lang || "fa";
   var friendlyLang = formatLanguage(preferredLanguage);
+  var rawSiteLang = data.site_language || data.siteLanguage || "";
+  var siteLang = rawSiteLang ? formatLanguage(rawSiteLang) : formatLanguage(data.lang || "en");
   var source = data.source || "";
-  var page = data.page || "";
+  var page = data.page_path || data.page || "";
 
   var emailStatus = "Not Sent (No Email Provided)";
   if (email && email.indexOf("@") !== -1) {
@@ -790,9 +932,22 @@ function handleWebinarRegistration(data) {
   }
 
   sheet.appendRow([
-    nowUtc, webinarId, webinarSlug, fullName, safeDialCode, safePhone,
-    email, residence, question, newsletter, friendlyLang, source, page,
-    "Registered", emailStatus
+    nowUtc,
+    webinarId,
+    webinarSlug,
+    fullName,
+    safeDialCode,
+    safePhone,
+    email,
+    residence,
+    question,
+    newsletter,
+    siteLang,
+    friendlyLang,
+    source,
+    page,
+    "Registered",
+    emailStatus
   ]);
 
   try {
@@ -819,20 +974,100 @@ function handleWebinarRegistration(data) {
 // ==============================================================================
 function formatObjective(val) {
   if (!val) return "";
-  var s = String(val).toLowerCase().trim();
-  if (s === "global-mobility" || s.indexOf("mobility") !== -1 || s.indexOf("travel") !== -1) return "Global Mobility & Visa-Free Travel";
-  if (s === "plan-b" || s.indexOf("plan b") !== -1 || s.indexOf("passport") !== -1) return "Secure Second Passport (Plan B)";
-  if (s === "tax-optimization" || s.indexOf("tax") !== -1 || s.indexOf("wealth") !== -1) return "Wealth Preservation & Tax Structuring";
-  if (s === "family-future" || s.indexOf("family") !== -1 || s.indexOf("children") !== -1) return "Security & Future for Children";
-  return String(val);
+  var rawList = Array.isArray(val) ? val : String(val).split(/[,;|]/);
+  var formatted = [];
+
+  for (var i = 0; i < rawList.length; i++) {
+    var s = String(rawList[i]).toLowerCase().trim();
+    if (!s) continue;
+    if (s === "mobility" || s === "global-mobility" || s.indexOf("mobility") !== -1 || s.indexOf("travel") !== -1) {
+      formatted.push("Global Mobility & Visa-Free Travel");
+    } else if (s === "security" || s === "plan-b" || s.indexOf("plan b") !== -1 || s.indexOf("passport") !== -1 || s.indexOf("security") !== -1) {
+      formatted.push("Security & Second Passport (Plan B)");
+    } else if (s === "tax" || s === "tax-optimization" || s.indexOf("tax") !== -1 || s.indexOf("wealth") !== -1) {
+      formatted.push("Wealth Preservation & Tax Structuring");
+    } else if (s === "family" || s === "family-future" || s.indexOf("family") !== -1 || s.indexOf("children") !== -1) {
+      formatted.push("Security & Future for Children");
+    } else if (s === "lifestyle" || s === "minimal-stay" || s.indexOf("presence") !== -1) {
+      formatted.push("European Residence & Minimal Physical Presence");
+    } else if (s.indexOf("eu-citizenship") !== -1 || s.indexOf("citizenship pathway") !== -1) {
+      formatted.push("Pathway to EU Citizenship (5 Years)");
+    } else if (s.indexOf("schengen") !== -1) {
+      formatted.push("Visa-Free Schengen Mobility");
+    } else if (s.indexOf("family-inclusion") !== -1) {
+      formatted.push("Include Dependent Children & Parents");
+    } else if (s.indexOf("tax-planning") !== -1) {
+      formatted.push("International Tax & Wealth Planning");
+    } else if (s === "rental-roi" || s.indexOf("yield") !== -1 || s.indexOf("roi") !== -1) {
+      formatted.push("High Rental Yields & ROI");
+    } else if (s === "capital-growth" || s.indexOf("capital") !== -1 || s.indexOf("appreciation") !== -1) {
+      formatted.push("Long-Term Capital Appreciation");
+    } else if (s === "golden-visa" || s.indexOf("golden visa") !== -1) {
+      formatted.push("UAE 10-Year Golden Visa via Property");
+    } else if (s === "holiday-home" || s.indexOf("holiday") !== -1 || s.indexOf("secondary") !== -1) {
+      formatted.push("Holiday Home / Secondary Residence");
+    } else if (s === "uk" || s.indexOf("united kingdom") !== -1) {
+      formatted.push("United Kingdom (UK)");
+    } else if (s === "switzerland" || s.indexOf("swiss") !== -1) {
+      formatted.push("Switzerland");
+    } else if (s === "eu-english" || s.indexOf("netherlands") !== -1 || s.indexOf("ireland") !== -1) {
+      formatted.push("EU English-Taught Universities");
+    } else if (s === "us-canada" || s.indexOf("us / canada") !== -1) {
+      formatted.push("USA & Canada");
+    } else if (s === "uae-branch" || s.indexOf("uae") !== -1) {
+      formatted.push("UAE International Branch Campuses");
+    } else {
+      formatted.push(rawList[i].trim());
+    }
+  }
+
+  var unique = [];
+  for (var j = 0; j < formatted.length; j++) {
+    if (unique.indexOf(formatted[j]) === -1) {
+      unique.push(formatted[j]);
+    }
+  }
+  return unique.length > 0 ? unique.join(", ") : String(val);
 }
 
 function formatTimeline(val) {
   if (!val) return "";
   var s = String(val).toLowerCase().trim();
-  if (s === "immediate" || s.indexOf("immediate") !== -1 || s.indexOf("0") !== -1) return "Immediately (0–3 months)";
+  // Safe exact check to avoid mistaking dates containing '0' (e.g. 2026-11-20) for 0-3 months
+  if (s === "immediate" || s.indexOf("immediate") !== -1 || s === "0-3" || s.indexOf("0-3") !== -1 || s.indexOf("0–3") !== -1) return "Immediately (0–3 months)";
   if (s === "short_term" || s.indexOf("short") !== -1 || s.indexOf("3-6") !== -1 || s.indexOf("3–6") !== -1) return "3–6 months";
   if (s === "planning" || s.indexOf("plan") !== -1 || s.indexOf("6-12") !== -1 || s.indexOf("6–12") !== -1) return "6–12 months";
+  return String(val);
+}
+
+function formatEducationAge(val) {
+  if (!val) return "";
+  var s = String(val).toLowerCase().trim();
+  if (s === "prep_school" || s.indexOf("prep") !== -1 || s.indexOf("7-11") !== -1 || s.indexOf("7–11") !== -1) return "Ages 7–11 (Prep / Primary)";
+  if (s === "senior_school" || s.indexOf("senior") !== -1 || s.indexOf("11-16") !== -1 || s.indexOf("11–16") !== -1) return "Ages 11–16 (Senior School / GCSE)";
+  if (s === "sixth_form" || s.indexOf("sixth") !== -1 || s.indexOf("16-18") !== -1 || s.indexOf("16–18") !== -1) return "Ages 16–18 (Sixth Form / A-Levels / IB)";
+  if (s === "university" || s.indexOf("18+") !== -1) return "Ages 18+ (University / Degree)";
+  if (s === "adult" || s.indexOf("adult") !== -1 || s.indexOf("postgraduate") !== -1) return "Postgraduate / Adult Executive";
+  return String(val);
+}
+
+function formatEducationIntake(val) {
+  if (!val) return "";
+  var s = String(val).toLowerCase().trim();
+  if (s === "sep-2026" || s.indexOf("sep-2026") !== -1 || s.indexOf("september 2026") !== -1) return "September 2026 Intake";
+  if (s === "jan-2027" || s.indexOf("jan-2027") !== -1 || s.indexOf("january 2027") !== -1 || s.indexOf("spring 2027") !== -1) return "January / Spring 2027 Intake";
+  if (s === "sep-2027" || s.indexOf("sep-2027") !== -1 || s.indexOf("september 2027") !== -1) return "September 2027 Intake";
+  if (s === "future" || s.indexOf("2028") !== -1) return "2028 or Later";
+  return String(val);
+}
+
+function formatContactMethod(val) {
+  if (!val) return "";
+  var s = String(val).toLowerCase().trim();
+  if (s === "phone" || s.indexOf("phone") !== -1 || s.indexOf("call") !== -1) return "Phone Call";
+  if (s === "whatsapp" || s.indexOf("whatsapp") !== -1) return "WhatsApp";
+  if (s === "zoom" || s.indexOf("zoom") !== -1 || s.indexOf("teams") !== -1 || s.indexOf("meeting") !== -1) return "Video Meeting (Zoom / Teams)";
+  if (s === "email" || s.indexOf("email") !== -1) return "Email Correspondence";
   return String(val);
 }
 
@@ -950,6 +1185,40 @@ function formatBudget(val) {
 function formatRoute(val) {
   if (!val) return "";
   var s = String(val).toLowerCase().trim();
+
+  // Portugal RBI (Programme-specific CMVM regulated fund & EUR)
+  if (s === "regulated-fund" || s.indexOf("regulated-fund") !== -1 || s.indexOf("investment fund") !== -1 || s.indexOf("cmvm") !== -1) return "CMVM Regulated Investment Fund (€500k)";
+  if (s === "cultural-heritage" || s.indexOf("cultural") !== -1) return "Cultural Heritage / Arts (€250k)";
+  if (s === "scientific-research" || s.indexOf("scientific") !== -1) return "Scientific Research (€500k)";
+  if (s === "business-job-creation" || s.indexOf("job-creation") !== -1) return "Business & Job Creation (€500k)";
+
+  // Greece Golden Visa
+  if (s === "real-estate-250k" || (s.indexOf("250k") !== -1 && s.indexOf("greece") !== -1)) return "Commercial-to-Residential Conversion (€250k)";
+  if (s === "real-estate-400k" || (s.indexOf("400k") !== -1 && s.indexOf("greece") !== -1)) return "Regional Property Investment (€400k)";
+  if (s === "real-estate-800k" || (s.indexOf("800k") !== -1 && s.indexOf("greece") !== -1)) return "Prime Tier Property Investment (€800k)";
+
+  // Panama Residency
+  if (s.indexOf("qualified-investor") !== -1 || s.indexOf("panama-real-estate") !== -1) return "Real Estate Investment ($300k+)";
+  if (s.indexOf("bank-deposit") !== -1) return "Fixed-Term Bank Deposit ($750k+)";
+
+  // UAE Golden Visa
+  if (s === "property-2m" || s.indexOf("uae-property") !== -1 || (s.indexOf("2m") !== -1 && s.indexOf("uae") !== -1)) return "Real Estate Purchase (AED 2M+)";
+
+  // Real Estate (Property Desk - Human readable labels with AED)
+  if (s === "ready-villas" || s.indexOf("ready") !== -1 || s.indexOf("villa") !== -1) return "Ready Homes & Luxury Villas";
+  if (s === "golden-visa" || s.indexOf("golden-visa") !== -1) return "Golden Visa Property (AED 2M+)";
+  if (s === "off-plan" || s.indexOf("off-plan") !== -1 || s.indexOf("offplan") !== -1) return "Off-Plan & High ROI Projects";
+  if (s === "prime-penthouses" || s.indexOf("penthouse") !== -1) return "Prime Penthouses & Waterfront";
+  if (s === "commercial" || s.indexOf("commercial") !== -1) return "Commercial & Retail Property";
+
+  // Educational Advisory Study Levels
+  if (s === "boarding-school" || s.indexOf("boarding") !== -1) return "Boarding School (UK / Switzerland)";
+  if (s === "undergraduate" || s.indexOf("undergrad") !== -1) return "Undergraduate Degree (UK / EU)";
+  if (s === "postgraduate" || s.indexOf("postgrad") !== -1 || s.indexOf("master") !== -1) return "Postgraduate / Master's / MBA";
+  if (s === "foundation" || s.indexOf("foundation") !== -1) return "University Foundation / Pathway";
+  if (s === "language-prep" || s.indexOf("language") !== -1) return "Language Immersion & Exam Prep";
+
+  // Caribbean & Pacific CBI routes
   if (s === "edf-donation" || s.indexOf("edf") !== -1) return "Economic Diversification Fund ($200k+)";
   if (s === "ntf-donation" || s.indexOf("ntf") !== -1) return "National Transformation Fund ($235k+)";
   if (s === "ndf-donation" || s.indexOf("ndf") !== -1) return "National Development Fund ($230k+)";
@@ -959,7 +1228,8 @@ function formatRoute(val) {
   if (s === "climate-resilience" || s.indexOf("climate") !== -1) return "Climate Resilience Fund ($105k+)";
   if (s === "public-investment" || s.indexOf("infrastructure") !== -1) return "National Infrastructure Fund ($90k+)";
   if (s === "real-estate" || s.indexOf("property") !== -1 || s.indexOf("estate") !== -1) return "Approved Real Estate Project ($200k+)";
-  if (s.indexOf("donation") !== -1 || s.indexOf("fund") !== -1) return "Government Fund Donation";
+  if (s.indexOf("donation") !== -1 || s.indexOf("fund donation") !== -1) return "Government Fund Donation";
+
   return String(val);
 }
 
@@ -1021,9 +1291,9 @@ function getOrCreateTab(ss, preferredName, headers) {
   // 1b. Direct alias match for General Enquiries / General Queries
   if (!sheet && preferredName === CONFIG.TAB_GENERAL) {
     sheet = ss.getSheetByName("General Queries") ||
-            ss.getSheetByName("General_Queries") ||
-            ss.getSheetByName("General Inquiries") ||
-            ss.getSheetByName("General");
+      ss.getSheetByName("General_Queries") ||
+      ss.getSheetByName("General Inquiries") ||
+      ss.getSheetByName("General");
   }
 
   // 2. Space <-> Underscore interchangeability
@@ -1135,6 +1405,15 @@ function sendPartnerConfirmationEmail(recipientEmail, recipientName, application
  */
 function sendSmartEmail(options) {
   var to = options.to;
+
+  // Anti-Spam Relay & RFC 5322 Email Validation (B4)
+  var emailRegex = /^[a-zA-Z0-9.!#$%&'*+/=?^_`{|}~-]+@[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?(?:\.[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?)+$/;
+  if (!to || !emailRegex.test(to)) return false;
+
+  var domain = (to.split("@")[1] || "").toLowerCase();
+  var blockedDomains = ["mailinator.com", "guerrillamail.com", "tempmail.com", "example.com", "test.com", "localhost", "127.0.0.1"];
+  if (blockedDomains.indexOf(domain) !== -1) return false;
+
   var subject = options.subject;
   var body = options.body || "";
   var name = options.name || CONFIG.SENDER_NAME;
@@ -1196,15 +1475,15 @@ function sendLeadConfirmationEmail(leadEmail, leadName, leadService, lang) {
     '<div style="padding:32px 32px 24px 32px;color:#E2E8F0;font-size:15px;line-height:1.7;">' +
     (isFa
       ? ('<p style="direction:rtl;text-align:right;">سلام <strong>' + leadName + '</strong> گرامی،</p>' +
-         '<p style="direction:rtl;text-align:right;">از پیام شما به شریف گروپ دبی درباره <strong>' + (leadService || 'مشاوره اختصاصی') + '</strong> سپاسگزاریم.</p>' +
-         '<p style="direction:rtl;text-align:right;">مشاوران ارشد ما جزئیات درخواست شما را به صورت محرمانه بررسی نموده و ظرف حداکثر ۲۴ ساعت کاری با شما تماس خواهند گرفت.</p>')
+        '<p style="direction:rtl;text-align:right;">از پیام شما به شریف گروپ دبی درباره <strong>' + (leadService || 'مشاوره اختصاصی') + '</strong> سپاسگزاریم.</p>' +
+        '<p style="direction:rtl;text-align:right;">مشاوران ارشد ما جزئیات درخواست شما را به صورت محرمانه بررسی نموده و ظرف حداکثر ۲۴ ساعت کاری با شما تماس خواهند گرفت.</p>')
       : (isAr
         ? ('<p style="direction:rtl;text-align:right;">مرحباً <strong>' + leadName + '</strong>،</p>' +
-           '<p style="direction:rtl;text-align:right;">شكراً لتواصلكم مع مجموعة شريف دبي. تم استلام طلبكم بنجاح بخصوص <strong>' + (leadService || 'الاستشارة الخاصة') + '</strong>.</p>' +
-           '<p style="direction:rtl;text-align:right;">سيقوم مستشارنا الخاص بمراجعة متطلباتكم والتواصل معكم خلال 24 ساعة عمل.</p>')
+          '<p style="direction:rtl;text-align:right;">شكراً لتواصلكم مع مجموعة شريف دبي. تم استلام طلبكم بنجاح بخصوص <strong>' + (leadService || 'الاستشارة الخاصة') + '</strong>.</p>' +
+          '<p style="direction:rtl;text-align:right;">سيقوم مستشارنا الخاص بمراجعة متطلباتكم والتواصل معكم خلال 24 ساعة عمل.</p>')
         : ('<p>Dear <strong>' + leadName + '</strong>,</p>' +
-           '<p>Thank you for reaching out to <strong>Sharif Group Dubai</strong>. We have successfully received your inquiry regarding <strong>' + (leadService || 'Private Client Consultation') + '</strong>.</p>' +
-           '<p>Our senior advisory team is reviewing your requirements under strict confidentiality and will reach out to you within 24 business hours.</p>'))) +
+          '<p>Thank you for reaching out to <strong>Sharif Group Dubai</strong>. We have successfully received your inquiry regarding <strong>' + (leadService || 'Private Client Consultation') + '</strong>.</p>' +
+          '<p>Our senior advisory team is reviewing your requirements under strict confidentiality and will reach out to you within 24 business hours.</p>'))) +
     '</div>' +
     '<div style="background:#070E1A;padding:20px 32px;border-top:1px solid rgba(197,168,128,0.2);text-align:center;font-size:12px;color:#94A3B8;line-height:1.6;">' +
     '  <strong style="color:#C5A880;">Sharif Group Dubai</strong> • 116 The Binary Tower, Business Bay, Dubai, UAE<br/>' +
@@ -1230,6 +1509,7 @@ function onOpen() {
     .addItem("🛠️ Setup All 7 Clean Tabs", "initializeAll7Tabs")
     .addItem("🔧 Fix Existing Phone Number #ERROR! (Clean All)", "fixExistingPhoneErrors")
     .addItem("📊 Format Existing Budget & Nationality Cells", "fixExistingBudgetAndNationality")
+    .addItem("📥 Migrate Leads from Old CRM Sheet", "migrateOldSheetLeadsPrompt")
     .addItem("✉️ Send Test Admin Email Alert", "testEmailPermissions")
     .addToUi();
 }
@@ -1396,13 +1676,107 @@ function fixExistingPhoneErrors() {
   SpreadsheetApp.getUi().alert("✅ Phone number formatting fixed across all sheets!\nCleaned and normalized " + fixedCount + " phone entries (fixed #ERROR! formulas and corrected 4-digit prefixes).");
 }
 
+function testEmailPermissions() {
+  var quota = MailApp.getRemainingDailyQuota();
+  sendSmartEmail({
+    to: CONFIG.ADMIN_EMAIL,
+    subject: "✅ Sharif Group Master CRM — Test Alert",
+    body: "Operational test.\nDaily Quota: " + quota + "\nSender: " + CONFIG.SENDER_EMAIL + "\nRecipient: " + CONFIG.ADMIN_EMAIL
+  });
+  SpreadsheetApp.getUi().alert("✅ Test email sent to " + CONFIG.ADMIN_EMAIL);
+}
+
 /**
- * Traverses category sheets and cleans/formats raw budget codes and blank nationality cells
+ * Migration Utility (B4): Moves leads from old "Sharif Group CRM 2026" sheet into Master Sheet
+ */
+function migrateOldSheetLeadsPrompt() {
+  var ui = SpreadsheetApp.getUi();
+  var prompt = ui.prompt(
+    "📥 Migrate Historical Leads (B4)",
+    "Enter the Google Sheet ID or URL of the old 'Sharif Group CRM 2026' sheet:",
+    ui.ButtonSet.OK_CANCEL
+  );
+
+  if (prompt.getSelectedButton() !== ui.Button.OK) return;
+  var input = prompt.getResponseText().trim();
+  if (!input) return;
+
+  var sheetId = input;
+  var m = input.match(/\/d\/([a-zA-Z0-9-_]+)/);
+  if (m) sheetId = m[1];
+
+  try {
+    var sourceSs = SpreadsheetApp.openById(sheetId);
+    var movedCount = migrateOldSheetLeads(sourceSs);
+    ui.alert("✅ Migration Complete!\n\nSuccessfully migrated " + movedCount + " lead(s) into the Master CRM Sheet.");
+  } catch (err) {
+    ui.alert("❌ Migration Error:\n\n" + err.toString());
+  }
+}
+
+function migrateOldSheetLeads(sourceSs) {
+  var sheets = sourceSs.getSheets();
+  var totalMigrated = 0;
+
+  for (var s = 0; s < sheets.length; s++) {
+    var srcSheet = sheets[s];
+    var data = srcSheet.getDataRange().getValues();
+    if (data.length <= 1) continue;
+
+    var srcHeaders = data[0].map(function(h) { return String(h || "").toLowerCase().trim(); });
+
+    var colMap = {};
+    for (var c = 0; c < srcHeaders.length; c++) {
+      var h = srcHeaders[c];
+      if (h.indexOf("time") !== -1 || h.indexOf("date") !== -1) colMap.timestamp = c;
+      if (h.indexOf("inquiry") !== -1 || h.indexOf("id") !== -1) colMap.inquiryId = c;
+      if (h.indexOf("name") !== -1) colMap.name = c;
+      if (h.indexOf("email") !== -1) colMap.email = c;
+      if (h.indexOf("phone") !== -1 || h.indexOf("dial") !== -1) colMap.phone = c;
+      if (h.indexOf("country") !== -1 || h.indexOf("residence") !== -1) colMap.country = c;
+      if (h.indexOf("program") !== -1 || h.indexOf("service") !== -1) colMap.service = c;
+      if (h.indexOf("lang") !== -1) colMap.lang = c;
+      if (h.indexOf("note") !== -1 || h.indexOf("message") !== -1) colMap.notes = c;
+    }
+
+    for (var r = 1; r < data.length; r++) {
+      var row = data[r];
+      var name = (colMap.name !== undefined ? row[colMap.name] : "") || "Lead";
+      var email = (colMap.email !== undefined ? row[colMap.email] : "") || "";
+      var phone = (colMap.phone !== undefined ? row[colMap.phone] : "") || "";
+      var service = (colMap.service !== undefined ? row[colMap.service] : "") || "";
+
+      if (!name && !email && !phone) continue;
+
+      var leadObj = {
+        fullName: name,
+        email: email,
+        phone: String(phone),
+        service: service,
+        country: (colMap.country !== undefined ? row[colMap.country] : ""),
+        lang: (colMap.lang !== undefined ? row[colMap.lang] : "en"),
+        notes: (colMap.notes !== undefined ? row[colMap.notes] : "Migrated from legacy sheet"),
+        inquiry_id: (colMap.inquiryId !== undefined ? row[colMap.inquiryId] : "") || ("INQ-MIG-" + r),
+        is_test: true // prevent external email dispatch during bulk migration
+      };
+
+      handleCategoryLead(leadObj);
+      totalMigrated++;
+    }
+  }
+
+  return totalMigrated;
+}
+
+/**
+ * Traverses category sheets and cleans/formats raw budget codes, corrupted routes, and blank nationality cells.
+ * Reads surviving 'Route: ...' and 'Budget: ...' codes from Notes to accurately recover mistranslated rows (e.g. Portugal Row 9).
  */
 function fixExistingBudgetAndNationality() {
   var ss = SpreadsheetApp.getActiveSpreadsheet();
   var sheets = ss.getSheets();
   var budgetFixed = 0;
+  var routeFixed = 0;
   var natFixed = 0;
 
   for (var s = 0; s < sheets.length; s++) {
@@ -1414,6 +1788,7 @@ function fixExistingBudgetAndNationality() {
     var headers = sheet.getRange(1, 1, 1, lastCol).getValues()[0];
 
     var budgetCol = -1;
+    var routeCol = -1;
     var natCol = -1;
     var countryCol = -1;
     var notesCol = -1;
@@ -1422,32 +1797,70 @@ function fixExistingBudgetAndNationality() {
     for (var c = 0; c < headers.length; c++) {
       var h = String(headers[c] || "").toLowerCase().trim();
       if (h.indexOf("budget") !== -1) budgetCol = c + 1;
+      else if (h.indexOf("route") !== -1 || h.indexOf("programme") !== -1 || h.indexOf("investment") !== -1) routeCol = c + 1;
       else if (h.indexOf("nationality") !== -1) natCol = c + 1;
       else if (h.indexOf("country") !== -1 || h.indexOf("residence") !== -1) countryCol = c + 1;
       else if (h.indexOf("note") !== -1 || h.indexOf("message") !== -1) notesCol = c + 1;
       else if (h.indexOf("phone") !== -1 || h.indexOf("whatsapp") !== -1) phoneCol = c + 1;
     }
 
-    if (budgetCol === -1 && natCol === -1) continue;
+    if (budgetCol === -1 && natCol === -1 && routeCol === -1) continue;
 
     var rows = sheet.getRange(2, 1, lastRow - 1, lastCol).getValues();
 
     for (var r = 0; r < rows.length; r++) {
       var row = rows[r];
+      var notesVal = (notesCol !== -1) ? String(row[notesCol - 1] || "") : "";
 
-      // 1. Fix Budget cell if raw code or unformatted
+      // 1. Recover Route from surviving Notes code or format existing route
+      if (routeCol !== -1) {
+        var currentRoute = String(row[routeCol - 1] || "").trim();
+        var trueRouteCode = "";
+        var rMatch = notesVal.match(/Route:\s*([^\s|]+)/i);
+        if (rMatch && rMatch[1]) {
+          trueRouteCode = rMatch[1].trim();
+        }
+
+        if (trueRouteCode) {
+          var expectedRoute = formatRoute(trueRouteCode);
+          if (expectedRoute && expectedRoute !== currentRoute) {
+            sheet.getRange(2 + r, routeCol).setValue(expectedRoute);
+            routeFixed++;
+          }
+        } else if (currentRoute) {
+          var formattedRoute = formatRoute(currentRoute);
+          if (formattedRoute && formattedRoute !== currentRoute) {
+            sheet.getRange(2 + r, routeCol).setValue(formattedRoute);
+            routeFixed++;
+          }
+        }
+      }
+
+      // 2. Recover Budget from surviving Notes code or format existing budget
       if (budgetCol !== -1) {
-        var rawBudget = String(row[budgetCol - 1] || "").trim();
-        if (rawBudget) {
-          var formattedBudget = formatBudget(rawBudget);
-          if (formattedBudget && formattedBudget !== rawBudget) {
+        var currentBudget = String(row[budgetCol - 1] || "").trim();
+        var trueBudgetCode = "";
+        var bMatch = notesVal.match(/Budget:\s*([^\s|]+)/i);
+        if (bMatch && bMatch[1]) {
+          trueBudgetCode = bMatch[1].trim();
+        }
+
+        if (trueBudgetCode) {
+          var expectedBudget = formatBudget(trueBudgetCode);
+          if (expectedBudget && expectedBudget !== currentBudget) {
+            sheet.getRange(2 + r, budgetCol).setValue(expectedBudget);
+            budgetFixed++;
+          }
+        } else if (currentBudget) {
+          var formattedBudget = formatBudget(currentBudget);
+          if (formattedBudget && formattedBudget !== currentBudget) {
             sheet.getRange(2 + r, budgetCol).setValue(formattedBudget);
             budgetFixed++;
           }
         }
       }
 
-      // 2. Fix Nationality cell if blank
+      // 3. Fix Nationality cell if blank
       if (natCol !== -1) {
         var rawNat = String(row[natCol - 1] || "").trim();
         if (!rawNat) {
@@ -1458,8 +1871,8 @@ function fixExistingBudgetAndNationality() {
             if (cVal) derivedNat = cVal;
           }
           // Check notes for nationality mentions
-          if (!derivedNat && notesCol !== -1) {
-            var nVal = String(row[notesCol - 1] || "").toLowerCase();
+          if (!derivedNat && notesVal) {
+            var nVal = notesVal.toLowerCase();
             if (nVal.indexOf("afghan") !== -1) derivedNat = "Afghanistan";
             else if (nVal.indexOf("iran") !== -1) derivedNat = "Iran";
             else if (nVal.indexOf("chin") !== -1) derivedNat = "China";
@@ -1491,15 +1904,5 @@ function fixExistingBudgetAndNationality() {
     }
   }
 
-  SpreadsheetApp.getUi().alert("✅ Budget & Nationality format scan complete!\nFormatted " + budgetFixed + " budget cell(s) and recovered " + natFixed + " nationality cell(s).");
-}
-
-function testEmailPermissions() {
-  var quota = MailApp.getRemainingDailyQuota();
-  sendSmartEmail({
-    to: CONFIG.ADMIN_EMAIL,
-    subject: "✅ Sharif Group Master CRM — Test Alert",
-    body: "Operational test.\nDaily Quota: " + quota + "\nSender: " + CONFIG.SENDER_EMAIL + "\nRecipient: " + CONFIG.ADMIN_EMAIL
-  });
-  SpreadsheetApp.getUi().alert("✅ Test email sent to " + CONFIG.ADMIN_EMAIL);
+  SpreadsheetApp.getUi().alert("✅ CRM Data Auto-Repair Complete!\n\n• Formatted " + budgetFixed + " budget cell(s)\n• Restored " + routeFixed + " route cell(s) (including CMVM fund)\n• Recovered " + natFixed + " nationality cell(s).");
 }

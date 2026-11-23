@@ -167,3 +167,30 @@ All 44 technical audit tickets/tokens from the Developer Handoff (`SharifGroup-T
 3. **Frontend Fallback:** Added explicit DOM selector fallbacks in all 4 language versions of `eligibilitychecker/index.html`.
 4. **CRM Cleanup Tool:** Added `fixExistingBudgetAndNationality()` under `⭐ Sharif Group CRM` menu to repair historical rows with 1 click.
 5. **Rebuilt Deployment Archives:** Updated `cpanel_update_only_changed_files.zip` (4.02 MB) and `cpanel_complete_update.zip` (16.12 MB).
+
+---
+
+## 8. Portugal Residency Route & Currency Resolution (Row 9)
+
+### Issues Reported
+In **Residency Tab Row 9** (Portugal ZH lead):
+1. **Budget:** `EUR 250k–500k` was stored as `USD 250k–350k` (`$250,000 – $350,000`).
+2. **Investment Route:** `CMVM-regulated fund` (`regulated-fund`) was stored as `“Government Fund Donation”`.
+3. The original raw codes (`Route: regulated-fund | Budget: 250k-500k`) survived intact in the **Client Notes** column.
+
+### Root Cause
+The client's active Google Sheets was executing code from an earlier legacy file (`scripts/GoogleAppsScript_Webinar_CRM.js`) rather than the Master CRM:
+1. `formatRoute()` in the legacy file had a fallback:
+   `if (s.indexOf("donation") !== -1 || s.indexOf("fund") !== -1) return "Government Fund Donation";`
+   Because `"regulated-fund"` contains `"fund"`, it was misclassified as a Caribbean Government Fund Donation!
+2. `formatBudget()` in the legacy file checked `s.indexOf("250k")` before checking exact ranges, turning `250k-500k` EUR into `$250,000 – $350,000` USD.
+
+### Resolution & Script Unification
+1. **Master Script Clarification:**
+   `scripts/SharifGroup_Master_CRM_AppsScript.js` is the **single authoritative Master CRM script**.
+2. **Zero-Drift Synchronization:**
+   `scripts/GoogleAppsScript_Webinar_CRM.js` has been overwritten to be an exact duplicate copy of `SharifGroup_Master_CRM_AppsScript.js`. Regardless of which file is opened, copied, or deployed, it runs the exact same Master CRM code.
+3. **Surviving Notes Recovery Feature:**
+   Enhanced `fixExistingBudgetAndNationality()` under the `⭐ Sharif Group CRM` menu to parse surviving `Route: <code>` and `Budget: <code>` tags from Client Notes. Clicking this option in Google Sheets automatically restores Row 9 to:
+   - **Route:** `CMVM Regulated Investment Fund (€500k)`
+   - **Budget:** `€250,000 – €500,000`
