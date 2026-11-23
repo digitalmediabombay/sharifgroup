@@ -22,18 +22,19 @@ This report documents all system updates, architectural improvements, bug fixes,
   - Set column number format explicitly to `@` (Plain Text).
   - Added dedicated auto-repair routine `fixExistingPhoneErrors()` to traverse all sheets and convert existing formula errors to plain text with a single click.
 
-### 1.2 Phone Country Dial Code 4-Digit Bug (`+9715`, `+9391`)
-- **Issue:** Dial codes were capturing 4 digits (e.g. `+9715 1234567` for UAE, `+9391 52923084` for Afghanistan) instead of standard 2–3 digit country dial codes (`+971`, `+93`).
-- **Root Cause:** A greedy regex pattern (`\d{1,4}`) merged the first digit of the national phone number into the dial code.
-- **Fix Implemented:**
-  - Strict ITU-T country dial code dictionary (`CRM_KNOWN_DIAL_CODES`) matching longest-prefix-first (`+1-268`... `+971`, `+93`, `+90`, `+44`, `+1`).
-  - Strict digit-level dial code splitting applied across:
-    - `scripts/SharifGroup_Master_CRM_AppsScript.js`
-    - `scripts/GoogleAppsScript_Webinar_CRM.js`
-    - `api/contact.php`
-    - `api/event-register.php`
-    - `assets/js/forms.js`
-  - Upgraded `fixExistingPhoneErrors()` in Apps Script to automatically re-parse and correct all past corrupted entries in Google Sheets.
+### 1.2 Phone Country Dial Code 4-Digit Bug & Selected Dial Code Preservation
+- **Issues Addressed:**
+  1. Dial codes were capturing 4 digits (e.g. `+9715 1234567` for UAE, `+9391 52923084` for Afghanistan) instead of standard 2–3 digit country dial codes (`+971`, `+93`).
+  2. Selected dial codes (`+44`, `+1`) were erroneously overwritten with other countries (`+7`, `+20`) when users entered national numbers starting with matching digits (e.g. UK mobile `7...` matched Russia `+7`, and US area code `20...` matched Egypt `+20`).
+- **Root Cause & Permanent Fix:**
+  - Removed aggressive digit-based country code guessing on inputs without a leading `+`.
+  - Enforced the golden rule: **The user's selected dropdown country code is strictly preserved.**
+  - If a user selects `+44` (UK) and enters `7123456789`, the output is guaranteed to be `+44 7123456789`.
+  - If a user selects `+1` (US) and enters `2015550123`, the output is guaranteed to be `+1 2015550123`.
+  - If a user selects `+971` (UAE) and enters `501234567`, the output is guaranteed to be `+971 501234567`.
+  - Only when an input explicitly begins with `+` (or `00`, e.g. in single-input forms like Eligibility Checker) does the international prefix override the default code.
+  - Redundant re-typing of the *selected* country's own digits (e.g. typing `447123456789` when `+44` is selected) is cleanly stripped while retaining all national digits.
+  - Upgraded `fixExistingPhoneErrors()` in Apps Script with row-level dial code hints (linking to Country/Residence/Nationality columns) to automatically clean both `#ERROR!` formula cells and misassigned test rows.
 
 ### 1.3 Lead Deduplication & Debounce Guards
 - **Issue:** Repeated rapid submissions caused duplicate leads in the sheet.
