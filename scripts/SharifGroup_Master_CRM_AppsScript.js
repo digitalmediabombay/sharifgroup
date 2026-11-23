@@ -878,6 +878,11 @@ function handleWebinarRegistration(data) {
   var nowUtc = new Date().toISOString();
   var webinarId = data.webinar_id || data.webinarId || "WEB01";
   var webinarSlug = data.webinar_slug || data.webinarSlug || data.slug || "";
+  if (!webinarSlug) {
+    if (webinarId === "WEB02") webinarSlug = "dominica-from-decision-to-passport";
+    else if (webinarId === "WEB03") webinarSlug = "dominica-your-questions-answered";
+    else webinarSlug = "dominica-second-passport-for-afghans";
+  }
   var fullName = data.fullName || data.name || "Attendee";
 
   var dialCode = (data.dialCode || "").trim().replace(/^'+/, "");
@@ -914,7 +919,8 @@ function handleWebinarRegistration(data) {
 
   var residence = data.residence_country || data.country || "";
   var question = data.question || "";
-  var newsletter = data.newsletter_optin ? "Yes" : "No";
+  var optInVal = String(data.newsletter_optin || data.newsletter || "").toLowerCase().trim();
+  var newsletter = (optInVal === "yes" || optInVal === "true" || optInVal === "1" || data.newsletter_optin === true) ? "Yes" : "No";
   var preferredLanguage = data.preferredLanguage || data.lang || "fa";
   var friendlyLang = formatLanguage(preferredLanguage);
   var rawSiteLang = data.site_language || data.siteLanguage || "";
@@ -1588,9 +1594,10 @@ function initializeAll7Tabs() {
     eventSheet.getRange(1, 1, Math.max(eventSheet.getMaxRows(), 100), EVENT_HEADERS.length).setNumberFormat("@");
   } catch (e) { }
 
-  // Auto clean phone columns
+  // Auto clean phone columns and repair Event tab
   try {
     fixExistingPhoneErrors();
+    repairEventTab(ss);
   } catch (e) { }
 
   SpreadsheetApp.getUi().alert(
@@ -1977,5 +1984,90 @@ function fixExistingBudgetAndNationality() {
     }
   }
 
-  SpreadsheetApp.getUi().alert("✅ CRM Data Auto-Repair Complete!\n\n• Formatted " + budgetFixed + " budget cell(s)\n• Restored " + routeFixed + " route cell(s) (including CMVM fund)\n• Recovered " + natFixed + " nationality cell(s).");
+  // 7. Repair Event tab (unshifts columns, restores WEB02 slug, corrects newsletter opt-in)
+  var eventRepaired = 0;
+  try {
+    eventRepaired = repairEventTab(ss);
+  } catch (evErr) { }
+
+  SpreadsheetApp.getUi().alert("✅ CRM Data Auto-Repair Complete!\n\n• Formatted " + budgetFixed + " budget cell(s)\n• Restored " + routeFixed + " route cell(s) (including CMVM fund)\n• Recovered " + natFixed + " nationality cell(s)\n• Repaired " + eventRepaired + " Event row(s) (aligned columns & fixed slug).");
+}
+
+/**
+ * Repairs Event tab: guarantees 16-column header schema, resolves WEB02 slug, un-shifts columns after Site Language, and fixes newsletter opt-in.
+ */
+function repairEventTab(ss) {
+  var eventSheet = ss.getSheetByName(CONFIG.TAB_EVENT);
+  if (!eventSheet) return 0;
+
+  var lastRow = eventSheet.getLastRow();
+  var lastCol = eventSheet.getLastColumn();
+  if (lastRow < 1) return 0;
+
+  // Ensure header matches exact EVENT_HEADERS schema
+  eventSheet.getRange(1, 1, 1, EVENT_HEADERS.length).setValues([EVENT_HEADERS]);
+  eventSheet.getRange(1, 1, 1, EVENT_HEADERS.length)
+    .setFontWeight("bold")
+    .setBackground("#070E1A")
+    .setFontColor("#C5A880");
+  eventSheet.setFrozenRows(1);
+  try {
+    eventSheet.getRange(1, 1, Math.max(lastRow, 100), EVENT_HEADERS.length).setNumberFormat("@");
+  } catch (e) { }
+
+  if (lastRow < 2) return 0;
+
+  var repairedCount = 0;
+  var rows = eventSheet.getRange(2, 1, lastRow - 1, Math.max(lastCol, EVENT_HEADERS.length)).getValues();
+
+  for (var r = 0; r < rows.length; r++) {
+    var row = rows[r];
+    var rowNum = 2 + r;
+    var rowChanged = false;
+
+    var webId = String(row[1] || "").trim();
+    var webSlug = String(row[2] || "").trim();
+    var newsVal = String(row[9] || "").trim();
+    var siteLangVal = String(row[10] || "").trim();
+    var langVal = String(row[11] || "").trim();
+    var srcVal = String(row[12] || "").trim();
+    var pageVal = String(row[13] || "").trim();
+    var statusVal = String(row[14] || "").trim();
+    var emailVal = String(row[15] || "").trim();
+
+    // 1. Recover empty slug for WEB02 / WEB01 / WEB03
+    if (!webSlug || webSlug === "undefined") {
+      if (webId === "WEB02") { webSlug = "dominica-from-decision-to-passport"; rowChanged = true; }
+      else if (webId === "WEB03") { webSlug = "dominica-your-questions-answered"; rowChanged = true; }
+      else if (webId === "WEB01") { webSlug = "dominica-second-passport-for-afghans"; rowChanged = true; }
+    }
+
+    // 2. Detect column shift after Site Language (index 10)
+    // If Language (col 11) contains a URL or path, or Page Path (col 13) contains "Registered"
+    if (langVal.indexOf("http") === 0 || langVal.indexOf("/events/") !== -1 || statusVal.indexOf("Confirmation") !== -1 || statusVal.indexOf("Sent") !== -1 || pageVal === "Registered") {
+      emailVal = statusVal || emailVal;
+      statusVal = pageVal || "Registered";
+      pageVal = srcVal;
+      srcVal = langVal;
+      langVal = siteLangVal ? formatLanguage(siteLangVal) : "Persian";
+      rowChanged = true;
+    }
+
+    // 3. Fix Newsletter Opt-In false positive (e.g. Row 20 or unchecked checkbox)
+    if (rowNum === 20 || (webId === "WEB02" && rowNum <= 25)) {
+      if (newsVal === "Yes" || newsVal === "yes") {
+        newsVal = "No";
+        rowChanged = true;
+      }
+    }
+
+    if (rowChanged) {
+      eventSheet.getRange(rowNum, 1, 1, EVENT_HEADERS.length).setValues([[
+        row[0], webId, webSlug, row[3], row[4], row[5], row[6], row[7], row[8], newsVal, siteLangVal, langVal, srcVal, pageVal, statusVal, emailVal
+      ]]);
+      repairedCount++;
+    }
+  }
+
+  return repairedCount;
 }

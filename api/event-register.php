@@ -178,10 +178,19 @@ $whatsappE164= $parsedPhone['e164'];
 $email       = trim(strtolower($data['email'] ?? ''));
 $country     = trim($data['residence_country'] ?? $data['country'] ?? '');
 $question    = trim($data['question'] ?? '');
-$newsletter  = (!empty($data['newsletter_optin']) && $data['newsletter_optin'] === 'yes') ? 'Yes' : 'No';
+$newsletterInput = strtolower(trim((string)($data['newsletter_optin'] ?? $data['newsletter'] ?? '')));
+$newsletter  = ($newsletterInput === 'yes' || $newsletterInput === 'true' || $newsletterInput === '1' || ($data['newsletter_optin'] ?? false) === true) ? 'Yes' : 'No';
 $lang        = strtolower(trim($data['lang'] ?? 'en'));
 $webinarId   = trim($data['webinar_id'] ?? 'WEB01');
-$webinarSlug = trim($data['webinar_slug'] ?? $data['slug'] ?? 'dominica-second-passport-for-afghans');
+$webinarSlug = trim($data['webinar_slug'] ?? $data['slug'] ?? '');
+if (empty($webinarSlug)) {
+    $slugMap = [
+        'WEB01' => 'dominica-second-passport-for-afghans',
+        'WEB02' => 'dominica-from-decision-to-passport',
+        'WEB03' => 'dominica-your-questions-answered'
+    ];
+    $webinarSlug = $slugMap[$webinarId] ?? 'dominica-second-passport-for-afghans';
+}
 $webinarTitle= trim($data['webinar_title'] ?? '');
 $regId       = trim($data['registration_id'] ?? ('REG-' . $webinarId . '-' . strtoupper(substr(uniqid(), -6))));
 $source      = trim($data['source'] ?? '');
