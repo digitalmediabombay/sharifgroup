@@ -47,26 +47,28 @@ const CONFIG = {
 };
 
 // Full Headers for Category Tabs (Citizenship, Residency, Real Estate, Education, General)
+// IMPORTANT: Must match the exact order values are written in appendRow inside handleCategoryLead()
 const CATEGORY_HEADERS = [
-  "Timestamp (UTC)",
-  "Full Name",
-  "Email Address",
-  "Phone Number",
-  "Nationality",
-  "Country / Residence",
-  "Program / Route",
-  "Investment Route",
-  "Approx Budget",
-  "Family Members",
-  "Primary Objective",
-  "Planning Timeline",
-  "Site Language",
-  "Language",
-  "Notes & Details",
-  "Source URL",
-  "Page Path",
-  "Form ID",
-  "Email Status"
+  "Timestamp (UTC)",      // col 1  - A
+  "Full Name",            // col 2  - B
+  "Email Address",        // col 3  - C
+  "Phone Number",         // col 4  - D
+  "Nationality",          // col 5  - E
+  "Country / Residence",  // col 6  - F
+  "Program / Route",      // col 7  - G
+  "Investment Route",     // col 8  - H
+  "Approx Budget",        // col 9  - I
+  "Family Members",       // col 10 - J
+  "Primary Objective",    // col 11 - K
+  "Planning Timeline",    // col 12 - L
+  "Site Language",        // col 13 - M  ← MUST exist; Language is col 14
+  "Language",             // col 14 - N
+  "Notes & Details",      // col 15 - O
+  "Source URL",           // col 16 - P
+  "Page Path",            // col 17 - Q
+  "Form ID",              // col 18 - R
+  "Email Status",         // col 19 - S
+  "Status"                // col 20 - T  ← Matches existing sheet column
 ];
 
 // Headers for Partnership Tab
@@ -512,25 +514,26 @@ function handleCategoryLead(data) {
   }
 
   var row = [
-    nowUtc,
-    leadName,
-    leadEmail,
-    safePhone,
-    leadNationality,
-    leadResidence,
-    leadService,
-    friendlyRoute,
-    friendlyBudget,
-    friendlyFamily,
-    friendlyObjective,
-    friendlyTimeline,
-    siteLang,
-    friendlyLang,
-    leadNotes,
-    sourceUrl,
-    pagePath,
-    formId,
-    emailStatus
+    nowUtc,            // col 1  Timestamp (UTC)
+    leadName,          // col 2  Full Name
+    leadEmail,         // col 3  Email Address
+    safePhone,         // col 4  Phone Number
+    leadNationality,   // col 5  Nationality
+    leadResidence,     // col 6  Country / Residence
+    leadService,       // col 7  Program / Route
+    friendlyRoute,     // col 8  Investment Route
+    friendlyBudget,    // col 9  Approx Budget
+    friendlyFamily,    // col 10 Family Members
+    friendlyObjective, // col 11 Primary Objective
+    friendlyTimeline,  // col 12 Planning Timeline
+    siteLang,          // col 13 Site Language
+    friendlyLang,      // col 14 Language
+    leadNotes,         // col 15 Notes & Details
+    sourceUrl,         // col 16 Source URL
+    pagePath,          // col 17 Page Path
+    formId,            // col 18 Form ID
+    emailStatus,       // col 19 Email Status
+    "Active"           // col 20 Status
   ];
 
   // Save directly to the designated category sheet tab
@@ -1367,9 +1370,24 @@ function getOrCreateTab(ss, preferredName, headers) {
   if (sheet) {
     try {
       var curCols = sheet.getLastColumn();
-      if (curCols < headers.length) {
-        sheet.getRange(1, 1, 1, headers.length).setValues([headers]);
-        sheet.getRange(1, 1, 1, headers.length)
+      // Compare actual header names, not just count — this catches misaligned/renamed headers
+      var existingHeaders = curCols > 0 ? sheet.getRange(1, 1, 1, curCols).getValues()[0] : [];
+      var needsSync = false;
+      for (var hi = 0; hi < headers.length; hi++) {
+        if (existingHeaders[hi] !== headers[hi]) {
+          needsSync = true;
+          break;
+        }
+      }
+      if (needsSync || curCols < headers.length) {
+        // Expand sheet if needed then write correct headers
+        if (curCols < headers.length) {
+          sheet.getRange(1, 1, 1, headers.length).setValues([headers]);
+        } else {
+          // Overwrite only up to headers.length columns — leave extra columns alone
+          sheet.getRange(1, 1, 1, headers.length).setValues([headers]);
+        }
+        sheet.getRange(1, 1, 1, Math.max(curCols, headers.length))
           .setFontWeight("bold")
           .setBackground("#070E1A")
           .setFontColor("#C5A880");
@@ -1537,11 +1555,64 @@ function onOpen() {
   SpreadsheetApp.getUi()
     .createMenu("⭐ Sharif Group CRM")
     .addItem("🛠️ Setup All 7 Clean Tabs", "initializeAll7Tabs")
+    .addItem("🔨 Force Rebuild All Headers (Fix Column Shift)", "forceRebuildAllHeaders")
     .addItem("🔧 Fix Existing Phone Number #ERROR! (Clean All)", "fixExistingPhoneErrors")
     .addItem("📊 Format Existing Budget & Nationality Cells", "fixExistingBudgetAndNationality")
     .addItem("📥 Migrate Leads from Old CRM Sheet", "migrateOldSheetLeadsPrompt")
     .addItem("✉️ Send Test Admin Email Alert", "testEmailPermissions")
     .addToUi();
+}
+
+/**
+ * Force Rebuild All Headers — Column-by-column precise fix.
+ * Does NOT delete any data rows. Only resets row 1 headers to exact canonical order.
+ * Run this ONCE after deploying the new script to fix any existing column misalignment.
+ */
+function forceRebuildAllHeaders() {
+  var ss = SpreadsheetApp.getActiveSpreadsheet();
+  var ui = SpreadsheetApp.getUi();
+  var fixed = [];
+
+  var tabHeaderMap = [
+    { name: CONFIG.TAB_CITIZENSHIP,  headers: CATEGORY_HEADERS },
+    { name: CONFIG.TAB_RESIDENCY,    headers: CATEGORY_HEADERS },
+    { name: CONFIG.TAB_REAL_ESTATE,  headers: CATEGORY_HEADERS },
+    { name: CONFIG.TAB_EDUCATION,    headers: CATEGORY_HEADERS },
+    { name: CONFIG.TAB_GENERAL,      headers: CATEGORY_HEADERS },
+    { name: CONFIG.TAB_PARTNERSHIP,  headers: PARTNER_HEADERS },
+    { name: CONFIG.TAB_EVENT,        headers: EVENT_HEADERS }
+  ];
+
+  for (var t = 0; t < tabHeaderMap.length; t++) {
+    var item   = tabHeaderMap[t];
+    var sheet  = ss.getSheetByName(item.name);
+    if (!sheet) {
+      // Try alias for general
+      if (item.name === CONFIG.TAB_GENERAL) {
+        sheet = ss.getSheetByName("General Queries") || ss.getSheetByName("General Inquiries");
+      }
+    }
+    if (!sheet) continue;
+
+    var hLen = item.headers.length;
+    // Expand columns if needed
+    var maxCols = Math.max(sheet.getLastColumn(), hLen);
+    // Write canonical headers to row 1
+    sheet.getRange(1, 1, 1, hLen).setValues([item.headers]);
+    sheet.getRange(1, 1, 1, maxCols)
+      .setFontWeight("bold")
+      .setBackground("#070E1A")
+      .setFontColor("#C5A880");
+    sheet.setFrozenRows(1);
+    // Apply plain text format to all data
+    try {
+      sheet.getRange(1, 1, Math.max(sheet.getMaxRows(), 100), hLen).setNumberFormat("@");
+    } catch(e) {}
+    fixed.push(item.name + " (" + hLen + " columns)");
+  }
+
+  ui.alert("✅ Headers Rebuilt Successfully!\n\nFixed tabs:\n• " + fixed.join("\n• ") +
+           "\n\nAll column positions are now correct.\nNew form submissions will land in the right columns.\n\nNOTE: Existing data rows were NOT deleted.");
 }
 
 /**
