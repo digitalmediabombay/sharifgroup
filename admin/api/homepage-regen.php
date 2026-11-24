@@ -299,7 +299,15 @@ function regenerateHomepage($rootDir = null, $publishedSnapshot = null) {
         // 1f. Reviews Section
         if (!empty($hp['reviews']) && is_array($hp['reviews']) && $lang === 'en') {
             if (!empty($hp['reviews']['badge'])) $html = ssgReplaceI18nElement($html, 'reviews.badge', $hp['reviews']['badge']);
-            if (!empty($hp['reviews']['heading'])) $html = ssgReplaceI18nElement($html, 'reviews.heading', $hp['reviews']['heading']);
+            if (!empty($hp['reviews']['heading'])) {
+                $headingVal = trim($hp['reviews']['heading']);
+                if (strcasecmp($headingVal, 'Success Stories') === 0) {
+                    $html = ssgReplaceI18nElement($html, 'reviews.heading', 'Success');
+                    $html = ssgReplaceI18nElement($html, 'reviews.headingItalic', 'Stories');
+                } else {
+                    $html = ssgReplaceI18nElement($html, 'reviews.heading', $headingVal);
+                }
+            }
         }
 
         // 1g. Blog Carousel: Pre-bake the latest published blogs directly into #blog-slider-inner (guaranteed minimum 4 cards to eliminate empty space)

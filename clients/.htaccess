@@ -1,5 +1,7 @@
 # Disable directory indexing
 Options -Indexes
 
-# T31: Deny all public access to /clients/ directory
-Require all denied
+# Allow public web access to client review images
+<FilesMatch "\.(webp|jpg|jpeg|png)$">
+    Require all granted
+</FilesMatch>

@@ -1158,13 +1158,23 @@
     const rev = data.reviews;
     if (rev) {
       if (rev.badge) setText('[data-i18n="reviews.badge"]', rev.badge);
-      if (rev.heading) setText('[data-i18n="reviews.heading"]', rev.heading);
+      if (rev.heading) {
+        const hTrim = (rev.heading || '').trim();
+        if (hTrim.toLowerCase() === 'success stories') {
+          setText('[data-i18n="reviews.heading"]', 'Success');
+          setText('[data-i18n="reviews.headingItalic"]', 'Stories');
+        } else {
+          setText('[data-i18n="reviews.heading"]', hTrim);
+        }
+      }
       if (rev.slides && rev.slides.length) {
-        const quoteEls = document.querySelectorAll('#review-slider-track blockquote');
-        const imgEls = document.querySelectorAll('#review-slider-track img.client-img');
+        const quoteEls = document.querySelectorAll('#review-slider-track blockquote, #review-slider-track [data-i18n^="reviews.r"]');
+        const imgEls = document.querySelectorAll('#review-slider-track img');
         rev.slides.forEach((sl, idx) => {
           if (quoteEls[idx] && sl.quote) quoteEls[idx].textContent = sl.quote;
-          if (imgEls[idx] && sl.img) imgEls[idx].src = sl.img;
+          if (imgEls[idx] && sl.img) {
+            imgEls[idx].src = sl.img.replace(/\.(png|jpe?g)$/i, '.webp');
+          }
         });
       }
     }

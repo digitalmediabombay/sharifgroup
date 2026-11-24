@@ -86,7 +86,15 @@ def build_complete_zip():
         'assets/locales/zh.json',
         'assets/locales/articles_fa.json',
         'assets/locales/articles_ar.json',
-        'assets/locales/articles_zh.json'
+        'assets/locales/articles_zh.json',
+        'clients/.htaccess',
+        'clients/client1.webp',
+        'clients/client2.webp',
+        'clients/client3.webp',
+        'clients/client4.webp',
+        'clients/client5.webp',
+        'clients/client6.webp',
+        'clients/client7.webp'
     ]
     for cf in core_files:
         files_to_pack.add(cf)
