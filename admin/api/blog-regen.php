@@ -761,27 +761,48 @@ MGHTML;
             $contentDiv = '<div class="article-content space-y-6 text-sm sm:text-base text-neutral-700 leading-relaxed font-light">' . "\n" . $body . "\n            </div>";
             $pageHtml = preg_replace('#<div class="article-content space-y-6[^"]*">.*?</div>\s*(?=<!-- (?:FAQ ACCORDION SECTION|SECTION: CONSULTATION))#is', $contentDiv . "\n\n            ", $pageHtml, 1);
 
-            // 11. Replace FAQs (ALWAYS inject complete authentic 12 FAQs in target language)
+            // 11. Replace FAQs (Prioritize user's custom FAQs; only fallback to defaults if zero custom FAQs)
             $faqsToUse = null;
-            $customFaqs = $ld['faqs'] ?? ($b['faqs'] ?? []);
-            if (is_array($customFaqs) && count($customFaqs) > 0) {
-                // If custom FAQs are provided in the article
-                $firstQ = $customFaqs[0]['q'] ?? '';
-                $isTargetLang = ($lang === 'en') ||
-                    ($lang === 'zh' && preg_match('/[\x{4E00}-\x{9FFF}]/u', $firstQ)) ||
-                    (($lang === 'ar' || $lang === 'fa') && preg_match('/[\x{0600}-\x{06FF}]/u', $firstQ));
+            $customFaqs = !empty($ld['faqs']) && is_array($ld['faqs']) 
+                ? $ld['faqs'] 
+                : (!empty($b['faqs']) && is_array($b['faqs']) 
+                    ? $b['faqs'] 
+                    : (!empty($b['en']['faqs']) && is_array($b['en']['faqs']) ? $b['en']['faqs'] : []));
 
-                if ($isTargetLang) {
-                    $faqsToUse = $customFaqs;
-                } else if ($lang !== 'en' && function_exists('translateTextServer')) {
-                    $translatedCustom = [];
-                    foreach ($customFaqs as $cf) {
-                        $translatedCustom[] = [
-                            'q' => translateTextServer($cf['q'] ?? '', $lang, 'en'),
-                            'a' => translateTextServer($cf['a'] ?? '', $lang, 'en')
-                        ];
+            if (is_array($customFaqs) && count($customFaqs) > 0) {
+                // Filter out empty items
+                $validCustom = [];
+                foreach ($customFaqs as $cf) {
+                    if (!is_array($cf)) continue;
+                    $q = trim($cf['q'] ?? '');
+                    $a = trim($cf['a'] ?? '');
+                    if ($q !== '' || $a !== '') {
+                        $validCustom[] = ['q' => $q, 'a' => $a];
                     }
-                    $faqsToUse = $translatedCustom;
+                }
+
+                if (!empty($validCustom)) {
+                    $firstQ = $validCustom[0]['q'] ?? '';
+                    $isTargetLang = ($lang === 'en') ||
+                        ($lang === 'zh' && preg_match('/[\x{4E00}-\x{9FFF}]/u', $firstQ)) ||
+                        (($lang === 'ar' || $lang === 'fa') && preg_match('/[\x{0600}-\x{06FF}]/u', $firstQ));
+
+                    if ($isTargetLang) {
+                        $faqsToUse = $validCustom;
+                    } else if ($lang !== 'en' && function_exists('translateTextServer')) {
+                        $translatedCustom = [];
+                        foreach ($validCustom as $cf) {
+                            $tQ = translateTextServer($cf['q'] ?? '', $lang, 'en');
+                            $tA = translateTextServer($cf['a'] ?? '', $lang, 'en');
+                            $translatedCustom[] = [
+                                'q' => $tQ ?: ($cf['q'] ?? ''),
+                                'a' => $tA ?: ($cf['a'] ?? '')
+                            ];
+                        }
+                        $faqsToUse = $translatedCustom;
+                    } else {
+                        $faqsToUse = $validCustom;
+                    }
                 }
             }
 

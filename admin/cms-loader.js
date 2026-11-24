@@ -1630,7 +1630,8 @@
       // Prioritize localized FAQs for current language (independent per language):
       const localizedFaqs = (ld.faqs && Array.isArray(ld.faqs) && ld.faqs.length) ? ld.faqs
         : ((b[l]?.faqs && Array.isArray(b[l].faqs) && b[l].faqs.length) ? b[l].faqs
-          : (l === 'en' ? ((b.en && Array.isArray(b.en.faqs)) ? b.en.faqs : (b.faqs || [])) : []));
+          : ((b.en && Array.isArray(b.en.faqs) && b.en.faqs.length) ? b.en.faqs
+            : (Array.isArray(b.faqs) ? b.faqs : [])));
 
       const emptyBodyHtml = '<p class="text-base text-neutral-700 leading-relaxed font-light mb-4"><br></p>';
       const langBody = (ld.body !== undefined && ld.body !== null)

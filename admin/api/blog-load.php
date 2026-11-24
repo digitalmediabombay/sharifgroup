@@ -62,17 +62,20 @@ foreach ($languages as $lng) {
     $found[$lng]['excerpt'] = $found[$lng]['excerpt'] ?? '';
     $found[$lng]['meta_title'] = $found[$lng]['meta_title'] ?? '';
     $found[$lng]['meta_desc'] = $found[$lng]['meta_desc'] ?? '';
-    if (!isset($found[$lng]['faqs']) || !is_array($found[$lng]['faqs'])) {
-        $found[$lng]['faqs'] = ($lng === 'en' && !empty($found['faqs']) && is_array($found['faqs'])) ? $found['faqs'] : [];
+    $foundFaqs = !empty($found['faqs']) && is_array($found['faqs']) ? $found['faqs'] : [];
+    $enFaqs = !empty($found['en']['faqs']) && is_array($found['en']['faqs']) ? $found['en']['faqs'] : $foundFaqs;
+    if (!isset($found[$lng]['faqs']) || !is_array($found[$lng]['faqs']) || empty($found[$lng]['faqs'])) {
+        $found[$lng]['faqs'] = $enFaqs;
     }
 }
 
 // Normalize faqs map for frontend
+$enFaqs = !empty($found['en']['faqs']) && is_array($found['en']['faqs']) ? $found['en']['faqs'] : (!empty($found['faqs']) && is_array($found['faqs']) ? $found['faqs'] : []);
 $faqsMap = [
-    'en' => $found['en']['faqs'] ?? ($found['faqs'] ?? []),
-    'ar' => $found['ar']['faqs'] ?? [],
-    'fa' => $found['fa']['faqs'] ?? [],
-    'zh' => $found['zh']['faqs'] ?? []
+    'en' => $enFaqs,
+    'ar' => !empty($found['ar']['faqs']) && is_array($found['ar']['faqs']) ? $found['ar']['faqs'] : $enFaqs,
+    'fa' => !empty($found['fa']['faqs']) && is_array($found['fa']['faqs']) ? $found['fa']['faqs'] : $enFaqs,
+    'zh' => !empty($found['zh']['faqs']) && is_array($found['zh']['faqs']) ? $found['zh']['faqs'] : $enFaqs
 ];
 
 jsonResponse([

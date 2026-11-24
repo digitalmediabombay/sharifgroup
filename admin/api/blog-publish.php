@@ -64,6 +64,27 @@ if (!empty($body['en']['title']) || !empty($body['slug'])) {
     $languages = ['en', 'ar', 'fa', 'zh'];
     $langData = [];
     $incomingFaqs = is_array($body['faqs'] ?? null) ? $body['faqs'] : [];
+    $isFlatFaqList = !empty($incomingFaqs) && isset($incomingFaqs[0]) && is_array($incomingFaqs[0]);
+
+    // First resolve English/canonical custom FAQs
+    $enCandidate = [];
+    if (!empty($incomingFaqs['en']) && is_array($incomingFaqs['en'])) {
+        $enCandidate = $incomingFaqs['en'];
+    } else if (!empty($body['en']['faqs']) && is_array($body['en']['faqs'])) {
+        $enCandidate = $body['en']['faqs'];
+    } else if ($isFlatFaqList) {
+        $enCandidate = $incomingFaqs;
+    }
+
+    $cleanEnFaqs = [];
+    foreach ($enCandidate as $faq) {
+        if (!is_array($faq)) continue;
+        $q = trim($faq['q'] ?? '');
+        $a = trim($faq['a'] ?? '');
+        if ($q !== '' || $a !== '') {
+            $cleanEnFaqs[] = ['q' => $q, 'a' => $a];
+        }
+    }
 
     foreach ($languages as $lng) {
         $src = is_array($body[$lng] ?? null) ? $body[$lng] : [];
@@ -74,14 +95,35 @@ if (!empty($body['en']['title']) || !empty($body['slug'])) {
         $metaDesc = trim($src['meta_desc'] ?? '');
 
         $lngFaqs = [];
+        $rawCandidate = [];
         if (!empty($incomingFaqs[$lng]) && is_array($incomingFaqs[$lng])) {
-            foreach ($incomingFaqs[$lng] as $faq) {
-                if (!is_array($faq)) continue;
-                $q = trim($faq['q'] ?? '');
-                $a = trim($faq['a'] ?? '');
-                if ($q !== '' || $a !== '') {
-                    $lngFaqs[] = ['q' => $q, 'a' => $a];
+            $rawCandidate = $incomingFaqs[$lng];
+        } else if (!empty($src['faqs']) && is_array($src['faqs'])) {
+            $rawCandidate = $src['faqs'];
+        } else if ($lng === 'en') {
+            $rawCandidate = $cleanEnFaqs;
+        }
+
+        foreach ($rawCandidate as $faq) {
+            if (!is_array($faq)) continue;
+            $q = trim($faq['q'] ?? '');
+            $a = trim($faq['a'] ?? '');
+            if ($q !== '' || $a !== '') {
+                $lngFaqs[] = ['q' => $q, 'a' => $a];
+            }
+        }
+
+        // If non-English language has no custom FAQs, inherit English custom FAQs as base
+        if (empty($lngFaqs) && !empty($cleanEnFaqs)) {
+            if (function_exists('translateTextServer')) {
+                foreach ($cleanEnFaqs as $cf) {
+                    $lngFaqs[] = [
+                        'q' => translateTextServer($cf['q'], $lng, 'en'),
+                        'a' => translateTextServer($cf['a'], $lng, 'en')
+                    ];
                 }
+            } else {
+                $lngFaqs = $cleanEnFaqs;
             }
         }
 
@@ -100,7 +142,7 @@ if (!empty($body['en']['title']) || !empty($body['slug'])) {
         ];
     }
 
-    $globalFaqs = !empty($langData['en']['faqs']) ? $langData['en']['faqs'] : [];
+    $globalFaqs = !empty($langData['en']['faqs']) ? $langData['en']['faqs'] : $cleanEnFaqs;
 
     $targetPrograms = is_array($body['target_programs'] ?? null) ? $body['target_programs'] : [
         $program,

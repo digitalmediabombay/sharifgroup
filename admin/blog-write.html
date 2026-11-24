@@ -1372,12 +1372,13 @@
         meta_desc: src.meta_desc || ''
       };
       // FAQs
-      if (faqsMap && faqsMap[lng]) {
+      const baseFaqs = (faqsMap && faqsMap.en && faqsMap.en.length) ? faqsMap.en : ((b.en && Array.isArray(b.en.faqs) && b.en.faqs.length) ? b.en.faqs : (Array.isArray(b.faqs) ? b.faqs : []));
+      if (faqsMap && faqsMap[lng] && Array.isArray(faqsMap[lng]) && faqsMap[lng].length) {
         blogState.faqs[lng] = faqsMap[lng];
-      } else if (src.faqs && Array.isArray(src.faqs)) {
+      } else if (src.faqs && Array.isArray(src.faqs) && src.faqs.length) {
         blogState.faqs[lng] = src.faqs;
-      } else if (lng === 'en' && Array.isArray(b.faqs)) {
-        blogState.faqs.en = b.faqs;
+      } else {
+        blogState.faqs[lng] = JSON.parse(JSON.stringify(baseFaqs));
       }
     });
 
@@ -1694,6 +1695,27 @@
       (blogState.category || '').toLowerCase()
     ].filter(Boolean);
 
+    // Normalize and clean FAQs per language
+    const cleanFaqs = {};
+    ['en', 'ar', 'fa', 'zh'].forEach(function(lng) {
+      const list = blogState.faqs[lng] || [];
+      const valid = list.filter(function(f) {
+        return f && ((f.q && String(f.q).trim()) || (f.a && String(f.a).trim()));
+      });
+      cleanFaqs[lng] = valid;
+      if (blogState[lng]) {
+        blogState[lng].faqs = valid;
+      }
+    });
+
+    const baseFaqs = cleanFaqs.en || [];
+    ['ar', 'fa', 'zh'].forEach(function(lng) {
+      if (!cleanFaqs[lng] || cleanFaqs[lng].length === 0) {
+        cleanFaqs[lng] = baseFaqs;
+        if (blogState[lng]) blogState[lng].faqs = baseFaqs;
+      }
+    });
+
     const payload = {
       id: blogState.id,
       slug: blogState.slug || ('blog-' + blogState.id),
@@ -1710,11 +1732,11 @@
       status_ar: statusToSet,
       status_fa: statusToSet,
       status_zh: statusToSet,
-      en: blogState.en,
-      ar: blogState.ar,
-      fa: blogState.fa,
-      zh: blogState.zh,
-      faqs: blogState.faqs.en || [] // canonical
+      en: Object.assign({}, blogState.en, { faqs: cleanFaqs.en }),
+      ar: Object.assign({}, blogState.ar, { faqs: cleanFaqs.ar }),
+      fa: Object.assign({}, blogState.fa, { faqs: cleanFaqs.fa }),
+      zh: Object.assign({}, blogState.zh, { faqs: cleanFaqs.zh }),
+      faqs: cleanFaqs
     };
 
     return payload;

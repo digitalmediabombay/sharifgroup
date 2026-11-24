@@ -1775,6 +1775,22 @@
         blogState.id = 'bid-' + Math.random().toString(36).substring(2, 9);
       }
 
+      const cleanFaqs = {};
+      ['en', 'ar', 'fa', 'zh'].forEach(lng => {
+        const list = blogState.faqs[lng] || [];
+        const valid = list.filter(f => f && ((f.q && String(f.q).trim()) || (f.a && String(f.a).trim())));
+        cleanFaqs[lng] = valid;
+        if (blogState[lng]) blogState[lng].faqs = valid;
+      });
+
+      const baseFaqs = cleanFaqs.en || [];
+      ['ar', 'fa', 'zh'].forEach(lng => {
+        if (!cleanFaqs[lng] || cleanFaqs[lng].length === 0) {
+          cleanFaqs[lng] = baseFaqs;
+          if (blogState[lng]) blogState[lng].faqs = baseFaqs;
+        }
+      });
+
       const targetPrograms = [
         blogState.subcategory ? blogState.program : null,
         blogState.subcategory,
@@ -1796,11 +1812,11 @@
         status_ar: 'draft',
         status_fa: 'draft',
         status_zh: 'draft',
-        en: blogState.en,
-        ar: blogState.ar,
-        fa: blogState.fa,
-        zh: blogState.zh,
-        faqs: blogState.faqs
+        en: Object.assign({}, blogState.en, { faqs: cleanFaqs.en }),
+        ar: Object.assign({}, blogState.ar, { faqs: cleanFaqs.ar }),
+        fa: Object.assign({}, blogState.fa, { faqs: cleanFaqs.fa }),
+        zh: Object.assign({}, blogState.zh, { faqs: cleanFaqs.zh }),
+        faqs: cleanFaqs
       };
     }
 
