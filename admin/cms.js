@@ -974,13 +974,13 @@ const DEFAULTS = {
       heading: 'Success',
       headingItalic: 'Stories',
       slides: [
-        { id: 'r1', quote: '"Fast follow-up and straightforward documentation."', btn_text: 'Start Your Journey Now', btn_link: 'contact/index.html', img: 'clients/client1.webp' },
-        { id: 'r2', quote: '"Reliable advice based on real experience."', btn_text: 'Start Your Journey Now', btn_link: 'contact/index.html', img: 'clients/client2.webp' },
-        { id: 'r3', quote: '"Professional, structured, and transparent throughout."', btn_text: 'Start Your Journey Now', btn_link: 'contact/index.html', img: 'clients/client3.webp' },
-        { id: 'r4', quote: '"Great communication and support until approval."', btn_text: 'Start Your Journey Now', btn_link: 'contact/index.html', img: 'clients/client4.webp' },
-        { id: 'r5', quote: '"Extremely efficient process from start to finish."', btn_text: 'Start Your Journey Now', btn_link: 'contact/index.html', img: 'clients/client5.webp' },
-        { id: 'r6', quote: '"Clear expectations and seamless delivery."', btn_text: 'Start Your Journey Now', btn_link: 'contact/index.html', img: 'clients/client6.webp' },
-        { id: 'r7', quote: '"Exceptional guidance and advisory every step of the way."', btn_text: 'Start Your Journey Now', btn_link: 'contact/index.html', img: 'clients/client7.webp' }
+        { id: 'r1', quote: '"Fast follow-up and straightforward documentation."', btn_text: 'Start Your Journey Now', btn_link: 'contact/index.html', img: '/assets/images/clients/client1.webp' },
+        { id: 'r2', quote: '"Reliable advice based on real experience."', btn_text: 'Start Your Journey Now', btn_link: 'contact/index.html', img: '/assets/images/clients/client2.webp' },
+        { id: 'r3', quote: '"Professional, structured, and transparent throughout."', btn_text: 'Start Your Journey Now', btn_link: 'contact/index.html', img: '/assets/images/clients/client3.webp' },
+        { id: 'r4', quote: '"Great communication and support until approval."', btn_text: 'Start Your Journey Now', btn_link: 'contact/index.html', img: '/assets/images/clients/client4.webp' },
+        { id: 'r5', quote: '"Extremely efficient process from start to finish."', btn_text: 'Start Your Journey Now', btn_link: 'contact/index.html', img: '/assets/images/clients/client5.webp' },
+        { id: 'r6', quote: '"Clear expectations and seamless delivery."', btn_text: 'Start Your Journey Now', btn_link: 'contact/index.html', img: '/assets/images/clients/client6.webp' },
+        { id: 'r7', quote: '"Exceptional guidance and advisory every step of the way."', btn_text: 'Start Your Journey Now', btn_link: 'contact/index.html', img: '/assets/images/clients/client7.webp' }
       ]
     },
     contact_block: {

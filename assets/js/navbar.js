@@ -924,6 +924,13 @@
     if (e.target && e.target.tagName === 'IMG' && !e.target.dataset.fallbackTried) {
       e.target.dataset.fallbackTried = 'true';
       if (e.target.src && !e.target.src.includes('dubai-office-2.webp') && !e.target.src.includes('vector_')) {
+        if (e.target.src.includes('client')) {
+          var cm = e.target.src.match(/client([1-7])\.(webp|png|jpe?g)/i);
+          if (cm) {
+            e.target.src = '/assets/images/clients/client' + cm[1] + '.webp';
+            return;
+          }
+        }
         e.target.src = '/assets/images/dubai-office-2.webp';
       }
     }

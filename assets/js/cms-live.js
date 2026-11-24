@@ -340,7 +340,19 @@
           if (quotes[ri] && rev.slides[ri].quote) quotes[ri].textContent = rev.slides[ri].quote;
           if (imgs[ri] && rev.slides[ri].img) {
             var imgSrc = rev.slides[ri].img.replace(/\.(png|jpe?g)$/i, '.webp');
+            if (imgSrc.indexOf('client') !== -1) {
+              imgSrc = '/assets/images/clients/client' + (ri + 1) + '.webp';
+            } else if (!imgSrc.startsWith('/') && !imgSrc.startsWith('http')) {
+              imgSrc = '/' + imgSrc;
+            }
             imgs[ri].src = imgSrc;
+            (function(im, num) {
+              im.onerror = function() {
+                if (im.src.indexOf('/clients/') === -1) {
+                  im.src = '/clients/client' + num + '.webp';
+                }
+              };
+            })(imgs[ri], ri + 1);
           }
         }
       }

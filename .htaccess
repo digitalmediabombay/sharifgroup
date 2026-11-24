@@ -21,8 +21,9 @@ ErrorDocument 410 /404.html
     Require all denied
 </FilesMatch>
 
-# T31: Deny access to /clients/ directory (also handled by clients/.htaccess)
+# T31: Deny access to non-image files in /clients/ directory (images allowed for client review cards)
 <IfModule mod_rewrite.c>
+    RewriteCond %{REQUEST_URI} !\.(webp|jpg|jpeg|png)$ [NC]
     RewriteRule ^clients(/.*)?$ - [F,L,NC]
 </IfModule>
 
