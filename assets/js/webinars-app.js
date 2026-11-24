@@ -144,8 +144,16 @@
     if (rawSchStale) {
       try {
         const pSch = JSON.parse(rawSchStale);
-        if (pSch && pSch.sessions && pSch.sessions[1] && pSch.sessions[1].start_utc) {
-          if (new Date(pSch.sessions[1].start_utc).getTime() <= Date.now()) {
+        if (pSch && pSch.sessions) {
+          let hasStale = false;
+          for (const sKey in pSch.sessions) {
+            const sItem = pSch.sessions[sKey];
+            if (sItem && sItem.start_utc && new Date(sItem.start_utc).getTime() <= Date.now()) {
+              hasStale = true;
+              break;
+            }
+          }
+          if (hasStale && !window.location.search.includes('preview=')) {
             localStorage.removeItem('sgcms_webinar_schedule');
           }
         }
@@ -2767,4 +2775,19 @@
 
   renderShell();
   route();
+
+  // Live dynamic sync with backend public JSON feed (zero-caching)
+  if (typeof window !== 'undefined' && window.location && window.location.protocol !== 'file:') {
+    fetch('/assets/data/webinars.json?v=' + Date.now())
+      .then(r => r.ok ? r.json() : null)
+      .then(feed => {
+        if (!feed) return;
+        const list = Array.isArray(feed) ? feed : (feed && feed.sgcms_webinars);
+        if (Array.isArray(list) && list.length >= 3) {
+          window.SGCMS_WEBINARS = list;
+          route();
+        }
+      })
+      .catch(() => {});
+  }
 })();

@@ -636,43 +636,66 @@
       }
     }
 
-    // 1. Check if SGCMS_WEBINARS is already in memory
-    if (window.SGCMS_WEBINARS && Array.isArray(window.SGCMS_WEBINARS)) {
-      proceed(window.SGCMS_WEBINARS);
+    // 1. Fetch live public data feed (Zero-caching dynamic sync)
+    if (window.location.protocol !== 'file:') {
+      fetch('/assets/data/webinars.json?v=' + Date.now())
+        .then(function(res) { return res.ok ? res.json() : null; })
+        .then(function(data) {
+          var list = Array.isArray(data) ? data : (data && data.sgcms_webinars);
+          if (Array.isArray(list) && list.length) {
+            window.SGCMS_WEBINARS = list;
+            proceed(list);
+            return;
+          }
+          fallbackLoad();
+        })
+        .catch(function() {
+          fallbackLoad();
+        });
       return;
     }
 
-    // 2. Check localStorage cache
-    try {
-      var cached = localStorage.getItem('sgcms_webinars_live') || localStorage.getItem('sgcms_webinars');
-      if (cached) {
-        var parsed = JSON.parse(cached);
-        if (Array.isArray(parsed) && parsed.length) {
-          proceed(parsed);
-          return;
-        }
-      }
-    } catch(e) {}
+    fallbackLoad();
 
-    // 3. Dynamically load webinars-data.js script
-    var isFile = window.location.protocol === 'file:';
-    var scriptPath = isFile ? '../../assets/js/webinars-data.js' : '/assets/js/webinars-data.js';
-    if (isFile) {
-      var refEl = document.querySelector('script[src*="assets/js/"]') || document.querySelector('link[href*="assets/"]');
-      if (refEl) {
-        var refStr = refEl.getAttribute('src') || refEl.getAttribute('href') || '';
-        var aIdx = refStr.indexOf('assets/');
-        if (aIdx !== -1) scriptPath = refStr.substring(0, aIdx) + 'assets/js/webinars-data.js';
-      }
-    }
-    var scr = document.createElement('script');
-    scr.src = scriptPath;
-    scr.onload = function() {
+    function fallbackLoad() {
+      // 1. Check if SGCMS_WEBINARS is already in memory
       if (window.SGCMS_WEBINARS && Array.isArray(window.SGCMS_WEBINARS)) {
         proceed(window.SGCMS_WEBINARS);
+        return;
       }
-    };
-    document.head.appendChild(scr);
+
+      // 2. Check localStorage cache
+      try {
+        var cached = localStorage.getItem('sgcms_webinars_live') || localStorage.getItem('sgcms_webinars');
+        if (cached) {
+          var parsed = JSON.parse(cached);
+          if (Array.isArray(parsed) && parsed.length) {
+            proceed(parsed);
+            return;
+          }
+        }
+      } catch(e) {}
+
+      // 3. Dynamically load webinars-data.js script
+      var isFile = window.location.protocol === 'file:';
+      var scriptPath = isFile ? '../../assets/js/webinars-data.js' : ('/assets/js/webinars-data.js?v=' + Date.now());
+      if (isFile) {
+        var refEl = document.querySelector('script[src*="assets/js/"]') || document.querySelector('link[href*="assets/"]');
+        if (refEl) {
+          var refStr = refEl.getAttribute('src') || refEl.getAttribute('href') || '';
+          var aIdx = refStr.indexOf('assets/');
+          if (aIdx !== -1) scriptPath = refStr.substring(0, aIdx) + 'assets/js/webinars-data.js';
+        }
+      }
+      var scr = document.createElement('script');
+      scr.src = scriptPath;
+      scr.onload = function() {
+        if (window.SGCMS_WEBINARS && Array.isArray(window.SGCMS_WEBINARS)) {
+          proceed(window.SGCMS_WEBINARS);
+        }
+      };
+      document.head.appendChild(scr);
+    }
   }
 
   if (document.readyState === 'loading') {
