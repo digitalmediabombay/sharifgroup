@@ -26,16 +26,22 @@ if (!function_exists('ssgReplaceI18nElement')) {
 
         $safeText = $isHtml ? $str : htmlspecialchars($str, ENT_QUOTES | ENT_SUBSTITUTE, 'UTF-8');
 
-        // 1. Match data-i18n="key"
+        // 1. Match data-i18n="key" (callback preserves literal `$` values and prevents NULL overwrite)
         $pattern = '#(<([a-zA-Z0-9]+)[^>]*\bdata-i18n="' . preg_quote($i18nKey, '#') . '"[^>]*>)(.*?)(</\2>)#us';
         if (preg_match($pattern, $html)) {
-            $html = preg_replace($pattern, '${1}' . $safeText . '${4}', $html, 1);
+            $res = @preg_replace_callback($pattern, function($m) use ($safeText) {
+                return $m[1] . $safeText . $m[4];
+            }, $html, 1);
+            if (is_string($res) && $res !== '') $html = $res;
         }
 
         // 2. Match data-i18n-html="key"
         $patternHtml = '#(<([a-zA-Z0-9]+)[^>]*\bdata-i18n-html="' . preg_quote($i18nKey, '#') . '"[^>]*>)(.*?)(</\2>)#us';
         if (preg_match($patternHtml, $html)) {
-            $html = preg_replace($patternHtml, '${1}' . $safeText . '${4}', $html, 1);
+            $res = @preg_replace_callback($patternHtml, function($m) use ($safeText) {
+                return $m[1] . $safeText . $m[4];
+            }, $html, 1);
+            if (is_string($res) && $res !== '') $html = $res;
         }
 
         return $html;
@@ -87,6 +93,16 @@ if (!function_exists('ssgGenerateBlogCard')) {
         }
 
         $imgUrl = trim($b['featured_img'] ?? '');
+        if ($imgUrl !== '' && stripos($imgUrl, 'data:image/') === 0) {
+            if (!function_exists('ssgPersistBase64Image') && file_exists(__DIR__ . '/blog-regen.php')) {
+                require_once __DIR__ . '/blog-regen.php';
+            }
+            if (function_exists('ssgPersistBase64Image')) {
+                $imgUrl = ssgPersistBase64Image($imgUrl, $slug ?: 'blog', realpath(dirname(__DIR__, 2)));
+            } else {
+                $imgUrl = '/assets/images/dubai-office-2.webp';
+            }
+        }
         if ($imgUrl === '') $imgUrl = '/assets/images/dubai-office-2.webp';
         if (!preg_match('#^(https?:)?//#i', $imgUrl) && strpos($imgUrl, 'data:') !== 0) {
             $imgUrl = preg_replace('#^(\.\./)+#', '/', $imgUrl);
@@ -200,7 +216,11 @@ function regenerateHomepage($rootDir = null, $publishedSnapshot = null) {
             // Also replace data-cms="hero-headline" if present
             $patternHero = '#(<([a-zA-Z0-9]+)[^>]*\bdata-cms="hero-headline"[^>]*>)(.*?)(</\2>)#us';
             if (preg_match($patternHero, $html)) {
-                $html = preg_replace($patternHero, '${1}' . htmlspecialchars($hero['headline'], ENT_QUOTES | ENT_SUBSTITUTE, 'UTF-8') . '${4}', $html, 1);
+                $safeHeroHeadline = htmlspecialchars($hero['headline'], ENT_QUOTES | ENT_SUBSTITUTE, 'UTF-8');
+                $resHero = @preg_replace_callback($patternHero, function($m) use ($safeHeroHeadline) {
+                    return $m[1] . $safeHeroHeadline . $m[4];
+                }, $html, 1);
+                if (is_string($resHero) && $resHero !== '') $html = $resHero;
             }
         }
         if (!empty($hero['tagline'])) {
@@ -454,7 +474,12 @@ function regenerateHomepage($rootDir = null, $publishedSnapshot = null) {
             $sliderPattern = '#(<div[^>]*\bid="blog-slider-inner"[^>]*>)(.*?)(?=\s*</div>\s*</div>\s*</div>\s*</section>)#us';
             if (preg_match($sliderPattern, $html)) {
                 $cardsBlock = "\n" . implode("\n", $cards) . "\n";
-                $html = preg_replace($sliderPattern, '${1}' . $cardsBlock, $html, 1);
+                $resSlider = @preg_replace_callback($sliderPattern, function($m) use ($cardsBlock) {
+                    return $m[1] . $cardsBlock;
+                }, $html, 1);
+                if (is_string($resSlider) && $resSlider !== '') {
+                    $html = $resSlider;
+                }
             }
         }
 
@@ -472,9 +497,12 @@ function regenerateHomepage($rootDir = null, $publishedSnapshot = null) {
             }
         }
 
-        // Save atomically
-        file_put_contents($filePath, $html, LOCK_EX);
-        $updatedFiles[] = $filePath;
+        // Save atomically only if HTML remains valid
+        if (is_string($html) && strlen($html) >= 5000 && stripos($html, '</html>') !== false) {
+            if (@file_put_contents($filePath, $html, LOCK_EX) !== false) {
+                $updatedFiles[] = $filePath;
+            }
+        }
     }
 
     // ─────────────────────────────────────────────────────────────
@@ -491,7 +519,7 @@ function regenerateHomepage($rootDir = null, $publishedSnapshot = null) {
         foreach ($aboutFiles as $lang => $filePath) {
             if (!file_exists($filePath)) continue;
             $html = file_get_contents($filePath);
-            if ($html === false || strlen($html) < 200) continue;
+            if ($html === false || strlen($html) < 5000) continue;
 
             $hero = ($lang === 'en')
                 ? ($aboutData['hero']['en'] ?? ($aboutData['hero'] ?? []))
@@ -518,8 +546,11 @@ function regenerateHomepage($rootDir = null, $publishedSnapshot = null) {
             if (!empty($ov['p1'])) $html = ssgReplaceI18nElement($html, 'pages.aboutUs.about_overview_item3', $ov['p1']);
             if (!empty($ov['p2'])) $html = ssgReplaceI18nElement($html, 'pages.aboutUs.about_overview_item4', $ov['p2']);
 
-            file_put_contents($filePath, $html, LOCK_EX);
-            $updatedFiles[] = $filePath;
+            if (is_string($html) && strlen($html) >= 5000 && stripos($html, '</html>') !== false) {
+                if (@file_put_contents($filePath, $html, LOCK_EX) !== false) {
+                    $updatedFiles[] = $filePath;
+                }
+            }
         }
     }
 
@@ -537,7 +568,7 @@ function regenerateHomepage($rootDir = null, $publishedSnapshot = null) {
         foreach ($contactFiles as $lang => $filePath) {
             if (!file_exists($filePath)) continue;
             $html = file_get_contents($filePath);
-            if ($html === false || strlen($html) < 200) continue;
+            if ($html === false || strlen($html) < 5000) continue;
 
             $d = ($lang === 'en')
                 ? ($contactData['en'] ?? ($contactData ?? []))
@@ -547,8 +578,11 @@ function regenerateHomepage($rootDir = null, $publishedSnapshot = null) {
             if (!empty($d['heading'])) $html = ssgReplaceI18nElement($html, 'pages.contact.heading', $d['heading']);
             if (!empty($d['sub'])) $html = ssgReplaceI18nElement($html, 'pages.contact.sub', $d['sub']);
 
-            file_put_contents($filePath, $html, LOCK_EX);
-            $updatedFiles[] = $filePath;
+            if (is_string($html) && strlen($html) >= 5000 && stripos($html, '</html>') !== false) {
+                if (@file_put_contents($filePath, $html, LOCK_EX) !== false) {
+                    $updatedFiles[] = $filePath;
+                }
+            }
         }
     }
 
@@ -559,8 +593,10 @@ function regenerateHomepage($rootDir = null, $publishedSnapshot = null) {
     ];
 }
 
-// Allow direct HTTP / CLI invocation
-if (php_sapi_name() === 'cli' || (isset($_SERVER['SCRIPT_FILENAME']) && realpath($_SERVER['SCRIPT_FILENAME']) === __FILE__)) {
+// Allow direct HTTP / CLI script invocation (never auto-run when included via require_once)
+$isDirectCliHp = (php_sapi_name() === 'cli' && !empty($_SERVER['argv'][0]) && realpath($_SERVER['argv'][0]) === __FILE__);
+$isDirectHttpHp = (php_sapi_name() !== 'cli' && isset($_SERVER['SCRIPT_FILENAME']) && realpath($_SERVER['SCRIPT_FILENAME']) === __FILE__);
+if ($isDirectCliHp || $isDirectHttpHp) {
     $rootDir = realpath(dirname(__DIR__, 2));
     $res = regenerateHomepage($rootDir);
     if (php_sapi_name() === 'cli') {

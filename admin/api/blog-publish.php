@@ -6,6 +6,7 @@
  */
 
 require_once __DIR__ . '/db.php';
+require_once __DIR__ . '/blog-regen.php';
 
 @set_time_limit(180);
 @ignore_user_abort(true);
@@ -61,6 +62,11 @@ if (!empty($body['en']['title']) || !empty($body['slug'])) {
     }
     if ($slug === '') $slug = 'blog-' . $id;
 
+    $rootDir = realpath(dirname(__DIR__, 2));
+    if ($featuredImg !== '' && stripos($featuredImg, 'data:image/') === 0 && function_exists('ssgPersistBase64Image')) {
+        $featuredImg = ssgPersistBase64Image($featuredImg, $slug, $rootDir);
+    }
+
     $languages = ['en', 'ar', 'fa', 'zh'];
     $langData = [];
     $incomingFaqs = is_array($body['faqs'] ?? null) ? $body['faqs'] : [];
@@ -90,6 +96,9 @@ if (!empty($body['en']['title']) || !empty($body['slug'])) {
         $src = is_array($body[$lng] ?? null) ? $body[$lng] : [];
         $title = trim($src['title'] ?? '');
         $bodyHtml = trim($src['body'] ?? '');
+        if ($bodyHtml !== '' && stripos($bodyHtml, 'data:image/') !== false && function_exists('ssgExtractBodyBase64Images')) {
+            $bodyHtml = ssgExtractBodyBase64Images($bodyHtml, ($slug ?: $id) . '-' . $lng, $rootDir);
+        }
         $excerpt = trim($src['excerpt'] ?? '');
         $metaTitle = trim($src['meta_title'] ?? '');
         $metaDesc = trim($src['meta_desc'] ?? '');
@@ -175,10 +184,14 @@ if (!empty($body['en']['title']) || !empty($body['slug'])) {
     ];
 } else if ($id) {
     // Case 2: ID supplied, locate in draft snapshot
+    $rootDir = realpath(dirname(__DIR__, 2));
     foreach ($draftSnapshot['sgcms_blog'] as $existing) {
         if (!is_array($existing)) continue;
         if (($existing['id'] ?? '') === $id || ($existing['slug'] ?? '') === $id) {
             $blogItem = $existing;
+            if (function_exists('ssgSanitizeBlogItemMedia')) {
+                ssgSanitizeBlogItemMedia($blogItem, $rootDir);
+            }
             break;
         }
     }

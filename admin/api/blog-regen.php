@@ -98,6 +98,263 @@ if (!function_exists('normalizeBlogImgUrl')) {
     }
 }
 
+if (!function_exists('ssgReplaceBetweenMarkers')) {
+    /**
+     * Replace a section bounded by exact start/end markers using byte offsets.
+     * Avoids PCRE backtrack limits and `$` backreference corruption on large HTML payloads.
+     */
+    function ssgReplaceBetweenMarkers($html, $startMarker, $endMarker, $replacement) {
+        $startPos = strpos($html, $startMarker);
+        if ($startPos === false) {
+            return ['found' => false, 'html' => $html];
+        }
+        $endPos = strpos($html, $endMarker, $startPos + strlen($startMarker));
+        if ($endPos === false) {
+            return ['found' => false, 'html' => $html];
+        }
+        $updated = substr($html, 0, $startPos) . $replacement . substr($html, $endPos + strlen($endMarker));
+        return ['found' => true, 'html' => $updated];
+    }
+}
+
+if (!function_exists('ssgPregReplaceLiteral')) {
+    /**
+     * Safe regex replacement treating $literalReplacement as a plain string
+     * (prevents `$100` currency amounts from acting as backreferences and
+     * never overwrites valid HTML with NULL if PCRE fails).
+     */
+    function ssgPregReplaceLiteral($pattern, $literalReplacement, $subject, $limit = -1) {
+        if (!is_string($subject) || $subject === '') return $subject;
+        $res = @preg_replace_callback($pattern, function() use ($literalReplacement) {
+            return $literalReplacement;
+        }, $subject, $limit);
+        if (!is_string($res) || $res === '') {
+            return $subject;
+        }
+        return $res;
+    }
+}
+
+if (!function_exists('ssgPregReplaceCallbackSafe')) {
+    function ssgPregReplaceCallbackSafe($pattern, $callback, $subject, $limit = -1) {
+        if (!is_string($subject) || $subject === '') return $subject;
+        $res = @preg_replace_callback($pattern, $callback, $subject, $limit);
+        if (!is_string($res) || $res === '') {
+            return $subject;
+        }
+        return $res;
+    }
+}
+
+if (!function_exists('ssgPersistBase64Image')) {
+    /**
+     * Extracts a data:image/...;base64,... URI into a physical file under /assets/images/uploads/
+     * (converting raster images to WebP via GD when available) and returns the root-relative URL.
+     */
+    function ssgPersistBase64Image($imgUrl, $slugHint = 'blog', $rootDir = null) {
+        $u = trim((string)$imgUrl);
+        if ($u === '' || stripos($u, 'data:image/') !== 0) {
+            return $imgUrl;
+        }
+
+        $commaPos = strpos($u, ',');
+        if ($commaPos === false) {
+            return '/assets/images/dubai-office-2.webp';
+        }
+
+        $header = strtolower(substr($u, 0, $commaPos));
+        if (strpos($header, ';base64') === false) {
+            return '/assets/images/dubai-office-2.webp';
+        }
+
+        $mimePart = substr($header, 5); // strip "data:"
+        $semiPos = strpos($mimePart, ';');
+        $mime = $semiPos !== false ? substr($mimePart, 0, $semiPos) : $mimePart;
+
+        $extMap = [
+            'image/jpeg'    => 'jpg',
+            'image/jpg'     => 'jpg',
+            'image/png'     => 'png',
+            'image/webp'    => 'webp',
+            'image/gif'     => 'gif',
+            'image/svg+xml' => 'svg'
+        ];
+        if (!isset($extMap[$mime])) {
+            return '/assets/images/dubai-office-2.webp';
+        }
+
+        $b64 = substr($u, $commaPos + 1);
+        $b64 = strtr($b64, [' ' => '+', "\r" => '', "\n" => '', "\t" => '']);
+        $bytes = base64_decode($b64, true);
+        if ($bytes === false) {
+            $bytes = base64_decode($b64);
+        }
+        if (!is_string($bytes) || strlen($bytes) < 32) {
+            return '/assets/images/dubai-office-2.webp';
+        }
+
+        $baseDir = ($rootDir && is_dir($rootDir)) ? rtrim($rootDir, '/\\') : realpath(dirname(__DIR__, 2));
+        if (!$baseDir) {
+            return '/assets/images/dubai-office-2.webp';
+        }
+        $uploadDir = $baseDir . '/assets/images/uploads';
+        if (!is_dir($uploadDir)) {
+            @mkdir($uploadDir, 0755, true);
+        }
+        if (!is_dir($uploadDir) || !is_writable($uploadDir)) {
+            return '/assets/images/dubai-office-2.webp';
+        }
+
+        $safeSlug = preg_replace('/[^a-z0-9_-]+/', '-', strtolower((string)$slugHint));
+        $safeSlug = trim(substr($safeSlug ?: 'blog', 0, 40), '-');
+        if ($safeSlug === '') $safeSlug = 'blog';
+        $hash = substr(sha1($bytes), 0, 12);
+        $prefix = 'blog_' . $safeSlug . '_' . $hash;
+
+        // Try converting raster images to compact WebP via GD
+        $ext = $extMap[$mime];
+        if ($ext !== 'svg' && function_exists('imagecreatefromstring') && function_exists('imagewebp')) {
+            $webpName = $prefix . '.webp';
+            $webpPath = $uploadDir . '/' . $webpName;
+            if (file_exists($webpPath) && filesize($webpPath) > 0) {
+                return '/assets/images/uploads/' . $webpName;
+            }
+            $img = @imagecreatefromstring($bytes);
+            if ($img !== false) {
+                if (function_exists('imagepalettetotruecolor')) {
+                    @imagepalettetotruecolor($img);
+                }
+                @imagealphablending($img, true);
+                @imagesavealpha($img, true);
+                $ok = @imagewebp($img, $webpPath, 86);
+                @imagedestroy($img);
+                if ($ok && file_exists($webpPath) && filesize($webpPath) > 0) {
+                    return '/assets/images/uploads/' . $webpName;
+                }
+            }
+        }
+
+        $rawName = $prefix . '.' . $ext;
+        $rawPath = $uploadDir . '/' . $rawName;
+        if (file_exists($rawPath) && filesize($rawPath) > 0) {
+            return '/assets/images/uploads/' . $rawName;
+        }
+        if (@file_put_contents($rawPath, $bytes, LOCK_EX) !== false && filesize($rawPath) > 0) {
+            return '/assets/images/uploads/' . $rawName;
+        }
+
+        return '/assets/images/dubai-office-2.webp';
+    }
+}
+
+if (!function_exists('ssgExtractBodyBase64Images')) {
+    /**
+     * Replaces any inline data:image/... URI inside HTML attributes with persisted files under /assets/images/uploads/.
+     * Uses pure string offsets to avoid PCRE backtracking on megabyte strings.
+     */
+    function ssgExtractBodyBase64Images($html, $slugHint = 'blog', $rootDir = null) {
+        if (!is_string($html) || stripos($html, 'data:image/') === false) {
+            return $html;
+        }
+        $offset = 0;
+        $idx = 0;
+        while (($pos = stripos($html, 'data:image/', $offset)) !== false) {
+            $quote = ($pos > 0) ? $html[$pos - 1] : '';
+            if ($quote !== '"' && $quote !== "'") {
+                $offset = $pos + 11;
+                continue;
+            }
+            $endPos = strpos($html, $quote, $pos);
+            if ($endPos === false) {
+                break;
+            }
+            $dataUri = substr($html, $pos, $endPos - $pos);
+            $idx++;
+            $url = ssgPersistBase64Image($dataUri, $slugHint . '-inline-' . $idx, $rootDir);
+            $html = substr($html, 0, $pos) . $url . substr($html, $endPos);
+            $offset = $pos + strlen($url);
+        }
+        return $html;
+    }
+}
+
+if (!function_exists('ssgSanitizeBlogItemMedia')) {
+    /**
+     * Converts any base64 featured_img / image / inline body images on a blog entry to file URLs
+     * so JSON snapshots and pre-rendered HTML remain compact. Returns true if the item was modified.
+     */
+    function ssgSanitizeBlogItemMedia(&$b, $rootDir = null) {
+        if (!is_array($b)) return false;
+        $changed = false;
+        $slugHint = trim((string)($b['slug'] ?? ($b['en']['slug'] ?? ($b['id'] ?? 'blog'))));
+
+        $candidates = [
+            $b['featured_img'] ?? '',
+            $b['image'] ?? '',
+            $b['en']['featured_img'] ?? '',
+            $b['en']['image'] ?? '',
+            $b['ar']['featured_img'] ?? '',
+            $b['fa']['featured_img'] ?? '',
+            $b['zh']['featured_img'] ?? ''
+        ];
+        $resolvedImg = '';
+        foreach ($candidates as $cand) {
+            $c = trim((string)$cand);
+            if ($c !== '') {
+                $resolvedImg = $c;
+                break;
+            }
+        }
+
+        if ($resolvedImg !== '' && stripos($resolvedImg, 'data:image/') === 0) {
+            $resolvedImg = ssgPersistBase64Image($resolvedImg, $slugHint, $rootDir);
+            $changed = true;
+        }
+
+        if ($resolvedImg !== '') {
+            if (($b['featured_img'] ?? '') !== $resolvedImg) {
+                $b['featured_img'] = $resolvedImg;
+                $changed = true;
+            }
+            if (array_key_exists('image', $b) && $b['image'] !== $resolvedImg) {
+                $b['image'] = $resolvedImg;
+                $changed = true;
+            }
+            foreach (['en', 'ar', 'fa', 'zh'] as $lng) {
+                if (isset($b[$lng]) && is_array($b[$lng])) {
+                    if (array_key_exists('featured_img', $b[$lng]) && ($b[$lng]['featured_img'] !== $resolvedImg)) {
+                        $b[$lng]['featured_img'] = $resolvedImg;
+                        $changed = true;
+                    }
+                    if (array_key_exists('image', $b[$lng]) && ($b[$lng]['image'] !== $resolvedImg)) {
+                        $b[$lng]['image'] = $resolvedImg;
+                        $changed = true;
+                    }
+                }
+            }
+        }
+
+        if (!empty($b['body']) && is_string($b['body']) && stripos($b['body'], 'data:image/') !== false) {
+            $cleanBody = ssgExtractBodyBase64Images($b['body'], $slugHint, $rootDir);
+            if ($cleanBody !== $b['body']) {
+                $b['body'] = $cleanBody;
+                $changed = true;
+            }
+        }
+        foreach (['en', 'ar', 'fa', 'zh'] as $lng) {
+            if (!empty($b[$lng]['body']) && is_string($b[$lng]['body']) && stripos($b[$lng]['body'], 'data:image/') !== false) {
+                $cleanBody = ssgExtractBodyBase64Images($b[$lng]['body'], $slugHint . '-' . $lng, $rootDir);
+                if ($cleanBody !== $b[$lng]['body']) {
+                    $b[$lng]['body'] = $cleanBody;
+                    $changed = true;
+                }
+            }
+        }
+
+        return $changed;
+    }
+}
+
 /**
  * Global Sovereign Legal 12 Canonical FAQs for Each Language
  */
@@ -190,6 +447,19 @@ function regenerateBlogListings($rootDir = null, $publishedSnapshot = null) {
     $blogs = $publishedSnapshot['sgcms_blog'] ?? [];
     if (!is_array($blogs)) $blogs = [];
 
+    // Normalize/extract any embedded base64 images to physical files on disk
+    $mediaChanged = false;
+    foreach ($blogs as &$rawBlog) {
+        if (!is_array($rawBlog)) continue;
+        if (ssgSanitizeBlogItemMedia($rawBlog, $rootDir)) {
+            $mediaChanged = true;
+        }
+    }
+    unset($rawBlog);
+    if ($mediaChanged) {
+        $publishedSnapshot['sgcms_blog'] = $blogs;
+    }
+
     // Blacklist check
     $deletedSlugs = array_map('strtolower', array_map('trim', $publishedSnapshot['sgcms_deleted_slugs'] ?? []));
     $delMap = array_flip($deletedSlugs);
@@ -252,9 +522,38 @@ function regenerateBlogListings($rootDir = null, $publishedSnapshot = null) {
     }
     unset($b);
 
-    if ($blogsChanged && file_exists($pubFile)) {
-        $publishedSnapshot['sgcms_blog'] = $activeBlogs;
-        @file_put_contents($pubFile, json_encode($publishedSnapshot, JSON_PRETTY_PRINT | JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES));
+    // Sync auto-translated active blogs back into full snapshot list (preserving any drafts/hidden items)
+    if ($blogsChanged) {
+        $activeByKey = [];
+        foreach ($activeBlogs as $ab) {
+            $k = strtolower(trim((string)($ab['id'] ?? ($ab['slug'] ?? ''))));
+            if ($k !== '') $activeByKey[$k] = $ab;
+        }
+        foreach ($publishedSnapshot['sgcms_blog'] as $idx => $orig) {
+            if (!is_array($orig)) continue;
+            $k = strtolower(trim((string)($orig['id'] ?? ($orig['slug'] ?? ''))));
+            if ($k !== '' && isset($activeByKey[$k])) {
+                $publishedSnapshot['sgcms_blog'][$idx] = $activeByKey[$k];
+            }
+        }
+    }
+
+    if (($blogsChanged || $mediaChanged) && file_exists($pubFile)) {
+        $encodedPub = json_encode($publishedSnapshot, JSON_PRETTY_PRINT | JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES);
+        if (is_string($encodedPub) && strlen($encodedPub) > 2) {
+            $pubTmp = $pubFile . '.tmp.' . bin2hex(random_bytes(4));
+            if (@file_put_contents($pubTmp, $encodedPub, LOCK_EX) !== false) {
+                if (!@rename($pubTmp, $pubFile)) {
+                    @unlink($pubTmp);
+                    @file_put_contents($pubFile, $encodedPub, LOCK_EX);
+                }
+            } else {
+                @unlink($pubTmp);
+            }
+            if ($pubFile !== $legacyPub && file_exists($legacyPub)) {
+                @file_put_contents($legacyPub, $encodedPub, LOCK_EX);
+            }
+        }
     }
 
     $targets = [
@@ -287,6 +586,28 @@ function regenerateBlogListings($rootDir = null, $publishedSnapshot = null) {
     $updatedFiles = [];
     $errors = [];
 
+    // Prepare compact JSON payload once for inline hydration across all 4 language index pages
+    $listingBlogs = [];
+    foreach ($activeBlogs as $ab) {
+        $compact = $ab;
+        if (isset($compact['featured_img']) && stripos((string)$compact['featured_img'], 'data:image/') === 0 && strlen((string)$compact['featured_img']) > 8192) {
+            $compact['featured_img'] = '/assets/images/dubai-office-2.webp';
+        }
+        if (isset($compact['image']) && stripos((string)$compact['image'], 'data:image/') === 0 && strlen((string)$compact['image']) > 8192) {
+            $compact['image'] = '/assets/images/dubai-office-2.webp';
+        }
+        foreach (['en', 'ar', 'fa', 'zh'] as $lng) {
+            if (isset($compact[$lng]) && is_array($compact[$lng])) {
+                unset($compact[$lng]['featured_img'], $compact[$lng]['image']);
+            }
+        }
+        $listingBlogs[] = $compact;
+    }
+    $cleanActiveBlogsJson = json_encode($listingBlogs, JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES | JSON_HEX_TAG);
+    if (!is_string($cleanActiveBlogsJson) || $cleanActiveBlogsJson === '') {
+        $cleanActiveBlogsJson = '[]';
+    }
+
     foreach ($targets as $lang => $cfg) {
         $filePath = $cfg['file'];
         if (!file_exists($filePath)) {
@@ -295,8 +616,8 @@ function regenerateBlogListings($rootDir = null, $publishedSnapshot = null) {
         }
 
         $html = file_get_contents($filePath);
-        if (!$html) {
-            $errors[] = "Empty or unreadable file for {$lang}: {$filePath}";
+        if (!is_string($html) || strlen($html) < 5000 || stripos($html, '</html>') === false) {
+            $errors[] = "Empty, corrupt, or truncated listing file for {$lang}: {$filePath}";
             continue;
         }
 
@@ -343,22 +664,23 @@ HTML;
         $markerEnd   = '<!-- CMS_PRE_RENDERED_BLOGS_END -->';
         $blockContent = $markerStart . "\n" . ($cardsHtml !== '' ? $cardsHtml : '') . $markerEnd;
 
-        // 3. Inject cards inside #all-blogs-grid
-        if (strpos($html, $markerStart) !== false && strpos($html, $markerEnd) !== false) {
-            $pattern = '#' . preg_quote($markerStart, '#') . '.*?' . preg_quote($markerEnd, '#') . '#s';
-            $html = preg_replace($pattern, $blockContent, $html);
+        // 3. Inject cards inside #all-blogs-grid using deterministic marker slicing (no PCRE backtrack limits)
+        $markerRes = ssgReplaceBetweenMarkers($html, $markerStart, $markerEnd, $blockContent);
+        if ($markerRes['found']) {
+            $html = $markerRes['html'];
         } else {
             $gridPattern = '#(<div[^>]*id=["\']all-blogs-grid["\'][^>]*>)#i';
             if (preg_match($gridPattern, $html)) {
-                $html = preg_replace($gridPattern, "$1\n" . $blockContent, $html, 1);
+                $html = ssgPregReplaceCallbackSafe($gridPattern, function($m) use ($blockContent) {
+                    return $m[1] . "\n" . $blockContent;
+                }, $html, 1);
             } else {
                 $errors[] = "Could not find #all-blogs-grid in {$filePath}";
                 continue;
             }
         }
 
-        // 4. Inject Inline Pre-Rendered Data Script for Instant In-Memory Detail Loading
-        $cleanActiveBlogsJson = json_encode($activeBlogs, JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES);
+        // 4. Inject Inline Pre-Rendered Data Script for Instant In-Memory Detail Loading (single JSON copy)
         $dataMarkerStart = '<!-- CMS_PRE_RENDERED_DATA_START -->';
         $dataMarkerEnd   = '<!-- CMS_PRE_RENDERED_DATA_END -->';
         $dataScript = <<<HTML
@@ -368,7 +690,7 @@ window.__PRE_RENDERED_CMS_BLOGS = {$cleanActiveBlogsJson};
 (function() {
     try {
         window.articlesDatabase = window.articlesDatabase || {};
-        var blogs = {$cleanActiveBlogsJson};
+        var blogs = window.__PRE_RENDERED_CMS_BLOGS;
         if (!Array.isArray(blogs)) return;
         blogs.forEach(function(b) {
             if (!b) return;
@@ -399,27 +721,40 @@ window.__PRE_RENDERED_CMS_BLOGS = {$cleanActiveBlogsJson};
 {$dataMarkerEnd}
 HTML;
 
-        if (strpos($html, $dataMarkerStart) !== false && strpos($html, $dataMarkerEnd) !== false) {
-            $dPattern = '#' . preg_quote($dataMarkerStart, '#') . '.*?' . preg_quote($dataMarkerEnd, '#') . '#s';
-            $html = preg_replace($dPattern, $dataScript, $html);
+        $dataMarkerRes = ssgReplaceBetweenMarkers($html, $dataMarkerStart, $dataMarkerEnd, $dataScript);
+        if ($dataMarkerRes['found']) {
+            $html = $dataMarkerRes['html'];
         } else {
-            if (stripos($html, '</head>') !== false) {
-                $html = str_ireplace('</head>', $dataScript . "\n</head>", $html);
+            $headPos = stripos($html, '</head>');
+            if ($headPos !== false) {
+                $html = substr($html, 0, $headPos) . $dataScript . "\n" . substr($html, $headPos);
             }
+        }
+
+        // Strict integrity guard: never overwrite an HTML file with NULL, empty, or truncated content
+        if (!is_string($html) || strlen($html) < 5000 || stripos($html, '</html>') === false || strpos($html, 'all-blogs-grid') === false) {
+            $errors[] = "Refusing to write invalid or truncated HTML for {$filePath}";
+            continue;
         }
 
         // Write file back atomically
         $tempFile = $filePath . '.tmp.' . bin2hex(random_bytes(4));
-        if (file_put_contents($tempFile, $html) !== false) {
+        $writtenBytes = file_put_contents($tempFile, $html, LOCK_EX);
+        if ($writtenBytes !== false && $writtenBytes >= 5000) {
             if (@rename($tempFile, $filePath)) {
                 $updatedFiles[] = $filePath;
             } else {
                 @unlink($tempFile);
-                file_put_contents($filePath, $html);
-                $updatedFiles[] = $filePath;
+                $directBytes = file_put_contents($filePath, $html, LOCK_EX);
+                if ($directBytes !== false && $directBytes >= 5000) {
+                    $updatedFiles[] = $filePath;
+                } else {
+                    $errors[] = "Failed direct write for {$filePath}";
+                }
             }
         } else {
-            $errors[] = "Failed to write temp file for {$filePath}";
+            @unlink($tempFile);
+            $errors[] = "Failed to write valid temp file for {$filePath}";
         }
     }
 
@@ -580,7 +915,14 @@ function regenerateStaticArticlePages($rootDir, $activeBlogs, $deletedSlugs = []
         $faSlug = trim($b['fa']['slug'] ?? ($b['slug'] ?? $enSlug));
         $zhSlug = trim($b['zh']['slug'] ?? ($b['slug'] ?? $enSlug));
 
-        $imgUrl = normalizeBlogImgUrl($b['featured_img'] ?? '');
+        $rawImg = $b['featured_img'] ?? '';
+        if (is_string($rawImg) && stripos($rawImg, 'data:image/') === 0) {
+            $rawImg = ssgPersistBase64Image($rawImg, $slug, $rootDir);
+        }
+        $imgUrl = normalizeBlogImgUrl($rawImg);
+        if (stripos($imgUrl, 'data:image/') === 0) {
+            $imgUrl = '/assets/images/dubai-office-2.webp';
+        }
         $fullImgUrl = (strpos($imgUrl, 'http') === 0) ? $imgUrl : ('https://sharifgroup.ae' . ($imgUrl[0] === '/' ? '' : '/') . $imgUrl);
         $author = trim($b['author'] ?? 'Sharif Group Advisory Desk');
         $pubDate = trim($b['publish_date'] ?? date('Y-m-d'));
@@ -633,7 +975,11 @@ function regenerateStaticArticlePages($rootDir, $activeBlogs, $deletedSlugs = []
             $safeDesc = htmlspecialchars($desc, ENT_QUOTES | ENT_SUBSTITUTE, 'UTF-8');
             $canonicalUrl = 'https://sharifgroup.ae/' . $info['prefix'] . 'blog/' . rawurlencode($slug) . '/';
 
-            // Clone template
+            // Clone template & verify baseline integrity
+            if (!is_string($tpl) || strlen($tpl) < 5000 || stripos($tpl, '</html>') === false) {
+                $errors[] = "Master template invalid/truncated for {$lang} ({$slug})";
+                continue;
+            }
             $pageHtml = $tpl;
 
             // 0. Ensure root-relative assets across all scripts, styles, images, videos
@@ -644,15 +990,15 @@ function regenerateStaticArticlePages($rootDir, $activeBlogs, $deletedSlugs = []
             );
 
             // 0b. Enforce document dir and lang
-            $pageHtml = preg_replace('#<html[^>]*>#is', '<html class="scroll-smooth" dir="' . $info['dir'] . '" lang="' . $lang . '">', $pageHtml, 1);
+            $pageHtml = ssgPregReplaceLiteral('#<html[^>]*>#is', '<html class="scroll-smooth" dir="' . $info['dir'] . '" lang="' . $lang . '">', $pageHtml, 1);
 
             // 1. Replace Title & Meta Title & Description
-            $pageHtml = preg_replace('#<title>.*?</title>#is', '<title>' . $safePageTitle . '</title>', $pageHtml, 1);
-            $pageHtml = preg_replace('#<meta[^>]+name="title"[^>]*>#is', '<meta name="title" content="' . $safePageTitle . '"/>', $pageHtml, 1);
-            $pageHtml = preg_replace('#<meta[^>]+name="description"[^>]*>#is', '<meta name="description" content="' . $safeDesc . '"/>', $pageHtml, 1);
+            $pageHtml = ssgPregReplaceLiteral('#<title>.*?</title>#is', '<title>' . $safePageTitle . '</title>', $pageHtml, 1);
+            $pageHtml = ssgPregReplaceLiteral('#<meta[^>]+name="title"[^>]*>#is', '<meta name="title" content="' . $safePageTitle . '"/>', $pageHtml, 1);
+            $pageHtml = ssgPregReplaceLiteral('#<meta[^>]+name="description"[^>]*>#is', '<meta name="description" content="' . $safeDesc . '"/>', $pageHtml, 1);
 
             // 2. Replace Canonical & Hreflangs
-            $pageHtml = preg_replace('#<link[^>]+rel="canonical"[^>]*>#is', '<link rel="canonical" href="' . $canonicalUrl . '" />', $pageHtml, 1);
+            $pageHtml = ssgPregReplaceLiteral('#<link[^>]+rel="canonical"[^>]*>#is', '<link rel="canonical" href="' . $canonicalUrl . '" />', $pageHtml, 1);
             $hreflangs = <<<HREF
 <link rel="alternate" hreflang="x-default" href="https://sharifgroup.ae/blog/{$enSlug}/" />
     <link rel="alternate" hreflang="en" href="https://sharifgroup.ae/blog/{$enSlug}/" />
@@ -661,22 +1007,24 @@ function regenerateStaticArticlePages($rootDir, $activeBlogs, $deletedSlugs = []
     <link rel="alternate" hreflang="zh" href="https://sharifgroup.ae/zh/blog/{$zhSlug}/" />
 HREF;
             // Strip any existing alternate hreflang links, then inject clean set after canonical
-            $pageHtml = preg_replace('#\s*<link[^>]+hreflang="[^"]+"[^>]*>#is', '', $pageHtml);
-            $pageHtml = preg_replace('#(<link[^>]+rel="canonical"[^>]*>)#is', "$1\n    " . $hreflangs, $pageHtml, 1);
+            $pageHtml = ssgPregReplaceLiteral('#\s*<link[^>]+hreflang="[^"]+"[^>]*>#is', '', $pageHtml);
+            $pageHtml = ssgPregReplaceCallbackSafe('#(<link[^>]+rel="canonical"[^>]*>)#is', function($m) use ($hreflangs) {
+                return $m[1] . "\n    " . $hreflangs;
+            }, $pageHtml, 1);
 
             // 3. Replace OpenGraph & Twitter
-            $pageHtml = preg_replace('#<meta property="og:title"[^>]*>#is', '<meta property="og:title" content="' . $safePageTitle . '"/>', $pageHtml, 1);
-            $pageHtml = preg_replace('#<meta property="og:description"[^>]*>#is', '<meta property="og:description" content="' . $safeDesc . '"/>', $pageHtml, 1);
-            $pageHtml = preg_replace('#<meta property="og:url"[^>]*>#is', '<meta property="og:url" content="' . $canonicalUrl . '"/>', $pageHtml, 1);
-            $pageHtml = preg_replace('#<meta property="og:image"[^>]*>#is', '<meta property="og:image" content="' . htmlspecialchars($fullImgUrl, ENT_QUOTES, 'UTF-8') . '"/>', $pageHtml, 1);
+            $pageHtml = ssgPregReplaceLiteral('#<meta property="og:title"[^>]*>#is', '<meta property="og:title" content="' . $safePageTitle . '"/>', $pageHtml, 1);
+            $pageHtml = ssgPregReplaceLiteral('#<meta property="og:description"[^>]*>#is', '<meta property="og:description" content="' . $safeDesc . '"/>', $pageHtml, 1);
+            $pageHtml = ssgPregReplaceLiteral('#<meta property="og:url"[^>]*>#is', '<meta property="og:url" content="' . $canonicalUrl . '"/>', $pageHtml, 1);
+            $pageHtml = ssgPregReplaceLiteral('#<meta property="og:image"[^>]*>#is', '<meta property="og:image" content="' . htmlspecialchars($fullImgUrl, ENT_QUOTES, 'UTF-8') . '"/>', $pageHtml, 1);
 
-            $pageHtml = preg_replace('#<meta name="twitter:title"[^>]*>#is', '<meta name="twitter:title" content="' . $safePageTitle . '"/>', $pageHtml, 1);
-            $pageHtml = preg_replace('#<meta name="twitter:description"[^>]*>#is', '<meta name="twitter:description" content="' . $safeDesc . '"/>', $pageHtml, 1);
-            $pageHtml = preg_replace('#<meta name="twitter:image"[^>]*>#is', '<meta name="twitter:image" content="' . htmlspecialchars($fullImgUrl, ENT_QUOTES, 'UTF-8') . '"/>', $pageHtml, 1);
+            $pageHtml = ssgPregReplaceLiteral('#<meta name="twitter:title"[^>]*>#is', '<meta name="twitter:title" content="' . $safePageTitle . '"/>', $pageHtml, 1);
+            $pageHtml = ssgPregReplaceLiteral('#<meta name="twitter:description"[^>]*>#is', '<meta name="twitter:description" content="' . $safeDesc . '"/>', $pageHtml, 1);
+            $pageHtml = ssgPregReplaceLiteral('#<meta name="twitter:image"[^>]*>#is', '<meta name="twitter:image" content="' . htmlspecialchars($fullImgUrl, ENT_QUOTES, 'UTF-8') . '"/>', $pageHtml, 1);
 
             // 4. Update Header Language Switcher Badge Label
             $curLangBadge = $uiTexts[$lang]['langBadge'];
-            $pageHtml = preg_replace(
+            $pageHtml = ssgPregReplaceLiteral(
                 '#<span id="current-lang-text">.*?</span>#is',
                 '<span id="current-lang-text">' . $curLangBadge . '</span>',
                 $pageHtml,
@@ -710,7 +1058,7 @@ HREF;
 </div>
 DDHTML;
 
-            $pageHtml = preg_replace(
+            $pageHtml = ssgPregReplaceLiteral(
                 '#<div class="hidden absolute right-0 mt-2 w-44[^"]*" id="lang-dropdown-menu">.*?</div>#is',
                 $dropdownMenuHtml,
                 $pageHtml,
@@ -727,7 +1075,7 @@ DDHTML;
 </div>
 MGHTML;
 
-            $pageHtml = preg_replace(
+            $pageHtml = ssgPregReplaceLiteral(
                 '#<div class="mobile-lang-grid">.*?</div>#is',
                 $mobileGridHtml,
                 $pageHtml,
@@ -741,25 +1089,25 @@ MGHTML;
             $homeUrl = ($lang === 'en') ? '/' : '/' . $lang . '/';
             $blogUrl = ($lang === 'en') ? '/blog/' : '/' . $lang . '/blog/';
 
-            $pageHtml = preg_replace('#<a[^>]+href="[^"]*blog/[^"]*"[^>]*class="[^"]*inline-flex items-center[^"]*"[^>]*>.*?</a>#is', '<a href="' . $blogUrl . '" class="inline-flex items-center gap-2 text-xs font-bold uppercase tracking-wider text-neutral-600 hover:text-luxury-gold transition mb-8">' . $backText . '</a>', $pageHtml, 1);
-            $pageHtml = preg_replace('#<a[^>]+href="/"[^>]*class="hover:text-luxury-gold[^"]*"[^>]*>.*?</a>#is', '<a href="' . $homeUrl . '" class="hover:text-luxury-gold transition">' . $homeText . '</a>', $pageHtml, 1);
-            $pageHtml = preg_replace('#<a[^>]+href="/(?:ar/|fa/|zh/)?blog/"[^>]*class="hover:text-luxury-gold[^"]*"[^>]*>.*?</a>#is', '<a href="' . $blogUrl . '" class="hover:text-luxury-gold transition">' . $blogText . '</a>', $pageHtml, 1);
-            $pageHtml = preg_replace('#<span class="text-luxury-gold truncate max-w-\[200px\][^"]*">.*?</span>#is', '<span class="text-luxury-gold truncate max-w-[200px] sm:max-w-xs">' . $safeTitle . '</span>', $pageHtml, 1);
+            $pageHtml = ssgPregReplaceLiteral('#<a[^>]+href="[^"]*blog/[^"]*"[^>]*class="[^"]*inline-flex items-center[^"]*"[^>]*>.*?</a>#is', '<a href="' . $blogUrl . '" class="inline-flex items-center gap-2 text-xs font-bold uppercase tracking-wider text-neutral-600 hover:text-luxury-gold transition mb-8">' . $backText . '</a>', $pageHtml, 1);
+            $pageHtml = ssgPregReplaceLiteral('#<a[^>]+href="/"[^>]*class="hover:text-luxury-gold[^"]*"[^>]*>.*?</a>#is', '<a href="' . $homeUrl . '" class="hover:text-luxury-gold transition">' . $homeText . '</a>', $pageHtml, 1);
+            $pageHtml = ssgPregReplaceLiteral('#<a[^>]+href="/(?:ar/|fa/|zh/)?blog/"[^>]*class="hover:text-luxury-gold[^"]*"[^>]*>.*?</a>#is', '<a href="' . $blogUrl . '" class="hover:text-luxury-gold transition">' . $blogText . '</a>', $pageHtml, 1);
+            $pageHtml = ssgPregReplaceLiteral('#<span class="text-luxury-gold truncate max-w-\[200px\][^"]*">.*?</span>#is', '<span class="text-luxury-gold truncate max-w-[200px] sm:max-w-xs">' . $safeTitle . '</span>', $pageHtml, 1);
 
             // 7. Replace Hero H1
-            $pageHtml = preg_replace('#<h1 class="font-serif[^"]*">.*?</h1>#is', '<h1 class="font-serif text-3xl sm:text-4xl md:text-5xl font-bold text-neutral-900 leading-tight">' . $safeTitle . '</h1>', $pageHtml, 1);
+            $pageHtml = ssgPregReplaceLiteral('#<h1 class="font-serif[^"]*">.*?</h1>#is', '<h1 class="font-serif text-3xl sm:text-4xl md:text-5xl font-bold text-neutral-900 leading-tight">' . $safeTitle . '</h1>', $pageHtml, 1);
 
             // 8. Replace Author and Dates in Meta Bar
-            $pageHtml = preg_replace('#<span>Sharif Group Advisory Desk</span>#is', '<span>' . htmlspecialchars($author, ENT_QUOTES, 'UTF-8') . '</span>', $pageHtml, 1);
-            $pageHtml = preg_replace('#<span>August 2026</span>#is', '<span>' . $dateFormatted . '</span>', $pageHtml);
+            $pageHtml = ssgPregReplaceLiteral('#<span>Sharif Group Advisory Desk</span>#is', '<span>' . htmlspecialchars($author, ENT_QUOTES, 'UTF-8') . '</span>', $pageHtml, 1);
+            $pageHtml = ssgPregReplaceLiteral('#<span>August 2026</span>#is', '<span>' . $dateFormatted . '</span>', $pageHtml);
 
             // 9. Replace Featured Image
             $imgTag = '<img alt="' . $safeTitle . '" class="w-full h-full object-cover" src="' . htmlspecialchars($imgUrl, ENT_QUOTES, 'UTF-8') . '" onerror="this.onerror=null;this.src=\'/assets/images/dubai-office-2.webp\'"/>';
-            $pageHtml = preg_replace('#<div class="aspect-video[^"]*">\s*<img[^>]+>\s*</div>#is', '<div class="aspect-video w-full rounded-2xl overflow-hidden shadow-xl border border-neutral-200 bg-neutral-100">' . "\n                " . $imgTag . "\n            </div>", $pageHtml, 1);
+            $pageHtml = ssgPregReplaceLiteral('#<div class="aspect-video[^"]*">\s*<img[^>]+>\s*</div>#is', '<div class="aspect-video w-full rounded-2xl overflow-hidden shadow-xl border border-neutral-200 bg-neutral-100">' . "\n                " . $imgTag . "\n            </div>", $pageHtml, 1);
 
             // 10. Replace Article Content Body
             $contentDiv = '<div class="article-content space-y-6 text-sm sm:text-base text-neutral-700 leading-relaxed font-light">' . "\n" . $body . "\n            </div>";
-            $pageHtml = preg_replace('#<div class="article-content space-y-6[^"]*">.*?</div>\s*(?=<!-- (?:FAQ ACCORDION SECTION|SECTION: CONSULTATION))#is', $contentDiv . "\n\n            ", $pageHtml, 1);
+            $pageHtml = ssgPregReplaceLiteral('#<div class="article-content space-y-6[^"]*">.*?</div>\s*(?=<!-- (?:FAQ ACCORDION SECTION|SECTION: CONSULTATION))#is', $contentDiv . "\n\n            ", $pageHtml, 1);
 
             // 11. Replace FAQs (Prioritize user's custom FAQs; only fallback to defaults if zero custom FAQs)
             $faqsToUse = null;
@@ -867,12 +1215,17 @@ FAQITEM;
 </div>
 FAQSEC;
 
-            $pageHtml = preg_replace(
+            $pageHtml = ssgPregReplaceLiteral(
                 '#(<!-- FAQ ACCORDION SECTION[^>]*-->\s*)?<div class="space-y-6 pt-12 border-t border-neutral-200">.*?</div>\s*</div>\s*(?=</div>\s*</main|</main|<!-- RELATED|<!-- (?:SECTION: )?CONSULTATION|<!-- FULL CONSULTATION|<!-- FOOTER)#is',
                 $fullFaqSection . "\n\n            ",
                 $pageHtml,
                 1
             );
+
+            if (!is_string($pageHtml) || strlen($pageHtml) < 5000 || stripos($pageHtml, '</html>') === false) {
+                $errors[] = "Refusing to write invalid or truncated article HTML for {$slug} ({$lang})";
+                continue;
+            }
 
             // Output directory
             $outDir = ($lang === 'en') ? ($rootDir . '/blog/' . $slug) : ($rootDir . '/' . $lang . '/blog/' . $slug);
@@ -880,10 +1233,23 @@ FAQSEC;
                 @mkdir($outDir, 0755, true);
             }
             $outFile = $outDir . '/index.html';
-            if (file_put_contents($outFile, $pageHtml) !== false) {
-                $generatedPages[] = $outFile;
+            $tmpOut = $outFile . '.tmp.' . bin2hex(random_bytes(4));
+            $writtenBytes = file_put_contents($tmpOut, $pageHtml, LOCK_EX);
+            if ($writtenBytes !== false && $writtenBytes >= 5000) {
+                if (@rename($tmpOut, $outFile)) {
+                    $generatedPages[] = $outFile;
+                } else {
+                    @unlink($tmpOut);
+                    $directBytes = file_put_contents($outFile, $pageHtml, LOCK_EX);
+                    if ($directBytes !== false && $directBytes >= 5000) {
+                        $generatedPages[] = $outFile;
+                    } else {
+                        $errors[] = "Failed direct write {$outFile}";
+                    }
+                }
             } else {
-                $errors[] = "Failed to write {$outFile}";
+                @unlink($tmpOut);
+                $errors[] = "Failed to write valid article HTML {$outFile}";
             }
         }
     }
@@ -895,8 +1261,10 @@ FAQSEC;
     ];
 }
 
-// Allow direct HTTP / CLI invocation
-if (php_sapi_name() === 'cli' || (isset($_SERVER['SCRIPT_FILENAME']) && realpath($_SERVER['SCRIPT_FILENAME']) === __FILE__)) {
+// Allow direct HTTP / CLI script invocation (never auto-run when included via require_once)
+$isDirectCliBlog = (php_sapi_name() === 'cli' && !empty($_SERVER['argv'][0]) && realpath($_SERVER['argv'][0]) === __FILE__);
+$isDirectHttpBlog = (php_sapi_name() !== 'cli' && isset($_SERVER['SCRIPT_FILENAME']) && realpath($_SERVER['SCRIPT_FILENAME']) === __FILE__);
+if ($isDirectCliBlog || $isDirectHttpBlog) {
     if (php_sapi_name() !== 'cli') {
         require_once __DIR__ . '/db.php';
         requireAdminAuth();

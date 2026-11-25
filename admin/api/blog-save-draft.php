@@ -5,6 +5,7 @@
  */
 
 require_once __DIR__ . '/db.php';
+require_once __DIR__ . '/blog-regen.php';
 
 if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
     jsonResponse(['error' => 'Method not allowed. Only POST is accepted.'], 405);
@@ -46,6 +47,11 @@ if ($slug === '') {
 }
 if ($slug === '') $slug = 'blog-' . $id;
 
+$rootDir = realpath(dirname(__DIR__, 2));
+if ($featuredImg !== '' && stripos($featuredImg, 'data:image/') === 0 && function_exists('ssgPersistBase64Image')) {
+    $featuredImg = ssgPersistBase64Image($featuredImg, $slug, $rootDir);
+}
+
 // Process 4 language structures
 $languages = ['en', 'ar', 'fa', 'zh'];
 $langData = [];
@@ -76,6 +82,9 @@ foreach ($languages as $lng) {
     $src = is_array($body[$lng] ?? null) ? $body[$lng] : [];
     $title = trim($src['title'] ?? '');
     $bodyHtml = trim($src['body'] ?? '');
+    if ($bodyHtml !== '' && stripos($bodyHtml, 'data:image/') !== false && function_exists('ssgExtractBodyBase64Images')) {
+        $bodyHtml = ssgExtractBodyBase64Images($bodyHtml, ($slug ?: $id) . '-' . $lng, $rootDir);
+    }
     $excerpt = trim($src['excerpt'] ?? '');
     $metaTitle = trim($src['meta_title'] ?? '');
     $metaDesc = trim($src['meta_desc'] ?? '');
