@@ -1,10 +1,8 @@
 <!DOCTYPE html>
 <html lang="en">
-
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Form Leads Inbox · Sharif Group CMS</title>
   <title>Leads · Sharif Group CMS</title>
   <base href="/admin/">
   <link rel="icon" type="image/svg+xml" href="/favicon.svg?v=20261109">
@@ -12,2433 +10,537 @@
   <!-- Fonts & Icons -->
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link rel="stylesheet"
-    href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700&family=Inter:wght@300;400;500;600;700&family=Playfair+Display:ital,wght@0,500;0,600;0,700;1,400&family=Vazirmatn:wght@400;500;600;700&display=swap">
   <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 
   <style>
-    :root {
-      --gold: #786142;
-      --gold-light: #A0845C;
-      --gold-bright: #C5A880;
-      --gold-dim: rgba(120, 97, 66, 0.15);
-      --bg: #0E0F12;
-      --surface: #161820;
-      --card: #1A1C22;
-      --card-hover: #1F2229;
-      --border: rgba(120, 97, 66, 0.18);
-      --border-h: rgba(120, 97, 66, 0.55);
-      --cream: #FAF6EE;
-      --text: #ECEAE6;
-      --muted: #9A9490;
-      --muted2: #5C5A56;
-      --header-h: 64px;
-      --green: #22c55e;
-      --green-dim: rgba(34, 197, 94, 0.14);
-      --blue: #3b82f6;
-      --blue-dim: rgba(59, 130, 246, 0.14);
-      --amber: #f59e0b;
-      --amber-dim: rgba(245, 158, 11, 0.14);
-      --purple: #a855f7;
-      --purple-dim: rgba(168, 85, 247, 0.14);
-      --red: #ef4444;
-      --red-dim: rgba(239, 68, 68, 0.12);
-    }
-
-    :root {
-      --gold: #786142;
-      --gold-light: #A0845C;
-      --gold-bright: #C5A880;
-      --bg: #0A0B0E;
-      --surface: #111318;
-      --card: #15171E;
-      --border: rgba(255, 255, 255, 0.08);
-      --border-h: rgba(197, 168, 128, 0.45);
-      --cream: #F3F1ED;
-      --text: #E4E2DD;
-      --muted: #8A8985;
-      --green: #22c55e;
-      --green-dim: rgba(34, 197, 94, 0.14);
-      --blue: #3b82f6;
-      --blue-dim: rgba(59, 130, 246, 0.14);
-      --amber: #f59e0b;
-      --amber-dim: rgba(245, 158, 11, 0.14);
-      --red: #ef4444;
-    }
-
-    :root {
-      --gold: #786142;
-      --gold-light: #A0845C;
-      --gold-bright: #C5A880;
-      --bg: #0B0C0F;
-      --surface: #121419;
-      --card: #14161C;
-      --border: rgba(255, 255, 255, 0.08);
-      --border-h: rgba(197, 168, 128, 0.45);
-      --cream: #F3F1ED;
-      --text: #E4E2DD;
-      --muted: #8E8C88;
-      --header-h: 58px;
-      --green: #22c55e;
-      --green-dim: rgba(34, 197, 94, 0.14);
-      --blue: #3b82f6;
-      --blue-dim: rgba(59, 130, 246, 0.14);
-      --amber: #f59e0b;
-      --amber-dim: rgba(245, 158, 11, 0.14);
-      --red: #ef4444;
-    }
-
-    * {
-      box-sizing: border-box;
-      margin: 0;
-      padding: 0;
-    }
-
-    * {
-      box-sizing: border-box;
-      margin: 0;
-      padding: 0;
-    }
-
-    html,
-    body {
-      min-height: 100vh;
-      font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
-      background: var(--bg);
-      color: var(--text);
-    }
-
-    * {
-      box-sizing: border-box;
-      margin: 0;
-      padding: 0;
-    }
-
-    /* ═══════════════════ MINIMAL TOP BAR ═══════════════════ */
-    .site-header {
-      position: sticky;
-      top: 0;
-      z-index: 100;
-      height: 50px;
-      background: rgba(10, 11, 14, 0.94);
-      backdrop-filter: blur(12px);
-      border-bottom: 1px solid var(--border);
-    }
-
-    html,
-    body {
-      min-height: 100vh;
-      font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
-      background: var(--bg);
-      color: var(--text);
-    }
-
-    .header-inner {
-      max-width: 1440px;
-      margin: 0 auto;
-      height: 100%;
-      padding: 0 20px;
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-    }
-
-    html,
-    body {
-      min-height: 100vh;
-      font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
-      background: var(--bg);
-      color: var(--text);
-    }
-
-    .back-btn {
-      display: inline-flex;
-      align-items: center;
-      gap: 7px;
-      padding: 5px 11px;
-      background: transparent;
-      border: 1px solid var(--border);
-      border-radius: 6px;
-      color: var(--muted);
-      font-size: 0.78rem;
-      font-weight: 500;
-      text-decoration: none;
-      transition: all 0.15s ease;
-    }
-
-    .back-btn:hover {
-      border-color: var(--border-h);
-      color: var(--gold-bright);
-    }
-
-    body::before {
-      content: '';
-      position: fixed;
-      inset: 0;
-      background:
-        radial-gradient(ellipse 55% 45% at 10% 20%, rgba(120, 97, 66, 0.07) 0%, transparent 65%),
-        radial-gradient(ellipse 40% 50% at 90% 80%, rgba(120, 97, 66, 0.05) 0%, transparent 55%);
-      pointer-events: none;
-      z-index: 0;
-    }
-
-    /* ═══════════════════ MAIN WRAPPER ═══════════════════ */
-    .main-wrapper {
-      max-width: 1440px;
-      margin: 0 auto;
-      padding: 16px 20px 48px;
-    }
-
-    /* ═══════════════════ HEADER ═══════════════════ */
-    .site-header {
-      position: sticky;
-      top: 0;
-      z-index: 100;
-      height: var(--header-h);
-      background: rgba(11, 12, 15, 0.94);
-      backdrop-filter: blur(12px);
-      border-bottom: 1px solid var(--border);
-    }
-
-    /* Single Clickable Category Filter & Search Bar */
-    .toolbar-box {
-      background: var(--surface);
-      border: 1px solid var(--border);
-      border-radius: 9px;
-      padding: 8px 12px;
-      margin-bottom: 12px;
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      gap: 12px;
-      flex-wrap: wrap;
-    }
-
-    /* ═══════════════════ HEADER ═══════════════════ */
-    .site-header {
-      position: sticky;
-      top: 0;
-      z-index: 100;
-      height: var(--header-h);
-      background: rgba(14, 15, 18, 0.94);
-      backdrop-filter: blur(14px);
-      border-bottom: 1px solid var(--border);
-    }
-
-    .channel-tabs {
-      display: flex;
-      gap: 4px;
-      flex-wrap: wrap;
-      align-items: center;
-    }
-
-    .channel-tab {
-      display: inline-flex;
-      align-items: center;
-      gap: 6px;
-      padding: 5px 10px;
-      background: transparent;
-      border: 1px solid transparent;
-      border-radius: 6px;
-      font-size: 0.78rem;
-      font-weight: 500;
-      color: var(--muted);
-      cursor: pointer;
-      transition: all 0.15s ease;
-      white-space: nowrap;
-    }
-
-    .channel-tab:hover {
-      color: var(--cream);
-      background: rgba(255, 255, 255, 0.04);
-    }
-
-    .channel-tab.active {
-      background: rgba(197, 168, 128, 0.12);
-      border-color: rgba(197, 168, 128, 0.45);
-      color: var(--gold-bright);
-      font-weight: 600;
-    }
-
-    .tab-count {
-      font-size: 0.68rem;
-      padding: 1px 6px;
-      border-radius: 999px;
-      background: rgba(255, 255, 255, 0.08);
-      color: var(--muted);
-    }
-
-    .channel-tab.active .tab-count {
-      background: rgba(197, 168, 128, 0.22);
-      color: var(--gold-bright);
-    }
-
-    .header-inner {
-      max-width: 1440px;
-      margin: 0 auto;
-      height: 100%;
-      padding: 0 20px;
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      gap: 16px;
-    }
-
-    .filters-group {
-      display: flex;
-      align-items: center;
-      gap: 8px;
-    }
-
-    .header-inner {
-      max-width: 1400px;
-      margin: 0 auto;
-      height: 100%;
-      padding: 0 24px;
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      gap: 16px;
-    }
-
-    .search-wrap {
-      position: relative;
-      width: 220px;
-    }
-
-    .search-wrap i {
-      position: absolute;
-      left: 10px;
-      top: 50%;
-      transform: translateY(-50%);
-      color: var(--muted);
-      font-size: 0.74rem;
-    }
-
-    .search-input {
-      width: 100%;
-      padding: 6px 10px 6px 28px;
-      background: var(--bg);
-      border: 1px solid var(--border);
-      border-radius: 6px;
-      color: var(--cream);
-      font-size: 0.78rem;
-      font-family: inherit;
-    }
-
-    .search-input:focus {
-      outline: none;
-      border-color: var(--gold-bright);
-    }
-
-    .header-left {
-      display: flex;
-      align-items: center;
-      gap: 14px;
-    }
-
-    .btn-export-csv {
-      display: inline-flex;
-      align-items: center;
-      gap: 6px;
-      padding: 6px 12px;
-      background: linear-gradient(135deg, #786142, #947854);
-      border: 1px solid rgba(197, 168, 128, 0.55);
-      border-radius: 6px;
-      color: var(--cream);
-      font-size: 0.78rem;
-      font-weight: 600;
-      cursor: pointer;
-      text-decoration: none;
-      white-space: nowrap;
-      transition: all 0.15s ease;
-    }
-
-    .btn-export-csv:hover {
-      background: linear-gradient(135deg, #8A6F4C, #A6875E);
-    }
-
-    .header-left {
-      display: flex;
-      align-items: center;
-      gap: 16px;
-    }
-
-    /* ═══════════════════ SIMPLE LINEAR-STYLE TABLE ═══════════════════ */
-    .leads-table-card {
-      background: var(--surface);
-      border: 1px solid var(--border);
-      border-radius: 9px;
-      overflow-x: auto;
-    }
-
-    .back-btn {
-      display: inline-flex;
-      align-items: center;
-      gap: 7px;
-      padding: 6px 12px;
-      background: transparent;
-      border: 1px solid var(--border);
-      border-radius: 7px;
-      color: var(--muted);
-      font-size: 0.8rem;
-      font-weight: 500;
-      text-decoration: none;
-      transition: all 0.15s ease;
-    }
-
-    .leads-table {
-      width: 100%;
-      border-collapse: collapse;
-      text-align: left;
-    }
-
-    .back-btn:hover {
-      border-color: var(--border-h);
-      color: var(--gold-bright);
-    }
-
-    .leads-table thead th {
-      padding: 10px 14px;
-      font-size: 0.72rem;
-      font-weight: 500;
-      color: var(--muted);
-      border-bottom: 1px solid var(--border);
-      white-space: nowrap;
-    }
-
-    .back-btn {
-      display: inline-flex;
-      align-items: center;
-      gap: 8px;
-      padding: 8px 14px;
-      background: transparent;
-      border: 1px solid var(--border);
-      border-radius: 8px;
-      color: var(--muted);
-      font-size: 0.84rem;
-      font-weight: 500;
-      text-decoration: none;
-      transition: all 0.2s ease;
-    }
-
-    .leads-table tbody tr {
-      border-bottom: 1px solid rgba(255, 255, 255, 0.05);
-      transition: background 0.12s ease;
-    }
-
-    .leads-table tbody tr:hover {
-      background: rgba(255, 255, 255, 0.025);
-    }
-
-    .leads-table tbody tr:last-child {
-      border-bottom: none;
-    }
-
-    .header-brand-box {
-      display: flex;
-      align-items: center;
-      gap: 10px;
-    }
-
-    .leads-table td {
-      padding: 10px 14px;
-      font-size: 0.8125rem;
-      vertical-align: middle;
-    }
-
-    .brand-logo-mark {
-      width: 30px;
-      height: 30px;
-      border-radius: 6px;
-      border: 1px solid rgba(197, 168, 128, 0.35);
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      background: rgba(120, 97, 66, 0.16);
-      color: var(--gold-bright);
-      font-size: 0.8rem;
-    }
-
-    /* Name Column */
-    .name-cell {
-      display: flex;
-      align-items: center;
-      gap: 8px;
-      white-space: nowrap;
-    }
-
-    .client-avatar {
-      width: 24px;
-      height: 24px;
-      border-radius: 50%;
-      background: linear-gradient(135deg, var(--gold), var(--gold-light));
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      font-size: 0.68rem;
-      font-weight: 700;
-      color: var(--cream);
-      flex-shrink: 0;
-    }
-
-    .client-name {
-      font-weight: 500;
-      color: var(--cream);
-    }
-
-    .lang-tag {
-      padding: 1px 5px;
-      border-radius: 4px;
-      font-size: 0.64rem;
-      font-weight: 600;
-      text-transform: uppercase;
-      background: rgba(255, 255, 255, 0.06);
-      color: var(--muted);
-    }
-
-    .brand-title-group h1 {
-      font-family: 'Playfair Display', serif;
-      font-size: 1rem;
-      color: var(--cream);
-      font-weight: 600;
-    }
-
-    /* Email & Phone Columns */
-    .email-cell {
-      color: var(--muted);
-      white-space: nowrap;
-      font-size: 0.8rem;
-    }
-
-    .phone-cell {
-      color: var(--text);
-      white-space: nowrap;
-      font-size: 0.8rem;
-      font-variant-numeric: tabular-nums;
-    }
-
-    .brand-title-group p {
-      font-size: 0.68rem;
-      color: var(--muted);
-      letter-spacing: 0.05em;
-      text-transform: uppercase;
-    }
-
-    /* Category (Plain clean text + icon, NO background capsule) */
-    .cat-text {
-      display: inline-flex;
-      align-items: center;
-      gap: 6px;
-      font-size: 0.8rem;
-      font-weight: 500;
-      color: var(--text);
-      white-space: nowrap;
-    }
-
-    .cat-text.citizenship i {
-      color: #60a5fa;
-    }
-
-    .cat-text.residency i {
-      color: #818cf8;
-    }
-
-    .cat-text.event i {
-      color: #4ade80;
-    }
-
-    .cat-text.general i {
-      color: #c084fc;
-    }
-
-    .cat-text.realestate i {
-      color: #2dd4bf;
-    }
-
-    .cat-text.education i {
-      color: #fbbf24;
-    }
-
-    .cat-text.partnership i {
-      color: #f472b6;
-    }
-
-    .back-btn:hover {
-      border-color: rgba(120, 97, 66, 0.5);
-      color: var(--gold-bright);
-      background: rgba(120, 97, 66, 0.06);
-    }
-
-    /* Service Column */
-    .service-cell {
-      max-width: 240px;
-    }
-
-    .service-title {
-      font-weight: 500;
-      color: var(--cream);
-      white-space: nowrap;
-      overflow: hidden;
-      text-overflow: ellipsis;
-    }
-
-    .service-country {
-      font-size: 0.72rem;
-      color: var(--muted);
-    }
-
-    .header-actions {
-      display: flex;
-      align-items: center;
-      gap: 10px;
-    }
-
-    /* Inline Status Select */
-    .status-select {
-      padding: 3px 8px;
-      border-radius: 5px;
-      font-size: 0.74rem;
-      font-weight: 600;
-      font-family: inherit;
-      cursor: pointer;
-      border: 1px solid transparent;
-      background: rgba(255, 255, 255, 0.05);
-      color: var(--cream);
-    }
-
-    .status-select.new {
-      background: var(--amber-dim);
-      color: #fde047;
-      border-color: rgba(245, 158, 11, 0.35);
-    }
-
-    .status-select.contacted {
-      background: var(--blue-dim);
-      color: #93c5fd;
-      border-color: rgba(59, 130, 246, 0.35);
-    }
-
-    .status-select.qualified {
-      background: var(--green-dim);
-      color: #86efac;
-      border-color: rgba(34, 197, 94, 0.35);
-    }
-
-    .status-select.archived {
-      background: rgba(100, 116, 139, 0.18);
-      color: #cbd5e1;
-      border-color: rgba(100, 116, 139, 0.35);
-    }
-
-    .header-brand-box {
-      display: flex;
-      align-items: center;
-      gap: 10px;
-    }
-
-    /* Date Column */
-    .date-cell {
-      white-space: nowrap;
-      font-size: 0.78rem;
-      color: var(--muted);
-    }
-
-    .btn-refresh,
-    .btn-logout {
-      display: inline-flex;
-      align-items: center;
-      gap: 6px;
-      padding: 6px 12px;
-      background: transparent;
-      border: 1px solid var(--border);
-      border-radius: 7px;
-      color: var(--muted);
-      font-size: 0.8rem;
-      cursor: pointer;
-      transition: all 0.15s ease;
-    }
-
-    /* Action Buttons */
-    .actions-cell {
-      display: flex;
-      align-items: center;
-      justify-content: flex-end;
-      gap: 6px;
-    }
-
-    .btn-act {
-      width: 26px;
-      height: 26px;
-      border-radius: 6px;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      font-size: 0.76rem;
-      cursor: pointer;
-      text-decoration: none;
-      transition: all 0.15s ease;
-      border: 1px solid var(--border);
-      background: transparent;
-      color: var(--muted);
-    }
-
-    .btn-act.wa {
-      color: var(--green);
-      border-color: rgba(34, 197, 94, 0.3);
-    }
-
-    .btn-act.wa:hover {
-      background: var(--green);
-      color: #0A0B0E;
-      border-color: var(--green);
-    }
-
-    .btn-act.mail:hover {
-      border-color: var(--gold-bright);
-      color: var(--gold-bright);
-    }
-
-    .btn-act.view:hover {
-      border-color: var(--blue);
-      color: #93c5fd;
-    }
-
-    .btn-refresh:hover {
-      color: var(--gold-bright);
-      border-color: var(--border-h);
-    }
-
-    /* Empty State */
-    .empty-box {
-      text-align: center;
-      padding: 48px 20px;
-      color: var(--muted);
-    }
-
-    .empty-box i {
-      font-size: 1.8rem;
-      color: var(--gold-bright);
-      margin-bottom: 10px;
-      opacity: 0.6;
-    }
-
-    .empty-box h3 {
-      font-size: 0.95rem;
-      color: var(--cream);
-      margin-bottom: 4px;
-    }
-
-    .btn-logout:hover {
-      border-color: rgba(239, 68, 68, 0.45);
-      color: #FCA5A5;
-    }
-
-    /* ═══════════════════ DETAILS MODAL ═══════════════════ */
-    .modal-backdrop {
-      position: fixed;
-      inset: 0;
-      background: rgba(0, 0, 0, 0.78);
-      backdrop-filter: blur(8px);
-      z-index: 500;
-      display: none;
-      align-items: center;
-      justify-content: center;
-      padding: 20px;
-    }
-
-    .modal-backdrop.open {
-      display: flex;
-    }
-
-    .modal-box {
-      background: var(--card);
-      border: 1px solid var(--border-h);
-      border-radius: 12px;
-      max-width: 640px;
-      width: 100%;
-      max-height: 90vh;
-      overflow-y: auto;
-      padding: 24px 26px;
-      box-shadow: 0 20px 50px rgba(0, 0, 0, 0.6);
-    }
-
-    .modal-head {
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      padding-bottom: 14px;
-      border-bottom: 1px solid var(--border);
-      margin-bottom: 16px;
-    }
-
-    .modal-head h3 {
-      font-size: 1.15rem;
-      font-weight: 600;
-      color: var(--cream);
-    }
-
-    .btn-modal-close {
-      background: transparent;
-      border: none;
-      color: var(--muted);
-      font-size: 1.2rem;
-      cursor: pointer;
-    }
-
-    .btn-modal-close:hover {
-      color: var(--cream);
-    }
-
-    .brand-logo-mark {
-      width: 32px;
-      height: 32px;
-      border-radius: 6px;
-      border: 1px solid rgba(120, 97, 66, 0.4);
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      background: linear-gradient(135deg, rgba(120, 97, 66, 0.2), rgba(120, 97, 66, 0.05));
-      color: var(--gold-bright);
-      font-size: 0.85rem;
-    }
-
-    .lead-detail-grid {
-      display: grid;
-      grid-template-columns: 1fr 1fr;
-      gap: 10px;
-      margin-bottom: 14px;
-    }
-
-    .detail-item {
-      background: var(--bg);
-      border: 1px solid var(--border);
-      border-radius: 7px;
-      padding: 9px 12px;
-    }
-
-    .detail-item.full {
-      grid-column: 1 / -1;
-    }
-
-    .detail-label {
-      font-size: 0.68rem;
-      text-transform: uppercase;
-      letter-spacing: 0.05em;
-      color: var(--muted);
-      margin-bottom: 3px;
-    }
-
-    .detail-val {
-      font-size: 0.84rem;
-      color: var(--cream);
-      word-break: break-word;
-    }
-
-    .notes-box {
-      background: var(--bg);
-      border: 1px solid var(--border);
-      border-radius: 7px;
-      padding: 11px 12px;
-      margin-bottom: 14px;
-    }
-
-    .notes-box p {
-      font-size: 0.82rem;
-      line-height: 1.5;
-      color: var(--text);
-      white-space: pre-wrap;
-    }
-
-    .admin-notes-section {
-      margin-bottom: 16px;
-    }
-
-    .admin-notes-section label {
-      display: block;
-      font-size: 0.78rem;
-      font-weight: 600;
-      color: var(--gold-bright);
-      margin-bottom: 6px;
-    }
-
-    .admin-notes-textarea {
-      width: 100%;
-      min-height: 70px;
-      padding: 9px 12px;
-      background: var(--bg);
-      border: 1px solid var(--border);
-      border-radius: 7px;
-      color: var(--cream);
-      font-size: 0.82rem;
-      font-family: inherit;
-      resize: vertical;
-    }
-
-    .admin-notes-textarea:focus {
-      outline: none;
-      border-color: var(--gold-bright);
-    }
-
-    .modal-status-select {
-      padding: 4px 10px;
-      background: var(--bg);
-      border: 1px solid var(--border);
-      border-radius: 6px;
-      color: var(--cream);
-      font-size: 0.78rem;
-      font-family: inherit;
-    }
-
-    /* ═══════════════════ MAIN WRAPPER ═══════════════════ */
-    .main-wrapper {
-      max-width: 1440px;
-      margin: 0 auto;
-      padding: 16px 20px 48px;
-    }
-
-    .toast {
-      position: fixed;
-      bottom: 24px;
-      right: 24px;
-      background: var(--card);
-      border: 1px solid var(--border-h);
-      color: var(--cream);
-      padding: 10px 16px;
-      border-radius: 8px;
-      font-size: 0.8rem;
-      display: none;
-      align-items: center;
-      gap: 8px;
-      z-index: 900;
-      box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
-    }
-
-    .toast.show {
-      display: flex;
-    }
-
-    .toast i {
-      color: var(--green);
-    }
-
-    .toast.error i {
-      color: var(--red);
-    }
-
-    .brand-title-group h1 {
-      font-family: 'Playfair Display', serif;
-      font-size: 1.05rem;
-      color: var(--cream);
-      font-weight: 600;
-    }
-
-    /* Toolbar: Single Clickable Category Bar & Search */
-    .toolbar-box {
-      background: var(--surface);
-      border: 1px solid var(--border);
-      border-radius: 10px;
-      padding: 10px 14px;
-      margin-bottom: 14px;
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      gap: 12px;
-      flex-wrap: wrap;
-    }
-
-    .brand-title-group p {
-      font-size: 0.72rem;
-      color: var(--muted);
-      letter-spacing: 0.05em;
-      text-transform: uppercase;
-    }
-
-    .channel-tabs {
-      display: flex;
-      gap: 4px;
-      flex-wrap: wrap;
-      align-items: center;
-    }
-
-    .channel-tab {
-      display: inline-flex;
-      align-items: center;
-      gap: 6px;
-      padding: 6px 11px;
-      background: transparent;
-      border: 1px solid transparent;
-      border-radius: 6px;
-      font-size: 0.78rem;
-      font-weight: 500;
-      color: var(--muted);
-      cursor: pointer;
-      transition: all 0.15s ease;
-      white-space: nowrap;
-    }
-
-    .channel-tab:hover {
-      color: var(--cream);
-      background: rgba(255, 255, 255, 0.04);
-    }
-
-    .channel-tab.active {
-      background: rgba(197, 168, 128, 0.12);
-      border-color: rgba(197, 168, 128, 0.45);
-      color: var(--gold-bright);
-      font-weight: 600;
-    }
-
-    .tab-count {
-      font-size: 0.68rem;
-      padding: 1px 6px;
-      border-radius: 999px;
-      background: rgba(255, 255, 255, 0.08);
-      color: var(--muted);
-    }
-
-    .channel-tab.active .tab-count {
-      background: rgba(197, 168, 128, 0.22);
-      color: var(--gold-bright);
-    }
-
-    .header-actions {
-      display: flex;
-      align-items: center;
-      gap: 12px;
-    }
-
-    .filters-group {
-      display: flex;
-      align-items: center;
-      gap: 8px;
-      flex-wrap: wrap;
-    }
-
-    .btn-refresh {
-      display: inline-flex;
-      align-items: center;
-      gap: 6px;
-      padding: 8px 14px;
-      background: transparent;
-      border: 1px solid var(--border);
-      border-radius: 8px;
-      color: var(--muted);
-      font-size: 0.82rem;
-      cursor: pointer;
-      transition: all 0.2s ease;
-    }
-
-    .search-wrap {
-      position: relative;
-      width: 210px;
-    }
-
-    .search-wrap i {
-      position: absolute;
-      left: 10px;
-      top: 50%;
-      transform: translateY(-50%);
-      color: var(--muted);
-      font-size: 0.74rem;
-    }
-
-    .search-input {
-      width: 100%;
-      padding: 6px 10px 6px 30px;
-      background: var(--bg);
-      border: 1px solid var(--border);
-      border-radius: 7px;
-      color: var(--cream);
-      font-size: 0.78rem;
-      font-family: inherit;
-    }
-
-    .search-input:focus {
-      outline: none;
-      border-color: var(--gold-bright);
-    }
-
-    .btn-refresh:hover {
-      color: var(--gold-bright);
-      border-color: var(--gold);
-      background: rgba(120, 97, 66, 0.06);
-    }
-
-    .filter-select {
-      padding: 6px 10px;
-      background: var(--bg);
-      border: 1px solid var(--border);
-      border-radius: 7px;
-      color: var(--cream);
-      font-size: 0.78rem;
-      font-family: inherit;
-      cursor: pointer;
-    }
-
-    .filter-select:focus {
-      outline: none;
-      border-color: var(--gold-bright);
-    }
-
-    .btn-logout {
-      display: inline-flex;
-      align-items: center;
-      gap: 7px;
-      padding: 8px 14px;
-      background: transparent;
-      border: 1px solid var(--border);
-      border-radius: 8px;
-      color: var(--muted);
-      font-size: 0.82rem;
-      cursor: pointer;
-      transition: all 0.2s ease;
-    }
-
-    .btn-export-csv {
-      display: inline-flex;
-      align-items: center;
-      gap: 6px;
-      padding: 6px 12px;
-      background: linear-gradient(135deg, #786142, #947854);
-      border: 1px solid rgba(197, 168, 128, 0.55);
-      border-radius: 7px;
-      color: var(--cream);
-      font-size: 0.78rem;
-      font-weight: 600;
-      cursor: pointer;
-      text-decoration: none;
-      transition: all 0.15s ease;
-    }
-
-    .btn-export-csv:hover {
-      background: linear-gradient(135deg, #8A6F4C, #A6875E);
-    }
-
-    .btn-logout:hover {
-      border-color: rgba(220, 38, 38, 0.4);
-      color: #FCA5A5;
-    }
-
-    /* ═══════════════════ LEADS TABLE (SIMPLE & COMPACT) ═══════════════════ */
-    .leads-table-card {
-      background: var(--surface);
-      border: 1px solid var(--border);
-      border-radius: 10px;
-      overflow-x: auto;
-    }
-
-    /* ═══════════════════ MAIN WRAPPER ═══════════════════ */
-    .main-wrapper {
-      position: relative;
-      z-index: 1;
-      max-width: 1400px;
-      margin: 0 auto;
-      padding: 32px 24px 80px;
-      padding: 18px 24px 56px;
-    }
-
-    .leads-table {
-      width: 100%;
-      border-collapse: collapse;
-      text-align: left;
-    }
-
-    /* KPI Stats Strip */
-    .kpi-grid {
-      display: grid;
-      grid-template-columns: repeat(4, 1fr);
-      gap: 16px;
-      margin-bottom: 28px;
-    }
-
-    .leads-table thead th {
-      padding: 10px 14px;
-      font-size: 0.72rem;
-      font-weight: 500;
-      color: var(--muted);
-      border-bottom: 1px solid var(--border);
-      white-space: nowrap;
-    }
-
-    .kpi-card {
-      background: var(--card);
-      border: 1px solid var(--border);
-      border-radius: 14px;
-      padding: 20px 22px;
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      transition: all 0.2s ease;
-    }
-
-    .leads-table tbody tr {
-      border-bottom: 1px solid rgba(255, 255, 255, 0.05);
-      transition: background 0.12s ease;
-    }
-
-    .leads-table tbody tr:hover {
-      background: rgba(255, 255, 255, 0.025);
-    }
-
-    .leads-table tbody tr:last-child {
-      border-bottom: none;
-    }
-
-    .kpi-card:hover {
-      border-color: rgba(120, 97, 66, 0.4);
-      transform: translateY(-2px);
-      box-shadow: 0 8px 24px rgba(0, 0, 0, 0.3);
-    }
-
-    .leads-table td {
-      padding: 10px 14px;
-      font-size: 0.8125rem;
-      vertical-align: middle;
-    }
-
-    .kpi-info h4 {
-      font-size: 0.76rem;
-      text-transform: uppercase;
-      letter-spacing: 0.05em;
-      color: var(--muted);
-      margin-bottom: 6px;
-    }
-
-    /* Name Column */
-    .name-cell {
-      display: flex;
-      align-items: center;
-      gap: 9px;
-      white-space: nowrap;
-    }
-
-    .client-avatar {
-      width: 24px;
-      height: 24px;
-      border-radius: 50%;
-      background: linear-gradient(135deg, var(--gold), var(--gold-light));
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      font-size: 0.7rem;
-      font-weight: 700;
-      color: var(--cream);
-      flex-shrink: 0;
-    }
-
-    .client-name {
-      font-weight: 500;
-      color: var(--cream);
-    }
-
-    .lang-tag {
-      padding: 1px 5px;
-      border-radius: 4px;
-      font-size: 0.65rem;
-      font-weight: 600;
-      text-transform: uppercase;
-      background: rgba(255, 255, 255, 0.06);
-      color: var(--muted);
-    }
-
-    .kpi-value {
-      font-family: 'Playfair Display', serif;
-      font-size: 1.8rem;
-      font-weight: 700;
-      color: var(--cream);
-    }
-
-    /* Email & Phone Columns */
-    .email-cell {
-      color: var(--muted);
-      white-space: nowrap;
-      font-size: 0.8rem;
-    }
-
-    .phone-cell {
-      color: var(--text);
-      white-space: nowrap;
-      font-size: 0.8rem;
-      font-variant-numeric: tabular-nums;
-    }
-
-    .kpi-icon {
-      width: 44px;
-      height: 44px;
-      border-radius: 12px;
-      background: var(--surface);
-      border: 1px solid var(--border);
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      font-size: 1.15rem;
-      color: var(--gold-bright);
-    }
-
-    /* Category (Plain clean text + subtle icon, NO capsule background) */
-    .cat-text {
-      display: inline-flex;
-      align-items: center;
-      gap: 6px;
-      font-size: 0.8rem;
-      font-weight: 500;
-      color: var(--text);
-      white-space: nowrap;
-    }
-
-    .cat-text.citizenship i {
-      color: #60a5fa;
-    }
-
-    .cat-text.residency i {
-      color: #818cf8;
-    }
-
-    .cat-text.event i {
-      color: #4ade80;
-    }
-
-    .cat-text.general i {
-      color: #c084fc;
-    }
-
-    .cat-text.realestate i {
-      color: #2dd4bf;
-    }
-
-    .cat-text.education i {
-      color: #fbbf24;
-    }
-
-    .cat-text.partnership i {
-      color: #f472b6;
-    }
-
-    .kpi-icon.new {
-      color: var(--amber);
-      background: var(--amber-dim);
-      border-color: rgba(245, 158, 11, 0.3);
-    }
-
-    /* Service Column */
-    .service-cell {
-      max-width: 240px;
-    }
-
-    .service-title {
-      font-weight: 500;
-      color: var(--cream);
-      white-space: nowrap;
-      overflow: hidden;
-      text-overflow: ellipsis;
-    }
-
-    .service-country {
-      font-size: 0.72rem;
-      color: var(--muted);
-    }
-
-    .kpi-icon.consult {
-      color: var(--blue);
-      background: var(--blue-dim);
-      border-color: rgba(59, 130, 246, 0.3);
-    }
-
-    /* Status Dropdown */
-    .status-select {
-      padding: 3px 8px;
-      border-radius: 5px;
-      font-size: 0.74rem;
-      font-weight: 600;
-      font-family: inherit;
-      cursor: pointer;
-      border: 1px solid transparent;
-      background: rgba(255, 255, 255, 0.05);
-      color: var(--cream);
-    }
-
-    .status-select.new {
-      background: var(--amber-dim);
-      color: #fde047;
-      border-color: rgba(245, 158, 11, 0.35);
-    }
-
-    .status-select.contacted {
-      background: var(--blue-dim);
-      color: #93c5fd;
-      border-color: rgba(59, 130, 246, 0.35);
-    }
-
-    .status-select.qualified {
-      background: var(--green-dim);
-      color: #86efac;
-      border-color: rgba(34, 197, 94, 0.35);
-    }
-
-    .status-select.archived {
-      background: rgba(100, 116, 139, 0.18);
-      color: #cbd5e1;
-      border-color: rgba(100, 116, 139, 0.35);
-    }
-
-    .kpi-icon.webinar {
-      color: var(--green);
-      background: var(--green-dim);
-      border-color: rgba(34, 197, 94, 0.3);
-    }
-
-    /* Date Column */
-    .date-cell {
-      white-space: nowrap;
-      font-size: 0.78rem;
-      color: var(--muted);
-    }
-
-    /* Toolbar: Tabs & Search */
-    /* Toolbar: Single Clickable Category Bar & Search */
-    .toolbar-box {
-      background: var(--card);
-      border: 1px solid var(--border);
-      border-radius: 14px;
-      padding: 16px 20px;
-      margin-bottom: 24px;
-      background: #13151A;
-      border: 1px solid rgba(255, 255, 255, 0.07);
-      border-radius: 10px;
-      padding: 10px 14px;
-      margin-bottom: 14px;
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      gap: 16px;
-      gap: 12px;
-      flex-wrap: wrap;
-    }
-
-    /* Action Buttons */
-    .actions-cell {
-      display: flex;
-      align-items: center;
-      justify-content: flex-end;
-      gap: 6px;
-    }
-
-    .btn-act {
-      width: 26px;
-      height: 26px;
-      border-radius: 6px;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      font-size: 0.78rem;
-      cursor: pointer;
-      text-decoration: none;
-      transition: all 0.15s ease;
-      border: 1px solid var(--border);
-      background: transparent;
-      color: var(--muted);
-    }
-
-    .btn-act.wa {
-      color: var(--green);
-      border-color: rgba(34, 197, 94, 0.3);
-    }
-
-    .btn-act.wa:hover {
-      background: var(--green);
-      color: #0B0C0F;
-      border-color: var(--green);
-    }
-
-    .btn-act.mail:hover {
-      border-color: var(--gold-bright);
-      color: var(--gold-bright);
-    }
-
-    .btn-act.view:hover {
-      border-color: var(--blue);
-      color: #93c5fd;
-    }
-
-    .channel-tabs {
-      display: flex;
-      gap: 8px;
-      gap: 6px;
-      flex-wrap: wrap;
-      align-items: center;
-    }
-
-    /* Empty State */
-    .empty-box {
-      text-align: center;
-      padding: 50px 20px;
-      color: var(--muted);
-    }
-
-    .empty-box i {
-      font-size: 2rem;
-      color: var(--gold-bright);
-      margin-bottom: 10px;
-      opacity: 0.6;
-    }
-
-    .empty-box h3 {
-      font-size: 1rem;
-      color: var(--cream);
-      margin-bottom: 4px;
-    }
-
-    .channel-tab {
-      padding: 8px 16px;
-      background: var(--surface);
-      border: 1px solid var(--border);
-      border-radius: 8px;
-      font-size: 0.82rem;
-      font-weight: 600;
-      display: inline-flex;
-      align-items: center;
-      gap: 6px;
-      padding: 6px 11px;
-      background: transparent;
-      border: 1px solid transparent;
-      border-radius: 6px;
-      font-size: 0.78rem;
-      font-weight: 500;
-      color: var(--muted);
-      cursor: pointer;
-      transition: all 0.2s ease;
-      transition: all 0.15s ease;
-      white-space: nowrap;
-    }
-
-    /* ═══════════════════ DETAILS MODAL ═══════════════════ */
-    .modal-backdrop {
-      position: fixed;
-      inset: 0;
-      background: rgba(0, 0, 0, 0.78);
-      backdrop-filter: blur(8px);
-      z-index: 500;
-      display: none;
-      align-items: center;
-      justify-content: center;
-      padding: 20px;
-    }
-
-    .modal-backdrop.open {
-      display: flex;
-    }
-
-    .modal-box {
-      background: var(--card);
-      border: 1px solid var(--border-h);
-      border-radius: 14px;
-      max-width: 640px;
-      width: 100%;
-      max-height: 90vh;
-      overflow-y: auto;
-      padding: 24px 28px;
-      box-shadow: 0 20px 50px rgba(0, 0, 0, 0.6);
-    }
-
-    .modal-head {
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      padding-bottom: 14px;
-      border-bottom: 1px solid var(--border);
-      margin-bottom: 16px;
-    }
-
-    .modal-head h3 {
-      font-family: 'Playfair Display', serif;
-      font-size: 1.2rem;
-      color: var(--cream);
-    }
-
-    .btn-modal-close {
-      background: transparent;
-      border: none;
-      color: var(--muted);
-      font-size: 1.2rem;
-      cursor: pointer;
-    }
-
-    .btn-modal-close:hover {
-      color: var(--cream);
-    }
-
-    .channel-tab:hover {
-      color: var(--cream);
-      border-color: rgba(120, 97, 66, 0.4);
-      background: rgba(255, 255, 255, 0.04);
-    }
-
-    .lead-detail-grid {
-      display: grid;
-      grid-template-columns: 1fr 1fr;
-      gap: 12px;
-      margin-bottom: 16px;
-    }
-
-    .detail-item {
-      background: var(--bg);
-      border: 1px solid var(--border);
-      border-radius: 8px;
-      padding: 10px 12px;
-    }
-
-    .detail-item.full {
-      grid-column: 1 / -1;
-    }
-
-    .detail-label {
-      font-size: 0.7rem;
-      text-transform: uppercase;
-      letter-spacing: 0.05em;
-      color: var(--muted);
-      margin-bottom: 3px;
-    }
-
-    .detail-val {
-      font-size: 0.85rem;
-      color: var(--cream);
-      word-break: break-word;
-    }
-
-    .notes-box {
-      background: var(--bg);
-      border: 1px solid var(--border);
-      border-radius: 8px;
-      padding: 12px;
-      margin-bottom: 16px;
-    }
-
-    .notes-box p {
-      font-size: 0.84rem;
-      line-height: 1.5;
-      color: var(--text);
-      white-space: pre-wrap;
-    }
-
-    .admin-notes-section {
-      margin-bottom: 16px;
-    }
-
-    .admin-notes-section label {
-      display: block;
-      font-size: 0.78rem;
-      font-weight: 600;
-      color: var(--gold-bright);
-      margin-bottom: 6px;
-    }
-
-    .admin-notes-textarea {
-      width: 100%;
-      min-height: 75px;
-      padding: 10px 12px;
-      background: var(--bg);
-      border: 1px solid var(--border);
-      border-radius: 8px;
-      color: var(--cream);
-      font-size: 0.82rem;
-      font-family: inherit;
-      resize: vertical;
-    }
-
-    .admin-notes-textarea:focus {
-      outline: none;
-      border-color: var(--gold-bright);
-    }
-
-    .channel-tab.active {
-      background: linear-gradient(135deg, rgba(120, 97, 66, 0.25), rgba(120, 97, 66, 0.1));
-      border-color: var(--gold-bright);
-      background: rgba(197, 168, 128, 0.12);
-      border-color: rgba(197, 168, 128, 0.45);
-      color: var(--gold-bright);
-      font-weight: 600;
-    }
-
-    .toast {
-      position: fixed;
-      bottom: 24px;
-      right: 24px;
-      background: var(--card);
-      border: 1px solid var(--border-h);
-      color: var(--cream);
-      padding: 10px 16px;
-      border-radius: 8px;
-      font-size: 0.82rem;
-      display: none;
-      align-items: center;
-      gap: 8px;
-      z-index: 900;
-      box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
-    }
-
-    .toast.show {
-      display: flex;
-    }
-
-    .toast i {
-      color: var(--green);
-    }
-
-    .toast.error i {
-      color: var(--red);
-    }
-
-    .tab-count {
-      font-size: 0.68rem;
-      padding: 1px 6px;
-      border-radius: 999px;
-      background: rgba(255, 255, 255, 0.07);
-      color: var(--muted);
-    }
-
-    .channel-tab.active .tab-count {
-      background: rgba(197, 168, 128, 0.2);
-      color: var(--gold-bright);
-    }
-
-    .filters-group {
-      display: flex;
-      align-items: center;
-      gap: 10px;
-      gap: 8px;
-      flex-wrap: wrap;
-    }
-
-    .search-wrap {
-      position: relative;
-      width: 240px;
-      width: 210px;
-    }
-
-    .search-wrap i {
-      position: absolute;
-      left: 12px;
-      left: 10px;
-      top: 50%;
-      transform: translateY(-50%);
-      color: var(--muted);
-      font-size: 0.8rem;
-      font-size: 0.74rem;
-    }
-
-    .search-input {
-      width: 100%;
-      padding: 8px 12px 8px 34px;
-      background: var(--surface);
-      border: 1px solid var(--border);
-      border-radius: 8px;
-      padding: 6px 10px 6px 30px;
-      background: #0B0C0F;
-      border: 1px solid rgba(255, 255, 255, 0.08);
-      border-radius: 7px;
-      color: var(--cream);
-      font-size: 0.82rem;
-      font-size: 0.78rem;
-      font-family: inherit;
-      transition: all 0.2s ease;
-      transition: all 0.15s ease;
-    }
-
-    .search-input:focus {
-      outline: none;
-      border-color: var(--gold-bright);
-      box-shadow: 0 0 0 2px rgba(120, 97, 66, 0.15);
-    }
-
-    .filter-select {
-      padding: 8px 12px;
-      background: var(--surface);
-      border: 1px solid var(--border);
-      border-radius: 8px;
-      padding: 6px 10px;
-      background: #0B0C0F;
-      border: 1px solid rgba(255, 255, 255, 0.08);
-      border-radius: 7px;
-      color: var(--cream);
-      font-size: 0.82rem;
-      font-size: 0.78rem;
-      font-family: inherit;
-      cursor: pointer;
-    }
-
-    .filter-select:focus {
-      outline: none;
-      border-color: var(--gold-bright);
-    }
-
-    .btn-export-csv {
-      display: inline-flex;
-      align-items: center;
-      gap: 7px;
-      padding: 8px 16px;
-      gap: 6px;
-      padding: 6px 12px;
-      background: linear-gradient(135deg, #786142, #947854);
-      border: 1px solid var(--gold-bright);
-      border-radius: 8px;
-      border: 1px solid rgba(197, 168, 128, 0.6);
-      border-radius: 7px;
-      color: var(--cream);
-      font-size: 0.82rem;
-      font-size: 0.78rem;
-      font-weight: 600;
-      cursor: pointer;
-      text-decoration: none;
-      transition: all 0.2s ease;
-      box-shadow: 0 2px 8px rgba(120, 97, 66, 0.25);
-      transition: all 0.15s ease;
-    }
-
-    .btn-export-csv:hover {
-      background: linear-gradient(135deg, #8A6F4C, #A6875E);
-      transform: translateY(-1px);
-      box-shadow: 0 4px 14px rgba(120, 97, 66, 0.4);
-    }
-
-    /* ═══════════════════ LEADS TABLE ═══════════════════ */
-    /* ═══════════════════ LEADS TABLE (COMPACT LINEAR STYLE) ═══════════════════ */
-    .leads-table-card {
-      background: var(--card);
-      border: 1px solid var(--border);
-      border-radius: 14px;
-      background: #0D0E12;
-      border: 1px solid rgba(255, 255, 255, 0.07);
-      border-radius: 10px;
-      overflow: hidden;
-      box-shadow: 0 12px 36px rgba(0, 0, 0, 0.3);
-    }
-
-    .leads-table {
-      width: 100%;
-      border-collapse: collapse;
-      text-align: left;
-    }
-
-    .leads-table thead th {
-      background: rgba(22, 24, 32, 0.95);
-      padding: 14px 18px;
-      background: transparent;
-      padding: 10px 14px;
-      font-size: 0.72rem;
-      font-weight: 700;
-      text-transform: uppercase;
-      letter-spacing: 0.06em;
-      font-weight: 500;
-      color: var(--muted);
-      border-bottom: 1px solid var(--border);
-      border-bottom: 1px solid rgba(255, 255, 255, 0.07);
-      white-space: nowrap;
-    }
-
-    .leads-table tbody tr {
-      border-bottom: 1px solid rgba(120, 97, 66, 0.09);
-      transition: background 0.15s ease;
-      border-bottom: 1px solid rgba(255, 255, 255, 0.05);
-      transition: background 0.12s ease;
-    }
-
-    .leads-table tbody tr:hover {
-      background: rgba(120, 97, 66, 0.04);
-      background: rgba(255, 255, 255, 0.025);
-    }
-
-    .leads-table tbody tr:last-child {
-      border-bottom: none;
-    }
-
-    .leads-table td {
-      padding: 16px 18px;
-      font-size: 0.85rem;
-      padding: 10px 14px;
-      font-size: 0.8125rem;
-      vertical-align: middle;
-    }
-
-    /* Client Column */
-    .client-cell {
-      display: flex;
-      align-items: center;
-      gap: 14px;
-      gap: 10px;
-    }
-
-    .client-avatar {
-      width: 38px;
-      height: 38px;
-      width: 26px;
-      height: 26px;
-      border-radius: 50%;
-      background: linear-gradient(135deg, var(--gold), var(--gold-light));
-      border: 1px solid rgba(197, 168, 128, 0.4);
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      font-size: 0.85rem;
-      font-size: 0.72rem;
-      font-weight: 700;
-      color: var(--cream);
-      flex-shrink: 0;
-    }
-
-    .client-details .client-name {
-      font-weight: 600;
-      font-weight: 500;
-      font-size: 0.83rem;
-      color: var(--cream);
-      margin-bottom: 2px;
-      margin-bottom: 1px;
-    }
-
-    .client-details .client-contact {
-      font-size: 0.78rem;
-      font-size: 0.73rem;
-      color: var(--muted);
-      display: flex;
-      align-items: center;
-      gap: 8px;
-      gap: 6px;
-    }
-
-    .lang-tag {
-      display: inline-block;
-      padding: 1px 6px;
-      padding: 0 5px;
-      border-radius: 4px;
-      font-size: 0.68rem;
-      font-size: 0.64rem;
-      font-weight: 700;
-      text-transform: uppercase;
-      background: rgba(120, 97, 66, 0.18);
-      color: var(--gold-bright);
-    }
-
-    /* Channel Badge */
-    /* Category Badge */
-    .channel-badge {
-      display: inline-flex;
-      align-items: center;
-      gap: 5px;
-      padding: 4px 10px;
-      border-radius: 6px;
-      padding: 3px 8px;
-      border-radius: 5px;
-      font-size: 0.72rem;
-      font-weight: 600;
-      font-weight: 500;
-      white-space: nowrap;
-    }
-
-    .channel-badge.consultation {
-      background: var(--blue-dim);
-      color: #93c5fd;
-      border: 1px solid rgba(59, 130, 246, 0.3);
-    }
-
-    .channel-badge.contact {
-      background: rgba(168, 85, 247, 0.14);
-      color: #d8b4fe;
-      border: 1px solid rgba(168, 85, 247, 0.3);
-    }
-
-    .channel-badge.webinar {
-      background: var(--green-dim);
-      color: #86efac;
-      border: 1px solid rgba(34, 197, 94, 0.3);
-    }
-
-    .channel-badge.education {
-      background: var(--amber-dim);
-      color: #fde047;
-      border: 1px solid rgba(245, 158, 11, 0.3);
-    }
-
-    .channel-badge.realestate {
-      background: rgba(20, 184, 166, 0.14);
-      color: #5eead4;
-      border: 1px solid rgba(20, 184, 166, 0.3);
-    }
-
-    .channel-badge.citizenship {
-      background: var(--blue-dim);
-      color: #93c5fd;
-      border: 1px solid rgba(59, 130, 246, 0.28);
-    }
-
-    .channel-badge.residency {
-      background: rgba(99, 102, 241, 0.14);
-      color: #a5b4fc;
-      border: 1px solid rgba(99, 102, 241, 0.28);
-    }
-
-    .channel-badge.event {
-      background: var(--green-dim);
-      color: #86efac;
-      border: 1px solid rgba(34, 197, 94, 0.28);
-    }
-
-    .channel-badge.general {
-      background: rgba(168, 85, 247, 0.14);
-      color: #d8b4fe;
-      border: 1px solid rgba(168, 85, 247, 0.28);
-    }
-
-    .channel-badge.realestate {
-      background: rgba(20, 184, 166, 0.14);
-      color: #5eead4;
-      border: 1px solid rgba(20, 184, 166, 0.28);
-    }
-
-    .channel-badge.education {
-      background: var(--amber-dim);
-      color: #fde047;
-      border: 1px solid rgba(245, 158, 11, 0.28);
-    }
-
-    .channel-badge.partnership {
-      background: rgba(236, 72, 153, 0.14);
-      color: #f9a8d4;
-      border: 1px solid rgba(236, 72, 153, 0.28);
-    }
-
-    /* Service Badge */
-    .service-cell {
-      max-width: 260px;
-    }
-
-    .service-title {
-      font-weight: 500;
-      font-size: 0.81rem;
-      color: var(--cream);
-      white-space: nowrap;
-      overflow: hidden;
-      text-overflow: ellipsis;
-      margin-bottom: 2px;
-      margin-bottom: 1px;
-    }
-
-    .service-country {
-      font-size: 0.75rem;
-      font-size: 0.72rem;
-      color: var(--muted);
-    }
-
-    /* Status Dropdown */
-    .status-select {
-      padding: 4px 8px;
-      border-radius: 6px;
-      font-size: 0.74rem;
-      padding: 3px 8px;
-      border-radius: 5px;
-      font-size: 0.72rem;
-      font-weight: 600;
-      font-family: inherit;
-      cursor: pointer;
-      border: 1px solid transparent;
-      transition: all 0.2s ease;
-      transition: all 0.15s ease;
-    }
-
-    .status-select.new {
-      background: var(--amber-dim);
-      color: #fde047;
-      border-color: rgba(245, 158, 11, 0.4);
-    }
-
-    .status-select.contacted {
-      background: var(--blue-dim);
-      color: #93c5fd;
-      border-color: rgba(59, 130, 246, 0.4);
-    }
-
-    .status-select.qualified {
-      background: var(--green-dim);
-      color: #86efac;
-      border-color: rgba(34, 197, 94, 0.4);
-    }
-
-    .status-select.archived {
-      background: rgba(100, 116, 139, 0.18);
-      color: #cbd5e1;
-      border-color: rgba(100, 116, 139, 0.4);
-    }
-
-    .status-select.new {
-      background: var(--amber-dim);
-      color: #fde047;
-      border-color: rgba(245, 158, 11, 0.35);
-    }
-
-    .status-select.contacted {
-      background: var(--blue-dim);
-      color: #93c5fd;
-      border-color: rgba(59, 130, 246, 0.35);
-    }
-
-    .status-select.qualified {
-      background: var(--green-dim);
-      color: #86efac;
-      border-color: rgba(34, 197, 94, 0.35);
-    }
-
-    .status-select.archived {
-      background: rgba(100, 116, 139, 0.18);
-      color: #cbd5e1;
-      border-color: rgba(100, 116, 139, 0.35);
-    }
-
-    /* Action Buttons */
-    .actions-cell {
-      display: flex;
-      align-items: center;
-      gap: 8px;
-      gap: 6px;
-    }
-
-    .btn-act {
-      width: 32px;
-      height: 32px;
-      border-radius: 8px;
-      width: 26px;
-      height: 26px;
-      border-radius: 6px;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      font-size: 0.85rem;
-      font-size: 0.78rem;
-      cursor: pointer;
-      text-decoration: none;
-      transition: all 0.2s ease;
-      border: 1px solid var(--border);
-      background: var(--surface);
-      transition: all 0.15s ease;
-      border: 1px solid rgba(255, 255, 255, 0.08);
-      background: rgba(255, 255, 255, 0.03);
-      color: var(--cream);
-    }
-
-    .btn-act.wa {
-      color: var(--green);
-      border-color: rgba(34, 197, 94, 0.3);
-    }
-
-    .btn-act.wa:hover {
-      background: var(--green);
-      color: #0E0F12;
-      border-color: var(--green);
-      box-shadow: 0 0 10px rgba(34, 197, 94, 0.4);
-    }
-
-    .btn-act.mail:hover {
-      border-color: var(--gold-bright);
-      color: var(--gold-bright);
-    }
-
-    .btn-act.view:hover {
-      border-color: var(--blue);
-      color: #93c5fd;
-    }
-
-    /* Empty State */
-    .empty-box {
-      text-align: center;
-      padding: 60px 20px;
-      color: var(--muted);
-    }
-
-    .empty-box i {
-      font-size: 2.2rem;
-      color: var(--gold-bright);
-      margin-bottom: 12px;
-      opacity: 0.6;
-    }
-
-    .empty-box h3 {
-      font-size: 1.1rem;
-      color: var(--cream);
-      margin-bottom: 4px;
-    }
-
-    /* ═══════════════════ DETAILS MODAL ═══════════════════ */
-    .modal-backdrop {
-      position: fixed;
-      inset: 0;
-      background: rgba(0, 0, 0, 0.78);
-      backdrop-filter: blur(8px);
-      z-index: 500;
-      display: none;
-      align-items: center;
-      justify-content: center;
-      padding: 20px;
-    }
-
-    .modal-backdrop.open {
-      display: flex;
-    }
-
-    .modal-box {
-      background: var(--card);
-      border: 1px solid var(--border-h);
-      border-radius: 16px;
-      max-width: 680px;
-      width: 100%;
-      max-height: 90vh;
-      overflow-y: auto;
-      padding: 28px 32px;
-      box-shadow: 0 20px 50px rgba(0, 0, 0, 0.6);
-    }
-
-    .modal-head {
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      padding-bottom: 18px;
-      border-bottom: 1px solid rgba(120, 97, 66, 0.15);
-      margin-bottom: 20px;
-    }
-
-    .modal-head h3 {
-      font-family: 'Playfair Display', serif;
-      font-size: 1.3rem;
-      color: var(--cream);
-    }
-
-    .btn-modal-close {
-      background: transparent;
-      border: none;
-      color: var(--muted);
-      font-size: 1.2rem;
-      cursor: pointer;
-    }
-
-    .btn-modal-close:hover {
-      color: var(--cream);
-    }
-
-    .lead-detail-grid {
-      display: grid;
-      grid-template-columns: 1fr 1fr;
-      gap: 16px;
-      margin-bottom: 20px;
-    }
-
-    .detail-item {
-      background: var(--surface);
-      border: 1px solid var(--border);
-      border-radius: 10px;
-      padding: 12px 14px;
-    }
-
-    .detail-item.full {
-      grid-column: 1 / -1;
-    }
-
-    .detail-label {
-      font-size: 0.72rem;
-      text-transform: uppercase;
-      color: var(--muted);
-      letter-spacing: 0.05em;
-      margin-bottom: 4px;
-    }
-
-    .detail-val {
-      font-size: 0.88rem;
-      font-weight: 500;
-      color: var(--cream);
-      word-break: break-all;
-    }
-
-    .notes-box {
-      background: var(--surface);
-      border: 1px solid var(--border);
-      border-radius: 10px;
-      padding: 16px;
-      margin-bottom: 20px;
-    }
-
-    .notes-box p {
-      font-size: 0.86rem;
-      color: var(--cream);
-      line-height: 1.6;
-      white-space: pre-line;
-    }
-
-    .admin-notes-section {
-      background: rgba(120, 97, 66, 0.06);
-      border: 1px solid rgba(120, 97, 66, 0.25);
-      border-radius: 12px;
-      padding: 16px;
-      margin-bottom: 20px;
-    }
-
-    .admin-notes-section label {
-      font-size: 0.78rem;
-      font-weight: 600;
-      color: var(--gold-bright);
-      margin-bottom: 8px;
-      display: block;
-    }
-
-    .admin-notes-textarea {
-      width: 100%;
-      min-height: 80px;
-      padding: 10px 12px;
-      background: var(--surface);
-      border: 1px solid var(--border);
-      border-radius: 8px;
-      color: var(--cream);
-      font-size: 0.84rem;
-      font-family: inherit;
-      resize: vertical;
-    }
-
-    .admin-notes-textarea:focus {
-      outline: none;
-      border-color: var(--gold-bright);
-    }
-
-    /* Toast */
-    .toast {
-      position: fixed;
-      bottom: 24px;
-      right: 24px;
-      padding: 12px 20px;
-      background: var(--card);
-      border: 1px solid var(--gold);
-      border-radius: 10px;
-      color: var(--cream);
-      font-size: 0.84rem;
-      box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
-      z-index: 1000;
-      display: none;
-      align-items: center;
-      gap: 10px;
-      animation: slideUp 0.3s ease;
-    }
-
-    .toast.show {
-      display: flex;
-    }
-
-    .toast.error {
-      border-color: var(--red);
-      color: #fca5a5;
-    }
-
-    @keyframes slideUp {
-      from {
-        opacity: 0;
-        transform: translateY(12px);
-      }
-
-      to {
-        opacity: 1;
-        transform: translateY(0);
-      }
-    }
-
-    @media (max-width: 900px) {
-      .kpi-grid {
-        grid-template-columns: 1fr 1fr;
-      }
-
-      .toolbar-box {
-        flex-direction: column;
-        align-items: stretch;
-      }
-
-      .filters-group {
-        flex-direction: column;
-        align-items: stretch;
-      }
-
-      .search-wrap {
-        width: 100%;
-      }
-
-      .lead-detail-grid {
-        grid-template-columns: 1fr;
-      }
-    }
-
-    @media (max-width: 900px) {
-      .toolbar-box {
-        flex-direction: column;
-        align-items: stretch;
-      }
-
-      .filters-group {
-        flex-direction: column;
-        align-items: stretch;
-      }
-
-      .search-wrap {
-        width: 100%;
-      }
-
-      .lead-detail-grid {
-        grid-template-columns: 1fr;
-      }
-    }
-
-    @media (max-width: 900px) {
-      .toolbar-box {
-        flex-direction: column;
-        align-items: stretch;
-      }
-
-      .filters-group {
-        justify-content: space-between;
-      }
-
-      .search-wrap {
-        flex: 1;
-      }
-
-      .lead-detail-grid {
-        grid-template-columns: 1fr;
-      }
-    }
+  :root {
+    --gold:        #786142;
+    --gold-light:  #A0845C;
+    --gold-bright: #C5A880;
+    --bg:          #0A0B0E;
+    --surface:     #111318;
+    --card:        #15171E;
+    --border:      rgba(255, 255, 255, 0.08);
+    --border-h:    rgba(197, 168, 128, 0.45);
+    --cream:       #F3F1ED;
+    --text:        #E4E2DD;
+    --muted:       #8A8985;
+    --green:       #22c55e;
+    --green-dim:   rgba(34, 197, 94, 0.14);
+    --blue:        #3b82f6;
+    --blue-dim:    rgba(59, 130, 246, 0.14);
+    --amber:       #f59e0b;
+    --amber-dim:   rgba(245, 158, 11, 0.14);
+    --red:         #ef4444;
+  }
+
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+
+  html, body {
+    min-height: 100vh;
+    font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+    background: var(--bg);
+    color: var(--text);
+  }
+
+  /* ═══════════════════ MINIMAL TOP BAR ═══════════════════ */
+  .site-header {
+    position: sticky;
+    top: 0;
+    z-index: 100;
+    height: 50px;
+    background: rgba(10, 11, 14, 0.94);
+    backdrop-filter: blur(12px);
+    border-bottom: 1px solid var(--border);
+  }
+
+  .header-inner {
+    max-width: 1440px;
+    margin: 0 auto;
+    height: 100%;
+    padding: 0 20px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+  }
+
+  .back-btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 7px;
+    padding: 5px 11px;
+    background: transparent;
+    border: 1px solid var(--border);
+    border-radius: 6px;
+    color: var(--muted);
+    font-size: 0.78rem;
+    font-weight: 500;
+    text-decoration: none;
+    transition: all 0.15s ease;
+  }
+  .back-btn:hover {
+    border-color: var(--border-h);
+    color: var(--gold-bright);
+  }
+
+  /* ═══════════════════ MAIN WRAPPER ═══════════════════ */
+  .main-wrapper {
+    max-width: 1440px;
+    margin: 0 auto;
+    padding: 16px 20px 48px;
+  }
+
+  /* Single Clickable Category Filter & Search Bar */
+  .toolbar-box {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 9px;
+    padding: 8px 12px;
+    margin-bottom: 12px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 12px;
+    flex-wrap: wrap;
+  }
+
+  .channel-tabs {
+    display: flex;
+    gap: 4px;
+    flex-wrap: wrap;
+    align-items: center;
+  }
+  .channel-tab {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    padding: 5px 10px;
+    background: transparent;
+    border: 1px solid transparent;
+    border-radius: 6px;
+    font-size: 0.78rem;
+    font-weight: 500;
+    color: var(--muted);
+    cursor: pointer;
+    transition: all 0.15s ease;
+    white-space: nowrap;
+  }
+  .channel-tab:hover {
+    color: var(--cream);
+    background: rgba(255, 255, 255, 0.04);
+  }
+  .channel-tab.active {
+    background: rgba(197, 168, 128, 0.12);
+    border-color: rgba(197, 168, 128, 0.45);
+    color: var(--gold-bright);
+    font-weight: 600;
+  }
+  .tab-count {
+    font-size: 0.68rem;
+    padding: 1px 6px;
+    border-radius: 999px;
+    background: rgba(255, 255, 255, 0.08);
+    color: var(--muted);
+  }
+  .channel-tab.active .tab-count {
+    background: rgba(197, 168, 128, 0.22);
+    color: var(--gold-bright);
+  }
+
+  .filters-group {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+
+  .search-wrap {
+    position: relative;
+    width: 220px;
+  }
+  .search-wrap i {
+    position: absolute;
+    left: 10px;
+    top: 50%;
+    transform: translateY(-50%);
+    color: var(--muted);
+    font-size: 0.74rem;
+  }
+  .search-input {
+    width: 100%;
+    padding: 6px 10px 6px 28px;
+    background: var(--bg);
+    border: 1px solid var(--border);
+    border-radius: 6px;
+    color: var(--cream);
+    font-size: 0.78rem;
+    font-family: inherit;
+  }
+  .search-input:focus {
+    outline: none;
+    border-color: var(--gold-bright);
+  }
+
+  .btn-export-csv {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    padding: 6px 12px;
+    background: linear-gradient(135deg, #786142, #947854);
+    border: 1px solid rgba(197, 168, 128, 0.55);
+    border-radius: 6px;
+    color: var(--cream);
+    font-size: 0.78rem;
+    font-weight: 600;
+    cursor: pointer;
+    text-decoration: none;
+    white-space: nowrap;
+    transition: all 0.15s ease;
+  }
+  .btn-export-csv:hover {
+    background: linear-gradient(135deg, #8A6F4C, #A6875E);
+  }
+
+  /* ═══════════════════ SIMPLE LINEAR-STYLE TABLE ═══════════════════ */
+  .leads-table-card {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 9px;
+    overflow-x: auto;
+  }
+
+  .leads-table {
+    width: 100%;
+    border-collapse: collapse;
+    text-align: left;
+  }
+
+  .leads-table thead th {
+    padding: 10px 14px;
+    font-size: 0.72rem;
+    font-weight: 500;
+    color: var(--muted);
+    border-bottom: 1px solid var(--border);
+    white-space: nowrap;
+  }
+
+  .leads-table tbody tr {
+    border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+    transition: background 0.12s ease;
+  }
+  .leads-table tbody tr:hover {
+    background: rgba(255, 255, 255, 0.025);
+  }
+  .leads-table tbody tr:last-child {
+    border-bottom: none;
+  }
+
+  .leads-table td {
+    padding: 10px 14px;
+    font-size: 0.8125rem;
+    vertical-align: middle;
+  }
+
+  /* Name Column */
+  .name-cell {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    white-space: nowrap;
+  }
+  .client-avatar {
+    width: 24px;
+    height: 24px;
+    border-radius: 50%;
+    background: linear-gradient(135deg, var(--gold), var(--gold-light));
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 0.68rem;
+    font-weight: 700;
+    color: var(--cream);
+    flex-shrink: 0;
+  }
+  .client-name {
+    font-weight: 500;
+    color: var(--cream);
+  }
+  .lang-tag {
+    padding: 1px 5px;
+    border-radius: 4px;
+    font-size: 0.64rem;
+    font-weight: 600;
+    text-transform: uppercase;
+    background: rgba(255, 255, 255, 0.06);
+    color: var(--muted);
+  }
+
+  /* Email & Phone Columns */
+  .email-cell {
+    color: var(--muted);
+    white-space: nowrap;
+    font-size: 0.8rem;
+  }
+  .phone-cell {
+    color: var(--text);
+    white-space: nowrap;
+    font-size: 0.8rem;
+    font-variant-numeric: tabular-nums;
+  }
+
+  /* Category (Plain clean text + icon, NO background capsule) */
+  .cat-text {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    font-size: 0.8rem;
+    font-weight: 500;
+    color: var(--text);
+    white-space: nowrap;
+  }
+  .cat-text.citizenship i { color: #60a5fa; }
+  .cat-text.residency i { color: #818cf8; }
+  .cat-text.event i { color: #4ade80; }
+  .cat-text.general i { color: #c084fc; }
+  .cat-text.realestate i { color: #2dd4bf; }
+  .cat-text.education i { color: #fbbf24; }
+  .cat-text.partnership i { color: #f472b6; }
+
+  /* Service Column */
+  .service-cell {
+    max-width: 240px;
+  }
+  .service-title {
+    font-weight: 500;
+    color: var(--cream);
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+  .service-country {
+    font-size: 0.72rem;
+    color: var(--muted);
+  }
+
+  /* Inline Status Select */
+  .status-select {
+    padding: 3px 8px;
+    border-radius: 5px;
+    font-size: 0.74rem;
+    font-weight: 600;
+    font-family: inherit;
+    cursor: pointer;
+    border: 1px solid transparent;
+    background: rgba(255, 255, 255, 0.05);
+    color: var(--cream);
+  }
+  .status-select.new { background: var(--amber-dim); color: #fde047; border-color: rgba(245,158,11,0.35); }
+  .status-select.contacted { background: var(--blue-dim); color: #93c5fd; border-color: rgba(59,130,246,0.35); }
+  .status-select.qualified { background: var(--green-dim); color: #86efac; border-color: rgba(34,197,94,0.35); }
+  .status-select.archived { background: rgba(100,116,139,0.18); color: #cbd5e1; border-color: rgba(100,116,139,0.35); }
+
+  /* Date Column */
+  .date-cell {
+    white-space: nowrap;
+    font-size: 0.78rem;
+    color: var(--muted);
+  }
+
+  /* Action Buttons */
+  .actions-cell {
+    display: flex;
+    align-items: center;
+    justify-content: flex-end;
+    gap: 6px;
+  }
+  .btn-act {
+    width: 26px;
+    height: 26px;
+    border-radius: 6px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 0.76rem;
+    cursor: pointer;
+    text-decoration: none;
+    transition: all 0.15s ease;
+    border: 1px solid var(--border);
+    background: transparent;
+    color: var(--muted);
+  }
+  .btn-act.wa { color: var(--green); border-color: rgba(34,197,94,0.3); }
+  .btn-act.wa:hover { background: var(--green); color: #0A0B0E; border-color: var(--green); }
+  .btn-act.mail:hover { border-color: var(--gold-bright); color: var(--gold-bright); }
+  .btn-act.view:hover { border-color: var(--blue); color: #93c5fd; }
+
+  /* Empty State */
+  .empty-box {
+    text-align: center;
+    padding: 48px 20px;
+    color: var(--muted);
+  }
+  .empty-box i {
+    font-size: 1.8rem;
+    color: var(--gold-bright);
+    margin-bottom: 10px;
+    opacity: 0.6;
+  }
+  .empty-box h3 {
+    font-size: 0.95rem;
+    color: var(--cream);
+    margin-bottom: 4px;
+  }
+
+  /* ═══════════════════ DETAILS MODAL ═══════════════════ */
+  .modal-backdrop {
+    position: fixed;
+    inset: 0;
+    background: rgba(0,0,0,0.78);
+    backdrop-filter: blur(8px);
+    z-index: 500;
+    display: none;
+    align-items: center;
+    justify-content: center;
+    padding: 20px;
+  }
+  .modal-backdrop.open { display: flex; }
+  .modal-box {
+    background: var(--card);
+    border: 1px solid var(--border-h);
+    border-radius: 12px;
+    max-width: 640px;
+    width: 100%;
+    max-height: 90vh;
+    overflow-y: auto;
+    padding: 24px 26px;
+    box-shadow: 0 20px 50px rgba(0,0,0,0.6);
+  }
+  .modal-head {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding-bottom: 14px;
+    border-bottom: 1px solid var(--border);
+    margin-bottom: 16px;
+  }
+  .modal-head h3 {
+    font-size: 1.15rem;
+    font-weight: 600;
+    color: var(--cream);
+  }
+  .btn-modal-close {
+    background: transparent;
+    border: none;
+    color: var(--muted);
+    font-size: 1.2rem;
+    cursor: pointer;
+  }
+  .btn-modal-close:hover { color: var(--cream); }
+
+  .lead-detail-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 10px;
+    margin-bottom: 14px;
+  }
+  .detail-item {
+    background: var(--bg);
+    border: 1px solid var(--border);
+    border-radius: 7px;
+    padding: 9px 12px;
+  }
+  .detail-item.full { grid-column: 1 / -1; }
+  .detail-label {
+    font-size: 0.68rem;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    color: var(--muted);
+    margin-bottom: 3px;
+  }
+  .detail-val {
+    font-size: 0.84rem;
+    color: var(--cream);
+    word-break: break-word;
+  }
+  .notes-box {
+    background: var(--bg);
+    border: 1px solid var(--border);
+    border-radius: 7px;
+    padding: 11px 12px;
+    margin-bottom: 14px;
+  }
+  .notes-box p {
+    font-size: 0.82rem;
+    line-height: 1.5;
+    color: var(--text);
+    white-space: pre-wrap;
+  }
+  .admin-notes-section {
+    margin-bottom: 16px;
+  }
+  .admin-notes-section label {
+    display: block;
+    font-size: 0.78rem;
+    font-weight: 600;
+    color: var(--gold-bright);
+    margin-bottom: 6px;
+  }
+  .admin-notes-textarea {
+    width: 100%;
+    min-height: 70px;
+    padding: 9px 12px;
+    background: var(--bg);
+    border: 1px solid var(--border);
+    border-radius: 7px;
+    color: var(--cream);
+    font-size: 0.82rem;
+    font-family: inherit;
+    resize: vertical;
+  }
+  .admin-notes-textarea:focus { outline: none; border-color: var(--gold-bright); }
+  .modal-status-select {
+    padding: 4px 10px;
+    background: var(--bg);
+    border: 1px solid var(--border);
+    border-radius: 6px;
+    color: var(--cream);
+    font-size: 0.78rem;
+    font-family: inherit;
+  }
+
+  .toast {
+    position: fixed;
+    bottom: 24px;
+    right: 24px;
+    background: var(--card);
+    border: 1px solid var(--border-h);
+    color: var(--cream);
+    padding: 10px 16px;
+    border-radius: 8px;
+    font-size: 0.8rem;
+    display: none;
+    align-items: center;
+    gap: 8px;
+    z-index: 900;
+    box-shadow: 0 10px 30px rgba(0,0,0,0.5);
+  }
+  .toast.show { display: flex; }
+  .toast i { color: var(--green); }
+  .toast.error i { color: var(--red); }
+
+  @media (max-width: 900px) {
+    .toolbar-box { flex-direction: column; align-items: stretch; }
+    .filters-group { justify-content: space-between; }
+    .search-wrap { flex: 1; }
+    .lead-detail-grid { grid-template-columns: 1fr; }
+  }
   </style>
 </head>
-
 <body>
 
-  <!-- ═══════════════ HEADER ═══════════════ -->
   <!-- ═══════════════ MINIMAL HEADER ═══════════════ -->
   <header class="site-header">
     <div class="header-inner">
-      <div class="header-left">
-        <a href="/admin/dashboard.html" class="back-btn">
-          <i class="fa-solid fa-arrow-left"></i>
-          <span>Dashboard</span>
-        </a>
-        <div class="header-brand-box">
-          <div class="brand-logo-mark"><i class="fa-solid fa-inbox"></i></div>
-          <div class="brand-title-group">
-            <h1>Form Leads &amp; Inquiries</h1>
-            <p>Executive Unified Inbox · Phase 4</p>
-            <p>Executive Unified Inbox</p>
-          </div>
-        </div>
-      </div>
-      <div class="header-actions">
-        <button class="btn-refresh" id="refreshBtn" onclick="loadLeads()">
-          <i class="fa-solid fa-arrows-rotate" id="refreshIcon"></i>
-          <span>Refresh</span>
-        </button>
-        <button class="btn-logout" id="logoutBtn">
-          <i class="fa-solid fa-right-from-bracket"></i>
-          <span>Sign Out</span>
-        </button>
-      </div>
       <a href="/admin/dashboard.html" class="back-btn">
         <i class="fa-solid fa-arrow-left"></i>
         <span>Dashboard</span>
@@ -2449,58 +551,10 @@
   <!-- ═══════════════ MAIN WRAPPER ═══════════════ -->
   <main class="main-wrapper">
 
-    <!-- KPI Stats Strip -->
-    <section class="kpi-grid">
-      <div class="kpi-card">
-        <div class="kpi-info">
-          <h4>Total Inquiries</h4>
-          <div class="kpi-value" id="kpiTotal">0</div>
-        </div>
-        <div class="kpi-icon"><i class="fa-solid fa-envelopes-bulk"></i></div>
-      </div>
-
-      <div class="kpi-card">
-        <div class="kpi-info">
-          <h4>New / Action Req.</h4>
-          <div class="kpi-value" id="kpiNew" style="color:var(--amber);">0</div>
-        </div>
-        <div class="kpi-icon new"><i class="fa-solid fa-bolt"></i></div>
-      </div>
-
-      <div class="kpi-card">
-        <div class="kpi-info">
-          <h4>Consultations</h4>
-          <div class="kpi-value" id="kpiConsult">0</div>
-        </div>
-        <div class="kpi-icon consult"><i class="fa-solid fa-user-tie"></i></div>
-      </div>
-
-      <div class="kpi-card">
-        <div class="kpi-info">
-          <h4>Webinar Bookings</h4>
-          <div class="kpi-value" id="kpiWebinar">0</div>
-        </div>
-        <div class="kpi-icon webinar"><i class="fa-solid fa-video"></i></div>
-      </div>
-    </section>
-
-    <!-- Toolbar: Channels & Filters -->
-    <!-- Toolbar: Single Clickable Category Filter & Search -->
     <!-- Toolbar: Single Clickable Category Bar + Search + Export -->
     <section class="toolbar-box">
       <div class="channel-tabs" id="channelTabs">
-        <div class="channel-tab active" data-channel="all" onclick="setChannel('all')">All Inquiries</div>
-        <div class="channel-tab" data-channel="consultations" onclick="setChannel('consultations')">Consultations &amp;
-          Contacts</div>
-        <div class="channel-tab" data-channel="webinars" onclick="setChannel('webinars')">Webinar Registrations</div>
-        <div class="channel-tab" data-channel="specialized" onclick="setChannel('specialized')">Specialized Advisory
-        </div>
-        <div class="channel-tab active" data-channel="all" onclick="setChannel('all')">All <span class="tab-count"
-            id="allCountBadge">0</span></div>
-        <div class="channel-tab active" data-channel="all" onclick="setChannel('all')">All <span class="tab-count"
-            id="allCountBadge">0</span></div>
-        <div class="channel-tab active" data-channel="all" onclick="setChannel('all')">All <span class="tab-count"
-            id="allCountBadge">0</span></div>
+        <div class="channel-tab active" data-channel="all" onclick="setChannel('all')">All <span class="tab-count" id="allCountBadge">0</span></div>
         <div class="channel-tab" data-channel="citizenship" onclick="setChannel('citizenship')">Citizenship</div>
         <div class="channel-tab" data-channel="residency" onclick="setChannel('residency')">Residency</div>
         <div class="channel-tab" data-channel="event" onclick="setChannel('event')">Events</div>
@@ -2516,24 +570,6 @@
           <input type="text" class="search-input" id="searchInput" placeholder="Search name, phone, email...">
         </div>
 
-        <select class="filter-select" id="statusFilter" onchange="applyFilters()">
-          <option value="all">All Statuses</option>
-          <option value="new">● New</option>
-          <option value="contacted">● Contacted</option>
-          <option value="qualified">● Qualified</option>
-          <option value="archived">● Archived</option>
-        </select>
-
-        <select class="filter-select" id="programFilter" onchange="applyFilters()">
-          <option value="all">All Programs</option>
-          <option value="dominica">Dominica</option>
-          <option value="grenada">Grenada</option>
-          <option value="st-kitts">St. Kitts</option>
-          <option value="uae">UAE Golden Visa</option>
-          <option value="greece">Greece</option>
-          <option value="vanuatu">Vanuatu</option>
-        </select>
-
         <a href="/admin/api/leads-export.php" class="btn-export-csv" id="btnExportCsv" title="Download Excel CSV">
           <i class="fa-solid fa-file-excel"></i>
           <span>Export CSV</span>
@@ -2546,9 +582,6 @@
       <table class="leads-table">
         <thead>
           <tr>
-            <th>Client &amp; Contact</th>
-            <th>Channel</th>
-            <th>Client</th>
             <th>Name</th>
             <th>Email</th>
             <th>Number</th>
@@ -2559,9 +592,6 @@
             <th style="text-align:right;">Actions</th>
           </tr>
         </thead>
-        <tbody id="leadsTableBody">
-          <!-- Filled dynamically -->
-        </tbody>
         <tbody id="leadsTableBody"></tbody>
       </table>
 
@@ -2579,12 +609,7 @@
     <div class="modal-box">
       <div class="modal-head">
         <div>
-          <span style="font-size:0.75rem; text-transform:uppercase; color:var(--gold-bright); letter-spacing:0.06em;"
-            id="mLeadId">INQ-000000</span>
-          <span style="font-size:0.72rem; text-transform:uppercase; color:var(--gold-bright); letter-spacing:0.06em;"
-            id="mLeadId">INQ-000000</span>
-          <span style="font-size:0.72rem; text-transform:uppercase; color:var(--gold-bright); letter-spacing:0.06em;"
-            id="mLeadId">INQ-000000</span>
+          <span style="font-size:0.72rem; text-transform:uppercase; color:var(--gold-bright); letter-spacing:0.06em;" id="mLeadId">INQ-000000</span>
           <h3 id="mLeadName">Client Details</h3>
         </div>
         <button type="button" class="btn-modal-close" onclick="closeLeadModal()">&times;</button>
@@ -2604,7 +629,6 @@
           <div class="detail-val" id="mCountry">—</div>
         </div>
         <div class="detail-item">
-          <div class="detail-label">Channel &amp; Form</div>
           <div class="detail-label">Category &amp; Form</div>
           <div class="detail-val" id="mChannel">—</div>
         </div>
@@ -2614,37 +638,27 @@
         </div>
         <div class="detail-item full">
           <div class="detail-label">Source URL &amp; Timestamp</div>
-          <div class="detail-val" id="mSource" style="font-size:0.8rem; color:var(--muted);">—</div>
           <div class="detail-val" id="mSource" style="font-size:0.78rem; color:var(--muted);">—</div>
         </div>
       </div>
 
-      <!-- Client Notes & Message -->
       <div class="notes-box">
-        <div class="detail-label" style="margin-bottom:6px;">Client Message / Details</div>
         <div class="detail-label" style="margin-bottom:5px;">Client Message / Details</div>
         <p id="mNotes">No message content.</p>
       </div>
 
-      <!-- Admin Internal Follow-up Notes -->
       <div class="admin-notes-section">
         <label for="mAdminNotes"><i class="fa-solid fa-pen-to-square"></i> Internal Follow-Up Notes</label>
-        <textarea class="admin-notes-textarea" id="mAdminNotes"
-          placeholder="Write internal notes on this lead (e.g. Called via WhatsApp, scheduled zoom consultation for Thursday)..."></textarea>
-        <textarea class="admin-notes-textarea" id="mAdminNotes"
-          placeholder="Write internal notes on this lead..."></textarea>
-        <textarea class="admin-notes-textarea" id="mAdminNotes"
-          placeholder="Write internal notes on this lead..."></textarea>
+        <textarea class="admin-notes-textarea" id="mAdminNotes" placeholder="Write internal notes on this lead..."></textarea>
         <div style="display:flex; justify-content:space-between; align-items:center; margin-top:10px;">
           <div style="display:flex; align-items:center; gap:8px;">
             <span style="font-size:0.78rem; color:var(--muted);">Status:</span>
-            <select class="filter-select" id="mStatusSelect" style="padding:4px 10px; font-size:0.78rem;">
-              <select class="modal-status-select" id="mStatusSelect">
-                <option value="new">New</option>
-                <option value="contacted">Contacted</option>
-                <option value="qualified">Qualified</option>
-                <option value="archived">Archived</option>
-              </select>
+            <select class="modal-status-select" id="mStatusSelect">
+              <option value="new">New</option>
+              <option value="contacted">Contacted</option>
+              <option value="qualified">Qualified</option>
+              <option value="archived">Archived</option>
+            </select>
           </div>
           <button type="button" class="btn-export-csv" style="padding:6px 14px;" onclick="saveLeadModalAction()">
             <i class="fa-solid fa-floppy-disk"></i> Save Notes
@@ -2654,21 +668,13 @@
 
       <div style="display:flex; justify-content:flex-end; gap:10px;">
         <button type="button" class="back-btn" onclick="closeLeadModal()">Close</button>
-        <a href="#" target="_blank" class="btn-export-csv" id="mBtnWhatsApp"
-          style="background:var(--green); border-color:var(--green); color:#0E0F12;">
-          <a href="#" target="_blank" class="btn-export-csv" id="mBtnWhatsApp"
-            style="background:var(--green); border-color:var(--green); color:#0B0C0F;">
-            <i class="fa-brands fa-whatsapp"></i> Chat on WhatsApp
-          </a>
-          <a href="#" target="_blank" class="btn-export-csv" id="mBtnWhatsApp"
-            style="background:var(--green); border-color:var(--green); color:#0A0B0E;">
-            <i class="fa-brands fa-whatsapp"></i> Chat on WhatsApp
-          </a>
+        <a href="#" target="_blank" class="btn-export-csv" id="mBtnWhatsApp" style="background:var(--green); border-color:var(--green); color:#0A0B0E;">
+          <i class="fa-brands fa-whatsapp"></i> Chat on WhatsApp
+        </a>
       </div>
     </div>
   </div>
 
-  <!-- Toast Notification -->
   <div class="toast" id="toast">
     <i class="fa-solid fa-circle-check"></i>
     <span id="toastMsg">Action completed</span>
@@ -2676,357 +682,162 @@
 
   <!-- ═══════════════ SCRIPT LOGIC ═══════════════ -->
   <script>
-    (() => {
-      'us             ;
-  (()            '          rict';
+  (() => {
     'use strict';
 
-      // ── 1. AUTH               GUARD ────────────────      ─────────────────────            nst token = localStorage.getIte                  ') || sessionStorage.g              s_token');
-        const user              torage.getItem('sgcms_user') |              rage.get      ('               || loca            e                       h') || sessionStorage.get        sgcms_auth');
-              oken || !userS                          .loc          place('/admin/index.        ;
-        re              }
-    //            HENTICATION GUARD         ──      ────      ──────────          ────               token = localStorage.ge            ms_token') || sessionSto        etItem('sgcms_                                     lo          ge.getItem('sg             || sessionStorage.getItem          user') ||               .getItem('sgcms_aut                      age.getItem('s              
-                             r) {
-                              place('/ad mi        x.h        
-                      //            HENTICATION GUARD ──────            ──────────────────────────
-    c             = localStorage.getItem('sgcms_token')             Storage.getItem('sgcms_toke            onst userStr = localStorage.get            s_user') || sessionStorag            'sgcms_user') || localStorage.g            cms_auth') || sessionStorage.getItem('sgcms_auth');            token || !userStr) {
-                 cation.replace(            dex.html');
+    // ── 1. AUTHENTICATION GUARD ──────────────────────────────────────────
+    const token = localStorage.getItem('sgcms_token') || sessionStorage.getItem('sgcms_token');
+    const userStr = localStorage.getItem('sgcms_user') || sessionStorage.getItem('sgcms_user') || localStorage.getItem('sgcms_auth') || sessionStorage.getItem('sgcms_auth');
+    if (!token || !userStr) {
+      window.location.replace('/admin/index.html');
       return;
     }
 
-             tach token               t link
-                          = docum            me          bt          sv');
-      if (exportBtn)             exportBtn.href          in/api/leads-export.        ken=${en                    (token)}`;
-      }
-         st exportBtn          ent.get          yId          or              if        rt       {
-             ortBtn.href = `/admin/api/        e            token=${encodeURIComponent(token)}`;
-            exportBtn = document.getEle            btnExportCsv');
-    if (exportB              exportBtn.href = `/admi            s-export.php?token=${encodeURIC            oken)}`;
+    const exportBtn = document.getElementById('btnExportCsv');
+    if (exportBtn) {
+      exportBtn.href = `/admin/api/leads-export.php?token=${encodeURIComponent(token)}`;
     }
 
-              2. STATE ────               ───            ──────────            ────────
-                         [];
-      let currentChannel = 'a                        eModa            ll;
-               STATE ───────────────              ────────────────              ─
-                     =           let currentC ha         'a           let a                 d               const $ = id => docume            entById(id);
-            2.           ──            ────────────────────────            ────────
-    let allLeads =             t currentChannel = 'all';
-    let acti            d = null;
-    const $ = id            nt.getElementById(id);
+    // ── 2. STATE ────────────────────────────────────────────────────────
+    let allLeads = [];
+    let currentChannel = 'all';
+    let activeModalLead = null;
+    const $ = id => document.getElementById(id);
 
-                  OM            ──────            ───────────────────────            
-                = id => docu            ementById(id);
-    /            A            OM BACKEND             PREV            CK) ─            
-    window.load            ync fu            
-      const ico =             Icon')             (ico) ico.classList.add('            
-
-      // ── 4              DS FROM BACKEND API (WI                         ───────────
-      window.loadLead            functi                       st            refreshIcon');
-        i            o.classList.                        // ── 3. LOAD LEADS FROM BACKEND API (WIT            FALLBACK) ───────────
-    wi            eads = async function() {
-                      const res = await fe            n/ap            t.php?t=${Date.now()}`                headers: { 'Authorization': `          {t                                             status =                        window.location.replace('                .html');
-        c             await fetch(`/admin/api/leads-get.php?t=${Date.now()}`, {
-          headers: { 'Authorization': `Bearer ${                    });
-        if (res.s            401) {
-          window.location.replace('/admin/inde          ;
-            r                              try {
-            const res             tch(`/ad            ads-get.php?t            w()}`, {
-                 d            thorization':             token}`               });
-                 es.status === 401) {                  indow.location.replace('/               .html');
-        con            s.headers.            nt-type') || '                        k && ct                       ion/json')) {
+    // ── 3. LOAD LEADS FROM BACKEND API (WITH PREVIEW FALLBACK) ───────────
+    window.loadLeads = async function() {
+      try {
+        const res = await fetch(`/admin/api/leads-get.php?t=${Date.now()}`, {
+          headers: { 'Authorization': `Bearer ${token}` }
+        });
+        if (res.status === 401) {
+          window.location.replace('/admin/index.html');
+          return;
         }
 
-        c            res.headers.get('content-ty            ;
+        const ct = res.headers.get('content-type') || '';
         if (res.ok && ct.includes('application/json')) {
-          const data = await             ;
-          if (data && da                {
+          const data = await res.json();
           if (data && data.success) {
-            allLeads           ea        [];
-              upda            ge(data.stats ? data.stats.total : allLeads.lengt                  apply                                                     }
-
-          c                   eaders.get('cont                     
-          if           && ct.includes('            n/json')) {
-            c                await res.json();
-                       && data.success) {
-                allLeads =           ds || [];
-                   ateKpis(data.stats || {});
-                ap                ;
-                 eturn;
-              }
-            updat      ntB      (data.stats ? data.stats.tota        lLeads.length);
+            allLeads = data.leads || [];
+            updateCountBadge(data.stats ? data.stats.total : allLeads.length);
             applyFilters();
-              return;
+            return;
           }
-                 l        for static hosts (e.g. Verc            )
-          loadP                );
-        } catch (err) {
-          loadPr        eads();
-        } fina                    if (ico) ico.classL            ('fa-spin');
         }
-      };
-           oad      iewLeads();
-              h (                          reviewLeads();
-      } f                   if (ico) ico.clas            ve('fa-spin');
-             ch (err) {
+        loadPreviewLeads();
+      } catch (err) {
         loadPreviewLeads();
       }
     };
 
-        func            reviewLeads() {
-        cons               localStorage.getItem('sgcms_pre            ');
-        if (cached)               try {
-            const pars        SO            ched);
-            if (Array.isArray(        )             length) {
-                       s = parsed;
-                recalcPreviewStats();
-                         lters();
-                     n;
-            }
-          } catch (_) { }
-        }
-
-        allLeads = [
-            {
-            id: 'INQ            001',
-            full_name:             l-Otaibi',
-            email: 'm.otaibi@alotaibi-inve          
-                          71 50 123 4567',                      app_e164: '971501234567',
-                annel: 'consultation',
-            chan             'Consultation',
-                       'Dominica Citizenship & UAE Go            ,
-            progra            ominica',
-            status: 'new                 timestamp: '2026-1        0:14:22',
-                       ry: 'United Arab Emira                      notes: 'Fa              requesting confidential p          o             at DIFC of                                     : '/programs/citizenshipbyin          /dominica/',
-            ad          : 'High net             ir          ubai office refe                     }              {
-            id: 'INQ-20261117-      ,
-                   l_        'Dr.         Al-Hashimi',
-            email: 'tari      shimi@medclinic.ae',
-                        '+971 55 987 6543                   whatsap      64:      1559876543',
-            channel        su          ,
-              channel_label: 'Consulta                            ce:         da Citizenship b      vest                       program_slug:  'gre        
-            status: 'qualified',
-            timestamp: '20              5:40:09',
-            country: 'Ir                   notes: 'Look        r v        e        el to UK/Sch        and USA E-2 investor tr          ess.',
-                     rce_page: '/programs/citize        yinvestment/grenada/',
-            admin_note:        ified candidate. Due          ce pre-check i        ed.'
-          },
-          {
-            id: 'REG-20261           ',
-            full_name: 'Elena Rostova',
-               mail: 'e.rostova@globaladvisory.eu                          '+357 99 876 543',
-            what          4: '35799      43'                ch          webinar',
-              channel_label: 'Webinar Registration',
-                  ice: 'European Go          a Masterclass',
-               rogram_slug: 'greece',
-                   s: 'contacted',                 timestamp: '2026-11-17 12:05:18',
-               ountry: 'Cyprus',
-            note          stered for upco          ece & Portugal             session.',
-                   e_page: '/events/',
-            admin_note: 'Sent s         calendar invite & WhatsApp brochure.'
-          },
-                          id: 'INQ-20261116-012',
-                        e:           ei',
-                ail:         .wei@shanghai-ventures.      
-              phone: '+86 138 0013 800                  whatsapp_e16      8613800138000',
-            ch         'specialized',
-            channel        : 'Real Estate Inquiry',
-              service: 'Dubai Prime R        tate Advisory',
-                program_slug: 'uae',
-                   s: 'new'                  timestamp: '2026-11-16 18:22:45                 country: 'Ch                    notes: 'Seeking luxury villa in           in Palm Jumeirah or Emirates Hills with Golden Visa eligib          
-            source_page: '/realesta                      admin_note:       ig           Real Estate advisory desk.'
-                                           id: 'INQ-20261115-008'                full_name: 'Marcus          g',
-            e          arcus@sterlingcapital.co.uk'                phone: '+44 20 7946 0                    whatsapp_e164: '          0912',
-            channel:        act                 channel_label: 'General Conta      
-              service: 'St. Kitts & Nevis Citizenship',
-            program_slug      t-kitts',
-            status : 'clos                   timestamp:        -11-15 09:12:00',
-            country: 'United Kingdom',
-            not          uiring about family office relocation and citizenship proces        imel        
-            sou      page      contact/',
-            admin_n ote:         eted consultation. Retainer agreement signed.'
-    function         eviewLeads() {
-      const cached = loca        ge.getItem('sgcms_preview_leads');
-      if        ed) {
     function loadPreviewLeads() {
       const cached = localStorage.getItem('sgcms_preview_leads');
       if (cached) {
         try {
-          const parsed           arse(cached);
-               (Array.isArray(parsed) && parsed.length) {
           const parsed = JSON.parse(cached);
           if (Array.isArray(parsed) && parsed.length) {
             allLeads = parsed;
-            updateCountBadge(allLe          th);
             updateCountBadge(allLeads.length);
             applyFilters();
             return;
           }
-        ];
-
-            calStorage.setItem('sgcms_preview_leads', JSON.stringify(allLeads));
-        recalcPreviewStats();
-                  ters();
         } catch (_) {}
-                 function recalcPreviewStats() {
-            nst stats = {
-          total: allLeads.length,
-          new: allLeads          l => l.status ===          length,
-          consultations: allLeads.filter(l => ['consult          'contact'].include          nel)).length,
-          webinars: allLeads.filter(l => l.channel === 'webinar').length
-          };
-        upda          tats);
-                   s({ total: allLeads.length });
       }
 
       allLeads = [
         {
           id: 'INQ-20261118-001',
           full_name: 'Mansoor Al-Otaibi',
-                l: 'm.otaibi@alotaibi-invest.com',
-          p          971          4567',
-              atsap        : '971501234567',
-            cha      : 'citizenship',
-          service: 'Dominica Citizenship b      vestment',
-          status: '                  timestamp: '2026-11-18 10        ',
-          relative_time: '20        18',
-          country:        ed Arab Emirates',
-            lang: 'en',
-          notes: 'F           4 reque        co        tial private consultation at DI        ice.',
-          sour           '/programs/citizenshipbyinvestment/domin                   admin_note: 'High net worth inquiry from Dubai off          rral.'
           email: 'm.otaibi@alotaibi-invest.com',
           phone: '+971 50 123 4567',
           whatsapp_e164: '971501234567',
           channel: 'citizenship',
           service: 'Dominica Citizenship by Investment',
-                 s: 'new',
-          tim        : '2      11-      0:14:22',
-          country: '         Arab Emirates',
+          status: 'new',
+          timestamp: '2026-11-18 10:14:22',
+          country: 'United Arab Emirates',
           lang: 'en',
-          notes: 'F        of 4 requesting confidential private consultation at DIFC        e.',
-          source_page: '/programs/citizenship        stment/dominica/',
-          admin_note: 'High net worth         y from Dubai office referral.'
+          notes: 'Family of 4 requesting confidential private consultation at DIFC office.',
+          source_page: '/programs/citizenshipbyinvestment/dominica/',
+          admin_note: 'High net worth inquiry from Dubai office referral.'
         },
         {
-                    NQ-20261117-004',
-          full          Dr. Tariq Al-Has        
-          email: '          shimi@medclinic.ae',
           id: 'INQ-20261117-004',
-          full_nam        . Tariq Al-Hashimi',
-          email: 'tariq.hashimi@med        .ae',
+          full_name: 'Dr. Tariq Al-Hashimi',
+          email: 'tariq.hashimi@medclinic.ae',
           phone: '+971 55 987 6543',
-          whatsapp         '971559876543',
-          chan        citizenship',
-          service: 'Grenada Citizenship by I        ent',
-          channel: 're      ncy               service: 'UAE 10-Year Gol        sa',
+          whatsapp_e164: '971559876543',
+          channel: 'residency',
+          service: 'UAE 10-Year Golden Visa',
           status: 'qualified',
-            timestamp: '2026-11-17 15:40:09',
-          relative_tim        26-11-17',
+          timestamp: '2026-11-17 15:40:09',
           country: 'Iraq',
           lang: 'en',
-          notes: 'Looking for visa-free travel to UK/Schengen and USA E-2 investor treaty access.',
-          sou        ge: '/programs/citizenship          ment/grenada/',
-          admin_note: 'Qualified candidate. Due diligence pre-check initiated.'
-          notes: 'Interested in UAE Golden Visa residency path        
-          source_page: '/program          ncybyinvestment/uae/',
+          notes: 'Interested in UAE Golden Visa residency pathway.',
+          source_page: '/programs/residencybyinvestment/uae/',
           admin_note: 'Qualified candidate.'
         },
         {
           id: 'REG-20261117-009',
-          fu        e:        a Rostova',
+          full_name: 'Elena Rostova',
           email: 'e.rostova@globaladvisory.eu',
-          phone:      57       76 543',
+          phone: '+357 99 876 543',
           whatsapp_e164: '35799876543',
-          channel: 'eve      
-          service: 'European Golden Vis a Masterclass',
-          status        tacted',
-          timestamp: '2026-11-17 12:05:18'              relative_time: '2026-11-17',
-          countr        prus',
+          channel: 'event',
+          service: 'European Golden Visa Masterclass',
+          status: 'contacted',
+          timestamp: '2026-11-17 12:05:18',
+          country: 'Cyprus',
           lang: 'en',
-                s: 'Registe        r upcoming Greece & Portugal residency session.',
-               rce_page: '/events/',
-                n_note          session calendar invite & WhatsApp brochure.'
-          a             'Sent session c            vite.'
-                     {
-          id: 'INQ-20261116-012               full_name: 'Zhang Wei',
-                      ang            hai-ventures.cn',
-          phone: '+86 138 0013 8000',
-               tsap          '8613800138000',
-          channel: 'realestate',
-            service: 'Dubai Prime Real Estate Advisory',
-              atus: 'new',
-          timestam            1-16 18:22:45',
-                  ve_time: '2026-11-16',
-          country: 'Chi                 lang:                        es          ng luxury villa investment in          meirah or Emirates Hills.',
-          notes: 'Seeking luxury villa inve          n Palm Jumeirah.',
-          source_page: '/re        te/',
-                  note: 'Assigned to Real Estate advisory desk.'
-          admin_note: 'A          to Real Estate desk.'
+          notes: 'Registered for upcoming Greece & Portugal residency session.',
+          source_page: '/events/',
+          admin_note: 'Sent session calendar invite.'
         },
         {
-            i      INQ-      1115-008',
+          id: 'INQ-20261116-012',
+          full_name: 'Zhang Wei',
+          email: 'zhang.wei@shanghai-ventures.cn',
+          phone: '+86 138 0013 8000',
+          whatsapp_e164: '8613800138000',
+          channel: 'realestate',
+          service: 'Dubai Prime Real Estate Advisory',
+          status: 'new',
+          timestamp: '2026-11-16 18:22:45',
+          country: 'China',
+          lang: 'zh',
+          notes: 'Seeking luxury villa investment in Palm Jumeirah.',
+          source_page: '/realestate/',
+          admin_note: 'Assigned to Real Estate desk.'
+        },
+        {
+          id: 'INQ-20261115-008',
           full_name: 'Marcus Sterling',
-          email: 'mar      sterlingcapital.co.uk',
-           phone: '         7946 0912',
-          whatsapp_e164: '44207946091                channel: 'g        ',
-          service: 'Ge        Consultation',
-          status: 'ar        ',
-          timestamp: '2026-11-15 09:12:00'              relative_time: '2026-11-15',
-          country: 'U        Kingdom',
+          email: 'marcus@sterlingcapital.co.uk',
+          phone: '+44 20 7946 0912',
+          whatsapp_e164: '442079460912',
+          channel: 'general',
+          service: 'General Consultation',
+          status: 'archived',
+          timestamp: '2026-11-15 09:12:00',
+          country: 'United Kingdom',
           lang: 'en',
-          notes: 'Inquir        out family office relocation.',
-          source_page: '/cont        
+          notes: 'Inquiring about family office relocation.',
+          source_page: '/contact/',
           admin_note: 'Completed consultation.'
         }
       ];
 
-      function upda        (stats) {
-        $('kpiTotal').textConten        ats.total || 0;
-        $('kpiNew').textContent = stats.new || 0;
-        $('kpiC        ').textContent = stats.consultations || 0;
-        $('kpiWebina        xtContent = stats.webinars || 0;
-        const b         $('allCountBadge');
-        if (badge) badge.text        t = stats.total || allLeads.         || 0;
-      }
-      localStorage        em('sgcms_preview_leads',           ingify(allLeads));
-      updateCountB          Leads.          
-      updateCountBad        Leads.len              applyFilters();
-        
-           u           resolveCategory(lead) {
-                  val       ['citizenship', 'residency', 'e vent'        eral'        lestate', 'education', 'part        p'];
-        if (valid.          e      ad.channel)) return lead.channel;
-        i f            hannel === 'webinar') return '        ;
-        const txt         ad.service || ''        ' + (lead.source_page || '') + '        le        m_id || '')).toLowerCase();
-             (txt.includes('partne        eturn         ership';
-               xt.includes('educat        || txt          s('school') || txt.includes('        sity')) return 'educ                  if (txt.in                    ate              cludes('realestate') || txt.includes                    turn 'realestate';
-        if            clu            ency') || txt.includes(              ') || txt.        es('portuga              nclud      gre                .includes('panama                         'uae          rn 'residency';
-             (txt.includes('citize          || txt.includes('cbi') || txt.        es('dominic            .includes('grenada') || txt.inc            igua') || txt.includ              || txt.includes('kitts') || txt.includes('v              txt.incl            u'                      s('sao tome')) retur          enship';
-        return 'general';
-                
-    function updateCountBadge(total) {
-           st badge = $('          Badge');
-      if (badge) badge.textContent =         || 0;
-      if (b          dge.textContent = total || 0;
+      localStorage.setItem('sgcms_preview_leads', JSON.stringify(allLeads));
+      updateCountBadge(allLeads.length);
+      applyFilters();
     }
 
-              on      C            abel(cat) {
-        const map = {
-          citizenship: 'Citizenship               residency: 'Residency',
-                t: 'Events',
-                      l: 'General Enquiry',
-              alestate: 'Real Estate',
-          educati      'Ed              ,
-          partnership: 'Partnership'
-        };
-          r      n m      at] || 'General         y';
-      }
-    fu nction resolveCategory(lead) {
-         onst valid = ['citizenship', 'residency', 'event',            l',      alestate', 'education', 'partnership'];
-                 id.includes(lead.channel)) return        channel;
-           (lead.channel = == '        r') return 'event';
-      const                 .service || '') + ' ' +        .sourc            | '') + ' ' + (lead.form_id || '')).t        Case();
-                  cludes('partner'              'partnershi               (txt.incl        education') || txt.i              ool') |        includes('university')            edu                   i      xt.includes('rea      tate') || txt    nclude're         txt          s('property')) return 'realestate';
-      if (txt.          ('residency') || txt.includes('golden visa') || t            s('portugal') || txt.includes('            | txt.includes('pana              includes('uae')) return 'residency';
-      if               s('citiz            |           ud          ) || txt.includes('dominica')          includes('grenada') || txt.includes('antigua') || txt.includes('lucia')          includes('kitts') || txt.includes('vanuatu') |        includes('naur          xt.includes('sao tome')) return 'citizenship';
+    function updateCountBadge(total) {
+      const badge = $('allCountBadge');
+      if (badge) badge.textContent = total || 0;
+    }
+
     function resolveCategory(lead) {
       const valid = ['citizenship', 'residency', 'event', 'general', 'realestate', 'education', 'partnership'];
       if (valid.includes(lead.channel)) return lead.channel;
@@ -3038,15 +849,6 @@
       if (txt.includes('residency') || txt.includes('golden visa') || txt.includes('portugal') || txt.includes('greece') || txt.includes('panama') || txt.includes('uae')) return 'residency';
       if (txt.includes('citizenship') || txt.includes('cbi') || txt.includes('dominica') || txt.includes('grenada') || txt.includes('antigua') || txt.includes('lucia') || txt.includes('kitts') || txt.includes('vanuatu') || txt.includes('nauru') || txt.includes('sao tome')) return 'citizenship';
       return 'general';
-               // ── 5. FILTERING & RENDERING ──────────        ──      ────      ──────────
-      window.setChannel = function (ch) {
-        currentChan      = ch;
-        document.querySel ectorAll('#        lTabs .channel-tab').forEach(tab => {
-          ta        sList.toggle('activ        b.dataset.channel === ch)            });
-        applyFilters();
-            on getCategoryLabel(cat) {
-      const map =             citizenship: 'Citizenship',
-        residency: 'Resi        ,
     }
 
     function getCategoryLabel(cat) {
@@ -3054,28 +856,15 @@
         citizenship: 'Citizenship',
         residency: 'Residency',
         event: 'Events',
-        general: 'General Enq        
         general: 'General Enquiry',
         realestate: 'Real Estate',
-        education: 'Educa        ',
         education: 'Educational',
         partnership: 'Partnership'
       };
-      return map[cat] || 'General Enquiry         }
       return map[cat] || 'General Enquiry';
     }
 
-      window.applyFilters = function (              const search = $('searchInput').value.trim().toLowerCase();
-        const s        = $('statusFilter').value;
-        const program = $('programFi        .value;
     function getChannelIcon(ch) {
-               === 'citizenship') return 'fa-solid fa-passport';         if (ch === 'residency') ret        a-solid fa-id-card';
-      if (ch        event') return 'fa-solid f          ;
-      if (ch === 'general') return           d fa-comment-dots';
-      if (ch ===         state') r          a-solid fa-building';
-      if        ==         tion') return 'fa-solid fa-graduation-      ;
-        if (ch === 'partnership') return  'fa-        fa-handshake';
-      return 'fa-solid fa-        ;
       if (ch === 'citizenship') return 'fa-solid fa-passport';
       if (ch === 'residency') return 'fa-solid fa-id-card';
       if (ch === 'event') return 'fa-solid fa-video';
@@ -3086,14 +875,6 @@
       return 'fa-solid fa-inbox';
     }
 
-        const f      red       lLeads.filter(lead => {
-          // Channe l fil                if (currentChannel ===        ultations' && !['consultation', 'contact'].i        s(lead.channel)) return false;
-          i        rentChannel === 'webinars' && lea        nel !== 'webinar') return false;
-            if (currentCha        == 'specialized' &&        ucatio          lestate'].includes(lead.channel)) return false;
-                      = resolveCatego                // ── 4              & RENDERING ────────────────────────              ────
-    window.setChannel = functi                           hannel = ch;
-      docu              lectorAll('#channelTabs .chan              rEach(tab => {
-               lassList.toggle('            ab.          chan          ch);
     // ── 4. FILTERING & RENDERING ────────────────────────────────────────
     window.setChannel = function(ch) {
       currentChannel = ch;
@@ -3103,67 +884,36 @@
       applyFilters();
     };
 
-               Single clickable category filter
-          if (cu            el !== 'all' && cat !== current            eturn false;
-    win              ters = function() {
-      const search = $(              ').value            Lo          );          onst status = $('statusFilter').value;
     window.applyFilters = function() {
       const search = ($('searchInput')?.value || '').trim().toLowerCase();
 
-          // Status filter
-               (status !== 'all' && lead.status !== statu        urn false;
-              filtered = allLeads.filter(lead => {
-        const cat = resolveCatego          ;
-        if (currentChannel !== 'all' && c         c      ntCh      l) return false;
-        if (status !== 'all' && lead.status !== status)      urn false;
       const filtered = allLeads.filter(lead => {
         const cat = resolveCategory(lead);
         if (currentChannel !== 'all' && cat !== currentChannel) return false;
 
-          // Program filter
-            if (program !== 'al        !lead.service.toLowerCase().inclu        ogram)) return false;
         if (search) {
-          con        stack = (lead.full_name + ' ' + lead.phone + ' ' + l      ema       ' ' + lead.country + ' '        d.service + ' ' + lead.notes).toLowerCase();
           const haystack = ((lead.full_name || '') + ' ' + (lead.phone || '') + ' ' + (lead.email || '') + ' ' + (lead.country || '') + ' ' + (lead.service || '') + ' ' + (lead.notes || '')).toLowerCase();
           if (!haystack.includes(search)) return false;
         }
-          ret      true;
         return true;
       });
 
-          // Search text
-               (search) {
-            const haystack = (lead.full_name + ' ' + lead.phone +  ' '        d.email + ' ' + lead.country + ' ' + lea        ice + ' ' + lead.notes).toLowerCase();
-              if (!haystack.includes(search)) r        false;
-          }
-      renderTable(filte            };
       renderTable(filtered);
     };
 
-          return true;
-        })        $('searchInput').addEventListener('input'        yFilters);
     $('searchInput').addEventListener('input', applyFilters);
 
-        renderTable(filtered);
-         ;
-         ction renderTabl      ads) {
-          nst tby =dsTableBody');
     function renderTable(leads) {
       const tbody = $('leadsTableBody');
       const empty = $('emptyState');
       tbody.innerHTML = '';
 
-      $('searchInput').addEventListener('input', applyFilters);
       if (!leads.length) {
         empty.style.display = 'block';
         return;
       }
       empty.style.display = 'none';
 
-      function renderTable(leads) {
-        const tbody = $('leadsTableBody');
-        const empty = $('emptyState');
-        tbody.innerHTML = '';
       leads.forEach(l => {
         const tr = document.createElement('tr');
         const init = ((l.full_name || 'C').charAt(0)).toUpperCase();
@@ -3173,36 +923,10 @@
         const dateStr = (l.timestamp || '').slice(0, 10) || l.relative_time || '—';
         const statusVal = l.status || 'new';
 
-        if (!leads.length) {
-          empty.style.display = 'block';
-          return;
-        }
-        empty.style.display = 'none';
-
-        leads.forEach(l => {
-          const tr = document.createElement('tr');
-          const init = (l.full_name.charAt(0) || 'C').toUpperCase();
-          const waUrl = buildWhatsAppUrl(l);
-
-          const cat = resolveCategory(l);
-          const catLabel = getCategoryLabel(cat);
-
-          tr.innerHTML = `
         tr.innerHTML = `
           <td>
-            <div class="client-cell">
             <div class="name-cell">
               <div class="client-avatar">${escapeHtml(init)}</div>
-              <div class="client-details">
-                <div class="client-name">${escapeHtml(l.full_name)}</div>
-                <div class="client-contact">
-                  <span>${escapeHtml(l.phone || 'No phone')}</span>
-                  <span>·</span>
-                  <span>${escapeHtml(l.email || 'No email')}</span>
-                  <span class="lang-tag">${escapeHtml(l.lang)}</span>
-                </div>
-              </div>
-              <span class="client-name">${escapeHtml(l.full_name)}</span>
               <span class="client-name">${escapeHtml(l.full_name || 'Client')}</span>
               ${l.lang ? `<span class="lang-tag">${escapeHtml(l.lang)}</span>` : ''}
             </div>
@@ -3210,30 +934,18 @@
           <td class="email-cell">${escapeHtml(l.email || '—')}</td>
           <td class="phone-cell">${escapeHtml(l.phone || '—')}</td>
           <td>
-            <span class="channel-badge ${escapeHtml(l.channel)}">
-              <i class="${getChannelIcon(l.channel)}"></i>
-              ${escapeHtml(l.channel_label)}
-            <span class="channel-badge ${escapeHtml(cat)}">
             <span class="cat-text ${escapeHtml(cat)}">
               <i class="${getChannelIcon(cat)}"></i>
-              ${escapeHtml(catLabel)}
               <span>${escapeHtml(catLabel)}</span>
             </span>
           </td>
           <td>
             <div class="service-cell">
-              <div class="service-title" title="${escapeHtml(l.service)}">${escapeHtml(l.service)}</div>
-              <div class="service-country"><i class="fa-solid fa-location-dot"></i> ${escapeHtml(l.country || 'International')}</div>
               <div class="service-title" title="${escapeHtml(l.service)}">${escapeHtml(l.service || '—')}</div>
               <div class="service-country">${escapeHtml(l.country || 'International')}</div>
             </div>
           </td>
           <td>
-            <select class="status-select ${escapeHtml(l.status)}" onchange="updateLeadStatus('${escapeHtml(l.id)}', this.value, this)">
-              <option value="new" ${l.status === 'new' ? 'selected' : ''}>● New</option>
-              <option value="contacted" ${l.status === 'contacted' ? 'selected' : ''}>● Contacted</option>
-              <option value="qualified" ${l.status === 'qualified' ? 'selected' : ''}>● Qualified</option>
-              <option value="archived" ${l.status === 'archived' ? 'selected' : ''}>● Archived</option>
             <select class="status-select ${escapeHtml(statusVal)}" onchange="updateLeadStatus('${escapeHtml(l.id)}', this.value, this)">
               <option value="new" ${statusVal === 'new' ? 'selected' : ''}>● New</option>
               <option value="contacted" ${statusVal === 'contacted' ? 'selected' : ''}>● Contacted</option>
@@ -3241,13 +953,8 @@
               <option value="archived" ${statusVal === 'archived' ? 'selected' : ''}>● Archived</option>
             </select>
           </td>
-          <td>
-            <div style="font-weight:500; color:var(--cream);">${escapeHtml(l.relative_time)}</div>
-            <div style="font-size:0.72rem; color:var(--muted);">${escapeHtml(l.timestamp.slice(0, 10))}</div>
-          </td>
           <td class="date-cell">${escapeHtml(dateStr)}</td>
           <td style="text-align:right;">
-            <div class="actions-cell" style="justify-content:flex-end;">
             <div class="actions-cell">
               ${l.whatsapp_e164 ? `
                 <a href="${waUrl}" target="_blank" class="btn-act wa" title="Chat on WhatsApp">
@@ -3265,26 +972,10 @@
             </div>
           </td>
         `;
-          tbody.appendChild(tr);
-        });
-      }
         tbody.appendChild(tr);
       });
     }
 
-      function getChannelIcon(ch) {
-        if (ch === 'consultation') return 'fa-solid fa-user-tie';
-        if (ch === 'contact') return 'fa-solid fa-comment-dots';
-        if (ch === 'webinar') return 'fa-solid fa-video';
-        if (ch === 'citizenship') return 'fa-solid fa-passport';
-        if (ch === 'residency') return 'fa-solid fa-id-card';
-        if (ch === 'event' || ch === 'webinar') return 'fa-solid fa-video';
-        if (ch === 'general' || ch === 'contact' || ch === 'consultation') return 'fa-solid fa-comment-dots';
-        if (ch === 'realestate') return 'fa-solid fa-building';
-        if (ch === 'education') return 'fa-solid fa-graduation-cap';
-        return 'fa-solid fa-building';
-        if (ch === 'partnership') return 'fa-solid fa-handshake';
-        return 'fa-solid fa-inbox';
     function buildWhatsAppUrl(lead) {
       if (!lead.whatsapp_e164) return '#';
       const cleanDigits = lead.whatsapp_e164.replace(/\D/g, '');
@@ -3297,48 +988,12 @@
       return `https://wa.me/${cleanDigits}?text=${encodeURIComponent(greeting)}`;
     }
 
-      function buildWhatsAppUrl(lead) {
-        if (!lead.whatsapp_e164) return '#';
-        const cleanDigits = lead.whatsapp_e164.replace(/\D/g, '');
-        let greeting = `Hello ${lead.full_name}, thank you for contacting Sharif Group Dubai regarding ${lead.service}. How may our private client advisory team assist you today?`;
-        if (lead.lang === 'fa') {
-          greeting = `سلام ${lead.full_name} گرامی، از تماس شما با شریف گروپ دبی در خصوص (${lead.service}) سپاسگزاریم. چطور می‌توانیم شما را در این مسیر همراهی کنیم؟`;
-        } else if (lead.lang === 'ar') {
-          greeting = `مرحباً ${lead.full_name}، شكراً لتواصلكم مع مجموعة شريف دبي بخصوص (${lead.service}). كيف يمكن لمستشارينا مساعدتكم اليوم؟`;
-        }
-        return `https://wa.me/${cleanDigits}?text=${encodeURIComponent(greeting)}`;
-      }
     // ── 5. UPDATE STATUS INLINE ─────────────────────────────────────────
     window.updateLeadStatus = async function(leadId, newStatus, selectEl) {
       selectEl.className = `status-select ${newStatus}`;
       const found = allLeads.find(x => x.id === leadId);
       if (found) found.status = newStatus;
 
-      // ── 6. UPDATE STATUS INLINE ─────────────────────────────────────────
-      window.updateLeadStatus = async function (leadId, newStatus, selectEl) {
-        selectEl.className = `status-select ${newStatus}`;
-        const found = allLeads.find(x => x.id === leadId);
-        if (found) found.status = newStatus;
-        let n = 0;
-        allLeads.forEach(l => { if (l.status === 'new') n++; });
-        $('kpiNew').textContent = n;
-
-        try {
-          const res = await fetch('/admin/api/leads-action.php', {
-            method: 'POST',
-            headers: {
-              'Content-Type': 'application/json',
-              'Authorization': `Bearer ${token}`
-            },
-            body: JSON.stringify({ lead_id: leadId, status: newStatus })
-          });
-          const ct = res.headers.get('content-type') || '';
-          if (res.ok && ct.includes('application/json')) {
-            const data = await res.json();
-            if (data.success) {
-              showToast(`Status updated to ${newStatus}.`);
-              return;
-            }
       try {
         const res = await fetch('/admin/api/leads-action.php', {
           method: 'POST',
@@ -3355,14 +1010,7 @@
             showToast(`Status updated to ${newStatus}.`);
             return;
           }
-          // Fallback for preview mode
-          localStorage.setItem('sgcms_preview_leads', JSON.stringify(allLeads));
-          showToast(`Status updated to ${newStatus}.`);
-        } catch (e) {
-          localStorage.setItem('sgcms_preview_leads', JSON.stringify(allLeads));
-          showToast(`Status updated to ${newStatus}.`);
         }
-      };
         localStorage.setItem('sgcms_preview_leads', JSON.stringify(allLeads));
         showToast(`Status updated to ${newStatus}.`);
       } catch (e) {
@@ -3371,28 +1019,12 @@
       }
     };
 
-      // ── 7. LEAD DETAILS MODAL & ADMIN NOTES ─────────────────────────────
-      window.openLeadModal = function (leadId) {
-        const lead = allLeads.find(x => x.id === leadId);
-        if (!lead) return;
-        activeModalLead = lead;
     // ── 6. LEAD DETAILS MODAL & ADMIN NOTES ─────────────────────────────
     window.openLeadModal = function(leadId) {
       const lead = allLeads.find(x => x.id === leadId);
       if (!lead) return;
       activeModalLead = lead;
 
-        $('mLeadId').textContent = lead.id;
-        $('mLeadName').textContent = lead.full_name;
-        $('mPhone').textContent = lead.phone || 'Not provided';
-        $('mEmail').textContent = lead.email || 'Not provided';
-        $('mCountry').textContent = lead.country || 'International';
-        $('mChannel').textContent = `${lead.channel_label} (${lead.form_id || 'online-form'})`;
-        $('mService').textContent = lead.service;
-        $('mSource').textContent = `${lead.source_page} · Submitted: ${lead.timestamp}`;
-        $('mNotes').textContent = lead.notes || 'No message entered.';
-        $('mAdminNotes').value = lead.admin_note || '';
-        $('mStatusSelect').value = lead.status || 'new';
       const cat = resolveCategory(lead);
       $('mLeadId').textContent = lead.id;
       $('mLeadName').textContent = lead.full_name;
@@ -3406,14 +1038,6 @@
       $('mAdminNotes').value = lead.admin_note || '';
       $('mStatusSelect').value = lead.status || 'new';
 
-        // WhatsApp Button in Modal
-        const waBtn = $('mBtnWhatsApp');
-        if (lead.whatsapp_e164) {
-          waBtn.style.display = 'inline-flex';
-          waBtn.href = buildWhatsAppUrl(lead);
-        } else {
-          waBtn.style.display = 'none';
-        }
       const waBtn = $('mBtnWhatsApp');
       if (lead.whatsapp_e164) {
         waBtn.style.display = 'inline-flex';
@@ -3422,58 +1046,24 @@
         waBtn.style.display = 'none';
       }
 
-        $('leadModal').classList.add('open');
-      };
       $('leadModal').classList.add('open');
     };
 
-      window.closeLeadModal = function () {
-        $('leadModal').classList.remove('open');
-        activeModalLead = null;
-      };
     window.closeLeadModal = function() {
       $('leadModal').classList.remove('open');
       activeModalLead = null;
     };
 
-      window.saveLeadModalAction = async function () {
-        if (!activeModalLead) return;
-        const note = $('mAdminNotes').value.trim();
-        const status = $('mStatusSelect').value;
     window.saveLeadModalAction = async function() {
       if (!activeModalLead) return;
       const note = $('mAdminNotes').value.trim();
       const status = $('mStatusSelect').value;
 
-        activeModalLead.status = status;
-        activeModalLead.admin_note = note;
-        applyFilters();
-        closeLeadModal();
       activeModalLead.status = status;
       activeModalLead.admin_note = note;
       applyFilters();
       closeLeadModal();
 
-        try {
-          const res = await fetch('/admin/api/leads-action.php', {
-            method: 'POST',
-            headers: {
-              'Content-Type': 'application/json',
-              'Authorization': `Bearer ${token}`
-            },
-            body: JSON.stringify({
-              lead_id: activeModalLead.id,
-              status: status,
-              admin_note: note
-            })
-          });
-          const ct = res.headers.get('content-type') || '';
-          if (res.ok && ct.includes('application/json')) {
-            const data = await res.json();
-            if (data.success) {
-              showToast('Lead notes and status saved!');
-              return;
-            }
       try {
         const res = await fetch('/admin/api/leads-action.php', {
           method: 'POST',
@@ -3494,20 +1084,7 @@
             showToast('Lead notes and status saved!');
             return;
           }
-          localStorage.setItem('sgcms_preview_leads', JSON.stringify(allLeads));
-          showToast('Lead notes and status saved!');
-        } catch (e) {
-          localStorage.setItem('sgcms_preview_leads', JSON.stringify(allLeads));
-          showToast('Lead notes and status saved!');
         }
-      };
-
-      // ── 8. UTILITIES & LOGOUT ───────────────────────────────────────────
-      function showToast(msg, isErr = false) {
-        const t = $('toast');
-        $('toastMsg').textContent = msg;
-        t.className = isErr ? 'toast show error' : 'toast show';
-        setTimeout(() => { t.className = 'toast'; }, 3400);
         localStorage.setItem('sgcms_preview_leads', JSON.stringify(allLeads));
         showToast('Lead notes and status saved!');
       } catch (e) {
@@ -3516,10 +1093,6 @@
       }
     };
 
-      function escapeHtml(s) {
-        return String(s || '').replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;');
-      }
-    // ── 7. UTILITIES & LOGOUT ───────────────────────────────────────────
     // ── 7. UTILITIES ────────────────────────────────────────────────────
     function showToast(msg, isErr = false) {
       const t = $('toast');
@@ -3528,38 +1101,13 @@
       setTimeout(() => { t.className = 'toast'; }, 3400);
     }
 
-      $('logoutBtn').addEventListener('click', () => {
-        fetch('/admin/api/auth.php?action=logout', { method: 'POST' }).catch(() => { });
-        localStorage.removeItem('sgcms_token');
-        localStorage.removeItem('sgcms_user');
-        localStorage.removeItem('sgcms_auth');
-        sessionStorage.removeItem('sgcms_token');
-        sessionStorage.removeItem('sgcms_user');
-        sessionStorage.removeItem('sgcms_auth');
-        window.location.replace('/admin/index.html');
-      });
     function escapeHtml(s) {
       return String(s || '').replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;');
     }
-
-      // Initial load
-      loadLeads();
-    })();
-    $('logoutBtn').addEventListener('click', () => {
-      fetch('/admin/api/auth.php?action=logout', { method: 'POST' }).catch(() => {});
-      localStorage.removeItem('sgcms_token');
-      localStorage.removeItem('sgcms_user');
-      localStorage.removeItem('sgcms_auth');
-      sessionStorage.removeItem('sgcms_token');
-      sessionStorage.removeItem('sgcms_user');
-      sessionStorage.removeItem('sgcms_auth');
-      window.location.replace('/admin/index.html');
-    });
 
     // Initial load
     loadLeads();
   })();
   </script>
 </body>
-
 </html>
