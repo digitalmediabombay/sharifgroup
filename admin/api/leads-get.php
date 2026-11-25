@@ -57,19 +57,32 @@ foreach ($inquiriesRaw as $item) {
 
     $service = trim($item['service'] ?? 'General Consultation');
     $formId = strtolower(trim($item['form_id'] ?? ''));
+    $sourcePage = strtolower(trim($item['page'] ?? ($item['source'] ?? '')));
+    $targetTabRaw = strtolower(trim($item['targetTab'] ?? ''));
+    $haystackCat = strtolower($service . ' ' . $sourcePage . ' ' . $formId . ' ' . $targetTabRaw);
 
-    // Channel identification
-    $channel = 'consultation';
-    $channelLabel = 'Private Consultation';
-    if (strpos($formId, 'contact') !== false) {
-        $channel = 'contact';
-        $channelLabel = 'Contact Us';
-    } elseif (stripos($service, 'education') !== false) {
+    // 7-Category classification: citizenship, residency, event, general, realestate, education, partnership
+    $channel = 'general';
+    $channelLabel = 'General Enquiry';
+
+    if (strpos($haystackCat, 'partner') !== false || strpos($sourcePage, '/partners') !== false) {
+        $channel = 'partnership';
+        $channelLabel = 'Partnership';
+    } elseif (strpos($haystackCat, 'education') !== false || strpos($haystackCat, 'school') !== false || strpos($haystackCat, 'university') !== false) {
         $channel = 'education';
-        $channelLabel = 'Education Advisory';
-    } elseif (stripos($service, 'real estate') !== false || stripos($service, 'property') !== false) {
+        $channelLabel = 'Educational';
+    } elseif (strpos($haystackCat, 'real estate') !== false || strpos($haystackCat, 'realestate') !== false || strpos($haystackCat, 'property') !== false || strpos($haystackCat, 'off-plan') !== false) {
         $channel = 'realestate';
         $channelLabel = 'Real Estate';
+    } elseif (strpos($haystackCat, 'residency') !== false || strpos($haystackCat, 'golden visa') !== false || strpos($haystackCat, 'portugal') !== false || strpos($haystackCat, 'greece') !== false || strpos($haystackCat, 'panama') !== false || strpos($haystackCat, 'uae') !== false) {
+        $channel = 'residency';
+        $channelLabel = 'Residency';
+    } elseif (strpos($haystackCat, 'citizenship') !== false || strpos($haystackCat, 'cbi') !== false || strpos($haystackCat, 'dominica') !== false || strpos($haystackCat, 'grenada') !== false || strpos($haystackCat, 'antigua') !== false || strpos($haystackCat, 'lucia') !== false || strpos($haystackCat, 'kitts') !== false || strpos($haystackCat, 'vanuatu') !== false || strpos($haystackCat, 'nauru') !== false || strpos($haystackCat, 'sao tome') !== false) {
+        $channel = 'citizenship';
+        $channelLabel = 'Citizenship';
+    } elseif (strpos($formId, 'contact-portal-form') !== false || strpos($formId, 'contact') !== false) {
+        $channel = 'general';
+        $channelLabel = 'General Enquiry';
     }
 
     // E.164 phone extraction for WhatsApp
@@ -145,8 +158,8 @@ foreach ($regsRaw as $item) {
 
     $allLeads[] = [
         'id'            => $id,
-        'channel'       => 'webinar',
-        'channel_label' => 'Webinar Registration',
+        'channel'       => 'event',
+        'channel_label' => 'Events',
         'full_name'     => trim($item['fullName'] ?? 'Webinar Attendee'),
         'email'         => trim($item['email'] ?? ''),
         'phone'         => $rawPhone,
@@ -167,15 +180,9 @@ foreach ($regsRaw as $item) {
 // ── 4. COMPUTE AGGREGATE STATS ──────────────────────────────────────────
 $totalCount = count($allLeads);
 $newCount = 0;
-$consultationsCount = 0;
-$webinarsCount = 0;
-$specializedCount = 0;
 
 foreach ($allLeads as $l) {
     if ($l['status'] === 'new') $newCount++;
-    if ($l['channel'] === 'consultation' || $l['channel'] === 'contact') $consultationsCount++;
-    if ($l['channel'] === 'webinar') $webinarsCount++;
-    if ($l['channel'] === 'education' || $l['channel'] === 'realestate') $specializedCount++;
 }
 
 // ── 5. SORT CHRONOLOGICALLY (Newest First) ──────────────────────────────
@@ -183,23 +190,20 @@ usort($allLeads, function($a, $b) {
     return strcmp($b['timestamp'], $a['timestamp']);
 });
 
-// ── 6. APPLY FILTERS (CHANNEL, SEARCH, STATUS, PROGRAM) ─────────────────
+// ── 6. APPLY FILTERS (CATEGORY, SEARCH, STATUS) ─────────────────────────
 $channelFilter = strtolower(trim($_GET['channel'] ?? 'all'));
 $searchQuery = strtolower(trim($_GET['search'] ?? ''));
 $statusFilter = strtolower(trim($_GET['status'] ?? 'all'));
-$programFilter = strtolower(trim($_GET['program'] ?? 'all'));
 
-$filteredLeads = array_values(array_filter($allLeads, function($l) use ($channelFilter, $searchQuery, $statusFilter, $programFilter) {
-    // Channel filter
-    if ($channelFilter === 'consultations' && !in_array($l['channel'], ['consultation', 'contact'], true)) return false;
-    if ($channelFilter === 'webinars' && $l['channel'] !== 'webinar') return false;
-    if ($channelFilter === 'specialized' && !in_array($l['channel'], ['education', 'realestate'], true)) return false;
+$filteredLeads = array_values(array_filter($allLeads, function($l) use ($channelFilter, $searchQuery, $statusFilter) {
+    // Category filter
+    if ($channelFilter !== 'all') {
+        $normFilter = ($channelFilter === 'webinar' || $channelFilter === 'webinars' || $channelFilter === 'events') ? 'event' : $channelFilter;
+        if ($l['channel'] !== $normFilter) return false;
+    }
 
     // Status filter
     if ($statusFilter !== 'all' && $l['status'] !== $statusFilter) return false;
-
-    // Program filter
-    if ($programFilter !== 'all' && stripos($l['service'], $programFilter) === false) return false;
 
     // Search query
     if ($searchQuery !== '') {
@@ -214,12 +218,9 @@ $filteredLeads = array_values(array_filter($allLeads, function($l) use ($channel
 jsonResponse([
     'success' => true,
     'stats'   => [
-        'total'         => $totalCount,
-        'new'           => $newCount,
-        'consultations' => $consultationsCount,
-        'webinars'      => $webinarsCount,
-        'specialized'   => $specializedCount,
-        'filtered'      => count($filteredLeads)
+        'total'    => $totalCount,
+        'new'      => $newCount,
+        'filtered' => count($filteredLeads)
     ],
     'leads'   => $filteredLeads
 ]);
