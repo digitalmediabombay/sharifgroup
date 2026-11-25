@@ -1,9 +1,11 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Form Leads Inbox · Sharif Group CMS</title>
+  <title>Leads · Sharif Group CMS</title>
   <base href="/admin/">
   <link rel="icon" type="image/svg+xml" href="/favicon.svg?v=20261109">
 
@@ -12,6 +14,7 @@
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link rel="stylesheet"
     href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700&family=Inter:wght@300;400;500;600;700&family=Playfair+Display:ital,wght@0,500;0,600;0,700;1,400&family=Vazirmatn:wght@400;500;600;700&display=swap">
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 
   <style>
@@ -41,6 +44,27 @@
       --purple-dim: rgba(168, 85, 247, 0.14);
       --red: #ef4444;
       --red-dim: rgba(239, 68, 68, 0.12);
+    }
+
+    :root {
+      --gold: #786142;
+      --gold-light: #A0845C;
+      --gold-bright: #C5A880;
+      --bg: #0A0B0E;
+      --surface: #111318;
+      --card: #15171E;
+      --border: rgba(255, 255, 255, 0.08);
+      --border-h: rgba(197, 168, 128, 0.45);
+      --cream: #F3F1ED;
+      --text: #E4E2DD;
+      --muted: #8A8985;
+      --green: #22c55e;
+      --green-dim: rgba(34, 197, 94, 0.14);
+      --blue: #3b82f6;
+      --blue-dim: rgba(59, 130, 246, 0.14);
+      --amber: #f59e0b;
+      --amber-dim: rgba(245, 158, 11, 0.14);
+      --red: #ef4444;
     }
 
     :root {
@@ -85,12 +109,67 @@
       color: var(--text);
     }
 
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    /* ═══════════════════ MINIMAL TOP BAR ═══════════════════ */
+    .site-header {
+      position: sticky;
+      top: 0;
+      z-index: 100;
+      height: 50px;
+      background: rgba(10, 11, 14, 0.94);
+      backdrop-filter: blur(12px);
+      border-bottom: 1px solid var(--border);
+    }
+
     html,
     body {
       min-height: 100vh;
       font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
       background: var(--bg);
       color: var(--text);
+    }
+
+    .header-inner {
+      max-width: 1440px;
+      margin: 0 auto;
+      height: 100%;
+      padding: 0 20px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+
+    html,
+    body {
+      min-height: 100vh;
+      font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+      background: var(--bg);
+      color: var(--text);
+    }
+
+    .back-btn {
+      display: inline-flex;
+      align-items: center;
+      gap: 7px;
+      padding: 5px 11px;
+      background: transparent;
+      border: 1px solid var(--border);
+      border-radius: 6px;
+      color: var(--muted);
+      font-size: 0.78rem;
+      font-weight: 500;
+      text-decoration: none;
+      transition: all 0.15s ease;
+    }
+
+    .back-btn:hover {
+      border-color: var(--border-h);
+      color: var(--gold-bright);
     }
 
     body::before {
@@ -104,6 +183,13 @@
       z-index: 0;
     }
 
+    /* ═══════════════════ MAIN WRAPPER ═══════════════════ */
+    .main-wrapper {
+      max-width: 1440px;
+      margin: 0 auto;
+      padding: 16px 20px 48px;
+    }
+
     /* ═══════════════════ HEADER ═══════════════════ */
     .site-header {
       position: sticky;
@@ -113,6 +199,20 @@
       background: rgba(11, 12, 15, 0.94);
       backdrop-filter: blur(12px);
       border-bottom: 1px solid var(--border);
+    }
+
+    /* Single Clickable Category Filter & Search Bar */
+    .toolbar-box {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 9px;
+      padding: 8px 12px;
+      margin-bottom: 12px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+      flex-wrap: wrap;
     }
 
     /* ═══════════════════ HEADER ═══════════════════ */
@@ -126,6 +226,54 @@
       border-bottom: 1px solid var(--border);
     }
 
+    .channel-tabs {
+      display: flex;
+      gap: 4px;
+      flex-wrap: wrap;
+      align-items: center;
+    }
+
+    .channel-tab {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      padding: 5px 10px;
+      background: transparent;
+      border: 1px solid transparent;
+      border-radius: 6px;
+      font-size: 0.78rem;
+      font-weight: 500;
+      color: var(--muted);
+      cursor: pointer;
+      transition: all 0.15s ease;
+      white-space: nowrap;
+    }
+
+    .channel-tab:hover {
+      color: var(--cream);
+      background: rgba(255, 255, 255, 0.04);
+    }
+
+    .channel-tab.active {
+      background: rgba(197, 168, 128, 0.12);
+      border-color: rgba(197, 168, 128, 0.45);
+      color: var(--gold-bright);
+      font-weight: 600;
+    }
+
+    .tab-count {
+      font-size: 0.68rem;
+      padding: 1px 6px;
+      border-radius: 999px;
+      background: rgba(255, 255, 255, 0.08);
+      color: var(--muted);
+    }
+
+    .channel-tab.active .tab-count {
+      background: rgba(197, 168, 128, 0.22);
+      color: var(--gold-bright);
+    }
+
     .header-inner {
       max-width: 1440px;
       margin: 0 auto;
@@ -135,6 +283,12 @@
       align-items: center;
       justify-content: space-between;
       gap: 16px;
+    }
+
+    .filters-group {
+      display: flex;
+      align-items: center;
+      gap: 8px;
     }
 
     .header-inner {
@@ -148,16 +302,75 @@
       gap: 16px;
     }
 
+    .search-wrap {
+      position: relative;
+      width: 220px;
+    }
+
+    .search-wrap i {
+      position: absolute;
+      left: 10px;
+      top: 50%;
+      transform: translateY(-50%);
+      color: var(--muted);
+      font-size: 0.74rem;
+    }
+
+    .search-input {
+      width: 100%;
+      padding: 6px 10px 6px 28px;
+      background: var(--bg);
+      border: 1px solid var(--border);
+      border-radius: 6px;
+      color: var(--cream);
+      font-size: 0.78rem;
+      font-family: inherit;
+    }
+
+    .search-input:focus {
+      outline: none;
+      border-color: var(--gold-bright);
+    }
+
     .header-left {
       display: flex;
       align-items: center;
       gap: 14px;
     }
 
+    .btn-export-csv {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      padding: 6px 12px;
+      background: linear-gradient(135deg, #786142, #947854);
+      border: 1px solid rgba(197, 168, 128, 0.55);
+      border-radius: 6px;
+      color: var(--cream);
+      font-size: 0.78rem;
+      font-weight: 600;
+      cursor: pointer;
+      text-decoration: none;
+      white-space: nowrap;
+      transition: all 0.15s ease;
+    }
+
+    .btn-export-csv:hover {
+      background: linear-gradient(135deg, #8A6F4C, #A6875E);
+    }
+
     .header-left {
       display: flex;
       align-items: center;
       gap: 16px;
+    }
+
+    /* ═══════════════════ SIMPLE LINEAR-STYLE TABLE ═══════════════════ */
+    .leads-table-card {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 9px;
+      overflow-x: auto;
     }
 
     .back-btn {
@@ -175,9 +388,24 @@
       transition: all 0.15s ease;
     }
 
+    .leads-table {
+      width: 100%;
+      border-collapse: collapse;
+      text-align: left;
+    }
+
     .back-btn:hover {
       border-color: var(--border-h);
       color: var(--gold-bright);
+    }
+
+    .leads-table thead th {
+      padding: 10px 14px;
+      font-size: 0.72rem;
+      font-weight: 500;
+      color: var(--muted);
+      border-bottom: 1px solid var(--border);
+      white-space: nowrap;
     }
 
     .back-btn {
@@ -195,10 +423,29 @@
       transition: all 0.2s ease;
     }
 
+    .leads-table tbody tr {
+      border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+      transition: background 0.12s ease;
+    }
+
+    .leads-table tbody tr:hover {
+      background: rgba(255, 255, 255, 0.025);
+    }
+
+    .leads-table tbody tr:last-child {
+      border-bottom: none;
+    }
+
     .header-brand-box {
       display: flex;
       align-items: center;
       gap: 10px;
+    }
+
+    .leads-table td {
+      padding: 10px 14px;
+      font-size: 0.8125rem;
+      vertical-align: middle;
     }
 
     .brand-logo-mark {
@@ -214,11 +461,62 @@
       font-size: 0.8rem;
     }
 
+    /* Name Column */
+    .name-cell {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      white-space: nowrap;
+    }
+
+    .client-avatar {
+      width: 24px;
+      height: 24px;
+      border-radius: 50%;
+      background: linear-gradient(135deg, var(--gold), var(--gold-light));
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 0.68rem;
+      font-weight: 700;
+      color: var(--cream);
+      flex-shrink: 0;
+    }
+
+    .client-name {
+      font-weight: 500;
+      color: var(--cream);
+    }
+
+    .lang-tag {
+      padding: 1px 5px;
+      border-radius: 4px;
+      font-size: 0.64rem;
+      font-weight: 600;
+      text-transform: uppercase;
+      background: rgba(255, 255, 255, 0.06);
+      color: var(--muted);
+    }
+
     .brand-title-group h1 {
       font-family: 'Playfair Display', serif;
       font-size: 1rem;
       color: var(--cream);
       font-weight: 600;
+    }
+
+    /* Email & Phone Columns */
+    .email-cell {
+      color: var(--muted);
+      white-space: nowrap;
+      font-size: 0.8rem;
+    }
+
+    .phone-cell {
+      color: var(--text);
+      white-space: nowrap;
+      font-size: 0.8rem;
+      font-variant-numeric: tabular-nums;
     }
 
     .brand-title-group p {
@@ -228,10 +526,67 @@
       text-transform: uppercase;
     }
 
+    /* Category (Plain clean text + icon, NO background capsule) */
+    .cat-text {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      font-size: 0.8rem;
+      font-weight: 500;
+      color: var(--text);
+      white-space: nowrap;
+    }
+
+    .cat-text.citizenship i {
+      color: #60a5fa;
+    }
+
+    .cat-text.residency i {
+      color: #818cf8;
+    }
+
+    .cat-text.event i {
+      color: #4ade80;
+    }
+
+    .cat-text.general i {
+      color: #c084fc;
+    }
+
+    .cat-text.realestate i {
+      color: #2dd4bf;
+    }
+
+    .cat-text.education i {
+      color: #fbbf24;
+    }
+
+    .cat-text.partnership i {
+      color: #f472b6;
+    }
+
     .back-btn:hover {
       border-color: rgba(120, 97, 66, 0.5);
       color: var(--gold-bright);
       background: rgba(120, 97, 66, 0.06);
+    }
+
+    /* Service Column */
+    .service-cell {
+      max-width: 240px;
+    }
+
+    .service-title {
+      font-weight: 500;
+      color: var(--cream);
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+
+    .service-country {
+      font-size: 0.72rem;
+      color: var(--muted);
     }
 
     .header-actions {
@@ -240,10 +595,54 @@
       gap: 10px;
     }
 
+    /* Inline Status Select */
+    .status-select {
+      padding: 3px 8px;
+      border-radius: 5px;
+      font-size: 0.74rem;
+      font-weight: 600;
+      font-family: inherit;
+      cursor: pointer;
+      border: 1px solid transparent;
+      background: rgba(255, 255, 255, 0.05);
+      color: var(--cream);
+    }
+
+    .status-select.new {
+      background: var(--amber-dim);
+      color: #fde047;
+      border-color: rgba(245, 158, 11, 0.35);
+    }
+
+    .status-select.contacted {
+      background: var(--blue-dim);
+      color: #93c5fd;
+      border-color: rgba(59, 130, 246, 0.35);
+    }
+
+    .status-select.qualified {
+      background: var(--green-dim);
+      color: #86efac;
+      border-color: rgba(34, 197, 94, 0.35);
+    }
+
+    .status-select.archived {
+      background: rgba(100, 116, 139, 0.18);
+      color: #cbd5e1;
+      border-color: rgba(100, 116, 139, 0.35);
+    }
+
     .header-brand-box {
       display: flex;
       align-items: center;
       gap: 10px;
+    }
+
+    /* Date Column */
+    .date-cell {
+      white-space: nowrap;
+      font-size: 0.78rem;
+      color: var(--muted);
     }
 
     .btn-refresh,
@@ -261,14 +660,135 @@
       transition: all 0.15s ease;
     }
 
+    /* Action Buttons */
+    .actions-cell {
+      display: flex;
+      align-items: center;
+      justify-content: flex-end;
+      gap: 6px;
+    }
+
+    .btn-act {
+      width: 26px;
+      height: 26px;
+      border-radius: 6px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 0.76rem;
+      cursor: pointer;
+      text-decoration: none;
+      transition: all 0.15s ease;
+      border: 1px solid var(--border);
+      background: transparent;
+      color: var(--muted);
+    }
+
+    .btn-act.wa {
+      color: var(--green);
+      border-color: rgba(34, 197, 94, 0.3);
+    }
+
+    .btn-act.wa:hover {
+      background: var(--green);
+      color: #0A0B0E;
+      border-color: var(--green);
+    }
+
+    .btn-act.mail:hover {
+      border-color: var(--gold-bright);
+      color: var(--gold-bright);
+    }
+
+    .btn-act.view:hover {
+      border-color: var(--blue);
+      color: #93c5fd;
+    }
+
     .btn-refresh:hover {
       color: var(--gold-bright);
       border-color: var(--border-h);
     }
 
+    /* Empty State */
+    .empty-box {
+      text-align: center;
+      padding: 48px 20px;
+      color: var(--muted);
+    }
+
+    .empty-box i {
+      font-size: 1.8rem;
+      color: var(--gold-bright);
+      margin-bottom: 10px;
+      opacity: 0.6;
+    }
+
+    .empty-box h3 {
+      font-size: 0.95rem;
+      color: var(--cream);
+      margin-bottom: 4px;
+    }
+
     .btn-logout:hover {
       border-color: rgba(239, 68, 68, 0.45);
       color: #FCA5A5;
+    }
+
+    /* ═══════════════════ DETAILS MODAL ═══════════════════ */
+    .modal-backdrop {
+      position: fixed;
+      inset: 0;
+      background: rgba(0, 0, 0, 0.78);
+      backdrop-filter: blur(8px);
+      z-index: 500;
+      display: none;
+      align-items: center;
+      justify-content: center;
+      padding: 20px;
+    }
+
+    .modal-backdrop.open {
+      display: flex;
+    }
+
+    .modal-box {
+      background: var(--card);
+      border: 1px solid var(--border-h);
+      border-radius: 12px;
+      max-width: 640px;
+      width: 100%;
+      max-height: 90vh;
+      overflow-y: auto;
+      padding: 24px 26px;
+      box-shadow: 0 20px 50px rgba(0, 0, 0, 0.6);
+    }
+
+    .modal-head {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding-bottom: 14px;
+      border-bottom: 1px solid var(--border);
+      margin-bottom: 16px;
+    }
+
+    .modal-head h3 {
+      font-size: 1.15rem;
+      font-weight: 600;
+      color: var(--cream);
+    }
+
+    .btn-modal-close {
+      background: transparent;
+      border: none;
+      color: var(--muted);
+      font-size: 1.2rem;
+      cursor: pointer;
+    }
+
+    .btn-modal-close:hover {
+      color: var(--cream);
     }
 
     .brand-logo-mark {
@@ -284,11 +804,127 @@
       font-size: 0.85rem;
     }
 
+    .lead-detail-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 10px;
+      margin-bottom: 14px;
+    }
+
+    .detail-item {
+      background: var(--bg);
+      border: 1px solid var(--border);
+      border-radius: 7px;
+      padding: 9px 12px;
+    }
+
+    .detail-item.full {
+      grid-column: 1 / -1;
+    }
+
+    .detail-label {
+      font-size: 0.68rem;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+      color: var(--muted);
+      margin-bottom: 3px;
+    }
+
+    .detail-val {
+      font-size: 0.84rem;
+      color: var(--cream);
+      word-break: break-word;
+    }
+
+    .notes-box {
+      background: var(--bg);
+      border: 1px solid var(--border);
+      border-radius: 7px;
+      padding: 11px 12px;
+      margin-bottom: 14px;
+    }
+
+    .notes-box p {
+      font-size: 0.82rem;
+      line-height: 1.5;
+      color: var(--text);
+      white-space: pre-wrap;
+    }
+
+    .admin-notes-section {
+      margin-bottom: 16px;
+    }
+
+    .admin-notes-section label {
+      display: block;
+      font-size: 0.78rem;
+      font-weight: 600;
+      color: var(--gold-bright);
+      margin-bottom: 6px;
+    }
+
+    .admin-notes-textarea {
+      width: 100%;
+      min-height: 70px;
+      padding: 9px 12px;
+      background: var(--bg);
+      border: 1px solid var(--border);
+      border-radius: 7px;
+      color: var(--cream);
+      font-size: 0.82rem;
+      font-family: inherit;
+      resize: vertical;
+    }
+
+    .admin-notes-textarea:focus {
+      outline: none;
+      border-color: var(--gold-bright);
+    }
+
+    .modal-status-select {
+      padding: 4px 10px;
+      background: var(--bg);
+      border: 1px solid var(--border);
+      border-radius: 6px;
+      color: var(--cream);
+      font-size: 0.78rem;
+      font-family: inherit;
+    }
+
     /* ═══════════════════ MAIN WRAPPER ═══════════════════ */
     .main-wrapper {
       max-width: 1440px;
       margin: 0 auto;
       padding: 16px 20px 48px;
+    }
+
+    .toast {
+      position: fixed;
+      bottom: 24px;
+      right: 24px;
+      background: var(--card);
+      border: 1px solid var(--border-h);
+      color: var(--cream);
+      padding: 10px 16px;
+      border-radius: 8px;
+      font-size: 0.8rem;
+      display: none;
+      align-items: center;
+      gap: 8px;
+      z-index: 900;
+      box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
+    }
+
+    .toast.show {
+      display: flex;
+    }
+
+    .toast i {
+      color: var(--green);
+    }
+
+    .toast.error i {
+      color: var(--red);
     }
 
     .brand-title-group h1 {
@@ -1751,12 +2387,32 @@
         grid-template-columns: 1fr;
       }
     }
+
+    @media (max-width: 900px) {
+      .toolbar-box {
+        flex-direction: column;
+        align-items: stretch;
+      }
+
+      .filters-group {
+        justify-content: space-between;
+      }
+
+      .search-wrap {
+        flex: 1;
+      }
+
+      .lead-detail-grid {
+        grid-template-columns: 1fr;
+      }
+    }
   </style>
 </head>
 
 <body>
 
   <!-- ═══════════════ HEADER ═══════════════ -->
+  <!-- ═══════════════ MINIMAL HEADER ═══════════════ -->
   <header class="site-header">
     <div class="header-inner">
       <div class="header-left">
@@ -1783,6 +2439,10 @@
           <span>Sign Out</span>
         </button>
       </div>
+      <a href="/admin/dashboard.html" class="back-btn">
+        <i class="fa-solid fa-arrow-left"></i>
+        <span>Dashboard</span>
+      </a>
     </div>
   </header>
 
@@ -1826,6 +2486,7 @@
 
     <!-- Toolbar: Channels & Filters -->
     <!-- Toolbar: Single Clickable Category Filter & Search -->
+    <!-- Toolbar: Single Clickable Category Bar + Search + Export -->
     <section class="toolbar-box">
       <div class="channel-tabs" id="channelTabs">
         <div class="channel-tab active" data-channel="all" onclick="setChannel('all')">All Inquiries</div>
@@ -1834,6 +2495,8 @@
         <div class="channel-tab" data-channel="webinars" onclick="setChannel('webinars')">Webinar Registrations</div>
         <div class="channel-tab" data-channel="specialized" onclick="setChannel('specialized')">Specialized Advisory
         </div>
+        <div class="channel-tab active" data-channel="all" onclick="setChannel('all')">All <span class="tab-count"
+            id="allCountBadge">0</span></div>
         <div class="channel-tab active" data-channel="all" onclick="setChannel('all')">All <span class="tab-count"
             id="allCountBadge">0</span></div>
         <div class="channel-tab active" data-channel="all" onclick="setChannel('all')">All <span class="tab-count"
@@ -1899,6 +2562,7 @@
         <tbody id="leadsTableBody">
           <!-- Filled dynamically -->
         </tbody>
+        <tbody id="leadsTableBody"></tbody>
       </table>
 
       <div class="empty-box" id="emptyState" style="display:none;">
@@ -1916,6 +2580,8 @@
       <div class="modal-head">
         <div>
           <span style="font-size:0.75rem; text-transform:uppercase; color:var(--gold-bright); letter-spacing:0.06em;"
+            id="mLeadId">INQ-000000</span>
+          <span style="font-size:0.72rem; text-transform:uppercase; color:var(--gold-bright); letter-spacing:0.06em;"
             id="mLeadId">INQ-000000</span>
           <span style="font-size:0.72rem; text-transform:uppercase; color:var(--gold-bright); letter-spacing:0.06em;"
             id="mLeadId">INQ-000000</span>
@@ -1967,15 +2633,18 @@
           placeholder="Write internal notes on this lead (e.g. Called via WhatsApp, scheduled zoom consultation for Thursday)..."></textarea>
         <textarea class="admin-notes-textarea" id="mAdminNotes"
           placeholder="Write internal notes on this lead..."></textarea>
+        <textarea class="admin-notes-textarea" id="mAdminNotes"
+          placeholder="Write internal notes on this lead..."></textarea>
         <div style="display:flex; justify-content:space-between; align-items:center; margin-top:10px;">
           <div style="display:flex; align-items:center; gap:8px;">
             <span style="font-size:0.78rem; color:var(--muted);">Status:</span>
             <select class="filter-select" id="mStatusSelect" style="padding:4px 10px; font-size:0.78rem;">
-              <option value="new">New</option>
-              <option value="contacted">Contacted</option>
-              <option value="qualified">Qualified</option>
-              <option value="archived">Archived</option>
-            </select>
+              <select class="modal-status-select" id="mStatusSelect">
+                <option value="new">New</option>
+                <option value="contacted">Contacted</option>
+                <option value="qualified">Qualified</option>
+                <option value="archived">Archived</option>
+              </select>
           </div>
           <button type="button" class="btn-export-csv" style="padding:6px 14px;" onclick="saveLeadModalAction()">
             <i class="fa-solid fa-floppy-disk"></i> Save Notes
@@ -1991,6 +2660,10 @@
             style="background:var(--green); border-color:var(--green); color:#0B0C0F;">
             <i class="fa-brands fa-whatsapp"></i> Chat on WhatsApp
           </a>
+          <a href="#" target="_blank" class="btn-export-csv" id="mBtnWhatsApp"
+            style="background:var(--green); border-color:var(--green); color:#0A0B0E;">
+            <i class="fa-brands fa-whatsapp"></i> Chat on WhatsApp
+          </a>
       </div>
     </div>
   </div>
@@ -2004,162 +2677,164 @@
   <!-- ═══════════════ SCRIPT LOGIC ═══════════════ -->
   <script>
     (() => {
-      'use str      ;
-  (() => {
-    'u      trict';
+      'us             ;
+  (()            '          rict';
+    'use strict';
 
-      // ── 1. AUTH      CATION GUARD ────────────────      ──────────────────────
-      const token = localStorage.getItem('sgcms_t      ') || sessionStorage.getItem('sgcms_token');
-        const userStr = localStorage.getItem('sgcms_user') || sessionStorage.get      ('sgcms_user') || localStorage.ge tItem        s_auth') || sessionStorage.get        sgcms_auth');
-      if (!token || !userS                        .location.replace('/admin/index.html');
-        return;
-      }
-    //            HENTICATION GUARD ──────────────────────────────          ────          st token = localStorage.ge            ms_token') || sessionStorage.getItem('sgcms_to             const u           lo          ge.getItem('sgcms_user') || sessionStorage.getItem          user') || localStorage.getItem('sgcms_auth') || s            age.getItem('sgcms_auth');
-                 || !userStr) {
-      window              place('/admin/index.html');
-               
+      // ── 1. AUTH               GUARD ────────────────      ─────────────────────            nst token = localStorage.getIte                  ') || sessionStorage.g              s_token');
+        const user              torage.getItem('sgcms_user') |              rage.get      ('               || loca            e                       h') || sessionStorage.get        sgcms_auth');
+              oken || !userS                          .loc          place('/admin/index.        ;
+        re              }
+    //            HENTICATION GUARD         ──      ────      ──────────          ────               token = localStorage.ge            ms_token') || sessionSto        etItem('sgcms_                                     lo          ge.getItem('sg             || sessionStorage.getItem          user') ||               .getItem('sgcms_aut                      age.getItem('s              
+                             r) {
+                              place('/ad mi        x.h        
+                      //            HENTICATION GUARD ──────            ──────────────────────────
+    c             = localStorage.getItem('sgcms_token')             Storage.getItem('sgcms_toke            onst userStr = localStorage.get            s_user') || sessionStorag            'sgcms_user') || localStorage.g            cms_auth') || sessionStorage.getItem('sgcms_auth');            token || !userStr) {
+                 cation.replace(            dex.html');
+      return;
     }
 
-      // Attach token               t link
-      con               = docum            me          bt          sv');
-      if (exportBtn) {
-        exportBtn.href          in/api/leads-export.        ken=${encodeURIC          (token)}`;
+             tach token               t link
+                          = docum            me          bt          sv');
+      if (exportBtn)             exportBtn.href          in/api/leads-export.        ken=${en                    (token)}`;
       }
-         st exportBtn          ent.getElementById('btnExportCsv');
-    if        rt       {
-        exportBtn.href = `/admin/api/        export.php?token=${encodeURIComponent(token)}`;
+         st exportBtn          ent.get          yId          or              if        rt       {
+             ortBtn.href = `/admin/api/        e            token=${encodeURIComponent(token)}`;
+            exportBtn = document.getEle            btnExportCsv');
+    if (exportB              exportBtn.href = `/admi            s-export.php?token=${encodeURIC            oken)}`;
     }
 
-              2. STATE ────          ──────            ────────────────────────────
-                  ds = [];
-      let currentChannel = 'all';
-                 eModalLead = null;
+              2. STATE ────               ───            ──────────            ────────
+                         [];
+      let currentChannel = 'a                        eModa            ll;
                STATE ───────────────              ────────────────              ─
-    le             =           let currentC ha         'a           let active          d               const $ = id => docume            entById(id);
+                     =           let currentC ha         'a           let a                 d               const $ = id => docume            entById(id);
+            2.           ──            ────────────────────────            ────────
+    let allLeads =             t currentChannel = 'all';
+    let acti            d = null;
+    const $ = id            nt.getElementById(id);
 
-      // ── 3. DOM            ───────────────────────────────────────            
-      const $ = id => docu            ementById(id);
-    // ── 3. LOA            OM BACKEND API (WITH PREV            CK) ───────────
-    window.load            ync function() {
-      const ico = $('refreshIcon')             (ico) ico.classList.add('            
+                  OM            ──────            ───────────────────────            
+                = id => docu            ementById(id);
+    /            A            OM BACKEND             PREV            CK) ─            
+    window.load            ync fu            
+      const ico =             Icon')             (ico) ico.classList.add('            
 
-      // ── 4            DS FROM BACKEND API (WITH PREVIEW             ───────────
-      window.loadLead            function () {
-        const ico = $('refreshIcon');
-        if (ico) ico.classList.            in');
-      try {
-        const res = await fetch(`/admin/ap            t.php?t=${Date.now()}`, {
-          headers: { 'Authorization': `          {to                                if (res.status =                      window.location.replace('            ex.html');
-          return;
-                     try {
-          const res             tch(`/admin/api/leads-get.php?t            w()}`, {
-            head            thorization': `Bearer ${token}`               });
-          if (res.status === 401) {
-               indow.location.replace('/            x.html');
-        con            s.headers.get('content-type') || '             if (res.ok && ct            'application/json')) {
-          const data = await res.json();
-          if (data && data            {
-            allLeads = data.leads || [];
-            upda            ge(data.stats ? data.stats.total : allLeads.length);
-            apply          );
-                                  }
+      // ── 4              DS FROM BACKEND API (WI                         ───────────
+      window.loadLead            functi                       st            refreshIcon');
+        i            o.classList.                        // ── 3. LOAD LEADS FROM BACKEND API (WIT            FALLBACK) ───────────
+    wi            eads = async function() {
+                      const res = await fe            n/ap            t.php?t=${Date.now()}`                headers: { 'Authorization': `          {t                                             status =                        window.location.replace('                .html');
+        c             await fetch(`/admin/api/leads-get.php?t=${Date.now()}`, {
+          headers: { 'Authorization': `Bearer ${                    });
+        if (res.s            401) {
+          window.location.replace('/admin/inde          ;
+            r                              try {
+            const res             tch(`/ad            ads-get.php?t            w()}`, {
+                 d            thorization':             token}`               });
+                 es.status === 401) {                  indow.location.replace('/               .html');
+        con            s.headers.            nt-type') || '                        k && ct                       ion/json')) {
+        }
 
-          c            res.headers.get('content-typ            
-          if (res.ok && ct.includes('            n/json')) {
-            co             await res.json();
+        c            res.headers.get('content-ty            ;
+        if (res.ok && ct.includes('application/json')) {
+          const data = await             ;
+          if (data && da                {
+          if (data && data.success) {
+            allLeads           ea        [];
+              upda            ge(data.stats ? data.stats.total : allLeads.lengt                  apply                                                     }
+
+          c                   eaders.get('cont                     
+          if           && ct.includes('            n/json')) {
+            c                await res.json();
                        && data.success) {
-                allLeads = data.leads || [];
+                allLeads =           ds || [];
                    ateKpis(data.stats || {});
-              appl            ;
-              return;
+                ap                ;
+                 eturn;
               }
+            updat      ntB      (data.stats ? data.stats.tota        lLeads.length);
+            applyFilters();
+              return;
           }
-                 llback for static hosts (e.g. Verc            )
-          loadPre            );
+                 l        for static hosts (e.g. Verc            )
+          loadP                );
         } catch (err) {
-          loadPreviewLeads();
-        } fina                  if (ico) ico.classL            ('fa-spin');
+          loadPr        eads();
+        } fina                    if (ico) ico.classL            ('fa-spin');
         }
       };
-        loadPreviewLeads();
-              h (                        reviewLeads();
+           oad      iewLeads();
+              h (                          reviewLeads();
       } f                   if (ico) ico.clas            ve('fa-spin');
+             ch (err) {
+        loadPreviewLeads();
       }
     };
 
-      func            reviewLeads() {
-        cons             localStorage.getItem('sgcms_pre            ');
+        func            reviewLeads() {
+        cons               localStorage.getItem('sgcms_pre            ');
         if (cached)               try {
-            const parsed = JSO            ched);
-            if (Array.isArray(parsed)             length) {
+            const pars        SO            ched);
+            if (Array.isArray(        )             length) {
                        s = parsed;
                 recalcPreviewStats();
-                       lters();
+                         lters();
                      n;
             }
           } catch (_) { }
         }
 
         allLeads = [
-          {
+            {
             id: 'INQ            001',
             full_name:             l-Otaibi',
             email: 'm.otaibi@alotaibi-inve          
-                          71 50 123 4567',
-                   app_e164: '971501234567',
+                          71 50 123 4567',                      app_e164: '971501234567',
                 annel: 'consultation',
             chan             'Consultation',
                        'Dominica Citizenship & UAE Go            ,
             progra            ominica',
-            status: 'new                 timestamp: '2026-11-18 10:14:22',
-               ountry: 'United Arab Emira                    notes: 'Fa            requesting confidential private co             at DIFC office.',
-                    _page: '/programs/citizenshipbyinvestment/dominica/',
-            admin_note: 'High net             iry from Dubai office refe                   },
-          {
-            id: 'INQ-20261117-004',
-                 l_        'Dr.         Al-Hashimi',
-            email: 'tariq.hashimi@medclinic.ae',
-                one: '+971 55 987 6543                 whatsap      64:      1559876543',
-            channel        sultation',
-              channel_label: 'Consulta                     service: 'Grenada Citizenship by Investment                 program_slug: 'grenada',
+            status: 'new                 timestamp: '2026-1        0:14:22',
+                       ry: 'United Arab Emira                      notes: 'Fa              requesting confidential p          o             at DIFC of                                     : '/programs/citizenshipbyin          /dominica/',
+            ad          : 'High net             ir          ubai office refe                     }              {
+            id: 'INQ-20261117-      ,
+                   l_        'Dr.         Al-Hashimi',
+            email: 'tari      shimi@medclinic.ae',
+                        '+971 55 987 6543                   whatsap      64:      1559876543',
+            channel        su          ,
+              channel_label: 'Consulta                            ce:         da Citizenship b      vest                       program_slug:  'gre        
             status: 'qualified',
-            timestamp: '2026          5:40:09',
-            country: 'Iraq',
-            notes: 'Look        r v        ee travel to UK/Sch        and USA E-2 investor treaty access.',
-                 ource_page: '/programs/citize        yinvestment/grenada/',
-            admin_note:        ified candidate. Due diligence pre-check i        ed.'
+            timestamp: '20              5:40:09',
+            country: 'Ir                   notes: 'Look        r v        e        el to UK/Sch        and USA E-2 investor tr          ess.',
+                     rce_page: '/programs/citize        yinvestment/grenada/',
+            admin_note:        ified candidate. Due          ce pre-check i        ed.'
           },
           {
-            id: 'REG-20261        9',
+            id: 'REG-20261           ',
             full_name: 'Elena Rostova',
-               mail: 'e.rostova@globaladvisory.eu                 phone: '+357 99 876 543',
-            whatsapp_e164: '35799      43'                channel: 'webinar',
+               mail: 'e.rostova@globaladvisory.eu                          '+357 99 876 543',
+            what          4: '35799      43'                ch          webinar',
               channel_label: 'Webinar Registration',
-            service: 'European Golden Visa Masterclass',
+                  ice: 'European Go          a Masterclass',
                rogram_slug: 'greece',
-            status: 'contacted',               timestamp: '2026-11-17 12:05:18',
+                   s: 'contacted',                 timestamp: '2026-11-17 12:05:18',
                ountry: 'Cyprus',
-            notes: 'Registered for upcoming Greece & Portugal residency session.',
+            note          stered for upco          ece & Portugal             session.',
                    e_page: '/events/',
             admin_note: 'Sent s         calendar invite & WhatsApp brochure.'
           },
-          {
-            id: 'INQ-20261116-012',
-               ull_name: 'Zhang Wei',
-            email: 'zhang.wei@shanghai-ventures.cn',
-            phone: '+86 138 0013 800                  whatsapp_e164: '8613800138000',
-            channel: 'specialized',
-            channel_label: 'Real Estate Inquiry',
-            service: 'Dubai Prime Real Estate Advisory',
-              program_slug: 'uae',
-            status: 'new',
-            timestamp: '2026-11-16 18:22:45',
-            country: 'China',
-            notes: 'Seeking luxury villa investment in Palm Jumeirah or Emirates Hills with Golden Visa eligibility.',
-            source_page: '/realestate/',
-              admin_note:       ign      o Real Estate advisory desk.'
-            },
-                          id: 'INQ-20261115-008'                full_name: 'Marcus          g',
+                          id: 'INQ-20261116-012',
+                        e:           ei',
+                ail:         .wei@shanghai-ventures.      
+              phone: '+86 138 0013 800                  whatsapp_e16      8613800138000',
+            ch         'specialized',
+            channel        : 'Real Estate Inquiry',
+              service: 'Dubai Prime R        tate Advisory',
+                program_slug: 'uae',
+                   s: 'new'                  timestamp: '2026-11-16 18:22:45                 country: 'Ch                    notes: 'Seeking luxury villa in           in Palm Jumeirah or Emirates Hills with Golden Visa eligib          
+            source_page: '/realesta                      admin_note:       ig           Real Estate advisory desk.'
+                                           id: 'INQ-20261115-008'                full_name: 'Marcus          g',
             e          arcus@sterlingcapital.co.uk'                phone: '+44 20 7946 0                    whatsapp_e164: '          0912',
             channel:        act                 channel_label: 'General Conta      
               service: 'St. Kitts & Nevis Citizenship',
@@ -2172,11 +2847,17 @@
     function         eviewLeads() {
       const cached = loca        ge.getItem('sgcms_preview_leads');
       if        ed) {
+    function loadPreviewLeads() {
+      const cached = localStorage.getItem('sgcms_preview_leads');
+      if (cached) {
         try {
           const parsed           arse(cached);
                (Array.isArray(parsed) && parsed.length) {
+          const parsed = JSON.parse(cached);
+          if (Array.isArray(parsed) && parsed.length) {
             allLeads = parsed;
             updateCountBadge(allLe          th);
+            updateCountBadge(allLeads.length);
             applyFilters();
             return;
           }
@@ -2196,6 +2877,7 @@
         upda          tats);
                    s({ total: allLeads.length });
       }
+
       allLeads = [
         {
           id: 'INQ-20261118-001',
@@ -2211,126 +2893,150 @@
             lang: 'en',
           notes: 'F           4 reque        co        tial private consultation at DI        ice.',
           sour           '/programs/citizenshipbyinvestment/domin                   admin_note: 'High net worth inquiry from Dubai off          rral.'
+          email: 'm.otaibi@alotaibi-invest.com',
+          phone: '+971 50 123 4567',
+          whatsapp_e164: '971501234567',
+          channel: 'citizenship',
+          service: 'Dominica Citizenship by Investment',
+                 s: 'new',
+          tim        : '2      11-      0:14:22',
+          country: '         Arab Emirates',
+          lang: 'en',
+          notes: 'F        of 4 requesting confidential private consultation at DIFC        e.',
+          source_page: '/programs/citizenship        stment/dominica/',
+          admin_note: 'High net worth         y from Dubai office referral.'
         },
         {
-                  NQ-20261117-004',
-          full          Dr. Tariq Al-Hashimi',
+                    NQ-20261117-004',
+          full          Dr. Tariq Al-Has        
           email: '          shimi@medclinic.ae',
+          id: 'INQ-20261117-004',
+          full_nam        . Tariq Al-Hashimi',
+          email: 'tariq.hashimi@med        .ae',
           phone: '+971 55 987 6543',
-          whatsapp_e164: '971559876543',
-          channel: 'citizenship',
-          service: 'Grenada Citizenship by Investment',
+          whatsapp         '971559876543',
+          chan        citizenship',
+          service: 'Grenada Citizenship by I        ent',
+          channel: 're      ncy               service: 'UAE 10-Year Gol        sa',
           status: 'qualified',
-          timestamp: '2026-11-17 15:40:09',
-          relative_time: '2026-11-17',
+            timestamp: '2026-11-17 15:40:09',
+          relative_tim        26-11-17',
           country: 'Iraq',
           lang: 'en',
           notes: 'Looking for visa-free travel to UK/Schengen and USA E-2 investor treaty access.',
-          source_page: '/programs/citizenshipbyinvestment/grenada/',
+          sou        ge: '/programs/citizenship          ment/grenada/',
           admin_note: 'Qualified candidate. Due diligence pre-check initiated.'
+          notes: 'Interested in UAE Golden Visa residency path        
+          source_page: '/program          ncybyinvestment/uae/',
+          admin_note: 'Qualified candidate.'
         },
         {
           id: 'REG-20261117-009',
-          full_name: 'Elena Rostova',
+          fu        e:        a Rostova',
           email: 'e.rostova@globaladvisory.eu',
-          phone: '+357 99 876 543',
+          phone:      57       76 543',
           whatsapp_e164: '35799876543',
-          channel: 'event',
-          service: 'European Golden Visa Masterclass',
-          status: 'contacted',
-          timestamp: '2026-11-17 12:05:18',
-          relative_time: '2026-11-17',
-          country: 'Cyprus',
+          channel: 'eve      
+          service: 'European Golden Vis a Masterclass',
+          status        tacted',
+          timestamp: '2026-11-17 12:05:18'              relative_time: '2026-11-17',
+          countr        prus',
           lang: 'en',
-          notes: 'Registered for upcoming Greece & Portugal residency session.',
-          source_page: '/events/',
-          admin_note: 'Sent session calendar invite & WhatsApp brochure.'
-        },
-        {
-          id: 'INQ-20261116-012',
-          full_name: 'Zhang Wei',
-          email: 'zhang.wei@shanghai-ventures.cn',
+                s: 'Registe        r upcoming Greece & Portugal residency session.',
+               rce_page: '/events/',
+                n_note          session calendar invite & WhatsApp brochure.'
+          a             'Sent session c            vite.'
+                     {
+          id: 'INQ-20261116-012               full_name: 'Zhang Wei',
+                      ang            hai-ventures.cn',
           phone: '+86 138 0013 8000',
-          whatsapp_e164: '8613800138000',
+               tsap          '8613800138000',
           channel: 'realestate',
-          service: 'Dubai Prime Real Estate Advisory',
-          status: 'new',
-          timestamp: '2026-11-16 18:22:45',
-          relative_time: '2026-11-16',
-          country: 'China',
-          lang: 'zh',
-          notes: 'Seeking luxury villa investment in Palm Jumeirah or Emirates Hills.',
-          source_page: '/realestate/',
-          admin_note: 'Assigned to Real Estate advisory desk.'
+            service: 'Dubai Prime Real Estate Advisory',
+              atus: 'new',
+          timestam            1-16 18:22:45',
+                  ve_time: '2026-11-16',
+          country: 'Chi                 lang:                        es          ng luxury villa investment in          meirah or Emirates Hills.',
+          notes: 'Seeking luxury villa inve          n Palm Jumeirah.',
+          source_page: '/re        te/',
+                  note: 'Assigned to Real Estate advisory desk.'
+          admin_note: 'A          to Real Estate desk.'
         },
         {
-          id: 'INQ-20261115-008',
+            i      INQ-      1115-008',
           full_name: 'Marcus Sterling',
-          email: 'marcus@sterlingcapital.co.uk',
-          phone: '+44 20 7946 0912',
-          whatsapp_e164: '442079460912',
-          channel: 'general',
-          service: 'General Consultation',
-          status: 'archived',
-          timestamp: '2026-11-15 09:12:00',
-          relative_time: '2026-11-15',
-          country: 'United Kingdom',
+          email: 'mar      sterlingcapital.co.uk',
+           phone: '         7946 0912',
+          whatsapp_e164: '44207946091                channel: 'g        ',
+          service: 'Ge        Consultation',
+          status: 'ar        ',
+          timestamp: '2026-11-15 09:12:00'              relative_time: '2026-11-15',
+          country: 'U        Kingdom',
           lang: 'en',
-          notes: 'Inquiring about family office relocation.',
-          source_page: '/contact/',
+          notes: 'Inquir        out family office relocation.',
+          source_page: '/cont        
           admin_note: 'Completed consultation.'
         }
       ];
 
-      function updateKpis(stats) {
-        $('kpiTotal').textContent = stats.total || 0;
+      function upda        (stats) {
+        $('kpiTotal').textConten        ats.total || 0;
         $('kpiNew').textContent = stats.new || 0;
-        $('kpiConsult').textContent = stats.consultations || 0;
-        $('kpiWebinar').textContent = stats.webinars || 0;
-        const badge = $('allCountBadge');
-        if (badge) badge.textContent = stats.total || allLeads.length || 0;
+        $('kpiC        ').textContent = stats.consultations || 0;
+        $('kpiWebina        xtContent = stats.webinars || 0;
+        const b         $('allCountBadge');
+        if (badge) badge.text        t = stats.total || allLeads.         || 0;
       }
-      localStorage.setItem('sgcms_preview_leads', JSON.stringify(allLeads));
-      updateCountBadge(allLeads.          
-      applyFilters();
+      localStorage        em('sgcms_preview_leads',           ingify(allLeads));
+      updateCountB          Leads.          
+      updateCountBad        Leads.len              applyFilters();
         
-         unc       resolveCategory(lead) {
-             st valid = ['citizenship', 'residency', 'event', 'general'        lestate', 'education', 'partnership'];
-        if (valid.        es(lead.channel)) return lead.channel;
-        if         channel === 'webinar') return 'event';
-        const txt         ad.service || '') + ' ' + (lead.source_page || '') + '        lead.form_id || '')).toLowerCase();
-        if (txt.includes('partne        eturn 'partnership';
-        if (txt.includes('education') || txt.includes('school') || txt.includes('        sity')) return 'education';
-        if (txt.includes('re        ate') || txt.includes('realestate') || txt.includes('property        turn 'realestate';
-        if (        cludes('residency') || txt.includes('golden visa') || txt.        es('portugal') || txt.includ      gre      ) || txt.includes('panama') || txt        des('uae')) return 'residency';
-             (txt.includes('citizenship') || txt.includes('cbi') || txt.        es('dominica') || txt.includes('grenada') || txt.includes('antigua') || txt.includes('lucia') || txt.includes('kitts') || txt.includes('vanuatu') || txt.includes('nauru') ||        ncludes('sao tome')) retur          enship';
+           u           resolveCategory(lead) {
+                  val       ['citizenship', 'residency', 'e vent'        eral'        lestate', 'education', 'part        p'];
+        if (valid.          e      ad.channel)) return lead.channel;
+        i f            hannel === 'webinar') return '        ;
+        const txt         ad.service || ''        ' + (lead.source_page || '') + '        le        m_id || '')).toLowerCase();
+             (txt.includes('partne        eturn         ership';
+               xt.includes('educat        || txt          s('school') || txt.includes('        sity')) return 'educ                  if (txt.in                    ate              cludes('realestate') || txt.includes                    turn 'realestate';
+        if            clu            ency') || txt.includes(              ') || txt.        es('portuga              nclud      gre                .includes('panama                         'uae          rn 'residency';
+             (txt.includes('citize          || txt.includes('cbi') || txt.        es('dominic            .includes('grenada') || txt.inc            igua') || txt.includ              || txt.includes('kitts') || txt.includes('v              txt.incl            u'                      s('sao tome')) retur          enship';
         return 'general';
-      }
+                
     function updateCountBadge(total) {
-      const badge = $('allCountBadge');
+           st badge = $('          Badge');
       if (badge) badge.textContent =         || 0;
+      if (b          dge.textContent = total || 0;
     }
 
-      function getC          abel(cat) {
+              on      C            abel(cat) {
         const map = {
-          citizenship: 'Citizenship',
-          residency: 'Residency',
-          event: 'Events',
-                    l: 'General Enquiry',
-          realestate: 'Real Estate',
-          educati      'Ed      ional',
+          citizenship: 'Citizenship               residency: 'Residency',
+                t: 'Events',
+                      l: 'General Enquiry',
+              alestate: 'Real Estate',
+          educati      'Ed              ,
           partnership: 'Partnership'
         };
-        return m      at] || 'General Enquiry';
+          r      n m      at] || 'General         y';
       }
     fu nction resolveCategory(lead) {
-         onst valid = ['citizenship', 'residency', 'event',         al', 'realestate', 'education', 'partnership'];
-           (valid.includes(lead.channel)) return        channel;
-           (lead.channel === 'webinar') return 'event';
-      const         ((lead.service || '') + ' ' +        .sourc          | '') + ' ' + (lead.form_id || '')).toLowerCase();
-                  cludes('partner'            'partnershi               (txt.includes('education') || txt.i              ool') || txt.includes('university')            edu                 if (txt.includes('real estate') || txt.includes('realest           txt          s('property')) return 'realestate';
+         onst valid = ['citizenship', 'residency', 'event',            l',      alestate', 'education', 'partnership'];
+                 id.includes(lead.channel)) return        channel;
+           (lead.channel = == '        r') return 'event';
+      const                 .service || '') + ' ' +        .sourc            | '') + ' ' + (lead.form_id || '')).t        Case();
+                  cludes('partner'              'partnershi               (txt.incl        education') || txt.i              ool') |        includes('university')            edu                   i      xt.includes('rea      tate') || txt    nclude're         txt          s('property')) return 'realestate';
       if (txt.          ('residency') || txt.includes('golden visa') || t            s('portugal') || txt.includes('            | txt.includes('pana              includes('uae')) return 'residency';
       if               s('citiz            |           ud          ) || txt.includes('dominica')          includes('grenada') || txt.includes('antigua') || txt.includes('lucia')          includes('kitts') || txt.includes('vanuatu') |        includes('naur          xt.includes('sao tome')) return 'citizenship';
+    function resolveCategory(lead) {
+      const valid = ['citizenship', 'residency', 'event', 'general', 'realestate', 'education', 'partnership'];
+      if (valid.includes(lead.channel)) return lead.channel;
+      if (lead.channel === 'webinar') return 'event';
+      const txt = ((lead.service || '') + ' ' + (lead.source_page || '') + ' ' + (lead.form_id || '')).toLowerCase();
+      if (txt.includes('partner')) return 'partnership';
+      if (txt.includes('education') || txt.includes('school') || txt.includes('university')) return 'education';
+      if (txt.includes('real estate') || txt.includes('realestate') || txt.includes('property')) return 'realestate';
+      if (txt.includes('residency') || txt.includes('golden visa') || txt.includes('portugal') || txt.includes('greece') || txt.includes('panama') || txt.includes('uae')) return 'residency';
+      if (txt.includes('citizenship') || txt.includes('cbi') || txt.includes('dominica') || txt.includes('grenada') || txt.includes('antigua') || txt.includes('lucia') || txt.includes('kitts') || txt.includes('vanuatu') || txt.includes('nauru') || txt.includes('sao tome')) return 'citizenship';
       return 'general';
                // ── 5. FILTERING & RENDERING ──────────        ──      ────      ──────────
       window.setChannel = function (ch) {
@@ -2341,13 +3047,23 @@
             on getCategoryLabel(cat) {
       const map =             citizenship: 'Citizenship',
         residency: 'Resi        ,
+    }
+
+    function getCategoryLabel(cat) {
+      const map = {
+        citizenship: 'Citizenship',
+        residency: 'Residency',
         event: 'Events',
         general: 'General Enq        
+        general: 'General Enquiry',
         realestate: 'Real Estate',
         education: 'Educa        ',
+        education: 'Educational',
         partnership: 'Partnership'
       };
       return map[cat] || 'General Enquiry         }
+      return map[cat] || 'General Enquiry';
+    }
 
       window.applyFilters = function (              const search = $('searchInput').value.trim().toLowerCase();
         const s        = $('statusFilter').value;
@@ -2360,6 +3076,14 @@
       if        ==         tion') return 'fa-solid fa-graduation-      ;
         if (ch === 'partnership') return  'fa-        fa-handshake';
       return 'fa-solid fa-        ;
+      if (ch === 'citizenship') return 'fa-solid fa-passport';
+      if (ch === 'residency') return 'fa-solid fa-id-card';
+      if (ch === 'event') return 'fa-solid fa-video';
+      if (ch === 'general') return 'fa-solid fa-comment-dots';
+      if (ch === 'realestate') return 'fa-solid fa-building';
+      if (ch === 'education') return 'fa-solid fa-graduation-cap';
+      if (ch === 'partnership') return 'fa-solid fa-handshake';
+      return 'fa-solid fa-inbox';
     }
 
         const f      red       lLeads.filter(lead => {
@@ -2370,6 +3094,11 @@
     window.setChannel = functi                           hannel = ch;
       docu              lectorAll('#channelTabs .chan              rEach(tab => {
                lassList.toggle('            ab.          chan          ch);
+    // ── 4. FILTERING & RENDERING ────────────────────────────────────────
+    window.setChannel = function(ch) {
+      currentChannel = ch;
+      document.querySelectorAll('#channelTabs .channel-tab').forEach(tab => {
+        tab.classList.toggle('active', tab.dataset.channel === ch);
       });
       applyFilters();
     };
@@ -2378,6 +3107,8 @@
           if (cu            el !== 'all' && cat !== current            eturn false;
     win              ters = function() {
       const search = $(              ').value            Lo          );          onst status = $('statusFilter').value;
+    window.applyFilters = function() {
+      const search = ($('searchInput')?.value || '').trim().toLowerCase();
 
           // Status filter
                (status !== 'all' && lead.status !== statu        urn false;
@@ -2385,14 +3116,19 @@
         const cat = resolveCatego          ;
         if (currentChannel !== 'all' && c         c      ntCh      l) return false;
         if (status !== 'all' && lead.status !== status)      urn false;
+      const filtered = allLeads.filter(lead => {
+        const cat = resolveCategory(lead);
+        if (currentChannel !== 'all' && cat !== currentChannel) return false;
 
           // Program filter
             if (program !== 'al        !lead.service.toLowerCase().inclu        ogram)) return false;
         if (search) {
           con        stack = (lead.full_name + ' ' + lead.phone + ' ' + l      ema       ' ' + lead.country + ' '        d.service + ' ' + lead.notes).toLowerCase();
+          const haystack = ((lead.full_name || '') + ' ' + (lead.phone || '') + ' ' + (lead.email || '') + ' ' + (lead.country || '') + ' ' + (lead.service || '') + ' ' + (lead.notes || '')).toLowerCase();
           if (!haystack.includes(search)) return false;
         }
           ret      true;
+        return true;
       });
 
           // Search text
@@ -2401,14 +3137,19 @@
               if (!haystack.includes(search)) r        false;
           }
       renderTable(filte            };
+      renderTable(filtered);
+    };
 
           return true;
         })        $('searchInput').addEventListener('input'        yFilters);
+    $('searchInput').addEventListener('input', applyFilters);
 
         renderTable(filtered);
          ;
          ction renderTabl      ads) {
           nst tby =dsTableBody');
+    function renderTable(leads) {
+      const tbody = $('leadsTableBody');
       const empty = $('emptyState');
       tbody.innerHTML = '';
 
@@ -2430,6 +3171,7 @@
         const cat = resolveCategory(l);
         const catLabel = getCategoryLabel(cat);
         const dateStr = (l.timestamp || '').slice(0, 10) || l.relative_time || '—';
+        const statusVal = l.status || 'new';
 
         if (!leads.length) {
           empty.style.display = 'block';
@@ -2461,6 +3203,7 @@
                 </div>
               </div>
               <span class="client-name">${escapeHtml(l.full_name)}</span>
+              <span class="client-name">${escapeHtml(l.full_name || 'Client')}</span>
               ${l.lang ? `<span class="lang-tag">${escapeHtml(l.lang)}</span>` : ''}
             </div>
           </td>
@@ -2491,6 +3234,11 @@
               <option value="contacted" ${l.status === 'contacted' ? 'selected' : ''}>● Contacted</option>
               <option value="qualified" ${l.status === 'qualified' ? 'selected' : ''}>● Qualified</option>
               <option value="archived" ${l.status === 'archived' ? 'selected' : ''}>● Archived</option>
+            <select class="status-select ${escapeHtml(statusVal)}" onchange="updateLeadStatus('${escapeHtml(l.id)}', this.value, this)">
+              <option value="new" ${statusVal === 'new' ? 'selected' : ''}>● New</option>
+              <option value="contacted" ${statusVal === 'contacted' ? 'selected' : ''}>● Contacted</option>
+              <option value="qualified" ${statusVal === 'qualified' ? 'selected' : ''}>● Qualified</option>
+              <option value="archived" ${statusVal === 'archived' ? 'selected' : ''}>● Archived</option>
             </select>
           </td>
           <td>
@@ -2772,6 +3520,7 @@
         return String(s || '').replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;');
       }
     // ── 7. UTILITIES & LOGOUT ───────────────────────────────────────────
+    // ── 7. UTILITIES ────────────────────────────────────────────────────
     function showToast(msg, isErr = false) {
       const t = $('toast');
       $('toastMsg').textContent = msg;
