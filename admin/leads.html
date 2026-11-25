@@ -211,18 +211,23 @@
 
   .leads-table {
     width: 100%;
+    table-layout: fixed;
     border-collapse: collapse;
     text-align: left;
   }
 
   .leads-table thead th {
-    padding: 10px 14px;
+    padding: 9px 8px;
     font-size: 0.72rem;
     font-weight: 500;
     color: var(--muted);
     border-bottom: 1px solid var(--border);
     white-space: nowrap;
   }
+  .leads-table thead th:first-child,
+  .leads-table tbody td:first-child { padding-left: 14px; }
+  .leads-table thead th:last-child,
+  .leads-table tbody td:last-child { padding-right: 14px; }
 
   .leads-table tbody tr {
     border-bottom: 1px solid rgba(255, 255, 255, 0.05);
@@ -236,27 +241,28 @@
   }
 
   .leads-table td {
-    padding: 10px 14px;
-    font-size: 0.8125rem;
+    padding: 9px 8px;
+    font-size: 0.8rem;
     vertical-align: middle;
+    overflow: hidden;
   }
 
   /* Name Column */
   .name-cell {
     display: flex;
     align-items: center;
-    gap: 8px;
-    white-space: nowrap;
+    gap: 7px;
+    min-width: 0;
   }
   .client-avatar {
-    width: 24px;
-    height: 24px;
+    width: 22px;
+    height: 22px;
     border-radius: 50%;
     background: linear-gradient(135deg, var(--gold), var(--gold-light));
     display: flex;
     align-items: center;
     justify-content: center;
-    font-size: 0.68rem;
+    font-size: 0.66rem;
     font-weight: 700;
     color: var(--cream);
     flex-shrink: 0;
@@ -264,27 +270,36 @@
   .client-name {
     font-weight: 500;
     color: var(--cream);
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    min-width: 0;
   }
   .lang-tag {
-    padding: 1px 5px;
+    padding: 1px 4px;
     border-radius: 4px;
-    font-size: 0.64rem;
+    font-size: 0.62rem;
     font-weight: 600;
     text-transform: uppercase;
     background: rgba(255, 255, 255, 0.06);
     color: var(--muted);
+    flex-shrink: 0;
   }
 
   /* Email & Phone Columns */
   .email-cell {
     color: var(--muted);
     white-space: nowrap;
-    font-size: 0.8rem;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    font-size: 0.78rem;
   }
   .phone-cell {
     color: var(--text);
     white-space: nowrap;
-    font-size: 0.8rem;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    font-size: 0.78rem;
     font-variant-numeric: tabular-nums;
   }
 
@@ -292,11 +307,14 @@
   .cat-text {
     display: inline-flex;
     align-items: center;
-    gap: 6px;
-    font-size: 0.8rem;
+    gap: 5px;
+    font-size: 0.78rem;
     font-weight: 500;
     color: var(--text);
     white-space: nowrap;
+    max-width: 100%;
+    overflow: hidden;
+    text-overflow: ellipsis;
   }
   .cat-text.citizenship i { color: #60a5fa; }
   .cat-text.residency i { color: #818cf8; }
@@ -308,25 +326,30 @@
 
   /* Service Column */
   .service-cell {
-    max-width: 240px;
+    min-width: 0;
   }
   .service-title {
     font-weight: 500;
+    font-size: 0.78rem;
     color: var(--cream);
     white-space: nowrap;
     overflow: hidden;
     text-overflow: ellipsis;
   }
   .service-country {
-    font-size: 0.72rem;
+    font-size: 0.7rem;
     color: var(--muted);
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
   }
 
   /* Inline Status Select */
   .status-select {
-    padding: 3px 8px;
+    max-width: 100%;
+    padding: 3px 6px;
     border-radius: 5px;
-    font-size: 0.74rem;
+    font-size: 0.72rem;
     font-weight: 600;
     font-family: inherit;
     cursor: pointer;
@@ -342,8 +365,9 @@
   /* Date Column */
   .date-cell {
     white-space: nowrap;
-    font-size: 0.78rem;
+    font-size: 0.76rem;
     color: var(--muted);
+    font-variant-numeric: tabular-nums;
   }
 
   /* Action Buttons */
@@ -351,27 +375,33 @@
     display: flex;
     align-items: center;
     justify-content: flex-end;
-    gap: 6px;
+    gap: 4px;
   }
   .btn-act {
-    width: 26px;
-    height: 26px;
-    border-radius: 6px;
+    width: 24px;
+    height: 24px;
+    border-radius: 5px;
     display: flex;
     align-items: center;
     justify-content: center;
-    font-size: 0.76rem;
+    font-size: 0.72rem;
     cursor: pointer;
     text-decoration: none;
     transition: all 0.15s ease;
     border: 1px solid var(--border);
     background: transparent;
     color: var(--muted);
+    flex-shrink: 0;
   }
   .btn-act.wa { color: var(--green); border-color: rgba(34,197,94,0.3); }
   .btn-act.wa:hover { background: var(--green); color: #0A0B0E; border-color: var(--green); }
   .btn-act.mail:hover { border-color: var(--gold-bright); color: var(--gold-bright); }
   .btn-act.view:hover { border-color: var(--blue); color: #93c5fd; }
+  .btn-act.del:hover { border-color: rgba(239,68,68,0.55); color: #f87171; background: rgba(239,68,68,0.1); }
+
+  @media (max-width: 1023px) {
+    .leads-table { table-layout: auto; min-width: 920px; }
+  }
 
   /* Empty State */
   .empty-box {
@@ -580,6 +610,16 @@
     <!-- Leads Table Card -->
     <section class="leads-table-card">
       <table class="leads-table">
+        <colgroup>
+          <col style="width:14%">
+          <col style="width:17%">
+          <col style="width:12%">
+          <col style="width:10%">
+          <col style="width:18%">
+          <col style="width:10%">
+          <col style="width:8%">
+          <col style="width:11%">
+        </colgroup>
         <thead>
           <tr>
             <th>Name</th>
@@ -666,11 +706,16 @@
         </div>
       </div>
 
-      <div style="display:flex; justify-content:flex-end; gap:10px;">
-        <button type="button" class="back-btn" onclick="closeLeadModal()">Close</button>
-        <a href="#" target="_blank" class="btn-export-csv" id="mBtnWhatsApp" style="background:var(--green); border-color:var(--green); color:#0A0B0E;">
-          <i class="fa-brands fa-whatsapp"></i> Chat on WhatsApp
-        </a>
+      <div style="display:flex; justify-content:space-between; align-items:center; gap:10px;">
+        <button type="button" class="back-btn" id="mBtnDelete" style="border-color:rgba(239,68,68,0.4); color:#f87171;" onclick="deleteActiveModalLead()">
+          <i class="fa-solid fa-trash-can"></i> Delete Lead
+        </button>
+        <div style="display:flex; gap:10px;">
+          <button type="button" class="back-btn" onclick="closeLeadModal()">Close</button>
+          <a href="#" target="_blank" class="btn-export-csv" id="mBtnWhatsApp" style="background:var(--green); border-color:var(--green); color:#0A0B0E;">
+            <i class="fa-brands fa-whatsapp"></i> Chat on WhatsApp
+          </a>
+        </div>
       </div>
     </div>
   </div>
@@ -925,14 +970,14 @@
 
         tr.innerHTML = `
           <td>
-            <div class="name-cell">
+            <div class="name-cell" title="${escapeHtml(l.full_name || 'Client')}">
               <div class="client-avatar">${escapeHtml(init)}</div>
               <span class="client-name">${escapeHtml(l.full_name || 'Client')}</span>
               ${l.lang ? `<span class="lang-tag">${escapeHtml(l.lang)}</span>` : ''}
             </div>
           </td>
-          <td class="email-cell">${escapeHtml(l.email || '—')}</td>
-          <td class="phone-cell">${escapeHtml(l.phone || '—')}</td>
+          <td class="email-cell" title="${escapeHtml(l.email || '')}">${escapeHtml(l.email || '—')}</td>
+          <td class="phone-cell" title="${escapeHtml(l.phone || '')}">${escapeHtml(l.phone || '—')}</td>
           <td>
             <span class="cat-text ${escapeHtml(cat)}">
               <i class="${getChannelIcon(cat)}"></i>
@@ -966,8 +1011,11 @@
                   <i class="fa-solid fa-envelope"></i>
                 </a>
               ` : ''}
-              <button type="button" class="btn-act view" title="View Full Details" onclick="openLeadModal('${escapeHtml(l.id)}')">
+              <button type="button" class="btn-act view" title="View Details" onclick="openLeadModal('${escapeHtml(l.id)}')">
                 <i class="fa-solid fa-eye"></i>
+              </button>
+              <button type="button" class="btn-act del" title="Delete Lead" onclick="deleteLead('${escapeHtml(l.id)}')">
+                <i class="fa-solid fa-trash-can"></i>
               </button>
             </div>
           </td>
@@ -1056,6 +1104,7 @@
 
     window.saveLeadModalAction = async function() {
       if (!activeModalLead) return;
+      const leadId = activeModalLead.id;
       const note = $('mAdminNotes').value.trim();
       const status = $('mStatusSelect').value;
 
@@ -1072,7 +1121,7 @@
             'Authorization': `Bearer ${token}`
           },
           body: JSON.stringify({
-            lead_id: activeModalLead.id,
+            lead_id: leadId,
             status: status,
             admin_note: note
           })
@@ -1091,6 +1140,48 @@
         localStorage.setItem('sgcms_preview_leads', JSON.stringify(allLeads));
         showToast('Lead notes and status saved!');
       }
+    };
+
+    // ── 7. DELETE LEAD ──────────────────────────────────────────────────
+    window.deleteLead = async function(leadId) {
+      const target = allLeads.find(x => x.id === leadId);
+      const label = target ? (target.full_name || leadId) : leadId;
+      if (!confirm(`Delete lead "${label}" permanently? This cannot be undone.`)) return;
+
+      allLeads = allLeads.filter(x => x.id !== leadId);
+      updateCountBadge(allLeads.length);
+      applyFilters();
+
+      try {
+        const res = await fetch('/admin/api/leads-action.php', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+            'Authorization': `Bearer ${token}`
+          },
+          body: JSON.stringify({ action: 'delete', lead_id: leadId })
+        });
+        const ct = res.headers.get('content-type') || '';
+        if (res.ok && ct.includes('application/json')) {
+          const data = await res.json();
+          if (data.success) {
+            showToast('Lead deleted permanently.');
+            return;
+          }
+        }
+        localStorage.setItem('sgcms_preview_leads', JSON.stringify(allLeads));
+        showToast('Lead deleted.');
+      } catch (e) {
+        localStorage.setItem('sgcms_preview_leads', JSON.stringify(allLeads));
+        showToast('Lead deleted.');
+      }
+    };
+
+    window.deleteActiveModalLead = function() {
+      if (!activeModalLead) return;
+      const leadId = activeModalLead.id;
+      closeLeadModal();
+      window.deleteLead(leadId);
     };
 
     // ── 7. UTILITIES ────────────────────────────────────────────────────
