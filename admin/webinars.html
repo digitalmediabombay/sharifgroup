@@ -1461,17 +1461,13 @@
                 <input type="date" id="ctrlSessionDate" class="modal-input" required onchange="updateSessionTimePreview()">
               </div>
               <div>
-                <label style="font-size:11px; color:var(--muted); display:block; margin-bottom:4px;">Time (Local)</label>
+                <label style="font-size:11px; color:var(--muted); display:block; margin-bottom:4px;">Time (Dubai Time)</label>
                 <input type="time" id="ctrlSessionTime" class="modal-input" required onchange="updateSessionTimePreview()">
               </div>
               <div>
                 <label style="font-size:11px; color:var(--muted); display:block; margin-bottom:4px;">Timezone</label>
                 <select id="ctrlSessionTz" class="modal-select" onchange="updateSessionTimePreview()">
                   <option value="Asia/Dubai" selected>Dubai (GST, UTC+4)</option>
-                  <option value="Asia/Kabul">Kabul (AFT, UTC+4:30)</option>
-                  <option value="Europe/Istanbul">Istanbul (TRT, UTC+3)</option>
-                  <option value="UTC">UTC (Universal, +0)</option>
-                  <option value="Europe/London">London (GMT/BST)</option>
                 </select>
               </div>
             </div>

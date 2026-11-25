@@ -230,7 +230,12 @@ foreach (['draft_content.json', 'published_content.json'] as $fSnap) {
 $regenScript = __DIR__ . '/webinars-regen.php';
 if (file_exists($regenScript)) {
     require_once $regenScript;
-    if (function_exists('regenerateWebinarArtifacts')) {
+    if (function_exists('regenerateWebinars')) {
+        @regenerateWebinars($rootDir, [
+            'sgcms_webinars' => $webinars,
+            'sgcms_webinar_schedule' => $schedule
+        ]);
+    } elseif (function_exists('regenerateWebinarArtifacts')) {
         @regenerateWebinarArtifacts($webinars, $heroSessionNo);
     }
 }

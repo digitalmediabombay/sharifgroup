@@ -589,4 +589,4 @@ window.SGCMS_WEBINARS = [
     }
 ];
 window.SGCMS_ACTIVE_SERIES = "dominica-pilot";
-window.SGCMS_HERO_SESSION_NO = null;
+window.SGCMS_HERO_SESSION_NO = 2;

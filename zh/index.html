@@ -2870,28 +2870,50 @@ html[lang="ar"] .cd-lbl {
         var dateValEl = document.querySelector('[data-i18n="homeWebinar.dateValue"]');
         var dateTimeEl = document.querySelector('[data-i18n="homeWebinar.dateTime"]');
         if (dateValEl && !isNaN(targetTime)) {
-            var optDate = { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric', timeZone: 'UTC' };
+            var optDate = { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric', timeZone: 'Asia/Dubai' };
             var locStr = targetDate.toLocaleDateString(isFa ? 'fa-IR' : (isAr ? 'ar-AE' : (isZh ? 'zh-CN' : 'en-US')), optDate);
             if (locStr) dateValEl.textContent = locStr;
         }
-        if (dateTimeEl && !isNaN(targetTime)) {
+        if (!isNaN(targetTime)) {
             var dKabul = new Date(targetTime).toLocaleTimeString('en-GB', { timeZone: 'Asia/Kabul', hour: '2-digit', minute: '2-digit', hour12: false });
             var dDubai = new Date(targetTime).toLocaleTimeString('en-GB', { timeZone: 'Asia/Dubai', hour: '2-digit', minute: '2-digit', hour12: false });
-            if (isFa) {
-                var faDays = ['یک‌شنبه','دوشنبه','سه‌شنبه','چهارشنبه','پنج‌شنبه','جمعه','شنبه'];
-                var faMonths = ['ژانویه','فوریه','مارس','آوریل','مه','ژوئن','ژوئیه','اوت','سپتامبر','اکتبر','نوامبر','دسامبر'];
-                dateTimeEl.textContent = faDays[targetDate.getUTCDay()] + ' ' + targetDate.getUTCDate() + ' ' + faMonths[targetDate.getUTCMonth()] + ' · ' + dKabul + ' کابل / ' + dDubai + ' دبی';
-            } else if (isAr) {
-                var arDays = ['الأحد','الإثنين','الثلاثاء','الأربعاء','الخميس','الجمعة','السبت'];
-                var arMonths = ['يناير','فبراير','مارس','أبريل','مايو','يونيو','يوليو','أغسطس','سبتمبر','أكتوبر','نوفمبر','ديسمبر'];
-                dateTimeEl.textContent = arDays[targetDate.getUTCDay()] + ' ' + targetDate.getUTCDate() + ' ' + arMonths[targetDate.getUTCMonth()] + ' · ' + dKabul + ' كابل / ' + dDubai + ' دبي';
-            } else if (isZh) {
-                var zhDays = ['星期日','星期一','星期二','星期三','星期四','星期五','星期六'];
-                dateTimeEl.textContent = (targetDate.getUTCMonth() + 1) + '月' + targetDate.getUTCDate() + '日' + zhDays[targetDate.getUTCDay()] + ' · 喀布尔 ' + dKabul + ' / 迪拜 ' + dDubai;
-            } else {
-                var enDays = ['Sunday','Monday','Tuesday','Wednesday','Thursday','Friday','Saturday'];
-                var enMonths = ['January','February','March','April','May','June','July','August','September','October','November','December'];
-                dateTimeEl.textContent = enDays[targetDate.getUTCDay()] + ' ' + targetDate.getUTCDate() + ' ' + enMonths[targetDate.getUTCMonth()] + ' · ' + dKabul + ' Kabul / ' + dDubai + ' Dubai';
+            var dIstanbul = new Date(targetTime).toLocaleTimeString('en-GB', { timeZone: 'Europe/Istanbul', hour: '2-digit', minute: '2-digit', hour12: false });
+
+            // Dynamically update regional timezone table rows
+            var rowKabul = document.querySelector('#hw-tz-kabul .tz-time');
+            var rowDubai = document.querySelector('#hw-tz-dubai .tz-time');
+            var rowIstanbul = document.querySelector('#hw-tz-istanbul .tz-time');
+            if (rowKabul) rowKabul.textContent = dKabul;
+            if (rowDubai) rowDubai.textContent = dDubai;
+            if (rowIstanbul) rowIstanbul.textContent = dIstanbul;
+
+            if (dateTimeEl) {
+                var dDubaiParts = new Intl.DateTimeFormat('en-US', { timeZone: 'Asia/Dubai', year: 'numeric', month: 'numeric', day: 'numeric', weekday: 'long' }).formatToParts(targetDate);
+                var dubaiDay = (dDubaiParts.find(function(p){ return p.type === 'day'; }) || {}).value || targetDate.getUTCDate();
+                var dubaiMonth = parseInt((dDubaiParts.find(function(p){ return p.type === 'month'; }) || {}).value || (targetDate.getUTCMonth() + 1), 10);
+                var dubaiWeekday = (dDubaiParts.find(function(p){ return p.type === 'weekday'; }) || {}).value || 'Wednesday';
+
+                if (isFa) {
+                    var faDays = { 'Sunday':'یک‌شنبه','Monday':'دوشنبه','Tuesday':'سه‌شنبه','Wednesday':'چهارشنبه','Thursday':'پنج‌شنبه','Friday':'جمعه','Saturday':'شنبه' };
+                    var faMonths = ['ژانویه','فوریه','مارس','آوریل','مه','ژوئن','ژوئیه','اوت','سپتامبر','اکتبر','نوامبر','دسامبر'];
+                    var fDay = faDays[dubaiWeekday] || dubaiWeekday;
+                    var fMon = faMonths[dubaiMonth - 1] || '';
+                    dateTimeEl.textContent = fDay + ' ' + dubaiDay + ' ' + fMon + ' · ' + dKabul + ' کابل / ' + dDubai + ' دبی';
+                } else if (isAr) {
+                    var arDays = { 'Sunday':'الأحد','Monday':'الإثنين','Tuesday':'الثلاثاء','Wednesday':'الأربعاء','Thursday':'الخميس','Friday':'الجمعة','Saturday':'السبت' };
+                    var arMonths = ['يناير','فبراير','مارس','أبريل','مايو','يونيو','يوليو','أغسطس','سبتمبر','أكتوبر','نوفمبر','ديسمبر'];
+                    var aDay = arDays[dubaiWeekday] || dubaiWeekday;
+                    var aMon = arMonths[dubaiMonth - 1] || '';
+                    dateTimeEl.textContent = aDay + ' ' + dubaiDay + ' ' + aMon + ' · ' + dKabul + ' كابل / ' + dDubai + ' دبي';
+                } else if (isZh) {
+                    var zhDays = { 'Sunday':'星期日','Monday':'星期一','Tuesday':'星期二','Wednesday':'星期三','Thursday':'星期四','Friday':'星期五','Saturday':'星期六' };
+                    var zDay = zhDays[dubaiWeekday] || dubaiWeekday;
+                    dateTimeEl.textContent = dubaiMonth + '月' + dubaiDay + '日' + zDay + ' · 喀布尔 ' + dKabul + ' / 迪拜 ' + dDubai;
+                } else {
+                    var enMonths = ['January','February','March','April','May','June','July','August','September','October','November','December'];
+                    var eMon = enMonths[dubaiMonth - 1] || '';
+                    dateTimeEl.textContent = dubaiWeekday + ' ' + dubaiDay + ' ' + eMon + ' · ' + dKabul + ' Kabul / ' + dDubai + ' Dubai';
+                }
             }
         }
     } catch(errFmt) {}

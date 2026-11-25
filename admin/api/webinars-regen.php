@@ -24,13 +24,17 @@ if (!function_exists('formatWebinarSchedule')) {
         // Times in key cities
         $dtKabul = clone $dt; $dtKabul->modify('+270 minutes'); // UTC+4:30
         $dtDubai = clone $dt; $dtDubai->modify('+240 minutes'); // UTC+4:00
+        $dtIstanbul = clone $dt; $dtIstanbul->modify('+180 minutes'); // UTC+3:00
 
         $kabulTime = $dtKabul->format('H:i');
         $dubaiTime = $dtDubai->format('H:i');
-        $dayNameEn = $dt->format('l');
-        $day = $dt->format('j');
-        $monthEn = $dt->format('F');
-        $year = $dt->format('Y');
+        $istanbulTime = $dtIstanbul->format('H:i');
+
+        // Reference date strictly in Dubai Local Time (+04:00)
+        $dayNameEn = $dtDubai->format('l');
+        $day = $dtDubai->format('j');
+        $monthEn = $dtDubai->format('F');
+        $year = $dtDubai->format('Y');
 
         $days = [
             'en' => ['Sunday'=>'Sunday','Monday'=>'Monday','Tuesday'=>'Tuesday','Wednesday'=>'Wednesday','Thursday'=>'Thursday','Friday'=>'Friday','Saturday'=>'Saturday'],
@@ -44,35 +48,37 @@ if (!function_exists('formatWebinarSchedule')) {
             'ar' => [1=>'يناير',2=>'فبراير',3=>'مارس',4=>'أبريل',5=>'مايو',6=>'يونيو',7=>'يوليو',8=>'أغسطس',9=>'سبتمبر',10=>'أكتوبر',11=>'نوفمبر',12=>'ديسمبر'],
             'zh' => [1=>'1月',2=>'2月',3=>'3月',4=>'4月',5=>'5月',6=>'6月',7=>'7月',8=>'8月',9=>'9月',10=>'10月',11=>'11月',12=>'12月'],
         ];
-        $mNum = (int)$dt->format('n');
+        $mNum = (int)$dtDubai->format('n');
+
+        $res = [
+            'kabulTime' => $kabulTime,
+            'dubaiTime' => $dubaiTime,
+            'istanbulTime' => $istanbulTime
+        ];
 
         switch ($lang) {
             case 'fa':
                 $dayFa = $days['fa'][$dayNameEn] ?? $dayNameEn;
                 $monthFa = $months['fa'][$mNum] ?? $monthEn;
-                return [
-                    'dateValue' => "{$dayFa}، {$day} {$monthFa} {$year}",
-                    'dateTime' => "{$dayFa} {$day} {$monthFa} · {$kabulTime} کابل / {$dubaiTime} دبی"
-                ];
+                $res['dateValue'] = "{$dayFa}، {$day} {$monthFa} {$year}";
+                $res['dateTime'] = "{$dayFa} {$day} {$monthFa} · {$kabulTime} کابل / {$dubaiTime} دبی";
+                return $res;
             case 'ar':
                 $dayAr = $days['ar'][$dayNameEn] ?? $dayNameEn;
                 $monthAr = $months['ar'][$mNum] ?? $monthEn;
-                return [
-                    'dateValue' => "{$dayAr}، {$day} {$monthAr} {$year}",
-                    'dateTime' => "{$dayAr} {$day} {$monthAr} · {$kabulTime} كابل / {$dubaiTime} دبي"
-                ];
+                $res['dateValue'] = "{$dayAr}، {$day} {$monthAr} {$year}";
+                $res['dateTime'] = "{$dayAr} {$day} {$monthAr} · {$kabulTime} كابل / {$dubaiTime} دبي";
+                return $res;
             case 'zh':
                 $dayZh = $days['zh'][$dayNameEn] ?? $dayNameEn;
                 $monthZh = $months['zh'][$mNum] ?? $monthEn;
-                return [
-                    'dateValue' => "{$year}年{$monthZh}{$day}日 {$dayZh}",
-                    'dateTime' => "{$monthZh}{$day}日{$dayZh} · 喀布尔 {$kabulTime} / 迪拜 {$dubaiTime}"
-                ];
+                $res['dateValue'] = "{$year}年{$monthZh}{$day}日 {$dayZh}";
+                $res['dateTime'] = "{$monthZh}{$day}日{$dayZh} · 喀布尔 {$kabulTime} / 迪拜 {$dubaiTime}";
+                return $res;
             default:
-                return [
-                    'dateValue' => "{$dayNameEn}, {$day} {$monthEn} {$year}",
-                    'dateTime' => "{$dayNameEn} {$day} {$monthEn} · {$kabulTime} Kabul / {$dubaiTime} Dubai"
-                ];
+                $res['dateValue'] = "{$dayNameEn}, {$day} {$monthEn} {$year}";
+                $res['dateTime'] = "{$dayNameEn} {$day} {$monthEn} · {$kabulTime} Kabul / {$dubaiTime} Dubai";
+                return $res;
         }
     }
 }
@@ -355,11 +361,11 @@ if (!function_exists('regenerateWebinars')) {
                 // Replace title & href
                 if ($titleText) {
                     $safeTitle = htmlspecialchars($titleText, ENT_QUOTES | ENT_SUBSTITUTE, 'UTF-8');
-                    $html = preg_replace('#(<a\b[^>]*\bdata-i18n="homeWebinar.title"[^>]*href=")[^"]*("[^>]*>)(.*?)(</a>)#us', '${1}' . $eventTargetUrl . '${2}' . $safeTitle . '${4}', $html, 1);
+                    $html = preg_replace('#(<a\b[^>]*\bdata-i18n="homeWebinar\.title"[^>]*\bhref=")[^"]*("[^>]*>)(.*?)(</a>)#us', '${1}' . $eventTargetUrl . '${2}' . $safeTitle . '${4}', $html, 1);
                 }
 
                 // Replace View & Register button href
-                $html = preg_replace('#(<a\b[^>]*href=")[^"]*(\b(?:dominica-second-passport-for-afghans|dominica-from-decision-to-passport)\/?"[^>]*>[\s\S]*?<span\b[^>]*data-i18n="homeWebinar\.joinBtn")#us', '${1}' . $eventTargetUrl . '${2}', $html, 1);
+                $html = preg_replace('#(<a\b[^>]*\bhref=")[^"]*("[^>]*>\s*<span\b[^>]*data-i18n="homeWebinar\.joinBtn")#us', '${1}' . $eventTargetUrl . '${2}', $html, 1);
 
                 // Replace description
                 if ($descText) {
@@ -379,6 +385,17 @@ if (!function_exists('regenerateWebinars')) {
                     $html = preg_replace('#(<span\b[^>]*\bdata-i18n="homeWebinar.dateTime"[^>]*>)(.*?)(</span>)#us', '${1}' . $safeDT . '${3}', $html, 1);
                 }
 
+                // Replace Regional Timezone Rows (Kabul, Dubai, Istanbul)
+                if (!empty($sched['kabulTime'])) {
+                    $html = preg_replace('#(<div\b[^>]*\bid="hw-tz-kabul"[^>]*>[\s\S]*?<span\b[^>]*class="tz-time"[^>]*>)(.*?)(</span>)#us', '${1}' . $sched['kabulTime'] . '${3}', $html, 1);
+                }
+                if (!empty($sched['dubaiTime'])) {
+                    $html = preg_replace('#(<div\b[^>]*\bid="hw-tz-dubai"[^>]*>[\s\S]*?<span\b[^>]*class="tz-time"[^>]*>)(.*?)(</span>)#us', '${1}' . $sched['dubaiTime'] . '${3}', $html, 1);
+                }
+                if (!empty($sched['istanbulTime'])) {
+                    $html = preg_replace('#(<div\b[^>]*\bid="hw-tz-istanbul"[^>]*>[\s\S]*?<span\b[^>]*class="tz-time"[^>]*>)(.*?)(</span>)#us', '${1}' . $sched['istanbulTime'] . '${3}', $html, 1);
+                }
+
                 // Replace seriesTag if present
                 $sTag = $lObj['series_tag'] ?? ($featured['series_tag'] ?? '');
                 if ($sTag) {
@@ -396,5 +413,15 @@ if (!function_exists('regenerateWebinars')) {
             'updatedFiles' => $updatedFiles,
             'count' => count($updatedFiles)
         ];
+    }
+}
+
+if (!function_exists('regenerateWebinarArtifacts')) {
+    function regenerateWebinarArtifacts($webinars, $heroSessionNo = null) {
+        $rootDir = realpath(dirname(__DIR__, 2));
+        return regenerateWebinars($rootDir, [
+            'sgcms_webinars' => $webinars,
+            'sgcms_webinar_schedule' => ['active_session_no' => $heroSessionNo]
+        ]);
     }
 }
