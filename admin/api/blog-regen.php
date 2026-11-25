@@ -556,6 +556,43 @@ function regenerateBlogListings($rootDir = null, $publishedSnapshot = null) {
         }
     }
 
+    // If base64 images were compacted on live publish snapshot, also compact draft JSON snapshots and MySQL row
+    if ($mediaChanged) {
+        foreach ([$rootDir . '/assets/data/draft_content.json', $rootDir . '/admin/api/draft_content.json'] as $draftPath) {
+            if (!file_exists($draftPath)) continue;
+            $rawDraft = @file_get_contents($draftPath);
+            if (!is_string($rawDraft) || stripos($rawDraft, 'data:image/') === false) continue;
+            $draftData = json_decode($rawDraft, true);
+            if (!is_array($draftData) || empty($draftData['sgcms_blog']) || !is_array($draftData['sgcms_blog'])) continue;
+            $draftUpdated = false;
+            foreach ($draftData['sgcms_blog'] as &$dbItem) {
+                if (is_array($dbItem) && ssgSanitizeBlogItemMedia($dbItem, $rootDir)) {
+                    $draftUpdated = true;
+                }
+            }
+            unset($dbItem);
+            if ($draftUpdated) {
+                $encDraft = json_encode($draftData, JSON_PRETTY_PRINT | JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES);
+                if (is_string($encDraft) && strlen($encDraft) > 2) {
+                    @file_put_contents($draftPath, $encDraft, LOCK_EX);
+                }
+            }
+        }
+
+        if (function_exists('getDb')) {
+            try {
+                $pdo = getDb(true);
+                if ($pdo) {
+                    $jsonLive = json_encode($publishedSnapshot['sgcms_blog'], JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES);
+                    if (is_string($jsonLive) && $jsonLive !== '') {
+                        $stmt = $pdo->prepare("UPDATE cms_content SET live_data = :live, updated_at = NOW() WHERE content_key = 'sgcms_blog'");
+                        $stmt->execute([':live' => $jsonLive]);
+                    }
+                }
+            } catch (Throwable $dbErr) {}
+        }
+    }
+
     $targets = [
         'en' => [
             'file'          => $rootDir . '/blog/index.html',

@@ -1343,24 +1343,27 @@
     runHydration(l);
   });
 
-  /* ── Instant 0ms Pre-Hydration from Local Live Store ───────────────── */
+  /* ── Instant 0ms Pre-Hydration from Local Live Store / Pre-Rendered HTML ─ */
   try {
+    var parsedBlogs = null;
     var cachedLiveBlogs = localStorage.getItem('sgcms_blog_live');
     if (cachedLiveBlogs) {
-      var parsedBlogs = JSON.parse(cachedLiveBlogs);
-      var initDelMap = getDeletedSlugsMap();
-      if (Array.isArray(parsedBlogs) && parsedBlogs.length) {
-        parsedBlogs = parsedBlogs.filter(function (b) {
-          if (!b) return false;
-          var bId = (b.id || '').toLowerCase();
-          var bSlug = (b.slug || (b.en && b.en.slug) || '').toLowerCase();
-          return !initDelMap[bId] && !initDelMap[bSlug];
-        });
-        if (parsedBlogs.length) {
-          if (!_data) _data = {};
-          _data.sgcms_blog = parsedBlogs;
-          runHydration(getLang());
-        }
+      parsedBlogs = JSON.parse(cachedLiveBlogs);
+    } else if (Array.isArray(window.__PRE_RENDERED_CMS_BLOGS) && window.__PRE_RENDERED_CMS_BLOGS.length) {
+      parsedBlogs = window.__PRE_RENDERED_CMS_BLOGS;
+    }
+    var initDelMap = getDeletedSlugsMap();
+    if (Array.isArray(parsedBlogs) && parsedBlogs.length) {
+      parsedBlogs = parsedBlogs.filter(function (b) {
+        if (!b) return false;
+        var bId = (b.id || '').toLowerCase();
+        var bSlug = (b.slug || (b.en && b.en.slug) || '').toLowerCase();
+        return !initDelMap[bId] && !initDelMap[bSlug];
+      });
+      if (parsedBlogs.length) {
+        if (!_data) _data = {};
+        _data.sgcms_blog = parsedBlogs;
+        runHydration(getLang());
       }
     }
   } catch (e) {}
@@ -1483,7 +1486,7 @@
           // Sanitize local storage against any deleted slugs
           sanitizeBlogStorage(json.sgcms_deleted_slugs);
 
-          // Cache sanitized published blog data into localStorage live cache
+          // Cache sanitized published blog data into localStorage live cache (isolated so QuotaExceededError never blocks hydration)
           try {
             if (Array.isArray(json.sgcms_blog)) {
               var liveDelMap = getDeletedSlugsMap();
@@ -1493,7 +1496,12 @@
                 var bSlug = (b.slug || (b.en && b.en.slug) || '').toLowerCase();
                 return !liveDelMap[bId] && !liveDelMap[bSlug];
               });
-              localStorage.setItem('sgcms_blog_live', JSON.stringify(cleanBlogs));
+              try {
+                var serializedLive = JSON.stringify(cleanBlogs);
+                if (serializedLive.length < 3500000) {
+                  localStorage.setItem('sgcms_blog_live', serializedLive);
+                }
+              } catch (storageErr) {}
               if (window.location.pathname.toLowerCase().indexOf('/blog') !== -1) {
                 var lang = getLang();
                 setTimeout(function () {
