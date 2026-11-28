@@ -173,10 +173,13 @@ if (!function_exists('translateTextServer')) {
             return callGoogleGtxChunk($text, $cleanTarget, $sourceLang);
         }
 
-        // Split HTML cleanly after closing block tags / breaks / newlines so each chunk stays <= 2400 bytes
-        $blocks = preg_split('/(?<=<\/p>|<\/h[1-6]>|<\/li>|<\/blockquote>|<\/div>|<br\s*\/?>|\n)/i', $text, -1, PREG_SPLIT_NO_EMPTY);
+        // Split cleanly around block boundaries (capturing tags avoids variable-length lookbehind warnings)
+        $blocks = preg_split('/(<\/p>|<\/h[1-6]>|<\/li>|<\/blockquote>|<\/div>|<br\s*\/?>|\n)/i', $text, -1, PREG_SPLIT_DELIM_CAPTURE | PREG_SPLIT_NO_EMPTY);
         if (!is_array($blocks) || count($blocks) <= 1) {
-            $blocks = str_split($text, 2400);
+            $blocks = preg_split('/(?<=>)/', $text, -1, PREG_SPLIT_NO_EMPTY);
+            if (!is_array($blocks) || count($blocks) <= 1) {
+                $blocks = str_split($text, 2400);
+            }
         }
 
         $batches = [];
