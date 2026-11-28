@@ -6,6 +6,7 @@
  */
 
 require_once __DIR__ . '/db.php';
+require_once __DIR__ . '/translate_sync.php';
 
 @set_time_limit(120);
 @ignore_user_abort(true);
@@ -30,15 +31,7 @@ if (!empty($payload['publisher'])) {
 }
 $publishedAt = isset($payload['publishedAt']) ? $payload['publishedAt'] : date('Y-m-d H:i:s');
 
-function isMojibakeString($raw) {
-    if (!is_string($raw) || trim($raw) === '') return false;
-    if (preg_match('/[\x{2500}-\x{259F}\x{FFFD}]|ΓÇ[ôöòóõô–•]|u0026amp;/u', $raw)) return true;
-    if (preg_match('/[ØÙ][\x80-\xFF]/', $raw) && !preg_match('/[\x{0600}-\x{06FF}]/u', $raw)) return true;
-    if (preg_match('/(?:æ[•™\x80-\xFF]|è[‚²¯¢¿Ž°\x80-\xFF]|å[’¨ˆ°«\x80-\xFF]|ç[º»\x80-\xFF]|é[\x80-\xFF]|ä[\x80-\xFF])/', $raw) && !preg_match('/[\x{4E00}-\x{9FFF}]/u', $raw)) return true;
-    if (preg_match('/[äåæçèéêëìíîï][\x{0080}-\x{00FF}\x{201A}-\x{2026}\x{2018}-\x{201D}\x{2122}\x{0152}\x{0153}\x{0160}\x{0161}\x{0178}\x{017E}\x{02C6}\x{02DC}]/u', $raw) && !preg_match('/[\x{4E00}-\x{9FFF}]/u', $raw)) return true;
-    if (preg_match('/(?:O\s*U,|AE\+|[A-Za-z]\s*[¿Ž°ˆ¬¢]|A["”][A-Za-z"”]+)/', $raw)) return true;
-    return false;
-}
+// Canonical isMojibakeString() is provided by translate_sync.php
 
 // Ensure no double-encoded JSON strings in published payload and filter corrupted DOM overrides
 foreach ($payload['data'] as $k => $v) {

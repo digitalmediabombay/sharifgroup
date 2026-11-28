@@ -65,10 +65,17 @@ if (!function_exists('translateTextServer')) {
             }
         }
 
-        // Sanitize incoming text before translation
+        // Sanitize incoming text & strip verbose MS Word conditional/style noise before auto-translation
         $cleanSource = str_replace(['\\u0026amp;', '&amp;', 'ΓÇô', 'ΓÇó', '\\u0027', '\\\"'], ['&', '&', '–', '•', "'", '"'], $text);
+        if (stripos($cleanSource, '<!--[if') !== false || stripos($cleanSource, '<style') !== false) {
+            $stripped = preg_replace('/<!--\[if[^\]]*\]>.*?<!\[endif\]-->/is', '', $cleanSource);
+            if (is_string($stripped)) $cleanSource = $stripped;
+            $stripped = preg_replace('/<style\b[^>]*>.*?<\/style>/is', '', $cleanSource);
+            if (is_string($stripped)) $cleanSource = $stripped;
+            $cleanSource = trim($cleanSource);
+        }
 
-        // Fallback: Free Google Translate service (official Chrome client, zero rate-limit 429)
+        // Fallback: Free Google Translate service (with paragraph/block chunking for long HTML articles)
         if (empty($translated)) {
             $translated = callGoogleGtxTranslate($cleanSource, $targetLang, $sourceLang);
         }
@@ -89,27 +96,25 @@ if (!function_exists('translateTextServer')) {
     }
 
     /**
-     * Free Google Translate HTTP endpoint using official dict-chrome-ex / at client
+     * Single-chunk Google Translate request (uses POST for medium chunks to avoid GET URL truncation)
      */
-    function callGoogleGtxTranslate($text, $targetLang, $sourceLang = 'en') {
-        $cleanTarget = strtolower($targetLang);
-        if ($cleanTarget === 'fa') {
-            $cleanTarget = 'fa';
-        } elseif ($cleanTarget === 'zh') {
-            $cleanTarget = 'zh-CN';
-        }
-
+    function callGoogleGtxChunk($chunk, $cleanTarget, $sourceLang = 'en') {
         $clients = ['dict-chrome-ex', 'at'];
         foreach ($clients as $client) {
-            $url = 'https://translate.googleapis.com/translate_a/single?client=' . urlencode($client) . '&sl=' . urlencode($sourceLang) . '&tl=' . urlencode($cleanTarget) . '&dt=t&q=' . urlencode($text);
+            $endpoint = 'https://translate.googleapis.com/translate_a/single?client=' . urlencode($client)
+                . '&sl=' . urlencode($sourceLang)
+                . '&tl=' . urlencode($cleanTarget)
+                . '&dt=t';
 
             $response = null;
             $httpCode = 0;
 
             if (function_exists('curl_init')) {
-                $ch = curl_init($url);
+                $ch = curl_init($endpoint);
                 curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
-                curl_setopt($ch, CURLOPT_TIMEOUT, 8);
+                curl_setopt($ch, CURLOPT_TIMEOUT, 10);
+                curl_setopt($ch, CURLOPT_POST, true);
+                curl_setopt($ch, CURLOPT_POSTFIELDS, http_build_query(['q' => $chunk]));
                 curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, false);
                 curl_setopt($ch, CURLOPT_SSL_VERIFYHOST, false);
                 curl_setopt($ch, CURLOPT_USERAGENT, 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36');
@@ -118,7 +123,10 @@ if (!function_exists('translateTextServer')) {
             } else {
                 $ctx = stream_context_create([
                     'http' => [
-                        'timeout' => 8,
+                        'method'  => 'POST',
+                        'header'  => "Content-Type: application/x-www-form-urlencoded\r\n",
+                        'content' => http_build_query(['q' => $chunk]),
+                        'timeout' => 10,
                         'user_agent' => 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36'
                     ],
                     'ssl' => [
@@ -126,7 +134,7 @@ if (!function_exists('translateTextServer')) {
                         'verify_peer_name' => false
                     ]
                 ]);
-                $response = @file_get_contents($url, false, $ctx);
+                $response = @file_get_contents($endpoint, false, $ctx);
                 if ($response !== false) {
                     $httpCode = 200;
                 }
@@ -148,6 +156,91 @@ if (!function_exists('translateTextServer')) {
             }
         }
         return null;
+    }
+
+    /**
+     * Free Google Translate HTTP endpoint with safe block-level HTML chunking for long articles
+     */
+    function callGoogleGtxTranslate($text, $targetLang, $sourceLang = 'en') {
+        $cleanTarget = strtolower($targetLang);
+        if ($cleanTarget === 'fa') {
+            $cleanTarget = 'fa';
+        } elseif ($cleanTarget === 'zh') {
+            $cleanTarget = 'zh-CN';
+        }
+
+        if (strlen($text) <= 2800) {
+            return callGoogleGtxChunk($text, $cleanTarget, $sourceLang);
+        }
+
+        // Split HTML cleanly after closing block tags / breaks / newlines so each chunk stays <= 2400 bytes
+        $blocks = preg_split('/(?<=<\/p>|<\/h[1-6]>|<\/li>|<\/blockquote>|<\/div>|<br\s*\/?>|\n)/i', $text, -1, PREG_SPLIT_NO_EMPTY);
+        if (!is_array($blocks) || count($blocks) <= 1) {
+            $blocks = str_split($text, 2400);
+        }
+
+        $batches = [];
+        $currentBatch = '';
+        foreach ($blocks as $block) {
+            if (strlen($block) > 2400) {
+                if ($currentBatch !== '') {
+                    $batches[] = $currentBatch;
+                    $currentBatch = '';
+                }
+                // Sub-split oversized single block along sentence/space or fixed boundaries
+                $subParts = (stripos($block, '<') === false)
+                    ? str_split($block, 2400)
+                    : preg_split('/(?<=>)/', $block, -1, PREG_SPLIT_NO_EMPTY);
+                if (is_array($subParts)) {
+                    $subCur = '';
+                    foreach ($subParts as $sp) {
+                        if (strlen($sp) > 2400) {
+                            if ($subCur !== '') { $batches[] = $subCur; $subCur = ''; }
+                            foreach (str_split($sp, 2400) as $frag) $batches[] = $frag;
+                        } elseif (strlen($subCur) + strlen($sp) > 2400) {
+                            if ($subCur !== '') $batches[] = $subCur;
+                            $subCur = $sp;
+                        } else {
+                            $subCur .= $sp;
+                        }
+                    }
+                    if ($subCur !== '') $batches[] = $subCur;
+                } else {
+                    $batches[] = $block;
+                }
+                continue;
+            }
+
+            if (strlen($currentBatch) + strlen($block) > 2400) {
+                if ($currentBatch !== '') {
+                    $batches[] = $currentBatch;
+                }
+                $currentBatch = $block;
+            } else {
+                $currentBatch .= $block;
+            }
+        }
+        if ($currentBatch !== '') {
+            $batches[] = $currentBatch;
+        }
+
+        $translatedParts = [];
+        $anySuccess = false;
+        foreach ($batches as $batch) {
+            if (trim(strip_tags($batch)) === '') {
+                $translatedParts[] = $batch;
+                continue;
+            }
+            $tr = callGoogleGtxChunk($batch, $cleanTarget, $sourceLang);
+            if ($tr !== null && $tr !== '') {
+                $translatedParts[] = $tr;
+                $anySuccess = true;
+            } else {
+                $translatedParts[] = $batch;
+            }
+        }
+
+        return $anySuccess ? implode('', $translatedParts) : null;
     }
 
     /**
@@ -250,21 +343,44 @@ if (!function_exists('translateTextServer')) {
         return null;
     }
 
-    function isMojibake($str) {
+    /**
+     * Checks if a string has actual Arabic/Persian/Chinese script characters
+     */
+    function hasNonLatinChars($str, $lang = null) {
         if (!is_string($str) || trim($str) === '') return false;
-        if (preg_match('/[\x{2500}-\x{259F}\x{FFFD}]|ΓÇ[ôöòóõô–•]|u0026amp;/u', $str)) return true;
-        if (preg_match('/[ØÙ][\x80-\xFF]/', $str) && !preg_match('/[\x{0600}-\x{06FF}]/u', $str)) return true;
-        if (preg_match('/(?:æ[¬¢\x80-\xFF]|è[¿Ž°\x80-\xFF]|å[ˆ°«\x80-\xFF]|ç[º»\x80-\xFF]|é[\x80-\xFF]|ä[\x80-\xFF])/', $str) && !preg_match('/[\x{4E00}-\x{9FFF}]/u', $str)) return true;
-        if (preg_match('/(?:O\s*U,|AE\+|[A-Za-z]\s*[¿Ž°ˆ¬¢]|A["”][A-Za-z"”]+)/', $str)) return true;
-        return false;
+        if ($lang === 'zh') {
+            return preg_match('/[\x{4E00}-\x{9FFF}]/u', $str) === 1;
+        }
+        if ($lang === 'ar' || $lang === 'fa') {
+            return preg_match('/[\x{0600}-\x{06FF}\x{0750}-\x{077F}\x{08A0}-\x{08FF}\x{FB50}-\x{FDFF}\x{FE70}-\x{FEFF}]/u', $str) === 1;
+        }
+        return preg_match('/[\x{0600}-\x{06FF}\x{0750}-\x{077F}\x{08A0}-\x{08FF}\x{FB50}-\x{FDFF}\x{FE70}-\x{FEFF}\x{4E00}-\x{9FFF}]/u', $str) === 1;
     }
 
     /**
-     * Checks if a string has actual Arabic/Persian/Chinese characters
+     * Canonical UTF-8-safe mojibake detector shared across all CMS PHP endpoints.
+     * Always runs regexes in /u mode and never flags genuine Chinese or Arabic/Farsi text.
      */
-    function hasNonLatinChars($str) {
-        if (!is_string($str) || trim($str) === '') return false;
-        return preg_match('/[\x{0600}-\x{06FF}\x{0750}-\x{077F}\x{08A0}-\x{08FF}\x{FB50}-\x{FDFF}\x{FE70}-\x{FEFF}\x{4E00}-\x{9FFF}]/u', $str) === 1;
+    if (!function_exists('isMojibakeString')) {
+        function isMojibakeString($raw) {
+            if (!is_string($raw) || trim($raw) === '') return false;
+            if (strpos($raw, '????') !== false) return true;
+            if (preg_match('/[\x{2500}-\x{259F}\x{FFFD}]|ΓÇ[ôöòóõô–•]|u0026amp;/u', $raw)) return true;
+
+            // Never apply Latin-1 double-encoding heuristics to strings containing real Arabic/Persian/Chinese script
+            if (hasNonLatinChars($raw)) {
+                return false;
+            }
+
+            if (preg_match('/[ØÙ][\x{0080}-\x{00FF}]/u', $raw)) return true;
+            if (preg_match('/[äåæçèéêëìíîï][\x{0080}-\x{00FF}\x{201A}-\x{2026}\x{2018}-\x{201D}\x{2122}\x{0152}\x{0153}\x{0160}\x{0161}\x{0178}\x{017E}\x{02C6}\x{02DC}]/u', $raw)) return true;
+            if (preg_match('/(?:O\s*U,|[A-Za-z]\s*[\x{00BF}\x{017D}\x{02C6}\x{00AC}\x{00A2}]|A["”][A-Za-z"”]+)/u', $raw)) return true;
+            return false;
+        }
+    }
+
+    function isMojibake($str) {
+        return isMojibakeString($str);
     }
 
     /**

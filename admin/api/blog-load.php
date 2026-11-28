@@ -5,6 +5,7 @@
  */
 
 require_once __DIR__ . '/db.php';
+require_once __DIR__ . '/translate_sync.php';
 
 if ($_SERVER['REQUEST_METHOD'] !== 'GET') {
     jsonResponse(['error' => 'Method not allowed. Only GET is accepted.'], 405);
@@ -46,6 +47,42 @@ if (!$found) {
         }
     }
 }
+
+// Cross-check MySQL cms_content so valid database translations (e.g. zh/ar/fa) are never masked by stale JSON
+try {
+    $pdo = getDb(true);
+    if ($pdo) {
+        $stmt = $pdo->query("SELECT draft_data, live_data FROM cms_content WHERE content_key = 'sgcms_blog' LIMIT 1");
+        $row = $stmt ? $stmt->fetch() : null;
+        if ($row) {
+            foreach (['draft_data', 'live_data'] as $col) {
+                if (empty($row[$col])) continue;
+                $dbList = json_decode($row[$col], true);
+                if (!is_array($dbList)) continue;
+                foreach ($dbList as $dbItem) {
+                    if (!is_array($dbItem)) continue;
+                    if (($dbItem['id'] ?? '') !== $id && ($dbItem['slug'] ?? '') !== $id) continue;
+                    if (!$found) {
+                        $found = $dbItem;
+                        break;
+                    }
+                    foreach (['zh', 'ar', 'fa'] as $chkLng) {
+                        if (empty($dbItem[$chkLng]) || !is_array($dbItem[$chkLng])) continue;
+                        if (!isset($found[$chkLng]) || !is_array($found[$chkLng])) $found[$chkLng] = [];
+                        foreach (['title', 'body', 'excerpt', 'meta_title', 'meta_desc'] as $fld) {
+                            $dbVal = trim((string)($dbItem[$chkLng][$fld] ?? ''));
+                            $curVal = trim((string)($found[$chkLng][$fld] ?? ''));
+                            if ($dbVal !== '' && hasNonLatinChars($dbVal, $chkLng) && !hasNonLatinChars($curVal, $chkLng)) {
+                                $found[$chkLng][$fld] = $dbItem[$chkLng][$fld];
+                            }
+                        }
+                    }
+                    break;
+                }
+            }
+        }
+    }
+} catch (Throwable $e) {}
 
 if (!$found) {
     jsonResponse(['success' => false, 'error' => 'Blog post not found.'], 404);

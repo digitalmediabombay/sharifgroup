@@ -23,16 +23,117 @@
 
 require_once __DIR__ . '/translate_sync.php';
 
-if (!function_exists('isMojibakeString')) {
-    function isMojibakeString($raw) {
-        if (!is_string($raw) || trim($raw) === '') return false;
-        if (strpos($raw, '????') !== false) return true;
-        if (preg_match('/[\x{2500}-\x{259F}\x{FFFD}]|ΓÇ[ôöòóõô–•]|u0026amp;/u', $raw)) return true;
-        if (preg_match('/[ØÙ][\x80-\xFF]/', $raw) && !preg_match('/[\x{0600}-\x{06FF}]/u', $raw)) return true;
-        if (preg_match('/(?:æ[•™\x80-\xFF]|è[‚²¯¢¿Ž°\x80-\xFF]|å[’¨ˆ°«\x80-\xFF]|ç[º»\x80-\xFF]|é[\x80-\xFF]|ä[\x80-\xFF])/', $raw) && !preg_match('/[\x{4E00}-\x{9FFF}]/u', $raw)) return true;
-        if (preg_match('/[äåæçèéêëìíîï][\x{0080}-\x{00FF}\x{201A}-\x{2026}\x{2018}-\x{201D}\x{2122}\x{0152}\x{0153}\x{0160}\x{0161}\x{0178}\x{017E}\x{02C6}\x{02DC}]/u', $raw) && !preg_match('/[\x{4E00}-\x{9FFF}]/u', $raw)) return true;
-        if (preg_match('/(?:O\s*U,|AE\+|[A-Za-z]\s*[¿Ž°ˆ¬¢]|A["”][A-Za-z"”]+)/', $raw)) return true;
-        return false;
+// Canonical isMojibakeString() is provided by translate_sync.php
+
+if (!function_exists('ssgHasValidTargetContent')) {
+    /**
+     * Verifies whether a field already contains genuine, non-corrupted content for $targetLang.
+     * Prevents valid user-authored Chinese, Arabic, or Farsi text from ever being overwritten.
+     */
+    function ssgHasValidTargetContent($text, $targetLang, $enRef = '') {
+        if (!is_string($text)) return false;
+        $trimmed = trim($text);
+        if ($trimmed === '') return false;
+        if (function_exists('isMojibakeString') && isMojibakeString($trimmed)) return false;
+
+        if ($targetLang === 'en') {
+            return true;
+        }
+        if ($targetLang === 'zh') {
+            return preg_match('/[\x{4E00}-\x{9FFF}]/u', $trimmed) === 1;
+        }
+        if ($targetLang === 'ar' || $targetLang === 'fa') {
+            return preg_match('/[\x{0600}-\x{06FF}]/u', $trimmed) === 1;
+        }
+
+        return trim((string)$enRef) === '' ? true : ($trimmed !== trim((string)$enRef));
+    }
+}
+
+if (!function_exists('ssgRecoverBlogsFromDb')) {
+    /**
+     * When MySQL cms_content still holds genuine localized content (e.g. user-typed Chinese)
+     * that was previously masked by corrupted/fallback JSON snapshots, restore it automatically.
+     */
+    function ssgRecoverBlogsFromDb(&$blogs) {
+        if (!is_array($blogs) || !function_exists('getDb')) return false;
+        try {
+            $pdo = getDb(true);
+            if (!$pdo) return false;
+            $stmt = $pdo->query("SELECT live_data, draft_data FROM cms_content WHERE content_key = 'sgcms_blog' LIMIT 1");
+            $row = $stmt ? $stmt->fetch() : null;
+            if (!$row) return false;
+
+            $dbLookup = [];
+            foreach (['draft_data', 'live_data'] as $col) {
+                if (empty($row[$col])) continue;
+                $list = json_decode($row[$col], true);
+                if (!is_array($list)) continue;
+                foreach ($list as $item) {
+                    if (!is_array($item)) continue;
+                    foreach ([$item['id'] ?? '', $item['slug'] ?? '', $item['en']['slug'] ?? ''] as $k) {
+                        $nk = strtolower(trim((string)$k));
+                        if ($nk !== '') {
+                            // Prefer whichever DB copy holds native script translations
+                            if (!isset($dbLookup[$nk])) {
+                                $dbLookup[$nk] = $item;
+                            } else {
+                                foreach (['zh', 'ar', 'fa'] as $chkLang) {
+                                    $candBody = $item[$chkLang]['body'] ?? '';
+                                    $curBody = $dbLookup[$nk][$chkLang]['body'] ?? '';
+                                    if (ssgHasValidTargetContent($candBody, $chkLang) && !ssgHasValidTargetContent($curBody, $chkLang)) {
+                                        $dbLookup[$nk][$chkLang] = $item[$chkLang];
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+
+            if (empty($dbLookup)) return false;
+
+            $recovered = false;
+            foreach ($blogs as &$b) {
+                if (!is_array($b)) continue;
+                $dbItem = null;
+                foreach ([$b['id'] ?? '', $b['slug'] ?? '', $b['en']['slug'] ?? ''] as $k) {
+                    $nk = strtolower(trim((string)$k));
+                    if ($nk !== '' && isset($dbLookup[$nk])) {
+                        $dbItem = $dbLookup[$nk];
+                        break;
+                    }
+                }
+                if (!$dbItem) continue;
+
+                foreach (['zh', 'ar', 'fa'] as $lng) {
+                    if (empty($dbItem[$lng]) || !is_array($dbItem[$lng])) continue;
+                    if (!isset($b[$lng]) || !is_array($b[$lng])) $b[$lng] = [];
+
+                    foreach (['title', 'body', 'excerpt', 'meta_title', 'meta_desc'] as $f) {
+                        $curVal = $b[$lng][$f] ?? '';
+                        $dbVal  = $dbItem[$lng][$f] ?? '';
+                        if ($dbVal !== '' && ssgHasValidTargetContent($dbVal, $lng) && !ssgHasValidTargetContent($curVal, $lng)) {
+                            $b[$lng][$f] = $dbVal;
+                            $recovered = true;
+                        }
+                    }
+
+                    if (!empty($dbItem[$lng]['faqs']) && is_array($dbItem[$lng]['faqs'])) {
+                        $firstDbQ = $dbItem[$lng]['faqs'][0]['q'] ?? '';
+                        $firstCurQ = $b[$lng]['faqs'][0]['q'] ?? '';
+                        if (ssgHasValidTargetContent($firstDbQ, $lng) && !ssgHasValidTargetContent($firstCurQ, $lng)) {
+                            $b[$lng]['faqs'] = $dbItem[$lng]['faqs'];
+                            $recovered = true;
+                        }
+                    }
+                }
+            }
+            unset($b);
+            return $recovered;
+        } catch (Throwable $e) {
+            return false;
+        }
     }
 }
 
@@ -447,6 +548,9 @@ function regenerateBlogListings($rootDir = null, $publishedSnapshot = null) {
     $blogs = $publishedSnapshot['sgcms_blog'] ?? [];
     if (!is_array($blogs)) $blogs = [];
 
+    // Recover genuine MySQL localized fields if JSON snapshot had overwritten/English fallback copies
+    $dbRecovered = ssgRecoverBlogsFromDb($blogs);
+
     // Normalize/extract any embedded base64 images to physical files on disk
     $mediaChanged = false;
     foreach ($blogs as &$rawBlog) {
@@ -456,7 +560,7 @@ function regenerateBlogListings($rootDir = null, $publishedSnapshot = null) {
         }
     }
     unset($rawBlog);
-    if ($mediaChanged) {
+    if ($mediaChanged || $dbRecovered) {
         $publishedSnapshot['sgcms_blog'] = $blogs;
     }
 
@@ -488,8 +592,8 @@ function regenerateBlogListings($rootDir = null, $publishedSnapshot = null) {
         return strcmp($db, $da);
     });
 
-    // Auto-translate any missing/mojibake fields for active blogs
-    $blogsChanged = false;
+    // Auto-translate only genuinely missing, corrupted, or untranslated-English fields
+    $blogsChanged = $dbRecovered;
     foreach ($activeBlogs as &$b) {
         $enTitle = trim($b['en']['title'] ?? ($b['title'] ?? ''));
         $enBody = trim($b['en']['body'] ?? ($b['body'] ?? ''));
@@ -502,16 +606,22 @@ function regenerateBlogListings($rootDir = null, $publishedSnapshot = null) {
             $tTitle = trim($b[$tLang]['title'] ?? '');
             $tBody = trim($b[$tLang]['body'] ?? '');
 
-            if ($tTitle === '' || isMojibakeString($tTitle) || $tTitle === $enTitle) {
+            if (!ssgHasValidTargetContent($tTitle, $tLang, $enTitle)) {
                 if (function_exists('translateTextServer')) {
-                    $b[$tLang]['title'] = translateTextServer($enTitle, $tLang, 'en');
-                    $blogsChanged = true;
+                    $trTitle = translateTextServer($enTitle, $tLang, 'en');
+                    if (ssgHasValidTargetContent($trTitle, $tLang, $enTitle) || $tTitle === '') {
+                        $b[$tLang]['title'] = $trTitle;
+                        $blogsChanged = true;
+                    }
                 }
             }
-            if ($tBody === '' || isMojibakeString($tBody) || $tBody === $enBody) {
+            if ($enBody !== '' && !ssgHasValidTargetContent($tBody, $tLang, $enBody)) {
                 if (function_exists('translateTextServer')) {
-                    $b[$tLang]['body'] = translateTextServer($enBody, $tLang, 'en');
-                    $blogsChanged = true;
+                    $trBody = translateTextServer($enBody, $tLang, 'en');
+                    if (ssgHasValidTargetContent($trBody, $tLang, $enBody) || $tBody === '') {
+                        $b[$tLang]['body'] = $trBody;
+                        $blogsChanged = true;
+                    }
                 }
             }
             if (empty($b[$tLang]['slug'])) {
@@ -578,19 +688,19 @@ function regenerateBlogListings($rootDir = null, $publishedSnapshot = null) {
                 }
             }
         }
+    }
 
-        if (function_exists('getDb')) {
-            try {
-                $pdo = getDb(true);
-                if ($pdo) {
-                    $jsonLive = json_encode($publishedSnapshot['sgcms_blog'], JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES);
-                    if (is_string($jsonLive) && $jsonLive !== '') {
-                        $stmt = $pdo->prepare("UPDATE cms_content SET live_data = :live, updated_at = NOW() WHERE content_key = 'sgcms_blog'");
-                        $stmt->execute([':live' => $jsonLive]);
-                    }
+    if (($mediaChanged || $blogsChanged) && function_exists('getDb')) {
+        try {
+            $pdo = getDb(true);
+            if ($pdo) {
+                $jsonLive = json_encode($publishedSnapshot['sgcms_blog'], JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES);
+                if (is_string($jsonLive) && $jsonLive !== '') {
+                    $stmt = $pdo->prepare("UPDATE cms_content SET live_data = :live, updated_at = NOW() WHERE content_key = 'sgcms_blog'");
+                    $stmt->execute([':live' => $jsonLive]);
                 }
-            } catch (Throwable $dbErr) {}
-        }
+            }
+        } catch (Throwable $dbErr) {}
     }
 
     $targets = [
@@ -974,22 +1084,32 @@ function regenerateStaticArticlePages($rootDir, $activeBlogs, $deletedSlugs = []
             $ld = $b[$lang] ?? ($b['en'] ?? $b);
 
             $title = trim($ld['title'] ?? '');
-            if ($title === '' || isMojibakeString($title) || ($lang !== 'en' && $title === $enTitle)) {
-                if ($lang !== 'en' && $enTitle !== '' && function_exists('translateTextServer')) {
-                    $title = translateTextServer($enTitle, $lang, 'en');
-                } else {
+            if ($lang !== 'en' && !ssgHasValidTargetContent($title, $lang, $enTitle)) {
+                if ($enTitle !== '' && function_exists('translateTextServer')) {
+                    $trTitle = translateTextServer($enTitle, $lang, 'en');
+                    if (ssgHasValidTargetContent($trTitle, $lang, $enTitle) || $title === '') {
+                        $title = $trTitle;
+                    }
+                } else if ($title === '') {
                     $title = $enTitle;
                 }
+            } else if ($lang === 'en' && $title === '') {
+                $title = $enTitle;
             }
             if ($title === '') continue;
 
             $body = trim($ld['body'] ?? '');
-            if ($body === '' || isMojibakeString($body) || ($lang !== 'en' && $body === $enBody)) {
-                if ($lang !== 'en' && $enBody !== '' && function_exists('translateTextServer')) {
-                    $body = translateTextServer($enBody, $lang, 'en');
-                } else {
+            if ($lang !== 'en' && !ssgHasValidTargetContent($body, $lang, $enBody)) {
+                if ($enBody !== '' && function_exists('translateTextServer')) {
+                    $trBody = translateTextServer($enBody, $lang, 'en');
+                    if (ssgHasValidTargetContent($trBody, $lang, $enBody) || $body === '') {
+                        $body = $trBody;
+                    }
+                } else if ($body === '') {
                     $body = $enBody;
                 }
+            } else if ($lang === 'en' && $body === '') {
+                $body = $enBody;
             }
             if ($body === '') {
                 $body = '<p>' . htmlspecialchars($enExcerpt ?: $title, ENT_QUOTES | ENT_SUBSTITUTE, 'UTF-8') . '</p>';
@@ -998,12 +1118,17 @@ function regenerateStaticArticlePages($rootDir, $activeBlogs, $deletedSlugs = []
             // Clean description
             $cleanText = trim(preg_replace('/\s+/', ' ', strip_tags($body)));
             $desc = trim($ld['meta_desc'] ?? ($ld['excerpt'] ?? ''));
-            if ($desc === '' || isMojibakeString($desc) || ($lang !== 'en' && $desc === $enExcerpt)) {
-                if ($lang !== 'en' && $enExcerpt !== '' && function_exists('translateTextServer')) {
-                    $desc = translateTextServer($enExcerpt, $lang, 'en');
+            if ($lang !== 'en' && !ssgHasValidTargetContent($desc, $lang, $enExcerpt)) {
+                if ($enExcerpt !== '' && function_exists('translateTextServer')) {
+                    $trDesc = translateTextServer($enExcerpt, $lang, 'en');
+                    $desc = ssgHasValidTargetContent($trDesc, $lang, $enExcerpt)
+                        ? $trDesc
+                        : (function_exists('mb_substr') ? mb_substr($cleanText, 0, 155, 'UTF-8') : substr($cleanText, 0, 155));
                 } else {
                     $desc = function_exists('mb_substr') ? mb_substr($cleanText, 0, 155, 'UTF-8') : substr($cleanText, 0, 155);
                 }
+            } else if ($desc === '') {
+                $desc = function_exists('mb_substr') ? mb_substr($cleanText, 0, 155, 'UTF-8') : substr($cleanText, 0, 155);
             }
 
             $pageTitle = $title . $info['brand'];
